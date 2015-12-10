@@ -53,6 +53,7 @@ import org.eclipse.ui.views.properties.tabbed.AbstractPropertySection;
 import org.eclipse.ui.views.properties.tabbed.ITabbedPropertyConstants;
 import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetWidgetFactory;
 import org.talend.commons.exception.CommonExceptionHandler;
+import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.exception.LoginException;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.runtime.model.repository.ERepositoryStatus;
@@ -80,6 +81,7 @@ import org.talend.core.ui.editor.JobEditorHandlerManager;
 import org.talend.core.utils.KeywordsValidator;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.repository.ProjectManager;
+import org.talend.repository.RepositoryWorkUnit;
 import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.RepositoryConstants;
 import org.talend.repository.ui.properties.StatusHelper;
@@ -594,70 +596,81 @@ public class MainComposite extends AbstractTabComposite {
                             // Convert
                             final Item newItem = ConvertJobsUtil.createOperation(originalName, originalJobType,
                                     originalFramework, repositoryObject);
-                            IWorkspaceRunnable runnable = new IWorkspaceRunnable() {
+                            RepositoryWorkUnit repositoryWorkUnit = new RepositoryWorkUnit("Convert job") { //$NON-NLS-1$
 
                                 @Override
-                                public void run(final IProgressMonitor monitor) throws CoreException {
-                                    try {
-                                        boolean isOpened = false;
-                                        if (repositoryObject instanceof IProcess2) {
-                                            isOpened = true;
-                                            boolean locked = proxyRepositoryFactory.getStatus(repositoryObject) == ERepositoryStatus.LOCK_BY_USER;
-                                            if (locked) {
-                                                proxyRepositoryFactory.unlock(repositoryObject);
-                                            }
-                                        }
+                                public void run() throws PersistenceException {
+                                    IWorkspaceRunnable runnable = new IWorkspaceRunnable() {
 
-                                        boolean isNewItemCreated = true;
-                                        Property repositoryProperty = repositoryObject.getProperty();
-                                        if (repositoryProperty != null) {
-                                            isNewItemCreated = (repositoryProperty.getItem() != newItem);
-                                        }
-                                        if (isNewItemCreated) {
-                                            // new Item created
-                                            proxyRepositoryFactory.deleteObjectPhysical(repositoryObject);
-                                            proxyRepositoryFactory.saveProject(ProjectManager.getInstance().getCurrentProject());
-                                        } else if (repositoryObject.getProperty() != null) {
-                                            proxyRepositoryFactory.save(ProjectManager.getInstance().getCurrentProject(),
-                                                    repositoryObject.getProperty().getItem(), false);
-                                        }
-                                        if (newItem != null && newItem.getProperty() != null) {
-                                            String newId = newItem.getProperty().getId();
-                                            if (isNewItemCreated) {
-                                                newRepositoryObject = proxyRepositoryFactory.getLastVersion(ProjectManager
-                                                        .getInstance().getCurrentProject(), newId);
-                                            } else {
-                                                newRepositoryObject = repositoryObject;
-                                            }
-                                            if (!isOpened) {
-                                                repositoryObject = newRepositoryObject;
-                                                if (!jobTypeCCombo.isDisposed() && !jobFrameworkCCombo.isDisposed()) {
-                                                    jobTypeValue = jobTypeCCombo.getText();
-                                                    frameworkValue = jobFrameworkCCombo.getText();
+                                        @Override
+                                        public void run(final IProgressMonitor monitor) throws CoreException {
+                                            try {
+                                                boolean isOpened = false;
+                                                if (repositoryObject instanceof IProcess2) {
+                                                    isOpened = true;
+                                                    boolean locked = proxyRepositoryFactory.getStatus(repositoryObject) == ERepositoryStatus.LOCK_BY_USER;
+                                                    if (locked) {
+                                                        proxyRepositoryFactory.unlock(repositoryObject);
+                                                    }
                                                 }
+
+                                                boolean isNewItemCreated = true;
+                                                Property repositoryProperty = repositoryObject.getProperty();
+                                                if (repositoryProperty != null) {
+                                                    isNewItemCreated = (repositoryProperty.getItem() != newItem);
+                                                }
+                                                if (isNewItemCreated) {
+                                                    // new Item created
+                                                    proxyRepositoryFactory.deleteObjectPhysical(repositoryObject);
+                                                    proxyRepositoryFactory.saveProject(ProjectManager.getInstance()
+                                                            .getCurrentProject());
+                                                } else if (repositoryObject.getProperty() != null) {
+                                                    proxyRepositoryFactory.save(ProjectManager.getInstance().getCurrentProject(),
+                                                            repositoryObject.getProperty().getItem(), false);
+                                                }
+                                                if (newItem != null && newItem.getProperty() != null) {
+                                                    String newId = newItem.getProperty().getId();
+                                                    if (isNewItemCreated) {
+                                                        newRepositoryObject = proxyRepositoryFactory.getLastVersion(
+                                                                ProjectManager.getInstance().getCurrentProject(), newId);
+                                                    } else {
+                                                        newRepositoryObject = repositoryObject;
+                                                    }
+                                                    if (!isOpened) {
+                                                        repositoryObject = newRepositoryObject;
+                                                        if (!jobTypeCCombo.isDisposed() && !jobFrameworkCCombo.isDisposed()) {
+                                                            jobTypeValue = jobTypeCCombo.getText();
+                                                            frameworkValue = jobFrameworkCCombo.getText();
+                                                        }
+                                                    }
+                                                }
+
+                                            } catch (PersistenceException e1) {
+                                                e1.printStackTrace();
+                                            } catch (LoginException e) {
+                                                e.printStackTrace();
                                             }
                                         }
+                                    };
+                                    // unlockObject();
+                                    // alreadyEditedByUser = true; // to avoid 2 calls of unlock
 
-                                    } catch (PersistenceException e1) {
-                                        e1.printStackTrace();
-                                    } catch (LoginException e) {
-                                        e.printStackTrace();
+                                    IWorkspace workspace = ResourcesPlugin.getWorkspace();
+                                    try {
+                                        ISchedulingRule schedulingRule = workspace.getRoot();
+                                        // the update the project files need to be done in the workspace runnable to
+                                        // avoid all
+                                        // notification
+                                        // of changes before the end of the modifications.
+                                        workspace.run(runnable, schedulingRule, IWorkspace.AVOID_UPDATE, null);
+                                    } catch (CoreException e1) {
+                                        MessageBoxExceptionHandler.process(e1.getCause());
                                     }
                                 }
                             };
-                            // unlockObject();
-                            // alreadyEditedByUser = true; // to avoid 2 calls of unlock
-
-                            IWorkspace workspace = ResourcesPlugin.getWorkspace();
-                            try {
-                                ISchedulingRule schedulingRule = workspace.getRoot();
-                                // the update the project files need to be done in the workspace runnable to avoid all
-                                // notification
-                                // of changes before the end of the modifications.
-                                workspace.run(runnable, schedulingRule, IWorkspace.AVOID_UPDATE, null);
-                            } catch (CoreException e1) {
-                                MessageBoxExceptionHandler.process(e1.getCause());
-                            }
+                            repositoryWorkUnit.setAvoidSvnUpdate(true);
+                            repositoryWorkUnit.setAvoidUnloadResources(true);
+                            ProxyRepositoryFactory.getInstance().executeRepositoryWorkUnit(repositoryWorkUnit);
                             if (newItem != null && repositoryObject instanceof IProcess2) {
                                 if (newRepositoryObject != null && newRepositoryObject.getProperty() != null) {
                                     openEditorOperation(newRepositoryObject.getProperty().getItem());
@@ -675,33 +688,44 @@ public class MainComposite extends AbstractTabComposite {
                                 }
                                 property.getAdditionalProperties().put(ConvertJobsUtil.FRAMEWORK, originalFramework);
                             }
-                            IWorkspaceRunnable runnable = new IWorkspaceRunnable() {
+                            RepositoryWorkUnit repositoryWorkUnit = new RepositoryWorkUnit("Convert job") { //$NON-NLS-1$
 
                                 @Override
-                                public void run(final IProgressMonitor monitor) throws CoreException {
-                                    try {
-                                        if (repositoryObject.getProperty() != null) {
-                                            proxyRepositoryFactory.save(ProjectManager.getInstance().getCurrentProject(),
-                                                    repositoryObject.getProperty().getItem(), false);
+                                public void run() throws PersistenceException {
+                                    IWorkspaceRunnable runnable = new IWorkspaceRunnable() {
+
+                                        @Override
+                                        public void run(final IProgressMonitor monitor) throws CoreException {
+                                            try {
+                                                if (repositoryObject.getProperty() != null) {
+                                                    proxyRepositoryFactory.save(ProjectManager.getInstance().getCurrentProject(),
+                                                            repositoryObject.getProperty().getItem(), false);
+                                                }
+                                            } catch (PersistenceException e1) {
+                                                ExceptionHandler.process(e1);
+                                            }
                                         }
-                                    } catch (PersistenceException e1) {
-                                        e1.printStackTrace();
+                                    };
+                                    // unlockObject();
+                                    // alreadyEditedByUser = true; // to avoid 2 calls of unlock
+
+                                    IWorkspace workspace = ResourcesPlugin.getWorkspace();
+                                    try {
+                                        ISchedulingRule schedulingRule = workspace.getRoot();
+                                        // the update the project files need to be done in the workspace runnable to
+                                        // avoid all
+                                        // notification
+                                        // of changes before the end of the modifications.
+                                        workspace.run(runnable, schedulingRule, IWorkspace.AVOID_UPDATE, null);
+                                    } catch (CoreException e1) {
+                                        MessageBoxExceptionHandler.process(e1.getCause());
                                     }
                                 }
                             };
-                            // unlockObject();
-                            // alreadyEditedByUser = true; // to avoid 2 calls of unlock
+                            repositoryWorkUnit.setAvoidSvnUpdate(true);
+                            repositoryWorkUnit.setAvoidUnloadResources(true);
+                            ProxyRepositoryFactory.getInstance().executeRepositoryWorkUnit(repositoryWorkUnit);
 
-                            IWorkspace workspace = ResourcesPlugin.getWorkspace();
-                            try {
-                                ISchedulingRule schedulingRule = workspace.getRoot();
-                                // the update the project files need to be done in the workspace runnable to avoid all
-                                // notification
-                                // of changes before the end of the modifications.
-                                workspace.run(runnable, schedulingRule, IWorkspace.AVOID_UPDATE, null);
-                            } catch (CoreException e1) {
-                                MessageBoxExceptionHandler.process(e1.getCause());
-                            }
                             if (repositoryObject instanceof IProcess2) {
                                 openEditorOperation(property.getItem());
                             }
