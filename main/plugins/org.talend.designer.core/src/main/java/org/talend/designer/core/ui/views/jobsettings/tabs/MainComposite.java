@@ -617,6 +617,9 @@ public class MainComposite extends AbstractTabComposite {
                                             // new Item created
                                             proxyRepositoryFactory.deleteObjectPhysical(repositoryObject);
                                             proxyRepositoryFactory.saveProject(ProjectManager.getInstance().getCurrentProject());
+                                        } else if (repositoryObject.getProperty() != null) {
+                                            proxyRepositoryFactory.save(ProjectManager.getInstance().getCurrentProject(),
+                                                    repositoryObject.getProperty().getItem(), false);
                                         }
                                         if (newItem != null && newItem.getProperty() != null) {
                                             String newId = newItem.getProperty().getId();
@@ -634,6 +637,7 @@ public class MainComposite extends AbstractTabComposite {
                                                 }
                                             }
                                         }
+
                                     } catch (PersistenceException e1) {
                                         e1.printStackTrace();
                                     } catch (LoginException e) {
