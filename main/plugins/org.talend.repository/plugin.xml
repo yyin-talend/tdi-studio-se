@@ -2672,6 +2672,15 @@
               name="ChangeOptionDefaultValueForFileArchive"
               version="6.1.0">
         </projecttask>
+        <projecttask
+              beforeLogon="false"
+              breaks="6.1.0"
+              class="org.talend.repository.model.migration.ChangeDBVersionValue4BonitaComponents"
+              description="Change the old db version value"
+              id="org.talend.repository.model.migration.ChangeDBVersionValue4BonitaComponents"
+              name="ChangeDBVersionValue4BonitaComponents"
+              version="6.1.1">
+        </projecttask>
    </extension>
 
    <extension
