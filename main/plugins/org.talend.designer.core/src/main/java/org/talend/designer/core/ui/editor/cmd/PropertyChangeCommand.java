@@ -643,6 +643,10 @@ public class PropertyChangeCommand extends Command {
                             testedParam.setValue(testedParam.getListItemsValue()[index]);
                             break;
                         }
+                    } else if (condition == null) {
+                        int index = ArrayUtils.indexOf(testedParam.getListItemsNotShowIf(), condition);
+                        testedParam.setValue(testedParam.getListItemsValue()[index]);
+                        break;
                     }
                 }
             }
