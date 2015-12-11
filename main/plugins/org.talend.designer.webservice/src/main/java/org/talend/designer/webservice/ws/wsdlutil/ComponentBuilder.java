@@ -154,7 +154,6 @@ public class ComponentBuilder {
             Iterator elementsItr = elements.getValues();
             while (elementsItr.hasNext()) {
                 XmlSchemaElement xmlSchemaElement = (XmlSchemaElement) elementsItr.next();
-                System.out.println(xmlSchemaElement.getName());
 
                 allXmlSchemaElement.add(xmlSchemaElement);
             }
