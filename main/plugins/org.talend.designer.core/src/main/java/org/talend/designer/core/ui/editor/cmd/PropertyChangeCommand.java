@@ -395,6 +395,7 @@ public class PropertyChangeCommand extends Command {
         if (!toUpdate
                 && (currentParam.getFieldType().equals(EParameterFieldType.RADIO)
                         || currentParam.getFieldType().equals(EParameterFieldType.CLOSED_LIST)
+                        || currentParam.getFieldType().equals(EParameterFieldType.OPENED_LIST)
                         || currentParam.getFieldType().equals(EParameterFieldType.CHECK)
                         || currentParam.getFieldType().equals(EParameterFieldType.AS400_CHECK) || currentParam.getFieldType()
                         .equals(EParameterFieldType.COMPONENT_LIST))) {
