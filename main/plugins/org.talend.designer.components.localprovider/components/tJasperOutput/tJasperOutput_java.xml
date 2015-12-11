@@ -131,7 +131,7 @@
 	  <IMPORT NAME="Barbecue" MODULE="barbecue-1.5-beta1.jar" REQUIRED="true" />
 	  <IMPORT NAME="CommonsDigester" MODULE="commons-digester-1.7.jar" UrlPath="platform:/plugin/org.talend.libraries.apache.common/lib/commons-digester-1.7.jar" REQUIRED="true" />
 	  <IMPORT NAME="JdtCompiler" MODULE="jdt-compiler-3.1.1.jar" UrlPath="platform:/plugin/org.talend.libraries.jasperreport/lib/jdt-compiler-3.1.1.jar" REQUIRED="true" />
-	  <IMPORT NAME="CommonsCollections" MODULE="commons-collections-3.2.jar" UrlPath="platform:/base/plugins/org.apache.commons.collections_3.2.0.v201005080500.jar" REQUIRED="true" />
+	  <IMPORT NAME="CommonsCollections" MODULE="commons-collections-3.2.2.jar" UrlPath="platform:/plugin/org.talend.libraries.apache.common/lib/commons-collections-3.2.2.jar" REQUIRED="true" />
 	  <IMPORT NAME="CommonsLogging" MODULE="commons-logging-1.1.jar" UrlPath="platform:/plugin/org.talend.libraries.apache.common/lib/commons-logging-1.1.jar" REQUIRED="true" />
 	  <IMPORT NAME="CommonsBeanutils" MODULE="commons-beanutils-1.7.jar" UrlPath="platform:/base/plugins/org.apache.commons.beanutils_1.7.0.v200902170505.jar" REQUIRED="true" />
 	  <IMPORT NAME="Itext" MODULE="iText-2.1.7.jar" REQUIRED="true" />

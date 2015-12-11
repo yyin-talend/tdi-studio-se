@@ -135,7 +135,7 @@
 			<IMPORT NAME="xom" MODULE="xom-1.2.7.jar" REQUIRED_IF="(READBYXPATH == 'true')" />
 			<IMPORT NAME="commons_beanutils" MODULE="commons-beanutils-1.8.3.jar" UrlPath="platform:/plugin/org.talend.libraries.apache.common/lib/commons-beanutils-1.8.3.jar"
 				REQUIRED_IF="(READBYXPATH == 'true')" />
-			<IMPORT NAME="commons_collections" MODULE="commons-collections-3.2.1.jar" UrlPath="platform:/plugin/org.talend.libraries.apache.common/lib/commons-collections-3.2.1.jar"
+			<IMPORT NAME="commons_collections" MODULE="commons-collections-3.2.2.jar" UrlPath="platform:/plugin/org.talend.libraries.apache.common/lib/commons-collections-3.2.2.jar"
 				REQUIRED_IF="(READBYXPATH == 'true')" />
 			<IMPORT NAME="staxon" MODULE="staxon-1.2.jar" REQUIRED_IF="(READBYXPATH == 'true')" />
 		</IMPORTS>

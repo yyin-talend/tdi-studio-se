@@ -161,7 +161,7 @@
             <IMPORT NAME="ezmorph" MODULE="ezmorph-1.0.6.jar" UrlPath="platform:/plugin/org.talend.libraries.jackson/lib/ezmorph-1.0.6.jar" REQUIRED_IF="READ_BY == 'XPATH'" />
             <IMPORT NAME="xom" MODULE="xom-1.2.7.jar" REQUIRED_IF="READ_BY == 'XPATH'" />
             <IMPORT NAME="commons_beanutils" MODULE="commons-beanutils-1.8.3.jar" UrlPath="platform:/plugin/org.talend.libraries.apache.common/lib/commons-beanutils-1.8.3.jar" REQUIRED_IF="READ_BY == 'XPATH'" />
-            <IMPORT NAME="commons_collections" MODULE="commons-collections-3.2.1.jar" UrlPath="platform:/plugin/org.talend.libraries.apache.common/lib/commons-collections-3.2.1.jar" REQUIRED_IF="READ_BY == 'XPATH'" />
+            <IMPORT NAME="commons_collections" MODULE="commons-collections-3.2.2.jar" UrlPath="platform:/plugin/org.talend.libraries.apache.common/lib/commons-collections-3.2.2.jar" REQUIRED_IF="READ_BY == 'XPATH'" />
             <IMPORT NAME="staxon" MODULE="staxon-1.2.jar" REQUIRED_IF="READ_BY == 'XPATH'" />
             
             <IMPORT NAME="json-path-1.2.0.jar" MODULE="json-path-1.2.0.jar" REQUIRED_IF="READ_BY == 'JSONPATH'" />

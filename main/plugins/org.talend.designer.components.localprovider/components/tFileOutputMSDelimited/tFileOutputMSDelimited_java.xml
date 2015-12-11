@@ -109,7 +109,7 @@
 			<IMPORT NAME="Talend_CSV" MODULE="talendcsv.jar" UrlPath="platform:/plugin/org.talend.libraries.csv/lib/talendcsv.jar" REQUIRED="true" />
 			<IMPORT NAME="Advanced_Persistent_Lookup" MODULE="advancedPersistentLookupLib-1.0.jar"
 				REQUIRED="true" />
-			<IMPORT NAME="ApacheCommonsCollection32" MODULE="commons-collections-3.2.jar" UrlPath="platform:/base/plugins/org.apache.commons.collections_3.2.0.v201005080500.jar"
+			<IMPORT NAME="ApacheCommonsCollection32" MODULE="commons-collections-3.2.2.jar" UrlPath="platform:/plugin/org.talend.libraries.apache.common/lib/commons-collections-3.2.2.jar"
 				REQUIRED="true" BundleID="" />
 		</IMPORTS>
 	</CODEGENERATION>

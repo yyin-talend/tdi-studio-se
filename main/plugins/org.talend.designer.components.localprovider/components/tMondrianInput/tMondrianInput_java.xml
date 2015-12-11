@@ -325,7 +325,7 @@
 		<IMPORT NAME="commons-vfs"          MODULE="commons-vfs.jar" UrlPath="platform:/plugin/org.talend.libraries.apache.common/lib/commons-vfs.jar" REQUIRED="true" />
 		<IMPORT NAME="commons-log"          MODULE="commons-logging-1.1.jar" UrlPath="platform:/plugin/org.talend.libraries.apache.common/lib/commons-logging-1.1.jar" REQUIRED="true" />
 		<IMPORT NAME="commons-beanutils"    MODULE="commons-beanutils-1.7.jar" UrlPath="platform:/base/plugins/org.apache.commons.beanutils_1.7.0.v200902170505.jar" REQUIRED="true" />
-		<IMPORT NAME="commons-colections"   MODULE="commons-collections-3.2.jar" UrlPath="platform:/base/plugins/org.apache.commons.collections_3.2.0.v201005080500.jar" REQUIRED="true" BundleID="" />
+		<IMPORT NAME="commons-colections"   MODULE="commons-collections-3.2.2.jar" UrlPath="platform:/plugin/org.talend.libraries.apache.common/lib/commons-collections-3.2.2.jar" REQUIRED="true" BundleID="" />
 		<IMPORT NAME="commons-fileupload"   MODULE="commons-fileupload-1.0.jar" UrlPath="platform:/plugin/org.talend.libraries.apache.common/lib/commons-fileupload-1.0.jar" REQUIRED="true" />
 		<IMPORT NAME="commons-pool"         MODULE="commons-pool-1.2.jar" UrlPath="platform:/plugin/org.talend.libraries.apache.common/lib/commons-pool-1.2.jar" REQUIRED="true" />
 		<IMPORT NAME="commons-digester"     MODULE="commons-digester-1.7.jar" UrlPath="platform:/plugin/org.talend.libraries.apache.common/lib/commons-digester-1.7.jar" REQUIRED="true" />

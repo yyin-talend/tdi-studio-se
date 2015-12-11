@@ -178,7 +178,7 @@
 				REQUIRED="true" />
 			<IMPORT NAME="commons-logging" MODULE="commons-logging-1.1.jar" UrlPath="platform:/plugin/org.talend.libraries.apache.common/lib/commons-logging-1.1.jar"
 				REQUIRED="true" />
-			<IMPORT NAME="commons-collections" MODULE="commons-collections-3.1.jar" UrlPath="platform:/plugin/org.talend.libraries.apache.common/lib/commons-collections-3.1.jar"
+			<IMPORT NAME="commons-collections" MODULE="commons-collections-3.2.2.jar" UrlPath="platform:/plugin/org.talend.libraries.apache.common/lib/commons-collections-3.2.2.jar"
 				REQUIRED="true" />
 			<IMPORT NAME="commons-lang" MODULE="commons-lang-2.4.jar" UrlPath="platform:/base/plugins/org.apache.commons.lang_2.4.0.v201005080502.jar"
 				REQUIRED="true" />
