@@ -2615,6 +2615,15 @@
                 name="ChangeComponentSettingNameMigrationTask"
                 version="5.6.2">
           </projecttask>
+          <projecttask
+              beforeLogon="false"
+              breaks="6.0.1"
+              class="org.talend.repository.model.migration.ChangeDBVersionValue4BonitaComponents"
+              description="Change the old db version value"
+              id="org.talend.repository.model.migration.ChangeDBVersionValue4BonitaComponents"
+              name="ChangeDBVersionValue4BonitaComponents"
+              version="6.0.2">
+        </projecttask>
    </extension>
 
    <extension
