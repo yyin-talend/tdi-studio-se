@@ -1,9 +1,11 @@
 package org.talend.designer.webservice.ws.wsdlutil;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.Vector;
 
 import javax.wsdl.Binding;
@@ -144,7 +146,7 @@ public class ComponentBuilder {
      */
     private void collectAllXmlSchemaElement() {
         for (int i = 0; i < wsdlTypes.size(); i++) {
-            XmlSchema xmlSchema = (XmlSchema) (wsdlTypes.elementAt(i));
+            XmlSchema xmlSchema = (wsdlTypes.elementAt(i));
             if (xmlSchema == null) {
                 continue;
             }
@@ -152,6 +154,8 @@ public class ComponentBuilder {
             Iterator elementsItr = elements.getValues();
             while (elementsItr.hasNext()) {
                 XmlSchemaElement xmlSchemaElement = (XmlSchemaElement) elementsItr.next();
+                System.out.println(xmlSchemaElement.getName());
+
                 allXmlSchemaElement.add(xmlSchemaElement);
             }
         }
@@ -162,7 +166,7 @@ public class ComponentBuilder {
      */
     private void collectAllXmlSchemaType() {
         for (int i = 0; i < wsdlTypes.size(); i++) {
-            XmlSchema xmlSchema = (XmlSchema) (wsdlTypes.elementAt(i));
+            XmlSchema xmlSchema = (wsdlTypes.elementAt(i));
             if (xmlSchema == null) {
                 continue;
             }
@@ -178,6 +182,7 @@ public class ComponentBuilder {
 
     protected Vector<XmlSchema> createSchemaFromTypes(List<Definition> wsdlDefinitions) {
         Vector<XmlSchema> schemas = new Vector<XmlSchema>();
+        Set<String> imports = new HashSet<String>();
         org.w3c.dom.Element schemaElementt = null;
         Map importElement = null;
         List includeElement = null;
@@ -199,7 +204,7 @@ public class ComponentBuilder {
                         }
                         importElement = ((javax.wsdl.extensions.schema.Schema) schemaElement).getImports();
                         if (importElement != null && importElement.size() > 0) {
-                            findImportSchema(def, schemas, importElement);
+                            findImportSchema(def, schemas, importElement, imports);
                         }
                     }
 
@@ -237,7 +242,7 @@ public class ComponentBuilder {
                         }
 
                         if (isHaveImport) {
-                            findImportSchema(def, schemas, importElement);
+                            findImportSchema(def, schemas, importElement, imports);
                         }
                     }
                 }
@@ -272,7 +277,7 @@ public class ComponentBuilder {
         }
     }
 
-    private void findImportSchema(Definition wsdlDefinition, Vector schemas, Map importElement) {
+    private void findImportSchema(Definition wsdlDefinition, Vector schemas, Map importElement, Set<String> imports) {
         org.w3c.dom.Element schemaElementt;
         List includeElement = null;
         Iterator keyIterator = importElement.keySet().iterator();
@@ -287,6 +292,13 @@ public class ComponentBuilder {
                     Map importChildElement = null;
                     com.ibm.wsdl.extensions.schema.SchemaImportImpl importImpl = (com.ibm.wsdl.extensions.schema.SchemaImportImpl) importEle
                             .elementAt(i);
+                    // to avoid import cycle
+                    String importLocation = importImpl.getSchemaLocationURI() + ":" + importImpl.getNamespaceURI();
+                    if (imports.contains(importLocation)) {
+                        continue;
+                    } else {
+                        imports.add(importLocation);
+                    }
                     if (importImpl.getReferencedSchema() != null) {
 
                         schemaElementt = importImpl.getReferencedSchema().getElement();
@@ -314,7 +326,7 @@ public class ComponentBuilder {
                     }
 
                     if (isHaveImport) {
-                        findImportSchema(wsdlDefinition, schemas, importChildElement);
+                        findImportSchema(wsdlDefinition, schemas, importChildElement, imports);
                     }
 
                     if ((com.ibm.wsdl.extensions.schema.SchemaImportImpl) importEle.elementAt(i) != null) {
@@ -1017,7 +1029,7 @@ public class ComponentBuilder {
                                         parameterType.setName(parameterSon.getName() + ".@type");
                                         boolean flag = false;
                                         for (int x = 0; x < parameterSon.getParameterInfos().size(); x++) {
-                                            ParameterInfo info = (ParameterInfo) parameterSon.getParameterInfos().get(x);
+                                            ParameterInfo info = parameterSon.getParameterInfos().get(x);
                                             if (info.getName().equals(parameterType.getName())) {
                                                 flag = true;
                                             }
