@@ -170,6 +170,7 @@ import org.talend.designer.core.utils.JobSettingVersionUtil;
 import org.talend.designer.core.utils.ValidationRulesUtil;
 import org.talend.designer.runprocess.IRunProcessService;
 import org.talend.designer.runprocess.ItemCacheManager;
+import org.talend.model.bridge.ReponsitoryContextBridge;
 import org.talend.repository.ProjectManager;
 import org.talend.repository.constants.Log4jPrefsConstants;
 import org.talend.repository.model.IProxyRepositoryFactory;
@@ -371,6 +372,17 @@ public class Process extends Element implements IProcess2, IGEFProcess, ILastVer
         param.setShow(false);
         param.setValue(DesignerPlugin.getDefault().getPreferenceStore()
                 .getString(TalendDesignerPrefConstants.COMP_DEFAULT_FILE_DIR));
+        param.setReadOnly(true);
+        addElementParameter(param);
+        // For TDQ-11338 Add this path for tDqReportRun component on git remote project
+        param = new ElementParameter(this);
+        param.setName(EParameterName.TDQ_DEFAULT_PROJECT_DIR.getName());
+        param.setCategory(EComponentCategory.TECHNICAL);
+        param.setFieldType(EParameterFieldType.DIRECTORY);
+        param.setDisplayName(EParameterName.TDQ_DEFAULT_PROJECT_DIR.getDisplayName());
+        param.setNumRow(99);
+        param.setShow(false);
+        param.setValue(ReponsitoryContextBridge.getRootProject().getLocation().toPortableString());
         param.setReadOnly(true);
         addElementParameter(param);
 
