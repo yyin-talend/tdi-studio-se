@@ -68,6 +68,7 @@ import org.talend.commons.ui.runtime.image.ImageUtils;
 import org.talend.commons.utils.VersionUtils;
 import org.talend.core.CorePlugin;
 import org.talend.core.GlobalServiceRegister;
+import org.talend.core.ITDQRepositoryService;
 import org.talend.core.PluginChecker;
 import org.talend.core.language.ECodeLanguage;
 import org.talend.core.language.LanguageManager;
@@ -375,16 +376,19 @@ public class Process extends Element implements IProcess2, IGEFProcess, ILastVer
         param.setReadOnly(true);
         addElementParameter(param);
         // For TDQ-11338 Add this path for tDqReportRun component on git remote project
-        param = new ElementParameter(this);
-        param.setName(EParameterName.TDQ_DEFAULT_PROJECT_DIR.getName());
-        param.setCategory(EComponentCategory.TECHNICAL);
-        param.setFieldType(EParameterFieldType.DIRECTORY);
-        param.setDisplayName(EParameterName.TDQ_DEFAULT_PROJECT_DIR.getDisplayName());
-        param.setNumRow(99);
-        param.setShow(false);
-        param.setValue(ReponsitoryContextBridge.getRootProject().getLocation().toPortableString());
-        param.setReadOnly(true);
-        addElementParameter(param);
+
+        if (GlobalServiceRegister.getDefault().isServiceRegistered(ITDQRepositoryService.class)) {
+            param = new ElementParameter(this);
+            param.setName(EParameterName.TDQ_DEFAULT_PROJECT_DIR.getName());
+            param.setCategory(EComponentCategory.TECHNICAL);
+            param.setFieldType(EParameterFieldType.DIRECTORY);
+            param.setDisplayName(EParameterName.TDQ_DEFAULT_PROJECT_DIR.getDisplayName());
+            param.setNumRow(99);
+            param.setShow(false);
+            param.setValue(ReponsitoryContextBridge.getRootProject().getLocation().toPortableString());
+            param.setReadOnly(true);
+            addElementParameter(param);
+        }
 
         // for log4j activate
         param = new ElementParameter(this);
