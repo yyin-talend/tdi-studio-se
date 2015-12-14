@@ -125,9 +125,8 @@ public class DesignerCoreService implements IDesignerCoreService {
     /*
      * (non-Javadoc)
      * 
-     * @see
-     * org.talend.designer.core.IDesignerCoreService#getProcessFromProcessItem(org.talend.core.model.properties.ProcessItem
-     * )
+     * @see org.talend.designer.core.IDesignerCoreService#getProcessFromProcessItem(org.talend.core.model.properties.
+     * ProcessItem )
      */
     @Override
     public IProcess getProcessFromProcessItem(ProcessItem processItem) {
@@ -198,9 +197,8 @@ public class DesignerCoreService implements IDesignerCoreService {
     /*
      * (non-Javadoc)
      * 
-     * @see
-     * org.talend.designer.core.IDesignerCoreService#getRepositoryAliasName(org.talend.core.model.properties.ConnectionItem
-     * )
+     * @see org.talend.designer.core.IDesignerCoreService#getRepositoryAliasName(org.talend.core.model.properties.
+     * ConnectionItem )
      */
     @Override
     public String getRepositoryAliasName(ConnectionItem connectionItem) {
@@ -692,11 +690,11 @@ public class DesignerCoreService implements IDesignerCoreService {
     @Override
     public void reloadParamFromProjectSettings(ParametersType processType, String paramName) {
         if (EParameterName.STATANDLOG_USE_PROJECT_SETTINGS.getName().equals(paramName)) {
-            ProjectSettingManager.reloadStatsAndLogFromProjectSettings(processType, ProjectManager.getInstance()
-                    .getCurrentProject());
+            ProjectSettingManager.reloadStatsAndLogFromProjectSettings(processType,
+                    ProjectManager.getInstance().getCurrentProject());
         } else if (EParameterName.IMPLICITCONTEXT_USE_PROJECT_SETTINGS.getName().equals(paramName)) {
-            ProjectSettingManager.reloadImplicitValuesFromProjectSettings(processType, ProjectManager.getInstance()
-                    .getCurrentProject());
+            ProjectSettingManager.reloadImplicitValuesFromProjectSettings(processType,
+                    ProjectManager.getInstance().getCurrentProject());
         }
 
     }
@@ -755,5 +753,18 @@ public class DesignerCoreService implements IDesignerCoreService {
     @Override
     public void resetJobProblemList(IRepositoryViewObject obj, String originalName) {
         JobLaunchShortcutManager.resetJobProblemList(obj, originalName);
+    }
+
+    @Override
+    public int getTACConnectionTimeout() {
+        final IPreferenceStore preferenceStore = DesignerPlugin.getDefault().getPreferenceStore();
+        int timeOut = -1;
+        if (preferenceStore != null && preferenceStore.contains(ITalendCorePrefConstants.PERFORMANCE_TAC_CONNECTION_TIMEOUT)) {
+            timeOut = preferenceStore.getInt(ITalendCorePrefConstants.PERFORMANCE_TAC_CONNECTION_TIMEOUT);
+        }
+        if (timeOut < 0) {
+            timeOut = 0;
+        }
+        return timeOut;
     }
 }
