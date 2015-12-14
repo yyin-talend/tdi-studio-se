@@ -308,10 +308,10 @@ public final class Expression {
          */
         if (variableName != null && EParameterName.CURRENT_OS.getName().equals(variableName)) {
             if (variableValue != null) {
-                if (checkCurrentOS(variableValue) && EQUALS.endsWith(test)) {
-                    return true;
+                if (EQUALS.endsWith(test)) {
+                    return checkCurrentOS(variableValue);
                 } else if (NOT_EQUALS.equals(test)) {
-                    return true;
+                    return !checkCurrentOS(variableValue);
                 }
             }
         }
@@ -435,7 +435,7 @@ public final class Expression {
                     }
                 }
                 return false;
-            }// End of TESB-6240
+            } // End of TESB-6240
             else if ("#NODE@IN".equals(varNames[0])) { //$NON-NLS-1$
                 if (listParam != null && listParam.size() > 0) {
                     IElement element = listParam.get(0).getElement();
@@ -761,7 +761,8 @@ public final class Expression {
      * except on an error case.
      * @return
      */
-    private static boolean executeBooleanMethod(String methodName, String distribution, String version, boolean positiveAssertion) {
+    private static boolean executeBooleanMethod(String methodName, String distribution, String version,
+            boolean positiveAssertion) {
         try {
             boolean ret = DistributionFactory.executeBooleanMethod(methodName, distribution, version);
             return positiveAssertion ? ret : !ret;
