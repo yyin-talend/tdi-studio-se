@@ -46,23 +46,23 @@ public class PerformancePreferencePage extends FieldEditorPreferencePage impleme
      */
     @Override
     protected void createFieldEditors() {
-        IBrandingService breaningService = (IBrandingService) GlobalServiceRegister.getDefault().getService(
-                IBrandingService.class);
+        IBrandingService breaningService = (IBrandingService) GlobalServiceRegister.getDefault()
+                .getService(IBrandingService.class);
         if (breaningService.isPoweredOnlyCamel()) {
             addField(new BooleanFieldEditor(ITalendCorePrefConstants.DEACTIVE_REPOSITORY_UPDATE,
-                    Messages.getString("PerformancePreferencePage.display.deactiveRepositoryUpdate"),//$NON-NLS-1$
+                    Messages.getString("PerformancePreferencePage.display.deactiveRepositoryUpdate"), //$NON-NLS-1$
                     getFieldEditorParent()));
             addField(new BooleanFieldEditor(TalendDesignerPrefConstants.PROPERTY_CODE_CHECK,
                     Messages.getString("PerformancePreferencePage.propertyCodeCheck"), getFieldEditorParent())); //$NON-NLS-1$
 
             addField(new BooleanFieldEditor(TalendDesignerPrefConstants.GENERATE_CODE_WHEN_OPEN_JOB,
-                    Messages.getString("PerformancePreferencePage.generateCode"),//$NON-NLS-1$
+                    Messages.getString("PerformancePreferencePage.generateCode"), //$NON-NLS-1$
                     getFieldEditorParent()));
             addField(new BooleanFieldEditor(TalendDesignerPrefConstants.CHECK_ONLY_LAST_VERSION,
                     Messages.getString("PerformancePreferencePage.checkVersion"), //$NON-NLS-1$
                     getFieldEditorParent()));
             addField(new BooleanFieldEditor(TalendDesignerPrefConstants.PROPAGATE_CONTEXT_VARIABLE,
-                    Messages.getString("PerformancePreferencePage.addOrDeleteVariable"),//$NON-NLS-1$
+                    Messages.getString("PerformancePreferencePage.addOrDeleteVariable"), //$NON-NLS-1$
                     getFieldEditorParent()));
 
             dbConnTimeoutActive = new CheckBoxFieldEditor(ITalendCorePrefConstants.DB_CONNECTION_TIMEOUT_ACTIVED,
@@ -87,19 +87,19 @@ public class PerformancePreferencePage extends FieldEditorPreferencePage impleme
             addSVNInforAutoCheckFiled();
         } else {
             addField(new BooleanFieldEditor(ITalendCorePrefConstants.DEACTIVE_REPOSITORY_UPDATE,
-                    Messages.getString("PerformancePreferencePage.display.deactiveRepositoryUpdate"),//$NON-NLS-1$
+                    Messages.getString("PerformancePreferencePage.display.deactiveRepositoryUpdate"), //$NON-NLS-1$
                     getFieldEditorParent()));
             addField(new BooleanFieldEditor(TalendDesignerPrefConstants.PROPERTY_CODE_CHECK,
                     Messages.getString("PerformancePreferencePage.propertyCodeCheck"), getFieldEditorParent())); //$NON-NLS-1$
 
             addField(new BooleanFieldEditor(TalendDesignerPrefConstants.GENERATE_CODE_WHEN_OPEN_JOB,
-                    Messages.getString("PerformancePreferencePage.generateCode"),//$NON-NLS-1$
+                    Messages.getString("PerformancePreferencePage.generateCode"), //$NON-NLS-1$
                     getFieldEditorParent()));
             addField(new BooleanFieldEditor(TalendDesignerPrefConstants.CHECK_ONLY_LAST_VERSION,
                     Messages.getString("PerformancePreferencePage.checkVersion"), //$NON-NLS-1$
                     getFieldEditorParent()));
             addField(new BooleanFieldEditor(TalendDesignerPrefConstants.PROPAGATE_CONTEXT_VARIABLE,
-                    Messages.getString("PerformancePreferencePage.addOrDeleteVariable"),//$NON-NLS-1$
+                    Messages.getString("PerformancePreferencePage.addOrDeleteVariable"), //$NON-NLS-1$
                     getFieldEditorParent()));
 
             dbConnTimeoutActive = new CheckBoxFieldEditor(ITalendCorePrefConstants.DB_CONNECTION_TIMEOUT_ACTIVED,
@@ -123,11 +123,11 @@ public class PerformancePreferencePage extends FieldEditorPreferencePage impleme
             addField(dbConnTimeout);
 
             addField(new BooleanFieldEditor(ITalendCorePrefConstants.ADD_USER_ROUTINES,
-                    Messages.getString("PerformancePreferencePage.addAllUserRoutines"),//$NON-NLS-1$
+                    Messages.getString("PerformancePreferencePage.addAllUserRoutines"), //$NON-NLS-1$
                     getFieldEditorParent()));
             // TDI-8323:remove this one,we do not need this since we always add all system routines for new job
             // addField(new BooleanFieldEditor(ITalendCorePrefConstants.ADD_SYSTEM_ROUTINES, Messages
-            //                .getString("PerformancePreferencePage.addAllSystemRoutines"),//$NON-NLS-1$
+            // .getString("PerformancePreferencePage.addAllSystemRoutines"),//$NON-NLS-1$
             // getFieldEditorParent()));
             addSVNInforAutoCheckFiled();
         }
@@ -158,10 +158,16 @@ public class PerformancePreferencePage extends FieldEditorPreferencePage impleme
                     }
                 }
             });
-            final CheckBoxFieldEditor autoRefreshLocksField = new CheckBoxFieldEditor(
-                    ITalendCorePrefConstants.AUTO_REFRESH_LOCKS,
+            final CheckBoxFieldEditor autoRefreshLocksField = new CheckBoxFieldEditor(ITalendCorePrefConstants.AUTO_REFRESH_LOCKS,
                     Messages.getString("PerformancePreferencePage.autoRefreshLocksField"), getFieldEditorParent()); //$NON-NLS-1$
             addField(autoRefreshLocksField);
+
+            final IntegerFieldEditor tacConnectionTimeout = new IntegerFieldEditor(
+                    ITalendCorePrefConstants.PERFORMANCE_TAC_CONNECTION_TIMEOUT,
+                    Messages.getString("PerformancePreferencePage.tacTimeout"), //$NON-NLS-1$
+                    getFieldEditorParent());
+            autoCheckTime.setValidRange(0, 3600);
+            addField(tacConnectionTimeout);
         }
 
     }
