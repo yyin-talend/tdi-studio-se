@@ -13,6 +13,7 @@
 package org.talend.component.core.utils;
 
 import java.util.List;
+import java.util.Map;
 
 import org.talend.component.core.constants.IGenericConstants;
 import org.talend.components.api.properties.ComponentProperties;
@@ -101,20 +102,28 @@ public class SchemaUtils {
     }
 
     public static ComponentProperties getCurrentComponentProperties(IMetadataTable table) {
-        if (table != null && table instanceof MetadataTableRepositoryObject) {
-            MetadataTableRepositoryObject metaTableRepObj = (MetadataTableRepositoryObject) table;
-            MetadataTable metadataTable = metaTableRepObj.getTable();
-            if (metadataTable != null && metadataTable.getTaggedValue() != null) {
-                for (TaggedValue serializedProps : metadataTable.getTaggedValue()) {
-                    if (IGenericConstants.COMPONENT_PROPERTIES_TAG.equals(serializedProps.getTag())) {
-                        String serializedProperties = serializedProps.getValue();
-                        if (serializedProperties != null) {
-                            Deserialized fromSerializedProperties = ComponentProperties.fromSerialized(serializedProperties);
-                            if (fromSerializedProperties != null) {
-                                return fromSerializedProperties.properties;
-                            }
+        if (table != null) {
+            String serializedProperties = null;
+            if (table instanceof MetadataTableRepositoryObject) {
+                MetadataTableRepositoryObject metaTableRepObj = (MetadataTableRepositoryObject) table;
+                MetadataTable metadataTable = metaTableRepObj.getTable();
+                if (metadataTable != null && metadataTable.getTaggedValue() != null) {
+                    for (TaggedValue serializedProps : metadataTable.getTaggedValue()) {
+                        if (IGenericConstants.COMPONENT_PROPERTIES_TAG.equals(serializedProps.getTag())) {
+                            serializedProperties = serializedProps.getValue();
+                            break;
                         }
                     }
+                }
+            } else if (table instanceof org.talend.core.model.metadata.MetadataTable) {
+                org.talend.core.model.metadata.MetadataTable metaTable = (org.talend.core.model.metadata.MetadataTable) table;
+                Map<String, String> additionalProperties = metaTable.getAdditionalProperties();
+                serializedProperties = additionalProperties.get(IGenericConstants.COMPONENT_PROPERTIES_TAG);
+            }
+            if (serializedProperties != null) {
+                Deserialized fromSerializedProperties = ComponentProperties.fromSerialized(serializedProperties);
+                if (fromSerializedProperties != null) {
+                    return fromSerializedProperties.properties;
                 }
             }
         }

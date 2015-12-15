@@ -194,8 +194,8 @@ public class GenericDragAndDropHandler extends AbstractComponentDragAndDropHandl
             setting.setName(SALESFORCE);
             setting.setRepositoryType(SALESFORCE);
             setting.setWithSchema(true);
-            setting.setInputComponent(INPUT);
-            setting.setOutputComponent(OUTPUT);
+            setting.setInputComponent(COMPONENT_T_SALSEFORCE_INPUT);
+            setting.setOutputComponent(COMPONENT_T_SALSEFORCE_OUTPUT);
             List<Class<Item>> list = new ArrayList<Class<Item>>();
             Class clazz = null;
             try {
