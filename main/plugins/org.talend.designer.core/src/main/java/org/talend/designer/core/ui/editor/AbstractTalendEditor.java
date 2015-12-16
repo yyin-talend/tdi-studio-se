@@ -2295,7 +2295,7 @@ public abstract class AbstractTalendEditor extends GraphicalEditorWithFlyoutPale
 
                 @Override
                 public String getId() {
-                    return "ID_OUTLINE"; //$NON-NLS-1$
+                    return "ID_OVERVIEW"; //$NON-NLS-1$
                 }
 
                 @Override
@@ -2332,10 +2332,6 @@ public abstract class AbstractTalendEditor extends GraphicalEditorWithFlyoutPale
             super.dispose();
             AbstractTalendEditor.this.outlinePage = null;
             outlinePage = null;
-            // if (AbstractTalendEditor.this.fActivationCodeTrigger != null) {
-            // fActivationCodeTrigger.uninstall();
-            // fActivationCodeTrigger = null;
-            // }
         }
 
         @Override
@@ -2407,9 +2403,11 @@ public abstract class AbstractTalendEditor extends GraphicalEditorWithFlyoutPale
 
         protected void unhookOutlineViewer() {
             IToolBarManager tbm = getSite().getActionBars().getToolBarManager();
-            tbm.remove(showOutlineAction.getId());
-            tbm.remove(showOverviewAction.getId());
+            tbm.remove(showOutlineAction.getId()).dispose();
+            tbm.remove(showOverviewAction.getId()).dispose();
             getSite().getActionBars().updateActionBars();
+            showOutlineAction = null;
+            showOverviewAction = null;
             // getSelectionSynchronizer().removeViewer(getViewer());
             if (disposeListener != null && getEditor() != null && !getEditor().isDisposed()) {
                 getEditor().removeDisposeListener(disposeListener);
