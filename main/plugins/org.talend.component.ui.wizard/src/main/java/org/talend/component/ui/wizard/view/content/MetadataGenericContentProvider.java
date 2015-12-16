@@ -79,9 +79,8 @@ public class MetadataGenericContentProvider extends ProjectRepoDirectChildrenNod
             getTopLevelNodes().addAll(projectRepositoryNode.getGenericTopNodesMap().values());
             return getTopLevelNodes().toArray();
         }
-        if (getTopLevelNodes().contains(repoNode) && !repoNode.isInitialized()) {
+        if (getTopLevelNodes().contains(repoNode)) {
             projectRepositoryNode.initializeChildren(repoNode);
-            repoNode.setInitialized(true);
         }
         return repoNode.getChildren().toArray();
     }

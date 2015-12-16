@@ -14,6 +14,8 @@ package org.talend.component.ui.wizard.persistence;
 
 import java.util.List;
 
+import org.talend.commons.exception.ExceptionHandler;
+import org.talend.commons.exception.PersistenceException;
 import org.talend.component.core.constants.IGenericConstants;
 import org.talend.component.core.utils.SchemaUtils;
 import org.talend.component.ui.model.genericMetadata.GenericConnection;
@@ -25,9 +27,10 @@ import org.talend.components.api.properties.Repository;
 import org.talend.components.api.schema.Schema;
 import org.talend.core.model.metadata.builder.connection.MetadataTable;
 import org.talend.core.model.properties.Item;
-import org.talend.core.repository.seeker.RepositorySeekerManager;
+import org.talend.core.model.properties.Property;
+import org.talend.core.model.repository.IRepositoryViewObject;
+import org.talend.core.repository.model.ProxyRepositoryFactory;
 import org.talend.cwm.helper.PackageHelper;
-import org.talend.repository.model.IRepositoryNode;
 
 /**
  * created by ycbai on 2015年9月29日 Detailled comment
@@ -39,9 +42,6 @@ public class GenericRepository implements Repository {
     public String storeComponentProperties(ComponentProperties properties, String name, String repositoryLocation, Schema schema) {
         String serializedProperties = properties.toSerialized();
         if (repositoryLocation.contains(IGenericConstants.REPOSITORY_LOCATION_SEPARATOR)) {// nested properties to be
-                                                                                           // set.
-            // the following search takes too much time especially when there are a lot of items in the filesystem
-            // whe should find another way of locating the item ask ggu ?.
             GenericConnectionItem item = getGenericConnectionItem(repositoryLocation.substring(0,
                     repositoryLocation.indexOf(IGenericConstants.REPOSITORY_LOCATION_SEPARATOR)));
             if (item == null) {
@@ -121,13 +121,22 @@ public class GenericRepository implements Repository {
      * @return
      */
     private GenericConnectionItem getGenericConnectionItem(String repositoryLocation) {
-        IRepositoryNode nodeUnderWichStoreTheProperties = RepositorySeekerManager.getInstance().searchRepoViewNode(
-                repositoryLocation);
-        if (nodeUnderWichStoreTheProperties == null) {
-            throw new RuntimeException("Failed to find correct node for storing the components properties");
-        } // else we found it
-        Item item = nodeUnderWichStoreTheProperties.getObject().getProperty().getItem();
-        return (GenericConnectionItem) item;
+        GenericConnectionItem genItem = null;
+        try {
+            IRepositoryViewObject repViewObj = ProxyRepositoryFactory.getInstance().getLastVersion(repositoryLocation);
+            if (repViewObj != null) {
+                Property property = repViewObj.getProperty();
+                if (property != null) {
+                    Item item = property.getItem();
+                    if (item instanceof GenericConnectionItem) {
+                        genItem = (GenericConnectionItem) item;
+                    }
+                }
+            }
+        } catch (PersistenceException e) {
+            ExceptionHandler.process(e);
+        }
+        return genItem;
     }
 
     @Override
