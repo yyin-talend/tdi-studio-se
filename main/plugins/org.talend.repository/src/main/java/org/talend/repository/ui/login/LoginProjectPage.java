@@ -805,7 +805,7 @@ public class LoginProjectPage extends AbstractLoginActionPage {
                         fillUIBranches(project, false);
                     } catch (JSONException e) {
                         // TODO Auto-generated catch block
-                        ExceptionHandler.process(e);                        
+                        ExceptionHandler.process(e);
                     }
                     setRepositoryContextInContext();
                 }
@@ -1646,7 +1646,7 @@ public class LoginProjectPage extends AbstractLoginActionPage {
      */
     protected void fillUIProjectList() {
 
-        Project[] projects = loginHelper.getProjects(getConnection());
+        Project[] projects = loginHelper.getProjects(getConnection(), errorManager);
         if (projects == null) {
             projects = new Project[0];
         }
@@ -1721,13 +1721,15 @@ public class LoginProjectPage extends AbstractLoginActionPage {
     }
 
     private String getStorage(Project project) throws JSONException {
-        if (project == null)
+        if (project == null) {
             return "";
+        }
         String storage = "";
         if (project != null) {
             String url = project.getEmfProject().getUrl();
-            if (url == null)
+            if (url == null) {
                 return "";
+            }
             JSONObject jsonObj = new JSONObject(url);
             storage = jsonObj.getString("storage");
         }
@@ -1747,9 +1749,10 @@ public class LoginProjectPage extends AbstractLoginActionPage {
                 List<String> branches = getBranches(project);
                 projectBranches.addAll(branches);
                 branchesViewer.setInput(projectBranches);
-                if (projectBranches.size() != 0)
+                if (projectBranches.size() != 0) {
                     branchesViewer.setSelection(new StructuredSelection(
                             new Object[] { projectBranches.contains("master") ? "master" : projectBranches.get(0) }));
+                }
 
             }
             branchesViewer.getCombo().setEnabled(false);
