@@ -279,6 +279,7 @@
    <% 
     if (isTestContainer) {
          List<String> instanceList =  ProcessUtils.getTestInstances(process);
+         String encoding = System.getProperty("file.encoding");
          for(String instance : instanceList)
          {
          String context = ProcessUtils.getInstanceContext(process,instance); 
@@ -329,7 +330,7 @@
             }else{
             %>
                 java.net.URL url_<%=testData%> = getClass().getResource("<%=path%>");
-                instance_<%=testData%>="<%=testData%>=" + url_<%=testData%>.getPath();
+                instance_<%=testData%>="<%=testData%>=" + java.net.URLDecoder.decode(url_<%=testData%>.getPath(), "<%=encoding%>");
             <%
             }
             %>
