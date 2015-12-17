@@ -12,21 +12,17 @@
 // ============================================================================
 package org.talend.designer.mapper.ui.visualmap.zone.toolbar;
 
+import java.util.List;
+
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.events.SelectionListener;
-import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.ToolItem;
 import org.talend.commons.ui.runtime.image.EImage;
-import org.talend.core.model.process.IElementParameter;
-import org.talend.designer.abstractmap.AbstractMapComponent;
 import org.talend.designer.mapper.i18n.Messages;
 import org.talend.designer.mapper.managers.MapperManager;
-import org.talend.designer.mapper.ui.image.ImageInfo;
-import org.talend.designer.mapper.ui.image.ImageProviderMapper;
+import org.talend.designer.mapper.ui.visualmap.table.DataMapTableView;
 import org.talend.designer.mapper.ui.visualmap.zone.Zone;
 
 /**
@@ -133,48 +129,32 @@ public class ToolbarOutputZone extends ToolbarZone {
         guessItem.addListener(SWT.Selection, new Listener() {
 
             public void handleEvent(Event event) {
+                List<DataMapTableView> outputsTablesView = getMapperManager().getUiManager().getOutputsTablesView();
+                for (DataMapTableView dataMapTableView : outputsTablesView) {
+                    dataMapTableView.notifyFocusLost();
+                }
                 getMapperManager().mapAutomaticallly();
             }
 
         });
-
-        // dieOnError.addSelectionListener(new SelectionListener() {
-        //
-        // public void widgetDefaultSelected(SelectionEvent e) {
-        // }
-        //
-        // public void widgetSelected(SelectionEvent e) {
-        // Image image = null;
-        // if (dieOnError.getSelection()) {
-        // image = ImageProviderMapper.getImage(ImageInfo.CHECKED_ICON);
-        // getMapperManager().removeRejectOutput();
-        // } else {
-        // image = ImageProviderMapper.getImage(ImageInfo.UNCHECKED_ICON);
-        // if (!getMapperManager().hasRejectOutput(getMapperManager().getOutputTables())) {
-        // getMapperManager().addRejectOutput();
-        // }
-        // }
-        // dieOnError.setImage(image);
-        // getMapperManager().setDieOnError(dieOnError.getSelection());
-        // getMapperManager().setDieOnErrorValueChanged(true);
-        // }
-        //
-        // });
-
     }
 
+    @Override
     public String getMinimizeTooltipText() {
         return MINIMIZE_TOOLTIP;
     }
 
+    @Override
     public String getRestoreTooltipText() {
         return RESTORE_TOOLTIP;
     }
 
+    @Override
     public String getMoveUpTooltipText() {
         return MOVE_UP_TOOLTIP;
     }
 
+    @Override
     public String getMoveDownTooltipText() {
         return MOVE_DOWN_TOOLTIP;
     }
