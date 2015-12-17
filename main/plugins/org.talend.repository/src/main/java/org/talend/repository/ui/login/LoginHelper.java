@@ -71,9 +71,9 @@ import org.talend.repository.RepositoryPlugin;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.RepositoryConstants;
 import org.talend.repository.ui.dialog.OverTimePopupDialogTask;
+import org.talend.repository.ui.login.AbstractLoginActionPage.ErrorManager;
 import org.talend.repository.ui.login.connections.ConnectionUserPerReader;
 import org.talend.utils.json.JSONException;
-import org.talend.utils.json.JSONObject;
 
 /**
  * created by cmeng on May 22, 2015 Detailled comment
@@ -121,7 +121,7 @@ public class LoginHelper {
     private IBrandingService brandingService = (IBrandingService) GlobalServiceRegister.getDefault().getService(
             IBrandingService.class);
 
-	private IGITProviderService gitProviderService;
+    private IGITProviderService gitProviderService;
 
     public static LoginHelper getInstance() {
         if (instance == null) {
@@ -343,12 +343,12 @@ public class LoginHelper {
         String lastUsedBranch = prefManipulator.getLastSVNBranch();
         if (isRemoteConnection) {
             List<String> branches = null;
-			try {
-				branches = getProjectBranches(lastUsedProject);
-			} catch (JSONException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+            try {
+                branches = getProjectBranches(lastUsedProject);
+            } catch (JSONException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
             if (branches == null || branches.isEmpty()) {
                 return false;
             }
@@ -472,6 +472,10 @@ public class LoginHelper {
     }
 
     public Project[] getProjects(ConnectionBean connBean) {
+        return getProjects(connBean, null);
+    }
+
+    public Project[] getProjects(ConnectionBean connBean, ErrorManager errorManager) {
         if (connBean == null) {
             return null;
         }
@@ -510,8 +514,12 @@ public class LoginHelper {
                 String warnings = e.getMessage();
                 if (warnings != null && !warnings.equals(lastWarnings)) {
                     lastWarnings = warnings;
-                    final Shell shell = new Shell(DisplayUtils.getDisplay(), SWT.ON_TOP | SWT.TOP);
-                    MessageDialog.openWarning(shell, Messages.getString("LoginComposite.warningTitle"), warnings); //$NON-NLS-1$
+                    if (errorManager != null) {
+                        errorManager.setWarnMessage(warnings);
+                    } else {
+                        final Shell shell = new Shell(DisplayUtils.getDisplay(), SWT.ON_TOP | SWT.TOP);
+                        MessageDialog.openWarning(shell, Messages.getString("LoginComposite.warningTitle"), warnings); //$NON-NLS-1$
+                    }
                 }
             }
 
@@ -529,9 +537,13 @@ public class LoginHelper {
             initialized = true;
         } catch (Throwable e) {
             projects = new Project[0];
-            final Shell shell = new Shell(DisplayUtils.getDisplay(), SWT.ON_TOP | SWT.TOP);
-            MessageDialog.openError(shell, Messages.getString("LoginComposite.warningTitle"), //$NON-NLS-1$
-                    Messages.getString("LoginComposite.errorMessages1") + newLine + e.getMessage()); //$NON-NLS-1$
+            if (errorManager != null) {
+                errorManager.setErrMessage(Messages.getString("LoginComposite.errorMessages1") + newLine + e.getMessage());//$NON-NLS-1$
+            } else {
+                final Shell shell = new Shell(DisplayUtils.getDisplay(), SWT.ON_TOP | SWT.TOP);
+                MessageDialog.openError(shell, Messages.getString("LoginComposite.warningTitle"), //$NON-NLS-1$
+                        Messages.getString("LoginComposite.errorMessages1") + newLine + e.getMessage()); //$NON-NLS-1$
+            }
         }
 
         if (initialized) {
@@ -557,19 +569,28 @@ public class LoginHelper {
                 });
             } catch (PersistenceException e) {
                 projects = new Project[0];
-
-                MessageDialog.openError(getUsableShell(), Messages.getString("LoginComposite.errorTitle"), //$NON-NLS-1$
-                        Messages.getString("LoginComposite.errorMessages1") + newLine + e.getMessage()); //$NON-NLS-1$
+                if (errorManager != null) {
+                    errorManager.setErrMessage(Messages.getString("LoginComposite.errorMessages1") + newLine + e.getMessage());//$NON-NLS-1$
+                } else {
+                    MessageDialog.openError(getUsableShell(), Messages.getString("LoginComposite.errorTitle"), //$NON-NLS-1$
+                            Messages.getString("LoginComposite.errorMessages1") + newLine + e.getMessage()); //$NON-NLS-1$
+                }
             } catch (BusinessException e) {
                 projects = new Project[0];
-
-                MessageDialog.openError(getUsableShell(), Messages.getString("LoginComposite.errorTitle"), //$NON-NLS-1$
-                        Messages.getString("LoginComposite.errorMessages1") + newLine + e.getMessage()); //$NON-NLS-1$
+                if (errorManager != null) {
+                    errorManager.setErrMessage(Messages.getString("LoginComposite.errorMessages1") + newLine + e.getMessage());//$NON-NLS-1$
+                } else {
+                    MessageDialog.openError(getUsableShell(), Messages.getString("LoginComposite.errorTitle"), //$NON-NLS-1$
+                            Messages.getString("LoginComposite.errorMessages1") + newLine + e.getMessage()); //$NON-NLS-1$
+                }
             } catch (Throwable e) {
                 projects = new Project[0];
-
-                MessageDialog.openError(getUsableShell(), Messages.getString("LoginComposite.errorTitle"), //$NON-NLS-1$
-                        Messages.getString("LoginComposite.errorMessages1") + newLine + e.getMessage()); //$NON-NLS-1$
+                if (errorManager != null) {
+                    errorManager.setErrMessage(Messages.getString("LoginComposite.errorMessages1") + newLine + e.getMessage());//$NON-NLS-1$
+                } else {
+                    MessageDialog.openError(getUsableShell(), Messages.getString("LoginComposite.errorTitle"), //$NON-NLS-1$
+                            Messages.getString("LoginComposite.errorMessages1") + newLine + e.getMessage()); //$NON-NLS-1$
+                }
             }
         }
 
@@ -588,7 +609,7 @@ public class LoginHelper {
                     }
 
                 } else if (!p.isLocal() && gitProviderService.isGITProject(p)) {
-                		branchesList.addAll(Arrays.asList(gitProviderService.getBranchList(p)));
+                    branchesList.addAll(Arrays.asList(gitProviderService.getBranchList(p)));
                 }
             } catch (PersistenceException e) {
                 CommonExceptionHandler.process(e);
@@ -597,7 +618,7 @@ public class LoginHelper {
         return branchesList;
     }
 
-	public Project getLastUsedProject(Project[] projects) {
+    public Project getLastUsedProject(Project[] projects) {
         if (projects == null || projects.length == 0) {
             return null;
         }
