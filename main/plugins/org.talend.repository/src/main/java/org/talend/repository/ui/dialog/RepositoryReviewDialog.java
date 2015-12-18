@@ -12,8 +12,11 @@
 // ============================================================================
 package org.talend.repository.ui.dialog;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.IDialogConstants;
@@ -38,12 +41,14 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 import org.talend.commons.CommonsPlugin;
+import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.utils.time.TimeMeasure;
 import org.talend.core.GlobalServiceRegister;
 import org.talend.core.database.EDatabaseTypeName;
 import org.talend.core.hadoop.IHadoopClusterService;
 import org.talend.core.model.metadata.builder.connection.DatabaseConnection;
 import org.talend.core.model.process.IElement;
+import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.properties.DatabaseConnectionItem;
 import org.talend.core.model.properties.FolderItem;
 import org.talend.core.model.properties.Item;
@@ -70,6 +75,9 @@ import org.talend.repository.ui.processor.SingleSelectedInMultiTypesProcessor;
 import org.talend.repository.ui.processor.ValidationRuleTypeProcessor;
 import org.talend.repository.ui.views.IRepositoryView;
 import org.talend.repository.viewer.ui.provider.RepoCommonViewerProvider;
+
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
  * bqian check the content of the repository view. <br/>
@@ -112,7 +120,15 @@ public class RepositoryReviewDialog extends Dialog {
 
     private IElement elem;
 
+    private IElementParameter elementParameter;
+
     private boolean showFilterText;
+
+    private static final String FILTER = "FILTER"; //$NON-NLS-1$
+
+    private static final String ISSPARK = "ISSPARK"; //$NON-NLS-1$
+
+    private static final String USEYARN = "USEYARN"; //$NON-NLS-1$
 
     protected RepositoryReviewDialog(Shell parentShell) {
         super(parentShell);
@@ -168,6 +184,21 @@ public class RepositoryReviewDialog extends Dialog {
          * borrow the repositoryType to set the current process id here.
          */
         this.repositoryType = repositoryType;
+        typeProcessor = createTypeProcessor();
+    }
+
+    public RepositoryReviewDialog(Shell parentShell, ERepositoryObjectType type, IElement compElement,
+            IElementParameter elemParameter) {
+        this(parentShell);
+        this.type = type;
+        /*
+         * avoid select self repository node for Process Type.
+         * 
+         * borrow the repositoryType to set the current process id here.
+         */
+        this.repositoryType = elemParameter.getRepositoryValue();
+        this.elem = compElement;
+        this.elementParameter = elemParameter;
         typeProcessor = createTypeProcessor();
     }
 
@@ -314,14 +345,64 @@ public class RepositoryReviewDialog extends Dialog {
 
     private IRepositoryTypeProcessor getHadoopSubMultiRepTypeProcessor(String[] repTypes) {
         if (GlobalServiceRegister.getDefault().isServiceRegistered(IHadoopClusterService.class)) {
-            IHadoopClusterService hadoopClusterService = (IHadoopClusterService) GlobalServiceRegister.getDefault().getService(
-                    IHadoopClusterService.class);
+            IHadoopClusterService hadoopClusterService = (IHadoopClusterService) GlobalServiceRegister.getDefault()
+                    .getService(IHadoopClusterService.class);
             if (hadoopClusterService != null) {
-                return hadoopClusterService.getHadoopSubMultiRepTypeProcessor(repTypes);
+                List<String> repTypeList = new ArrayList<String>();
+                Map<String, Object> attributes = new HashMap<String, Object>();
+                for (String repType : repTypes) {
+                    Map<String, Object> attr = parseAttributes(repType);
+                    if (attr == null) {
+                        repTypeList.add(repType);
+                    } else {
+                        attributes.putAll(attr);
+                    }
+                }
+
+                IRepositoryTypeProcessor processor = hadoopClusterService
+                        .getHadoopSubMultiRepTypeProcessor(repTypeList.toArray(new String[0]));
+                processor.setAttributes(attributes);
+                return processor;
             }
         }
 
         return null;
+    }
+
+    private Map<String, Object> parseAttributes(String typeString) {
+        Map<String, Object> attributeMap = new HashMap<String, Object>();
+
+        if (typeString.contains("{")) { //$NON-NLS-1$
+            try {
+                JsonNode root = new ObjectMapper().readTree(typeString.replaceAll("\\$", "\"")); //$NON-NLS-1$ //$NON-NLS-2$
+                if (root != null) {
+                    JsonNode filter = root.get(FILTER);
+                    if (filter != null) {
+                        JsonNode isSparkJsonNode = filter.get(ISSPARK);
+                        if (isSparkJsonNode != null) {
+                            String isSparkExpression = isSparkJsonNode.asText();
+                            attributeMap.put(ISSPARK,
+                                    elementParameter.isShow(isSparkExpression, null, elem.getElementParameters()));
+                        }
+                        JsonNode useYarnJsonNode = filter.get(USEYARN);
+                        if (useYarnJsonNode != null) {
+                            String useYarnExpression = useYarnJsonNode.asText();
+                            attributeMap.put(USEYARN,
+                                    elementParameter.isShow(useYarnExpression, null, elem.getElementParameters()));
+                        }
+                    }
+                } else {
+                    attributeMap = null;
+                }
+            } catch (Exception e) {
+                attributeMap = null;
+                ExceptionHandler.process(e);
+            }
+        } else {
+            attributeMap = null;
+        }
+
+        return attributeMap;
     }
 
     /**
@@ -384,7 +465,7 @@ public class RepositoryReviewDialog extends Dialog {
         // see feature 0003664: tRunJob: When opening the tree dialog to select the job target, it could be useful to
         // open it on previous selected job if exists
         selectNode();
-        TimeMeasure.step(RepositoryReviewDialog.class.getSimpleName(), "selectNode"); //$NON-NLS-1$  
+        TimeMeasure.step(RepositoryReviewDialog.class.getSimpleName(), "selectNode"); //$NON-NLS-1$
 
         repositoryTreeViewer.addSelectionChangedListener(new ISelectionChangedListener() {
 
@@ -414,7 +495,7 @@ public class RepositoryReviewDialog extends Dialog {
             }
         });
 
-        TimeMeasure.step(RepositoryReviewDialog.class.getSimpleName(), "finished createDialogArea..."); //$NON-NLS-1$ 
+        TimeMeasure.step(RepositoryReviewDialog.class.getSimpleName(), "finished createDialogArea..."); //$NON-NLS-1$
         TimeMeasure.end(RepositoryReviewDialog.class.getSimpleName());
         TimeMeasure.display = false;
         TimeMeasure.displaySteps = false;
@@ -580,7 +661,6 @@ public class RepositoryReviewDialog extends Dialog {
             ((JobTypeProcessor) this.typeProcessor).setJobIDList(jobIDList);
         }
     }
-
 }
 
 /**
