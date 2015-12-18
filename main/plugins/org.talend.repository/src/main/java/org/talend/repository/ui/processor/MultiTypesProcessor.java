@@ -14,6 +14,7 @@ package org.talend.repository.ui.processor;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.TreePath;
@@ -41,6 +42,8 @@ public abstract class MultiTypesProcessor implements IRepositoryTypeProcessor {
     protected String[] repositoryTypes;
 
     protected List<ERepositoryObjectType> typesToShow;
+
+    protected Map<String, Object> attributesMap;
 
     public MultiTypesProcessor(String[] repositoryTypes) {
         super();
@@ -191,6 +194,11 @@ public abstract class MultiTypesProcessor implements IRepositoryTypeProcessor {
     public ILabelProvider getLabelProvider(IElement elem) {
         // TODO Auto-generated method stub
         return null;
+    }
+
+    @Override
+    public void setAttributes(Map<String, Object> attributes) {
+        this.attributesMap = attributes;
     }
 
 }
