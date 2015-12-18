@@ -84,6 +84,7 @@ import org.talend.core.model.repository.RepositoryObject;
 import org.talend.core.repository.constants.FileConstants;
 import org.talend.core.repository.model.ProjectRepositoryNode;
 import org.talend.core.repository.model.repositoryObject.MetadataColumnRepositoryObject;
+import org.talend.core.ui.ITestContainerProviderService;
 import org.talend.core.ui.advanced.composite.FilteredCheckboxTree;
 import org.talend.repository.ProjectManager;
 import org.talend.repository.i18n.Messages;
@@ -1145,7 +1146,8 @@ public class ExportItemWizardPage extends WizardPage {
                         // only check childrens of allowed items in this viewer
                         if (selectRepositoryNode(getItemsTreeViewer(), repositoryNode)) {
                             Object[] children = ((ITreeContentProvider) contentProvider).getChildren(repositoryNode);
-                            collectNodes(items, children);
+                            List<Object> childrenNodes = getUnTestCaseChildren(children);
+                            collectNodes(items, childrenNodes.toArray());
                         }
                     }
                 }
@@ -1158,6 +1160,26 @@ public class ExportItemWizardPage extends WizardPage {
                 }
             }
         }
+    }
+
+    private List<Object> getUnTestCaseChildren(Object[] children) {
+        ITestContainerProviderService testContainerService = null;
+        if (GlobalServiceRegister.getDefault().isServiceRegistered(ITestContainerProviderService.class)) {
+            testContainerService = (ITestContainerProviderService) GlobalServiceRegister.getDefault().getService(
+                    ITestContainerProviderService.class);
+        }
+        List<Object> childrenNodes = new ArrayList<Object>();
+        for (Object obj : children) {
+            if ((obj instanceof RepositoryNode) && testContainerService != null) {
+                boolean isTestCase = testContainerService.isTestContainerType(((RepositoryNode) obj).getObjectType());
+                if (!isTestCase) {
+                    childrenNodes.add(obj);
+                }
+            } else {
+                childrenNodes.add(obj);
+            }
+        }
+        return childrenNodes;
     }
 
     // private void collectNodes(Map<String, Item> items, RepositoryNode repositoryNode) {
