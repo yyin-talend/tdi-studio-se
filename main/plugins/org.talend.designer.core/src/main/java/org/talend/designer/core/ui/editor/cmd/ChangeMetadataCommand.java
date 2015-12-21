@@ -397,6 +397,7 @@ public class ChangeMetadataCommand extends Command {
                                         dataComp.setColumnNameChanged(columnNameChanged);
                                     }
                                 }
+                                cmd.setRepositoryMode(repositoryMode);
                                 cmd.execute(true);
                                 propagatedChange.add(cmd);
                             }
