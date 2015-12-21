@@ -20,6 +20,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -626,10 +627,10 @@ public class SQLBuilderRepositoryNodeManager {
             // table.getSourceName()));
             // table.getColumns().clear();
             // for (MetadataColumn column : columnsFromDB) {
-            //                        column.setLabel(""); //$NON-NLS-1$
+            // column.setLabel(""); //$NON-NLS-1$
             // table.getColumns().add(column);
             // }
-            //                    table.setLabel(""); //$NON-NLS-1$
+            // table.setLabel(""); //$NON-NLS-1$
             // ConnectionHelper.getTables(connection).add(table);
             // }
             // ExtractMetaDataUtils.getInstance().setReconnect(true);
@@ -1100,7 +1101,7 @@ public class SQLBuilderRepositoryNodeManager {
             // for (MetadataColumn column : columns) {
             // MetadataColumn column1 = ConnectionFactory.eINSTANCE.createMetadataColumn();
             // column1.setOriginalField(column.getOriginalField());
-            //                column1.setLabel(""); //$NON-NLS-1$
+            // column1.setLabel(""); //$NON-NLS-1$
             // table.getColumns().add(column1);
             // }
             metaFromEMF.add(table);
@@ -1347,10 +1348,25 @@ public class SQLBuilderRepositoryNodeManager {
      * @return RepositoryNode
      */
     public static RepositoryNode getRoot(RepositoryNode repositoryNode) {
+        Set<RepositoryNode> visited = new HashSet<RepositoryNode>();
+        return getRoot(visited, repositoryNode);
+    }
+
+    private static RepositoryNode getRoot(Set<RepositoryNode> visited, RepositoryNode repositoryNode) {
+        if (visited.contains(repositoryNode)) {
+            return null;
+        } else {
+            visited.add(repositoryNode);
+        }
         if (getRepositoryType(repositoryNode) == RepositoryNodeType.FOLDER) {
             for (IRepositoryNode node : repositoryNode.getChildren()) {
                 if (getRepositoryType((RepositoryNode) node) == RepositoryNodeType.DATABASE) {
                     return (RepositoryNode) node;
+                } else {
+                    RepositoryNode repNode = getRoot((RepositoryNode) node);
+                    if (repNode != null) {
+                        return repNode;
+                    }
                 }
             }
             // return null;
