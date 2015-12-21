@@ -88,8 +88,8 @@ public class DeleteNodeAction extends SelectionProviderAction {
             }
 
             xmlViewer.refresh(parent);
+            xmlViewer.expandToLevel(parent, 1);
         }
-        xmlViewer.expandAll();
         foxui.redrawLinkers();
 
     }

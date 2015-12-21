@@ -62,14 +62,15 @@ public class DisconnectAction extends SelectionProviderAction {
         }
         node.setColumn(null);
         xmlViewer.refresh(node);
-        xmlViewer.expandAll();
+        xmlViewer.expandToLevel(node, 1);
         foxui.redrawLinkers();
     }
 
     /*
      * (non-Javadoc)
      * 
-     * @see org.eclipse.ui.actions.SelectionProviderAction#selectionChanged(org.eclipse.jface.viewers.IStructuredSelection)
+     * @see
+     * org.eclipse.ui.actions.SelectionProviderAction#selectionChanged(org.eclipse.jface.viewers.IStructuredSelection)
      */
     @Override
     public void selectionChanged(IStructuredSelection selection) {
