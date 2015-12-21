@@ -1635,7 +1635,7 @@ public class LoginProjectPage extends AbstractLoginActionPage {
      */
     protected void fillUIProjectList() {
 
-        Project[] projects = loginHelper.getProjects(getConnection());
+        Project[] projects = loginHelper.getProjects(getConnection(), errorManager);
         if (projects == null) {
             projects = new Project[0];
         }
