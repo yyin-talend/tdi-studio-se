@@ -88,7 +88,7 @@ public class CreateAttributeAction extends SelectionProviderAction {
         child.setRow(node.getRow());
         node.addChild(child);
         this.xmlViewer.refresh();
-        xmlViewer.expandAll();
+        this.xmlViewer.expandToLevel(node, 1);
         foxui.redrawLinkers();
     }
 

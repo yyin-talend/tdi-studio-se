@@ -100,7 +100,7 @@ public class CreateElementAction extends SelectionProviderAction {
         child.setRow(node.getRow());
         node.addChild(child);
         this.xmlViewer.refresh();
-        this.xmlViewer.expandAll();
+        this.xmlViewer.expandToLevel(node, 1);
         return true;
     }
 

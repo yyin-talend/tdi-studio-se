@@ -79,8 +79,8 @@ public class FixValueAction extends SelectionProviderAction {
             }
         }
         node.setDefaultValue(label);
-        this.xmlViewer.refresh();
-        xmlViewer.expandAll();
+        this.xmlViewer.refresh(node);
+        this.xmlViewer.expandToLevel(node, 1);
         foxui.redrawLinkers();
     }
 
