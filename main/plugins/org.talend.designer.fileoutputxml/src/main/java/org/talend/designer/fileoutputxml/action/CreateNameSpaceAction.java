@@ -92,7 +92,7 @@ public class CreateNameSpaceAction extends SelectionProviderAction {
         child.setRow(node.getRow());
         node.addChild(child);
         this.xmlViewer.refresh();
-        xmlViewer.expandAll();
+        xmlViewer.expandToLevel(node, 1);
         foxui.redrawLinkers();
     }
 
