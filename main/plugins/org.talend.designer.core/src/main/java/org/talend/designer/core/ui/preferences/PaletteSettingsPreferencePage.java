@@ -49,8 +49,8 @@ public class PaletteSettingsPreferencePage extends FieldEditorPreferencePage imp
 
     @Override
     public void init(IWorkbench workbench) {
-        originalSearchFromHelpValue = getPreferenceStore().getBoolean(
-                TalendDesignerPrefConstants.PALETTE_SETTINGS_SEARCH_FROM_HELP);
+        originalSearchFromHelpValue = getPreferenceStore()
+                .getBoolean(TalendDesignerPrefConstants.PALETTE_SETTINGS_SEARCH_FROM_HELP);
     }
 
     public static int getPaletteSearchResultLimitFromHelp() {
@@ -124,6 +124,14 @@ public class PaletteSettingsPreferencePage extends FieldEditorPreferencePage imp
                 resultLimitFromHelp.setEnabled(shouldSearchFromHelp.getBooleanValue(), getFieldEditorParent());
             }
         });
+    }
+
+    @Override
+    protected void performDefaults() {
+        super.performDefaults();
+        resultLimitFromHelp.setEnabled(
+                getPreferenceStore().getBoolean(TalendDesignerPrefConstants.PALETTE_SETTINGS_SEARCH_FROM_HELP),
+                getFieldEditorParent());
     }
 
 }
