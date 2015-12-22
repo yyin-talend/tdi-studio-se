@@ -91,6 +91,7 @@ import org.eclipse.gef.ui.parts.TreeViewer;
 import org.eclipse.gef.ui.rulers.RulerComposite;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IAction;
+import org.eclipse.jface.action.IContributionItem;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.commands.ActionHandler;
 import org.eclipse.jface.dialogs.ProgressMonitorDialog;
@@ -2403,8 +2404,14 @@ public abstract class AbstractTalendEditor extends GraphicalEditorWithFlyoutPale
 
         protected void unhookOutlineViewer() {
             IToolBarManager tbm = getSite().getActionBars().getToolBarManager();
-            tbm.remove(showOutlineAction.getId()).dispose();
-            tbm.remove(showOverviewAction.getId()).dispose();
+            IContributionItem item = tbm.remove(showOutlineAction.getId());
+            if (item != null) {
+                item.dispose();
+            }
+            item = tbm.remove(showOverviewAction.getId());
+            if (item != null) {
+                item.dispose();
+            }
             getSite().getActionBars().updateActionBars();
             showOutlineAction = null;
             showOverviewAction = null;
