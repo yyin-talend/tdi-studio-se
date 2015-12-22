@@ -990,8 +990,15 @@ public class Node extends Element implements IGraphicalNode {
      */
     @Override
     public void setLocation(final Point location) {
+        if (location == null) {
+            return;
+        }
+        float tempX = (float) location.x / (float) DEFAULT_SIZE;
+        float tempY = (float) location.y / (float) DEFAULT_SIZE;
+        location.x = (int) (Math.rint(tempX) * DEFAULT_SIZE);
+        location.y = (int) (Math.rint(tempY) * DEFAULT_SIZE);
         // TDI-22649
-        if (location == null || this.location.equals(location)) {
+        if (this.location.equals(location)) {
             return;
         }
         this.location = location;
