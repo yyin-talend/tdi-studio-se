@@ -2517,6 +2517,14 @@
 			SHOW_IF="USE_EXISTING_CONNECTION == 'false'">
 			<DEFAULT>""</DEFAULT>
 		</PARAMETER>
+		
+		<PARAMETER
+           NAME="TLS12_FOR_JAVA"
+           FIELD="CHECK"
+           SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
+           NUM_ROW="30">
+           <DEFAULT>false</DEFAULT>
+        </PARAMETER>
 	</ADVANCED_PARAMETERS>
   <CODEGENERATION>
     <IMPORTS>

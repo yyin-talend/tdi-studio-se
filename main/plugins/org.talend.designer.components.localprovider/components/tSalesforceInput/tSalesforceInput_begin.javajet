@@ -85,6 +85,13 @@ if ((metadatas != null) && (metadatas.size() > 0)) {
                     sforceConn_<%=cid%> = (org.talend.salesforce.SforceConnection)globalMap.get("conn_<%=connection%>");
                 <%
                 }else{
+                	boolean tls12_for_java = "true".equals(ElementParameterParser.getValue(node,"__TLS12_FOR_JAVA__"));
+					if(tls12_for_java) {
+					%>
+					<%@ include file="../tSalesforceConnection/TLS12.javajet"%>
+					<%
+					}
+					
                     if(useOAuth){
                         String oauthKey = ElementParameterParser.getValue(node,"__OAUTH_CLIENT_ID__");
                         String oauthSecret = ElementParameterParser.getValue(node,"__OAUTH_CLIENT_SECRET__");

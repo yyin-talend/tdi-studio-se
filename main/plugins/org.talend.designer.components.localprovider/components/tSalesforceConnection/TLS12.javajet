@@ -1,0 +1,51 @@
+<%@ jet%>
+
+org.apache.commons.httpclient.protocol.Protocol baseHttps_<%=cid%> = org.apache.commons.httpclient.protocol.Protocol.getProtocol("https");
+		
+int defaultPort_<%=cid%> = baseHttps_<%=cid%>.getDefaultPort();
+
+final org.apache.commons.httpclient.protocol.ProtocolSocketFactory baseFactory_<%=cid%> = baseHttps_<%=cid%>.getSocketFactory();
+
+org.apache.commons.httpclient.protocol.Protocol protocol_<%=cid%> = new org.apache.commons.httpclient.protocol.Protocol("https", new org.apache.commons.httpclient.protocol.ProtocolSocketFactory() {
+
+	private java.util.List<String> protocols = null;
+	
+	private java.net.Socket accept(java.net.Socket socket) {
+		if(!(socket instanceof javax.net.ssl.SSLSocket)) return socket;
+		javax.net.ssl.SSLSocket sslSocket = (javax.net.ssl.SSLSocket) socket;
+		
+		if(protocols == null) {
+			protocols = new java.util.ArrayList<String>(8);
+			for(String enabledProtocol : sslSocket.getEnabledProtocols()) {
+				protocols.add(enabledProtocol);
+			}
+
+			for(String supportedProtocol : sslSocket.getSupportedProtocols()) {
+				if(("TLSv1.1".equalsIgnoreCase(supportedProtocol) || "TLSv1.2".equalsIgnoreCase(supportedProtocol)) && !protocols.contains(supportedProtocol)) {
+					protocols.add(supportedProtocol);
+				}
+			}
+		}
+		
+		sslSocket.setEnabledProtocols(protocols.toArray(new String[0]));
+		return sslSocket;
+    }
+	 
+	public java.net.Socket createSocket(String arg0, int arg1)
+			throws java.io.IOException, java.net.UnknownHostException {
+		return accept(baseFactory_<%=cid%>.createSocket(arg0, arg1));
+	}
+
+	public java.net.Socket createSocket(String arg0, int arg1, java.net.InetAddress arg2,
+			int arg3) throws java.io.IOException, java.net.UnknownHostException {
+		return accept(baseFactory_<%=cid%>.createSocket(arg0, arg1, arg2,arg3));
+	}
+
+	public java.net.Socket createSocket(String arg0, int arg1, java.net.InetAddress arg2,
+			int arg3, org.apache.commons.httpclient.params.HttpConnectionParams arg4) throws java.io.IOException,
+			java.net.UnknownHostException, org.apache.commons.httpclient.ConnectTimeoutException {
+		return accept(baseFactory_<%=cid%>.createSocket(arg0, arg1, arg2, arg3,arg4));
+	}
+	
+}, defaultPort_<%=cid%>);
+org.apache.commons.httpclient.protocol.Protocol.registerProtocol("https", protocol_<%=cid%>);

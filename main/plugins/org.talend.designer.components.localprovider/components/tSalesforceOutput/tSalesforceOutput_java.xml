@@ -3476,6 +3476,14 @@
 				<ITEM NAME="LOOKUP_FIELD_EXTERNAL_ID_NAME" />
 			</ITEMS>
 		</PARAMETER>
+		
+		<PARAMETER
+           NAME="TLS12_FOR_JAVA"
+           FIELD="CHECK"
+           SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
+           NUM_ROW="90">
+           <DEFAULT>false</DEFAULT>
+        </PARAMETER>
 	</ADVANCED_PARAMETERS>
 
 	<CODEGENERATION>
