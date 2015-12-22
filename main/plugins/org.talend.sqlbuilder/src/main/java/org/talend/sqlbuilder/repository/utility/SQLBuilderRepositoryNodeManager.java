@@ -61,6 +61,7 @@ import org.talend.core.sqlbuilder.util.TextUtil;
 import org.talend.cwm.helper.ConnectionHelper;
 import org.talend.cwm.helper.PackageHelper;
 import org.talend.cwm.helper.SchemaHelper;
+import org.talend.cwm.helper.SubItemHelper;
 import org.talend.cwm.relational.TdColumn;
 import org.talend.metadata.managment.connection.manager.HiveConnectionManager;
 import org.talend.repository.model.IRepositoryNode;
@@ -495,8 +496,8 @@ public class SQLBuilderRepositoryNodeManager {
         }
         if (tableFromDB != null) {
             List<MetadataColumn> columnsFromDB = new ArrayList<MetadataColumn>();
-            columnsFromDB.addAll(
-                    ExtractMetaDataFromDataBase.returnMetadataColumnsFormTable(iMetadataConnection, tableFromDB.getSourceName()));
+            columnsFromDB.addAll(ExtractMetaDataFromDataBase.returnMetadataColumnsFormTable(iMetadataConnection,
+                    tableFromDB.getSourceName()));
             modifyOldOneColumnFromDB(columnsFromDB, metadataColumn);
         }
     }
@@ -648,8 +649,8 @@ public class SQLBuilderRepositoryNodeManager {
         }
         DatabaseConnectionItem item = PropertiesFactory.eINSTANCE.createDatabaseConnectionItem();
         Property connectionProperty = PropertiesFactory.eINSTANCE.createProperty();
-        connectionProperty
-                .setAuthor(((RepositoryContext) CorePlugin.getContext().getProperty(Context.REPOSITORY_CONTEXT_KEY)).getUser());
+        connectionProperty.setAuthor(((RepositoryContext) CorePlugin.getContext().getProperty(Context.REPOSITORY_CONTEXT_KEY))
+                .getUser());
         connectionProperty.setVersion(VersionUtils.DEFAULT_VERSION);
         connectionProperty.setStatusCode(""); //$NON-NLS-1$
 
@@ -860,8 +861,8 @@ public class SQLBuilderRepositoryNodeManager {
      * @throws InstantiationException
      * @throws ClassNotFoundException
      */
-    public DatabaseMetaData getDatabaseMetaData(IMetadataConnection iMetadataConnection)
-            throws ClassNotFoundException, InstantiationException, IllegalAccessException, SQLException {
+    public DatabaseMetaData getDatabaseMetaData(IMetadataConnection iMetadataConnection) throws ClassNotFoundException,
+            InstantiationException, IllegalAccessException, SQLException {
         ExtractMetaDataUtils extractMeta = ExtractMetaDataUtils.getInstance();
         extractMeta.getConnection(iMetadataConnection.getDbType(), iMetadataConnection.getUrl(),
                 iMetadataConnection.getUsername(), iMetadataConnection.getPassword(), iMetadataConnection.getDatabase(),
