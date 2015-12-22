@@ -18,13 +18,6 @@ import java.net.PasswordAuthentication;
 import java.net.Proxy;
 import java.net.SocketAddress;
 
-import javax.net.ssl.SSLContext;
-import javax.net.ssl.SSLSocketFactory;
-
-import java.net.Socket;
-
-import javax.net.ssl.SSLSocket;
-
 import com.sforce.async.BulkConnection;
 import com.sforce.soap.partner.PartnerConnection;
 import com.sforce.ws.ConnectionException;
@@ -95,8 +88,6 @@ public class SforceBasicBulkConnection extends SforceBulkConnection {
     }
 
     private void init() throws Exception {
-    	initTLS();
-    	
         config = new ConnectorConfig();
         setProxyToConnection(config);
         // This should only be false when doing debugging.
@@ -105,31 +96,6 @@ public class SforceBasicBulkConnection extends SforceBulkConnection {
         config.setTraceMessage(needTraceMessage);
         renewSession();
         connection = new BulkConnection(config);
-    }
-    
-    private void initTLS() throws Exception {
-    	if(System.getProperty("https.protocols") != null) {
-    		return;
-    	}
-    	
-    	SSLContext context = SSLContext.getDefault();
-		SSLSocketFactory factory = (SSLSocketFactory)context.getSocketFactory();
-		SSLSocket socket = (SSLSocket)factory.createSocket();
-
-		String[] supportedProtocols = socket.getSupportedProtocols();
-		
-		for(String supportedProtocol : supportedProtocols) {
-			if("TLSv1.1".equalsIgnoreCase(supportedProtocol)) {
-				System.setProperty("https.protocols", "SSLv3,TLSv1,TLSv1.1");
-				continue;
-			}
-			
-			if("TLSv1.2".equalsIgnoreCase(supportedProtocol)) {
-				System.setProperty("https.protocols", "SSLv3,TLSv1,TLSv1.1,TLSv1.2");
-				break;
-			}
-		}
-    	
     }
 
     private void setProxyToConnection(ConnectorConfig conn) {

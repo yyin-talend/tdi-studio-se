@@ -5,19 +5,6 @@
  */
 package com.salesforce.soap.partner;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.ArrayList;
-import java.io.IOException;
-import java.net.InetAddress;
-import java.net.Socket;
-import java.net.UnknownHostException;
-import javax.net.ssl.SSLSocket;
-import org.apache.commons.httpclient.ConnectTimeoutException;
-import org.apache.commons.httpclient.params.HttpConnectionParams;
-import org.apache.commons.httpclient.protocol.Protocol;
-import org.apache.commons.httpclient.protocol.ProtocolSocketFactory;
-
 /*
  * SforceServiceStub java implementation
  */
@@ -1571,8 +1558,6 @@ public class SforceServiceStub extends org.apache.axis2.client.Stub implements
 		populateAxisService();
 		populateFaults();
 
-		initTLS();
-		
 		_serviceClient = new org.apache.axis2.client.ServiceClient(
 				configurationContext, _service);
 
@@ -1582,58 +1567,6 @@ public class SforceServiceStub extends org.apache.axis2.client.Stub implements
 		_serviceClient.getOptions().setUseSeparateListener(useSeparateListener);
 
 	}
-	
-	private void initTLS() {
-		Protocol baseHttps = Protocol.getProtocol("https");
-		
-		int defaultPort = baseHttps.getDefaultPort();
-		
-		final ProtocolSocketFactory baseFactory = baseHttps.getSocketFactory();
-		
-		Protocol protocol = new Protocol("https", new ProtocolSocketFactory() {
-
-			private List<String> protocols = null;
-			
-			private Socket accept(Socket socket) {
-				if(!(socket instanceof SSLSocket)) return socket;
-				SSLSocket sslSocket = (SSLSocket) socket;
-				
-				if(protocols == null) {
-					protocols = new ArrayList<String>(8);
-					for(String enabledProtocol : sslSocket.getEnabledProtocols()) {
-						protocols.add(enabledProtocol);
-					}
-		
-					for(String supportedProtocol : sslSocket.getSupportedProtocols()) {
-						if(("TLSv1.1".equalsIgnoreCase(supportedProtocol) || "TLSv1.2".equalsIgnoreCase(supportedProtocol)) && !protocols.contains(supportedProtocol)) {
-							protocols.add(supportedProtocol);
-						}
-					}
-				}
-				
-				sslSocket.setEnabledProtocols(protocols.toArray(new String[0]));
-				return sslSocket;
-		    }
-			 
-			public Socket createSocket(String arg0, int arg1)
-					throws IOException, UnknownHostException {
-				return accept(baseFactory.createSocket(arg0, arg1));
-			}
-
-			public Socket createSocket(String arg0, int arg1, InetAddress arg2,
-					int arg3) throws IOException, UnknownHostException {
-				return accept(baseFactory.createSocket(arg0, arg1, arg2,arg3));
-			}
-
-			public Socket createSocket(String arg0, int arg1, InetAddress arg2,
-					int arg3, HttpConnectionParams arg4) throws IOException,
-					UnknownHostException, ConnectTimeoutException {
-				return accept(baseFactory.createSocket(arg0, arg1, arg2, arg3,arg4));
-			}
-			
-		}, defaultPort);
-		Protocol.registerProtocol("https", protocol);
-	} 
 
 	/**
 	 * Default Constructor
