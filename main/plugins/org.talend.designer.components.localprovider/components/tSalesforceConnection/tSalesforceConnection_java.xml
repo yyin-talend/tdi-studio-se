@@ -233,19 +233,28 @@
 
     <ADVANCED_PARAMETERS>
         <PARAMETER
-            NAME="CLIENT_ID"
+        	NAME="CLIENT_ID"
             FIELD="TEXT"
             NUM_ROW="1"
             SHOW_IF="BULK_CONNECTION=='false'">
             <DEFAULT>""</DEFAULT>
         </PARAMETER>
         <PARAMETER
-           NAME="USE_HTTP_CHUNKED"
-           FIELD="CHECK"
-           SHOW_IF="BULK_CONNECTION=='false'"
-           NUM_ROW="5">
-           <DEFAULT>false</DEFAULT>
+        	NAME="USE_HTTP_CHUNKED"
+          	FIELD="CHECK"
+           	SHOW_IF="BULK_CONNECTION=='false'"
+          	NUM_ROW="5">
+           	<DEFAULT>false</DEFAULT>
         </PARAMETER>
+        
+        <PARAMETER
+	        NAME="TLS12_FOR_JAVA"
+	        FIELD="CHECK"
+	        SHOW_IF="BULK_CONNECTION=='false'"
+	        NUM_ROW="10">
+	        <DEFAULT>false</DEFAULT>
+    	</PARAMETER>
+    	
     </ADVANCED_PARAMETERS>
 
     <CODEGENERATION>

@@ -2632,6 +2632,14 @@
             SHOW_IF="(USE_EXISTING_CONNECTION == 'false') AND (API == 'soap')">
             <DEFAULT>""</DEFAULT>
         </PARAMETER>
+        
+        <PARAMETER
+	        NAME="TLS12_FOR_JAVA"
+	        FIELD="CHECK"
+	        SHOW_IF="(USE_EXISTING_CONNECTION == 'false') AND (API == 'soap')"
+	        NUM_ROW="105">
+	        <DEFAULT>false</DEFAULT>
+	    </PARAMETER>
     </ADVANCED_PARAMETERS>
 
     <CODEGENERATION>
