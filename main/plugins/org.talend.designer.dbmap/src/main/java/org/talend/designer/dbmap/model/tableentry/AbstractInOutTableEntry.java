@@ -54,8 +54,4 @@ public class AbstractInOutTableEntry extends TableEntry implements IColumnEntry 
         this.metadataColumn.setLabel(name);
     }
 
-    public String getOriginalName() {
-        return this.metadataColumn.getOriginalDbColumnName();
-    }
-
 }

@@ -20,7 +20,6 @@ import org.talend.designer.dbmap.language.IDbLanguage;
 import org.talend.designer.dbmap.managers.MapperManager;
 import org.talend.designer.dbmap.model.table.InputTable;
 import org.talend.designer.dbmap.model.table.OutputTable;
-import org.talend.designer.dbmap.model.tableentry.AbstractInOutTableEntry;
 import org.talend.designer.dbmap.ui.visualmap.table.DataMapTableView;
 
 /**
@@ -75,14 +74,8 @@ public class AutoMapper {
                         List<IColumnEntry> inputColumnEntries = inputTable.getColumnEntries();
                         for (IColumnEntry inputEntry : inputColumnEntries) {
                             if (inputEntry.getName().equalsIgnoreCase(outputColumnName)) {
-                                String dbColumn = inputEntry.getName();
-                                if (inputEntry instanceof AbstractInOutTableEntry) {
-                                    String originalName = ((AbstractInOutTableEntry) inputEntry).getOriginalName();
-                                    if (originalName != null && !"".equals(originalName)) {
-                                        dbColumn = originalName;
-                                    }
-                                }
-                                outputEntry.setExpression(currentLanguage.getLocation(inputTable.getName(), dbColumn));
+                                outputEntry
+                                        .setExpression(currentLanguage.getLocation(inputTable.getName(), inputEntry.getName()));
                                 mapFound = true;
                                 break;
                             }

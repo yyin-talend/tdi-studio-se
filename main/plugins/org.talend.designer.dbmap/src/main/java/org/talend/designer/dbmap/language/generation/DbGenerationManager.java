@@ -860,7 +860,8 @@ public abstract class DbGenerationManager {
             // schema.context.table.column
             // schema.table.column
             // table.column
-            MapExpressionParser mapParser1 = new MapExpressionParser("((\\s*(\\w+)\\s*\\.)*)(\\w+)"); //$NON-NLS-1$
+            // add \\w*#* for oracle 12 , schema name start with C##
+            MapExpressionParser mapParser1 = new MapExpressionParser("((\\s*(\\w*#*\\w+)\\s*\\.)*)(\\w+)"); //$NON-NLS-1$
             itemNameList = mapParser1.parseInTableEntryLocations2(expression);
 
             if (itemNameList == null || itemNameList.isEmpty()) {
@@ -876,6 +877,16 @@ public abstract class DbGenerationManager {
                     String columnValue = entry.getKey();
                     String tableValue = entry.getValue();
 
+                    // find original table name if tableValue is alias
+                    String originaltableName = tableValue;
+                    ExternalDbMapData externalData = (ExternalDbMapData) component.getExternalData();
+                    final List<ExternalDbMapTable> inputTables = externalData.getInputTables();
+                    for (ExternalDbMapTable inputTable : inputTables) {
+                        if (inputTable.getAlias() != null && inputTable.getAlias().equals(tableValue)) {
+                            originaltableName = inputTable.getTableName();
+                        }
+                    }
+
                     List<IConnection> inputConnections = (List<IConnection>) component.getIncomingConnections();
                     if (inputConnections == null) {
                         return expression;
@@ -883,7 +894,7 @@ public abstract class DbGenerationManager {
                     for (IConnection iconn : inputConnections) {
                         IMetadataTable metadataTable = iconn.getMetadataTable();
                         String tName = iconn.getName();
-                        if (tableValue.equals(tName) && metadataTable != null) {
+                        if ((originaltableName.equals(tName) || tableValue.equals(tName)) && metadataTable != null) {
                             List<IMetadataColumn> lColumn = metadataTable.getListColumns();
                             String tableName = metadataTable.getTableName();
                             String tableColneName = tableName;
@@ -918,6 +929,12 @@ public abstract class DbGenerationManager {
                                     String oriName = co.getOriginalDbColumnName();
                                     // if OriginalDbColumn is empty , still use label to generate sql
                                     if (oriName == null || "".equals(oriName)) { //$NON-NLS-1$
+                                        continue;
+                                    }
+                                    if (expression.trim().equals(tableValue + "." + oriName)) {
+                                        continue;
+                                    }
+                                    if (expression.trim().equals(originaltableName + "." + oriName)) {
                                         continue;
                                     }
                                     // if it is temp delived table, use label to generate sql
