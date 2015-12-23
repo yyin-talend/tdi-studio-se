@@ -42,8 +42,8 @@ public class TableEntryLocation {
     }
 
     public TableEntryLocation(String prefix, String tableName, String columnName, String sufix) {
-        this.tableName = tableName.trim();
-        this.columnName = columnName.trim();
+        this.tableName = (tableName == null ? null : tableName.trim());
+        this.columnName = (columnName == null ? null : columnName.trim());
     }
 
     @Override
