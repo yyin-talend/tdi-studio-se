@@ -1364,7 +1364,7 @@ public class SQLBuilderRepositoryNodeManager {
                 if (getRepositoryType((RepositoryNode) node) == RepositoryNodeType.DATABASE) {
                     return (RepositoryNode) node;
                 } else {
-                    RepositoryNode repNode = getRoot((RepositoryNode) node);
+                    RepositoryNode repNode = getRoot(visited, (RepositoryNode) node);
                     if (repNode != null) {
                         return repNode;
                     }
@@ -1377,7 +1377,7 @@ public class SQLBuilderRepositoryNodeManager {
         if (getRepositoryType(repositoryNode) == RepositoryNodeType.DATABASE) {
             return repositoryNode;
         }
-        return getRoot(repositoryNode.getParent());
+        return getRoot(visited, repositoryNode.getParent());
     }
 
     public void synchronizeAllSqlEditors(SQLBuilderDialog builderDialog) {
