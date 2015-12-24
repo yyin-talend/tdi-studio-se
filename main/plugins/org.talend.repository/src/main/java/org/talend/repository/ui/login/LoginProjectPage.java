@@ -821,7 +821,7 @@ public class LoginProjectPage extends AbstractLoginActionPage {
                 if (branch == null) {
                     branch = SVNConstant.EMPTY;
                 }
-                loginHelper.getPrefManipulator().setLastSVNBranch(branch);
+                // loginHelper.getPrefManipulator().setLastSVNBranch(tacUrl, projectName, branch);
             }
         });
 

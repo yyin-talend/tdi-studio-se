@@ -102,6 +102,7 @@ import org.talend.core.repository.model.RepositoryFactoryProvider;
 import org.talend.core.repository.model.repositoryObject.SalesforceModuleRepositoryObject;
 import org.talend.core.repository.utils.ProjectHelper;
 import org.talend.core.repository.utils.RepositoryPathProvider;
+import org.talend.core.services.ISVNProviderService;
 import org.talend.core.ui.branding.IBrandingService;
 import org.talend.core.ui.component.ComponentsFactoryProvider;
 import org.talend.core.ui.services.IRulesProviderService;
@@ -356,10 +357,6 @@ public class RepositoryService implements IRepositoryService, IRepositoryContext
                 if (lastProject != null) {
                     projectName = lastProject;
                 }
-                final String lastSVNBranch = preferenceManipulator.getLastSVNBranch();
-                if (lastSVNBranch != null) {
-                    branch = lastSVNBranch;
-                }
                 final String lastUser = lastBean.getUser();
                 if (lastUser != null) {
                     login = lastUser;
@@ -412,9 +409,16 @@ public class RepositoryService implements IRepositoryService, IRepositoryContext
                         break;
                     }
                 }
-                if (project != null && branch != null) {
-                    ProjectManager.getInstance().setMainProjectBranch(project, branch);
-
+                if (project != null && reload && lastBean != null ) {
+                    if (PluginChecker.isSVNProviderPluginLoaded()) {
+                        ISVNProviderService svnProviderService = (ISVNProviderService) GlobalServiceRegister.getDefault().getService(
+                                ISVNProviderService.class);
+                        if (svnProviderService.isSVNProject(project)) {
+                            String projectUrl = svnProviderService.getProjectUrl(project);
+                            String lastBranch = preferenceManipulator.getLastSVNBranch(projectUrl, project.getTechnicalLabel());
+                            ProjectManager.getInstance().setMainProjectBranch(project, lastBranch);
+                        }
+                    }
                 }
                 if (!reload) {
                     if (deleteProjectIfExist && project != null) {

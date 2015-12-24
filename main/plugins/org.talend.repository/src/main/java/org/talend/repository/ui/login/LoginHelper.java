@@ -340,7 +340,9 @@ public class LoginHelper {
         if (lastUsedProject == null) {
             return false;
         }
-        String lastUsedBranch = prefManipulator.getLastSVNBranch();
+        String projectName = lastUsedProject.getTechnicalLabel();
+        String projectUrl = svnProviderService.getProjectUrl(lastUsedProject);
+        String lastUsedBranch = prefManipulator.getLastSVNBranch(projectUrl, projectName);
         if (isRemoteConnection) {
             List<String> branches = null;
             try {
