@@ -89,7 +89,8 @@ public class CheckController extends AbstractElementPropertySectionController {
                     if (StringUtils.isNotEmpty(processId)) {
                         repNode = RepositorySeekerManager.getInstance().searchRepoViewNode(processId);
                     }
-                    if (repNode != null && ERepositoryObjectType.PROCESS_MR.equals(repNode.getObjectType())) {
+                    if (repNode != null && ERepositoryObjectType.PROCESS_MR != null
+                            && ERepositoryObjectType.PROCESS_MR.equals(repNode.getObjectType())) {
                         cmd = new PropertyChangeCommand(elem, processParamName, ""); //$NON-NLS-1$
                         executeCommand(cmd);
                     }
@@ -128,8 +129,8 @@ public class CheckController extends AbstractElementPropertySectionController {
 
         });
         if (param.isRepositoryValueUsed()) {
-            FieldDecoration decoration = FieldDecorationRegistry.getDefault().getFieldDecoration(
-                    FieldDecorationRegistry.DEC_CONTENT_PROPOSAL);
+            FieldDecoration decoration = FieldDecorationRegistry.getDefault()
+                    .getFieldDecoration(FieldDecorationRegistry.DEC_CONTENT_PROPOSAL);
             decoration.setDescription(Messages.getString("CheckController.decoration.description")); //$NON-NLS-1$
             dField.addFieldDecoration(decoration, SWT.RIGHT | SWT.BOTTOM, false);
         }
@@ -163,9 +164,8 @@ public class CheckController extends AbstractElementPropertySectionController {
     /*
      * (non-Javadoc)
      * 
-     * @see
-     * org.talend.designer.core.ui.editor.properties.controllers.AbstractElementPropertySectionController#estimateRowSize
-     * (org.eclipse.swt.widgets.Composite, org.talend.core.model.process.IElementParameter)
+     * @see org.talend.designer.core.ui.editor.properties.controllers.AbstractElementPropertySectionController#
+     * estimateRowSize (org.eclipse.swt.widgets.Composite, org.talend.core.model.process.IElementParameter)
      */
     @Override
     public int estimateRowSize(Composite subComposite, final IElementParameter param) {
