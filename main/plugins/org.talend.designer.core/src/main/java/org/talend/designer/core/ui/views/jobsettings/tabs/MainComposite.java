@@ -136,8 +136,8 @@ public class MainComposite extends AbstractTabComposite {
     public MainComposite(Composite parent, int style, TabbedPropertySheetWidgetFactory factory, IRepositoryViewObject obj) {
         super(parent, style, factory, obj);
 
-        IBrandingService brandingService = (IBrandingService) GlobalServiceRegister.getDefault().getService(
-                IBrandingService.class);
+        IBrandingService brandingService = (IBrandingService) GlobalServiceRegister.getDefault()
+                .getService(IBrandingService.class);
         boolean allowVerchange = brandingService.getBrandingConfiguration().isAllowChengeVersion();
         allowEnableControl = false;
         enableControl = false;
@@ -188,8 +188,8 @@ public class MainComposite extends AbstractTabComposite {
 
         // Adding the decorator for nameText
         nameTextDecorator = new ControlDecoration(nameText, SWT.TOP | SWT.RIGHT);
-        FieldDecoration fieldDecoration = FieldDecorationRegistry.getDefault().getFieldDecoration(
-                FieldDecorationRegistry.DEC_ERROR);
+        FieldDecoration fieldDecoration = FieldDecorationRegistry.getDefault()
+                .getFieldDecoration(FieldDecorationRegistry.DEC_ERROR);
         nameTextDecorator.setImage(fieldDecoration.getImage());
         nameTextDecorator.hide();
 
@@ -689,7 +689,8 @@ public class MainComposite extends AbstractTabComposite {
 
                         IViewPart jobSettingView = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage()
                                 .findView(IJobSettingsView.ID);
-                        if (jobSettingView != null && jobSettingView instanceof IJobSettingsView) {
+                        if (jobSettingView != null && jobSettingView instanceof IJobSettingsView
+                                && !(repositoryObject instanceof IProcess2)) {
                             Map<String, Object> propertiesMap = new HashMap<String, Object>();
                             propertiesMap.put(IJobSettingsView.JOBTYPE_CHANGED, repositoryObject);
                             ((IJobSettingsView) jobSettingView).onPropertiesChanged(propertiesMap);
@@ -740,8 +741,8 @@ public class MainComposite extends AbstractTabComposite {
         Map<String, String> statusMap = new HashMap();
         try {
             if (statusHelper != null) {
-                List<org.talend.core.model.properties.Status> statusList = statusHelper.getStatusList(repositoryObject
-                        .getProperty());
+                List<org.talend.core.model.properties.Status> statusList = statusHelper
+                        .getStatusList(repositoryObject.getProperty());
                 if (statusList != null) {
                     for (org.talend.core.model.properties.Status s : statusList) {
                         statusMap.put(s.getCode(), s.getLabel());
@@ -797,7 +798,8 @@ public class MainComposite extends AbstractTabComposite {
                 isValid = false;
             } else if (nameText.getText().startsWith(" ")//$NON-NLS-1$
                     || !Pattern.matches(RepositoryConstants.getPattern(repositoryObject.getRepositoryObjectType()),
-                            nameText.getText()) || nameText.getText().trim().contains(" ")) { //$NON-NLS-1$
+                            nameText.getText())
+                    || nameText.getText().trim().contains(" ")) { //$NON-NLS-1$
                 errorMessage = Messages.getString("MainComposite.NameFormatError"); //$NON-NLS-1$
                 isValid = false;
             } else if (KeywordsValidator.isKeyword(nameText.getText()) || "java".equalsIgnoreCase(nameText.getText())) {//$NON-NLS-1$
@@ -808,18 +810,17 @@ public class MainComposite extends AbstractTabComposite {
                 isValid = false;
             } else {
                 try {
-                    List<IRepositoryViewObject> listExistingObjects = proxyRepositoryFactory.getAll(
-                            ERepositoryObjectType.PROCESS, true, false);
+                    List<IRepositoryViewObject> listExistingObjects = proxyRepositoryFactory.getAll(ERepositoryObjectType.PROCESS,
+                            true, false);
                     if (PluginChecker.isStormPluginLoader()) {
-                        listExistingObjects.addAll(proxyRepositoryFactory
-                                .getAll(ERepositoryObjectType.PROCESS_STORM, true, false));
+                        listExistingObjects
+                                .addAll(proxyRepositoryFactory.getAll(ERepositoryObjectType.PROCESS_STORM, true, false));
                     }
                     if (PluginChecker.isMapReducePluginLoader()) {
                         listExistingObjects.addAll(proxyRepositoryFactory.getAll(ERepositoryObjectType.PROCESS_MR, true, false));
                     }
-                    if (repositoryObject.getProperty() != null
-                            && !proxyRepositoryFactory.isNameAvailable(repositoryObject.getProperty().getItem(),
-                                    nameText.getText(), listExistingObjects)) {
+                    if (repositoryObject.getProperty() != null && !proxyRepositoryFactory
+                            .isNameAvailable(repositoryObject.getProperty().getItem(), nameText.getText(), listExistingObjects)) {
                         errorMessage = Messages.getString("MainComposite.ItemExistsError");//$NON-NLS-1$
                         isValid = false;
                     }
@@ -861,8 +862,8 @@ public class MainComposite extends AbstractTabComposite {
         if (item != null) {
             try {
                 ERepositoryObjectType repObjType = ERepositoryObjectType.getItemType(item);
-                IJobEditorHandler editorInputFactory = JobEditorHandlerManager.getInstance().extractEditorInputFactory(
-                        repObjType.getType());
+                IJobEditorHandler editorInputFactory = JobEditorHandlerManager.getInstance()
+                        .extractEditorInputFactory(repObjType.getType());
                 editorInputFactory.openJobEditor(editorInputFactory.createJobEditorInput(item, true));
             } catch (PartInitException e) {
                 e.printStackTrace();
