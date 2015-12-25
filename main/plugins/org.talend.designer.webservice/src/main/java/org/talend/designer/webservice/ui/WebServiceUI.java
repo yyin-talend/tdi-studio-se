@@ -1449,7 +1449,9 @@ public class WebServiceUI implements AbstractWebService {
                 // }
                 List<ParameterInfo> listIn = currentFunction.getInputParameters();
                 List<ParameterInfo> listOut = currentFunction.getOutputParameters();
-                if (listIn == null || listOut == null) {
+
+                // For fix TDI-34970 to show the input only parameters
+                if (listIn == null /* || listOut == null */) {
                     return;
                 }
                 ExtendedTableModel<InputMappingData> columnModel = expressinPutTableView.getExtendedTableModel();
