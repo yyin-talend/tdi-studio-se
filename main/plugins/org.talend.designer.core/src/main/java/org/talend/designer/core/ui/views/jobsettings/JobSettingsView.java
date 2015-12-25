@@ -116,20 +116,20 @@ public class JobSettingsView extends ViewPart implements IJobSettingsView, ISele
     private Composite parent;
 
     private ISelection selectedModel;
-    
+
     private ISVNProviderService svnService;
-    
+
     private ISVNUiProviderService svnUIService;
-    
+
     private IGITProviderService gitService;
-    
+
     private IGitUIProviderService gitUIService;
 
     public JobSettingsView() {
         tabFactory = new HorizontalTabFactory();
         CorePlugin.getDefault().getRepositoryService().addRepositoryTreeViewListener(this);
-        IBrandingService brandingService = (IBrandingService) GlobalServiceRegister.getDefault().getService(
-                IBrandingService.class);
+        IBrandingService brandingService = (IBrandingService) GlobalServiceRegister.getDefault()
+                .getService(IBrandingService.class);
         allowVerchange = brandingService.getBrandingConfiguration().isAllowChengeVersion();
         initProviderServices();
     }
@@ -181,8 +181,8 @@ public class JobSettingsView extends ViewPart implements IJobSettingsView, ISele
 
                 if (currentSelectedTab != null) {
                     if ((!currentSelectedTab.getData().equals(descriptor.getData())
-                            || currentSelectedTab.getData() != descriptor.getData() || currentSelectedTab.getCategory() != descriptor
-                            .getCategory())) {
+                            || currentSelectedTab.getData() != descriptor.getData()
+                            || currentSelectedTab.getCategory() != descriptor.getCategory())) {
                         for (Control curControl : tabFactory.getTabComposite().getChildren()) {
                             curControl.dispose();
                         }
@@ -233,11 +233,8 @@ public class JobSettingsView extends ViewPart implements IJobSettingsView, ISele
     private IRepositoryViewObject retrieveBusiness(IEditorPart businessPart) {
         if (CorePlugin.getDefault().getDiagramModelService().isBusinessDiagramEditor(businessPart)) {
             IRepositoryViewObject lastVersion = null;
-            selectedModel = CorePlugin
-                    .getDefault()
-                    .getDiagramModelService()
-                    .getBusinessEditorSelection(
-                            PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getActiveEditor());
+            selectedModel = CorePlugin.getDefault().getDiagramModelService().getBusinessEditorSelection(
+                    PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getActiveEditor());
 
             try {
 
@@ -305,8 +302,8 @@ public class JobSettingsView extends ViewPart implements IJobSettingsView, ISele
             dynamicComposite = svnUIService.createProcessSVNHistoryComposite(parent, tabFactory.getWidgetFactory(),
                     (IRepositoryViewObject) data);
         } else if (EComponentCategory.GITHISTORY.equals(category) && gitUIService != null) {
-          dynamicComposite = gitUIService.createProcessGitHistoryComposite(parent, this, tabFactory.getWidgetFactory(),
-                  (IRepositoryViewObject) data);
+            dynamicComposite = gitUIService.createProcessGitHistoryComposite(parent, this, tabFactory.getWidgetFactory(),
+                    (IRepositoryViewObject) data);
         } else if (EComponentCategory.APPEARANCE.equals(category)) {
             dynamicComposite = (IDynamicProperty) CorePlugin.getDefault().getDiagramModelService()
                     .getBusinessAppearanceComposite(parent, SWT.NONE, tabFactory.getWidgetFactory(), selectedModel);
@@ -465,7 +462,7 @@ public class JobSettingsView extends ViewPart implements IJobSettingsView, ISele
             title = ""; //$NON-NLS-1$
         }
         if (!title.equals("")) { //$NON-NLS-1$
-            viewName = viewName + "(" + title + ")"; //$NON-NLS-1$ //$NON-NLS-2$            
+            viewName = viewName + "(" + title + ")"; //$NON-NLS-1$ //$NON-NLS-2$
             super.setTitleToolTip(title);
         }
         if (tabFactory != null && icon == null) {
@@ -525,7 +522,7 @@ public class JobSettingsView extends ViewPart implements IJobSettingsView, ISele
             if (svnService != null && svnService.isProjectInSvnMode() && !isOfflineMode) {
                 category.add(EComponentCategory.SVNHISTORY);
             }
-            
+
             if (gitService != null && gitService.isProjectInGitMode() && !isOfflineMode) {
                 category.add(EComponentCategory.GITHISTORY);
             }
@@ -536,17 +533,15 @@ public class JobSettingsView extends ViewPart implements IJobSettingsView, ISele
                 category.add(EComponentCategory.VERSIONS);
             }
 
-            if (svnService != null
-                    && svnService.isProjectInSvnMode()
-                    && !isOfflineMode
-                    && (((IRepositoryViewObject) obj).getRepositoryObjectType() == ERepositoryObjectType.JOBLET || ERepositoryObjectType
-                            .getAllTypesOfProcess().contains(((IRepositoryViewObject) obj).getRepositoryObjectType()))) {
+            if (svnService != null && svnService.isProjectInSvnMode() && !isOfflineMode
+                    && (((IRepositoryViewObject) obj).getRepositoryObjectType() == ERepositoryObjectType.JOBLET
+                            || ERepositoryObjectType.getAllTypesOfProcess()
+                                    .contains(((IRepositoryViewObject) obj).getRepositoryObjectType()))) {
                 category.add(EComponentCategory.SVNHISTORY);
-            } else if (gitService != null
-                    && gitService.isProjectInGitMode()
-                    && !isOfflineMode
-                    && (((IRepositoryViewObject) obj).getRepositoryObjectType() == ERepositoryObjectType.JOBLET || ERepositoryObjectType
-                            .getAllTypesOfProcess().contains(((IRepositoryViewObject) obj).getRepositoryObjectType()))) {
+            } else if (gitService != null && gitService.isProjectInGitMode() && !isOfflineMode
+                    && (((IRepositoryViewObject) obj).getRepositoryObjectType() == ERepositoryObjectType.JOBLET
+                            || ERepositoryObjectType.getAllTypesOfProcess()
+                                    .contains(((IRepositoryViewObject) obj).getRepositoryObjectType()))) {
                 category.add(EComponentCategory.GITHISTORY);
             }
         } else if (obj instanceof IEditorPart) {
@@ -687,9 +682,8 @@ public class JobSettingsView extends ViewPart implements IJobSettingsView, ISele
     /*
      * (non-Javadoc)
      * 
-     * @see
-     * org.eclipse.jface.viewers.ISelectionChangedListener#selectionChanged(org.eclipse.jface.viewers.SelectionChangedEvent
-     * )
+     * @see org.eclipse.jface.viewers.ISelectionChangedListener#selectionChanged(org.eclipse.jface.viewers.
+     * SelectionChangedEvent )
      */
     @Override
     public void selectionChanged(SelectionChangedEvent event) {
@@ -828,9 +822,10 @@ public class JobSettingsView extends ViewPart implements IJobSettingsView, ISele
         Object obj = maps.get(IJobSettingsView.JOBTYPE_CHANGED);
         if (obj instanceof IRepositoryViewObject) {
             String type = null;
+            IRepositoryViewObject repositoryObject = (IRepositoryViewObject) obj;
             // opened job needn't to change the title
             if (!(obj instanceof IProcess2)) {
-                Property property = ((IRepositoryViewObject) obj).getProperty();
+                Property property = repositoryObject.getProperty();
                 if (property != null) {
                     Item item = property.getItem();
                     if (item != null) {
@@ -843,7 +838,7 @@ public class JobSettingsView extends ViewPart implements IJobSettingsView, ISele
                     }
                 }
             }
-            Image image = getImage((IRepositoryViewObject) obj);
+            Image image = getImage(repositoryObject);
             if (image != null && image.isDisposed()) {
                 image = null;
             }
@@ -851,7 +846,12 @@ public class JobSettingsView extends ViewPart implements IJobSettingsView, ISele
                 super.setTitleImage(image);
                 tabFactory.setTitleImage(image);
             } else {
-                String title = ((IRepositoryViewObject) obj).getLabel();
+                String title = repositoryObject.getLabel();
+                if (allowVerchange) {
+                    if (repositoryObject.getVersion() != null) {
+                        title = repositoryObject.getLabel() + " " + repositoryObject.getVersion(); //$NON-NLS-1$
+                    }
+                }
                 setPartName(type + SEPARATOR + title, image);
             }
         }
