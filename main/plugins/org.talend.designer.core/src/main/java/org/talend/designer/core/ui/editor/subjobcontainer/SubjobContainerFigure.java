@@ -143,7 +143,7 @@ public class SubjobContainerFigure extends Figure {
             AbstractMultiPageTalendEditor editor = (AbstractMultiPageTalendEditor) process.getEditor();
             Node startNode = subjobContainer.getSubjobStartNode();
             if (startNode != null && editor != null) {
-                if (startNode.isJoblet() && !startNode.getNodeContainer().isCollapsed()) {
+                if ((startNode.isJoblet() && !startNode.getNodeContainer().isCollapsed()) || startNode.getJunitNode() != null) {
                     editor.getTalendEditor().getViewer().deselectAll();
                     return;
                 }

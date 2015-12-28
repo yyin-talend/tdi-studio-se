@@ -47,4 +47,6 @@ public interface ITestContainerGEFService extends IService {
 
     public Map<SubjobContainer, List<Node>> caculateJunitGroup(List<NodePart> nodeParts);
 
+    public boolean isJunitContainer(NodeContainer nodeContainer);
+
 }
