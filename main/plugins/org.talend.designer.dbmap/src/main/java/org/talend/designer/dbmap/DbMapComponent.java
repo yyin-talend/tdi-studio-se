@@ -429,6 +429,9 @@ public class DbMapComponent extends AbstractMapComponent {
                 if (table.getTableName() != null && table.getTableName().equals(oldName)) {
                     table.setTableName(newName);
                 }
+                if (table.getName() != null && table.getName().equals(oldName)) {
+                    table.setName(newName);
+                }
             }
         }
     }
