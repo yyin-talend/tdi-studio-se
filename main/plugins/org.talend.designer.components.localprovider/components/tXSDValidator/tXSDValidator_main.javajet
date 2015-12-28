@@ -26,9 +26,22 @@ String xmlfile = ElementParameterParser.getValue(node, "__XMLFILE__");
 String mode = ElementParameterParser.getValue(node, "__MODE__");
 String encoding = ElementParameterParser.getValue(node, "__ENCODING__");
 
+List<Map<String, String>> features = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node,"__ENABLE_FEATURES__");
 %>
 
 javax.xml.validation.SchemaFactory factory<%=cid %> =javax.xml.validation.SchemaFactory.newInstance("http://www.w3.org/2001/XMLSchema");
+
+<%
+if(features!=null && features.size()>0){
+    for(int i = 0; i < features.size(); i++){
+    	Map<String, String> feature = features.get(i);
+    	%>
+    	factory<%=cid %>.setFeature(<%=feature.get("FEATURE")%>, true);
+    <%
+    }
+}
+%>
+
 String xsdfile_<%=cid%> = <%=xsdfile %>;
 boolean isURL_<%=cid%> = xsdfile_<%=cid%>!=null && xsdfile_<%=cid%>.startsWith("http") && xsdfile_<%=cid%>.endsWith("xsd");
 Object schemaLocation<%=cid %> = null;
