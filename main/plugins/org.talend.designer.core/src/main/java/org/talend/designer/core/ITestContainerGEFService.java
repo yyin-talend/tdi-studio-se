@@ -50,4 +50,6 @@ public interface ITestContainerGEFService extends IService {
 
     public IProcess2 getTestContainerProcess(Item item);
 
+    public boolean isJunitContainer(NodeContainer nodeContainer);
+
 }
