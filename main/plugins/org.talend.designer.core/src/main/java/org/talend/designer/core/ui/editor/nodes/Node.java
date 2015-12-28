@@ -258,6 +258,8 @@ public class Node extends Element implements IGraphicalNode {
 
     private Node jobletNode = null;
 
+    private Node junitNode = null;
+
     private String inOutUniqueName;
 
     private String joblet_unique_name;
@@ -4903,6 +4905,14 @@ public class Node extends Element implements IGraphicalNode {
 
     public void setJobletnode(Node jobletNode) {
         this.jobletNode = jobletNode;
+    }
+
+    public INode getJunitNode() {
+        return junitNode;
+    }
+
+    public void setJunitnode(Node junitNode) {
+        this.junitNode = junitNode;
     }
 
     public String getJoblet_unique_name() {

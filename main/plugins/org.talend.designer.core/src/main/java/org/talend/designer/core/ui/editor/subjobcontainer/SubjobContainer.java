@@ -29,6 +29,7 @@ import org.talend.core.model.process.EParameterFieldType;
 import org.talend.core.model.process.Element;
 import org.talend.core.model.process.IConnection;
 import org.talend.core.model.process.IConnectionCategory;
+import org.talend.core.model.process.INode;
 import org.talend.core.model.process.IProcess2;
 import org.talend.core.model.process.ISubjobContainer;
 import org.talend.designer.core.DesignerPlugin;
@@ -317,9 +318,15 @@ public class SubjobContainer extends Element implements ISubjobContainer {
                 } else {
                     totalRectangle = totalRectangle.getUnion(curRect);
                 }
+            } else if (collapsed && testContainerService != null && testContainerService.isJunitContainer(container)) {
+                INode startNode = this.getSubjobStartNode().getJunitNode();
+                INode containerNode = container.getNode().getJunitNode();
+                if (startNode != null && containerNode != null && startNode == containerNode) {
+                    totalRectangle = testContainerService.getJunitContainerRectangle(container).getCopy();
+                }
             }
 
-            if (isTestContainer) {
+            if (isTestContainer && !collapsed) {
                 if (curRect.x == totalRectangle.x) {
                     totalRectangle.setLocation(totalRectangle.getLocation().x - TalendEditor.GRID_SIZE,
                             totalRectangle.getLocation().y);

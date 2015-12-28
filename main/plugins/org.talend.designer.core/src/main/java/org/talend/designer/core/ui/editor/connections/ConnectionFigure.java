@@ -264,6 +264,28 @@ public class ConnectionFigure extends PolylineConnectionEx implements IMapMode {
                 }
 
             }
+        } else if (isStartNodeFromJunit((Node) linkedNode)) {
+            Node jnode = (Node) ((Node) linkedNode).getJunitNode();
+            SubjobContainer subjobCon = jnode.getNodeContainer().getSubjobContainer();
+            if (subjobCon != null && subjobCon.isCollapsed() && connection != null && !connection.isSubjobConnection()) {
+                Node subjobStartNode = jnode.getNodeContainer().getSubjobContainer().getSubjobStartNode();
+                if (jnode.getJunitNode() != null && ((Node) connection.getTarget()).getJunitNode() != null) {
+                    // do nothing
+                } else {
+                    // only dependency links will be drawn
+                    if (!connection.getLineStyle().hasConnectionCategory(IConnectionCategory.DEPENDENCY)) {
+                        return;
+                    }
+                    if (!connection.getSource().equals(subjobStartNode) && !connection.getTarget().equals(subjobStartNode)) {
+                        return;
+                    }
+                    if (connection.getTarget().getDesignSubjobStartNode().equals(subjobStartNode)) {
+                        return;
+                    }
+                }
+
+            }
+
         } else {
             if (((Node) linkedNode).getNodeContainer().getSubjobContainer() != null
                     && ((Node) linkedNode).getNodeContainer().getSubjobContainer().isCollapsed() && connection != null
@@ -287,6 +309,16 @@ public class ConnectionFigure extends PolylineConnectionEx implements IMapMode {
             graphics.setAlpha(getAlpha());
         }
         super.paint(graphics);
+    }
+
+    private boolean isStartNodeFromJunit(Node linkNode) {
+        Node startNode = linkNode.getNodeContainer().getSubjobContainer().getSubjobStartNode();
+        Node jNode = (Node) linkNode.getJunitNode();
+        Node startJNode = (Node) startNode.getJunitNode();
+        if (jNode != null && startJNode != null && jNode == startJNode) {
+            return true;
+        }
+        return false;
     }
 
     protected void setConnectionProperty(IConnectionProperty connectionProperty) {
