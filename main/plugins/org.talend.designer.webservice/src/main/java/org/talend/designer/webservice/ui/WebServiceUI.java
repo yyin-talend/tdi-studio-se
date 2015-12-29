@@ -542,10 +542,12 @@ public class WebServiceUI implements AbstractWebService {
                 .getShell());
         IRunnableWithProgress runnable = new IRunnableWithProgress() {
 
+            @Override
             public void run(final IProgressMonitor monitor) {
                 monitor.beginTask("Retrieve WSDL parameter from net,please wait....", IProgressMonitor.UNKNOWN); //$NON-NLS-1$
                 Display.getDefault().syncExec(new Runnable() {
 
+                    @Override
                     public void run() {
                         if (inPutcolumnList.isEmpty()) {
                             getInConnList();
@@ -1186,6 +1188,7 @@ public class WebServiceUI implements AbstractWebService {
             protected void setFileFieldValue(String result) {
                 if (result != null) {
                     getTextControl().setText(TalendTextUtils.addQuotes(PathUtils.getPortablePath(result)));
+                    URLValue = wsdlField.getText();
                     getDataFromNet();
                     isFirst = false;
                 }
@@ -1194,6 +1197,7 @@ public class WebServiceUI implements AbstractWebService {
         };
         wsdlField.addModifyListener(new ModifyListener() {
 
+            @Override
             public void modifyText(ModifyEvent e) {
                 // TODO Auto-generated method stub
                 URLValue = wsdlField.getText();
@@ -1258,10 +1262,12 @@ public class WebServiceUI implements AbstractWebService {
                 rowColumn.setTitle(Messages.getString("WebServiceUI.COLUMN")); //$NON-NLS-1$
                 rowColumn.setBeanPropertyAccessors(new IBeanPropertyAccessors<PortNames, String>() {
 
+                    @Override
                     public String get(PortNames bean) {
                         return bean.getPortName();
                     }
 
+                    @Override
                     public void set(PortNames bean, String value) {
                         bean.setPortName(value);
                     }
@@ -1315,10 +1321,12 @@ public class WebServiceUI implements AbstractWebService {
                 rowColumn.setTitle(Messages.getString("WebServiceUI.COLUMN")); //$NON-NLS-1$
                 rowColumn.setBeanPropertyAccessors(new IBeanPropertyAccessors<Function, String>() {
 
+                    @Override
                     public String get(Function bean) {
                         return bean.getName();
                     }
 
+                    @Override
                     public void set(Function bean, String value) {
                         bean.setName(value);
 
@@ -1342,88 +1350,7 @@ public class WebServiceUI implements AbstractWebService {
 
             @Override
             public void widgetSelected(SelectionEvent e) {
-                final Job job = new Job("t") {
-
-                    @Override
-                    protected IStatus run(IProgressMonitor monitor) {
-                        // TODO Auto-generated method stub
-                        // monitor.setCanceled(true);
-                        monitor.beginTask("Retrieve WSDL parameter from net.", IProgressMonitor.UNKNOWN);
-                        getDataFromNet();
-                        monitor.done();
-                        return Status.OK_STATUS;
-                    }
-                };
-                job.setSystem(true);
-                job.schedule();
-                ProgressMonitorDialog progressDialog = new ProgressMonitorDialog(PlatformUI.getWorkbench().getDisplay()
-                        .getActiveShell().getShell());
-                IRunnableWithProgress runnable = new IRunnableWithProgress() {
-
-                    public void run(final IProgressMonitor monitor) {
-                        monitor.beginTask("Retrieve WSDL parameter from net.", IProgressMonitor.UNKNOWN); //$NON-NLS-1$
-                        boolean f = true;
-                        // TODO Auto-generated method stub
-                        while (f) {
-                            try {
-                                Thread.sleep(1000);
-                            } catch (InterruptedException e) {
-                                // TODO Auto-generated catch block
-                                e.printStackTrace();
-                            }
-                            if (monitor.isCanceled()) {
-                                job.done(Status.OK_STATUS);
-                                job.cancel();
-                            }
-                            if (monitor.isCanceled() || (job.getResult() != null && job.getResult().isOK())) {
-                                monitor.done();
-                                f = false;
-                            }
-                        }
-
-                        // monitor.done();
-                    }
-                };
-
-                try {
-                    progressDialog.run(true, true, runnable);
-                } catch (InvocationTargetException e1) {
-                    ExceptionHandler.process(e1);
-                } catch (InterruptedException e1) {
-                    ExceptionHandler.process(e1);
-                } catch (WebServiceCancelException e1) {
-                    return;
-                }
-
-                if (connection != null) {
-                    if (listTable.getItemCount() > 0) {
-                        listTable.setSelection(listTable.getItem(0));
-                    }
-                    if (currentFunction != null) {
-                        if (currentFunction.getName() != null) {
-                            connection.setMethodName(currentFunction.getName());
-                        }
-                        if (currentFunction.getServerNameSpace() != null) {
-                            connection.setServerNameSpace(currentFunction.getServerNameSpace());
-                        }
-                        if (currentFunction.getServerName() != null) {
-                            connection.setServerName(currentFunction.getServerName());
-                        }
-                        if (currentFunction.getServerNameSpace() != null) {
-                            connection.setPortNameSpace(currentFunction.getServerNameSpace());
-                        }
-                    }
-                    if (currentPortName != null) {
-                        connection.setPortName(currentPortName.getPortName());
-
-                    } else if (currentPortName == null && !allPortNames.isEmpty()) {
-                        currentPortName = allPortNames.get(0);
-                        connection.setPortName(currentPortName.getPortName());
-                    }
-                }
-                // listTable.setSelection(listTable.getItem(0));
-                // listTable.select(0);
-                isFirst = false;
+                refresh(wsdlField.getText(), false);
             }
         });
         // TableItem firstItem = listTable.getItem(0);
@@ -1555,6 +1482,97 @@ public class WebServiceUI implements AbstractWebService {
         });
     }
 
+    public void refresh(String url, boolean resetFunction) {
+        URLValue = url;
+        final Job job = new Job("t") {
+
+            @Override
+            protected IStatus run(IProgressMonitor monitor) {
+                // TODO Auto-generated method stub
+                // monitor.setCanceled(true);
+                monitor.beginTask("Retrieve WSDL parameter from net.", IProgressMonitor.UNKNOWN);
+                getDataFromNet();
+                monitor.done();
+                return Status.OK_STATUS;
+            }
+        };
+        job.setSystem(true);
+        job.schedule();
+        ProgressMonitorDialog progressDialog = new ProgressMonitorDialog(PlatformUI.getWorkbench().getDisplay().getActiveShell()
+                .getShell());
+        IRunnableWithProgress runnable = new IRunnableWithProgress() {
+
+            @Override
+            public void run(final IProgressMonitor monitor) {
+                monitor.beginTask("Retrieve WSDL parameter from net.", IProgressMonitor.UNKNOWN); //$NON-NLS-1$
+                boolean f = true;
+                // TODO Auto-generated method stub
+                while (f) {
+                    try {
+                        Thread.sleep(1000);
+                    } catch (InterruptedException e) {
+                        // TODO Auto-generated catch block
+                        e.printStackTrace();
+                    }
+                    if (monitor.isCanceled()) {
+                        job.done(Status.OK_STATUS);
+                        job.cancel();
+                    }
+                    if (monitor.isCanceled() || (job.getResult() != null && job.getResult().isOK())) {
+                        monitor.done();
+                        f = false;
+                    }
+                }
+
+                // monitor.done();
+            }
+        };
+
+        try {
+            progressDialog.run(true, true, runnable);
+        } catch (InvocationTargetException e1) {
+            ExceptionHandler.process(e1);
+        } catch (InterruptedException e1) {
+            ExceptionHandler.process(e1);
+        } catch (WebServiceCancelException e1) {
+            return;
+        }
+        if (resetFunction) {
+            currentFunction = null;
+        }
+
+        if (connection != null) {
+            if (listTable.getItemCount() > 0) {
+                listTable.setSelection(listTable.getItem(0));
+            }
+            if (currentFunction != null) {
+                if (currentFunction.getName() != null) {
+                    connection.setMethodName(currentFunction.getName());
+                }
+                if (currentFunction.getServerNameSpace() != null) {
+                    connection.setServerNameSpace(currentFunction.getServerNameSpace());
+                }
+                if (currentFunction.getServerName() != null) {
+                    connection.setServerName(currentFunction.getServerName());
+                }
+                if (currentFunction.getServerNameSpace() != null) {
+                    connection.setPortNameSpace(currentFunction.getServerNameSpace());
+                }
+            }
+            if (currentPortName != null) {
+                connection.setPortName(currentPortName.getPortName());
+
+            } else if (currentPortName == null && !allPortNames.isEmpty()) {
+                currentPortName = allPortNames.get(0);
+                connection.setPortName(currentPortName.getPortName());
+            }
+        }
+        // listTable.setSelection(listTable.getItem(0));
+        // listTable.select(0);
+        isFirst = false;
+
+    }
+
     private ParameterInfo isOnlyOnePara(List<ParameterInfo> list) {
         if (list.size() == 1) {
             ParameterInfo first = list.get(0);
@@ -1572,14 +1590,6 @@ public class WebServiceUI implements AbstractWebService {
     private void getDataFromNet() {
         funList.clear();
         portNameList.clear();
-        Display.getDefault().syncExec(new Runnable() {
-
-            public void run() {
-                // TODO Auto-generated method stub
-                URLValue = wsdlField.getText();
-            }
-
-        });
 
         if (URLValue == null) {
             URLValue = ""; //$NON-NLS-1$
@@ -1629,6 +1639,7 @@ public class WebServiceUI implements AbstractWebService {
         }
         Display.getDefault().syncExec(new Runnable() {
 
+            @Override
             public void run() {
                 // TODO Auto-generated method stub
                 ExtendedTableModel<Function> listModel = listTableView.getExtendedTableModel();
@@ -1651,6 +1662,7 @@ public class WebServiceUI implements AbstractWebService {
 
         Display.getDefault().syncExec(new Runnable() {
 
+            @Override
             public void run() {
                 String url = "";
                 // TODO Auto-generated method stub
@@ -1797,10 +1809,12 @@ public class WebServiceUI implements AbstractWebService {
                 rowColumn.setTitle(Messages.getString("WebServiceUI.COLUMN")); //$NON-NLS-1$
                 rowColumn.setBeanPropertyAccessors(new IBeanPropertyAccessors<IMetadataColumn, String>() {
 
+                    @Override
                     public String get(IMetadataColumn bean) {
                         return bean.getLabel();
                     }
 
+                    @Override
                     public void set(IMetadataColumn bean, String value) {
                         bean.setLabel(value);
 
@@ -1901,6 +1915,7 @@ public class WebServiceUI implements AbstractWebService {
                 expressionColumn.setTitle(Messages.getString("WebServiceUI.EXPRESSION")); //$NON-NLS-1$
                 expressionColumn.setBeanPropertyAccessors(new IBeanPropertyAccessors<InputMappingData, String>() {
 
+                    @Override
                     public String get(InputMappingData bean) {
                         if ("".equals(bean.getInputColumnValue()) || bean.getInputColumnValue() == null) {
                             return "";
@@ -1920,6 +1935,7 @@ public class WebServiceUI implements AbstractWebService {
                         return bean.getInputColumnValue();
                     }
 
+                    @Override
                     public void set(InputMappingData bean, String value) {
                         bean.setInputColumnValue(value);
 
@@ -1955,6 +1971,7 @@ public class WebServiceUI implements AbstractWebService {
                 elementColumn.setTitle(Messages.getString("WebServiceUI.ELEMENT")); //$NON-NLS-1$
                 elementColumn.setBeanPropertyAccessors(new IBeanPropertyAccessors<InputMappingData, String>() {
 
+                    @Override
                     public String get(InputMappingData bean) {
                         ParameterInfo para = bean.getParameter();
                         if (para != null) {
@@ -1978,6 +1995,7 @@ public class WebServiceUI implements AbstractWebService {
                         return bean.getParameterName();
                     }
 
+                    @Override
                     public void set(InputMappingData bean, String value) {
                         if (value.contains("[+] ")) { //$NON-NLS-1$
                             value.replace("[+] ", ""); //$NON-NLS-1$ //$NON-NLS-2$
@@ -2577,6 +2595,7 @@ public class WebServiceUI implements AbstractWebService {
                 rowColumn.setTitle(Messages.getString("WebServiceUI.ELEMENT")); //$NON-NLS-1$
                 rowColumn.setBeanPropertyAccessors(new IBeanPropertyAccessors<OutPutMappingData, String>() {
 
+                    @Override
                     public String get(OutPutMappingData bean) {
 
                         ParameterInfo para = bean.getParameter();
@@ -2606,6 +2625,7 @@ public class WebServiceUI implements AbstractWebService {
                         return bean.getParameterName();
                     }
 
+                    @Override
                     public void set(OutPutMappingData bean, String value) {
                         if (value.contains("[+] ")) { //$NON-NLS-1$
                             value.replace("[+] ", ""); //$NON-NLS-1$ //$NON-NLS-2$
@@ -2699,6 +2719,7 @@ public class WebServiceUI implements AbstractWebService {
                 expressionColumn.setTitle(Messages.getString("WebServiceUI.EXPRESSION")); //$NON-NLS-1$
                 expressionColumn.setBeanPropertyAccessors(new IBeanPropertyAccessors<OutPutMappingData, String>() {
 
+                    @Override
                     public String get(OutPutMappingData bean) {
                         StringBuffer paraName = new StringBuffer();
                         String paraNameof = bean.getParameterName();
@@ -2730,6 +2751,7 @@ public class WebServiceUI implements AbstractWebService {
                         }
                     }
 
+                    @Override
                     public void set(OutPutMappingData bean, String value) {
                         bean.setParameterName(value);
 
@@ -2765,10 +2787,12 @@ public class WebServiceUI implements AbstractWebService {
                 elementColumn.setTitle(Messages.getString("WebServiceUI.COLUMN")); //$NON-NLS-1$
                 elementColumn.setBeanPropertyAccessors(new IBeanPropertyAccessors<OutPutMappingData, String>() {
 
+                    @Override
                     public String get(OutPutMappingData bean) {
                         return bean.getOutputColumnValue();
                     }
 
+                    @Override
                     public void set(OutPutMappingData bean, String value) {
                         bean.setOutputColumnValue(value);
 
