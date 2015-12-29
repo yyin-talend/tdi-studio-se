@@ -28,7 +28,6 @@ import org.talend.core.model.components.ComponentCategory;
 import org.talend.core.model.components.IComponent;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.metadata.MetadataTable;
-import org.talend.core.model.metadata.builder.connection.MetadataColumn;
 import org.talend.core.model.metadata.builder.connection.WSDLParameter;
 import org.talend.core.model.metadata.builder.connection.WSDLSchemaConnection;
 import org.talend.core.model.process.IElementParameter;
@@ -48,7 +47,6 @@ public class WebServiceHelper implements IWebServiceTos {
 
     private WebServiceUI webServiceUI;
 
-
     WebServiceTosSaveManager manager = WebServiceTosSaveManager.getInstance();
 
     public WebServiceHelper() {
@@ -61,11 +59,13 @@ public class WebServiceHelper implements IWebServiceTos {
      * org.talend.repository.ui.wizards.metadata.connection.wsdl.IWebService#getWebServiceUI(org.eclipse.swt.widgets
      * .Composite, org.talend.core.model.components.IComponent)
      */
+    @Override
     public AbstractWebService getWebServiceUI(Composite uiParent, ConnectionItem connectionItem) {
         // TODO Auto-generated method stub
         WebServiceComponent wenCom = new WebServiceComponent();
         wenCom.initialize();
-        IComponent iComponent = ComponentsFactoryProvider.getInstance().get("tWebService",ComponentCategory.CATEGORY_4_DI.getName());
+        IComponent iComponent = ComponentsFactoryProvider.getInstance().get("tWebService",
+                ComponentCategory.CATEGORY_4_DI.getName());
         List<? extends IElementParameter> parameters = iComponent.createElementParameters(wenCom);
         wenCom.setElementParameters(parameters);
         if (connectionItem.getState() != null) {
@@ -188,8 +188,7 @@ public class WebServiceHelper implements IWebServiceTos {
                         .next();
                 if (metadatatable.getLabel().equals("Output")) {
                     for (int i = 0; i < metadatatable.getColumns().size(); i++) {
-                        org.talend.core.model.metadata.builder.connection.MetadataColumn col = (MetadataColumn) metadatatable
-                                .getColumns().get(i);
+                        org.talend.core.model.metadata.builder.connection.MetadataColumn col = metadatatable.getColumns().get(i);
                         org.talend.core.model.metadata.MetadataColumn newColumn = new org.talend.core.model.metadata.MetadataColumn();
                         newColumn.setLabel(col.getLabel());
                         newColumn.setTalendType(col.getTalendType());
@@ -202,8 +201,7 @@ public class WebServiceHelper implements IWebServiceTos {
                     // ConnectionHelper
                     // .getTables(connection).toArray()[1]).getColumns();
                     for (int i = 0; i < metadatatable.getColumns().size(); i++) {
-                        org.talend.core.model.metadata.builder.connection.MetadataColumn col = (MetadataColumn) metadatatable
-                                .getColumns().get(i);
+                        org.talend.core.model.metadata.builder.connection.MetadataColumn col = metadatatable.getColumns().get(i);
                         org.talend.core.model.metadata.MetadataColumn newColumn = new org.talend.core.model.metadata.MetadataColumn();
                         newColumn.setLabel(col.getLabel());
                         newColumn.setTalendType(col.getTalendType());
@@ -235,6 +233,7 @@ public class WebServiceHelper implements IWebServiceTos {
      * 
      * @see org.talend.core.ui.IWebService#getCurrentFunction()
      */
+    @Override
     public Boolean getCurrentFunction() {
         boolean flag = true;
         if (webServiceUI.getCurrentFunction() == null) {
@@ -258,6 +257,7 @@ public class WebServiceHelper implements IWebServiceTos {
      * 
      * @see org.talend.core.ui.IWebService#getTable()
      */
+    @Override
     public Table getTable() {
         // TODO Auto-generated method stub
         return webServiceUI.getTable();
@@ -268,14 +268,26 @@ public class WebServiceHelper implements IWebServiceTos {
      * 
      * @see org.talend.repository.ui.wizards.metadata.connection.wsdl.webService.tree.WebServiceSaveListener#saveValue()
      */
+    @Override
     public void saveValue() {
         // TODO Auto-generated method stub
         webServiceUI.saveInputValue();
         webServiceUI.saveOutPutValue();
     }
 
+    @Override
     public LabelledFileField getWSDLLabel(Boolean b) {
         return webServiceUI.getWSDLLabel(b);
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.core.service.IWebServiceTos#refreshUI()
+     */
+    @Override
+    public void refreshUI(String url) {
+        webServiceUI.refresh(url, true);
     }
 
 }
