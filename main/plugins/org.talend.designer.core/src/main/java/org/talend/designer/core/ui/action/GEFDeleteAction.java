@@ -72,6 +72,7 @@ public class GEFDeleteAction extends DeleteAction {
         AbstractProcessProvider pProvider = AbstractProcessProvider.findProcessProviderFromPID(IComponent.JOBLET_PID);
         if (pProvider != null) {
             boolean allJobletnode = true;
+            boolean allJunitnode = true;
             boolean hasNode = false;
             for (Object o : objects) {
                 if (o instanceof NodePart) {
@@ -80,12 +81,15 @@ public class GEFDeleteAction extends DeleteAction {
                     if (no.getJobletNode() == null) {
                         allJobletnode = false;
                     }
+                    if (no.getJunitNode() == null) {
+                        allJunitnode = false;
+                    }
                     if (!pProvider.canDeleteNode(no)) {
                         return false;
                     }
                 }
             }
-            if (allJobletnode && hasNode) {
+            if ((allJobletnode || allJunitnode) && hasNode) {
                 return false;
             }
         }
@@ -174,6 +178,9 @@ public class GEFDeleteAction extends DeleteAction {
                 others.remove(o);
                 Node model = (Node) ((NodePart) o).getModel();
                 if (model.getJobletNode() != null) {
+                    continue;
+                }
+                if (model.getJunitNode() != null) {
                     continue;
                 }
 
