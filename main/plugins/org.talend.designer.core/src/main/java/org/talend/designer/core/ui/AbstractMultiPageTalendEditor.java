@@ -184,7 +184,6 @@ import org.talend.repository.ProjectManager;
 import org.talend.repository.RepositoryWorkUnit;
 import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.IRepositoryService;
-import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.ui.views.IJobSettingsView;
 import org.talend.themes.core.elements.interfaces.ITalendThemeChangeListener;
 import org.talend.themes.core.elements.utils.TalendThemeUtils;
@@ -442,7 +441,8 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart
                     if (lockTopic.equals(event.getTopic())) {
                         Object o = event.getProperty(Constant.ITEM_EVENT_PROPERTY_KEY);
                         if (o != null && o instanceof Item) {
-                            String itemId = ((Item) o).getProperty().getId();
+                            Item item = (Item) o;
+                            String itemId = item.getProperty().getId();
                             if (itemId.equals(currentProcess.getId())) {
                                 if (currentProcess.isReadOnly()) {
                                     boolean readOnly = currentProcess.checkReadOnly();
@@ -458,10 +458,7 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart
                                         });
 
                                         if (orginalReadOnlyStatus == true) {
-                                            RepositoryNode repoNode = processEditorInput.getRepositoryNode();
-                                            if (repoNode != null) {
-                                                refreshProcess(repoNode.getObject().getProperty().getItem(), false);
-                                            }
+                                            refreshProcess(item, false);
                                         }
 
                                         Property property = processEditorInput.getItem().getProperty();
@@ -485,7 +482,7 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart
 
     private void refreshProcess(final Item refreshedItem, boolean force) {
         Item currentItem = processEditorInput.getItem();
-        if (isVersionChanged(refreshedItem, currentItem) || force) {
+        if (isStorageVersionChanged(refreshedItem, currentItem) || force) {
             if (refreshedItem instanceof ProcessItem) {
                 processEditorInput.setItem(refreshedItem);
                 final IProcess2 process = processEditorInput.getLoadedProcess();
@@ -504,12 +501,13 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart
         }
     }
 
-    private boolean isVersionChanged(Item refreshedItem, Item currentItem) {
+    private boolean isStorageVersionChanged(Item refreshedItem, Item currentItem) {
         boolean isChanged = false;
         if (PluginChecker.isSVNProviderPluginLoaded()) {
-
             if (svnProviderService != null && svnProviderService.isProjectInSvnMode()) {
-                String refreshedNumStr = svnProviderService.getCurrentSVNRevision(processEditorInput.getLoadedProcess());
+                Process refreshedProcess = new Process(refreshedItem.getProperty());
+                String refreshedNumStr = svnProviderService.getCurrentSVNRevision(refreshedProcess);
+                refreshedProcess.dispose();
                 if (refreshedNumStr != null) {
                     refreshedNumStr = getFormattedRevisionNumStr(refreshedNumStr);
                     if (!refreshedNumStr.equals(revisionNumStr)) {
