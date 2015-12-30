@@ -460,6 +460,8 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart
                                         });
 
                                         if (orginalReadOnlyStatus == true) {
+                                            // refresh to the given item version, nomally it is the latest version,
+                                            // means the editor/process will be refreshed to the latest version
                                             refreshProcess(item, false);
                                         }
 
@@ -482,6 +484,12 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart
 
     }
 
+    /**
+     * Refresh the editor/process to the given refreshedItem version
+     * 
+     * @param refreshedItem
+     * @param force
+     */
     private void refreshProcess(final Item refreshedItem, boolean force) {
         Item currentItem = processEditorInput.getItem();
         if (isStorageVersionChanged(refreshedItem, currentItem) || force) {
