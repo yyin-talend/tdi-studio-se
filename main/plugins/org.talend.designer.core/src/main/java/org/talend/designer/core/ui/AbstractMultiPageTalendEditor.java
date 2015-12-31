@@ -488,6 +488,7 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
                         process.setProperty(refreshedItem.getProperty());
                         process.updateProperties();
                         ((Process) process).updateProcess(((ProcessItem) refreshedItem).getProcess());
+                        process.refreshProcess();
                         revisionChanged = true;
                         setName();
                     }
