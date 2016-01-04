@@ -17,6 +17,7 @@ import java.net.URL;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.FileLocator;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.IMenuManager;
@@ -25,10 +26,9 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.navigator.CommonActionProvider;
 import org.eclipse.ui.navigator.ICommonActionExtensionSite;
 import org.eclipse.ui.navigator.ICommonViewerWorkbenchSite;
+import org.osgi.framework.Bundle;
 import org.talend.componentdesigner.i18n.internal.Messages;
 import org.talend.componentdesigner.ui.dialog.ImportComponentDialog;
-import org.talend.core.GlobalServiceRegister;
-import org.talend.designer.core.ILocalProviderService;
 
 /**
  * DOC slanglois class global comment. Detailled comment
@@ -39,6 +39,7 @@ public class CopyFromPaletteActionProvider extends CommonActionProvider {
 
     private IProject selectedProject;
 
+    @Override
     public void init(ICommonActionExtensionSite anExtensionSite) {
 
         if (anExtensionSite.getViewSite() instanceof ICommonViewerWorkbenchSite) {
@@ -51,6 +52,7 @@ public class CopyFromPaletteActionProvider extends CommonActionProvider {
      * 
      * @see org.eclipse.ui.actions.ActionGroup#fillContextMenu(org.eclipse.jface.action.IMenuManager)
      */
+    @Override
     public void fillContextMenu(IMenuManager menu) {
         menu.insertBefore("group.edit", copyProjectAction); //$NON-NLS-1$
         Object obj = ((TreeSelection) this.getContext().getSelection()).getFirstElement();
@@ -72,19 +74,21 @@ public class CopyFromPaletteActionProvider extends CommonActionProvider {
         /*
          * (non-Javadoc) Method declared on IAction.
          */
+        @Override
         public void run() {
-            ILocalProviderService service = (ILocalProviderService) GlobalServiceRegister.getDefault().getService(
-                    ILocalProviderService.class);
-
-            URL url = service.getPlugin().getBundle().getResource("/components"); //$NON-NLS-1$
-            try {
-                url = FileLocator.toFileURL(url);
-            } catch (IOException e) {
-                // e.printStackTrace();
-                org.talend.componentdesigner.exception.ExceptionHandler.process(e);
+            // set DI localprovider as defualt
+            String path = "";
+            Bundle bundle = Platform.getBundle("org.talend.designer.components.localprovider");
+            if (bundle != null) {
+                URL url = bundle.getResource("/components"); //$NON-NLS-1$
+                try {
+                    url = FileLocator.toFileURL(url);
+                    path = url.getFile();
+                } catch (IOException e) {
+                    // e.printStackTrace();
+                    org.talend.componentdesigner.exception.ExceptionHandler.process(e);
+                }
             }
-            String path = url.getFile();
-            // path = "";
 
             ImportComponentDialog dialog = new ImportComponentDialog(PlatformUI.getWorkbench().getActiveWorkbenchWindow()
                     .getShell(), Messages.getString("CopyFromPaletteActionProvider.Label2"), null, path, selectedProject); //$NON-NLS-1$
