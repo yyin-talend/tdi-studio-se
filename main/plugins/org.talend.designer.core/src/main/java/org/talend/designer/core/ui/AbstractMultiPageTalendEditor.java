@@ -705,10 +705,10 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart
                 ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(scriptValue.getBytes());
                 if (file.exists()) {
                     jobletEditor.getDocumentProvider().getDocument(jobletEditor.getEditorInput()).set(scriptValue);
-                    boolean isReadjob = ((JobEditorInput) getEditor(0).getEditorInput()).checkReadOnly();
+                    boolean isProcessReadOnly = ((JobEditorInput) getEditor(0).getEditorInput()).isReadOnly();
 
                     IProxyRepositoryFactory rFactory = ProxyRepositoryFactory.getInstance();
-                    if (isReadjob || rFactory.isUserReadOnlyOnCurrentProject()) {
+                    if (isProcessReadOnly || rFactory.isUserReadOnlyOnCurrentProject()) {
                         IDocumentProvider provider = jobletEditor.getDocumentProvider();
                         Class p = provider.getClass();
                         Class[] type = new Class[1];
@@ -755,8 +755,6 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart
             } catch (IllegalAccessException e) {
                 ExceptionHandler.process(e);
             } catch (InvocationTargetException e) {
-                ExceptionHandler.process(e);
-            } catch (PersistenceException e) {
                 ExceptionHandler.process(e);
             }
             changeContextsViewStatus(false);
