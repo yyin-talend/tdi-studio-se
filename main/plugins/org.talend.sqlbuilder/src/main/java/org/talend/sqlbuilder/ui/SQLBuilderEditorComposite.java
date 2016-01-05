@@ -42,6 +42,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Text;
 import org.talend.commons.ui.swt.colorstyledtext.ColorStyledText;
+import org.talend.commons.ui.swt.preferences.HotKeyUtil;
 import org.talend.commons.ui.swt.proposal.StyledTextContentAdapter;
 import org.talend.core.CorePlugin;
 import org.talend.core.model.metadata.builder.connection.Query;
@@ -216,8 +217,8 @@ public class SQLBuilderEditorComposite extends AbstractSQLEditorComposite {
      */
     private void createEditorProposal() {
         try {
-            // create KeyStroke use Ctrl+Space
-            KeyStroke keyStroke = KeyStroke.getInstance("Ctrl+Space"); //$NON-NLS-1$
+            // create KeyStroke use Ctrl+Space as default
+            KeyStroke keyStroke = HotKeyUtil.getHotKey(HotKeyUtil.contentAssist);
             IControlContentAdapter controlContentAdapter = new StyledTextContentAdapter();
             IContentProposalProvider contentProposalProvider = new SQLEditorProposalProvider(repositoryNode, language);
 
