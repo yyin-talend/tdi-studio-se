@@ -1731,6 +1731,11 @@ public class Node extends Element implements IGraphicalNode {
      */
     @Override
     public void setPropertyValue(final String id, Object value) {
+        if (id.equals(EParameterName.REPAINT.getName())) {
+            // this repaint parameter maybe not exists in the node paramters
+            firePropertyChange(id, null, null);
+            return;
+        }
         IElementParameter parameter = getElementParameter(id);
         if (id.contains(EParameterName.SCHEMA_TYPE.getName()) || id.contains(EParameterName.QUERYSTORE_TYPE.getName())
                 || id.contains(EParameterName.PROPERTY_TYPE.getName())

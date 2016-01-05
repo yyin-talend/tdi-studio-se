@@ -478,22 +478,30 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
     private void refreshProcess(final Item refreshedItem, boolean force) {
         Item currentItem = processEditorInput.getItem();
         if (isStorageVersionChanged(refreshedItem, currentItem) || force) {
-            if (refreshedItem instanceof ProcessItem) {
-                processEditorInput.setItem(refreshedItem);
-                final IProcess2 process = processEditorInput.getLoadedProcess();
-                getSite().getShell().getDisplay().syncExec(new Runnable() {
+            processEditorInput.setItem(refreshedItem);
+            final IProcess2 process = processEditorInput.getLoadedProcess();
+            getSite().getShell().getDisplay().syncExec(new Runnable() {
 
-                    @Override
-                    public void run() {
-                        process.setProperty(refreshedItem.getProperty());
-                        process.updateProperties();
-                        ((Process) process).updateProcess(((ProcessItem) refreshedItem).getProcess());
-                        process.refreshProcess();
-                        revisionChanged = true;
-                        setName();
+                @Override
+                public void run() {
+                    process.setProperty(refreshedItem.getProperty());
+                    process.updateProperties();
+                    ProcessType processType = null;
+                    if (refreshedItem instanceof ProcessItem) {
+                        processType = ((ProcessItem) refreshedItem).getProcess();
+                    } else if (refreshedItem instanceof JobletProcessItem) {
+                        processType = ((JobletProcessItem) refreshedItem).getJobletProcess();
+                    } else {
+                        ExceptionHandler.process(new Exception("Mismatched case")); //$NON-NLS-1$
                     }
-                });
-            }
+                    if (processType != null) {
+                        ((Process) process).updateProcess(processType);
+                    }
+                    process.refreshProcess();
+                    revisionChanged = true;
+                    setName();
+                }
+            });
         }
     }
 
