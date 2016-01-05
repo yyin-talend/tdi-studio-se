@@ -14,6 +14,8 @@ package org.talend.designer.core.ui.editor;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
+import java.util.Collections;
+import java.util.Hashtable;
 import java.util.List;
 
 import org.eclipse.core.internal.events.ResourceChangeEvent;
@@ -52,8 +54,16 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
+import org.eclipse.ui.IEditorSite;
+import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.FileEditorInput;
+import org.osgi.framework.Bundle;
+import org.osgi.framework.FrameworkUtil;
+import org.osgi.framework.ServiceRegistration;
+import org.osgi.service.event.Event;
+import org.osgi.service.event.EventConstants;
+import org.osgi.service.event.EventHandler;
 import org.talend.commons.exception.LoginException;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.runtime.model.repository.ERepositoryStatus;
@@ -75,6 +85,7 @@ import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.Folder;
 import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.model.utils.RepositoryManagerHelper;
+import org.talend.core.repository.constants.Constant;
 import org.talend.core.repository.model.ProxyRepositoryFactory;
 import org.talend.core.repository.ui.editor.RepositoryEditorInput;
 import org.talend.core.runtime.CoreRuntimePlugin;
@@ -82,6 +93,9 @@ import org.talend.core.runtime.process.ITalendProcessJavaProject;
 import org.talend.core.services.IUIRefresher;
 import org.talend.core.ui.ILastVersionChecker;
 import org.talend.core.ui.branding.IBrandingService;
+import org.talend.designer.codegen.ICodeGeneratorService;
+import org.talend.designer.codegen.ISQLPatternSynchronizer;
+import org.talend.designer.codegen.ITalendSynchronizer;
 import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.ui.action.SaveAsRoutineAction;
@@ -112,6 +126,8 @@ public class StandAloneTalendJavaEditor extends CompilationUnitEditor implements
 
     private Color bgColorForEditabeItem;
 
+    private ServiceRegistration lockService;
+
     /**
      * DOC smallet Comment method "getRepositoryFactory".
      */
@@ -138,6 +154,66 @@ public class StandAloneTalendJavaEditor extends CompilationUnitEditor implements
             isEditable = false;
         }
         return !rEditorInput.isReadOnly() && getRepositoryFactory().getStatus(item).isEditable() && isLastVersion(item);
+    }
+
+    @Override
+    public void init(IEditorSite site, IEditorInput input) throws PartInitException {
+        super.init(site, input);
+        Bundle bundle = FrameworkUtil.getBundle(StandAloneTalendJavaEditor.class);
+        lockService = bundle.getBundleContext().registerService(EventHandler.class.getName(), new EventHandler() {
+
+            @Override
+            public void handleEvent(Event event) {
+                String lockTopic = Constant.REPOSITORY_ITEM_EVENT_PREFIX + Constant.ITEM_LOCK_EVENT_SUFFIX;
+                if (lockTopic.equals(event.getTopic())) {
+                    if (!isEditable) {
+                        Object o = event.getProperty(Constant.ITEM_EVENT_PROPERTY_KEY);
+                        if (o instanceof FileItem) {
+                            item.getProperty().eAdapters().remove(dirtyListener);
+                            item = (FileItem) o;
+                            item.getProperty().eAdapters().add(dirtyListener);
+                            if (isEditable()) {
+                                isEditable = true;
+                                rEditorInput.getFile().setReadOnly(false);
+                                getSite().getShell().getDisplay().asyncExec(new Runnable() {
+
+                                    @Override
+                                    public void run() {
+                                        setFocus();
+                                        ISourceViewer viewer = getViewer();
+                                        if (viewer != null) {
+                                            StyledText styledText = viewer.getTextWidget();
+                                            if (styledText != null) {
+                                                styledText.setBackground(bgColorForEditabeItem);
+                                                styledText.setDragDetect(true);
+                                            }
+                                        }
+                                    }
+                                });
+
+                                try {
+                                    ICodeGeneratorService service = (ICodeGeneratorService) GlobalServiceRegister.getDefault()
+                                            .getService(ICodeGeneratorService.class);
+                                    if (o instanceof RoutineItem) {
+                                        ITalendSynchronizer routineSynchronizer = service.createJavaRoutineSynchronizer();
+                                        routineSynchronizer.syncRoutine((RoutineItem) o, true);
+                                    } else if (o instanceof SQLPatternItem) {
+                                        ISQLPatternSynchronizer sqlPatternSynchronizer = service.getSQLPatternSynchronizer();
+                                        sqlPatternSynchronizer.syncSQLPattern((SQLPatternItem) o, true);
+                                    } else {
+                                        org.talend.commons.exception.ExceptionHandler.process(new Exception("Uncatched case")); //$NON-NLS-1$
+                                    }
+                                    setName();
+                                } catch (Exception e) {
+                                    org.talend.commons.exception.ExceptionHandler.process(e);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }, new Hashtable<String, String>(
+                Collections.singletonMap(EventConstants.EVENT_TOPIC, Constant.REPOSITORY_ITEM_EVENT_PREFIX + "*"))); //$NON-NLS-1$
     }
 
     @Override
@@ -194,8 +270,8 @@ public class StandAloneTalendJavaEditor extends CompilationUnitEditor implements
     private String getTitleText(IRepositoryViewObject object) {
         StringBuffer string = new StringBuffer();
         string.append(object.getLabel());
-        IBrandingService brandingService = (IBrandingService) GlobalServiceRegister.getDefault().getService(
-                IBrandingService.class);
+        IBrandingService brandingService = (IBrandingService) GlobalServiceRegister.getDefault()
+                .getService(IBrandingService.class);
         boolean allowVerchange = brandingService.getBrandingConfiguration().isAllowChengeVersion();
         if (!(object instanceof Folder) && allowVerchange) {
             string.append(" " + object.getVersion()); //$NON-NLS-1$
@@ -265,6 +341,11 @@ public class StandAloneTalendJavaEditor extends CompilationUnitEditor implements
         // RuntimeExceptionHandler.process(e1);
         // }
         super.dispose();
+
+        if (lockService != null) {
+            lockService.unregister();
+        }
+
         // Unlock the process :
         IRepositoryService service = DesignerPlugin.getDefault().getRepositoryService();
         IProxyRepositoryFactory repFactory = service.getProxyRepositoryFactory();
@@ -346,8 +427,9 @@ public class StandAloneTalendJavaEditor extends CompilationUnitEditor implements
             Property updatedProperty = null;
             try {
                 factory.initialize();
-                IRepositoryViewObject repositoryViewObject = factory.getLastVersion(new Project(ProjectManager.getInstance()
-                        .getProject(item.getProperty().getItem())), item.getProperty().getId());
+                IRepositoryViewObject repositoryViewObject = factory.getLastVersion(
+                        new Project(ProjectManager.getInstance().getProject(item.getProperty().getItem())),
+                        item.getProperty().getId());
                 if (repositoryViewObject != null) {
                     updatedProperty = repositoryViewObject.getProperty();
                     item = (FileItem) updatedProperty.getItem();
@@ -573,8 +655,8 @@ public class StandAloneTalendJavaEditor extends CompilationUnitEditor implements
     public boolean isLastVersion(Item item) {
         if (item.getProperty() != null) {
             try {
-                List<IRepositoryViewObject> allVersion = ProxyRepositoryFactory.getInstance().getAllVersion(
-                        item.getProperty().getId());
+                List<IRepositoryViewObject> allVersion = ProxyRepositoryFactory.getInstance()
+                        .getAllVersion(item.getProperty().getId());
 
                 if (allVersion == null || allVersion.isEmpty()) {
                     return false;
@@ -624,13 +706,13 @@ public class StandAloneTalendJavaEditor extends CompilationUnitEditor implements
 
         StyledText styledText = viewer.getTextWidget();
 
+        bgColorForReadOnlyItem = new Color(styledText.getDisplay(), DesignerColorUtils.getPreferenceReadonlyRGB(
+                DesignerColorUtils.READONLY_BACKGROUND_COLOR_NAME, DesignerColorUtils.DEFAULT_READONLY_COLOR));
+        bgColorForEditabeItem = new Color(styledText.getDisplay(), DesignerColorUtils.getPreferenceDesignerEditorRGB(
+                DesignerColorUtils.JOBDESIGNER_EGITOR_BACKGROUND_COLOR_NAME, DesignerColorUtils.DEFAULT_EDITOR_COLOR));
         if (!isEditable()) {
-            bgColorForReadOnlyItem = new Color(styledText.getDisplay(), DesignerColorUtils.getPreferenceReadonlyRGB(
-                    DesignerColorUtils.READONLY_BACKGROUND_COLOR_NAME, DesignerColorUtils.DEFAULT_READONLY_COLOR));
             styledText.setBackground(bgColorForReadOnlyItem);
         } else {
-            bgColorForEditabeItem = new Color(styledText.getDisplay(), DesignerColorUtils.getPreferenceDesignerEditorRGB(
-                    DesignerColorUtils.JOBDESIGNER_EGITOR_BACKGROUND_COLOR_NAME, DesignerColorUtils.DEFAULT_EDITOR_COLOR));
             styledText.setBackground(bgColorForEditabeItem);
         }
     }

@@ -408,6 +408,14 @@ public class NodePart extends AbstractGraphicalEditPart implements PropertyChang
                     }
                 }
             }
+        } else if (changeEvent.getPropertyName().equals(EParameterName.REPAINT.getName())) {
+            ((NodeFigure) figure).repaint();
+            refreshVisuals();
+            EditPart parentPart = getParent();
+            if (parentPart != null) {
+                parentPart.refresh();
+            }
+            needUpdateSubjob = true;
         }
         if (needUpdateSubjob) {
             EditPart editPart = getParent();
