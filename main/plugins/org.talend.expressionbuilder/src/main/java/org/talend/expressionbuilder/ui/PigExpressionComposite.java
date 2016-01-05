@@ -39,6 +39,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
 import org.talend.commons.ui.runtime.expressionbuilder.IExpressionDataBean;
 import org.talend.commons.ui.swt.colorstyledtext.ColorStyledText;
+import org.talend.commons.ui.swt.preferences.HotKeyUtil;
 import org.talend.commons.ui.swt.proposal.ContentProposalAdapterExtended;
 import org.talend.commons.ui.swt.proposal.ProposalUtils;
 import org.talend.commons.ui.swt.proposal.StyledTextContentAdapter;
@@ -253,8 +254,8 @@ public class PigExpressionComposite extends ExpressionComposite {
      */
     private void createEditorProposal() {
         try {
-            // create KeyStroke use Ctrl+Space
-            KeyStroke keyStroke = KeyStroke.getInstance("Ctrl+Space"); //$NON-NLS-1$
+            // create KeyStroke use Ctrl+Space as default
+            KeyStroke keyStroke = HotKeyUtil.getHotKey(HotKeyUtil.contentAssist);
             IControlContentAdapter controlContentAdapter = new StyledTextContentAdapter();
             // TDI-25309 :expression builder UDF autocompletion need add the inputTable node
             if (GlobalServiceRegister.getDefault().isServiceRegistered(IPigMapService.class)) {

@@ -120,6 +120,7 @@ public class SQLEditorProposalAdapter {
      */
     private final class ControlListener2 implements Listener {
 
+        @Override
         public void handleEvent(Event e) {
             if (!isEnabled) {
                 return;
@@ -158,10 +159,14 @@ public class SQLEditorProposalAdapter {
                     return;
                 }
                 if (e.type == SWT.KeyDown) {
+
                     if (triggerKeyStroke != null) {
                         if ((triggerKeyStroke.getModifierKeys() == KeyStroke.NO_KEY && triggerKeyStroke.getNaturalKey() == e.character)
-                                || (triggerKeyStroke.getNaturalKey() == e.keyCode && ((triggerKeyStroke.getModifierKeys() & e.stateMask) == triggerKeyStroke
-                                        .getModifierKeys()))) {
+                                || ((triggerKeyStroke.getNaturalKey() == e.keyCode)
+                                        || (Character.toLowerCase(triggerKeyStroke.getNaturalKey()) == e.keyCode) || (Character
+                                        .toUpperCase(triggerKeyStroke.getNaturalKey()) == e.keyCode)
+                                        && ((triggerKeyStroke.getModifierKeys() & e.stateMask) == triggerKeyStroke
+                                                .getModifierKeys()))) {
                             e.doit = false;
                             openProposalPopup();
                             return;
@@ -216,6 +221,7 @@ public class SQLEditorProposalAdapter {
             if (autoActivationDelay > 0) {
                 Runnable runnable = new Runnable() {
 
+                    @Override
                     public void run() {
                         receivedKeyDown = false;
                         try {
@@ -228,6 +234,7 @@ public class SQLEditorProposalAdapter {
                         }
                         getControl().getDisplay().syncExec(new Runnable() {
 
+                            @Override
                             public void run() {
                                 openProposalPopup();
                             }
@@ -243,6 +250,7 @@ public class SQLEditorProposalAdapter {
                 // changes as a result of this event occurring.
                 getControl().getDisplay().asyncExec(new Runnable() {
 
+                    @Override
                     public void run() {
                         if (isValid()) {
                             openProposalPopup();
@@ -290,6 +298,7 @@ public class SQLEditorProposalAdapter {
 
             private boolean scrollbarClicked = false;
 
+            @Override
             public void handleEvent(final Event e) {
 
                 if (e.type == SWT.FocusOut && e.widget == control) {
@@ -305,6 +314,7 @@ public class SQLEditorProposalAdapter {
                             }
                             control.getDisplay().asyncExec(new Runnable() {
 
+                                @Override
                                 public void run() {
                                     Control focusControl = control.getDisplay().getFocusControl();
                                     if (focusControl != control && focusControl != proposalTable && focusControl != getShell()) {
@@ -326,12 +336,12 @@ public class SQLEditorProposalAdapter {
                     // System.out.println(1);
                     return;
                 }
-                //                
+                //
                 if (e.type == SWT.FocusOut && e.widget == proposalTable && hasFocus() && !hasJustAccepted) {
                     // System.out.println(2);
                     return;
                 }
-                //                
+                //
                 if (e.type == SWT.Deactivate && hasFocus() && !hasJustAccepted) {
                     // System.out.println(3);
                     return;
@@ -348,6 +358,7 @@ public class SQLEditorProposalAdapter {
                      */
                     e.display.asyncExec(new Runnable() {
 
+                        @Override
                         public void run() {
                             if (isValid()) {
                                 if (scrollbarClicked || hasFocus() || (infoPopup != null && infoPopup.hasFocus())) {
@@ -455,6 +466,7 @@ public class SQLEditorProposalAdapter {
              * 
              * @see org.eclipse.swt.widgets.Listener#handleEvent(org.eclipse.swt.widgets.Event)
              */
+            @Override
             public void handleEvent(Event e) {
                 if (!isValid()) {
                     return;
@@ -827,6 +839,7 @@ public class SQLEditorProposalAdapter {
 
                 Listener listener = new Listener() {
 
+                    @Override
                     public void handleEvent(Event event) {
                         handleSetData(event);
                     }
@@ -842,6 +855,7 @@ public class SQLEditorProposalAdapter {
             proposalTable.setHeaderVisible(false);
             proposalTable.addSelectionListener(new SelectionListener() {
 
+                @Override
                 public void widgetSelected(SelectionEvent e) {
                     // If a proposal has been selected, show it in the popup.
                     // Otherwise close the popup.
@@ -857,6 +871,7 @@ public class SQLEditorProposalAdapter {
                 }
 
                 // Default selection was made. Accept the current proposal.
+                @Override
                 public void widgetDefaultSelected(SelectionEvent e) {
                     acceptCurrentProposal();
                 }
@@ -898,6 +913,7 @@ public class SQLEditorProposalAdapter {
             // Now set up a listener to monitor any changes in size.
             getShell().addListener(SWT.Resize, new Listener() {
 
+                @Override
                 public void handleEvent(Event e) {
                     popupSize = getShell().getSize();
                     if (infoPopup != null) {
@@ -1069,9 +1085,9 @@ public class SQLEditorProposalAdapter {
                 showProposalDescription(p.getDescription());
             }
             final Object[] listenerArray = proposalListeners.getListeners();
-            for (int i = 0; i < listenerArray.length; i++) {
-                if (listenerArray[i] instanceof IContentProposalExtendedListener) {
-                    ((IContentProposalExtendedListener) listenerArray[i]).proposalOpened();
+            for (Object element : listenerArray) {
+                if (element instanceof IContentProposalExtendedListener) {
+                    ((IContentProposalExtendedListener) element).proposalOpened();
                 }
             }
             return value;
@@ -1096,9 +1112,9 @@ public class SQLEditorProposalAdapter {
             }
             boolean isClosed = super.close();
             final Object[] listenerArray = proposalListeners.getListeners();
-            for (int i = 0; i < listenerArray.length; i++) {
-                if (listenerArray[i] instanceof IContentProposalExtendedListener) {
-                    ((IContentProposalExtendedListener) listenerArray[i]).proposalClosed();
+            for (Object element : listenerArray) {
+                if (element instanceof IContentProposalExtendedListener) {
+                    ((IContentProposalExtendedListener) element).proposalClosed();
                 }
             }
             return isClosed;
@@ -1143,6 +1159,7 @@ public class SQLEditorProposalAdapter {
                 // runtime.
                 Runnable runnable = new Runnable() {
 
+                    @Override
                     public void run() {
                         pendingDescriptionUpdate = true;
                         try {
@@ -1155,6 +1172,7 @@ public class SQLEditorProposalAdapter {
                         }
                         getShell().getDisplay().syncExec(new Runnable() {
 
+                            @Override
                             public void run() {
                                 // Query the current selection since we have
                                 // been delayed
@@ -1165,6 +1183,7 @@ public class SQLEditorProposalAdapter {
                                         infoPopup.open();
                                         infoPopup.getShell().addDisposeListener(new DisposeListener() {
 
+                                            @Override
                                             public void widgetDisposed(DisposeEvent event) {
                                                 infoPopup = null;
                                             }
@@ -1218,6 +1237,7 @@ public class SQLEditorProposalAdapter {
             if (isValid()) {
                 control.getDisplay().asyncExec(new Runnable() {
 
+                    @Override
                     public void run() {
                         recordCursorPosition();
                         recomputeProposals(filterString);
@@ -1250,18 +1270,18 @@ public class SQLEditorProposalAdapter {
             for (int indexStartFilter = 0; list.size() == 0 && continueSearching && indexStartFilter < filterString.length(); indexStartFilter++) {
                 currentFilter = filterString.substring(indexStartFilter);
                 // System.out.println("currentFilter="+currentFilter);
-                for (int i = 0; i < contentProposals.length; i++) {
-                    String string = getString(contentProposals[i]);
+                for (IContentProposal contentProposal : contentProposals) {
+                    String string = getString(contentProposal);
                     if (string.length() >= currentFilter.length()
                             && string.substring(0, currentFilter.length()).equalsIgnoreCase(currentFilter)) {
-                        list.add(contentProposals[i]);
+                        list.add(contentProposal);
                     }
                 }
             }
             if (list.size() == 0) {
                 list = new ArrayList();
-                for (int i = 0; i < contentProposals.length; i++) {
-                    list.add(contentProposals[i]);
+                for (IContentProposal contentProposal : contentProposals) {
+                    list.add(contentProposal);
                 }
                 filterText = EMPTY;
             } else {
@@ -1756,6 +1776,7 @@ public class SQLEditorProposalAdapter {
                 popup.open();
                 popup.getShell().addDisposeListener(new DisposeListener() {
 
+                    @Override
                     public void widgetDisposed(DisposeEvent event) {
                         popup = null;
                     }
@@ -1772,9 +1793,9 @@ public class SQLEditorProposalAdapter {
     private void proposalAccepted(IContentProposal proposal) {
         // In all cases, notify listeners of an accepted proposal.
         final Object[] listenerArray = proposalListeners.getListeners();
-        for (int i = 0; i < listenerArray.length; i++) {
-            if (listenerArray[i] instanceof IContentProposalExtendedListener) {
-                ((IContentProposalExtendedListener) listenerArray[i]).proposalBeforeModifyControl(proposal);
+        for (Object element : listenerArray) {
+            if (element instanceof IContentProposalExtendedListener) {
+                ((IContentProposalExtendedListener) element).proposalBeforeModifyControl(proposal);
             }
         }
         if (controlContentAdapter instanceof IControlContentAdapterExtended) {
@@ -1794,8 +1815,8 @@ public class SQLEditorProposalAdapter {
         }
 
         // In all cases, notify listeners of an accepted proposal.
-        for (int i = 0; i < listenerArray.length; i++) {
-            ((IContentProposalListener) listenerArray[i]).proposalAccepted(proposal);
+        for (Object element : listenerArray) {
+            ((IContentProposalListener) element).proposalAccepted(proposal);
         }
     }
 
