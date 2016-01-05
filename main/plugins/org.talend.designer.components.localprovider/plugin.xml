@@ -1902,14 +1902,14 @@
 	   		context="plugin:org.talend.libraries.hadoop.hdp.2.0"
         	id="netty-3.6.6.Final.jar"
          	name="netty-3.6.6.Final.jar" mvn_uri="mvn:org.talend.libraries/netty-3.6.6.Final/6.0.0"
-         	uripath="platform:/plugin/org.talend.libraries.hadoop.hdp.2.0/lib/netty-3.6.6.Final.jar">
+         	uripath="platform:/plugin/org.talend.libraries.hadoop.cloudera.cdh5.1/lib/netty-3.6.6.Final.jar">
     	</libraryNeeded>
 
     	<libraryNeeded
 	   		context="plugin:org.talend.libraries.hadoop.hdp.2.1"
         	id="htrace-core-2.04.jar"
          	name="htrace-core-2.04.jar" mvn_uri="mvn:org.talend.libraries/htrace-core-2.04/6.0.0"
-         	uripath="platform:/plugin/org.talend.libraries.hadoop.hdp.2.1/lib/htrace-core-2.04.jar">
+         	uripath="platform:/plugin/org.talend.libraries.hadoop.cloudera.cdh5.1/lib/htrace-core-2.04.jar">
     	</libraryNeeded>
 
         <libraryNeeded
