@@ -4085,6 +4085,7 @@ public class Process extends Element implements IProcess2, IGEFProcess, ILastVer
         nodes.clear();
         notes.clear();
         subjobContainers.clear();
+        setGeneratingProcess(null);
 
         // added for context
         contextManager.getListContext().clear();
@@ -4268,14 +4269,17 @@ public class Process extends Element implements IProcess2, IGEFProcess, ILastVer
             node.getProcess().checkStartNodes();
             node.checkAndRefreshNode();
             // change active status here to force refersh node
-            IElementParameter ep = node.getElementParameter("ACTIVATE");
-            if (ep != null && ep.getValue().equals(Boolean.FALSE)) {
-                node.setPropertyValue(EParameterName.ACTIVATE.getName(), true);
-                node.setPropertyValue(EParameterName.ACTIVATE.getName(), false);
-            } else if (ep != null && ep.getValue().equals(Boolean.TRUE)) {
-                node.setPropertyValue(EParameterName.ACTIVATE.getName(), false);
-                node.setPropertyValue(EParameterName.ACTIVATE.getName(), true);
-            }
+            // IElementParameter ep = node.getElementParameter("ACTIVATE");
+            // if (ep != null && ep.getValue().equals(Boolean.FALSE)) {
+            // node.setPropertyValue(EParameterName.ACTIVATE.getName(), true);
+            // node.setPropertyValue(EParameterName.ACTIVATE.getName(), false);
+            // } else if (ep != null && ep.getValue().equals(Boolean.TRUE)) {
+            // node.setPropertyValue(EParameterName.ACTIVATE.getName(), false);
+            // node.setPropertyValue(EParameterName.ACTIVATE.getName(), true);
+            // } else {
+            // node.setPropertyValue(EParameterName.REPAINT.getName(), Boolean.TRUE);
+            // }
+            node.setPropertyValue(EParameterName.REPAINT.getName(), Boolean.TRUE);
         }
     }
 
