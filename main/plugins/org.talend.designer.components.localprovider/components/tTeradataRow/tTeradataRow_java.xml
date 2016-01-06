@@ -272,8 +272,8 @@
 
    <CODEGENERATION>
      <IMPORTS>
-		<IMPORT NAME="Driver-Teradata" MODULE="terajdbc4.jar" UrlPath="platform:/plugin/org.talend.libraries.jdbc.teradata/lib/terajdbc4.jar" REQUIRED="true" />
-		<IMPORT NAME="Driver-Teradata" MODULE="tdgssconfig.jar" UrlPath="platform:/plugin/org.talend.libraries.jdbc.teradata/lib/tdgssconfig.jar" REQUIRED="true" />
+		<IMPORT NAME="Driver-Teradata" MODULE="terajdbc4-15.10.00.14.jar"  REQUIRED="true" />
+		<IMPORT NAME="Driver-Teradata" MODULE="tdgssconfig-15.10.00.14.jar"  REQUIRED="true" />
      </IMPORTS>
    </CODEGENERATION>
 
