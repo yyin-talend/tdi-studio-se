@@ -239,8 +239,8 @@
 
 	<CODEGENERATION>
 		<IMPORTS>
-			<IMPORT NAME="TERAJDBC4" MODULE="terajdbc4.jar" MVN="mvn:org.talend.libraries/terajdbc4/6.0.0" UrlPath="platform:/plugin/org.talend.libraries.jdbc.teradata/lib/terajdbc4.jar" REQUIRED="true" />
-			<IMPORT NAME="TDGSSCONFIG" MODULE="tdgssconfig.jar" MVN="mvn:org.talend.libraries/tdgssconfig/6.0.0" UrlPath="platform:/plugin/org.talend.libraries.jdbc.teradata/lib/tdgssconfig.jar" REQUIRED="true" />
+			<IMPORT NAME="terajdbc4_15.10.00.14" MODULE="terajdbc4_15.10.00.14.jar" MVN="mvn:org.talend.libraries/terajdbc4_15.10.00.14/6.0.0"  REQUIRED="true" />
+			<IMPORT NAME="tdgssconfig_15.10.00.14" MODULE="tdgssconfig_15.10.00.14.jar" MVN="mvn:org.talend.libraries/tdgssconfig_15.10.00.14/6.0.0"  REQUIRED="true" />
 		</IMPORTS>
 	</CODEGENERATION>
 
