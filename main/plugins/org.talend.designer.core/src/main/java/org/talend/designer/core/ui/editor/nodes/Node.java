@@ -4889,6 +4889,7 @@ public class Node extends Element implements IGraphicalNode {
         this.jobletNode = jobletNode;
     }
 
+    @Override
     public INode getJunitNode() {
         return junitNode;
     }
