@@ -201,6 +201,7 @@ public final class CodeGeneratorEmittersPoolFactory {
                 for (IComponent genericComponent : genericComponents) {
                     initGenericComponent(codeLanguage, jetBeans, ECodePart.BEGIN, genericComponent);
                     initGenericComponent(codeLanguage, jetBeans, ECodePart.END, genericComponent);
+                    initGenericComponent(codeLanguage, jetBeans, ECodePart.MAIN, genericComponent);
                     // TODO
                     break;
                 }

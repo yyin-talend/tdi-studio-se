@@ -1321,7 +1321,7 @@ public class Component extends AbstractComponent {
     private ArrayList<ECodePart> createCodePartList() {
         ArrayList<ECodePart> theCodePartList = new ArrayList<ECodePart>();
         theCodePartList.add(ECodePart.BEGIN);
-        // theCodePartList.add(ECodePart.MAIN); (no main for salesforceinput for testing)
+        theCodePartList.add(ECodePart.MAIN); 
         theCodePartList.add(ECodePart.END);
         return theCodePartList;
     }
