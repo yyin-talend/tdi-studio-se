@@ -73,7 +73,11 @@ public abstract class AbstractBuildJobHandler implements IBuildJobHandler {
         this.processItem = processItem;
         this.version = version;
         this.contextName = contextName;
-        this.exportChoice = exportChoiceMap;
+        if (exportChoiceMap != null) {
+            this.exportChoice = exportChoiceMap;
+        } else {
+            this.exportChoice = new HashMap<ExportChoice, Object>();
+        }
         IRunProcessService runProcessService = CorePlugin.getDefault().getRunProcessService();
         this.talendProcessJavaProject = runProcessService.getTalendProcessJavaProject();
     }
