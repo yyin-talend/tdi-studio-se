@@ -677,8 +677,8 @@ public final class JSONConnectionContextHelper {
                     for (Map.Entry<ContextItem, List<ConectionAdaptContextVariableModel>> entry : map.entrySet()) {
                         List<ConectionAdaptContextVariableModel> modelList = entry.getValue();
                         for (ConectionAdaptContextVariableModel model : modelList) {
-                            if (model.getName().equals(jsonParam.name())) {
-                                jsonVariableName = model.getValue();
+                            if (model.getValue().equals(jsonParam.name())) {
+                                jsonVariableName = model.getName();
                                 break;
                             }
                         }
