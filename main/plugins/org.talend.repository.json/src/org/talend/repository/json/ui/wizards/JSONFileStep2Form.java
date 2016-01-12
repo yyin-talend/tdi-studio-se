@@ -211,6 +211,7 @@ public class JSONFileStep2Form extends AbstractJSONFileStepForm implements IRefr
             jsonXPathLoopDescriptor.setLimitBoucle(XmlArray.getRowLimit());
 
         }
+        treePopulator.populateTree(wizard.getTempJsonPath(), treeNode);
         fieldsModel.setJSONXPathLoopDescriptor(jsonXPathLoopDescriptor.getSchemaTargets());
         fieldsTableEditorView.getTableViewerCreator().layout();
 
