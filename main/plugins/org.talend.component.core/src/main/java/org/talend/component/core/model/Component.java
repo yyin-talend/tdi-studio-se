@@ -173,7 +173,7 @@ public class Component extends AbstractComponent {
         addPropertyParameters(listParam, node, ADVANCED_PROPERTY);
         initializePropertyParameters(listParam, node);
         checkSchemaParameter(listParam, node);
-        // addViewParameters(listParam, node);
+        addViewParameters(listParam, node);
         addDocParameters(listParam, node);
         addValidationRulesParameters(listParam, node);
         return listParam;
