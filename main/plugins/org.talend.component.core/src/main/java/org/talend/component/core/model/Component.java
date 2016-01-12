@@ -14,6 +14,7 @@ package org.talend.component.core.model;
 
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -87,6 +88,8 @@ public class Component extends AbstractComponent {
 
     private ComponentsProvider provider;
 
+    private Map<String, String> translatedMap = new HashMap<String, String>();
+
     public Component(ComponentDefinition componentDefinition) throws BusinessException {
         this.componentDefinition = componentDefinition;
         // TODO
@@ -154,8 +157,11 @@ public class Component extends AbstractComponent {
     }
 
     private String getTranslatedValue(final String nameValue) {
-        // TODO
-        return "org.talend.help.tSalesforceInput";//$NON-NLS-1$
+        String returnValue = nameValue;
+        if (translatedMap.containsKey(nameValue)) {
+            return translatedMap.get(nameValue);
+        }
+        return returnValue;
     }
 
     @Override
@@ -1117,7 +1123,13 @@ public class Component extends AbstractComponent {
         List<NodeConnector> listConnector = new ArrayList<NodeConnector>();
         ComponentConnector[] listConnectors = componentDefinition.getConnectors();
         for (ComponentConnector componentConnector : listConnectors) {
-            String connectorName = componentConnector.getType().name();
+            String originalConnectorName = componentConnector.getType().name();
+            String connectorName = originalConnectorName;
+            boolean isFlow_Sub_ConnectorName = IComponentConstants.MAIN_CONNECTOR_NAME.equals(originalConnectorName)
+                    || IComponentConstants.REJECT_CONNECTOR_NAME.equals(originalConnectorName);
+            if (isFlow_Sub_ConnectorName) {
+                connectorName = "FLOW";//$NON-NLS-1$
+            }
             EConnectionType currentType = EConnectionType.getTypeFromName(connectorName);
             if (currentType == null || ("LOOKUP").equals(connectorName) || ("MERGE").equals(connectorName)) {//$NON-NLS-1$//$NON-NLS-2$
                 if (currentType == null) {
@@ -1133,16 +1145,42 @@ public class Component extends AbstractComponent {
             nodeConnector.setMenuName(currentType.getDefaultMenuName());
             RGB rgb = currentType.getRGB();
             Integer lineStyle = currentType.getDefaultLineStyle();
-
-            nodeConnector.setMaxLinkInput(componentConnector.getMaxInput());
-            // nodeConnector.setMaxLinkOutput(componentConnector.getMaxOutput());
-
+            if (!isFlow_Sub_ConnectorName) {
+                nodeConnector.setMaxLinkInput(componentConnector.getMaxInput());
+            }
+            if ("FLOW".equals(connectorName)) {
+                nodeConnector.setMaxLinkOutput(componentConnector.getMaxOutput());
+            }
             if (nodeConnector.getName() == null) {
-                nodeConnector.setName(connectorName);
-                nodeConnector.setBaseSchema(currentType.getName());
+                if (isFlow_Sub_ConnectorName) {
+                    nodeConnector.setName(originalConnectorName);
+                    nodeConnector.setBaseSchema(currentType.getName());
+                    if (IComponentConstants.REJECT_CONNECTOR_NAME.equals(originalConnectorName)) {
+                        nodeConnector.setMenuName("Reject"); //$NON-NLS-1$
+                        nodeConnector.setLinkName("Reject"); //$NON-NLS-1$
+                    }
+                } else {
+                    nodeConnector.setName(connectorName);
+                    nodeConnector.setBaseSchema(currentType.getName());
+                }
             }
             nodeConnector.addConnectionProperty(currentType, rgb, lineStyle);
             listConnector.add(nodeConnector);
+            if ("FLOW".equals(connectorName)) { //$NON-NLS-1$
+                // if kind is "flow" (main type), then add the same for the lookup and merge.
+                currentType = EConnectionType.FLOW_REF;
+
+                rgb = currentType.getRGB();
+                lineStyle = currentType.getDefaultLineStyle();
+                nodeConnector.addConnectionProperty(currentType, rgb, lineStyle);
+                nodeConnector.getConnectionProperty(currentType).setRGB(rgb);
+                currentType = EConnectionType.FLOW_MERGE;
+
+                rgb = currentType.getRGB();
+                lineStyle = currentType.getDefaultLineStyle();
+                nodeConnector.addConnectionProperty(currentType, rgb, lineStyle);
+                nodeConnector.getConnectionProperty(currentType).setRGB(rgb);
+            }
         }
 
         for (int i = 0; i < EConnectionType.values().length; i++) {
@@ -1321,7 +1359,7 @@ public class Component extends AbstractComponent {
     private ArrayList<ECodePart> createCodePartList() {
         ArrayList<ECodePart> theCodePartList = new ArrayList<ECodePart>();
         theCodePartList.add(ECodePart.BEGIN);
-        theCodePartList.add(ECodePart.MAIN); 
+        theCodePartList.add(ECodePart.MAIN);
         theCodePartList.add(ECodePart.END);
         return theCodePartList;
     }
