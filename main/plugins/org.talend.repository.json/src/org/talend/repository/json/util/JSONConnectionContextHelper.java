@@ -613,7 +613,7 @@ public final class JSONConnectionContextHelper {
                 jsonFilePath = TalendQuoteUtils.addQuotes(jsonFilePath);
                 encoding = TalendQuoteUtils.addQuotes(encoding);
             }
-            paramName = prefixName + EParamName.XmlFilePath;
+            paramName = prefixName + EParamName.FilePath;
             createParameters(varList, paramName, jsonFilePath, JavaTypesManager.FILE);
 
             paramName = prefixName + EParamName.Encoding;
@@ -645,7 +645,7 @@ public final class JSONConnectionContextHelper {
         String paramName = null;
 
         if (conn.isInputModel()) {
-            paramName = prefixName + EParamName.XmlFilePath;
+            paramName = prefixName + EParamName.FilePath;
             conn.setJSONFilePath(ContextParameterUtils.getNewScriptCode(paramName, LANGUAGE));
             paramName = prefixName + EParamName.Encoding;
             conn.setEncoding(ContextParameterUtils.getNewScriptCode(paramName, LANGUAGE));
@@ -686,7 +686,7 @@ public final class JSONConnectionContextHelper {
                 }
                 if (jsonConn.isInputModel()) {
                     switch (jsonParam) {
-                    case XmlFilePath:
+                    case FilePath:
                         jsonConn.setJSONFilePath(ContextParameterUtils.getNewScriptCode(jsonVariableName, LANGUAGE));
                         break;
                     case Encoding:
