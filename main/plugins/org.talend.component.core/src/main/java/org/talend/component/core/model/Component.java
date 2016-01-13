@@ -1148,7 +1148,7 @@ public class Component extends AbstractComponent {
             if (!isFlow_Sub_ConnectorName) {
                 nodeConnector.setMaxLinkInput(componentConnector.getMaxInput());
             }
-            if ("FLOW".equals(connectorName)) {
+            if ("FLOW".equals(connectorName) || "ITERATE".equals(connectorName)) {//$NON-NLS-1$//$NON-NLS-2$
                 nodeConnector.setMaxLinkOutput(componentConnector.getMaxOutput());
             }
             if (nodeConnector.getName() == null) {
