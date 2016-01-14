@@ -320,7 +320,7 @@ if(columnList != null && columnList.size()>0) {
 				 if (i!=<%=numPerInsert%>-1) extendInsertValueStmt_<%=cid%>.append(",");
 			}
             
-			String insert_<%=cid%> = "INSERT INTO "+<%=tableName%>+" (<%=insertColName.toString()%>) VALUES " + extendInsertValueStmt_<%=cid%>.toString();
+			String insert_<%=cid%> = "INSERT INTO \"" + tableName_<%=cid%> + "\" (<%=insertColName.toString()%>) VALUES " + extendInsertValueStmt_<%=cid%>.toString();
 			java.sql.PreparedStatement pstmt_<%=cid %> =  conn_<%=cid%>.prepareStatement(insert_<%=cid%>);
 <%
 		}
