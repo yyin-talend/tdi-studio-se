@@ -215,7 +215,7 @@ skeleton="../templates/db_output_bulk.skeleton"
 	        }
 	        
 	
-			insert_<%=cid%> = "INSERT INTO "+<%=tableName%>+" (<%=insertColName.toString()%>) VALUES "+extendInsertValueStmt.toString();
+			insert_<%=cid%> = "INSERT INTO \"" + tableName_<%=cid%> + "\" (<%=insertColName.toString()%>) VALUES "+extendInsertValueStmt.toString();
 			pstmt_<%=cid %> = conn_<%=cid%>.prepareStatement(insert_<%=cid%>);
 	        
 	        int row2Count<%=cid%> = 0;
