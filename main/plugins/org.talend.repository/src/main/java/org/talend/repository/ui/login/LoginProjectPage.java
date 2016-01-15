@@ -828,7 +828,7 @@ public class LoginProjectPage extends AbstractLoginActionPage {
                             branch);
                 } catch (JSONException e) {
                     // TODO Auto-generated catch block
-                    e.printStackTrace();
+                    ExceptionHandler.process(e);
                 }
             }
         });

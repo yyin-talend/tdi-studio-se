@@ -441,11 +441,13 @@ public class RepositoryService implements IRepositoryService, IRepositoryContext
                     }
 
                 }
-                ProjectManager.getInstance().setMainProjectBranch(
-                        project,
-                        preferenceManipulator.getLastSVNBranch(
-                                new JSONObject(project.getEmfProject().getUrl()).getString("location"),
-                                project.getTechnicalLabel()));
+                if (!repositoryFactory.isLocalConnectionProvider()) {
+                    ProjectManager.getInstance().setMainProjectBranch(
+                            project,
+                            preferenceManipulator.getLastSVNBranch(
+                                    new JSONObject(project.getEmfProject().getUrl()).getString("location"),
+                                    project.getTechnicalLabel()));
+                }
                 if (project != null && reload && lastBean != null && repositoryFactory.getRepositoryContext().isOffline()) {
                     if (PluginChecker.isSVNProviderPluginLoaded()) {
                         ISVNProviderService svnProviderService = (ISVNProviderService) GlobalServiceRegister.getDefault()
@@ -493,7 +495,7 @@ public class RepositoryService implements IRepositoryService, IRepositoryContext
                 return false;
             } catch (JSONException e) {
                 // TODO Auto-generated catch block
-                e.printStackTrace();
+                ExceptionHandler.process(e);
             }
 
             return true;
