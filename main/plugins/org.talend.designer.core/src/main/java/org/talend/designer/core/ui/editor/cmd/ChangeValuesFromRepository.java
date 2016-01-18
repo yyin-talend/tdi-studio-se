@@ -510,10 +510,12 @@ public class ChangeValuesFromRepository extends ChangeMetadataCommand {
                         List<Map<String, Object>> table = (List<Map<String, Object>>) elem.getPropertyValue(param.getName());
                         table.clear();
                         ArrayList parameters = ((WSDLSchemaConnection) connection).getParameters();
-                        for (Object object : parameters) {
-                            Map<String, Object> map2 = new HashMap<String, Object>();
-                            map2.put("VALUE", TalendTextUtils.addQuotes(object.toString())); //$NON-NLS-1$
-                            table.add(map2);
+                        if (parameters != null) {
+                            for (Object object : parameters) {
+                                Map<String, Object> map2 = new HashMap<String, Object>();
+                                map2.put("VALUE", TalendTextUtils.addQuotes(object.toString())); //$NON-NLS-1$
+                                table.add(map2);
+                            }
                         }
                         param.setRepositoryValueUsed(true);
                     } else if (param.getFieldType().equals(EParameterFieldType.TEXT)
