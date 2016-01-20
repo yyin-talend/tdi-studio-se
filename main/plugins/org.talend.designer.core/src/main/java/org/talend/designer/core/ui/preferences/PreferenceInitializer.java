@@ -203,5 +203,6 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer {
             store.setDefault(MetadataTypeLengthConstants.VALUE_DEFAULT_TYPE, JavaTypesManager.STRING.getId());
         }
 
+        store.setDefault(ITalendCorePrefConstants.PERFORMANCE_JAVA_PROCESS_CODE_FORMATE_TIMEOUT, 30);
     }
 }
