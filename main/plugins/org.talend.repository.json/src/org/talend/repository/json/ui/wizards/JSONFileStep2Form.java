@@ -172,8 +172,8 @@ public class JSONFileStep2Form extends AbstractJSONFileStepForm implements IRefr
      */
     public JSONFileStep2Form(Composite parent, ConnectionItem connectionItem, JSONWizard wizard) {
         super(parent, connectionItem);
-        setupForm(true);
         this.wizard = wizard;
+        setupForm(true);
     }
 
     /**
