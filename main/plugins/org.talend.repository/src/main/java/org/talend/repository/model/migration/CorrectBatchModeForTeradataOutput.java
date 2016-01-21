@@ -78,17 +78,23 @@ public class CorrectBatchModeForTeradataOutput extends AbstractJobMigrationTask 
                     ComponentUtilities.getNodeProperty(node, "USE_BATCH_SIZE").setValue("false");
 				}
 				
+                boolean useBatchExistAndCheckForPreviousVersion = useBatchSizePara != null && useBatchSizePara.getValue().equalsIgnoreCase("true");
+                
                 ElementParameterType useBatchAndUseConnPara = ComponentUtilities.getNodeProperty(node, "USE_BATCH_AND_USE_CONN");
                 if (useBatchAndUseConnPara == null) {
                     ComponentUtilities.addNodeProperty(node, "USE_BATCH_AND_USE_CONN", "CHECK");
-                    ComponentUtilities.getNodeProperty(node, "USE_BATCH_AND_USE_CONN").setValue("false");
+                    ComponentUtilities.getNodeProperty(node, "USE_BATCH_AND_USE_CONN").setValue(useBatchExistAndCheckForPreviousVersion ? "true" : "false");
                 }
-				
+                
+                boolean useBatchExistAndUncheckForPreviousVersion = useBatchSizePara != null && useBatchSizePara.getValue().equalsIgnoreCase("false");
+                
 				if(useExistConn){
-				    ComponentUtilities.getNodeProperty(node, "USE_BATCH_AND_USE_CONN").setValue("true");
-				    ComponentUtilities.getNodeProperty(node, "BATCH_SIZE").setValue("0");
+					if(useBatchExistAndUncheckForPreviousVersion) {
+					    ComponentUtilities.getNodeProperty(node, "USE_BATCH_AND_USE_CONN").setValue("true");
+					    ComponentUtilities.getNodeProperty(node, "BATCH_SIZE").setValue("0");
+					}
 				}else{
-                    if (useBatchSizePara != null && useBatchSizePara.getValue().equalsIgnoreCase("false")) {
+                    if (useBatchExistAndUncheckForPreviousVersion) {
                         useBatchSizePara.setValue("true");
                         ComponentUtilities.getNodeProperty(node, "BATCH_SIZE").setValue("0");
                     }
