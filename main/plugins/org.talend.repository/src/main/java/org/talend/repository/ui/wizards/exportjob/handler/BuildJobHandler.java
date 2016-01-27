@@ -77,6 +77,7 @@ public class BuildJobHandler extends AbstractBuildJobHandler {
         super(processItem, version, contextName, exportChoiceMap);
 
         setProjectNameLowerCase(true);
+        ProcessorUtilities.setExportConfig(JavaUtils.JAVA_APP_NAME, null, null);
     }
 
     public boolean isProjectNameLowerCase() {
@@ -149,7 +150,7 @@ public class BuildJobHandler extends AbstractBuildJobHandler {
         // isOptionChoosed(ExportChoice.addStatistics), false,
         // isOptionChoosed(ExportChoice.applyToChildren), isOptionChoosed(ExportChoice.needContext), generationOption,
         // monitor);
-        ProcessorUtilities.setExportConfig(JavaUtils.JAVA_APP_NAME, null, null);
+
         ProcessorUtilities.generateCode(processItem, contextName, version, argumentsMap, monitor);
         ProcessorUtilities.resetExportConfig();
     }
