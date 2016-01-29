@@ -1722,6 +1722,22 @@ public class Component extends AbstractComponent {
         }
     }
 
+    @Override
+    public Object getElementParameterValueFromComponentProperties(INode iNode, IElementParameter param) {
+        if (iNode != null) {
+            ComponentProperties iNodeComponentProperties = iNode.getComponentProperties();
+            if (iNodeComponentProperties != null && param instanceof GenericElementParameter) {
+                ComponentProperties paramComponentProperties = ComponentsUtils.getCurrentComponentProperties(
+                        iNodeComponentProperties, param.getName());
+                if (paramComponentProperties != null) {
+                    ((GenericElementParameter) param).setComponentProperties(paramComponentProperties);
+                    return ComponentsUtils.getGenericPropertyValue(iNodeComponentProperties, param.getName());
+                }
+            }
+        }
+        return null;
+    }
+
     /**
      * Getter for log. Will be used by ComponentUtil.
      *
