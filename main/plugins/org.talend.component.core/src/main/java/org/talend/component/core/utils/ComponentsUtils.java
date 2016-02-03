@@ -27,15 +27,8 @@ import org.talend.commons.exception.BusinessException;
 import org.talend.component.core.constants.IComponentConstants;
 import org.talend.component.core.model.Component;
 import org.talend.component.core.model.GenericElementParameter;
-import org.talend.components.api.NamedThing;
 import org.talend.components.api.component.ComponentDefinition;
 import org.talend.components.api.properties.ComponentProperties;
-import org.talend.components.api.properties.NameAndLabel;
-import org.talend.components.api.properties.Property;
-import org.talend.components.api.properties.presentation.Form;
-import org.talend.components.api.properties.presentation.Widget;
-import org.talend.components.api.schema.SchemaElement;
-import org.talend.components.api.schema.SchemaElement.Type;
 import org.talend.components.api.service.ComponentService;
 import org.talend.core.model.components.IComponent;
 import org.talend.core.model.components.IComponentsFactory;
@@ -45,6 +38,13 @@ import org.talend.core.model.process.EParameterFieldType;
 import org.talend.core.model.process.IElement;
 import org.talend.core.model.process.INode;
 import org.talend.core.ui.component.ComponentsFactoryProvider;
+import org.talend.daikon.NamedThing;
+import org.talend.daikon.NamedThing;
+import org.talend.daikon.properties.Property;
+import org.talend.daikon.properties.presentation.Form;
+import org.talend.daikon.properties.presentation.Widget;
+import org.talend.daikon.schema.SchemaElement;
+import org.talend.daikon.schema.SchemaElement.Type;
 import org.talend.designer.core.model.components.ElementParameter;
 
 /**
@@ -141,7 +141,7 @@ public class ComponentsUtils {
         }
         ComponentProperties componentProperties = compProperties;
         if (componentProperties == null) {
-            componentProperties = form.getComponentProperties();
+            componentProperties = (ComponentProperties) form.getProperties();
         }
         if (element instanceof INode) {
             INode node = (INode) element;
@@ -161,7 +161,7 @@ public class ComponentsUtils {
             String propertiesPath = getPropertiesPath(parentPropertiesPath, null);
             if (widgetProperty instanceof Form) {
                 Form subForm = (Form) widgetProperty;
-                ComponentProperties subProperties = subForm.getComponentProperties();
+                ComponentProperties subProperties = (ComponentProperties) subForm.getProperties();
                 // Reset properties path
                 if (!isSameComponentProperties(componentProperties, widgetProperty)) {
                     propertiesPath = getPropertiesPath(parentPropertiesPath, subProperties.getName());
@@ -215,10 +215,10 @@ public class ComponentsUtils {
                         List<String> possVals = new ArrayList<>();
                         List<String> possValsDisplay = new ArrayList<>();
                         for (Object obj : values) {
-                            if (obj instanceof NameAndLabel) {
-                                NameAndLabel nal = (NameAndLabel) obj;
+                            if (obj instanceof NamedThing) {
+                                NamedThing nal = (NamedThing) obj;
                                 possVals.add(nal.getName());
-                                possValsDisplay.add(nal.getLabel());
+                                possValsDisplay.add(nal.getDisplayName());
                             } else {
                                 possVals.add(String.valueOf(obj));
                                 possValsDisplay.add(String.valueOf(obj));
@@ -474,7 +474,7 @@ public class ComponentsUtils {
         if (componentProperties != null && widgetProperty instanceof Form) {
             Form subForm = (Form) widgetProperty;
             if (subForm != null) {
-                return componentProperties == subForm.getComponentProperties();
+                return componentProperties == subForm.getProperties();
             }
         }
         return false;
