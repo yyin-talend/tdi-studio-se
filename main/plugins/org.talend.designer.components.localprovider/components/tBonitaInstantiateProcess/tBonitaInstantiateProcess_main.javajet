@@ -55,7 +55,7 @@ imports="
 									} else {
 									%>
 										
-										vars_<%=cid%>.put("<%=columns.get(i).getLabel()%>",java.net.URLEncoder.encode(java.net.URLEncoder.encode(String.valueOf(<%=conn.getName()%>.<%=(columns.get(i)).getLabel()%>), utf8Charset),utf8Charset));
+										vars_<%=cid%>.put("<%=columns.get(i).getLabel()%>",String.valueOf(<%=conn.getName()%>.<%=(columns.get(i)).getLabel()%>));
 									<%
 									}
 									
