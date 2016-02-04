@@ -132,7 +132,7 @@ if(columnList != null && columnList.size() > 0) {
 %>
 		loadingCols_<%=cid%>.append("ASCII(" + <%=column.getLength()%> + ")");
 <%			}else{ %>
-        	loadingCols_<%=cid%>.append("'" + <%=field_separator.replaceAll("\\\\", "\\\\\\\\") %> + "' <%if(blankAsNull){%>NULL(BLANKS)<%}%>");
+        	loadingCols_<%=cid%>.append("'" + <%=lines_separator.replaceAll("\\\\", "\\\\\\\\") %> + "' <%if(blankAsNull){%>NULL(BLANKS)<%}%>");
 <%			}
       	}
     }
