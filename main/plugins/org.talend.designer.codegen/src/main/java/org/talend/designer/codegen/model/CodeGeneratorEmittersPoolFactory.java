@@ -219,8 +219,11 @@ public final class CodeGeneratorEmittersPoolFactory {
 
                             @Override
                             protected IStatus run(IProgressMonitor monitor) {
-                                CorePlugin.getDefault().getDesignerCoreService().synchronizeDesignerUI(
-                                        new PropertyChangeEvent(this, IComponentConstants.NORMAL, null, null));
+                                CorePlugin
+                                        .getDefault()
+                                        .getDesignerCoreService()
+                                        .synchronizeDesignerUI(
+                                                new PropertyChangeEvent(this, IComponentConstants.NORMAL, null, null));
                                 return Status.OK_STATUS;
                             }
 
@@ -358,6 +361,28 @@ public final class CodeGeneratorEmittersPoolFactory {
     }
 
     /**
+     * 
+     * Utility method that create a {@link DelegateClassLoader} made of a given parent {@link ClassLoader} and a
+     * delegate one given a bundle name and a class name.
+     * 
+     * @param baseClassLoader the parent ClassLoader
+     * @param bundleName the name of the bundle to load the className from.
+     * @param className the className to load in order to get its ClassLoader
+     * @return the {@link DelegateClassLoader} made of the parent ClassLoader and the new created secondary ClassLoader.
+     */
+    private static ClassLoader createDelegateClassLoader(ClassLoader baseClassLoader, String bundleName, String className) {
+        try {
+            // This secondary class loader is used to find other classes in the given bundle. None of the classes in the
+            // parent can depend on these classes, but these can depend on the parent.
+            ClassLoader secondaryClassLoader = Platform.getBundle(bundleName).loadClass(className).getClassLoader();
+            return new DelegateClassLoader(baseClassLoader, secondaryClassLoader);
+        } catch (ClassNotFoundException e) {
+            ExceptionHandler.process(e);
+        }
+        return baseClassLoader;
+    }
+
+    /**
      * initialization of available templates.
      * 
      * @param template
@@ -365,9 +390,8 @@ public final class CodeGeneratorEmittersPoolFactory {
      * @return
      */
     private static JetBean initializeUtilTemplate(TemplateUtil template, ECodeLanguage codeLanguage) {
-        JetBean jetBean = new JetBean(CodeGeneratorActivator.PLUGIN_ID,
-                TemplateUtil.RESOURCES_DIRECTORY + TemplateUtil.DIR_SEP + template.getResourceName() + TemplateUtil.EXT_SEP
-                        + codeLanguage.getExtension() + TemplateUtil.TEMPLATE_EXT,
+        JetBean jetBean = new JetBean(CodeGeneratorActivator.PLUGIN_ID, TemplateUtil.RESOURCES_DIRECTORY + TemplateUtil.DIR_SEP
+                + template.getResourceName() + TemplateUtil.EXT_SEP + codeLanguage.getExtension() + TemplateUtil.TEMPLATE_EXT,
                 template.getResourceName(), template.getVersion(), codeLanguage.getName(), ""); //$NON-NLS-1$
         jetBean.addClassPath("CORERUNTIME_LIBRARIES", "org.talend.core.runtime"); //$NON-NLS-1$ //$NON-NLS-2$
         jetBean.addClassPath("MANAGEMENT_LIBRARIES", "org.talend.metadata.managment"); //$NON-NLS-1$ //$NON-NLS-2$
@@ -375,6 +399,12 @@ public final class CodeGeneratorEmittersPoolFactory {
         jetBean.addClassPath("CODEGEN_LIBRARIES", CodeGeneratorActivator.PLUGIN_ID); //$NON-NLS-1$
         jetBean.addClassPath("COMMON_LIBRARIES", CommonsPlugin.PLUGIN_ID); //$NON-NLS-1$
         jetBean.setClassLoader(new CodeGeneratorEmittersPoolFactory().getClass().getClassLoader());
+        String sparkUtilsPluginName = "org.talend.designer.spark"; //$NON-NLS-1$
+        if (PluginChecker.isPluginLoaded(sparkUtilsPluginName)) {
+            jetBean.addClassPath("SPARK_LIBRARIES", sparkUtilsPluginName); //$NON-NLS-1$ 
+            jetBean.setClassLoader(createDelegateClassLoader(jetBean.getClassLoader(), sparkUtilsPluginName,
+                    "org.talend.designer.spark.SparkPlugin")); //$NON-NLS-1$ 
+        }
         return jetBean;
     }
 
@@ -386,16 +416,15 @@ public final class CodeGeneratorEmittersPoolFactory {
      * @param codePart
      * @param component
      */
-    private static void initComponent(ECodeLanguage codeLanguage, List<JetBean> jetBeans, ECodePart codePart,
-            IComponent component) {
+    private static void initComponent(ECodeLanguage codeLanguage, List<JetBean> jetBeans, ECodePart codePart, IComponent component) {
 
         if (component.getAvailableCodeParts().contains(codePart)) {
             IComponentFileNaming fileNamingInstance = ComponentsFactoryProvider.getFileNamingInstance();
             String templateURI = component.getPathSource() + TemplateUtil.DIR_SEP + component.getName() + TemplateUtil.DIR_SEP
                     + fileNamingInstance.getJetFileName(component, codeLanguage.getExtension(), codePart);
             String componentsPath = IComponentsFactory.COMPONENTS_LOCATION;
-            IBrandingService breaningService = (IBrandingService) GlobalServiceRegister.getDefault()
-                    .getService(IBrandingService.class);
+            IBrandingService breaningService = (IBrandingService) GlobalServiceRegister.getDefault().getService(
+                    IBrandingService.class);
             if (breaningService.isPoweredOnlyCamel()) {
                 componentsPath = IComponentsFactory.CAMEL_COMPONENTS_LOCATION;
             }
@@ -411,10 +440,10 @@ public final class CodeGeneratorEmittersPoolFactory {
             jetBean.addClassPath("CORE_LIBRARIES", CorePlugin.PLUGIN_ID); //$NON-NLS-1$
             jetBean.addClassPath("CODEGEN_LIBRARIES", CodeGeneratorActivator.PLUGIN_ID); //$NON-NLS-1$
             jetBean.addClassPath("COMMON_LIBRARIES", CommonsPlugin.PLUGIN_ID); //$NON-NLS-1$
-            jetBean.addClassPath("COMPONENT_FRAMEWORK", "org.talend.components.api"); //$NON-NLS-1$
-            jetBean.addClassPath("DAIKON", "org.talend.daikon"); //$NON-NLS-1$
-            jetBean.addClassPath("COMPONENT_CORE", "org.talend.component.core"); //$NON-NLS-1$
-            jetBean.addClassPath("DESIGNER_CORE", "org.talend.designer.core"); //$NON-NLS-1$
+            jetBean.addClassPath("COMPONENT_FRAMEWORK", "org.talend.components.api"); //$NON-NLS-1$ //$NON-NLS-2$
+            jetBean.addClassPath("DAIKON", "org.talend.daikon"); //$NON-NLS-1$ //$NON-NLS-2$
+            jetBean.addClassPath("COMPONENT_CORE", "org.talend.component.core"); //$NON-NLS-1$ //$NON-NLS-2$
+            jetBean.addClassPath("DESIGNER_CORE", "org.talend.designer.core"); //$NON-NLS-1$ //$NON-NLS-2$
             jetBean.addClassPath("HADOOP_DISTRIBUTIONS", "org.talend.hadoop.distribution"); //$NON-NLS-1$ //$NON-NLS-2$
             jetBean.addClassPath("HADOOP_CUSTOM_DISTRIBUTIONS", "org.talend.hadoop.distribution.custom"); //$NON-NLS-1$ //$NON-NLS-2$
 
@@ -434,29 +463,17 @@ public final class CodeGeneratorEmittersPoolFactory {
 
             // Spark, M/R and Storm requires the plugin org.talend.designer.spark to be in the classpath in order to
             // generate the code.
-            if (PluginChecker.isPluginLoaded("org.talend.designer.spark") && ("SPARK".equals(component.getPaletteType()) //$NON-NLS-1$ //$NON-NLS-2$
+            String sparkUtilsPluginName = "org.talend.designer.spark"; //$NON-NLS-1$
+            String bigDataUtilsPluginName = "org.talend.designer.bigdata"; //$NON-NLS-1$
+            if (PluginChecker.isPluginLoaded(sparkUtilsPluginName) && ("SPARK".equals(component.getPaletteType()) //$NON-NLS-1$ 
                     || "MR".equals(component.getPaletteType()) || "STORM".equals(component.getPaletteType()) //$NON-NLS-1$ //$NON-NLS-2$
-                    || "SPARKSTREAMING".equals(component.getPaletteType()))) { //$NON-NLS-1$
-                jetBean.addClassPath("BIGDATA_LIBRARIES", "org.talend.designer.bigdata"); //$NON-NLS-1$ //$NON-NLS-2$
-                jetBean.addClassPath("SPARK_LIBRARIES", "org.talend.designer.spark"); //$NON-NLS-1$ //$NON-NLS-2$
-                try {
-                    // The parent class loader is used first to find all of the classes that a javajet code generator
-                    // can use.
-                    ClassLoader baseClassLoader = new CodeGeneratorEmittersPoolFactory().getClass().getClassLoader();
-                    // This secondary class loader is used to find big data utility classes. None of the classes in the
-                    // parent can depend on these classes, but these can depend on the parent.
-                    ClassLoader bigDataUtilsClassLoader = Platform.getBundle("org.talend.designer.bigdata") //$NON-NLS-1$
-                            .loadClass("org.talend.designer.bigdata.common.BigDataDataProcess").getClassLoader(); //$NON-NLS-1$
-                    ClassLoader delegateClassLoader = new DelegateClassLoader(baseClassLoader, bigDataUtilsClassLoader);
-                    // Add another class loader for spark utilities. This can depend on classes already in the delegate,
-                    // but they can't depend on its classes.
-                    ClassLoader sparkUtilsClassLoader = Platform.getBundle("org.talend.designer.spark") //$NON-NLS-1$
-                            .loadClass("org.talend.designer.spark.SparkPlugin").getClassLoader(); //$NON-NLS-1$
-                    delegateClassLoader = new DelegateClassLoader(delegateClassLoader, sparkUtilsClassLoader);
-                    jetBean.setClassLoader(delegateClassLoader);
-                } catch (ClassNotFoundException e) {
-                    ExceptionHandler.process(e);
-                }
+            || "SPARKSTREAMING".equals(component.getPaletteType()))) { //$NON-NLS-1$
+                jetBean.addClassPath("BIGDATA_LIBRARIES", bigDataUtilsPluginName); //$NON-NLS-1$ 
+                jetBean.addClassPath("SPARK_LIBRARIES", sparkUtilsPluginName); //$NON-NLS-1$ 
+                jetBean.setClassLoader(createDelegateClassLoader(
+                        createDelegateClassLoader(new CodeGeneratorEmittersPoolFactory().getClass().getClassLoader(),
+                                bigDataUtilsPluginName, "org.talend.designer.bigdata.common.BigDataDataProcess"), //$NON-NLS-1$
+                        sparkUtilsPluginName, "org.talend.designer.spark.SparkPlugin")); //$NON-NLS-1$
 
                 // If Spark AND with an external component, use the external component as the parent classloader and
                 // spark as a secondary, delegate classloader.
@@ -464,17 +481,16 @@ public final class CodeGeneratorEmittersPoolFactory {
                     jetBean.addClassPath(
                             "EXTERNAL_COMPONENT_" + component.getPluginExtension().toUpperCase().replaceAll("\\.", "_"), //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
                             component.getPluginExtension());
-                    jetBean.setClassLoader(new DelegateClassLoader(
-                            ExternalNodesFactory.getInstance(component.getPluginExtension()).getClass().getClassLoader(),
-                            jetBean.getClassLoader()));
+                    jetBean.setClassLoader(new DelegateClassLoader(ExternalNodesFactory
+                            .getInstance(component.getPluginExtension()).getClass().getClassLoader(), jetBean.getClassLoader()));
                 }
 
             } else if (component.getPluginExtension() != null) {
 
                 jetBean.addClassPath("EXTERNAL_COMPONENT_" + component.getPluginExtension().toUpperCase().replaceAll("\\.", "_"), //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
                         component.getPluginExtension());
-                jetBean.setClassLoader(
-                        ExternalNodesFactory.getInstance(component.getPluginExtension()).getClass().getClassLoader());
+                jetBean.setClassLoader(ExternalNodesFactory.getInstance(component.getPluginExtension()).getClass()
+                        .getClassLoader());
             } else {
                 jetBean.setClassLoader(new CodeGeneratorEmittersPoolFactory().getClass().getClassLoader());
             }
@@ -503,8 +519,8 @@ public final class CodeGeneratorEmittersPoolFactory {
     private static void initGenericComponent(ECodeLanguage codeLanguage, List<JetBean> jetBeans, ECodePart codePart,
             IComponent component) {
         if (component.getAvailableCodeParts().contains(codePart)) {
-            String templateURI = TemplateUtil.JET_STUB_DIRECTORY + TemplateUtil.DIR_SEP + TemplateUtil.RESOURCES_DIRECTORY_GENERIC
-                    + TemplateUtil.DIR_SEP + "component_" + codePart.getName()//$NON-NLS-1$
+            String templateURI = TemplateUtil.JET_STUB_DIRECTORY + TemplateUtil.DIR_SEP
+                    + TemplateUtil.RESOURCES_DIRECTORY_GENERIC + TemplateUtil.DIR_SEP + "component_" + codePart.getName()//$NON-NLS-1$
                     + TemplateUtil.EXT_SEP + codeLanguage.getExtension() + TemplateUtil.TEMPLATE_EXT;
             String componentsPath = "org.talend.designer.codegen";//$NON-NLS-1$
             // TODO
@@ -533,8 +549,8 @@ public final class CodeGeneratorEmittersPoolFactory {
             if (component.getPluginExtension() != null) {
                 jetBean.addClassPath("EXTERNAL_COMPONENT_" + component.getPluginExtension().toUpperCase().replaceAll("\\.", "_"), //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
                         component.getPluginExtension());
-                jetBean.setClassLoader(
-                        ExternalNodesFactory.getInstance(component.getPluginExtension()).getClass().getClassLoader());
+                jetBean.setClassLoader(ExternalNodesFactory.getInstance(component.getPluginExtension()).getClass()
+                        .getClassLoader());
             } else {
                 jetBean.setClassLoader(new CodeGeneratorEmittersPoolFactory().getClass().getClassLoader());
             }
@@ -550,8 +566,7 @@ public final class CodeGeneratorEmittersPoolFactory {
      * @return
      * @throws JETException
      */
-    private static void initializeEmittersPool(List<JetBean> components, ECodeLanguage codeLanguage,
-            IProgressMonitor monitorWrap) {
+    private static void initializeEmittersPool(List<JetBean> components, ECodeLanguage codeLanguage, IProgressMonitor monitorWrap) {
         IProgressMonitor monitor = new NullProgressMonitor();
         IProgressMonitor sub = new SubProgressMonitor(monitor, 1);
         int monitorBuffer = 0;
@@ -580,8 +595,8 @@ public final class CodeGeneratorEmittersPoolFactory {
 
         if (!isSkeletonChanged) {
             try {
-                alreadyCompiledEmitters = loadEmfPersistentData(
-                        EmfEmittersPersistenceFactory.getInstance(codeLanguage).loadEmittersPool(), components, monitorWrap);
+                alreadyCompiledEmitters = loadEmfPersistentData(EmfEmittersPersistenceFactory.getInstance(codeLanguage)
+                        .loadEmittersPool(), components, monitorWrap);
                 for (JetBean jetBean : alreadyCompiledEmitters) {
                     TalendJetEmitter emitter = new TalendJetEmitter(jetBean, dummyEmitter.getTalendEclipseHelper());
                     emitterPool.put(jetBean, emitter);
@@ -603,16 +618,15 @@ public final class CodeGeneratorEmittersPoolFactory {
 
         monitorWrap.worked(monitorBuffer);
         try {
-            EmfEmittersPersistenceFactory.getInstance(codeLanguage)
-                    .saveEmittersPool(extractEmfPersistenData(alreadyCompiledEmitters));
+            EmfEmittersPersistenceFactory.getInstance(codeLanguage).saveEmittersPool(
+                    extractEmfPersistenData(alreadyCompiledEmitters));
         } catch (BusinessException e) {
             log.error(Messages.getString("CodeGeneratorEmittersPoolFactory.PersitentData.Error") + e.getMessage(), e); //$NON-NLS-1$
         }
     }
 
     private static void synchronizedComponent(List<JetBean> components, IProgressMonitor sub,
-            List<JetBean> alreadyCompiledEmitters, TalendJetEmitter dummyEmitter, int monitorBuffer,
-            IProgressMonitor monitorWrap) {
+            List<JetBean> alreadyCompiledEmitters, TalendJetEmitter dummyEmitter, int monitorBuffer, IProgressMonitor monitorWrap) {
         for (JetBean jetBean : components) {
             if (!emitterPool.containsKey(jetBean)) {
                 ComponentCompilations.deleteMarkers();
@@ -670,8 +684,8 @@ public final class CodeGeneratorEmittersPoolFactory {
         for (JetBean unit : alreadyCompiledEmitters) {
             // long unitCRC = extractTemplateHashCode(unit);
             long unitCRC = unit.getCrc();
-            toReturn.add(new LightJetBean(unit.getTemplateRelativeUri(), unit.getClassName(), unit.getMethodName(),
-                    unit.getVersion(), unit.getLanguage(), unitCRC));
+            toReturn.add(new LightJetBean(unit.getTemplateRelativeUri(), unit.getClassName(), unit.getMethodName(), unit
+                    .getVersion(), unit.getLanguage(), unitCRC));
         }
         return toReturn;
     }
@@ -737,8 +751,8 @@ public final class CodeGeneratorEmittersPoolFactory {
                     if (!forceMethodLoad) {
                         lightBean = datas.get(lightBeanIndex);
                     } else {
-                        lightBean = mapOnName.get(myLightJetBean.getTemplateRelativeUri()
-                                .substring(myLightJetBean.getTemplateRelativeUri().lastIndexOf("/"))); //$NON-NLS-1$
+                        lightBean = mapOnName.get(myLightJetBean.getTemplateRelativeUri().substring(
+                                myLightJetBean.getTemplateRelativeUri().lastIndexOf("/"))); //$NON-NLS-1$
                     }
                     if (lightBean != null && lightBean.getCrc() == unit.getCrc()) {
                         unit.setClassName(lightBean.getClassName());
