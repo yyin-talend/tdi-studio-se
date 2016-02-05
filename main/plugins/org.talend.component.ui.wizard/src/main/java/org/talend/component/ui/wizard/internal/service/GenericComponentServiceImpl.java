@@ -121,11 +121,6 @@ public class GenericComponentServiceImpl implements ComponentService {
     }
 
     @Override
-    public ComponentProperties getPropertiesForComponent(String componentId) {
-        return componentService.getPropertiesForComponent(componentId);
-    }
-
-    @Override
     public String storeProperties(ComponentProperties properties, String name, String repositoryLocation, Schema schema) {
         return componentService.storeProperties(properties, name, repositoryLocation, schema);
     }
