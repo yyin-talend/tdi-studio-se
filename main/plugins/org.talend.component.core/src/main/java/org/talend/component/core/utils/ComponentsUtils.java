@@ -151,6 +151,9 @@ public class ComponentsUtils {
             }
         }
 
+        // Dont use Value Evaluator here.
+        componentProperties.setValueEvaluator(null);
+
         // Have to initialize for the messages
         componentProperties.getProperties();
         List<Widget> formWidgets = form.getWidgets();
@@ -166,8 +169,8 @@ public class ComponentsUtils {
                 if (!isSameComponentProperties(componentProperties, widgetProperty)) {
                     propertiesPath = getPropertiesPath(parentPropertiesPath, subProperties.getName());
                 }
-                elementParameters.addAll(
-                        getParametersFromForm(element, compCategory, subProperties, propertiesPath, subForm, widget, lastRN));
+                elementParameters.addAll(getParametersFromForm(element, compCategory, subProperties, propertiesPath, subForm,
+                        widget, lastRN));
                 continue;
             }
 

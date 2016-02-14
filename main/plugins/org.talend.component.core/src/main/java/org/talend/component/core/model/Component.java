@@ -27,12 +27,17 @@ import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.graphics.ImageData;
 import org.talend.commons.exception.BusinessException;
 import org.talend.component.core.constants.IComponentConstants;
+import org.talend.component.core.context.ComponentContextPropertyValueEvaluator;
 import org.talend.component.core.utils.ComponentsUtils;
+import org.talend.components.api.NamedThing;
 import org.talend.components.api.component.ComponentDefinition;
 import org.talend.components.api.component.ComponentImageType;
 import org.talend.components.api.component.Connector;
 import org.talend.components.api.component.Trigger;
 import org.talend.components.api.properties.ComponentProperties;
+import org.talend.components.api.properties.ComponentProperties.Deserialized;
+import org.talend.components.api.properties.presentation.Form;
+import org.talend.components.api.schema.SchemaElement;
 import org.talend.components.api.service.ComponentService;
 import org.talend.core.CorePlugin;
 import org.talend.core.GlobalServiceRegister;
@@ -52,11 +57,8 @@ import org.talend.core.model.process.IProcess;
 import org.talend.core.model.temp.ECodePart;
 import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.core.prefs.ITalendCorePrefConstants;
+import org.talend.core.runtime.services.ComponentServiceWithValueEvaluator;
 import org.talend.core.ui.services.IComponentsLocalProviderService;
-import org.talend.daikon.NamedThing;
-import org.talend.daikon.properties.Properties.Deserialized;
-import org.talend.daikon.properties.presentation.Form;
-import org.talend.daikon.schema.SchemaElement;
 import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.model.components.AbstractComponent;
 import org.talend.designer.core.model.components.DummyComponent;
@@ -747,8 +749,17 @@ public class Component extends AbstractComponent {
             props = node.getComponentProperties();
             form = props.getForm(advanced ? IComponentConstants.FORM_ADVANCED : IComponentConstants.FORM_MAIN);
         }
-        listParam.addAll(
-                ComponentsUtils.getParametersFromForm(node, category, node.getComponentProperties(), null, form, null, null));
+        List<ElementParameter> parameters = ComponentsUtils.getParametersFromForm(node, category, node.getComponentProperties(),
+                null, form, null, null);
+        ComponentService componentService = new ComponentServiceWithValueEvaluator(ComponentsUtils.getComponentService(),
+                new ComponentContextPropertyValueEvaluator(node));
+        for (ElementParameter parameter : parameters) {
+            if (parameter instanceof GenericElementParameter) {
+                GenericElementParameter genericElementParameter = (GenericElementParameter) parameter;
+                genericElementParameter.setComponentService(componentService);
+            }
+        }
+        listParam.addAll(parameters);
     }
 
     private void initializePropertyParameters(List<ElementParameter> listParam, final INode node) {
