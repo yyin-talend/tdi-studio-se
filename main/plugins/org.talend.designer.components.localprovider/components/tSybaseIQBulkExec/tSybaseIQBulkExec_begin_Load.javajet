@@ -144,6 +144,7 @@ if(columnList != null && columnList.size() > 0) {
 
     java.sql.Statement stmt_<%=cid %>=conn_<%=cid %>.createStatement();
     stmt_<%=cid %>.execute("SET TEMPORARY OPTION ESCAPE_CHARACTER='ON'");
+    stmt_<%=cid %>.execute("SET TEMPORARY OPTION LOAD_ZEROLENGTH_ASNULL='ON'");
 
     //stmt_<%=cid %>.execute("SET TEMPORARY OPTION ALLOW_READ_CLIENT_FILE='ON'");//sybaseIQ 15 whether is set?
 
