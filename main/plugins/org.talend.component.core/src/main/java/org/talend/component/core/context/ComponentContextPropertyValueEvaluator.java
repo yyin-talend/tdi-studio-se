@@ -12,13 +12,13 @@
 // ============================================================================
 package org.talend.component.core.context;
 
-import org.talend.components.api.properties.Property;
-import org.talend.components.api.properties.PropertyValueEvaluator;
 import org.talend.core.model.process.IContext;
 import org.talend.core.model.process.IContextManager;
 import org.talend.core.model.process.INode;
 import org.talend.core.model.process.IProcess;
 import org.talend.core.model.utils.ContextParameterUtils;
+import org.talend.daikon.properties.Property;
+import org.talend.daikon.properties.PropertyValueEvaluator;
 
 /**
  * created by ycbai on 2016年2月6日 Detailled comment
@@ -34,6 +34,9 @@ public class ComponentContextPropertyValueEvaluator implements PropertyValueEval
 
     @Override
     public Object evaluate(Property property, Object storedValue) {
+        if (storedValue == null) {
+            return storedValue;
+        }
         IContext context = null;
         if (node != null) {
             IProcess process = node.getProcess();

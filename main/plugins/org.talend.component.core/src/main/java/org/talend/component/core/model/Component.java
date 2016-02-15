@@ -29,15 +29,11 @@ import org.talend.commons.exception.BusinessException;
 import org.talend.component.core.constants.IComponentConstants;
 import org.talend.component.core.context.ComponentContextPropertyValueEvaluator;
 import org.talend.component.core.utils.ComponentsUtils;
-import org.talend.components.api.NamedThing;
 import org.talend.components.api.component.ComponentDefinition;
 import org.talend.components.api.component.ComponentImageType;
 import org.talend.components.api.component.Connector;
 import org.talend.components.api.component.Trigger;
 import org.talend.components.api.properties.ComponentProperties;
-import org.talend.components.api.properties.ComponentProperties.Deserialized;
-import org.talend.components.api.properties.presentation.Form;
-import org.talend.components.api.schema.SchemaElement;
 import org.talend.components.api.service.ComponentService;
 import org.talend.core.CorePlugin;
 import org.talend.core.GlobalServiceRegister;
@@ -59,6 +55,10 @@ import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.core.prefs.ITalendCorePrefConstants;
 import org.talend.core.runtime.services.ComponentServiceWithValueEvaluator;
 import org.talend.core.ui.services.IComponentsLocalProviderService;
+import org.talend.daikon.NamedThing;
+import org.talend.daikon.properties.Properties.Deserialized;
+import org.talend.daikon.properties.presentation.Form;
+import org.talend.daikon.schema.SchemaElement;
 import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.model.components.AbstractComponent;
 import org.talend.designer.core.model.components.DummyComponent;
@@ -801,8 +801,8 @@ public class Component extends AbstractComponent {
                             param.setValue(defaultValue);
                             if (param.getFieldType() == EParameterFieldType.ENCODING_TYPE) {
                                 String encodingType = TalendTextUtils.removeQuotes((String) defaultValue);
-                                IElementParameter elementParameter = param.getChildParameters()
-                                        .get(EParameterName.ENCODING_TYPE.getName());
+                                IElementParameter elementParameter = param.getChildParameters().get(
+                                        EParameterName.ENCODING_TYPE.getName());
                                 if (elementParameter != null) {
                                     elementParameter.setValue(encodingType);
                                 }
@@ -1699,8 +1699,8 @@ public class Component extends AbstractComponent {
                     ComponentProperties.class);
             if (fromSerialized != null) {
                 ComponentProperties componentProperties = fromSerialized.properties;
-                ((GenericElementParameter) param).setComponentProperties(
-                        ComponentsUtils.getCurrentComponentProperties(componentProperties, param.getName()));
+                ((GenericElementParameter) param).setComponentProperties(ComponentsUtils.getCurrentComponentProperties(
+                        componentProperties, param.getName()));
             }
         }
     }
@@ -1740,8 +1740,8 @@ public class Component extends AbstractComponent {
         if (iNode != null) {
             ComponentProperties iNodeComponentProperties = iNode.getComponentProperties();
             if (iNodeComponentProperties != null && param instanceof GenericElementParameter) {
-                ComponentProperties paramComponentProperties = ComponentsUtils
-                        .getCurrentComponentProperties(iNodeComponentProperties, param.getName());
+                ComponentProperties paramComponentProperties = ComponentsUtils.getCurrentComponentProperties(
+                        iNodeComponentProperties, param.getName());
                 if (paramComponentProperties != null) {
                     ((GenericElementParameter) param).setComponentProperties(paramComponentProperties);
                     return ComponentsUtils.getGenericPropertyValue(iNodeComponentProperties, param.getName());
