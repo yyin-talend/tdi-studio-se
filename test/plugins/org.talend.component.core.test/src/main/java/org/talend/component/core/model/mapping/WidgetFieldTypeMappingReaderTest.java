@@ -12,10 +12,11 @@
 // ============================================================================
 package org.talend.component.core.model.mapping;
 
-import static org.mockito.Mockito.*;
 import junit.framework.Assert;
 
 import org.junit.Test;
+import org.talend.daikon.NamedThing;
+import org.talend.daikon.SimpleNamedThing;
 
 /**
  * created by hcyi on Feb 16, 2016 Detailled comment
@@ -25,8 +26,16 @@ public class WidgetFieldTypeMappingReaderTest {
 
     @Test
     public void testGetFieldType() {
-        WidgetFieldTypeMappingReader mappingReader = mock(WidgetFieldTypeMappingReader.class);
-        String fieldType = mappingReader.getFieldType("DEFAULT", "STRING");
-        Assert.assertEquals("TEXT", fieldType);
+        NamedThing nameAndLabel = new SimpleNamedThing("testName", "testLabel");//$NON-NLS-1$//$NON-NLS-2$
+        Assert.assertEquals("testName", nameAndLabel.getName());//$NON-NLS-1$
+        Assert.assertEquals("testLabel", nameAndLabel.getDisplayName());//$NON-NLS-1$
+        Assert.assertNull(nameAndLabel.getTitle());
+        WidgetFieldTypeMappingReader mappingReader = WidgetFieldTypeMappingReader.getInstance();
+        String fieldType = mappingReader.getFieldType("DEFAULT", nameAndLabel, "STRING");//$NON-NLS-1$//$NON-NLS-2$
+        Assert.assertEquals("TEXT", fieldType);//$NON-NLS-1$
+        fieldType = mappingReader.getFieldType("DEFAULT", nameAndLabel, null);//$NON-NLS-1$
+        Assert.assertEquals("LABEL", fieldType);//$NON-NLS-1$
+        fieldType = mappingReader.getFieldType("HIDDEN_TEXT", nameAndLabel, "HIDDEN_TEXT");//$NON-NLS-1$//$NON-NLS-2$
+        Assert.assertEquals("PASSWORD", fieldType);//$NON-NLS-1$
     }
 }

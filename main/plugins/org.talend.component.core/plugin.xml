@@ -127,30 +127,25 @@
             name="NAME_SELECTION_REFERENCE"
             widgetType="NAME_SELECTION_REFERENCE">
       </Mapping>
-       <Mapping
-            mapFieldType="SCHEMA_EDITOR"
-            name="SCHEMA_EDITOR"
-            widgetType="SCHEMA_EDITOR">
-      </Mapping>
+      <Mapping
+             mapFieldType="SCHEMA_EDITOR"
+             name="SCHEMA_EDITOR"
+             widgetType="SCHEMA_EDITOR">
+       </Mapping>
        <Mapping
             mapFieldType="SCHEMA_TYPE"
             name="SCHEMA_REFERENCE"
             widgetType="SCHEMA_REFERENCE">
       </Mapping>
-       <Mapping
-            mapFieldType="PASSWORD"
-            name="ENCRYPT"
-            widgetType="ENCRYPT">
+      <Mapping
+            mapFieldType="TABLE"
+            name="TABLE"
+            widgetType="TABLE">
       </Mapping>
        <Mapping
-            mapFieldType="PASSWORD"
-            name="UI_PASSWORD"
-            widgetType="UI_PASSWORD">
-      </Mapping>
-       <Mapping
-            mapFieldType="PASSWORD"
-            name="SUPPRESS_LOGGING"
-            widgetType="SUPPRESS_LOGGING">
+            mapFieldType="HIDDEN_TEXT"
+            name="HIDDEN_TEXT"
+            widgetType="HIDDEN_TEXT">
       </Mapping>
    </extension>
 
