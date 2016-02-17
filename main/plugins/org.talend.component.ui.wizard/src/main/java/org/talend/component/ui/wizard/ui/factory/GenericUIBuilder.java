@@ -134,12 +134,7 @@ public class GenericUIBuilder {
     }
 
     private NamedThing getProperty(Widget widget) {
-        NamedThing[] properties = widget.getProperties();
-        NamedThing property = null;
-        if (properties != null && properties.length > 0) {
-            property = properties[0];
-        }
-        return property;
+        return widget.getContent();
     }
 
 }
