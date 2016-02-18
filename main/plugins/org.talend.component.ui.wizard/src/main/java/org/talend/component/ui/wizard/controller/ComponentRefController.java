@@ -36,10 +36,10 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.ui.views.properties.tabbed.ITabbedPropertyConstants;
 import org.talend.component.core.model.GenericElementParameter;
-import org.talend.daikon.NamedThing;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.INode;
 import org.talend.core.ui.properties.tab.IDynamicProperty;
+import org.talend.daikon.NamedThing;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.ui.editor.cmd.PropertyChangeCommand;
@@ -277,7 +277,10 @@ public class ComponentRefController extends AbstractElementPropertySectionContro
         List<INode> refNodes = new ArrayList<>();
         if (param instanceof GenericElementParameter) {
             GenericElementParameter gParameter = (GenericElementParameter) param;
-            refNodes = (List<INode>) part.getProcess().getNodesOfType(gParameter.getWidget().getReferencedComponentName());
+            if (gParameter != null && gParameter.getElement() != null && gParameter.getElement() instanceof Node) {
+                Node node = (Node) gParameter.getElement();
+                refNodes = (List<INode>) node.getProcess().getNodesOfType(gParameter.getWidget().getReferencedComponentName());
+            }
         }
         return refNodes;
     }
