@@ -107,6 +107,7 @@ public class MissingSettingsMultiThreadDynamicComposite extends TopMessagesMulti
                     public void widgetSelected(SelectionEvent e) {
                         if (!missModulesNeeded.isEmpty()) {
                             ModulesInstallerUtil.forceInstallModules(getShell(), component, missModulesNeeded);
+                            checkVisibleTopMessages();
                         }
                     }
 
