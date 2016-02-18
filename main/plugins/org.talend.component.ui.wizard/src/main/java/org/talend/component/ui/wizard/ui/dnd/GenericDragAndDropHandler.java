@@ -25,6 +25,7 @@ import org.talend.component.core.utils.ComponentsUtils;
 import org.talend.component.core.utils.SchemaUtils;
 import org.talend.component.ui.model.genericMetadata.GenericConnection;
 import org.talend.component.ui.model.genericMetadata.GenericConnectionItem;
+import org.talend.component.ui.model.genericMetadata.SubContainer;
 import org.talend.components.api.properties.ComponentProperties;
 import org.talend.core.GlobalServiceRegister;
 import org.talend.core.model.components.EComponentType;
@@ -40,10 +41,10 @@ import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.utils.IComponentName;
 import org.talend.core.repository.RepositoryComponentSetting;
 import org.talend.daikon.NamedThing;
-import org.talend.daikon.properties.Properties.Deserialized;
 import org.talend.daikon.properties.Property;
 import org.talend.daikon.schema.SchemaElement.Type;
 import org.talend.repository.model.RepositoryNode;
+import orgomg.cwm.objectmodel.core.ModelElement;
 
 /**
  * 
@@ -81,61 +82,55 @@ public class GenericDragAndDropHandler extends AbstractComponentDragAndDropHandl
         if (connection == null) {
             return null;
         }
-        String serialized = connection.getCompProperties();
-        if (serialized != null) {
-            Deserialized<ComponentProperties> fromSerialized = ComponentProperties.fromSerialized(serialized,
-                    ComponentProperties.class);
-            if (fromSerialized != null) {
-                ComponentProperties componentProperties = fromSerialized.properties;
-                String paramName = ComponentsUtils.getPropertyName(value);
-                if (value != null && value.startsWith(componentProperties.getName())) {
-                    if (value.indexOf(IComponentConstants.EXP_SEPARATOR) != -1) {
-                        value = value.substring(componentProperties.getName().length() + 1, value.length());
-                    }
-                }
-                if (IComponentConstants.SCHEMA.equalsIgnoreCase(paramName)) {
-                    ComponentProperties componentModuleProperties = SchemaUtils.getCurrentComponentProperties(table);
-                    if (componentModuleProperties != null) {
-                        NamedThing namedThing = componentModuleProperties.getProperty(paramName);
-                        if (namedThing != null && namedThing instanceof ComponentProperties) {
-                            return ComponentsUtils.getGenericPropertyValue(componentModuleProperties, namedThing.getName()
-                                    + IComponentConstants.EXP_SEPARATOR + paramName);
-                        }
-                    }
-                } else if (IComponentConstants.MODULENAME.equalsIgnoreCase(paramName)) {
-                    ComponentProperties componentModuleProperties = SchemaUtils.getCurrentComponentProperties(table);
-                    if (componentModuleProperties != null) {
-                        Property property = componentModuleProperties.getValuedProperty(paramName);
-                        if (property != null) {
-                            if (Type.STRING.equals(property.getType())) {
-                                return getRepositoryValueOfStringType(connection, StringUtils.trimToNull(table.getLabel()));
-                            } else {
-                                return table.getLabel();
-                            }
-                        }
-                    }
-                } else if (IComponentConstants.QUERYMODE.equalsIgnoreCase(paramName)) {
-                    if (ComponentsUtils.getGenericPropertyValue(componentProperties, value) != null) {
-                        return ComponentsUtils.getGenericPropertyValue(componentProperties, value);
-                    } else {
-                        return IComponentConstants.QUERY_QUERY;
-                    }
-                } else if (IComponentConstants.OUTPUTACTION.equalsIgnoreCase(paramName)) {
-                    if (ComponentsUtils.getGenericPropertyValue(componentProperties, value) != null) {
-                        return ComponentsUtils.getGenericPropertyValue(componentProperties, value);
-                    } else {
-                        return IComponentConstants.ACTION_INSERT;
-                    }
-                } else if (IComponentConstants.LOGIN_TYPE.equalsIgnoreCase(paramName)) {
-                    return ComponentsUtils.getGenericPropertyValue(componentProperties, value);
-                } else {
-                    Object object = ComponentsUtils.getGenericPropertyValue(componentProperties, value);
-                    if (object != null && object instanceof String) {
-                        return getRepositoryValueOfStringType(connection, StringUtils.trimToNull(object.toString()));
-                    }
-                    return ComponentsUtils.getGenericPropertyValue(componentProperties, value);
+        ComponentProperties componentProperties = ComponentsUtils.getComponentPropertiesFromSerialized(connection
+                .getCompProperties());
+        String paramName = ComponentsUtils.getPropertyName(value);
+        if (value != null && value.startsWith(componentProperties.getName())) {
+            if (value.indexOf(IComponentConstants.EXP_SEPARATOR) != -1) {
+                value = value.substring(componentProperties.getName().length() + 1, value.length());
+            }
+        }
+        if (IComponentConstants.SCHEMA.equalsIgnoreCase(paramName)) {
+            ComponentProperties componentModuleProperties = SchemaUtils.getCurrentComponentProperties(table);
+            if (componentModuleProperties != null) {
+                NamedThing namedThing = componentModuleProperties.getProperty(paramName);
+                if (namedThing != null && namedThing instanceof ComponentProperties) {
+                    return ComponentsUtils.getGenericPropertyValue(componentModuleProperties, namedThing.getName()
+                            + IComponentConstants.EXP_SEPARATOR + paramName);
                 }
             }
+        } else if (IComponentConstants.MODULENAME.equalsIgnoreCase(paramName)) {
+            ComponentProperties componentModuleProperties = SchemaUtils.getCurrentComponentProperties(table);
+            if (componentModuleProperties != null) {
+                Property property = componentModuleProperties.getValuedProperty(paramName);
+                if (property != null) {
+                    if (Type.STRING.equals(property.getType())) {
+                        return getRepositoryValueOfStringType(connection, StringUtils.trimToNull(table.getLabel()));
+                    } else {
+                        return table.getLabel();
+                    }
+                }
+            }
+        } else if (IComponentConstants.QUERYMODE.equalsIgnoreCase(paramName)) {
+            if (ComponentsUtils.getGenericPropertyValue(componentProperties, value) != null) {
+                return ComponentsUtils.getGenericPropertyValue(componentProperties, value);
+            } else {
+                return IComponentConstants.QUERY_QUERY;
+            }
+        } else if (IComponentConstants.OUTPUTACTION.equalsIgnoreCase(paramName)) {
+            if (ComponentsUtils.getGenericPropertyValue(componentProperties, value) != null) {
+                return ComponentsUtils.getGenericPropertyValue(componentProperties, value);
+            } else {
+                return IComponentConstants.ACTION_INSERT;
+            }
+        } else if (IComponentConstants.LOGIN_TYPE.equalsIgnoreCase(paramName)) {
+            return ComponentsUtils.getGenericPropertyValue(componentProperties, value);
+        } else {
+            Object object = ComponentsUtils.getGenericPropertyValue(componentProperties, value);
+            if (object != null && object instanceof String) {
+                return getRepositoryValueOfStringType(connection, StringUtils.trimToNull(object.toString()));
+            }
+            return ComponentsUtils.getGenericPropertyValue(componentProperties, value);
         }
         return null;
     }
@@ -152,23 +147,29 @@ public class GenericDragAndDropHandler extends AbstractComponentDragAndDropHandl
         if (connection == null) {
             return false;
         }
-        String serialized = connection.getCompProperties();
-        if (serialized != null) {
-            Deserialized<ComponentProperties> fromSerialized = ComponentProperties.fromSerialized(serialized,
-                    ComponentProperties.class);
-            if (fromSerialized != null) {
-                ComponentProperties componentProperties = fromSerialized.properties;
-                List<Property> propertyValues = ComponentsUtils.getAllValuedProperties(componentProperties);
-                for (Property property : propertyValues) {
+        ComponentProperties componentProperties = ComponentsUtils.getComponentPropertiesFromSerialized(connection
+                .getCompProperties());
+        List<Property> propertyValues = ComponentsUtils.getAllValuedProperties(componentProperties);
+        for (Property property : propertyValues) {
+            paramName = ComponentsUtils.getPropertyName(paramName);
+            if (property.getName().equals(paramName)) {
+                return property.getTaggedValue(IComponentConstants.REPOSITORY_VALUE) != null;
+            }
+            if (IComponentConstants.QUERYMODE.equalsIgnoreCase(paramName)
+                    || IComponentConstants.OUTPUTACTION.equalsIgnoreCase(paramName)) {
+                return true;
+            }
+        }
+        for (ModelElement modelElement : connection.getOwnedElement()) {
+            if (modelElement instanceof SubContainer) {
+                SubContainer subContainer = (SubContainer) modelElement;
+                ComponentProperties subComponentProperties = ComponentsUtils.getComponentPropertiesFromSerialized(subContainer
+                        .getCompProperties());
+                List<Property> subPropertyValues = ComponentsUtils.getAllValuedProperties(subComponentProperties);
+                for (Property subProperty : subPropertyValues) {
                     paramName = ComponentsUtils.getPropertyName(paramName);
-                    if (property.getName().equals(paramName)) {
-                        return property.getTaggedValue(IComponentConstants.REPOSITORY_VALUE) != null;
-                    }
-                    if (IComponentConstants.MODULENAME.equalsIgnoreCase(paramName)
-                            || IComponentConstants.SCHEMA.equalsIgnoreCase(paramName)
-                            || IComponentConstants.QUERYMODE.equalsIgnoreCase(paramName)
-                            || IComponentConstants.OUTPUTACTION.equalsIgnoreCase(paramName)) {
-                        return true;
+                    if (subProperty.getName().equals(paramName)) {
+                        return subProperty.getTaggedValue(IComponentConstants.REPOSITORY_VALUE) != null;
                     }
                 }
             }
