@@ -16,7 +16,9 @@ import java.util.List;
 
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.exception.PersistenceException;
+import org.talend.component.core.constants.IComponentConstants;
 import org.talend.component.core.constants.IGenericConstants;
+import org.talend.component.core.utils.ComponentsUtils;
 import org.talend.component.core.utils.SchemaUtils;
 import org.talend.component.ui.model.genericMetadata.GenericConnection;
 import org.talend.component.ui.model.genericMetadata.GenericConnectionItem;
@@ -41,10 +43,19 @@ public class GenericRepository implements Repository {
 
     @Override
     public String storeProperties(Properties properties, String name, String repositoryLocation, Schema schema) {
+        // Add repository value if it is from repository
+        if (properties != null && properties instanceof ComponentProperties) {
+            List<org.talend.daikon.properties.Property> propertyValues = ComponentsUtils
+                    .getAllValuedProperties((ComponentProperties) properties);
+            for (org.talend.daikon.properties.Property property : propertyValues) {
+                property.setTaggedValue(IComponentConstants.REPOSITORY_VALUE, property.getName());
+            }
+        }
+
         String serializedProperties = properties.toSerialized();
         if (repositoryLocation.contains(IGenericConstants.REPOSITORY_LOCATION_SEPARATOR)) {// nested properties to be
-            GenericConnectionItem item = getGenericConnectionItem(
-                    repositoryLocation.substring(0, repositoryLocation.indexOf(IGenericConstants.REPOSITORY_LOCATION_SEPARATOR)));
+            GenericConnectionItem item = getGenericConnectionItem(repositoryLocation.substring(0,
+                    repositoryLocation.indexOf(IGenericConstants.REPOSITORY_LOCATION_SEPARATOR)));
             if (item == null) {
                 throw new RuntimeException("Failed to find the GenericConnectionItem for location:" + repositoryLocation); //$NON-NLS-1$
             }

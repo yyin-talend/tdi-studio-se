@@ -98,8 +98,8 @@ public class GenericDragAndDropHandler extends AbstractComponentDragAndDropHandl
                     if (componentModuleProperties != null) {
                         NamedThing namedThing = componentModuleProperties.getProperty(paramName);
                         if (namedThing != null && namedThing instanceof ComponentProperties) {
-                            return ComponentsUtils.getGenericPropertyValue(componentModuleProperties,
-                                    namedThing.getName() + IComponentConstants.EXP_SEPARATOR + paramName);
+                            return ComponentsUtils.getGenericPropertyValue(componentModuleProperties, namedThing.getName()
+                                    + IComponentConstants.EXP_SEPARATOR + paramName);
                         }
                     }
                 } else if (IComponentConstants.MODULENAME.equalsIgnoreCase(paramName)) {
@@ -138,6 +138,42 @@ public class GenericDragAndDropHandler extends AbstractComponentDragAndDropHandl
             }
         }
         return null;
+    }
+
+    @Override
+    public boolean isGenericRepositoryValue(Connection connection, String paramName) {
+        if (paramName != null && canHandle(connection)) {
+            return isGenericRepositoryValue((GenericConnection) connection, paramName);
+        }
+        return false;
+    }
+
+    public boolean isGenericRepositoryValue(GenericConnection connection, String paramName) {
+        if (connection == null) {
+            return false;
+        }
+        String serialized = connection.getCompProperties();
+        if (serialized != null) {
+            Deserialized<ComponentProperties> fromSerialized = ComponentProperties.fromSerialized(serialized,
+                    ComponentProperties.class);
+            if (fromSerialized != null) {
+                ComponentProperties componentProperties = fromSerialized.properties;
+                List<Property> propertyValues = ComponentsUtils.getAllValuedProperties(componentProperties);
+                for (Property property : propertyValues) {
+                    paramName = ComponentsUtils.getPropertyName(paramName);
+                    if (property.getName().equals(paramName)) {
+                        return property.getTaggedValue(IComponentConstants.REPOSITORY_VALUE) != null;
+                    }
+                    if (IComponentConstants.MODULENAME.equalsIgnoreCase(paramName)
+                            || IComponentConstants.SCHEMA.equalsIgnoreCase(paramName)
+                            || IComponentConstants.QUERYMODE.equalsIgnoreCase(paramName)
+                            || IComponentConstants.OUTPUTACTION.equalsIgnoreCase(paramName)) {
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
     }
 
     @Override

@@ -176,7 +176,6 @@ public class ComponentsUtils {
             String parameterName = propertiesPath.concat(param.getName());
             param.setName(parameterName);
             param.setCategory(compCategory);
-            param.setRepositoryValue(parameterName);
             param.setShow(parentWidget == null ? widget.isVisible() : parentWidget.isVisible() && widget.isVisible());
             int rowNum = 0;
             if (widget.getOrder() != 1) {
@@ -207,6 +206,8 @@ public class ComponentsUtils {
                 Property property = componentProperties.getValuedProperty(se.getName());
                 if (property != null) {
                     param.setRequired(property.isRequired());
+                    // set the default value
+                    param.setDefaultValue(property.getDefaultValue());
                     param.setValue(property.getValue());
                     param.setSupportContext(isSupportContext(property));
                     List<?> values = property.getPossibleValues();
