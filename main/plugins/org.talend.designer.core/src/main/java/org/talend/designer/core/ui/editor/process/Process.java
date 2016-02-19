@@ -1424,7 +1424,11 @@ public class Process extends Element implements IProcess2, IGEFProcess, ILastVer
                 elemParam.setPropertyValue(key, value);
                 // end of fix for bug 2193
             } else if (param.getFieldType().equals(EParameterFieldType.PASSWORD)) {
-                param.setValue(pType.getRawValue());
+                if (generic) {
+                    param.setValue(value);
+                } else {
+                    param.setValue(pType.getRawValue());
+                }
             } else if (!param.getFieldType().equals(EParameterFieldType.SCHEMA_TYPE)) {
                 if (param.getFieldType().equals(EParameterFieldType.COLOR)) {
                     if (value != null && value.length() > 2) {

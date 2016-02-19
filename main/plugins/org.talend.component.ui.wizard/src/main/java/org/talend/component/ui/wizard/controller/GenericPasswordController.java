@@ -10,12 +10,10 @@
 // 9 rue Pages 92150 Suresnes, France
 //
 // ============================================================================
-package org.talend.designer.core.ui.editor.properties.controllers;
+package org.talend.component.ui.wizard.controller;
 
 import org.eclipse.gef.commands.Command;
 import org.eclipse.jface.dialogs.InputDialog;
-import org.eclipse.jface.fieldassist.DecoratedField;
-import org.eclipse.jface.fieldassist.TextControlCreator;
 import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
@@ -28,70 +26,25 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.ui.views.properties.tabbed.ITabbedPropertyConstants;
 import org.talend.commons.ui.runtime.image.ImageProvider;
+import org.talend.component.ui.wizard.i18n.Messages;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.ui.CoreUIPlugin;
 import org.talend.core.ui.properties.tab.IDynamicProperty;
-import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.ui.editor.cmd.PropertyChangeCommand;
+import org.talend.designer.core.ui.editor.properties.controllers.PasswordController;
 
 /**
- * DOC nrousseau class global comment. Detailled comment
+ * created by hcyi on Feb 19, 2016 Detailled comment
+ *
  */
-public class PasswordController extends TextController {
+public class GenericPasswordController extends PasswordController {
 
-    protected static final String PASSWORD = "PASSWORD"; //$NON-NLS-1$
-
-    /**
-     * DOC nrousseau PasswordController constructor comment.
-     * 
-     * @param dp
-     */
-    public PasswordController(IDynamicProperty dp) {
+    public GenericPasswordController(IDynamicProperty dp) {
         super(dp);
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * org.talend.designer.core.ui.editor.properties.controllers.TextController#isPasswordParam(org.talend.core.model
-     * .process.IElementParameter)
-     */
     @Override
-    protected boolean isPasswordParam(IElementParameter parameter) {
-        return true;
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.talend.designer.core.ui.editor.properties.controllers.TextController#isReadOnly()
-     */
-    @Override
-    protected boolean isReadOnly() {
-        return true;
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * org.talend.designer.core.ui.editor.properties.controllers.TextController#createControl(org.eclipse.swt.widgets
-     * .Composite, org.talend.core.model.process.IElementParameter, int, int, int, org.eclipse.swt.widgets.Control)
-     */
-    @Override
-    public Control createControl(Composite subComposite, IElementParameter param, int numInRow, int nbInRow, int top,
-            Control lastControl) {
-        Control lastControlUsed = super.createControl(subComposite, param, numInRow, nbInRow, top, lastControl);
-        FormData data = (FormData) lastControlUsed.getLayoutData();
-        if (!param.isRepositoryValueUsed()) {
-            data.right = new FormAttachment((numInRow * MAX_PERCENT) / nbInRow, -STANDARD_BUTTON_WIDTH);
-            lastControlUsed = addButton(subComposite, param, lastControlUsed, numInRow, nbInRow, top);
-        }
-        return lastControlUsed;
-    }
-
     protected Control addButton(Composite subComposite, IElementParameter param, Control lastControl, int numInRow, int nbInRow,
             int top) {
         Button btn;
@@ -130,35 +83,12 @@ public class PasswordController extends TextController {
         return lastControlUsed;
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * org.talend.designer.core.ui.editor.properties.controllers.TextController#estimateRowSize(org.eclipse.swt.widgets
-     * .Composite, org.talend.core.model.process.IElementParameter)
-     */
     @Override
-    public int estimateRowSize(Composite subComposite, IElementParameter param) {
-        if (!estimateInitialized) {
-            final DecoratedField dField = new DecoratedField(subComposite, SWT.BORDER, new TextControlCreator());
-            Point initialSize = dField.getLayoutControl().computeSize(SWT.DEFAULT, SWT.DEFAULT);
-            dField.getLayoutControl().dispose();
-
-            Button btn = getWidgetFactory().createButton(subComposite, "", SWT.PUSH); //$NON-NLS-1$
-            int buttonSize = btn.computeSize(SWT.DEFAULT, SWT.DEFAULT).y;
-            btn.dispose();
-            rowSize = Math.max(initialSize.y, buttonSize) + ITabbedPropertyConstants.VSPACE;
-            estimateInitialized = true;
-
-        }
-        return rowSize;
-    }
-
     protected Command createButtonCommand(final Button button) {
         if (button.getData(NAME).equals(PASSWORD)) {
             InputDialog dlg = new InputDialog(
                     button.getShell(),
-                    Messages.getString("PasswordController.NewPassword"), Messages.getString("PasswordController.NoteConvention"), "\"\"", null) { //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                    Messages.getString("GenericPasswordController.NewPassword"), Messages.getString("GenericPasswordController.NoteConvention"), "\"\"", null) { //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 
                 /*
                  * (non-Javadoc)
@@ -170,7 +100,7 @@ public class PasswordController extends TextController {
                     Control control = super.createDialogArea(parent);
                     String paramName = (String) button.getData(PARAMETER_NAME);
                     getText().setData(PARAMETER_NAME, paramName);
-                    editionControlHelper.register(paramName, getText());
+                    // editionControlHelper.register(paramName, getText());
                     return control;
                 }
             };
@@ -195,6 +125,13 @@ public class PasswordController extends TextController {
         public void widgetSelected(SelectionEvent e) {
             Command cmd = createCommand(e);
             executeCommand(cmd);
+            if (e.getSource() instanceof Button) {
+                Button button = (Button) e.getSource();
+                if (button.getData(NAME).equals(PASSWORD)) {
+                    String paramName = (String) button.getData(PARAMETER_NAME);
+                    refresh(elem.getElementParameter(paramName), false);
+                }
+            }
         }
     };
 
@@ -204,5 +141,4 @@ public class PasswordController extends TextController {
         }
         return null;
     }
-
 }
