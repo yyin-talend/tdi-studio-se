@@ -40,7 +40,6 @@ import org.talend.core.model.process.IElement;
 import org.talend.core.model.process.INode;
 import org.talend.core.ui.component.ComponentsFactoryProvider;
 import org.talend.daikon.NamedThing;
-import org.talend.daikon.properties.Properties.Deserialized;
 import org.talend.daikon.properties.Property;
 import org.talend.daikon.properties.presentation.Form;
 import org.talend.daikon.properties.presentation.Widget;
@@ -152,12 +151,15 @@ public class ComponentsUtils {
             }
         }
 
+        // Dont use Value Evaluator here.
+        componentProperties.setValueEvaluator(null);
+
         // Have to initialize for the messages
         componentProperties.getProperties();
         List<Widget> formWidgets = form.getWidgets();
         for (Widget widget : formWidgets) {
-            NamedThing[] widgetProperties = widget.getProperties();
-            NamedThing widgetProperty = widgetProperties[0];
+
+            NamedThing widgetProperty = widget.getContent();
 
             String propertiesPath = getPropertiesPath(parentPropertiesPath, null);
             if (widgetProperty instanceof Form) {
@@ -195,7 +197,7 @@ public class ComponentsUtils {
             SchemaElement se = null;
 
             if (widgetProperty instanceof SchemaElement) {
-                se = (SchemaElement) widgetProperties[0];
+                se = (SchemaElement) widgetProperty;
                 param.setContext(EConnectionType.FLOW_MAIN.getName());
             }
 
