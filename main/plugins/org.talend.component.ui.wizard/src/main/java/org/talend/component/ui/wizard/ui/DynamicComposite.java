@@ -135,8 +135,8 @@ public class DynamicComposite extends MultipleThreadDynamicComposite implements 
             componentService = new ComponentServiceWithValueEvaluator(internalService.getComponentService(),
                     new ComponentContextPropertyValueEvaluator(node));
         }
-        List<ElementParameter> parameters = ComponentsUtils.getParametersFromForm(element, section, props, null, form, null,
-                null);
+        List<ElementParameter> parameters = ComponentsUtils
+                .getParametersFromForm(element, section, props, null, form, null, null);
         for (ElementParameter parameter : parameters) {
             if (parameter instanceof GenericElementParameter) {
                 ((GenericElementParameter) parameter).callBeforePresent();
@@ -156,8 +156,7 @@ public class DynamicComposite extends MultipleThreadDynamicComposite implements 
                             ComponentProperties oldProperties = ((GenericElementParameter) oldParameter).getComponentProperties();
                             ComponentProperties newProperties = ((GenericElementParameter) parameter).getComponentProperties();
                             if (oldProperties != null && oldProperties.getName() != null && newProperties != null
-                                    && newProperties.getName() != null
-                                    && oldProperties.getName().equals(newProperties.getName())) {
+                                    && newProperties.getName() != null && oldProperties.getName().equals(newProperties.getName())) {
                                 if (parameter.getChildParameters().size() == 0) {
                                     parameter.getChildParameters().putAll(oldParameter.getChildParameters());
                                 }
@@ -172,6 +171,12 @@ public class DynamicComposite extends MultipleThreadDynamicComposite implements 
                             IElementParameter elementParameter = childParameters.get(EParameterName.PROPERTY_TYPE.getName());
                             if (elementParameter != null && EmfComponent.REPOSITORY.equals(elementParameter.getValue())) {
                                 String repositoryValue = parameter.getRepositoryValue();
+                                if (repositoryValue == null) {
+                                    if (parameter.getValue() != null) {
+                                        parameter.setRepositoryValue(parameter.getName());
+                                        repositoryValue = parameter.getRepositoryValue();
+                                    }
+                                }
                                 if (oldParameter.isShow(oldParameters) && (repositoryValue != null)
                                         && (!parameter.getName().equals(EParameterName.PROPERTY_TYPE.getName()))
                                         && parameter.getCategory() == section) {

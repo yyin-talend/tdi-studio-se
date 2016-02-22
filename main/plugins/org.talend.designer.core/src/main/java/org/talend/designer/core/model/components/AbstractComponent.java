@@ -225,4 +225,8 @@ public abstract class AbstractComponent implements IComponent {
     public Object getElementParameterValueFromComponentProperties(INode iNode, IElementParameter param) {
         return null;
     }
+
+    public boolean setGenericPropertyValue(IElementParameter param) {
+        return false;
+    }
 }

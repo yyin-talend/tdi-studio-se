@@ -298,6 +298,7 @@ public class ChangeValuesFromRepository extends ChangeMetadataCommand {
                 if (repositoryValue == null && isGenericRepositoryValue) {
                     repositoryValue = param.getName();
                     param.setRepositoryValue(repositoryValue);
+                    param.setRepositoryValueUsed(true);
                 }
                 if (repositoryValue == null || param.getRepositoryProperty() != null
                         && !param.getRepositoryProperty().equals(propertyParamName)) {

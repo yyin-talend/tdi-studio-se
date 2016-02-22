@@ -57,6 +57,7 @@ import org.talend.core.runtime.services.ComponentServiceWithValueEvaluator;
 import org.talend.core.ui.services.IComponentsLocalProviderService;
 import org.talend.daikon.NamedThing;
 import org.talend.daikon.properties.Properties.Deserialized;
+import org.talend.daikon.properties.Property;
 import org.talend.daikon.properties.presentation.Form;
 import org.talend.daikon.schema.SchemaElement;
 import org.talend.designer.core.DesignerPlugin;
@@ -1744,11 +1745,41 @@ public class Component extends AbstractComponent {
                         iNodeComponentProperties, param.getName());
                 if (paramComponentProperties != null) {
                     ((GenericElementParameter) param).setComponentProperties(paramComponentProperties);
+                    // update repository value
+                    Property property = iNodeComponentProperties.getValuedProperty(param.getName());
+                    if (property != null) {
+                        if (property.getTaggedValue(IComponentConstants.REPOSITORY_VALUE) != null) {
+                            param.setRepositoryValue(param.getName());
+                            param.setRepositoryValueUsed(true);
+                        }
+                    }
                     return ComponentsUtils.getGenericPropertyValue(iNodeComponentProperties, param.getName());
                 }
             }
         }
         return null;
+    }
+
+    @Override
+    public boolean setGenericPropertyValue(IElementParameter param) {
+        if (param == null || param.getName() == null) {
+            return false;
+        }
+        if (param instanceof GenericElementParameter) {
+            ComponentProperties componentProperties = ((Node) ((GenericElementParameter) param).getElement())
+                    .getComponentProperties();
+            ComponentProperties currentComponentProperties = ComponentsUtils.getCurrentComponentProperties(componentProperties,
+                    param.getName());
+            if (currentComponentProperties == null) {
+                return false;
+            }
+            Property property = componentProperties.getValuedProperty(param.getName());
+            if (property != null) {
+                property.setTaggedValue(IComponentConstants.REPOSITORY_VALUE, param.getName());
+                return true;
+            }
+        }
+        return false;
     }
 
     /**
