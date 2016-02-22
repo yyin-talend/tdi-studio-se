@@ -200,7 +200,7 @@ public class ConnectionManagerTest {
             boolean canRename = ConnectionManager.canRename(source, target, EConnectionType.FLOW_MAIN, "test1");
             assertTrue(canRename);
             canRename = ConnectionManager.canRename(source, target, EConnectionType.FLOW_MAIN, "test");
-            assertTrue(!canRename);
+            assertTrue(canRename);
         } catch (Exception e) {
             e.printStackTrace();
             fail("Test CanConnectToSource() method failure.");
