@@ -122,6 +122,7 @@ public class DynamicComposite extends MultipleThreadDynamicComposite implements 
         return parameters;
     }
 
+    // TUP-4160
     public List<ElementParameter> resetElementParameters() {
         ComponentService componentService = null;
         List<ElementParameter> oldParameters = (List<ElementParameter>) element.getElementParameters();

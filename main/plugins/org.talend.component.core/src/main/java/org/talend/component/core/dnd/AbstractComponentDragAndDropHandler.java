@@ -21,6 +21,7 @@ import org.talend.core.model.utils.AbstractDragAndDropServiceHandler;
  * created by hcyi on Oct 26, 2015 Detailled comment
  *
  */
+// TUP-4151 --remove this class
 public abstract class AbstractComponentDragAndDropHandler extends AbstractDragAndDropServiceHandler {
 
     protected static final String UNDEFINE = "UNDEFINE"; //$NON-NLS-1$

@@ -44,7 +44,6 @@ import org.talend.daikon.properties.Property;
 import org.talend.daikon.properties.presentation.Form;
 import org.talend.daikon.properties.presentation.Widget;
 import org.talend.daikon.schema.Schema;
-import org.talend.daikon.schema.SchemaElement;
 import org.talend.designer.core.model.components.ElementParameter;
 import org.talend.designer.core.ui.editor.cmd.ChangeMetadataCommand;
 import org.talend.designer.core.ui.editor.nodes.Node;
@@ -191,8 +190,8 @@ public class GenericElementParameter extends ElementParameter {
 
     private void update() {
         NamedThing property = componentProperties.getProperty(getParameterName());
-        if (property != null && property instanceof SchemaElement) {
-            List<?> values = ((SchemaElement) property).getPossibleValues();
+        if (property != null && property instanceof Property) {
+            List<?> values = ((Property) property).getPossibleValues();
             if (values != null) {
                 this.setPossibleValues(values);
             }
@@ -243,8 +242,8 @@ public class GenericElementParameter extends ElementParameter {
             // do nothing
         }
         if (schemaObj != null && schemaObj instanceof Schema) {
-            MetadataTable metadataTable = SchemaUtils.createSchema(String.valueOf(getValue()),
-                    componentProperties.toSerialized());
+            MetadataTable metadataTable = SchemaUtils
+                    .createSchema(String.valueOf(getValue()), componentProperties.toSerialized());
             SchemaUtils.convertComponentSchemaIntoTalendSchema((Schema) schemaObj, metadataTable);
             IMetadataTable newTable = MetadataToolHelper.convert(metadataTable);
             IElement element = this.getElement();

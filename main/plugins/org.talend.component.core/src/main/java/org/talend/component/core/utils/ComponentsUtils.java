@@ -40,6 +40,7 @@ import org.talend.core.model.process.IElement;
 import org.talend.core.model.process.INode;
 import org.talend.core.ui.component.ComponentsFactoryProvider;
 import org.talend.daikon.NamedThing;
+import org.talend.daikon.properties.PresentationItem;
 import org.talend.daikon.properties.Properties.Deserialized;
 import org.talend.daikon.properties.Property;
 import org.talend.daikon.properties.presentation.Form;
@@ -156,10 +157,8 @@ public class ComponentsUtils {
         componentProperties.setValueEvaluator(null);
 
         // Have to initialize for the messages
-        componentProperties.getProperties();
         List<Widget> formWidgets = form.getWidgets();
         for (Widget widget : formWidgets) {
-
             NamedThing widgetProperty = widget.getContent();
 
             String propertiesPath = getPropertiesPath(parentPropertiesPath, null);
@@ -195,59 +194,44 @@ public class ComponentsUtils {
             lastRN.set(rowNum);
             // handle form...
 
-            SchemaElement se = null;
-
-            if (widgetProperty instanceof SchemaElement) {
-                se = (SchemaElement) widgetProperty;
-                param.setContext(EConnectionType.FLOW_MAIN.getName());
-            }
-
-            EParameterFieldType fieldType = getFieldType(widget, widgetProperty, se);
+            EParameterFieldType fieldType = getFieldType(widget, widgetProperty);
             param.setFieldType(fieldType != null ? fieldType : EParameterFieldType.TEXT);
-            if (se == null) {
+            if (widgetProperty instanceof PresentationItem) {
                 param.setValue(widgetProperty.getDisplayName());
             } else {
-                Property property = componentProperties.getValuedProperty(se.getName());
-                if (property != null) {
-                    param.setRequired(property.isRequired());
-                    // set the default value
-                    param.setDefaultValue(property.getDefaultValue());
-                    param.setValue(property.getValue());
-                    param.setSupportContext(isSupportContext(property));
-                    List<?> values = property.getPossibleValues();
-                    if (values != null) {
-                        param.setPossibleValues(values);
-                        List<String> possVals = new ArrayList<>();
-                        List<String> possValsDisplay = new ArrayList<>();
-                        for (Object obj : values) {
-                            if (obj instanceof NamedThing) {
-                                NamedThing nal = (NamedThing) obj;
-                                possVals.add(nal.getName());
-                                possValsDisplay.add(nal.getDisplayName());
-                            } else {
-                                possVals.add(String.valueOf(obj));
-                                possValsDisplay.add(String.valueOf(obj));
-                            }
+                Property property = (Property) widgetProperty;
+                param.setRequired(property.isRequired());
+                param.setDefaultValue(property.getDefaultValue());
+                param.setValue(property.getValue());
+                param.setSupportContext(isSupportContext(property));
+                // TCOMP-96
+                param.setContext(EConnectionType.FLOW_MAIN.getName());
+                List<?> values = property.getPossibleValues();
+                if (values != null) {
+                    param.setPossibleValues(values);
+                    List<String> possVals = new ArrayList<>();
+                    List<String> possValsDisplay = new ArrayList<>();
+                    for (Object obj : values) {
+                        if (obj instanceof NamedThing) {
+                            NamedThing nal = (NamedThing) obj;
+                            possVals.add(nal.getName());
+                            possValsDisplay.add(nal.getDisplayName());
+                        } else {
+                            possVals.add(String.valueOf(obj));
+                            possValsDisplay.add(String.valueOf(obj));
                         }
-                        param.setListItemsDisplayName(possValsDisplay.toArray(new String[0]));
-                        param.setListItemsDisplayCodeName(possValsDisplay.toArray(new String[0]));
-                        param.setListItemsValue(possVals.toArray(new String[0]));
                     }
-                } // else a ComponentProperties so ignor
+                    param.setListItemsDisplayName(possValsDisplay.toArray(new String[0]));
+                    param.setListItemsDisplayCodeName(possValsDisplay.toArray(new String[0]));
+                    param.setListItemsValue(possVals.toArray(new String[0]));
+                }
             }
-            // if (widgetProperty instanceof PresentationItem) {
-            // param.setValue(null);
-            // }
             param.setReadOnly(false);
             param.setSerialized(true);
+            // TCOMP-96
             // Set param context when multiple schema
             if (EParameterFieldType.SCHEMA_TYPE.equals(param.getFieldType())) {
                 String propertyName = componentProperties.getName();
-                if (IComponentConstants.SCHEMA_FLOW.equals(propertyName)) {
-                    param.setContext(EConnectionType.FLOW_MAIN.getDefaultMenuName().toUpperCase());
-                } else if (IComponentConstants.SCHEMA_REJECT.equals(propertyName)) {
-                    param.setContext(EConnectionType.REJECT.getName());
-                }
             }
             elementParameters.add(param);
         }
@@ -274,8 +258,8 @@ public class ComponentsUtils {
      * @param se
      * @return
      */
-    private static EParameterFieldType getFieldType(Widget widget, NamedThing widgetProperty, SchemaElement se) {
-        return WidgetFieldTypeMapper.getFieldType(widget, widgetProperty, se);
+    private static EParameterFieldType getFieldType(Widget widget, NamedThing widgetProperty) {
+        return WidgetFieldTypeMapper.getFieldType(widget, widgetProperty);
     }
 
     public static ComponentProperties getCurrentComponentProperties(ComponentProperties componentProperties, String paramName) {

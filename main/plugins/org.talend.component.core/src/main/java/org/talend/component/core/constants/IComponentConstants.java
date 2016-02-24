@@ -32,50 +32,9 @@ public interface IComponentConstants {
 
     public static final String UNDERLINE_SEPARATOR = "_";//$NON-NLS-1$ 
 
-    public static final String FORM_ADVANCED = "Advanced";//$NON-NLS-1$
-
-    public static final String FORM_MAIN = "Main";//$NON-NLS-1$
-
-    public static final String USERID = "userId";//$NON-NLS-1$
-
-    public static final String PASSWORD = "password";//$NON-NLS-1$
-
-    public static final String SCHEMA = "schema";//$NON-NLS-1$ 
-
-    public static final String MODULENAME = "moduleName";//$NON-NLS-1$  
-
-    public static final String QUERYMODE = "QueryMode";//$NON-NLS-1$
-
-    public static final String QUERY_QUERY = "Query";//$NON-NLS-1$
-
-    public static final String QUERY_BULK = "Bulk";//$NON-NLS-1$  
-
-    public static final String OUTPUTACTION = "outputAction";//$NON-NLS-1$
-
-    public static final String ACTION_INSERT = "INSERT";//$NON-NLS-1$
-
-    public static final String ACTION_UPDATE = "UPDATE";//$NON-NLS-1$
-
-    public static final String ACTION_UPSERT = "UPSERT";//$NON-NLS-1$
-
-    public static final String ACTION_DELETE = "DELETE";//$NON-NLS-1$
-
-    public static final String LOGIN_TYPE = "loginType";//$NON-NLS-1$
-
-    public static final String LOGIN_BASIC = "Basic";//$NON-NLS-1$
-
-    public static final String LOGIN_OAUTH = "OAuth";//$NON-NLS-1$
-
-    public static final String CONCURRENCY_PARALLEL = "Parallel";//$NON-NLS-1$
-
-    public static final String CONCURRENCY_SERIAL = "Serial";//$NON-NLS-1$
-
-    public static final String SCHEMA_FLOW = "schemaFlow";//$NON-NLS-1$
-
-    public static final String SCHEMA_REJECT = "schemaReject";//$NON-NLS-1$
-
     /**
      * Tag key of property's repository value.
      */
     public static final String REPOSITORY_VALUE = "REPOSITORY_VALUE";//$NON-NLS-1$
+
 }

@@ -22,7 +22,6 @@ import org.talend.component.core.constants.IComponentConstants;
 import org.talend.component.core.dnd.AbstractComponentDragAndDropHandler;
 import org.talend.component.core.model.GenericElementParameter;
 import org.talend.component.core.utils.ComponentsUtils;
-import org.talend.component.core.utils.SchemaUtils;
 import org.talend.component.ui.model.genericMetadata.GenericConnection;
 import org.talend.component.ui.model.genericMetadata.GenericConnectionItem;
 import org.talend.component.ui.model.genericMetadata.SubContainer;
@@ -40,9 +39,7 @@ import org.talend.core.model.properties.Item;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.utils.IComponentName;
 import org.talend.core.repository.RepositoryComponentSetting;
-import org.talend.daikon.NamedThing;
 import org.talend.daikon.properties.Property;
-import org.talend.daikon.schema.SchemaElement.Type;
 import org.talend.repository.model.RepositoryNode;
 import orgomg.cwm.objectmodel.core.ModelElement;
 
@@ -90,49 +87,13 @@ public class GenericDragAndDropHandler extends AbstractComponentDragAndDropHandl
                 value = value.substring(componentProperties.getName().length() + 1, value.length());
             }
         }
-        if (IComponentConstants.SCHEMA.equalsIgnoreCase(paramName)) {
-            ComponentProperties componentModuleProperties = SchemaUtils.getCurrentComponentProperties(table);
-            if (componentModuleProperties != null) {
-                NamedThing namedThing = componentModuleProperties.getProperty(paramName);
-                if (namedThing != null && namedThing instanceof ComponentProperties) {
-                    return ComponentsUtils.getGenericPropertyValue(componentModuleProperties, namedThing.getName()
-                            + IComponentConstants.EXP_SEPARATOR + paramName);
-                }
-            }
-        } else if (IComponentConstants.MODULENAME.equalsIgnoreCase(paramName)) {
-            ComponentProperties componentModuleProperties = SchemaUtils.getCurrentComponentProperties(table);
-            if (componentModuleProperties != null) {
-                Property property = componentModuleProperties.getValuedProperty(paramName);
-                if (property != null) {
-                    if (Type.STRING.equals(property.getType())) {
-                        return getRepositoryValueOfStringType(connection, StringUtils.trimToNull(table.getLabel()));
-                    } else {
-                        return table.getLabel();
-                    }
-                }
-            }
-        } else if (IComponentConstants.QUERYMODE.equalsIgnoreCase(paramName)) {
-            if (ComponentsUtils.getGenericPropertyValue(componentProperties, value) != null) {
-                return ComponentsUtils.getGenericPropertyValue(componentProperties, value);
-            } else {
-                return IComponentConstants.QUERY_QUERY;
-            }
-        } else if (IComponentConstants.OUTPUTACTION.equalsIgnoreCase(paramName)) {
-            if (ComponentsUtils.getGenericPropertyValue(componentProperties, value) != null) {
-                return ComponentsUtils.getGenericPropertyValue(componentProperties, value);
-            } else {
-                return IComponentConstants.ACTION_INSERT;
-            }
-        } else if (IComponentConstants.LOGIN_TYPE.equalsIgnoreCase(paramName)) {
-            return ComponentsUtils.getGenericPropertyValue(componentProperties, value);
-        } else {
-            Object object = ComponentsUtils.getGenericPropertyValue(componentProperties, value);
-            if (object != null && object instanceof String) {
-                return getRepositoryValueOfStringType(connection, StringUtils.trimToNull(object.toString()));
-            }
-            return ComponentsUtils.getGenericPropertyValue(componentProperties, value);
+
+        Object object = ComponentsUtils.getGenericPropertyValue(componentProperties, value);
+        if (object != null && object instanceof String) {
+            return getRepositoryValueOfStringType(connection, StringUtils.trimToNull(object.toString()));
         }
-        return null;
+        return ComponentsUtils.getGenericPropertyValue(componentProperties, value);
+
     }
 
     @Override
@@ -155,10 +116,6 @@ public class GenericDragAndDropHandler extends AbstractComponentDragAndDropHandl
             if (property.getName().equals(paramName)) {
                 return property.getTaggedValue(IComponentConstants.REPOSITORY_VALUE) != null;
             }
-            if (IComponentConstants.QUERYMODE.equalsIgnoreCase(paramName)
-                    || IComponentConstants.OUTPUTACTION.equalsIgnoreCase(paramName)) {
-                return true;
-            }
         }
         for (ModelElement modelElement : connection.getOwnedElement()) {
             if (modelElement instanceof SubContainer) {
@@ -179,6 +136,7 @@ public class GenericDragAndDropHandler extends AbstractComponentDragAndDropHandl
 
     @Override
     public List<IComponent> filterNeededComponents(Item item, RepositoryNode seletetedNode, ERepositoryObjectType type) {
+        // TUP-4151
         List<IComponent> neededComponents = new ArrayList<IComponent>();
         if (!(item instanceof GenericConnectionItem)) {
             return neededComponents;
@@ -197,6 +155,7 @@ public class GenericDragAndDropHandler extends AbstractComponentDragAndDropHandl
 
     private boolean isValid(Item item, ERepositoryObjectType type, RepositoryNode seletetedNode, IComponent component,
             String repositoryType) {
+        // TUP-4151
         if (component == null || repositoryType == null) {
             return false;
         }

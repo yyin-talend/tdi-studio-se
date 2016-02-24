@@ -21,7 +21,6 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.ImageData;
 import org.eclipse.swt.widgets.Composite;
-import org.talend.component.core.constants.IComponentConstants;
 import org.talend.component.core.model.GenericElementParameter;
 import org.talend.component.core.utils.ComponentsUtils;
 import org.talend.component.ui.model.genericMetadata.GenericMetadataPackage;
@@ -30,7 +29,6 @@ import org.talend.component.ui.wizard.internal.service.GenericWizardInternalServ
 import org.talend.component.ui.wizard.persistence.SchemaUtils;
 import org.talend.component.ui.wizard.ui.DynamicComposite;
 import org.talend.components.api.properties.ComponentProperties;
-import org.talend.daikon.properties.presentation.Form;
 import org.talend.components.api.wizard.ComponentWizardDefinition;
 import org.talend.components.api.wizard.WizardImageType;
 import org.talend.core.model.metadata.builder.connection.Connection;
@@ -41,6 +39,7 @@ import org.talend.core.model.process.INode;
 import org.talend.core.model.properties.Item;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.runtime.services.IGenericWizardService;
+import org.talend.daikon.properties.presentation.Form;
 import org.talend.designer.core.model.components.ElementParameter;
 import org.talend.repository.model.IRepositoryNode.ENodeType;
 import org.talend.repository.model.RepositoryNode;
@@ -64,7 +63,7 @@ public class GenericWizardService implements IGenericWizardService {
         for (ComponentWizardDefinition wizardDefinition : wizardDefinitions) {
             String name = wizardDefinition.getName();
             String displayName = wizardDefinition.getDisplayName();
-            String folder = "metadata/" + name; //$NON-NLS-1$  //TODO: maybe need to retrieve it from component service?
+            String folder = "metadata/" + name; //$NON-NLS-1$
             int ordinal = 100;
             ERepositoryObjectType repositoryType = internalService.createRepositoryType(name, displayName, name, folder, ordinal);
             if (curParentNode != null) {
@@ -151,8 +150,7 @@ public class GenericWizardService implements IGenericWizardService {
                 props = node.getComponentProperties();
             }
             if (props != null) {
-                Form form = props.getForm(EComponentCategory.ADVANCED.equals(sectionCategory) ? IComponentConstants.FORM_ADVANCED
-                        : IComponentConstants.FORM_MAIN);
+                Form form = props.getForm(EComponentCategory.ADVANCED.equals(sectionCategory) ? Form.ADVANCED : Form.MAIN);
                 dynamicComposite = new DynamicComposite(composite, SWT.H_SCROLL | SWT.V_SCROLL | SWT.NO_FOCUS, sectionCategory,
                         element, isCompactView, composite.getBackground(), form);
                 List<ElementParameter> elementParameters = (List<ElementParameter>) node.getElementParameters();
