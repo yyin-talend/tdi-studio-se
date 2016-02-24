@@ -284,7 +284,9 @@ public class ComponentsFactory implements IComponentsFactory {
                 componentsProvider.preComponentsLoad();
                 File componentFile = componentsProvider.getInstallationFolder();
                 if (componentFile == null) {
-                    log.warn("The components provider " + componentsProvider.getId() + " missing components folder when setup."); //$NON-NLS-1$ //$NON-NLS-2$ 
+                    log.warn(Messages
+                            .getString(
+                                    "ComponentsFactory.loadComponents.missingFolder", componentsProvider.getFolderName(), componentsProvider.getContributer()));//$NON-NLS-1$
                     return;
                 }
                 if (componentFile != null && componentFile.exists()) {
