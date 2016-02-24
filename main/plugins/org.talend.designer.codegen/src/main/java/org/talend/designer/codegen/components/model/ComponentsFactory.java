@@ -283,7 +283,7 @@ public class ComponentsFactory implements IComponentsFactory {
             try {
                 componentsProvider.preComponentsLoad();
                 File componentFile = componentsProvider.getInstallationFolder();
-                if (componentFile.exists()) {
+                if (componentFile != null && componentFile.exists()) {
                     loadComponentsFromFolder(componentsProvider.getComponentsLocation(), componentsProvider);
                 }
             } catch (IOException e) {
