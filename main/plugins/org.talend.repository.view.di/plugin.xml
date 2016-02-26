@@ -458,6 +458,13 @@
             properties="isDocTopNode"
             type="org.talend.repository.model.RepositoryNode">
       </propertyTester>
+      <propertyTester
+            class="org.talend.repository.view.di.viewer.tester.JobTopNodesPropertyTester"
+            id="org.talend.repository.node.tester.job.top.nodes"
+            namespace="org.talend.repository.node.job.top"
+            properties="isJobDesignsNode,isStandardNode"
+            type="org.talend.repository.model.RepositoryNode">
+      </propertyTester>
    </extension>
    <extension
          point="org.talend.core.repository.repositorySeeker">
@@ -1535,6 +1542,17 @@
             properties="isSalesforceModule"
             type="org.talend.repository.model.RepositoryNode">
       </propertyTester>
+   </extension>
+   <extension
+         point="org.eclipse.ui.navigator.viewer">
+      <viewerContentBinding
+            viewerId="org.talend.repository.cnf.view">
+         <includes>
+            <contentExtension
+                  pattern="org.talend.repository.node.job.top.*">
+            </contentExtension>
+         </includes>
+      </viewerContentBinding>
    </extension>
 
 
