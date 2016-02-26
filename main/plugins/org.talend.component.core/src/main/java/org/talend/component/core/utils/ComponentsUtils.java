@@ -174,7 +174,7 @@ public class ComponentsUtils {
                 continue;
             }
 
-            GenericElementParameter param = new GenericElementParameter(element, componentProperties, widget,
+            GenericElementParameter param = new GenericElementParameter(element, componentProperties, form, widget,
                     getComponentService());
             String parameterName = propertiesPath.concat(param.getName());
             param.setName(parameterName);

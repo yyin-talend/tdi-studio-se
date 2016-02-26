@@ -56,6 +56,8 @@ public class GenericElementParameter extends ElementParameter {
 
     private ComponentProperties componentProperties;
 
+    private Form form;
+
     private Widget widget;
 
     private ComponentService componentService;
@@ -68,10 +70,13 @@ public class GenericElementParameter extends ElementParameter {
 
     private boolean isFirstCall;
 
-    public GenericElementParameter(IElement element, ComponentProperties componentProperties, Widget widget,
+    private boolean drivedByForm;
+
+    public GenericElementParameter(IElement element, ComponentProperties componentProperties, Form form, Widget widget,
             ComponentService componentService) {
         super(element);
         this.componentProperties = componentProperties;
+        this.form = form;
         this.widget = widget;
         this.componentService = componentService;
         isFirstCall = true;
@@ -116,7 +121,11 @@ public class GenericElementParameter extends ElementParameter {
             Object oldValue = se.getValue();
             if (newValue != null && !newValue.equals(oldValue)) {
                 se = (Property) componentProperties.getProperty(se.getName());
-                se.setValue(newValue);
+                if (isDrivedByForm()) {
+                    form.setValue(se.getName(), newValue);
+                } else {
+                    se.setValue(newValue);
+                }
                 fireConnectionPropertyChangedEvent(newValue);
             }
         } else if (widgetProperty instanceof PresentationItem) {
@@ -355,6 +364,14 @@ public class GenericElementParameter extends ElementParameter {
 
     public void setComponentService(ComponentService componentService) {
         this.componentService = componentService;
+    }
+
+    public boolean isDrivedByForm() {
+        return this.drivedByForm;
+    }
+
+    public void setDrivedByForm(boolean drivedByForm) {
+        this.drivedByForm = drivedByForm;
     }
 
 }
