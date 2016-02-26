@@ -28,5 +28,6 @@ Export-Package: org.talend.repository.view.di,
  org.talend.repository.view.di.viewer.content,
  org.talend.repository.view.di.viewer.content.code,
  org.talend.repository.view.di.viewer.content.doc,
+ org.talend.repository.view.di.viewer.filter,
  org.talend.repository.view.di.viewer.handlers,
  org.talend.repository.view.di.viewer.tester
