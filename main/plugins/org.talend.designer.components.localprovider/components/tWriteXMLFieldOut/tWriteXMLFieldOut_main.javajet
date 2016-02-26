@@ -107,7 +107,7 @@ class XMLTool{
 		}
 		if(column.isNullable()){
 			%>:<% 
-			if(isNotSetDefault == false){
+			if(!isNotSetDefault){
 				%><%=column.getDefault()%><%
 			}else{
 				%>null<%
@@ -593,11 +593,17 @@ if (inConn != null) {
 	if(strCompCache_<%=cid %>==null){
 		strCompCache_<%=cid %>=strTemp_<%=cid %>;
 		<%
-		     if(istWriteJSONField){
-						%>
-						      rowStructOutput_<%= cid %> = <%= rowNameInput %>;
-						<%
-		 }
+		if(istWriteJSONField){
+            for(Map<String,String> map : groupbys){
+            	String groupByColumnName = map.get("INPUT_COLUMN");
+            	String outputColumnName = map.get("OUTPUT_COLUMN");
+            	if (!outputColumnName.equals(jsonField)) {
+            	%>
+            	rowStructOutput_<%= cid %>.<%= groupByColumnName %> = <%= rowNameInput %>.<%= groupByColumnName %>;
+            	<%
+            	}
+            }
+		}
 		%>
 	}else{
 <%
@@ -608,7 +614,7 @@ if(("Dom4j").equals(mode)){
 		if(inputKeysColumns.size() !=0){
 %>
 		//the data read is different from the data read last time. 
-		if(strCompCache_<%=cid %>.equals(strTemp_<%=cid %>)==false){	
+		if(!strCompCache_<%=cid %>.equals(strTemp_<%=cid %>)){	
 <%		}
 		if(("true").equals(outputAsXSD)){
 %>
@@ -683,9 +689,15 @@ if(("Dom4j").equals(mode)){
 			strCompCache_<%=cid %>=strTemp_<%=cid %>;
 <%
 		if(istWriteJSONField){
-			%>
-				rowStructOutput_<%= cid %> = <%= rowNameInput %>;
-			<%
+			for(Map<String,String> map : groupbys){
+            	String groupByColumnName = map.get("INPUT_COLUMN");
+            	String outputColumnName = map.get("OUTPUT_COLUMN");
+            	if (!outputColumnName.equals(jsonField)) {
+            	%>
+            	rowStructOutput_<%= cid %>.<%= groupByColumnName %> = <%= rowNameInput %>.<%= groupByColumnName %>;
+            	<%
+            	}
+            }
 		}
 		if(inputKeysColumns.size() !=0){
 %>
@@ -816,7 +828,7 @@ else if(("Null").equals(mode)){
 	if(inputKeysColumns.size() !=0){
 	%>
 		//the data read is different from the data read last time. 
-		if(strCompCache_<%=cid %>.equals(strTemp_<%=cid %>)==false){
+		if(!strCompCache_<%=cid %>.equals(strTemp_<%=cid %>)){
 <%	}%>
 <%
 		if(!("true").equals(outputAsXSD) && !("true").equals(allowEmpty)){
@@ -965,7 +977,7 @@ else if(("Null").equals(mode)){
 %>
 	){
 		// Is the first new element in groups.
-		if(isNewElememt == false && groupbyList_<%=cid%>.size()><%=i%>){
+		if(!isNewElememt && groupbyList_<%=cid%>.size()><%=i%>){
 			newTabIndex_<%=cid%> = <%=i%>;
 		}
 
