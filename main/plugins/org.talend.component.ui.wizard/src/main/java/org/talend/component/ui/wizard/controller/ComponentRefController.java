@@ -276,7 +276,10 @@ public class ComponentRefController extends AbstractElementPropertySectionContro
         List<INode> refNodes = new ArrayList<>();
         if (param instanceof GenericElementParameter) {
             GenericElementParameter gParameter = (GenericElementParameter) param;
-            refNodes = (List<INode>) part.getProcess().getNodesOfType(gParameter.getWidget().getReferencedComponentName());
+            if (gParameter != null && gParameter.getElement() != null && gParameter.getElement() instanceof Node) {
+                Node node = (Node) gParameter.getElement();
+                refNodes = (List<INode>) node.getProcess().getNodesOfType(gParameter.getWidget().getReferencedComponentName());
+            }
         }
         return refNodes;
     }

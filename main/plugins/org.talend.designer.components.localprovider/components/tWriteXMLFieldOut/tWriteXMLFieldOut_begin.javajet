@@ -242,7 +242,7 @@ class NestXMLTool_<%=cid%>{
 }
 NestXMLTool_<%=cid%> nestXMLTool_<%=cid%> = new NestXMLTool_<%=cid%>();
 
-<%= inputRowName %>Struct  rowStructOutput_<%= cid %> = null;
+<%= inputRowName %>Struct  rowStructOutput_<%= cid %> = new <%=inputRowName%>Struct();
 // sort group root element for judgement of group
 java.util.List<org.dom4j.Element> groupElementList_<%=cid%> = new java.util.ArrayList<org.dom4j.Element>();
 org.dom4j.Element root4Group_<%=cid%> = null;

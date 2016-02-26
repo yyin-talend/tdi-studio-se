@@ -992,6 +992,15 @@ public class Process extends Element implements IProcess2, IGEFProcess, ILastVer
                         IComponent iComponent = ((INode) param.getElement()).getComponent();
                         if (iComponent instanceof AbstractComponent) {
                             AbstractComponent component = (AbstractComponent) iComponent;
+                            //
+                            for (IElementParameter parameter : paramList) {
+                                if (!param.isSerialized()) {
+                                    continue;
+                                }
+                                if (parameter.isRepositoryValueUsed() && parameter.getRepositoryValue() != null) {
+                                    component.setGenericPropertyValue(parameter);
+                                }
+                            }
                             serializedProperties = component.genericToSerialized(param);
                         }
                     }
@@ -1424,7 +1433,11 @@ public class Process extends Element implements IProcess2, IGEFProcess, ILastVer
                 elemParam.setPropertyValue(key, value);
                 // end of fix for bug 2193
             } else if (param.getFieldType().equals(EParameterFieldType.PASSWORD)) {
-                param.setValue(pType.getRawValue());
+                if (generic) {
+                    param.setValue(value);
+                } else {
+                    param.setValue(pType.getRawValue());
+                }
             } else if (!param.getFieldType().equals(EParameterFieldType.SCHEMA_TYPE)) {
                 if (param.getFieldType().equals(EParameterFieldType.COLOR)) {
                     if (value != null && value.length() > 2) {
