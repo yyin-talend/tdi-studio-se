@@ -255,30 +255,42 @@ public class JavaProcessorUtilities {
      * @see org.talend.designer.runprocess.IProcessor#computeLibrariesPath(Set<String>)
      */
     public static void computeLibrariesPath(Set<ModuleNeeded> jobModuleList, IProcess process) {
-        // try {
+        computeLibrariesPath(jobModuleList, process, new HashSet<ModuleNeeded>());
+    }
+    
+    /**
+     * DOC nrousseau Comment method "computeLibrariesPath".
+     * @param hashSet
+     * @param process
+     * @param alreadyRetrievedModules
+     */
+    public static void computeLibrariesPath(Set<ModuleNeeded> jobModuleList, IProcess process,
+            Set<ModuleNeeded> alreadyRetrievedModules) {
         RepositoryContext repositoryContext = (RepositoryContext) CorePlugin.getContext().getProperty(
                 Context.REPOSITORY_CONTEXT_KEY);
         Project project = repositoryContext.getProject();
         if (projectSetup == null || !projectSetup.equals(project.getTechnicalLabel())) {
-            // updateClasspath(jobModuleList);
             projectSetup = project.getTechnicalLabel();
         }
         // use maven to update the class path.
         try {
-            sortClasspath(jobModuleList, process);
+            sortClasspath(jobModuleList, process, alreadyRetrievedModules);
         } catch (BusinessException be1) {
             ExceptionHandler.process(be1);
         } catch (CoreException e) {
             ExceptionHandler.process(e);
         }
-
-        checkAndUpdateLog4jFile();
+        if (alreadyRetrievedModules.isEmpty()) {
+            // to update this only one time in one build of full job/subjobs
+            checkAndUpdateLog4jFile();
+        }
     }
+
 
     // // see bug 3914, make the order of the jar files consistent with the
     // command
     // // line in run mode
-    private static void sortClasspath(Set<ModuleNeeded> jobModuleList, IProcess process) throws CoreException, BusinessException {
+    private static void sortClasspath(Set<ModuleNeeded> jobModuleList, IProcess process, Set<ModuleNeeded> alreadyRetrievedModules) throws CoreException, BusinessException {
         ITalendProcessJavaProject jProject = getTalendJavaProject();
         if (jProject == null) {
             return;
@@ -304,6 +316,8 @@ public class JavaProcessorUtilities {
         }
 
         addLog4jToModuleList(listModulesReallyNeeded);
+        listModulesReallyNeeded.removeAll(alreadyRetrievedModules);
+        alreadyRetrievedModules.addAll(listModulesReallyNeeded);
 
         String missingJars = null;
         Set<String> missingJarsForRoutinesOnly = new HashSet<String>();
@@ -367,6 +381,7 @@ public class JavaProcessorUtilities {
         }
         if (!foundLog4jJar) {
             ModuleNeeded log4j = new ModuleNeeded("log4j", "log4j-1.2.16.jar", null, true); //$NON-NLS-1$ //$NON-NLS-2$
+            log4j.setMavenUri("mvn:org.talend.libraries/log4j-1.2.16/6.0.0");
             jarList.add(log4j);
             added = true;
         }
