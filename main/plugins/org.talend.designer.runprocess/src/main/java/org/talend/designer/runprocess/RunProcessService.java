@@ -181,6 +181,15 @@ public class RunProcessService implements IRunProcessService {
     public void updateLibraries(Set<ModuleNeeded> jobModuleList, IProcess process) {
         delegateService.updateLibraries(jobModuleList, process);
     }
+    
+    /* (non-Javadoc)
+     * @see org.talend.designer.runprocess.IRunProcessService#updateLibraries(java.util.Set, org.talend.core.model.process.IProcess, java.util.Set)
+     */
+    @Override
+    public void updateLibraries(Set<ModuleNeeded> jobModuleList, IProcess process, Set<ModuleNeeded> alreadyRetrievedModules) {
+        delegateService.updateLibraries(jobModuleList, process, alreadyRetrievedModules);
+    }
+
 
     @Override
     public void refreshView() {
