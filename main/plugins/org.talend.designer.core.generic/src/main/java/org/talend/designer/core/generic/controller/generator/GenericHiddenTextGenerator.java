@@ -13,7 +13,7 @@
 package org.talend.designer.core.generic.controller.generator;
 
 import org.talend.core.ui.properties.tab.IDynamicProperty;
-import org.talend.designer.core.generic.controller.GenericPasswordController;
+import org.talend.designer.core.generic.controller.GenericHiddenTextController;
 import org.talend.designer.core.ui.editor.properties.controllers.AbstractElementPropertySectionController;
 import org.talend.designer.core.ui.editor.properties.controllers.generator.IControllerGenerator;
 
@@ -21,13 +21,13 @@ import org.talend.designer.core.ui.editor.properties.controllers.generator.ICont
  * created by hcyi on Feb 19, 2016 Detailled comment
  *
  */
-public class GenericPasswordGenerator implements IControllerGenerator {
+public class GenericHiddenTextGenerator implements IControllerGenerator {
 
     private IDynamicProperty dp;
 
     @Override
     public AbstractElementPropertySectionController generate() {
-        return new GenericPasswordController(dp);
+        return new GenericHiddenTextController(dp);
     }
 
     @Override

@@ -32,19 +32,42 @@ import org.talend.core.ui.properties.tab.IDynamicProperty;
 import org.talend.designer.core.generic.i18n.Messages;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.ui.editor.cmd.PropertyChangeCommand;
-import org.talend.designer.core.ui.editor.properties.controllers.PasswordController;
+import org.talend.designer.core.ui.editor.properties.controllers.TextController;
 
 /**
  * created by hcyi on Feb 19, 2016 Detailled comment
  *
  */
-public class GenericPasswordController extends PasswordController {
+public class GenericHiddenTextController extends TextController {
 
-    public GenericPasswordController(IDynamicProperty dp) {
+    protected static final String HIDDEN_TEXT = "HIDDEN_TEXT"; //$NON-NLS-1$
+
+    public GenericHiddenTextController(IDynamicProperty dp) {
         super(dp);
     }
 
     @Override
+    protected boolean isPasswordParam(IElementParameter parameter) {
+        return true;
+    }
+
+    @Override
+    protected boolean isReadOnly() {
+        return true;
+    }
+
+    @Override
+    public Control createControl(Composite subComposite, IElementParameter param, int numInRow, int nbInRow, int top,
+            Control lastControl) {
+        Control lastControlUsed = super.createControl(subComposite, param, numInRow, nbInRow, top, lastControl);
+        FormData data = (FormData) lastControlUsed.getLayoutData();
+        if (!param.isRepositoryValueUsed()) {
+            data.right = new FormAttachment((numInRow * MAX_PERCENT) / nbInRow, -STANDARD_BUTTON_WIDTH);
+            lastControlUsed = addButton(subComposite, param, lastControlUsed, numInRow, nbInRow, top);
+        }
+        return lastControlUsed;
+    }
+
     protected Control addButton(Composite subComposite, IElementParameter param, Control lastControl, int numInRow, int nbInRow,
             int top) {
         Button btn;
@@ -58,7 +81,7 @@ public class GenericPasswordController extends PasswordController {
         btn.setImage(ImageProvider.getImage(CoreUIPlugin.getImageDescriptor(DOTS_BUTTON)));
 
         btn.addSelectionListener(listenerSelection);
-        btn.setData(NAME, PASSWORD);
+        btn.setData(NAME, HIDDEN_TEXT);
         btn.setData(PARAMETER_NAME, param.getName());
 
         lastControlUsed = btn;
@@ -83,12 +106,11 @@ public class GenericPasswordController extends PasswordController {
         return lastControlUsed;
     }
 
-    @Override
     protected Command createButtonCommand(final Button button) {
-        if (button.getData(NAME).equals(PASSWORD)) {
+        if (button.getData(NAME).equals(HIDDEN_TEXT)) {
             InputDialog dlg = new InputDialog(
                     button.getShell(),
-                    Messages.getString("GenericPasswordController.NewPassword"), Messages.getString("GenericPasswordController.NoteConvention"), "\"\"", null) { //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                    Messages.getString("GenericHiddenTextController.NewPassword"), Messages.getString("GenericHiddenTextController.NoteConvention"), "\"\"", null) { //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 
                 /*
                  * (non-Javadoc)
@@ -127,7 +149,7 @@ public class GenericPasswordController extends PasswordController {
             executeCommand(cmd);
             if (e.getSource() instanceof Button) {
                 Button button = (Button) e.getSource();
-                if (button.getData(NAME).equals(PASSWORD)) {
+                if (button.getData(NAME).equals(HIDDEN_TEXT)) {
                     String paramName = (String) button.getData(PARAMETER_NAME);
                     refresh(elem.getElementParameter(paramName), false);
                 }

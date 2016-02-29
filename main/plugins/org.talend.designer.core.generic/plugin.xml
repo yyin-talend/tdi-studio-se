@@ -171,9 +171,9 @@
             name="Component Reference">
       </generator>
       <generator
-            class="org.talend.designer.core.generic.controller.generator.GenericPasswordGenerator"
-            mapping="PASSWORD"
-            name="Password">
+            class="org.talend.designer.core.generic.controller.generator.GenericHiddenTextGenerator"
+            mapping="HIDDEN_TEXT"
+            name="Hidden Text">
       </generator>
    </extension>
 

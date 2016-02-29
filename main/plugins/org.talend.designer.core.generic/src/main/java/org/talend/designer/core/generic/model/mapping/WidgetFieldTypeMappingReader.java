@@ -93,7 +93,7 @@ class WidgetFieldTypeMappingReader extends RegistryReader {
             if (widgetProperty != null && widgetProperty instanceof Property) {
                 Property prop = (Property) widgetProperty;
                 if (prop.isFlag(Property.Flags.ENCRYPT)) {
-                    return EParameterFieldType.PASSWORD.getName();
+                    return EParameterFieldType.HIDDEN_TEXT.getName();
                 }
             }
             fieldType = this.allDynamicWidgetFieldType.get(widgetType + "+" + schemaType);//$NON-NLS-1$
@@ -103,7 +103,7 @@ class WidgetFieldTypeMappingReader extends RegistryReader {
                 return EParameterFieldType.TEXT.getName();
             }
         } else if (Widget.WidgetType.HIDDEN_TEXT.name().equals(widgetType)) {
-            return EParameterFieldType.PASSWORD.getName();
+            return EParameterFieldType.HIDDEN_TEXT.getName();
         } else {
             return this.allDynamicWidgetFieldType.get(widgetType);
         }
