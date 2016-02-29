@@ -471,6 +471,13 @@
             properties="isJobDesignsNode,isStandardNode"
             type="org.talend.repository.model.RepositoryNode">
       </propertyTester>
+      <propertyTester
+            class="org.talend.repository.view.di.viewer.tester.StandardJobNodePropertyTester"
+            id="org.talend.repository.node.tester.job.standard.needed"
+            namespace="org.talend.repository.node.job"
+            properties="needStandardNode"
+            type="org.talend.repository.model.RepositoryNode">
+      </propertyTester>
    </extension>
    <extension
          point="org.talend.core.repository.repositorySeeker">
