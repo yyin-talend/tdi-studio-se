@@ -151,8 +151,4 @@ public class GenericRepository implements Repository {
         return genItem;
     }
 
-    public ComponentProperties getPropertiesForComponent(String componentId) {
-        return null;// FIXME
-    }
-
 }

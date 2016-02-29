@@ -74,7 +74,7 @@ public class DynamicComposite extends MultipleThreadDynamicComposite implements 
 
     private IGenericWizardInternalService internalService;
 
-    private boolean isWizard;
+    private boolean drivedByForm;
 
     public DynamicComposite(Composite parentComposite, int styles, EComponentCategory section, Element element,
             boolean isCompactView, Color backgroundColor, Form form) {
@@ -82,13 +82,16 @@ public class DynamicComposite extends MultipleThreadDynamicComposite implements 
     }
 
     public DynamicComposite(Composite parentComposite, int styles, EComponentCategory section, Element element,
-            boolean isCompactView, Color backgroundColor, Form form, boolean isWizard) {
+            boolean isCompactView, Color backgroundColor, Form form, boolean drivedByForm) {
         super(parentComposite, styles, section, element, isCompactView, backgroundColor);
         this.element = element;
         this.form = form;
-        this.isWizard = isWizard;
+        this.drivedByForm = drivedByForm;
         checker = new Checker();
         internalService = new GenericWizardInternalService();
+        if (drivedByForm) {
+            internalService.getComponentService().makeFormCancelable((ComponentProperties) form.getProperties(), form.getName());
+        }
     }
 
     private void resetComponentProperties() {
@@ -113,6 +116,7 @@ public class DynamicComposite extends MultipleThreadDynamicComposite implements 
             if (parameter instanceof GenericElementParameter) {
                 GenericElementParameter genericElementParameter = (GenericElementParameter) parameter;
                 genericElementParameter.setComponentService(componentService);
+                genericElementParameter.setDrivedByForm(drivedByForm);
                 genericElementParameter.callBeforePresent();
                 genericElementParameter.addPropertyChangeListener(this);
             }
@@ -122,6 +126,7 @@ public class DynamicComposite extends MultipleThreadDynamicComposite implements 
         return parameters;
     }
 
+    // TUP-4160
     public List<ElementParameter> resetElementParameters() {
         ComponentService componentService = null;
         List<ElementParameter> oldParameters = (List<ElementParameter>) element.getElementParameters();
@@ -321,10 +326,6 @@ public class DynamicComposite extends MultipleThreadDynamicComposite implements 
 
     public void setConnectionItem(ConnectionItem connectionItem) {
         this.connectionItem = connectionItem;
-    }
-
-    public boolean isWizard() {
-        return this.isWizard;
     }
 
 }

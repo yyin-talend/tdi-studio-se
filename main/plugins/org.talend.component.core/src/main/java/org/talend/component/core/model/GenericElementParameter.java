@@ -44,7 +44,6 @@ import org.talend.daikon.properties.Property;
 import org.talend.daikon.properties.presentation.Form;
 import org.talend.daikon.properties.presentation.Widget;
 import org.talend.daikon.schema.Schema;
-import org.talend.daikon.schema.SchemaElement;
 import org.talend.designer.core.model.components.ElementParameter;
 import org.talend.designer.core.ui.editor.cmd.ChangeMetadataCommand;
 import org.talend.designer.core.ui.editor.nodes.Node;
@@ -56,6 +55,8 @@ import org.talend.designer.core.ui.editor.nodes.Node;
 public class GenericElementParameter extends ElementParameter {
 
     private ComponentProperties componentProperties;
+
+    private Form form;
 
     private Widget widget;
 
@@ -69,10 +70,13 @@ public class GenericElementParameter extends ElementParameter {
 
     private boolean isFirstCall;
 
-    public GenericElementParameter(IElement element, ComponentProperties componentProperties, Widget widget,
+    private boolean drivedByForm;
+
+    public GenericElementParameter(IElement element, ComponentProperties componentProperties, Form form, Widget widget,
             ComponentService componentService) {
         super(element);
         this.componentProperties = componentProperties;
+        this.form = form;
         this.widget = widget;
         this.componentService = componentService;
         isFirstCall = true;
@@ -117,7 +121,11 @@ public class GenericElementParameter extends ElementParameter {
             Object oldValue = se.getValue();
             if (newValue != null && !newValue.equals(oldValue)) {
                 se = (Property) componentProperties.getProperty(se.getName());
-                se.setValue(newValue);
+                if (isDrivedByForm()) {
+                    form.setValue(se.getName(), newValue);
+                } else {
+                    se.setValue(newValue);
+                }
                 fireConnectionPropertyChangedEvent(newValue);
             }
         } else if (widgetProperty instanceof PresentationItem) {
@@ -191,8 +199,8 @@ public class GenericElementParameter extends ElementParameter {
 
     private void update() {
         NamedThing property = componentProperties.getProperty(getParameterName());
-        if (property != null && property instanceof SchemaElement) {
-            List<?> values = ((SchemaElement) property).getPossibleValues();
+        if (property != null && property instanceof Property) {
+            List<?> values = ((Property) property).getPossibleValues();
             if (values != null) {
                 this.setPossibleValues(values);
             }
@@ -243,8 +251,8 @@ public class GenericElementParameter extends ElementParameter {
             // do nothing
         }
         if (schemaObj != null && schemaObj instanceof Schema) {
-            MetadataTable metadataTable = SchemaUtils.createSchema(String.valueOf(getValue()),
-                    componentProperties.toSerialized());
+            MetadataTable metadataTable = SchemaUtils
+                    .createSchema(String.valueOf(getValue()), componentProperties.toSerialized());
             SchemaUtils.convertComponentSchemaIntoTalendSchema((Schema) schemaObj, metadataTable);
             IMetadataTable newTable = MetadataToolHelper.convert(metadataTable);
             IElement element = this.getElement();
@@ -356,6 +364,14 @@ public class GenericElementParameter extends ElementParameter {
 
     public void setComponentService(ComponentService componentService) {
         this.componentService = componentService;
+    }
+
+    public boolean isDrivedByForm() {
+        return this.drivedByForm;
+    }
+
+    public void setDrivedByForm(boolean drivedByForm) {
+        this.drivedByForm = drivedByForm;
     }
 
 }

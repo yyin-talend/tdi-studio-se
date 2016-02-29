@@ -22,11 +22,11 @@ import org.eclipse.swt.widgets.Composite;
 import org.talend.component.ui.wizard.model.FakeElement;
 import org.talend.component.ui.wizard.ui.common.GenericWizardPage;
 import org.talend.component.ui.wizard.ui.context.ContextComposite;
-import org.talend.daikon.properties.presentation.Form;
 import org.talend.components.api.service.ComponentService;
 import org.talend.core.model.process.EComponentCategory;
 import org.talend.core.model.process.Element;
 import org.talend.core.model.properties.ConnectionItem;
+import org.talend.daikon.properties.presentation.Form;
 
 /**
  * 
@@ -51,7 +51,7 @@ public class GenericConnWizardPage extends GenericWizardPage {
 
         Element element = new FakeElement(form.getName());
         dynamicComposite = new DynamicComposite(container, SWT.H_SCROLL | SWT.V_SCROLL | SWT.NO_FOCUS, EComponentCategory.BASIC,
-                element, true, container.getBackground(), form, true);
+                element, true, container.getBackground(), form, false);
         dynamicComposite.setLayoutData(createMainFormData(addContextFields));
         dynamicComposite.setConnectionItem(connectionItem);
         addCheckListener(dynamicComposite.getChecker());

@@ -19,30 +19,37 @@ import java.util.Set;
 import org.apache.commons.lang.StringUtils;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.component.core.constants.IComponentConstants;
-import org.talend.component.core.dnd.AbstractComponentDragAndDropHandler;
+import org.talend.component.core.model.Component;
 import org.talend.component.core.model.GenericElementParameter;
 import org.talend.component.core.utils.ComponentsUtils;
 import org.talend.component.core.utils.SchemaUtils;
 import org.talend.component.ui.model.genericMetadata.GenericConnection;
 import org.talend.component.ui.model.genericMetadata.GenericConnectionItem;
 import org.talend.component.ui.model.genericMetadata.SubContainer;
+import org.talend.components.api.component.ComponentDefinition;
 import org.talend.components.api.properties.ComponentProperties;
 import org.talend.core.GlobalServiceRegister;
 import org.talend.core.model.components.EComponentType;
 import org.talend.core.model.components.IComponent;
 import org.talend.core.model.components.IComponentsService;
 import org.talend.core.model.metadata.IMetadataTable;
+import org.talend.core.model.metadata.MetadataToolHelper;
 import org.talend.core.model.metadata.builder.connection.Connection;
+import org.talend.core.model.metadata.builder.connection.MetadataTable;
 import org.talend.core.model.process.IElement;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.INode;
+import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.model.properties.Item;
 import org.talend.core.model.repository.ERepositoryObjectType;
+import org.talend.core.model.repository.IRepositoryViewObject;
+import org.talend.core.model.repository.RepositoryViewObject;
+import org.talend.core.model.utils.AbstractDragAndDropServiceHandler;
 import org.talend.core.model.utils.IComponentName;
 import org.talend.core.repository.RepositoryComponentSetting;
-import org.talend.daikon.NamedThing;
+import org.talend.core.repository.model.repositoryObject.MetadataColumnRepositoryObject;
+import org.talend.core.repository.model.repositoryObject.MetadataTableRepositoryObject;
 import org.talend.daikon.properties.Property;
-import org.talend.daikon.schema.SchemaElement.Type;
 import org.talend.repository.model.RepositoryNode;
 import orgomg.cwm.objectmodel.core.ModelElement;
 
@@ -51,19 +58,7 @@ import orgomg.cwm.objectmodel.core.ModelElement;
  * created by hcyi on Oct 26, 2015 Detailled comment
  *
  */
-public class GenericDragAndDropHandler extends AbstractComponentDragAndDropHandler {
-
-    private static final String SALESFORCE = "salesforce"; //$NON-NLS-1$
-
-    public static final String COMPONENT_T_SALSEFORCE_CONNECTION = "tSalesforceConnectionNew"; //$NON-NLS-1$
-
-    public static final String COMPONENT_T_SALSEFORCE_WAVE_BULK_EXEC = "tSalesforceWaveBulkExecNew"; //$NON-NLS-1$
-
-    public static final String COMPONENT_T_SALSEFORCE_WAVE_OUTPUT_BULK_EXEC = "tSalesforceWaveOutputBulkExecNew"; //$NON-NLS-1$
-
-    public static final String COMPONENT_T_SALSEFORCE_INPUT = "tSalesforceInputNew"; //$NON-NLS-1$
-
-    public static final String COMPONENT_T_SALSEFORCE_OUTPUT = "tSalesforceOutputNew"; //$NON-NLS-1$
+public class GenericDragAndDropHandler extends AbstractDragAndDropServiceHandler {
 
     @Override
     public boolean canHandle(Connection connection) {
@@ -90,49 +85,13 @@ public class GenericDragAndDropHandler extends AbstractComponentDragAndDropHandl
                 value = value.substring(componentProperties.getName().length() + 1, value.length());
             }
         }
-        if (IComponentConstants.SCHEMA.equalsIgnoreCase(paramName)) {
-            ComponentProperties componentModuleProperties = SchemaUtils.getCurrentComponentProperties(table);
-            if (componentModuleProperties != null) {
-                NamedThing namedThing = componentModuleProperties.getProperty(paramName);
-                if (namedThing != null && namedThing instanceof ComponentProperties) {
-                    return ComponentsUtils.getGenericPropertyValue(componentModuleProperties, namedThing.getName()
-                            + IComponentConstants.EXP_SEPARATOR + paramName);
-                }
-            }
-        } else if (IComponentConstants.MODULENAME.equalsIgnoreCase(paramName)) {
-            ComponentProperties componentModuleProperties = SchemaUtils.getCurrentComponentProperties(table);
-            if (componentModuleProperties != null) {
-                Property property = componentModuleProperties.getValuedProperty(paramName);
-                if (property != null) {
-                    if (Type.STRING.equals(property.getType())) {
-                        return getRepositoryValueOfStringType(connection, StringUtils.trimToNull(table.getLabel()));
-                    } else {
-                        return table.getLabel();
-                    }
-                }
-            }
-        } else if (IComponentConstants.QUERYMODE.equalsIgnoreCase(paramName)) {
-            if (ComponentsUtils.getGenericPropertyValue(componentProperties, value) != null) {
-                return ComponentsUtils.getGenericPropertyValue(componentProperties, value);
-            } else {
-                return IComponentConstants.QUERY_QUERY;
-            }
-        } else if (IComponentConstants.OUTPUTACTION.equalsIgnoreCase(paramName)) {
-            if (ComponentsUtils.getGenericPropertyValue(componentProperties, value) != null) {
-                return ComponentsUtils.getGenericPropertyValue(componentProperties, value);
-            } else {
-                return IComponentConstants.ACTION_INSERT;
-            }
-        } else if (IComponentConstants.LOGIN_TYPE.equalsIgnoreCase(paramName)) {
-            return ComponentsUtils.getGenericPropertyValue(componentProperties, value);
-        } else {
-            Object object = ComponentsUtils.getGenericPropertyValue(componentProperties, value);
-            if (object != null && object instanceof String) {
-                return getRepositoryValueOfStringType(connection, StringUtils.trimToNull(object.toString()));
-            }
-            return ComponentsUtils.getGenericPropertyValue(componentProperties, value);
+
+        Object object = ComponentsUtils.getGenericPropertyValue(componentProperties, value);
+        if (object != null && object instanceof String) {
+            return getRepositoryValueOfStringType(connection, StringUtils.trimToNull(object.toString()));
         }
-        return null;
+        return ComponentsUtils.getGenericPropertyValue(componentProperties, value);
+
     }
 
     @Override
@@ -155,10 +114,6 @@ public class GenericDragAndDropHandler extends AbstractComponentDragAndDropHandl
             if (property.getName().equals(paramName)) {
                 return property.getTaggedValue(IComponentConstants.REPOSITORY_VALUE) != null;
             }
-            if (IComponentConstants.QUERYMODE.equalsIgnoreCase(paramName)
-                    || IComponentConstants.OUTPUTACTION.equalsIgnoreCase(paramName)) {
-                return true;
-            }
         }
         for (ModelElement modelElement : connection.getOwnedElement()) {
             if (modelElement instanceof SubContainer) {
@@ -179,7 +134,8 @@ public class GenericDragAndDropHandler extends AbstractComponentDragAndDropHandl
 
     @Override
     public List<IComponent> filterNeededComponents(Item item, RepositoryNode seletetedNode, ERepositoryObjectType type) {
-        List<IComponent> neededComponents = new ArrayList<IComponent>();
+        // TUP-4151
+        List<IComponent> neededComponents = new ArrayList<>();
         if (!(item instanceof GenericConnectionItem)) {
             return neededComponents;
         }
@@ -187,7 +143,7 @@ public class GenericDragAndDropHandler extends AbstractComponentDragAndDropHandl
         Set<IComponent> components = service.getComponentsFactory().getComponents();
         for (IComponent component : components) {
             if (EComponentType.GENERIC.equals(component.getComponentType())) {
-                if (isValid(item, type, seletetedNode, component, type.getType()) && !neededComponents.contains(component)) {
+                if (!neededComponents.contains(component) && isValid(seletetedNode, component)) {
                     neededComponents.add(component);
                 }
             }
@@ -195,30 +151,44 @@ public class GenericDragAndDropHandler extends AbstractComponentDragAndDropHandl
         return neededComponents;
     }
 
-    private boolean isValid(Item item, ERepositoryObjectType type, RepositoryNode seletetedNode, IComponent component,
-            String repositoryType) {
-        if (component == null || repositoryType == null) {
+    private boolean isValid(RepositoryNode seletetedNode, IComponent component) {
+        // TUP-4151
+        IRepositoryViewObject object = seletetedNode.getObject();
+        if (component == null || object == null) {
             return false;
         }
-        String componentProductname = component.getRepositoryType();
-        String typeName = ""; //$NON-NLS-1$
-        if (item instanceof GenericConnectionItem) {
-            typeName = ((GenericConnectionItem) item).getTypeName();
+        ComponentProperties currentComponentProperties = null;
+        if (object instanceof RepositoryViewObject) {
+            RepositoryViewObject repositoryViewObj = (RepositoryViewObject) object;
+            Connection connection = ((ConnectionItem) repositoryViewObj.getProperty().getItem()).getConnection();
+            if (canHandle(connection)) {
+                GenericConnection genericConnection = (GenericConnection) connection;
+                currentComponentProperties = ComponentsUtils.getComponentPropertiesFromSerialized(genericConnection
+                        .getCompProperties());
+            }
+        } else if (object instanceof MetadataTableRepositoryObject) {
+            MetadataTableRepositoryObject metaTableRepObj = (MetadataTableRepositoryObject) object;
+            currentComponentProperties = SchemaUtils.getCurrentComponentProperties(metaTableRepObj);
+        } else if (object instanceof MetadataColumnRepositoryObject) {
+            MetadataColumnRepositoryObject metaColumnRepObj = (MetadataColumnRepositoryObject) object;
+            ModelElement element = metaColumnRepObj.getTdColumn();
+            if (element != null && element.eContainer() instanceof MetadataTable) {
+                MetadataTable metadataTable = (MetadataTable) element.eContainer();
+                IMetadataTable newTable = MetadataToolHelper.convert(metadataTable);
+                currentComponentProperties = SchemaUtils.getCurrentComponentProperties(newTable);
+            }
         }
-        if (componentProductname != null && componentProductname.contains(repositoryType)
-                || componentProductname.contains(typeName)) {
-            String componentName = component.getName();
-            if (ERepositoryObjectType.METADATA_SALESFORCE_MODULE == type || ERepositoryObjectType.METADATA_CON_TABLE == type
-                    || ERepositoryObjectType.METADATA_CON_COLUMN == type) {
-                if (COMPONENT_T_SALSEFORCE_INPUT.equals(componentName) || COMPONENT_T_SALSEFORCE_OUTPUT.equals(componentName)) {
-                    return true;
+        //
+        if (currentComponentProperties != null) {
+            try {
+                List<ComponentDefinition> possibleComponents = ComponentsUtils.getComponentService().getPossibleComponents(
+                        currentComponentProperties);
+                if (component instanceof Component) {
+                    ComponentDefinition componentDefinition = ((Component) component).getComponentDefinition();
+                    return possibleComponents.contains(componentDefinition);
                 }
-            } else {
-                if (COMPONENT_T_SALSEFORCE_CONNECTION.equals(componentName)
-                        || COMPONENT_T_SALSEFORCE_WAVE_BULK_EXEC.equals(componentName)
-                        || COMPONENT_T_SALSEFORCE_WAVE_OUTPUT_BULK_EXEC.equals(componentName)) {
-                    return true;
-                }
+            } catch (Throwable e) {
+                e.printStackTrace();
             }
         }
         return false;
@@ -227,14 +197,10 @@ public class GenericDragAndDropHandler extends AbstractComponentDragAndDropHandl
     @Override
     public IComponentName getCorrespondingComponentName(Item item, ERepositoryObjectType type) {
         RepositoryComponentSetting setting = null;
+        List<Class<Item>> list = new ArrayList<Class<Item>>();
         if (item instanceof GenericConnectionItem) {
             setting = new RepositoryComponentSetting();
-            setting.setName(SALESFORCE);
-            setting.setRepositoryType(SALESFORCE);
             setting.setWithSchema(true);
-            setting.setInputComponent(COMPONENT_T_SALSEFORCE_INPUT);
-            setting.setOutputComponent(COMPONENT_T_SALSEFORCE_OUTPUT);
-            List<Class<Item>> list = new ArrayList<Class<Item>>();
             Class clazz = null;
             try {
                 clazz = Class.forName(GenericConnectionItem.class.getName());
@@ -258,18 +224,7 @@ public class GenericDragAndDropHandler extends AbstractComponentDragAndDropHandl
 
     @Override
     public ERepositoryObjectType getType(String repositoryType) {
-        if (SALESFORCE.equals(repositoryType)) {
-            return ERepositoryObjectType.METADATA_SALESFORCE_SCHEMA;
-        }
         return null;
-    }
-
-    @Override
-    public void handleTableRelevantParameters(Connection connection, IElement ele, IMetadataTable metadataTable) {
-        // TODO
-        if (ele == null || metadataTable == null) {
-            return;
-        }
     }
 
     @Override
@@ -277,5 +232,10 @@ public class GenericDragAndDropHandler extends AbstractComponentDragAndDropHandl
         if (node != null && canHandle(connection)) {
             setGenericRepositoryValue((GenericConnection) connection, node, param);
         }
+    }
+
+    @Override
+    public void handleTableRelevantParameters(Connection connection, IElement ele, IMetadataTable metadataTable) {
+
     }
 }
