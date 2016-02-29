@@ -279,14 +279,14 @@
          unpack="false"/>
 
    <plugin
-         id="org.talend.component.core"
+         id="org.talend.repository.generic"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
 
    <plugin
-         id="org.talend.component.ui.wizard"
+         id="org.talend.designer.core.generic"
          download-size="0"
          install-size="0"
          version="0.0.0"
