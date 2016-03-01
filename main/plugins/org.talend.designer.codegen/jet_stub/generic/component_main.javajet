@@ -2,7 +2,6 @@
 imports="
         java.util.List
 		org.talend.components.api.component.ComponentDefinition
-        org.talend.components.api.runtime.ComponentRuntime
 		org.talend.component.core.model.Component
         org.talend.core.model.metadata.IMetadataColumn
         org.talend.core.model.metadata.IMetadataTable

@@ -1,7 +1,6 @@
 <%@ jet 
 imports="
 		org.talend.components.api.component.ComponentDefinition
-        org.talend.components.api.runtime.ComponentRuntime
 		org.talend.component.core.model.Component
     	org.talend.core.model.process.INode 
     	org.talend.core.model.process.ElementParameterParser 

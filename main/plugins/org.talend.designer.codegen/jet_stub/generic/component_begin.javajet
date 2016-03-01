@@ -7,8 +7,7 @@ imports="
         org.talend.components.api.component.InputComponentDefinition
         org.talend.components.api.component.OutputComponentDefinition
         org.talend.components.api.properties.ComponentProperties
-        org.talend.components.api.runtime.ComponentRuntimeContainer
-        org.talend.components.api.runtime.ComponentRuntime
+        org.talend.components.api.container.RuntimeContainer
         org.talend.daikon.properties.Property
         org.talend.daikon.NamedThing
 		org.talend.component.core.model.Component
@@ -82,7 +81,7 @@ for (Component.CodegenPropInfo propInfo : propsToProcess) { // propInfo
 	} // property
 } // propInfo
 %>
-//org.talend.components.api.runtime.ComponentRuntimeContainer container_<%=cid %> = 
+//org.talend.components.api.container.RuntimeContainer container_<%=cid %> = 
 <%
 	if (hasDynamic) {
 %>
