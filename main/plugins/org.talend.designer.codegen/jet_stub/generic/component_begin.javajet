@@ -156,18 +156,47 @@ if(metadata != null){
 					<%
 					}
 					%>
+					Object value_<%=cid%>;
 					<%
 					for(IMetadataColumn column : columnList){ // column
 						String columnName = column.getLabel();
 		              	JavaType javaType = JavaTypesManager.getJavaTypeFromId(column.getTalendType());
 						String typeToGenerate = JavaTypesManager.getTypeToGenerate(column.getTalendType(), column.isNullable());
+						String patternValue = column.getPattern() == null || column.getPattern().trim().length() == 0 ? null : column.getPattern();
 						if(columnName.equals(dynamicColName)){
 							continue;
 						}
 						//TODO consider null and default and reject in here
 						//TODO change to use type mapping later
 						%>
-						<%=outgoingConn.getName()%>.<%=columnName%> = (<%=typeToGenerate%>)((java.util.Map<String, Object>)boundedReader_<%=cid%>.getCurrent()).get("<%=columnName%>");
+						value_<%=cid%> = ((java.util.Map<String, Object>)boundedReader_<%=cid%>.getCurrent()).get("<%=columnName%>");
+						if (value_<%=cid %> != null) {
+							<%
+							if (javaType == JavaTypesManager.STRING) { 
+							%>
+								<%=outgoingConn.getName()%>.<%=columnName%> = (String) value_<%=cid%>;
+							<%
+							} else if (javaType == JavaTypesManager.OBJECT) {
+							%>
+								<%=outgoingConn.getName()%>.<%=columnName%> = value_<%=cid%>;
+							<%
+							} else if(javaType == JavaTypesManager.DATE) { 
+							%>
+								<%=outgoingConn.getName()%>.<%=columnName%> = ParserUtils.parseTo_Date((String)value_<%=cid%>, <%= patternValue %>);
+							<%
+							} else if(javaType == JavaTypesManager.BYTE_ARRAY) {
+							%>
+								<%=outgoingConn.getName()%>.<%=columnName%> = value_<%=cid%>.getBytes();
+							<%
+							} else  { // other
+							%>
+								<%=outgoingConn.getName()%>.<%=columnName%> = ParserUtils.parseTo_<%= typeToGenerate %>((String)value_<%=cid%>);
+							<%
+							}
+							%>
+						}else{
+							<%=outgoingConn.getName()%>.<%=columnName%> = <%=JavaTypesManager.getDefaultValueFromJavaType(typeToGenerate)%>;
+						}
 					<%
 					}
 			}			
