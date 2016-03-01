@@ -74,9 +74,6 @@ public class GenericDragAndDropHandler extends AbstractDragAndDropServiceHandler
     }
 
     private Object getGenericRepositoryValue(GenericConnection connection, String value, IMetadataTable table) {
-        if (connection == null) {
-            return null;
-        }
         ComponentProperties componentProperties = ComponentsUtils.getComponentPropertiesFromSerialized(connection
                 .getCompProperties());
         String paramName = ComponentsUtils.getPropertyName(value);
@@ -85,13 +82,35 @@ public class GenericDragAndDropHandler extends AbstractDragAndDropServiceHandler
                 value = value.substring(componentProperties.getName().length() + 1, value.length());
             }
         }
-
-        Object object = ComponentsUtils.getGenericPropertyValue(componentProperties, value);
-        if (object != null && object instanceof String) {
-            return getRepositoryValueOfStringType(connection, StringUtils.trimToNull(object.toString()));
+        boolean found = false;
+        List<Property> allValuedProperties = ComponentsUtils.getAllValuedProperties(componentProperties);
+        for (Property property : allValuedProperties) {
+            if (paramName != null && paramName.equals(property.getName())) {
+                found = true;
+            }
+        }
+        Object object = null;
+        if (found) {
+            object = ComponentsUtils.getGenericPropertyValue(componentProperties, value);
+        } else {
+            for (ModelElement modelElement : connection.getOwnedElement()) {
+                if (modelElement instanceof SubContainer) {
+                    SubContainer subContainer = (SubContainer) modelElement;
+                    ComponentProperties subComponentProperties = ComponentsUtils
+                            .getComponentPropertiesFromSerialized(subContainer.getCompProperties());
+                    if (value.indexOf(IGenericConstants.EXP_SEPARATOR) != -1) {
+                        value = value.substring(value.indexOf(IGenericConstants.EXP_SEPARATOR) + 1, value.length());
+                    }
+                    return ComponentsUtils.getGenericPropertyValue(subComponentProperties, value);
+                }
+            }
+        }
+        if (object != null) {
+            if (object instanceof String && value != null && value.indexOf(IGenericConstants.EXP_SEPARATOR) != -1) {
+                return getRepositoryValueOfStringType(connection, StringUtils.trimToNull(object.toString()));
+            }
         }
         return ComponentsUtils.getGenericPropertyValue(componentProperties, value);
-
     }
 
     @Override
