@@ -20,6 +20,7 @@ import org.talend.core.model.process.EConnectionType;
 import org.talend.core.model.process.INode;
 import org.talend.designer.core.model.components.NodeConnector;
 
+// TUP-4153
 public class ComponentUtils {
 
     /**

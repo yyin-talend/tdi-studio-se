@@ -38,7 +38,6 @@ import org.talend.components.api.service.ComponentService;
 import org.talend.core.CorePlugin;
 import org.talend.core.GlobalServiceRegister;
 import org.talend.core.model.components.EComponentType;
-import org.talend.core.model.components.IComponentsFactory;
 import org.talend.core.model.components.IMultipleComponentManager;
 import org.talend.core.model.general.ModuleNeeded;
 import org.talend.core.model.param.ERepositoryCategoryType;
@@ -46,17 +45,14 @@ import org.talend.core.model.process.EComponentCategory;
 import org.talend.core.model.process.EConnectionType;
 import org.talend.core.model.process.EParameterFieldType;
 import org.talend.core.model.process.IElementParameter;
-import org.talend.core.model.process.IElementParameterDefaultValue;
 import org.talend.core.model.process.INode;
 import org.talend.core.model.process.INodeConnector;
 import org.talend.core.model.process.IProcess;
 import org.talend.core.model.temp.ECodePart;
-import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.core.prefs.ITalendCorePrefConstants;
 import org.talend.core.runtime.services.ComponentServiceWithValueEvaluator;
 import org.talend.core.ui.services.IComponentsLocalProviderService;
 import org.talend.daikon.NamedThing;
-import org.talend.daikon.properties.Properties.Deserialized;
 import org.talend.daikon.properties.Property;
 import org.talend.daikon.properties.presentation.Form;
 import org.talend.daikon.schema.SchemaElement;
@@ -65,11 +61,8 @@ import org.talend.designer.core.model.components.AbstractComponent;
 import org.talend.designer.core.model.components.DummyComponent;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.model.components.ElementParameter;
-import org.talend.designer.core.model.components.MultiDefaultValuesUtils;
 import org.talend.designer.core.model.components.NodeConnector;
 import org.talend.designer.core.model.components.NodeReturn;
-import org.talend.designer.core.model.utils.emf.component.ITEMSType;
-import org.talend.designer.core.model.utils.emf.component.ITEMType;
 import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.preferences.TalendDesignerPrefConstants;
 
@@ -81,13 +74,9 @@ public class Component extends AbstractComponent {
 
     private static Logger log = Logger.getLogger(Component.class);
 
-    private static final long serialVersionUID = 1L;
-
     private ComponentDefinition componentDefinition;
 
     private List<ModuleNeeded> componentImportNeedsList;
-
-    private List<IMultipleComponentManager> multipleComponentManagers;
 
     private ComponentsProvider provider;
 
@@ -96,6 +85,7 @@ public class Component extends AbstractComponent {
     public Component(ComponentDefinition componentDefinition) throws BusinessException {
         this.componentDefinition = componentDefinition;
         // TODO
+        // TCOMP-92
         this.setPaletteType("DI"); //$NON-NLS-1$
     }
 
@@ -103,31 +93,16 @@ public class Component extends AbstractComponent {
         return componentDefinition;
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.talend.core.model.components.IComponent#getName()
-     */
     @Override
     public String getName() {
         return componentDefinition.getName();
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.talend.core.model.components.IComponent#getLongName()
-     */
     @Override
     public String getLongName() {
         return componentDefinition.getTitle();
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.talend.core.model.components.IComponent#getOriginalFamilyName()
-     */
     @Override
     public String getOriginalFamilyName() {
         String[] families = componentDefinition.getFamilies();
@@ -141,22 +116,10 @@ public class Component extends AbstractComponent {
         return sb.toString();
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.talend.core.model.components.IComponent#getTranslatedFamilyName()
-     */
     @Override
     public String getTranslatedFamilyName() {
-        String[] families = componentDefinition.getFamilies();
-        StringBuffer sb = new StringBuffer();
-        for (String familyName : families) {
-            if (sb.length() > 0) {
-                sb.append("|");//$NON-NLS-1$
-            }
-            sb.append(familyName);
-        }
-        return sb.toString();
+        // TCOMP-93 , Need translated name
+        return getOriginalFamilyName();
     }
 
     private String getTranslatedValue(final String nameValue) {
@@ -170,93 +133,20 @@ public class Component extends AbstractComponent {
     @Override
     public List<ElementParameter> createElementParameters(INode node) {
         List<ElementParameter> listParam;
-        listParam = new ArrayList<ElementParameter>();
+        listParam = new ArrayList<>();
         addMainParameters(listParam, node);
-        addPropertyParameters(listParam, node, NORMAL_PROPERTY);
-        addPropertyParameters(listParam, node, ADVANCED_PROPERTY);
+        addPropertyParameters(listParam, node, Form.MAIN, EComponentCategory.BASIC);
+        addPropertyParameters(listParam, node, Form.ADVANCED, EComponentCategory.ADVANCED);
         initializePropertyParameters(listParam, node);
-        checkSchemaParameter(listParam, node);
         addViewParameters(listParam, node);
         addDocParameters(listParam, node);
         addValidationRulesParameters(listParam, node);
         return listParam;
     }
 
-    private void checkSchemaParameter(List<ElementParameter> listParam, INode node) {
-        boolean acceptInputFlow = false;
-        List<NodeConnector> connectors = createConnectors(node);
-        for (NodeConnector connector : connectors) {
-            if (connector.getName().equals(EConnectionType.FLOW_MAIN.getName())) {
-                if (connector.getMaxLinkInput() != 0 && !connector.isBuiltIn()) {
-                    acceptInputFlow = true;
-                }
-                break;
-            }
-        }
-
-        boolean hasSchemaType = false;
-        for (ElementParameter param : listParam) {
-            if (param.getFieldType().equals(EParameterFieldType.SCHEMA_TYPE)
-                    || param.getFieldType().equals(EParameterFieldType.DCSCHEMA)) {
-                hasSchemaType = true;
-                break;
-            }
-        }
-
-        if (acceptInputFlow && !hasSchemaType) {
-            // increment the row number for each parameter
-            for (ElementParameter param : listParam) {
-                if (EComponentCategory.BASIC.equals(param.getCategory())) {
-                    param.setNumRow(param.getNumRow() + 1);
-                }
-            }
-
-            ElementParameter parentParam = new ElementParameter(node);
-            parentParam.setName(EParameterName.NOT_SYNCHRONIZED_SCHEMA.getName());
-            parentParam.setDisplayName(EParameterName.SCHEMA_TYPE.getDisplayName());
-            parentParam.setFieldType(EParameterFieldType.SCHEMA_TYPE);
-            parentParam.setCategory(EComponentCategory.BASIC);
-            parentParam.setNumRow(1);
-            parentParam.setReadOnly(false);
-            parentParam.setShow(false);
-            parentParam.setContext(IComponentConstants.CONTEXT);
-            listParam.add(parentParam);
-
-            ElementParameter newParam = new ElementParameter(node);
-            newParam.setCategory(EComponentCategory.BASIC);
-            newParam.setName(EParameterName.SCHEMA_TYPE.getName());
-            newParam.setDisplayName(EParameterName.SCHEMA_TYPE.getDisplayName());
-            newParam.setListItemsDisplayName(new String[] { TEXT_BUILTIN, TEXT_REPOSITORY, TNS_FILE });
-            newParam.setListItemsDisplayCodeName(new String[] { BUILTIN, REPOSITORY, TNS_FILE });
-            newParam.setListItemsValue(new String[] { BUILTIN, REPOSITORY, TNS_FILE });
-            newParam.setValue(BUILTIN);
-            newParam.setNumRow(1);
-            newParam.setFieldType(EParameterFieldType.TECHNICAL);
-            newParam.setShow(true);
-            newParam.setReadOnly(true);
-
-            newParam.setContext(IComponentConstants.CONTEXT);
-            newParam.setParentParameter(parentParam);
-
-            newParam = new ElementParameter(node);
-            newParam.setCategory(EComponentCategory.BASIC);
-            newParam.setName(EParameterName.REPOSITORY_SCHEMA_TYPE.getName());
-            newParam.setDisplayName(EParameterName.REPOSITORY_SCHEMA_TYPE.getDisplayName());
-            newParam.setListItemsDisplayName(new String[] {});
-            newParam.setListItemsValue(new String[] {});
-            newParam.setNumRow(1);
-            newParam.setFieldType(EParameterFieldType.TECHNICAL);
-            newParam.setValue(""); //$NON-NLS-1$
-            newParam.setShow(false);
-            newParam.setRequired(true);
-            newParam.setContext(IComponentConstants.CONTEXT);
-            newParam.setParentParameter(parentParam);
-        }
-
-    }
-
     @Override
     public List<NodeReturn> createReturns() {
+        // TUP-4148
         List<NodeReturn> listReturn = new ArrayList<NodeReturn>();
         // ****************** add standard returns ******************
         NodeReturn nodeRet = new NodeReturn();
@@ -536,18 +426,6 @@ public class Component extends AbstractComponent {
         listParam.add(param);
 
         param = new ElementParameter(node);
-        param.setName(EParameterName.VERSION.getName());
-        param.setValue(""); //$NON-NLS-1$ //TODO
-        param.setDisplayName(EParameterName.VERSION.getDisplayName());
-        param.setFieldType(EParameterFieldType.TEXT);
-        param.setCategory(EComponentCategory.TECHNICAL);
-        param.setNumRow(2);
-        param.setReadOnly(true);
-        param.setRequired(false);
-        param.setShow(false);
-        listParam.add(param);
-
-        param = new ElementParameter(node);
         param.setName(EParameterName.FAMILY.getName());
         param.setValue(getOriginalFamilyName());
         param.setDisplayName(EParameterName.FAMILY.getDisplayName());
@@ -558,8 +436,8 @@ public class Component extends AbstractComponent {
         param.setRequired(false);
         param.setShow(false);
         listParam.add(param);
-
-        if (componentDefinition.isStartable()) {
+        // TUP-4142
+        if (canStart()) {
             param = new ElementParameter(node);
             param.setName(EParameterName.START.getName());
             param.setValue(new Boolean(false));
@@ -572,7 +450,7 @@ public class Component extends AbstractComponent {
             param.setShow(false);
             listParam.add(param);
         }
-
+        // TUP-4142
         param = new ElementParameter(node);
         param.setName(EParameterName.STARTABLE.getName());
         param.setValue(new Boolean(canStart()));
@@ -584,7 +462,7 @@ public class Component extends AbstractComponent {
         param.setRequired(false);
         param.setShow(false);
         listParam.add(param);
-
+        // TUP-4142
         param = new ElementParameter(node);
         param.setName(EParameterName.SUBTREE_START.getName());
         param.setValue(new Boolean(canStart()));
@@ -596,7 +474,7 @@ public class Component extends AbstractComponent {
         param.setRequired(false);
         param.setShow(false);
         listParam.add(param);
-
+        // TUP-4142
         param = new ElementParameter(node);
         param.setName(EParameterName.END_OF_FLOW.getName());
         param.setValue(new Boolean(canStart()));
@@ -622,19 +500,7 @@ public class Component extends AbstractComponent {
         param.setShow(true);
         listParam.add(param);
 
-        param = new ElementParameter(node);
-        param.setName(EParameterName.DUMMY.getName());
-        param.setValue(Boolean.FALSE);
-        param.setDefaultValue(Boolean.FALSE);
-        param.setDisplayName(EParameterName.DUMMY.getDisplayName());
-        param.setFieldType(EParameterFieldType.CHECK);
-        param.setCategory(EComponentCategory.TECHNICAL);
-        param.setNumRow(5);
-        param.setReadOnly(false);
-        param.setRequired(false);
-        param.setShow(false);
-        listParam.add(param);
-
+        // TUP-4143
         param = new ElementParameter(node);
         param.setName(EParameterName.HELP.getName());
         param.setValue(getTranslatedValue(PROP_HELP));
@@ -671,30 +537,6 @@ public class Component extends AbstractComponent {
         param.setReadOnly(true);
         listParam.add(param);
 
-        param = new ElementParameter(node);
-        param.setName(EParameterName.SUBJOB_COLOR.getName());
-        param.setValue("");//$NON-NLS-1$ // TODO
-        param.setDisplayName(EParameterName.SUBJOB_COLOR.getDisplayName());
-        param.setFieldType(EParameterFieldType.TEXT);
-        param.setCategory(EComponentCategory.ADVANCED);
-        param.setNumRow(99);
-        param.setReadOnly(true);
-        param.setShow(false);
-        param.setDefaultValue(param.getValue());
-        listParam.add(param);
-
-        param = new ElementParameter(node);
-        param.setName(EParameterName.SUBJOB_TITLE_COLOR.getName());
-        param.setValue("");//$NON-NLS-1$ // TODO
-        param.setDisplayName(EParameterName.SUBJOB_TITLE_COLOR.getDisplayName());
-        param.setFieldType(EParameterFieldType.TEXT);
-        param.setCategory(EComponentCategory.ADVANCED);
-        param.setNumRow(99);
-        param.setReadOnly(true);
-        param.setShow(false);
-        param.setDefaultValue(param.getValue());
-        listParam.add(param);
-        //
         param = new ElementParameter(node);
         param.setName("PROPERTY");//$NON-NLS-1$
         param.setCategory(EComponentCategory.BASIC);
@@ -742,13 +584,13 @@ public class Component extends AbstractComponent {
         listParam.add(param);
     }
 
-    private void addPropertyParameters(final List<ElementParameter> listParam, final INode node, boolean advanced) {
-        EComponentCategory category = advanced ? EComponentCategory.ADVANCED : EComponentCategory.BASIC;
+    private void addPropertyParameters(final List<ElementParameter> listParam, final INode node, String formName,
+            EComponentCategory category) {
         ComponentProperties props = ComponentsUtils.getComponentProperties(getName());
-        Form form = props.getForm(advanced ? IComponentConstants.FORM_ADVANCED : IComponentConstants.FORM_MAIN);
+        Form form = props.getForm(formName);
         if (node.getComponentProperties() != null) {
             props = node.getComponentProperties();
-            form = props.getForm(advanced ? IComponentConstants.FORM_ADVANCED : IComponentConstants.FORM_MAIN);
+            form = props.getForm(formName);
         }
         List<ElementParameter> parameters = ComponentsUtils.getParametersFromForm(node, category, node.getComponentProperties(),
                 null, form, null, null);
@@ -764,89 +606,7 @@ public class Component extends AbstractComponent {
     }
 
     private void initializePropertyParameters(List<ElementParameter> listParam, final INode node) {
-        for (ElementParameter param : listParam) {
-            if (param.getDefaultValues().size() > 0) {
-                boolean isSet = false;
-                if (param.getFieldType().equals(EParameterFieldType.COMMAND)) {
-                    // convert the values of COMMMAND
-                    param.setValue(MultiDefaultValuesUtils.convertDefaultValues(param));
-                    continue;
-                }
-                for (IElementParameterDefaultValue defaultValue : param.getDefaultValues()) {
-                    String conditionIf = defaultValue.getIfCondition();
-                    String conditionNotIf = defaultValue.getNotIfCondition();
-
-                    if (param.isCondition(conditionIf, conditionNotIf, listParam)) {
-                        isSet = true;
-                        if (param.getFieldType().equals(EParameterFieldType.RADIO)
-                                || param.getFieldType().equals(EParameterFieldType.CHECK)
-                                || param.getFieldType().equals(EParameterFieldType.AS400_CHECK)) {
-                            param.setValue(new Boolean(defaultValue.getDefaultValue().toString()));
-                        } else {
-                            param.setValue(defaultValue.getDefaultValue());
-                        }
-                    }
-                }
-                if (!isSet) {
-                    if (param.getFieldType().equals(EParameterFieldType.RADIO)
-                            || param.getFieldType().equals(EParameterFieldType.CHECK)
-                            || param.getFieldType().equals(EParameterFieldType.AS400_CHECK)) {
-                        int index = this.computeIndex(listParam, param);
-                        if (index >= 0) {
-                            param.setValue(new Boolean(param.getDefaultValues().get(index).getDefaultValue().toString()));
-                        }
-                    } else {
-                        int index = this.computeIndex(listParam, param);
-                        if (index >= 0) {
-                            Object defaultValue = param.getDefaultValues().get(index).getDefaultValue();
-                            param.setValue(defaultValue);
-                            if (param.getFieldType() == EParameterFieldType.ENCODING_TYPE) {
-                                String encodingType = TalendTextUtils.removeQuotes((String) defaultValue);
-                                IElementParameter elementParameter = param.getChildParameters().get(
-                                        EParameterName.ENCODING_TYPE.getName());
-                                if (elementParameter != null) {
-                                    elementParameter.setValue(encodingType);
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
         initializePropertyParametersForSchema(listParam, node);
-    }
-
-    private int computeIndex(List<ElementParameter> listParam, ElementParameter param) {
-        String[] types = null;
-        int index = 0;
-        boolean isDBTYPEANDMYSQL = false;
-        List<IElementParameterDefaultValue> elementParameterDefaultValueList = param.getDefaultValues();
-
-        if (EParameterFieldType.MAPPING_TYPE.equals(param.getFieldType())) {
-            for (IElementParameterDefaultValue elementParameterDefaultValue : elementParameterDefaultValueList) {
-                String ifCondition = elementParameterDefaultValue.getIfCondition();
-                if (ifCondition != null) {
-                    types = ifCondition.split(EQUALS);
-                    if (types.length == 2) {
-                        if (types[0] != null && types[1] != null) {
-                            for (ElementParameter elementParameter : listParam) {
-                                if (types[0].equals(elementParameter.getName())
-                                        && types[1].substring(1, types[1].length() - 1).equals(elementParameter.getValue())) {
-                                    isDBTYPEANDMYSQL = true;
-                                    break;
-                                }
-                            }
-                            if (isDBTYPEANDMYSQL) {
-                                index = param.getDefaultValues().indexOf(elementParameterDefaultValue);
-                                isDBTYPEANDMYSQL = false;
-                                break;
-                            }
-                        }
-                    }
-                }
-            }
-        }
-        return index;
     }
 
     /**
@@ -856,7 +616,7 @@ public class Component extends AbstractComponent {
      * @param listParam
      */
     private void initializePropertyParametersForSchema(List<ElementParameter> listParam, final INode node) {
-        for (ElementParameter param : listParam) {
+        for (ElementParameter param : listParam) { // TUP-4161
             if (param.getFieldType().equals(EParameterFieldType.SCHEMA_TYPE)
                     || param.getFieldType().equals(EParameterFieldType.DCSCHEMA)) {
                 ElementParameter newParam = new ElementParameter(node);
@@ -898,203 +658,6 @@ public class Component extends AbstractComponent {
         }
     }
 
-    public void addItemsPropertyParameters(String paramName, ITEMSType items, ElementParameter param, EParameterFieldType type,
-            INode node) {
-        ITEMType item;
-        ElementParameter newParam;
-
-        int nbItems = 0;
-        if (items != null) {
-            if (items.isSetBASEDONSCHEMA()) {
-                param.setBasedOnSchema(items.isBASEDONSCHEMA());
-            }
-            if (items.isSetBASEDONSUBJOBSTARTS()) {
-                param.setBasedOnSubjobStarts(items.isBASEDONSUBJOBSTARTS());
-            }
-            if (items.isSetCOLUMNSBASEDONSCHEMA()) {
-                param.setColumnsBasedOnSchema(items.isCOLUMNSBASEDONSCHEMA());
-            }
-            nbItems = items.getITEM().size();
-            if (param.isBasedOnSchema() || param.isBasedOnSubjobStarts()) {
-                nbItems++;
-            }
-        }
-        String[] listRepositoryItem = new String[nbItems];
-        String[] listItemsDisplayValue = new String[nbItems];
-        String[] listItemsDisplayCodeValue = new String[nbItems];
-        Object[] listItemsValue = new Object[nbItems];
-        String[] listItemsShowIf = new String[nbItems];
-        String[] listItemsNotShowIf = new String[nbItems];
-        String[] listField = new String[nbItems];
-        String[] listReadonlyIf = new String[nbItems];
-        String[] listNotReadonlyIf = new String[nbItems];
-
-        for (int k = 0; k < nbItems; k++) {
-            int currentItem = k;
-            if (param.isBasedOnSchema() || param.isBasedOnSubjobStarts()) {
-                if (k == 0) {
-                    if (param.isBasedOnSchema()) {
-                        listItemsDisplayCodeValue[k] = "SCHEMA_COLUMN"; //$NON-NLS-1$
-                        listItemsDisplayValue[k] = "Column"; //$NON-NLS-1$
-                        listField[k] = ""; //$NON-NLS-1$
-                        listRepositoryItem[k] = ""; //$NON-NLS-1$
-                        listItemsShowIf[k] = null;
-                        listItemsNotShowIf[k] = null;
-                        newParam = new ElementParameter(node);
-                        newParam.setName("SCHEMA_COLUMN"); //$NON-NLS-1$
-                        newParam.setDisplayName(""); //$NON-NLS-1$
-                        newParam.setFieldType(EParameterFieldType.TEXT);
-                        newParam.setValue(""); //$NON-NLS-1$
-                        listItemsValue[k] = newParam;
-                        continue;
-                    } else { // based on subjobs starts
-                        listItemsDisplayCodeValue[k] = "SUBJOB_START_COLUMN"; //$NON-NLS-1$
-                        listItemsDisplayValue[k] = "Subjob Start"; //$NON-NLS-1$
-                        listField[k] = ""; //$NON-NLS-1$
-                        listRepositoryItem[k] = ""; //$NON-NLS-1$
-                        listItemsShowIf[k] = null;
-                        listItemsNotShowIf[k] = null;
-                        newParam = new ElementParameter(node);
-                        newParam.setName("SUBJOB_START_COLUMN"); //$NON-NLS-1$
-                        newParam.setDisplayName(""); //$NON-NLS-1$
-                        newParam.setFieldType(EParameterFieldType.TEXT);
-                        newParam.setValue(""); //$NON-NLS-1$
-                        listItemsValue[k] = newParam;
-                        continue;
-                    }
-                } else {
-                    currentItem = k - 1;
-                }
-            }
-            item = (ITEMType) items.getITEM().get(currentItem);
-            listItemsDisplayCodeValue[k] = item.getNAME();
-            // wzhang modified for 10846
-            boolean displayAsValue = item.isDISPLAYNAMEASVALUE();
-            if (displayAsValue) {
-                String value = item.getVALUE();
-                if (value != null) {
-                    listItemsDisplayValue[k] = value;
-                } else {
-                    listItemsDisplayValue[k] = getTranslatedValue(paramName + ".ITEM." + item.getNAME()); //$NON-NLS-1$
-                }
-            } else {
-                listItemsDisplayValue[k] = getTranslatedValue(paramName + ".ITEM." + item.getNAME()); //$NON-NLS-1$
-            }
-            if (type == EParameterFieldType.ROUTE_COMPONENT_TYPE) {
-                listItemsValue[k] = new String[] { item.getNAME(), item.getFILTER() };
-                // {component name, attributes filter}
-            } else if (type != EParameterFieldType.TABLE && type != EParameterFieldType.TREE_TABLE
-                    && type != EParameterFieldType.TABLE_BY_ROW) {
-                listItemsValue[k] = item.getVALUE();
-            } else {
-                EParameterFieldType currentField = EParameterFieldType.getFieldTypeByName(item.getFIELD());
-                newParam = new ElementParameter(node);
-                newParam.setName(item.getNAME());
-                newParam.setFilter(item.getFILTER());
-                newParam.setDisplayName(""); //$NON-NLS-1$
-                newParam.setFieldType(currentField);
-                newParam.setContext(item.getCONTEXT());
-                newParam.setShowIf(item.getSHOWIF());
-                newParam.setNotShowIf(item.getNOTSHOWIF());
-                newParam.setReadOnlyIf(item.getREADONLYIF());
-                newParam.setNotReadOnlyIf(item.getNOTREADONLYIF());
-                newParam.setNoContextAssist(item.isNOCONTEXTASSIST());
-                newParam.setRaw(item.isRAW());
-                if (item.isSetREADONLY()) {
-                    newParam.setReadOnly(item.isREADONLY());
-                }
-                switch (currentField) {
-                case CLOSED_LIST:
-                case OPENED_LIST:
-                case COLUMN_LIST:
-                case COMPONENT_LIST:
-                case CONNECTION_LIST:
-                case DBTYPE_LIST:
-                case LOOKUP_COLUMN_LIST:
-                case PREV_COLUMN_LIST:
-                case CONTEXT_PARAM_NAME_LIST:
-                case MODULE_LIST:
-                    addItemsPropertyParameters(paramName + ".ITEM." + item.getNAME(), item.getITEMS(), newParam, currentField, //$NON-NLS-1$
-                            node);
-                    break;
-                case COLOR:
-                    newParam.setValue(DEFAULT_COLOR);
-                    break;
-                case CHECK:
-                case RADIO:
-                    if (item.getVALUE() == null || item.getVALUE().equals("")) { //$NON-NLS-1$
-                        newParam.setValue(Boolean.FALSE);
-                    } else {
-                        newParam.setValue(new Boolean(item.getVALUE()));
-                    }
-                    break;
-                case SCHEMA_TYPE:
-                    newParam.setValue(""); //$NON-NLS-1$
-                    break;
-                case SAP_SCHEMA_TYPE:
-                    newParam.setValue(""); //$NON-NLS-1$
-                    break;
-                case SCHEMA_XPATH_QUERYS:
-                    newParam.setValue(""); //$NON-NLS-1$
-                    break;
-                case RULE_TYPE:
-                    newParam.setFieldType(EParameterFieldType.RULE_TYPE);
-                    break;
-                // case VALIDATION_RULE_TYPE:
-                // newParam.setFieldType(EParameterFieldType.VALIDATION_RULE_TYPE);
-                // break;
-                default: // TEXT by default
-                    newParam.setFieldType(EParameterFieldType.TEXT);
-                    if (item.getVALUE() == null || item.getVALUE().equals("")) { //$NON-NLS-1$
-                        newParam.setValue(""); //$NON-NLS-1$
-                    } else {
-                        newParam.setValue(item.getVALUE());
-                    }
-
-                }
-                listItemsValue[k] = newParam;
-            }
-            listField[k] = item.getFIELD();
-            listRepositoryItem[k] = item.getREPOSITORYITEM();
-            listItemsShowIf[k] = item.getSHOWIF();
-            listItemsNotShowIf[k] = item.getNOTSHOWIF();
-            listReadonlyIf[k] = item.getREADONLYIF();
-            listNotReadonlyIf[k] = item.getNOTREADONLYIF();
-        }
-
-        param.setListItemsDisplayName(listItemsDisplayValue);
-        param.setListItemsDisplayCodeName(listItemsDisplayCodeValue);
-        param.setListItemsValue(listItemsValue);
-        param.setListRepositoryItems(listRepositoryItem);
-        param.setListItemsShowIf(listItemsShowIf);
-        param.setListItemsNotShowIf(listItemsNotShowIf);
-        param.setListItemsNotReadOnlyIf(listNotReadonlyIf);
-        param.setListItemsReadOnlyIf(listReadonlyIf);
-        if (type != EParameterFieldType.TABLE && type != EParameterFieldType.TREE_TABLE) {
-            Object defaultValue = ""; //$NON-NLS-1$
-            if (items != null) {
-                if (items.getDEFAULT() != null) {
-                    boolean found = false;
-                    String temp = items.getDEFAULT();
-                    for (int i = 0; i < listItemsDisplayCodeValue.length & !found; i++) {
-                        if (listItemsDisplayCodeValue[i].equals(items.getDEFAULT())) {
-                            found = true;
-                            temp = (String) listItemsValue[i];
-                        }
-                    }
-                    defaultValue = new String(temp);
-                }
-            }
-            param.setDefaultClosedListValue(defaultValue);
-            param.setValue(defaultValue);
-        }
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.talend.core.model.components.IComponent#hasConditionalOutputs()
-     */
     @Override
     public boolean hasConditionalOutputs() {
         return false;
@@ -1124,11 +687,6 @@ public class Component extends AbstractComponent {
         return componentDefinition.isStartable();
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.talend.designer.core.model.components.IComponent#createConnectors()
-     */
     @Override
     public List<NodeConnector> createConnectors(INode parentNode) {
         List<NodeConnector> listConnector = new ArrayList<NodeConnector>();
@@ -1199,11 +757,6 @@ public class Component extends AbstractComponent {
         return componentDefinition.isDataAutoPropagate();
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.talend.core.model.components.IComponent#isVisible()
-     */
     @Override
     public boolean isVisible() {
         return true;
@@ -1242,23 +795,9 @@ public class Component extends AbstractComponent {
 
     @Override
     public List<IMultipleComponentManager> getMultipleComponentManagers() {
-        if (multipleComponentManagers == null) {
-            multipleComponentManagers = createMultipleComponentManagerFromTemplates();
-        } // else already exist so return it
-        return multipleComponentManagers;
+        return new ArrayList<>();
     }
 
-    private ArrayList<IMultipleComponentManager> createMultipleComponentManagerFromTemplates() {
-        // TODO
-        ArrayList<IMultipleComponentManager> theMultipleComponentManagers = new ArrayList<IMultipleComponentManager>();
-        return theMultipleComponentManagers;
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.talend.core.model.components.IComponent#isLoaded()
-     */
     @Override
     public boolean isLoaded() {
         return true;
@@ -1296,11 +835,6 @@ public class Component extends AbstractComponent {
         return new DummyComponent("dummy").getIcon24();//$NON-NLS-1$
     }
 
-    /**
-     * Getter for icon32.
-     *
-     * @return the icon32
-     */
     @Override
     public ImageDescriptor getIcon32() {
         InputStream imageStream = ComponentsUtils.getComponentService().getComponentPngImage(getName(),
@@ -1318,7 +852,7 @@ public class Component extends AbstractComponent {
     }
 
     private ArrayList<ECodePart> createCodePartList() {
-        ArrayList<ECodePart> theCodePartList = new ArrayList<ECodePart>();
+        ArrayList<ECodePart> theCodePartList = new ArrayList<>();
         theCodePartList.add(ECodePart.BEGIN);
         theCodePartList.add(ECodePart.MAIN);
         theCodePartList.add(ECodePart.END);
@@ -1334,53 +868,43 @@ public class Component extends AbstractComponent {
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     public List<String> getPluginDependencies() {
-        List<String> pluginDependencyList = new ArrayList<String>();
-        return pluginDependencyList;
+        return new ArrayList<>();
     }
 
     @Override
     public boolean useMerge() {
+        // TUP-4149
         return false;
     }
 
     public boolean useFlow() {
+        // TUP-4149
         return false;
     }
 
     public boolean useSchema() {
+        // TUP-4149
         return false;
     }
 
     @Override
     public boolean isMultiplyingOutputs() {
+        // TUP-4150
         return false;
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.talend.core.model.components.IComponent#getComponentType()
-     */
     @Override
     public boolean isMultipleOutput() {
+        // TUP-4150
         return false;
     }
 
     public boolean isMultiSchemaOutput() {
+        // TUP-4150
         return false;
     }
 
-    private boolean connectorUseInputLinkSelection(String name) {
-        return false;
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.talend.core.model.components.IComponent#useLookup()
-     */
     @Override
     public boolean useLookup() {
         return false;
@@ -1391,67 +915,29 @@ public class Component extends AbstractComponent {
         return false;
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.talend.core.model.components.IComponent#getComponentType()
-     */
     @Override
     public EComponentType getComponentType() {
         return EComponentType.GENERIC;
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.talend.core.model.components.IComponent#isHashComponent()
-     */
     @Override
     public boolean isHashComponent() {
         return false;
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.talend.core.model.components.IComponent#isTechnical()
-     */
     @Override
     public boolean isTechnical() {
         return false;
-
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.talend.core.model.components.IComponent#isSingleton()
-     */
     @Override
     public boolean isSingleton() {
         return false;
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.talend.core.model.components.IComponent#isMainCodeCalled()
-     */
     @Override
     public boolean isMainCodeCalled() {
         return false;
-    }
-
-    /**
-     * get this component's repository type <br>
-     * see <PARAMETER NAME="PROPERTY" ...> in the component's xml definition.
-     *
-     * @return
-     */
-    @Override
-    public String getRepositoryType() {
-        // FIXME - this is the name of the object stored in the repository, need to put this in the definition
-        return "salesforce";
     }
 
     @Override
@@ -1469,90 +955,41 @@ public class Component extends AbstractComponent {
         return null;
     }
 
-    /**
-     * Getter for type.
-     *
-     * @return the type
-     */
     @Override
     public String getType() {
+        // TCOMP-92
         return "DI";//$NON-NLS-1$
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.talend.core.model.components.IComponent#getInputType()
-     */
     @Override
     public String getInputType() {
         return "";//$NON-NLS-1$
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.talend.core.model.components.IComponent#getOutputType()
-     */
     @Override
     public String getOutputType() {
         return "";//$NON-NLS-1$
     }
 
-    /**
-     * Getter for reduce.
-     *
-     * @return the reduce
-     */
     @Override
     public boolean isReduce() {
         return false;
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.talend.core.model.components.IComponent#isSparkAction()
-     */
     @Override
     public boolean isSparkAction() {
         return false;
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.talend.designer.core.model.components.AbstractComponent#setPaletteType(java.lang.String)
-     */
-    @Override
-    public void setPaletteType(String paletteType) {
-        super.setPaletteType(paletteType);
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.talend.core.model.components.IComponent#getPartitioning()
-     */
     @Override
     public String getPartitioning() {
         return "";//$NON-NLS-1$
     }
 
-    /**
-     * Getter for provider.
-     *
-     * @return the provider
-     */
     public ComponentsProvider getProvider() {
         return this.provider;
     }
 
-    /**
-     * Sets the provider.
-     *
-     * @param provider the provider to set
-     */
     public void setProvider(ComponentsProvider provider) {
         this.provider = provider;
     }
@@ -1560,10 +997,6 @@ public class Component extends AbstractComponent {
     @Override
     public boolean isSupportDbType() {
         return false;
-    }
-
-    public String getBundleName() {
-        return IComponentsFactory.COMPONENTS_LOCATION;
     }
 
     public static class CodegenPropInfo {
@@ -1614,11 +1047,6 @@ public class Component extends AbstractComponent {
         return value;
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see java.lang.Object#hashCode()
-     */
     @Override
     public int hashCode() {
         final int prime = 31;
@@ -1662,11 +1090,6 @@ public class Component extends AbstractComponent {
         return true;
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.talend.core.model.components.IComponent#isLog4JEnabled()
-     */
     @Override
     public boolean isLog4JEnabled() {
         return false;
@@ -1676,11 +1099,6 @@ public class Component extends AbstractComponent {
         return "";//$NON-NLS-1$
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.talend.core.model.components.IComponent#getCONNECTORList()
-     */
     @Override
     public EList getCONNECTORList() {
         return null;
@@ -1691,39 +1109,6 @@ public class Component extends AbstractComponent {
         if (node != null) {
             node.setComponentProperties(ComponentProperties.fromSerialized(serialized, ComponentProperties.class).properties);
         }
-    }
-
-    @Override
-    public void initParamPropertiesFromSerialized(IElementParameter param, String serialized) {
-        if (param instanceof GenericElementParameter) {
-            Deserialized<ComponentProperties> fromSerialized = ComponentProperties.fromSerialized(serialized,
-                    ComponentProperties.class);
-            if (fromSerialized != null) {
-                ComponentProperties componentProperties = fromSerialized.properties;
-                ((GenericElementParameter) param).setComponentProperties(ComponentsUtils.getCurrentComponentProperties(
-                        componentProperties, param.getName()));
-            }
-        }
-    }
-
-    @Override
-    public Object getElementParameterValue(IElementParameter param) {
-        if (param instanceof GenericElementParameter) {
-            return ComponentsUtils.getGenericPropertyValue(((GenericElementParameter) param).getComponentProperties(),
-                    param.getName());
-        }
-        return null;
-    }
-
-    @Override
-    public Object genericFromSerialized(String serialized, String name) {
-        Deserialized<ComponentProperties> fromSerialized = ComponentProperties.fromSerialized(serialized,
-                ComponentProperties.class);
-        if (fromSerialized != null) {
-            ComponentProperties componentProperties = fromSerialized.properties;
-            return ComponentsUtils.getGenericPropertyValue(componentProperties, name);
-        }
-        return null;
     }
 
     @Override

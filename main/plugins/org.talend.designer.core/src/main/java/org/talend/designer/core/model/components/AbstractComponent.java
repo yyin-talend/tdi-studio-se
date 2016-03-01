@@ -206,18 +206,6 @@ public abstract class AbstractComponent implements IComponent {
 
     }
 
-    public void initParamPropertiesFromSerialized(IElementParameter param, String serialized) {
-        // nothing by default
-    }
-
-    public Object getElementParameterValue(IElementParameter param) {
-        return null;
-    }
-
-    public Object genericFromSerialized(String serialized, String name) {
-        return null;
-    }
-
     public String genericToSerialized(IElementParameter param) {
         return null;
     }

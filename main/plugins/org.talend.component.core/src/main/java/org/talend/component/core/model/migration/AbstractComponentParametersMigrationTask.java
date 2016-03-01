@@ -15,7 +15,6 @@ package org.talend.component.core.model.migration;
 import java.util.Date;
 import java.util.List;
 
-import org.talend.component.core.constants.IComponentConstants;
 import org.talend.core.model.migration.AbstractJobMigrationTask;
 import org.talend.core.model.properties.Item;
 import org.talend.designer.core.model.utils.emf.talendfile.ElementParameterType;
@@ -114,24 +113,6 @@ public class AbstractComponentParametersMigrationTask extends AbstractJobMigrati
          */
         public static String convertSpecialParameterValue(String oldParameterValue) {
             if (oldParameterValue != null) {
-                if (IComponentConstants.ACTION_INSERT.equalsIgnoreCase(oldParameterValue)) {
-                    return IComponentConstants.ACTION_INSERT;
-                } else if (IComponentConstants.ACTION_UPDATE.equalsIgnoreCase(oldParameterValue)) {
-                    return IComponentConstants.ACTION_UPDATE;
-                } else if (IComponentConstants.ACTION_UPSERT.equalsIgnoreCase(oldParameterValue)) {
-                    return IComponentConstants.ACTION_UPSERT;
-                } else if (IComponentConstants.ACTION_DELETE.equalsIgnoreCase(oldParameterValue)) {
-                    return IComponentConstants.ACTION_DELETE;
-                } else if (IComponentConstants.LOGIN_BASIC.equalsIgnoreCase(oldParameterValue)) {
-                    return IComponentConstants.LOGIN_BASIC;
-                } else if (IComponentConstants.LOGIN_OAUTH.equalsIgnoreCase(oldParameterValue)
-                        || (!oldParameterValue.equals("") && oldParameterValue.startsWith(IComponentConstants.LOGIN_OAUTH))) {//$NON-NLS-1$
-                    return IComponentConstants.LOGIN_OAUTH;
-                } else if (IComponentConstants.QUERY_QUERY.equalsIgnoreCase(oldParameterValue)) {
-                    return IComponentConstants.QUERY_QUERY;
-                } else if (IComponentConstants.QUERY_BULK.equalsIgnoreCase(oldParameterValue)) {
-                    return IComponentConstants.QUERY_BULK;
-                }
             }
             return oldParameterValue;
         }

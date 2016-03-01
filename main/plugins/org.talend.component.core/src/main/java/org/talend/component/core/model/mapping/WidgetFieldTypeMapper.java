@@ -14,8 +14,8 @@ package org.talend.component.core.model.mapping;
 
 import org.talend.core.model.process.EParameterFieldType;
 import org.talend.daikon.NamedThing;
+import org.talend.daikon.properties.Property;
 import org.talend.daikon.properties.presentation.Widget;
-import org.talend.daikon.schema.SchemaElement;
 
 /**
  * created by hcyi on Jan 21, 2016 Detailled comment
@@ -25,10 +25,14 @@ public class WidgetFieldTypeMapper {
 
     private static final WidgetFieldTypeMappingReader mappingReader = new WidgetFieldTypeMappingReader();
 
-    public static EParameterFieldType getFieldType(Widget widget, NamedThing widgetProperty, SchemaElement se) {
+    public static EParameterFieldType getFieldType(Widget widget, NamedThing widgetProperty) {
         // init
         mappingReader.init();
-        String fieldType = mappingReader.getFieldType(widget.getWidgetType().name(), widgetProperty, se != null ? se.getType()
+        Property property = null;
+        if (widgetProperty instanceof Property) {
+            property = (Property) widgetProperty;
+        }
+        String fieldType = mappingReader.getFieldType(widget.getWidgetType().name(), widgetProperty, property != null ? property.getType()
                 .name() : null);
         return fieldType != null ? EParameterFieldType.valueOf(fieldType.toUpperCase()) : null;
     }

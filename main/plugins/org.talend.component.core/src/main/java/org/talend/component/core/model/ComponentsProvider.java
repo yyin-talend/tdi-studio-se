@@ -33,6 +33,7 @@ import org.talend.repository.ProjectManager;
  * created by hcyi on Sep 11, 2015 Detailled comment
  *
  */
+// TUP-4152
 public class ComponentsProvider extends AbstractProcessProvider {
 
     private static Logger log = Logger.getLogger(ComponentsProvider.class);
