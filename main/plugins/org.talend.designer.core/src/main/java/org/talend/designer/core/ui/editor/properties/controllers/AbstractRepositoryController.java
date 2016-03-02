@@ -123,6 +123,7 @@ public abstract class AbstractRepositoryController extends AbstractElementProper
         if (!propertyTypeParameter.isReadOnly()) {
             if (param.getFieldType() == EParameterFieldType.PROPERTY_TYPE
                     || param.getFieldType() == EParameterFieldType.SCHEMA_TYPE
+                    || param.getFieldType() == EParameterFieldType.SCHEMA_REFERENCE
                     || param.getFieldType() == EParameterFieldType.QUERYSTORE_TYPE) {
                 combo.setEnabled(ExtractMetaDataUtils.getInstance().haveLoadMetadataNode());
             }
@@ -244,7 +245,7 @@ public abstract class AbstractRepositoryController extends AbstractElementProper
         return btn;
     }
 
-    SelectionListener listenerSelection = new SelectionListener() {
+    protected SelectionListener listenerSelection = new SelectionListener() {
 
         @Override
         public void widgetDefaultSelected(SelectionEvent e) {
