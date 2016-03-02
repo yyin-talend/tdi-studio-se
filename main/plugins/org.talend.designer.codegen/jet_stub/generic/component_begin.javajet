@@ -57,7 +57,6 @@ if ((metadatas != null) && (metadatas.size() > 0)) { // metadata
 
 org.talend.components.api.component.ComponentDefinition def_<%=cid %> =
    new <%= def.getClass().getName()%>();
-
 <%
 List<Component.CodegenPropInfo> propsToProcess = component.getCodegenPropInfos(componentProps);
 %>
@@ -89,7 +88,7 @@ for (Component.CodegenPropInfo propInfo : propsToProcess) { // propInfo
 	} // property
 } // propInfo
 %>
-//org.talend.components.api.runtime.ComponentRuntimeContainer container_<%=cid %> =
+//org.talend.components.api.container.RuntimeContainer container_<%=cid %> = 
 <%
 	if (hasDynamic) {
 %>
@@ -104,7 +103,6 @@ for (Component.CodegenPropInfo propInfo : propsToProcess) { // propInfo
    // public java.util.Map<String, Object> getGlobalMap() {
 	//	return globalMap;
     //}
-
    // public String getCurrentComponentName(){
    // 	return "<%=cid %>";
     //}
@@ -119,6 +117,12 @@ if(metadata != null){
 		boundedSource_<%=cid%>.initialize(null, props_<%=cid%>);<%//FIXME for the null adaptor%>
 		org.talend.components.api.component.runtime.BoundedReader boundedReader_<%=cid%> = boundedSource_<%=cid%>.createReader(null);
 
+		<%//add calculate dynamic code in here%>
+		java.util.List<org.talend.daikon.schema.SchemaElement> fields_<%=cid%> = ((org.talend.daikon.schema.Schema) props_<%=cid%>.module.schema.schema.getValue()).getRoot().getChildren();
+		java.util.Map<String, org.talend.daikon.schema.SchemaElement> fieldsMap_<%=cid%> = new java.util.HashMap<String, org.talend.daikon.schema.SchemaElement>();
+		for(org.talend.daikon.schema.SchemaElement field_<%=cid%> : fields_<%=cid%>){
+			fieldsMap_<%=cid%>.put(field_<%=cid%>.getName(), field_<%=cid%>);
+		}
 		<%
 		if(hasDynamic){
 		%>
@@ -135,7 +139,7 @@ if(metadata != null){
 		    	}
 		    	dynamicMetadata_<%=cid%>.setType("id_" + talendType_<%=cid%>);
 		    	dynamic_<%=cid%>.metadatas.add(dynamicMetadata_<%=cid%>);
-			}
+			} 
 		<%
 		}
 		List<? extends IConnection> outgoingConns = node.getOutgoingSortedConnections();
