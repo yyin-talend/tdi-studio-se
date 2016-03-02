@@ -442,7 +442,7 @@ public final class CodeGeneratorEmittersPoolFactory {
             jetBean.addClassPath("COMMON_LIBRARIES", CommonsPlugin.PLUGIN_ID); //$NON-NLS-1$
             jetBean.addClassPath("COMPONENT_FRAMEWORK", "org.talend.components.api"); //$NON-NLS-1$ //$NON-NLS-2$
             jetBean.addClassPath("DAIKON", "org.talend.daikon"); //$NON-NLS-1$ //$NON-NLS-2$
-            jetBean.addClassPath("COMPONENT_CORE", "org.talend.component.core"); //$NON-NLS-1$ //$NON-NLS-2$
+            jetBean.addClassPath("COMPONENT_CORE", "org.talend.designer.core.generic"); //$NON-NLS-1$ //$NON-NLS-2$
             jetBean.addClassPath("DESIGNER_CORE", "org.talend.designer.core"); //$NON-NLS-1$ //$NON-NLS-2$
             jetBean.addClassPath("HADOOP_DISTRIBUTIONS", "org.talend.hadoop.distribution"); //$NON-NLS-1$ //$NON-NLS-2$
             jetBean.addClassPath("HADOOP_CUSTOM_DISTRIBUTIONS", "org.talend.hadoop.distribution.custom"); //$NON-NLS-1$ //$NON-NLS-2$
