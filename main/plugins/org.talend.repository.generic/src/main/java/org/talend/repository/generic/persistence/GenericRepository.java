@@ -41,7 +41,7 @@ import org.talend.repository.generic.model.genericMetadata.SubContainer;
 public class GenericRepository implements Repository {
 
     @Override
-    public String storeProperties(Properties properties, String name, String repositoryLocation, Schema schema) {
+    public String storeProperties(Properties properties, String name, String repositoryLocation, String schemaPropertyName) {
         // Add repository value if it is from repository
         if (properties != null && properties instanceof ComponentProperties) {
             List<org.talend.daikon.properties.Property> propertyValues = ComponentsUtils
@@ -69,7 +69,8 @@ public class GenericRepository implements Repository {
                 parentContainer.getOwnedElement().add(subContainer);
             }
             // if there is a schema then creates a Schema element
-            if (schema != null) {
+            if (schemaPropertyName != null) {
+                Schema schema = (Schema) properties.getValuedProperty(schemaPropertyName).getValue();
                 MetadataTable metadataTable = SchemaUtils.createSchema(name, serializedProperties);
                 subContainer.getOwnedElement().add(metadataTable);
                 SchemaUtils.convertComponentSchemaIntoTalendSchema(schema, metadataTable);
