@@ -4,9 +4,10 @@ imports="
         java.util.ArrayList
         java.util.Stack
         org.talend.components.api.component.ComponentDefinition
+        org.talend.components.api.component.InputComponentDefinition
+        org.talend.components.api.component.OutputComponentDefinition
         org.talend.components.api.properties.ComponentProperties
-        org.talend.components.api.runtime.ComponentRuntimeContainer
-        org.talend.components.api.runtime.ComponentRuntime
+        org.talend.components.api.container.RuntimeContainer
         org.talend.daikon.properties.Property
         org.talend.daikon.NamedThing
 		org.talend.component.core.model.Component
@@ -34,6 +35,7 @@ List<IMetadataTable> metadatas = node.getMetadataList();
 IMetadataTable metadata = null;
 List<IMetadataColumn> columnList = null;
 boolean hasDynamic = false;
+String dynamicColName = null;
 if ((metadatas != null) && (metadatas.size() > 0)) { // metadata
 
 	metadata = metadatas.get(0);
@@ -45,6 +47,7 @@ if ((metadatas != null) && (metadatas.size() > 0)) { // metadata
 		for (IMetadataColumn column : columnList) {
 			if (column.getTalendType().equals("id_Dynamic")) {
 				hasDynamic = true;
+				dynamicColName = column.getLabel();
 				break;
 			}
 		}
@@ -54,8 +57,7 @@ if ((metadatas != null) && (metadatas.size() > 0)) { // metadata
 
 org.talend.components.api.component.ComponentDefinition def_<%=cid %> =
    new <%= def.getClass().getName()%>();
-
-
+ 
 <%
 List<Component.CodegenPropInfo> propsToProcess = component.getCodegenPropInfos(componentProps);
 %>
@@ -79,102 +81,135 @@ for (Component.CodegenPropInfo propInfo : propsToProcess) { // propInfo
 	} // property
 } // propInfo
 %>
-
-org.talend.components.api.runtime.ComponentRuntimeContainer container_<%=cid %> = 
+//org.talend.components.api.container.RuntimeContainer container_<%=cid %> = 
 <%
 	if (hasDynamic) {
 %>
-    	new routines.system.ComponentRuntimeContainerDynamic() {
+  //  	new routines.system.ComponentRuntimeContainerDynamic() {
 <%
 	} else {
 %>
-    	new routines.system.ComponentRuntimeContainerBase() {
+    //	new routines.system.ComponentRuntimeContainerBase() {
 <%
 	}
 %>
-    public java.util.Map<String, Object> getGlobalMap() {
-		return globalMap;
-    }
+   // public java.util.Map<String, Object> getGlobalMap() {
+	//	return globalMap;
+    //}
     
-    public String getCurrentComponentName(){
-    	return "<%=cid %>";
-    }
-};
-
-org.talend.components.api.runtime.ComponentRuntime runtime_<%=cid %> = def_<%=cid %>.createRuntime();
-runtime_<%=cid %>.setContainer(container_<%=cid %>);
+   // public String getCurrentComponentName(){
+   // 	return "<%=cid %>";
+    //}
+//};
 
 <%
 if(metadata != null){
-	if (component.canStart()) { // canStart
-	// Input
-%>
-		runtime_<%=cid %>.inputBegin(props_<%=cid %>);
-<%
+	if(def instanceof InputComponentDefinition){
+		//TODO how about UnboundedSource(tJMSInput?)
+		%>
+		org.talend.components.api.component.runtime.BoundedSource boundedSource_<%=cid%> = (org.talend.components.api.component.runtime.BoundedSource)((org.talend.components.api.component.InputComponentDefinition)def_<%=cid%>).getRuntime();
+		boundedSource_<%=cid%>.initialize(null, props_<%=cid%>);<%//FIXME for the null adaptor%>
+		org.talend.components.api.component.runtime.BoundedReader boundedReader_<%=cid%> = boundedSource_<%=cid%>.createReader(null);
+		<%//add calculate dynamic code in here%>
+		java.util.List<org.talend.daikon.schema.SchemaElement> fields_<%=cid%> = ((org.talend.daikon.schema.Schema) props_<%=cid%>.module.schema.schema.getValue()).getRoot().getChildren();
+		java.util.Map<String, org.talend.daikon.schema.SchemaElement> fieldsMap_<%=cid%> = new java.util.HashMap<String, org.talend.daikon.schema.SchemaElement>();
+		for(org.talend.daikon.schema.SchemaElement field_<%=cid%> : fields_<%=cid%>){
+			fieldsMap_<%=cid%>.put(field_<%=cid%>.getName(), field_<%=cid%>);
+		}
+		<%
+		if(hasDynamic){
+		%>
+			routines.system.Dynamic dynamic_<%=cid%> = new routines.system.Dynamic();
+			org.talend.daikon.schema.SchemaElement dynamicSchemaElement_<%=cid%> = fieldsMap_<%=cid%>.get("<%=dynamicColName%>");
+			for(org.talend.daikon.schema.SchemaElement childDynamic_<%=cid%> : dynamicSchemaElement_<%=cid%>.getChildren()){
+				routines.system.DynamicMetadata dynamicMetadata_<%=cid%> = new routines.system.DynamicMetadata();
+		    	dynamicMetadata_<%=cid%>.setName(childDynamic_<%=cid%>.getName());
+		    	dynamicMetadata_<%=cid%>.setDbName(childDynamic_<%=cid%>.getName());
+		    	String talendType_<%=cid%> = null;
+		    	//TODO finish the mapping
+		    	if(childDynamic_<%=cid%>.getType() == org.talend.daikon.schema.SchemaElement.Type.STRING){
+		    		talendType_<%=cid%> = "String";
+		    	}
+		    	dynamicMetadata_<%=cid%>.setType("id_" + talendType_<%=cid%>);
+		    	dynamic_<%=cid%>.metadatas.add(dynamicMetadata_<%=cid%>);
+			} 
+		<%
+		}
 		List<? extends IConnection> outgoingConns = node.getOutgoingSortedConnections();
-		if (outgoingConns.size() > 0) { // outgoing size
+		if(outgoingConns.size() > 0){ // outgoing size
 			// FIXME - multiple outgoing connections?
 			IConnection outgoingConn = outgoingConns.get(0);
-			if (outgoingConn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) { // outgoingConn 
-%>
-		
-				java.util.Map<String, Object> row_<%=cid %>;
-				Object value_<%=cid %>;
-				while ((row_<%=cid %> = runtime_<%=cid %>.inputRow()) != null) { // while (ends in component_end)
-<%
-					for (IMetadataColumn column : columnList) { // column
+			if(outgoingConn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)){ // outgoingConn 
+			%>
+				for(boolean available = boundedReader_<%=cid%>.start(); available; available = boundedReader_<%=cid%>.advance()){
+					<%
+					if(hasDynamic){
+					%>
+						dynamic_<%=cid%>.clearColumnValues();
+						for(org.talend.daikon.schema.SchemaElement childDynamic_<%=cid%> : dynamicSchemaElement_<%=cid%>.getChildren()){
+							dynamic_<%=cid%>.addColumnValue(
+								<%//TODO change to use type mapping later%>
+								dynamic_<%=cid%>.addColumnValue(((java.util.Map<String, Object>)boundedReader_<%=cid%>.getCurrent()).get(childDynamic_<%=cid%>.getName()));
+							);
+						}
+						<%=outgoingConn.getName()%>.<%=dynamicColName%> = dynamic_<%=cid%>;
+					<%
+					}
+					%>
+					Object value_<%=cid%>;
+					<%
+					for(IMetadataColumn column : columnList){ // column
 						String columnName = column.getLabel();
 		              	JavaType javaType = JavaTypesManager.getJavaTypeFromId(column.getTalendType());
-						String patternValue = column.getPattern() == null || column.getPattern().trim().length() == 0 ? null : column.getPattern();
 						String typeToGenerate = JavaTypesManager.getTypeToGenerate(column.getTalendType(), column.isNullable());
-		              	
-%>
-						value_<%=cid %> = row_<%=cid %>.get("<%=columnName %>");
+						String patternValue = column.getPattern() == null || column.getPattern().trim().length() == 0 ? null : column.getPattern();
+						if(columnName.equals(dynamicColName)){
+							continue;
+						}
+						//TODO consider null and default and reject in here
+						//TODO change to use type mapping later
+						%>
+						value_<%=cid%> = ((java.util.Map<String, Object>)boundedReader_<%=cid%>.getCurrent()).get("<%=columnName%>");
 						if (value_<%=cid %> != null) {
-<%
+							<%
 							if (javaType == JavaTypesManager.STRING) { 
-%>
+							%>
 								<%=outgoingConn.getName()%>.<%=columnName%> = (String) value_<%=cid%>;
-<%
+							<%
 							} else if (javaType == JavaTypesManager.OBJECT) {
-%>
+							%>
 								<%=outgoingConn.getName()%>.<%=columnName%> = value_<%=cid%>;
-<%
+							<%
 							} else if(javaType == JavaTypesManager.DATE) { 
-%>
+							%>
 								<%=outgoingConn.getName()%>.<%=columnName%> = ParserUtils.parseTo_Date((String)value_<%=cid%>, <%= patternValue %>);
-<%
+							<%
 							} else if(javaType == JavaTypesManager.BYTE_ARRAY) {
-%>
+							%>
 								<%=outgoingConn.getName()%>.<%=columnName%> = value_<%=cid%>.getBytes();
-<%
+							<%
 							} else  { // other
-%>
+							%>
 								<%=outgoingConn.getName()%>.<%=columnName%> = ParserUtils.parseTo_<%= typeToGenerate %>((String)value_<%=cid%>);
-<%
+							<%
 							}
-%>
-						} else {
+							%>
+						}else{
 							<%=outgoingConn.getName()%>.<%=columnName%> = <%=JavaTypesManager.getDefaultValueFromJavaType(typeToGenerate)%>;
-						}	              	
-<%
-					} // column
-			} // outgoingConn
-		} // outgoing size
-	} else { // canStart
-	// Output
+						}
+					<%
+					}
+			}			
+		}
+	}else if(def instanceof OutputComponentDefinition){
+	%>
+		org.talend.components.api.component.runtime.Sink sink_<%=cid%> = ((org.talend.components.api.component.OutputComponentDefinition)def_<%=cid%>).getRuntime();
+		sink_<%=cid%>.initialize(null, props_<%=cid%>);
+		org.talend.components.api.component.runtime.WriteOperation writeOperation_<%=cid%> = sink_<%=cid%>.createWriteOperation();
+		writeOperation_<%=cid%>.initialize(null);<%//create folder for file; create database/table for db%>
+		org.talend.components.api.component.runtime.Writer writer_<%=cid%> = writeOperation_<%=cid%>.createWriter(null);
+		java.util.List<org.talend.daikon.schema.SchemaElement> fields_<%=cid%> = ((Schema) props_<%=cid%>.module.schema.schema.getValue()).getRoot().getChildren()
+	<%	
+	}
+}
 %>
-		runtime_<%=cid %>.outputBegin(props_<%=cid %>);
-<%
-	} // canStart
-}else{
-%>
-	// This for "metadata == null", like connection component
-	// FIXME - this is a compromise 
-	runtime_<%=cid %>.inputBegin(props_<%=cid %>);
-<%
-} // metadata
-%>
-
-
-

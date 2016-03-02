@@ -121,7 +121,7 @@ public class GenericDialog extends TitleAreaDialog {
 
     @Override
     protected void cancelPressed() {
-        // FIXME: call afterFormCancel method if there is one.
+        componentService.cancelFormValues((ComponentProperties) form.getProperties(), form.getName());
         super.cancelPressed();
     }
 
