@@ -1,0 +1,26 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Generic Core
+Bundle-SymbolicName: org.talend.designer.core.generic;singleton:=true
+Bundle-Version: 6.2.0.qualifier
+Require-Bundle: org.eclipse.ui,
+ org.eclipse.core.runtime,
+ org.eclipse.emf.common,
+ org.eclipse.gef,
+ org.eclipse.ui.views.properties.tabbed;visibility:=reexport,
+ org.apache.commons.collections,
+ org.talend.core,
+ org.talend.core.ui,
+ org.talend.core.runtime;visibility:=reexport,
+ org.talend.core.repository,
+ org.talend.designer.core,
+ org.talend.librariesmanager,
+ org.talend.model,
+ org.talend.commons.ui,
+ org.talend.components.api
+Bundle-ActivationPolicy: lazy
+Bundle-Vendor: .Talend SA.
+Export-Package: org.talend.designer.core.generic.constants,
+ org.talend.designer.core.generic.context,
+ org.talend.designer.core.generic.model,
+ org.talend.designer.core.generic.utils

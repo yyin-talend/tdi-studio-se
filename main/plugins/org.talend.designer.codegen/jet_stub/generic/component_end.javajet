@@ -1,7 +1,7 @@
 <%@ jet 
 imports="
 		org.talend.components.api.component.ComponentDefinition
-		org.talend.component.core.model.Component
+		org.talend.designer.core.generic.model.Component
     	org.talend.core.model.process.INode 
     	org.talend.core.model.process.ElementParameterParser 
 		org.talend.core.model.metadata.IMetadataTable 

@@ -10,7 +10,7 @@ imports="
         org.talend.components.api.container.RuntimeContainer
         org.talend.daikon.properties.Property
         org.talend.daikon.NamedThing
-		org.talend.component.core.model.Component
+		org.talend.designer.core.generic.model.Component
         org.talend.core.model.metadata.IMetadataColumn
         org.talend.core.model.metadata.IMetadataTable
         org.talend.core.model.metadata.types.JavaType
