@@ -1570,6 +1570,16 @@
          </includes>
       </viewerContentBinding>
    </extension>
+   <extension
+         point="org.talend.repository.view.repositorySorter">
+      <sorter
+            class="org.talend.repository.view.di.viewer.sorter.StandardNodeOnTopSorter"
+            description="The standard node will be on top always"
+            id="org.talend.repository.view.di.viewer.sorter.StandardNodeOnTopSorter"
+            name="StandardOrder"
+            order="10">
+      </sorter>
+   </extension>
 
 
 </plugin>
