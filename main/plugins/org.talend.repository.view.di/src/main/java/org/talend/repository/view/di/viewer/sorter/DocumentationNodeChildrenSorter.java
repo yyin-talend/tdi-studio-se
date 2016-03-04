@@ -13,21 +13,18 @@
 package org.talend.repository.view.di.viewer.sorter;
 
 import org.talend.repository.model.RepositoryNode;
-import org.talend.repository.view.di.viewer.tester.JobTopNodesPropertyTester;
-import org.talend.repository.view.di.viewer.tester.StandardJobNodePropertyTester;
+import org.talend.repository.view.di.viewer.tester.doc.DocumentationNodeTester;
 import org.talend.repository.view.sorter.RepositoryNodeCompareSorter;
 
 /**
  * DOC ggu class global comment. Detailled comment
  */
-public class JobDesignsWithStandardNodeChildrenSorter extends RepositoryNodeCompareSorter {
+public class DocumentationNodeChildrenSorter extends RepositoryNodeCompareSorter {
 
-    protected StandardJobNodePropertyTester neededTester = new StandardJobNodePropertyTester();
-
-    protected JobTopNodesPropertyTester topNodeTester = new JobTopNodesPropertyTester();
+    protected DocumentationNodeTester docTester = new DocumentationNodeTester();
 
     protected void sortChildren(RepositoryNode parent, Object[] children) {
-        if (topNodeTester.isJobDesignsNode(parent) && neededTester.needStandardNode(parent)) {
+        if (docTester.isDocTopNode(parent)) {
             sortChildren(children);
         }
     }

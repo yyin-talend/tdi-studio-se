@@ -41,7 +41,7 @@ public class GeneratedDocNodeTester extends AbstractNodeTester {
     }
 
     public boolean isGeneratedDocTopNode(RepositoryNode repositoryNode) {
-        return isTypeNode(repositoryNode, ERepositoryObjectType.GENERATED);
+        return isTypeTopNode(repositoryNode, ERepositoryObjectType.GENERATED);
     }
 
 }

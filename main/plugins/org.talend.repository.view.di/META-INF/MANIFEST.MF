@@ -31,4 +31,5 @@ Export-Package: org.talend.repository.view.di,
  org.talend.repository.view.di.viewer.filter,
  org.talend.repository.view.di.viewer.handlers,
  org.talend.repository.view.di.viewer.sorter,
- org.talend.repository.view.di.viewer.tester
+ org.talend.repository.view.di.viewer.tester,
+ org.talend.repository.view.di.viewer.tester.doc
