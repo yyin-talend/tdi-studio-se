@@ -1013,29 +1013,35 @@ public abstract class AbstractTalendEditor extends GraphicalEditorWithFlyoutPale
         IAction snapAction = new ToggleSnapToGeometryAction(getGraphicalViewer());
         getActionRegistry().registerAction(snapAction);
 
-        if (getProcess().isSubjobEnabled()) {
-            // toggle subjobs action
-            IAction toggleSubjobsAction = ToggleSubjobsAction.getDefault();
-            getActionRegistry().registerAction(toggleSubjobsAction);
+        configurationSubJob(viewer);
+    }
 
-            for (Iterator iterator = getSelectionActions().iterator(); iterator.hasNext();) {
-                String actionID = (String) iterator.next();
-                IAction action = getActionRegistry().getAction(actionID);
-                setAction(actionID, action);
-            }
-        }
-        int minx = getMinX();
-        int miny = getMinY();
-        if (viewer.getControl() instanceof FigureCanvas) {
-            if (minx < 0) {
-                ((FigureCanvas) viewer.getControl()).getViewport().getHorizontalRangeModel().setMinimum(minx);
-                ((FigureCanvas) viewer.getControl()).scrollToX(minx);
-            }
-            if (miny < 0) {
-                ((FigureCanvas) viewer.getControl()).getViewport().getVerticalRangeModel().setMinimum(miny);
-                ((FigureCanvas) viewer.getControl()).scrollToY(miny);
-            }
+    protected void configurationSubJob(GraphicalViewer viewer) {
+        if (getProcess() != null) {
+            if (getProcess().isSubjobEnabled()) {
+                // toggle subjobs action
+                IAction toggleSubjobsAction = ToggleSubjobsAction.getDefault();
+                getActionRegistry().registerAction(toggleSubjobsAction);
 
+                for (Iterator iterator = getSelectionActions().iterator(); iterator.hasNext();) {
+                    String actionID = (String) iterator.next();
+                    IAction action = getActionRegistry().getAction(actionID);
+                    setAction(actionID, action);
+                }
+            }
+            int minx = getMinX();
+            int miny = getMinY();
+            if (viewer != null && viewer.getControl() instanceof FigureCanvas) {
+                if (minx < 0) {
+                    ((FigureCanvas) viewer.getControl()).getViewport().getHorizontalRangeModel().setMinimum(minx);
+                    ((FigureCanvas) viewer.getControl()).scrollToX(minx);
+                }
+                if (miny < 0) {
+                    ((FigureCanvas) viewer.getControl()).getViewport().getVerticalRangeModel().setMinimum(miny);
+                    ((FigureCanvas) viewer.getControl()).scrollToY(miny);
+                }
+
+            }
         }
     }
 
@@ -2192,7 +2198,7 @@ public abstract class AbstractTalendEditor extends GraphicalEditorWithFlyoutPale
         return sharedKeyHandler;
     }
 
-    TalendEditorDropTargetListener talendEditorDropTargetListener = null;
+    protected TalendEditorDropTargetListener talendEditorDropTargetListener = null;
 
     // ------------------------------------------------------------------------
     // Abstract methods from GraphicalEditor
@@ -2207,8 +2213,10 @@ public abstract class AbstractTalendEditor extends GraphicalEditorWithFlyoutPale
         getGraphicalViewer().setContents(process);
 
         // containers are not correctly updated by default, so update them after all nodes have been added
-        for (ISubjobContainer subjobContainer : process.getSubjobContainers()) {
-            subjobContainer.updateSubjobContainer();
+        if (process != null) {
+            for (ISubjobContainer subjobContainer : process.getSubjobContainers()) {
+                subjobContainer.updateSubjobContainer();
+            }
         }
         getGraphicalViewer().getControl().addMouseListener(new MouseAdapter() {
 
