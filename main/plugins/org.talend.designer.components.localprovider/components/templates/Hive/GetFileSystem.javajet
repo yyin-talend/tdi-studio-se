@@ -64,9 +64,8 @@ class GetFileSystem{
     	}
     	
     	if("MAPR".equals(distribution)){
-    		String group = ElementParameterParser.getValue(node, "__GROUP__");
     		%>
-			conf_<%=cid%>.set("hadoop.job.ugi",username_<%=cid%>+","+<%=group%>);
+			conf_<%=cid%>.set("hadoop.job.ugi",username_<%=cid%>+","+username_<%=cid%>);
         	fs_<%=cid%> = org.apache.hadoop.fs.FileSystem.get(conf_<%=cid%>);
         <%
         }else{
