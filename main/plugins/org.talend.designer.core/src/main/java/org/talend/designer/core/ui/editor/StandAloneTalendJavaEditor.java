@@ -169,6 +169,20 @@ public class StandAloneTalendJavaEditor extends CompilationUnitEditor implements
                     if (!isEditable) {
                         Object o = event.getProperty(Constant.ITEM_EVENT_PROPERTY_KEY);
                         if (o instanceof FileItem) {
+                            boolean isTheCorrectEditor = false;
+                            Property property = ((FileItem) o).getProperty();
+                            if (property != null) {
+                                String eventItemId = property.getId();
+                                String currentOpenedItemId = ""; //$NON-NLS-1$
+                                if (rEditorInput != null) {
+                                    currentOpenedItemId = rEditorInput.getId();
+                                }
+                                isTheCorrectEditor = currentOpenedItemId.equals(eventItemId);
+                            }
+                            if (!isTheCorrectEditor) {
+                                return;
+                            }
+
                             item.getProperty().eAdapters().remove(dirtyListener);
                             item = (FileItem) o;
                             item.getProperty().eAdapters().add(dirtyListener);
