@@ -27,11 +27,6 @@ import org.talend.designer.core.model.utils.emf.talendfile.TalendFileFactory;
  */
 public class AbstractComponentParametersMigrationTask extends AbstractJobMigrationTask {
 
-    protected String[] salesforceComponentsName = new String[] {
-            "tSalesforceInput", "tSalesforceOutput", "tSalesforceConnection", //$NON-NLS-1$//$NON-NLS-2$ //$NON-NLS-3$
-            "tSalesforceBulkExec", "tSalesforceGetDeleted", "tSalesforceGetUpdated", "tSalesforceOutputBulkExec",//$NON-NLS-1$//$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
-            "tSalesforceGetServerTimestamp", "tSalesforceOutputBulk", "tSalesforceWaveBulkExec", "tSalesforceWaveOutputBulkExec" };//$NON-NLS-1$//$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
-
     /**
      * UtilTool to handle NodeType.
      */
@@ -118,24 +113,13 @@ public class AbstractComponentParametersMigrationTask extends AbstractJobMigrati
         }
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.talend.migration.IMigrationTask#getOrder()
-     */
     @Override
     public Date getOrder() {
         return null;
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.talend.core.model.migration.AbstractItemMigrationTask#execute(org.talend.core.model.properties.Item)
-     */
     @Override
     public ExecutionResult execute(Item item) {
-        // TODO Auto-generated method stub
         return null;
     }
 }

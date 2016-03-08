@@ -45,189 +45,75 @@ public class ComponentsProvider extends AbstractProcessProvider {
         }
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * org.talend.core.model.process.IReplaceNodeInProcess#rebuildGraphicProcessFromNode(org.talend.core.model.process
-     * .INode, java.util.List)
-     */
     @Override
     public void rebuildGraphicProcessFromNode(INode node, List<INode> graphicalNodeList) {
-        // TODO Auto-generated method stub
-
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * org.talend.core.model.process.IReplaceNodeInProcess#isNeedForceRebuild(org.talend.core.model.process.IProcess2)
-     */
     @Override
     public boolean isNeedForceRebuild(IProcess2 process) {
-        // TODO Auto-generated method stub
         return false;
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * org.talend.core.model.process.IReplaceNodeInProcess#beforeRunJobInGUI(org.talend.core.model.process.IProcess2)
-     */
     @Override
     public void beforeRunJobInGUI(IProcess2 process) {
-        // TODO Auto-generated method stub
-
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.talend.designer.core.model.process.AbstractProcessProvider#buildNewGraphicProcess(org.talend.core.model.
-     * properties.Item)
-     */
     @Override
     public Process buildNewGraphicProcess(Item node) {
-        // TODO Auto-generated method stub
         return null;
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.talend.designer.core.model.process.AbstractProcessProvider#buildNewGraphicProcess(org.talend.core.model.
-     * properties.Item, boolean)
-     */
     @Override
     public Process buildNewGraphicProcess(Item node, boolean needScreenshot) {
-        // TODO Auto-generated method stub
         return null;
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * org.talend.designer.core.model.process.AbstractProcessProvider#updateProcessContexts(org.talend.core.model.process
-     * .IProcess)
-     */
     @Override
     public List<String> updateProcessContexts(IProcess process) {
-        // TODO Auto-generated method stub
         return null;
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * org.talend.designer.core.model.process.AbstractProcessProvider#updateProcessContextsWithoutUI(org.talend.core
-     * .model.process.IProcess)
-     */
     @Override
     public List<String> updateProcessContextsWithoutUI(IProcess process) {
-        // TODO Auto-generated method stub
         return null;
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * org.talend.designer.core.model.process.AbstractProcessProvider#checkJobletNodeSchema(org.talend.core.model.process
-     * .IProcess)
-     */
     @Override
     public List<UpdateResult> checkJobletNodeSchema(IProcess process) {
-        // TODO Auto-generated method stub
         return null;
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * org.talend.designer.core.model.process.AbstractProcessProvider#hasJobletComponent(org.talend.core.model.process
-     * .IProcess)
-     */
     @Override
     public boolean hasJobletComponent(IProcess process) {
-        // TODO Auto-generated method stub
         return false;
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * org.talend.designer.core.model.process.AbstractProcessProvider#getIcons(org.talend.core.model.process.IProcess2)
-     */
     @Override
     public ImageDescriptor getIcons(IProcess2 process) {
-        // TODO Auto-generated method stub
         return null;
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * org.talend.designer.core.model.process.AbstractProcessProvider#setIcons(org.talend.core.model.process.IProcess,
-     * org.eclipse.jface.resource.ImageDescriptor)
-     */
     @Override
     public void setIcons(IProcess process, ImageDescriptor image) {
-        // TODO Auto-generated method stub
-
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.talend.designer.core.model.process.AbstractProcessProvider#addJobletEntry()
-     */
     @Override
     public List<PaletteEntry> addJobletEntry() {
         return ComponentsPaletteFactory.createPalette();
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * org.talend.designer.core.model.process.AbstractProcessProvider#getProcessFromJobletProcessItem(org.talend.core
-     * .model.properties.JobletProcessItem)
-     */
     @Override
     public IProcess getProcessFromJobletProcessItem(JobletProcessItem jobletProcessItem) {
-        // TODO Auto-generated method stub
         return null;
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * org.talend.designer.core.model.process.AbstractProcessProvider#getJobletItem(org.talend.core.model.process.INode)
-     */
     @Override
     public Item getJobletItem(INode node) {
-        // TODO Auto-generated method stub
         return null;
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * org.talend.designer.core.model.process.AbstractProcessProvider#getJobletItem(org.talend.core.model.process.INode,
-     * java.lang.String)
-     */
     @Override
     public Item getJobletItem(INode node, String version) {
-        // TODO Auto-generated method stub
         return null;
     }
 }
