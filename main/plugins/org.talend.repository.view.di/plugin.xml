@@ -426,7 +426,7 @@
             isResouce="true"
             key="repository.context"
             label="%NavigatorContent.contexts"
-            ordinal="5"
+            ordinal="40"
             products="DI"
             type="CONTEXT">
       </repositoryNode>
@@ -447,7 +447,7 @@
             isResouce="true"
             key="repository.metadataSQLPatterns"
             label="%NavigatorContent.sqlTemplates"
-            ordinal="7"
+            ordinal="70"
             products="DI"
             type="SQLPATTERNS">
       </repositoryNode>
