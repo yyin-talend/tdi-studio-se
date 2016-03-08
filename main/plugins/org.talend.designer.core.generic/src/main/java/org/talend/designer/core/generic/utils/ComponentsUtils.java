@@ -35,6 +35,7 @@ import org.talend.core.model.process.EParameterFieldType;
 import org.talend.core.model.process.IElement;
 import org.talend.core.model.process.INode;
 import org.talend.core.ui.component.ComponentsFactoryProvider;
+import org.talend.core.utils.TalendQuoteUtils;
 import org.talend.daikon.NamedThing;
 import org.talend.daikon.properties.PresentationItem;
 import org.talend.daikon.properties.Properties.Deserialized;
@@ -201,8 +202,17 @@ public class ComponentsUtils {
             } else {
                 Property property = (Property) widgetProperty;
                 param.setRequired(property.isRequired());
-                param.setDefaultValue(property.getDefaultValue());
-                param.setValue(property.getValue());
+                if (property.getValue() != null) {
+                    param.setValue(property.getValue());
+                } else {
+                    if (property.getDefaultValue() != null) {
+                        if (SchemaElement.Type.STRING.equals(property.getType())) {
+                            param.setValue(TalendQuoteUtils.addQuotesIfNotExist(property.getDefaultValue()));
+                        } else {
+                            param.setValue(property.getDefaultValue());
+                        }
+                    }
+                }
                 param.setSupportContext(isSupportContext(property));
                 // TCOMP-96
                 param.setContext(EConnectionType.FLOW_MAIN.getName());
