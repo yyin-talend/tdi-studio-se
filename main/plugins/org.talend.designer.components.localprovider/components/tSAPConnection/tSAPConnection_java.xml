@@ -52,7 +52,6 @@
 			NUM_ROW="6">
 			<ITEMS DEFAULT="TALENDSAP">
 			    <ITEM NAME="TALENDSAP" VALUE="TALENDSAP" />
-				<ITEM NAME="SAP2" VALUE="sapjco.jar" />
 				<ITEM NAME="SAP3" VALUE="sapjco3.jar" />
 			</ITEMS>
 		</PARAMETER>
