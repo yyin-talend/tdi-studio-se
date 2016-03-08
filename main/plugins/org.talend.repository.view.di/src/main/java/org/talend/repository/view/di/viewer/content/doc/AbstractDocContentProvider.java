@@ -27,6 +27,11 @@ public abstract class AbstractDocContentProvider extends SubEmptyTopNodeContentP
         super();
     }
 
+    @Override
+    public boolean hasChildren(Object element) {
+        return getChildren(element).length > 0;
+    }
+
     /*
      * (non-Javadoc)
      * 
