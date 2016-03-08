@@ -150,8 +150,8 @@ public class GenericElementParameter extends ElementParameter {
     private void fireValueChangedEvent() {
         if (hasPropertyChangeListener()) {
             List<Form> forms = componentProperties.getForms();
-            for (Form form : forms) {
-                if (form.isRefreshUI()) {
+            for (Form f : forms) {
+                if (f.isRefreshUI()) {
                     this.pcs.firePropertyChange(IElementParameterEventProperties.EVENT_PROPERTY_VALUE_CHANGED, null, null);
                     return;
                 }
@@ -172,26 +172,28 @@ public class GenericElementParameter extends ElementParameter {
     }
 
     public boolean callBeforePresent() {
-        if (widget.isCallBeforePresent()) {
-            try {
-                componentProperties = componentService.beforePropertyPresent(getParameterName(), componentProperties);
-                return true;
-            } catch (Throwable e) {
-                ExceptionHandler.process(e);
-            }
+        if (widget.isCallBeforePresent() && hasPropertyChangeListener()) {
+            return new ComponentServiceCaller(widget.getContent().getDisplayName(), widget.isLongRunning()) {
+
+                @Override
+                protected void doWork() throws Throwable {
+                    componentProperties = componentService.beforePropertyPresent(getParameterName(), componentProperties);
+                }
+            }.call();
         }
         return false;
     }
 
     public boolean callBeforeActivate() {
-        if (widget.isCallBeforeActivate()) {
-            try {
-                componentProperties = componentService.beforePropertyActivate(getParameterName(), componentProperties);
-                update();
-                return true;
-            } catch (Throwable e) {
-                ExceptionHandler.process(e);
-            }
+        if (widget.isCallBeforeActivate() && hasPropertyChangeListener()) {
+            return new ComponentServiceCaller(widget.getContent().getDisplayName(), widget.isLongRunning()) {
+
+                @Override
+                protected void doWork() throws Throwable {
+                    componentProperties = componentService.beforePropertyActivate(getParameterName(), componentProperties);
+                    update();
+                }
+            }.call();
         }
         return false;
     }
@@ -207,37 +209,28 @@ public class GenericElementParameter extends ElementParameter {
     }
 
     private boolean callValidate() {
-        if (widget.isCallValidate()) {
-            if (widget.isLongRunning()) {
-                return new RunWithProgress(widget.getContent().getDisplayName()) {
+        if (widget.isCallValidate() && hasPropertyChangeListener()) {
+            return new ComponentServiceCaller(widget.getContent().getDisplayName(), widget.isLongRunning()) {
 
-                    @Override
-                    protected void toDo() throws Throwable {
-                        componentProperties = componentService.validateProperty(getParameterName(), componentProperties);
-                    };
-
-                }.run();
-            } else {
-                try {
+                @Override
+                protected void doWork() throws Throwable {
                     componentProperties = componentService.validateProperty(getParameterName(), componentProperties);
-                    return true;
-                } catch (Throwable e) {
-                    ExceptionHandler.process(e);
                 }
-            }
+            }.call();
         }
         return false;
     }
 
     private boolean callAfter() {
         if (widget.isCallAfter() && hasPropertyChangeListener()) {
-            try {
-                componentProperties = componentService.afterProperty(getParameterName(), componentProperties);
-                updateSchema();
-                return true;
-            } catch (Throwable e) {
-                ExceptionHandler.process(e);
-            }
+            return new ComponentServiceCaller(widget.getContent().getDisplayName(), widget.isLongRunning()) {
+
+                @Override
+                protected void doWork() throws Throwable {
+                    componentProperties = componentService.afterProperty(getParameterName(), componentProperties);
+                    updateSchema();
+                }
+            }.call();
         }
         return false;
     }
@@ -289,6 +282,42 @@ public class GenericElementParameter extends ElementParameter {
             }
         }
         return paramName;
+    }
+
+    abstract class ComponentServiceCaller {
+
+        private String title;
+
+        private boolean isLongRuning;
+
+        public ComponentServiceCaller(String title, boolean isLongRuning) {
+            this.title = title;
+            this.isLongRuning = isLongRuning;
+        }
+
+        public boolean call() {
+            if (isLongRuning) {
+                return new RunWithProgress(title) {
+
+                    @Override
+                    protected void toDo() throws Throwable {
+                        doWork();
+                    };
+
+                }.run();
+            } else {
+                try {
+                    doWork();
+                } catch (Throwable e) {
+                    ExceptionHandler.process(e);
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        protected abstract void doWork() throws Throwable;
+
     }
 
     abstract class RunWithProgress {
