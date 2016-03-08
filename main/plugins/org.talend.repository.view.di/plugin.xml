@@ -1498,6 +1498,13 @@
             name="StandardOrder"
             order="10">
       </sorter>
+      <sorter
+            class="org.talend.repository.view.di.viewer.sorter.RoutinesRepositoryNodeSorter"
+            description="Always on top (1)"
+            id="org.talend.repository.view.di.viewer.sorter.routines"
+            name="Routine Sorter"
+            order="10">
+      </sorter>
    </extension>
 
 
