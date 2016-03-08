@@ -202,17 +202,18 @@ public class ComponentsUtils {
             } else {
                 Property property = (Property) widgetProperty;
                 param.setRequired(property.isRequired());
-                if (property.getValue() != null) {
-                    param.setValue(property.getValue());
-                } else {
-                    if (property.getDefaultValue() != null) {
-                        if (SchemaElement.Type.STRING.equals(property.getType())) {
-                            param.setValue(TalendQuoteUtils.addQuotesIfNotExist(property.getDefaultValue()));
-                        } else {
-                            param.setValue(property.getDefaultValue());
-                        }
+                Object paramValue = null;
+                Object propertyValue = property.getValue();
+                Object propertyDefaultValue = property.getDefaultValue();
+                if (propertyValue != null) {
+                    paramValue = propertyValue;
+                } else if (propertyDefaultValue != null) {
+                    paramValue = propertyDefaultValue;
+                    if (SchemaElement.Type.STRING.equals(property.getType())) {
+                        paramValue = TalendQuoteUtils.addQuotesIfNotExist((String) paramValue);
                     }
                 }
+                param.setValue(paramValue);
                 param.setSupportContext(isSupportContext(property));
                 // TCOMP-96
                 param.setContext(EConnectionType.FLOW_MAIN.getName());
