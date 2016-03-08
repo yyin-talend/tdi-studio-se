@@ -71,10 +71,10 @@ public class RemoveBinFolderMigrationTask extends AbstractProjectMigrationTask {
         toReturn.add(ERepositoryObjectType.JOBLET);
         toReturn.add(ERepositoryObjectType.CONTEXT);
         if (PluginChecker.isDocumentationPluginLoaded()) {
-            toReturn.add(ERepositoryObjectType.JOBS);
+            toReturn.add(ERepositoryObjectType.JOB_DOC);
         }
         if (PluginChecker.isJobLetPluginLoaded()) {
-            toReturn.add(ERepositoryObjectType.JOBLETS);
+            toReturn.add(ERepositoryObjectType.JOBLET_DOC);
         }
         if (PluginChecker.isEBCDICPluginLoaded()) {
             toReturn.add(ERepositoryObjectType.METADATA_FILE_EBCDIC);
