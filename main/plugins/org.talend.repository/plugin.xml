@@ -2672,6 +2672,15 @@
               name="ChangeOptionDefaultValueForFileArchive"
               version="6.1.0">
         </projecttask>
+        <projecttask
+              beforeLogon="false"
+              breaks="6.1.0"
+              class="org.talend.repository.model.migration.AddContextCommentValueMigrationTask"
+              description="Copy context comment value to other groups"
+              id="org.talend.repository.model.migration.AddContextCommentValueMigrationTask"
+              name="AddContextCommentValueMigrationTask"
+              version="6.1.2">
+        </projecttask>
    </extension>
 
    <extension
