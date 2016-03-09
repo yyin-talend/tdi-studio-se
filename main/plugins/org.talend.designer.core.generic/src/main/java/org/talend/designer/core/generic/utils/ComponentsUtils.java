@@ -42,8 +42,6 @@ import org.talend.daikon.properties.Properties.Deserialized;
 import org.talend.daikon.properties.Property;
 import org.talend.daikon.properties.presentation.Form;
 import org.talend.daikon.properties.presentation.Widget;
-import org.talend.daikon.schema.SchemaElement;
-import org.talend.daikon.schema.SchemaElement.Type;
 import org.talend.designer.core.generic.constants.IGenericConstants;
 import org.talend.designer.core.generic.model.Component;
 import org.talend.designer.core.generic.model.GenericElementParameter;
@@ -209,7 +207,7 @@ public class ComponentsUtils {
                     paramValue = propertyValue;
                 } else if (propertyDefaultValue != null) {
                     paramValue = propertyDefaultValue;
-                    if (SchemaElement.Type.STRING.equals(property.getType())) {
+                    if (Property.Type.STRING.equals(property.getType())) {
                         paramValue = TalendQuoteUtils.addQuotesIfNotExist((String) paramValue);
                     }
                 }
@@ -384,8 +382,8 @@ public class ComponentsUtils {
         return propertyName;
     }
 
-    public static boolean isSupportContext(SchemaElement schemaElement) {
-        Type type = schemaElement.getType();
+    public static boolean isSupportContext(Property schemaElement) {
+        Property.Type type = schemaElement.getType();
         switch (type) {
         case STRING:
         case INT:

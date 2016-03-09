@@ -12,32 +12,25 @@
 // ============================================================================
 package org.talend.designer.core.generic.utils;
 
-import java.util.List;
 import java.util.Map;
 
+import org.apache.avro.Schema;
 import org.talend.components.api.properties.ComponentProperties;
 import org.talend.core.model.metadata.IMetadataTable;
+import org.talend.core.model.metadata.MetadataToolHelper;
 import org.talend.core.model.metadata.builder.connection.ConnectionFactory;
 import org.talend.core.model.metadata.builder.connection.MetadataColumn;
 import org.talend.core.model.metadata.builder.connection.MetadataTable;
-import org.talend.core.model.metadata.types.JavaTypesManager;
 import org.talend.core.repository.model.ProxyRepositoryFactory;
 import org.talend.core.repository.model.repositoryObject.MetadataTableRepositoryObject;
 import org.talend.daikon.properties.Properties.Deserialized;
-import org.talend.daikon.schema.Schema;
-import org.talend.daikon.schema.SchemaElement;
-import org.talend.daikon.schema.SchemaElement.Type;
 import org.talend.designer.core.generic.constants.IGenericConstants;
 import org.talend.repository.model.IProxyRepositoryFactory;
 
 import orgomg.cwm.objectmodel.core.CoreFactory;
 import orgomg.cwm.objectmodel.core.TaggedValue;
 
-/**
- * 
- * created by ycbai on 2015年12月2日 Detailled comment
- *
- */
+
 public class SchemaUtils {
 
     public static MetadataTable createSchema(String name, String serializedProperties) {
@@ -55,51 +48,10 @@ public class SchemaUtils {
     }
 
     public static void convertComponentSchemaIntoTalendSchema(Schema schema, MetadataTable metadataTable) {
-        SchemaElement root = schema.getRoot();
-        if (root != null) {
-            List<SchemaElement> schemaElements = root.getChildren();
-            for (SchemaElement schemaElement : schemaElements) {
-                MetadataColumn metadataColumn = ConnectionFactory.eINSTANCE.createMetadataColumn();
-                setupMetadataColumn(metadataColumn, schemaElement);
-                metadataTable.getColumns().add(metadataColumn);
-            }
+    	for (Schema.Field field : schema.getFields()) {
+            MetadataColumn metadataColumn = MetadataToolHelper.convertFromAvro(field);
+            metadataTable.getColumns().add(metadataColumn);
         }
-    }
-
-    private static void setupMetadataColumn(MetadataColumn metadataColumn, SchemaElement schemaElement) {
-        String talendType = JavaTypesManager.STRING.getId();
-        Type type = schemaElement.getType();
-        switch (type) {
-        case BOOLEAN:
-            talendType = JavaTypesManager.BOOLEAN.getId();
-            break;
-        case INT:
-            talendType = JavaTypesManager.INTEGER.getId();
-            break;
-        case DATE:
-            talendType = JavaTypesManager.DATE.getId();
-            break;
-        case DATETIME:
-            talendType = JavaTypesManager.DATE.getId();
-            break;
-        case DOUBLE:
-            talendType = JavaTypesManager.DOUBLE.getId();
-            break;
-        case DECIMAL:
-            talendType = JavaTypesManager.BIGDECIMAL.getId();
-            break;
-        default:
-            talendType = JavaTypesManager.STRING.getId();
-            break;
-        }
-        metadataColumn.setTalendType(talendType);
-        metadataColumn.setName(schemaElement.getName());
-        metadataColumn.setLabel(metadataColumn.getName());
-        metadataColumn.setPattern(schemaElement.getPattern());
-        metadataColumn.setNullable(schemaElement.isNullable());
-        metadataColumn.setLength(schemaElement.getSize());
-        metadataColumn.setPrecision(schemaElement.getPrecision());
-        metadataColumn.setDefaultValue(schemaElement.getDefaultValue());
     }
 
     public static ComponentProperties getCurrentComponentProperties(IMetadataTable table) {
