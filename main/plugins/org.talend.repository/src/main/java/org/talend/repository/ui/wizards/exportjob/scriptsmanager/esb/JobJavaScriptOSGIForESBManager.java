@@ -28,10 +28,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.jar.Manifest;
 
-import aQute.bnd.osgi.Analyzer;
-import aQute.bnd.osgi.FileResource;
-import aQute.bnd.osgi.Jar;
-
 import org.apache.commons.collections.map.MultiKeyMap;
 import org.eclipse.core.resources.IFolder;
 import org.talend.commons.exception.ExceptionHandler;
@@ -72,6 +68,10 @@ import org.talend.repository.ui.wizards.exportjob.scriptsmanager.JobJavaScriptsM
 import org.talend.repository.utils.EmfModelUtils;
 import org.talend.repository.utils.TemplateProcessor;
 
+import aQute.bnd.osgi.Analyzer;
+import aQute.bnd.osgi.FileResource;
+import aQute.bnd.osgi.Jar;
+
 /**
  * DOC ycbai class global comment. Detailled comment
  */
@@ -94,6 +94,13 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
 
     private final File classesLocation = new File(getTmpFolder() + File.separator + "classes"); //$NON-NLS-1$;
 
+    private static final String DLL_FILE = ".dll"; //$NON-NLS-1$
+    
+    private static final String SO_FILE = ".so"; //$NON-NLS-1$
+
+    private static final String OSGI_OS_CODE = ';' + "osname=" + System.getProperty("osgi.os") + ';' + "processor=" //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+            + System.getProperty("osgi.arch") + ','; //$NON-NLS-1$
+    
     @Override
     public List<ExportFileResource> getExportResources(ExportFileResource[] processes, String... codeOptions)
             throws ProcessorException {
@@ -632,6 +639,7 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
         addOsgiDependencies(analyzer, libResource, processItem);
 
         final StringBuilder bundleClasspath = new StringBuilder("."); //$NON-NLS-1$
+        final StringBuilder bundleNativeCode = new StringBuilder();
         Set<String> relativePathList = libResource.getRelativePathList();
         for (String path : relativePathList) {
             Set<URL> resources = libResource.getResourcesByRelativePath(path);
@@ -641,10 +649,21 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
                 bundleClasspath.append(MANIFEST_ITEM_SEPARATOR).append(relativePath);
                 bin.putResource(relativePath, new FileResource(dependencyFile));
                 // analyzer.addClasspath(new File(url.getPath()));
+                // Add dynamic library declaration in manifest
+                if (relativePath.toLowerCase().endsWith(DLL_FILE) || relativePath.toLowerCase().endsWith(SO_FILE)) {
+                    bundleNativeCode.append(libResource.getDirectoryName() + PATH_SEPARATOR + dependencyFile.getName()).append(
+                            OSGI_OS_CODE);
+                }
             }
         }
         analyzer.setProperty(Analyzer.BUNDLE_CLASSPATH, bundleClasspath.toString());
-
+        
+        // TESB-15680: Add Bundle-NativeCode in manifest
+        if (bundleNativeCode.length() > 0) {
+            bundleNativeCode.setLength(bundleNativeCode.length() - 1);
+            analyzer.setProperty(Analyzer.BUNDLE_NATIVECODE, bundleNativeCode.toString());
+        }
+        
         return analyzer;
     }
 

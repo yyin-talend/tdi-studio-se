@@ -35,14 +35,13 @@ import org.talend.core.model.process.EParameterFieldType;
 import org.talend.core.model.process.IElement;
 import org.talend.core.model.process.INode;
 import org.talend.core.ui.component.ComponentsFactoryProvider;
+import org.talend.core.utils.TalendQuoteUtils;
 import org.talend.daikon.NamedThing;
 import org.talend.daikon.properties.PresentationItem;
 import org.talend.daikon.properties.Properties.Deserialized;
 import org.talend.daikon.properties.Property;
 import org.talend.daikon.properties.presentation.Form;
 import org.talend.daikon.properties.presentation.Widget;
-import org.talend.daikon.schema.SchemaElement;
-import org.talend.daikon.schema.SchemaElement.Type;
 import org.talend.designer.core.generic.constants.IGenericConstants;
 import org.talend.designer.core.generic.model.Component;
 import org.talend.designer.core.generic.model.GenericElementParameter;
@@ -201,8 +200,18 @@ public class ComponentsUtils {
             } else {
                 Property property = (Property) widgetProperty;
                 param.setRequired(property.isRequired());
-                param.setDefaultValue(property.getDefaultValue());
-                param.setValue(property.getValue());
+                Object paramValue = null;
+                Object propertyValue = property.getValue();
+                Object propertyDefaultValue = property.getDefaultValue();
+                if (propertyValue != null) {
+                    paramValue = propertyValue;
+                } else if (propertyDefaultValue != null) {
+                    paramValue = propertyDefaultValue;
+                    if (Property.Type.STRING.equals(property.getType())) {
+                        paramValue = TalendQuoteUtils.addQuotesIfNotExist((String) paramValue);
+                    }
+                }
+                param.setValue(paramValue);
                 param.setSupportContext(isSupportContext(property));
                 // TCOMP-96
                 param.setContext(EConnectionType.FLOW_MAIN.getName());
@@ -373,8 +382,8 @@ public class ComponentsUtils {
         return propertyName;
     }
 
-    public static boolean isSupportContext(SchemaElement schemaElement) {
-        Type type = schemaElement.getType();
+    public static boolean isSupportContext(Property schemaElement) {
+        Property.Type type = schemaElement.getType();
         switch (type) {
         case STRING:
         case INT:

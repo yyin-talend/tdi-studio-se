@@ -14,6 +14,7 @@ package org.talend.repository.generic.persistence;
 
 import java.util.List;
 
+import org.apache.avro.Schema;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.components.api.properties.ComponentProperties;
@@ -25,7 +26,6 @@ import org.talend.core.repository.model.ProxyRepositoryFactory;
 import org.talend.cwm.helper.PackageHelper;
 import org.talend.daikon.properties.Properties;
 import org.talend.daikon.properties.service.Repository;
-import org.talend.daikon.schema.Schema;
 import org.talend.designer.core.generic.constants.IGenericConstants;
 import org.talend.designer.core.generic.utils.ComponentsUtils;
 import org.talend.designer.core.generic.utils.SchemaUtils;

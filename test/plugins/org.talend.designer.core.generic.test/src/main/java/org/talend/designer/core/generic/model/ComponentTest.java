@@ -21,8 +21,6 @@ import org.talend.components.api.component.ComponentDefinition;
 import org.talend.components.api.properties.ComponentProperties;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.INode;
-import org.talend.designer.core.generic.model.Component;
-import org.talend.designer.core.generic.model.GenericElementParameter;
 
 /**
  * created by hcyi on Feb 17, 2016 Detailled comment
@@ -46,8 +44,8 @@ public class ComponentTest {
         ComponentDefinition componentDefinition = mock(ComponentDefinition.class);
         when(component.getComponentDefinition()).thenReturn(componentDefinition);
         component.setPaletteType("DI"); //$NON-NLS-1$
-        when(component.getName()).thenReturn("tSalesforce");//$NON-NLS-1$
-        when(component.getLongName()).thenReturn("tSalesforce");//$NON-NLS-1$
+        when(component.getName()).thenReturn("tComponentName");//$NON-NLS-1$
+        when(component.getLongName()).thenReturn("tComponentName");//$NON-NLS-1$
         //
     }
 
