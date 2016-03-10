@@ -146,16 +146,21 @@ public class Component extends AbstractComponent {
 
     @Override
     public List<NodeReturn> createReturns() {
-        // TUP-4148
-        List<NodeReturn> listReturn = new ArrayList<NodeReturn>();
-        // ****************** add standard returns ******************
-        NodeReturn nodeRet = new NodeReturn();
-        nodeRet.setAvailability("AFTER"); //$NON-NLS-1$
-        nodeRet.setType(STRING_TYPE);
-        nodeRet.setVarName("ERROR_MESSAGE"); //$NON-NLS-1$
-        nodeRet.setDisplayName("Error Message"); //$NON-NLS-1$
-        nodeRet.setName("ERROR_MESSAGE"); //$NON-NLS-1$
-        listReturn.add(nodeRet);
+        List<NodeReturn> listReturn = new ArrayList<>();
+        ComponentProperties props = ComponentsUtils.getComponentProperties(getName());
+        Property returns = props.returns;
+        if (returns != null) {
+            NodeReturn nodeRet = null;
+            for (SchemaElement children : returns.getChildren()) {
+                nodeRet = new NodeReturn();
+                // Set "AFTER" as default since not the availability yet
+                nodeRet.setAvailability("AFTER"); //$NON-NLS-1$
+                nodeRet.setType(children.getType().name());
+                nodeRet.setDisplayName(children.getDisplayName());
+                nodeRet.setName(children.getName());
+                listReturn.add(nodeRet);
+            }
+        }
         return listReturn;
     }
 
