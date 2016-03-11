@@ -12,11 +12,8 @@
 // ============================================================================
 package org.talend.repository.view.di.viewer.content.doc;
 
-import org.talend.core.GlobalServiceRegister;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.repository.model.ProjectRepositoryNode;
-import org.talend.designer.core.ICamelDesignerCoreService;
-import org.talend.repository.model.IRepositoryNode;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.viewer.content.ProjectRepoDirectChildrenNodeContentProvider;
 
@@ -44,33 +41,6 @@ public class DocumentationContentProvider extends ProjectRepoDirectChildrenNodeC
     @Override
     protected void resetTopLevelNode(RepositoryNode topLevelNode) {
         super.resetTopLevelNode(topLevelNode);
-
-        if (topLevelNode != null) {
-            IRepositoryNode generatedNode = topLevelNode.getRoot().getRootRepositoryNode(ERepositoryObjectType.GENERATED);
-            if (generatedNode != null) {
-                if (!topLevelNode.getChildren().contains(generatedNode)) {
-                    topLevelNode.getChildren().add(generatedNode); // add back
-                }
-                // add for bug TDI-21013
-                IRepositoryNode clearJobs = generatedNode.getRoot().getRootRepositoryNode(ERepositoryObjectType.JOBS);
-                if (clearJobs != null) {
-                    clearJobs.getChildren().clear();
-                }
-                IRepositoryNode clearJoblets = generatedNode.getRoot().getRootRepositoryNode(ERepositoryObjectType.JOBLETS);
-                if (clearJoblets != null) {
-                    clearJoblets.getChildren().clear();
-                }
-                // TESB-16648
-                if (GlobalServiceRegister.getDefault().isServiceRegistered(ICamelDesignerCoreService.class)) {
-                    final ICamelDesignerCoreService camelService =
-                        (ICamelDesignerCoreService) GlobalServiceRegister.getDefault().getService(ICamelDesignerCoreService.class);
-                    IRepositoryNode clearRoutes = generatedNode.getRoot().getRootRepositoryNode(camelService.getRouteDocsType());
-                    if (clearRoutes != null) {
-                        clearRoutes.getChildren().clear();
-                    }
-                }
-            }
-        }
     }
 
     // @Override

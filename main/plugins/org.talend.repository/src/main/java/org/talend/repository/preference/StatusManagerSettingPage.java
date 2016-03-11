@@ -706,7 +706,7 @@ public class StatusManagerSettingPage extends ProjectSettingPage {
                     // Modified by Marvin Wang on Jan.7, 2011 for bug Talend DI TDI-19154, should not use
                     // obj.equals(constant) that will cause NPE.
                     if (!type.equals(ERepositoryObjectType.DOCUMENTATION) && !type.equals(ERepositoryObjectType.BUSINESS_PROCESS)
-                            && !type.equals(ERepositoryObjectType.JOBLETS)) {
+                            && !type.equals(ERepositoryObjectType.JOBLET_DOC)) {
                         // if (!type.equals(ERepositoryObjectType.DOCUMENTATION) &&
                         // !type.equals(ERepositoryObjectType.BUSINESS_PROCESS)
                         // && !type.equals(ERepositoryObjectType.JOBLETS)) {
@@ -726,8 +726,7 @@ public class StatusManagerSettingPage extends ProjectSettingPage {
                 }
             } else {
                 if (isDocumentStatus()) {
-                    if (type.equals(ERepositoryObjectType.JOBS) || type.equals(ERepositoryObjectType.JOBLETS)
-                            || type.equals(ERepositoryObjectType.JOB_DOC) || type.equals(ERepositoryObjectType.JOBLET_DOC)) {
+                    if (type.equals(ERepositoryObjectType.JOB_DOC) || type.equals(ERepositoryObjectType.JOBLET_DOC)) {
                         itemTable.setRedraw(false);
                         tableItem = new TableItem(itemTable, SWT.NONE);
                     }

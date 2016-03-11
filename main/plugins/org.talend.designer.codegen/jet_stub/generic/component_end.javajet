@@ -35,7 +35,7 @@ if(def instanceof org.talend.components.api.component.InputComponentDefinition){
 	} // outgoing size
 %>
 
-	boundedReader_<%=cid%>.close();
+	reader_<%=cid%>.close();
 <%
 }else if(def instanceof org.talend.components.api.component.OutputComponentDefinition){
 // Output
