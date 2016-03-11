@@ -536,6 +536,9 @@ public class Component extends AbstractComponent {
         param.setReadOnly(true);
         listParam.add(param);
 
+        // TUP-4129
+        ComponentProperties compProperties = ComponentsUtils.getComponentProperties(getName());
+        ComponentService service = ComponentsUtils.getComponentService();
         param = new ElementParameter(node);
         param.setName("PROPERTY");//$NON-NLS-1$
         param.setCategory(EComponentCategory.BASIC);
@@ -544,6 +547,7 @@ public class Component extends AbstractComponent {
         param.setRepositoryValue(getRepositoryType());
         param.setValue("");//$NON-NLS-1$
         param.setNumRow(2);
+        param.setShow(checkAssociatedFromComponentProperties(compProperties, service));
 
         ElementParameter newParam = new ElementParameter(node);
         newParam.setCategory(EComponentCategory.BASIC);
@@ -581,6 +585,26 @@ public class Component extends AbstractComponent {
         newParam.setSerialized(true);
         newParam.setParentParameter(param);
         listParam.add(param);
+    }
+
+    private boolean checkAssociatedFromComponentProperties(ComponentProperties componentProperties, ComponentService service) {
+        if (componentProperties == null || service == null) {
+            return false;
+        }
+        List componentWizards = service.getComponentWizardsForProperties(componentProperties, null);
+        if (componentWizards != null && !componentWizards.isEmpty()) {
+            return true;
+        }
+        List<NamedThing> namedThings = componentProperties.getProperties();
+        for (NamedThing namedThing : namedThings) {
+            if (namedThing instanceof ComponentProperties) {
+                boolean associated = checkAssociatedFromComponentProperties((ComponentProperties) namedThing, service);
+                if (associated) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     private void addPropertyParameters(final List<ElementParameter> listParam, final INode node, String formName,
