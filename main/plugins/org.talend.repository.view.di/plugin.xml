@@ -5,90 +5,6 @@
          point="org.eclipse.ui.navigator.navigatorContent">
       <navigatorContent
             activeByDefault="true"
-            appearsBefore="org.talend.repository.viewer.root.jobDesigns"
-            contentProvider="org.talend.repository.view.di.viewer.content.BusinessModelsContentProvider"
-            icon="icons/businessModels.png"
-            id="org.talend.repository.viewer.root.businessModels"
-            labelProvider="org.talend.repository.viewer.label.RepositoryViewLabelProvider"
-            name="%NavigatorContent.businessModels"
-            priority="higher">
-         <triggerPoints>
-            <or>
-               <adapt
-                     type="org.talend.core.repository.model.ProjectRepositoryNode">
-               </adapt>
-               <instanceof
-                     value="org.talend.core.repository.model.ProjectRepositoryNode">
-               </instanceof>
-               <and>
-                  <instanceof
-                        value="org.talend.repository.model.RepositoryNode">
-                  </instanceof>
-                  <test
-                        forcePluginActivation="true"
-                        property="org.talend.repository.node.isBusinessModelBranch">
-                  </test>
-               </and>
-            </or>
-         </triggerPoints>
-         <possibleChildren>
-            <and>
-               <instanceof
-                     value="org.talend.repository.model.RepositoryNode">
-               </instanceof>
-               <test
-                     forcePluginActivation="true"
-                     property="org.talend.repository.node.isBusinessModelBranch">
-               </test>
-            </and>
-         </possibleChildren>
-         <actionProvider
-               class="org.talend.repository.view.di.viewer.action.DIRepositoryNodeActionProvider"
-               id="org.talend.repository.business.model.action.provider.id">
-            <enablement>
-               <and>
-                  <instanceof
-                        value="org.talend.repository.model.RepositoryNode">
-                  </instanceof>
-                  <test
-                        forcePluginActivation="true"
-                        property="org.talend.repository.node.isBusinessModelBranch">
-                  </test>
-                  <not>
-                     <test
-                           forcePluginActivation="true"
-                           property="org.talend.repository.node.isDeleted">
-                     </test>
-                  </not>
-               </and>
-            </enablement>
-         </actionProvider>
-         <actionProvider
-               class="org.talend.repository.view.di.viewer.action.JobRepositoryNodeActionProvider"
-               id="org.talend.repository.view.di.viewer.action.JobRepositoryNodeActionProvider"
-               overrides="org.talend.repository.viewer.root.jobDesigns.ActionProvider"
-               priority="high">
-            <enablement>
-               <and>
-                  <instanceof
-                        value="org.talend.repository.model.RepositoryNode">
-                  </instanceof>
-                  <test
-                        forcePluginActivation="true"
-                        property="org.talend.repository.node.isJobTempBranch">
-                  </test>
-                  <not>
-                     <test
-                           forcePluginActivation="true"
-                           property="org.talend.repository.node.isDeleted">
-                     </test>
-                  </not>
-               </and>
-            </enablement>
-         </actionProvider>
-      </navigatorContent>
-      <navigatorContent
-            activeByDefault="true"
             appearsBefore="org.talend.repository.viewer.root.contexts"
             contentProvider="org.talend.repository.view.di.viewer.content.JobDesignsContentProvider"
             icon="icons/jobDesigns.png"
@@ -352,7 +268,7 @@
                   </instanceof>
                   <test
                         forcePluginActivation="true"
-                        property="org.talend.repository.node.isDocTopNode">
+                        property="org.talend.repository.node.doc.isDocNode">
                   </test>
                </and>
             </or>
@@ -364,7 +280,7 @@
                </instanceof>
                <test
                      forcePluginActivation="true"
-                     property="org.talend.repository.node.isDocTopNode">
+                     property="org.talend.repository.node.doc.isDocNode">
                </test>
             </and>
          </possibleChildren>
@@ -378,7 +294,7 @@
                   </instanceof>
                   <test
                         forcePluginActivation="true"
-                        property="org.talend.repository.node.isDocTopNode">
+                        property="org.talend.repository.node.doc.isDocNode">
                   </test>
                   <not>
                      <test
@@ -406,6 +322,12 @@
             </and>
          </enablement>
       </navigatorContent>
+      <commonFilter
+            activeByDefault="true"
+            class="org.talend.repository.view.di.viewer.filter.StandardJobNodeFilter"
+            id="org.talend.repository.viewer.filter.StandardJobNodeFilter"
+            name="StandardJobNode Filter">
+      </commonFilter>
    </extension>
    <extension
          point="org.eclipse.core.expressions.propertyTesters">
@@ -413,7 +335,7 @@
             class="org.talend.repository.view.di.viewer.tester.NodeTester"
             id="org.talend.repository.node.tester"
             namespace="org.talend.repository.node"
-            properties="isJobBranch,isBusinessModelBranch"
+            properties="isJobBranch"
             type="org.talend.repository.model.RepositoryNode">
       </propertyTester>
       <propertyTester
@@ -454,8 +376,22 @@
       <propertyTester
             class="org.talend.repository.view.di.viewer.tester.doc.DocumentationNodeTester"
             id="org.talend.repository.node.tester.doc"
-            namespace="org.talend.repository.node"
-            properties="isDocTopNode"
+            namespace="org.talend.repository.node.doc"
+            properties="isDocNode,isDocTopNode"
+            type="org.talend.repository.model.RepositoryNode">
+      </propertyTester>
+      <propertyTester
+            class="org.talend.repository.view.di.viewer.tester.JobTopNodesPropertyTester"
+            id="org.talend.repository.node.tester.job.top.nodes"
+            namespace="org.talend.repository.node.job.top"
+            properties="isJobDesignsNode,isStandardNode"
+            type="org.talend.repository.model.RepositoryNode">
+      </propertyTester>
+      <propertyTester
+            class="org.talend.repository.view.di.viewer.tester.StandardJobNodePropertyTester"
+            id="org.talend.repository.node.tester.job.standard.needed"
+            namespace="org.talend.repository.node.job"
+            properties="needStandardNode"
             type="org.talend.repository.model.RepositoryNode">
       </propertyTester>
    </extension>
@@ -490,7 +426,7 @@
             isResouce="true"
             key="repository.context"
             label="%NavigatorContent.contexts"
-            ordinal="5"
+            ordinal="40"
             products="DI"
             type="CONTEXT">
       </repositoryNode>
@@ -511,7 +447,7 @@
             isResouce="true"
             key="repository.metadataSQLPatterns"
             label="%NavigatorContent.sqlTemplates"
-            ordinal="7"
+            ordinal="70"
             products="DI"
             type="SQLPATTERNS">
       </repositoryNode>
@@ -1535,6 +1471,40 @@
             properties="isSalesforceModule"
             type="org.talend.repository.model.RepositoryNode">
       </propertyTester>
+   </extension>
+   <extension
+         point="org.eclipse.ui.navigator.viewer">
+      <viewerContentBinding
+            viewerId="org.talend.repository.cnf.view">
+         <includes>
+            <contentExtension
+                  pattern="org.talend.repository.node.job.top.*">
+            </contentExtension>
+            <contentExtension
+                  pattern="org.talend.repository.node.doc.*">
+            </contentExtension>
+            <contentExtension
+                  pattern="org.talend.repository.viewer.filter.*">
+            </contentExtension>
+         </includes>
+      </viewerContentBinding>
+   </extension>
+   <extension
+         point="org.talend.repository.view.repositorySorter">
+      <sorter
+            class="org.talend.repository.view.di.viewer.sorter.StandardNodeOnTopSorter"
+            description="The standard node will be on top always"
+            id="org.talend.repository.view.di.viewer.sorter.StandardNodeOnTopSorter"
+            name="StandardOrder"
+            order="10">
+      </sorter>
+      <sorter
+            class="org.talend.repository.view.di.viewer.sorter.RoutinesRepositoryNodeSorter"
+            description="Always on top (1)"
+            id="org.talend.repository.view.di.viewer.sorter.routines"
+            name="Routine Sorter"
+            order="10">
+      </sorter>
    </extension>
 
 

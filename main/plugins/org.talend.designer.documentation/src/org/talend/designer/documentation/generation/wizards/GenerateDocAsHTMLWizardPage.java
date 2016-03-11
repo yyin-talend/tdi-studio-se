@@ -92,8 +92,8 @@ public class GenerateDocAsHTMLWizardPage extends WizardFileSystemResourceExportP
         nodes = (RepositoryNode[]) selection.toList().toArray(new RepositoryNode[selection.size()]);
         if (nodes.length > 0) {
 
-            manager = new JobHTMLScriptsManager(
-                    new HTMLDocGenerator(nodes[0].getRoot().getProject(), ERepositoryObjectType.JOBS), true);
+            manager = new JobHTMLScriptsManager(new HTMLDocGenerator(nodes[0].getRoot().getProject(),
+                    ERepositoryObjectType.JOB_DOC), true);
         }
 
         List<ExportFileResource> list = new ArrayList<ExportFileResource>();

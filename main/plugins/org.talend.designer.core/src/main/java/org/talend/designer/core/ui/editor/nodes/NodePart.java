@@ -325,7 +325,9 @@ public class NodePart extends AbstractGraphicalEditPart implements PropertyChang
     @Override
     public void propertyChange(final PropertyChangeEvent changeEvent) {
         boolean needUpdateSubjob = false;
-
+        if(!this.isActive()){
+            return;
+        }
         if (changeEvent.getPropertyName().equals(Node.LOCATION)) {
             refreshVisuals();
             needUpdateSubjob = true;

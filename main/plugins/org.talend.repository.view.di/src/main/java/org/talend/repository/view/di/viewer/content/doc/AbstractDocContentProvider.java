@@ -21,10 +21,15 @@ import org.talend.repository.viewer.content.SubEmptyTopNodeContentProvider;
  */
 public abstract class AbstractDocContentProvider extends SubEmptyTopNodeContentProvider {
 
-    DocumentationNodeTester nodeTester = new DocumentationNodeTester();
+    DocumentationNodeTester docTester = new DocumentationNodeTester();
 
     public AbstractDocContentProvider() {
         super();
+    }
+
+    @Override
+    public boolean hasChildren(Object element) {
+        return getChildren(element).length > 0;
     }
 
     /*
@@ -35,7 +40,7 @@ public abstract class AbstractDocContentProvider extends SubEmptyTopNodeContentP
     @Override
     protected boolean isRootNodeType(Object element) {
         if (element instanceof RepositoryNode) {
-            return nodeTester.isDocTopNode((RepositoryNode) element);
+            return docTester.isDocTopNode((RepositoryNode) element);
         } else {
             return false;
         }
