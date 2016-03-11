@@ -52,7 +52,6 @@ import org.talend.core.ui.services.IComponentsLocalProviderService;
 import org.talend.daikon.NamedThing;
 import org.talend.daikon.properties.Property;
 import org.talend.daikon.properties.presentation.Form;
-import org.talend.daikon.schema.SchemaElement;
 import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.generic.constants.IGenericConstants;
 import org.talend.designer.core.generic.context.ComponentContextPropertyValueEvaluator;
@@ -537,6 +536,9 @@ public class Component extends AbstractComponent {
         param.setReadOnly(true);
         listParam.add(param);
 
+        // TUP-4129
+        ComponentProperties compProperties = ComponentsUtils.getComponentProperties(getName());
+        ComponentService service = ComponentsUtils.getComponentService();
         param = new ElementParameter(node);
         param.setName("PROPERTY");//$NON-NLS-1$
         param.setCategory(EComponentCategory.BASIC);
@@ -545,6 +547,7 @@ public class Component extends AbstractComponent {
         param.setRepositoryValue(getRepositoryType());
         param.setValue("");//$NON-NLS-1$
         param.setNumRow(2);
+        param.setShow(checkAssociatedFromComponentProperties(compProperties, service));
 
         ElementParameter newParam = new ElementParameter(node);
         newParam.setCategory(EComponentCategory.BASIC);
@@ -582,6 +585,26 @@ public class Component extends AbstractComponent {
         newParam.setSerialized(true);
         newParam.setParentParameter(param);
         listParam.add(param);
+    }
+
+    private boolean checkAssociatedFromComponentProperties(ComponentProperties componentProperties, ComponentService service) {
+        if (componentProperties == null || service == null) {
+            return false;
+        }
+        List componentWizards = service.getComponentWizardsForProperties(componentProperties, null);
+        if (componentWizards != null && !componentWizards.isEmpty()) {
+            return true;
+        }
+        List<NamedThing> namedThings = componentProperties.getProperties();
+        for (NamedThing namedThing : namedThings) {
+            if (namedThing instanceof ComponentProperties) {
+                boolean associated = checkAssociatedFromComponentProperties((ComponentProperties) namedThing, service);
+                if (associated) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     private void addPropertyParameters(final List<ElementParameter> listParam, final INode node, String formName,
@@ -1036,11 +1059,11 @@ public class Component extends AbstractComponent {
         return propsList;
     }
 
-    public String getCodegenValue(SchemaElement property, String value) {
-        if (property.getType() == SchemaElement.Type.ENUM) {
+    public String getCodegenValue(Property property, String value) {
+        if (property.getType() == Property.Type.ENUM) {
             return "\"" + value + "\"";//$NON-NLS-1$ //$NON-NLS-2$
         }
-        if (property.getType() == SchemaElement.Type.SCHEMA) {
+        if (property.getType() == Property.Type.SCHEMA) {
             // Handles embedded escaped quotes which might occur
             return "\"" + value.replace("\\\"", "\\\\\"").replace("\"", "\\\"") + "\"";//$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$
         }

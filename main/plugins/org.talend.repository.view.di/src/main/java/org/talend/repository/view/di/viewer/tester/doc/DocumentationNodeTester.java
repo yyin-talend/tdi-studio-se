@@ -23,11 +23,7 @@ public class DocumentationNodeTester extends AbstractNodeTester {
 
     private static final String IS_DOC_TOP_NODE = "isDocTopNode"; //$NON-NLS-1$
 
-    private GeneratedDocNodeTester generatedNodeTester = new GeneratedDocNodeTester();
-
-    private JobsDocNodeTester jobsNodeTester = new JobsDocNodeTester();
-
-    private JobletsDocNodeTester jobletsNodeTester = new JobletsDocNodeTester();
+    private static final String IS_DOC_NODE = "isDocNode"; //$NON-NLS-1$
 
     /*
      * (non-Javadoc)
@@ -39,18 +35,20 @@ public class DocumentationNodeTester extends AbstractNodeTester {
     protected Boolean testProperty(Object receiver, String property, Object[] args, Object expectedValue) {
         if (receiver instanceof RepositoryNode) {
             RepositoryNode repositoryNode = (RepositoryNode) receiver;
-            if (IS_DOC_TOP_NODE.equals(property)) {
-                return isDocTopNode(repositoryNode) || generatedNodeTester.isGeneratedDocTopNode(repositoryNode)
-                        || jobsNodeTester.isJobs(repositoryNode) || jobletsNodeTester.isJoblets(repositoryNode);
-            } else {
-
+            if (IS_DOC_NODE.equals(property)) {
+                return isDocNode(repositoryNode);
+            } else if (IS_DOC_TOP_NODE.equals(property)) {
+                return isDocTopNode(repositoryNode);
             }
         }
         return null;
     }
 
-    public boolean isDocTopNode(RepositoryNode repositoryNode) {
+    public boolean isDocNode(RepositoryNode repositoryNode) {
         return isTypeNode(repositoryNode, ERepositoryObjectType.DOCUMENTATION);
     }
 
+    public boolean isDocTopNode(RepositoryNode repositoryNode) {
+        return isTypeTopNode(repositoryNode, ERepositoryObjectType.DOCUMENTATION);
+    }
 }
