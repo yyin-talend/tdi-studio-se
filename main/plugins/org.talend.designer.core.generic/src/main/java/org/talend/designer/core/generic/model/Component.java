@@ -554,7 +554,8 @@ public class Component extends AbstractComponent {
         param.setCategory(EComponentCategory.BASIC);
         param.setDisplayName(EParameterName.PROPERTY_TYPE.getDisplayName());
         param.setFieldType(EParameterFieldType.PROPERTY_TYPE);
-        param.setRepositoryValue(wizardDefinition.getName());
+        if (wizardDefinition != null)
+        	param.setRepositoryValue(wizardDefinition.getName());
         param.setValue("");//$NON-NLS-1$
         param.setNumRow(2);
         param.setShow(wizardDefinition != null);
