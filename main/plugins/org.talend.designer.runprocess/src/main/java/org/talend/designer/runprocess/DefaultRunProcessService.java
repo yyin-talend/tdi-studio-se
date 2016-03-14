@@ -234,6 +234,17 @@ public class DefaultRunProcessService implements IRunProcessService {
         JavaProcessorUtilities.computeLibrariesPath(new HashSet<ModuleNeeded>(jobModuleList), process);
     }
 
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.designer.runprocess.IRunProcessService#updateLibraries(java.util.Set,
+     * org.talend.core.model.process.IProcess, java.util.Set)
+     */
+    @Override
+    public void updateLibraries(Set<ModuleNeeded> jobModuleList, IProcess process, Set<ModuleNeeded> alreadyRetrievedModules) {
+        JavaProcessorUtilities.computeLibrariesPath(new HashSet<ModuleNeeded>(jobModuleList), process, alreadyRetrievedModules);
+    }
+
     @Override
     public void refreshView() {
         ProcessView view = ProcessView.findProcessView();

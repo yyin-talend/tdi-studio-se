@@ -115,6 +115,7 @@ import org.talend.core.model.routines.RoutinesUtil;
 import org.talend.core.model.update.IUpdateManager;
 import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.core.repository.model.ProxyRepositoryFactory;
+import org.talend.core.repository.utils.ConvertJobsUtil;
 import org.talend.core.repository.utils.XmiResourceManager;
 import org.talend.core.ui.IJobletProviderService;
 import org.talend.core.ui.ILastVersionChecker;
@@ -1485,6 +1486,16 @@ public class Process extends Element implements IProcess2, IGEFProcess, ILastVer
         saveProcessElementParameters(processType);
         saveRoutinesDependencies(processType);
         saveAdditionalProperties();
+        
+        String sourceJobType =   ConvertJobsUtil.getJobTypeFromFramework(this.getProperty().getItem());
+        String sourceJobFramework = (String) this.getProperty().getAdditionalProperties().get(ConvertJobsUtil.FRAMEWORK);
+        if(sourceJobType!=null){
+            processType.setJobType(sourceJobType.replaceAll(" ", "_"));
+        }
+        if(sourceJobFramework!=null){
+            processType.setFramework(sourceJobFramework.replaceAll(" ", "_"));
+        }
+       
 
         EList nList = processType.getNode();
         EList cList = processType.getConnection();

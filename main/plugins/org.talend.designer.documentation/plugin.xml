@@ -58,7 +58,7 @@
             isResouce="true"
             key="repository.documentation"
             label="Documentation"
-            ordinal="11"
+            ordinal="100"
             products="DI"
             type="DOCUMENTATION">
       </repositoryNode>

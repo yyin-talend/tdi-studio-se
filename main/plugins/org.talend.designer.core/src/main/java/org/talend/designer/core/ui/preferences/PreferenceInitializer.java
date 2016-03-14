@@ -165,6 +165,9 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer {
             store.setDefault(ITalendCorePrefConstants.PERFORMANCE_TAC_CONNECTION_TIMEOUT, 30);
         }
 
+        store.setDefault(ITalendCorePrefConstants.NEXUS_TIMEOUT, 10000);
+        store.setDefault(ITalendCorePrefConstants.NEXUS_REFRESH_FREQUENCY, 0);
+
         if (!CommonUIPlugin.isFullyHeadless()) {
             Display display = Display.getDefault();
             if (display == null) {

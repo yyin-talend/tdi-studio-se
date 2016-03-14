@@ -282,7 +282,8 @@ public class ExportItemWizardPage extends WizardPage {
             return false;
         }
         // hide the generated documentation node, avoid to export .
-        if (object == null && ERepositoryObjectType.GENERATED.equals(node.getContentType())) {
+        final ERepositoryObjectType contentType = node.getContentType();
+        if (object == null && contentType != null && contentType.equals(ERepositoryObjectType.GENERATED)) {
             return false;
         }
 

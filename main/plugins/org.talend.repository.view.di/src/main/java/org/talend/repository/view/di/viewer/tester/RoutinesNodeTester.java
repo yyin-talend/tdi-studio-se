@@ -44,4 +44,8 @@ public class RoutinesNodeTester extends AbstractNodeTester {
         return isTypeNode(repositoryNode, ERepositoryObjectType.ROUTINES);
     }
 
+    public boolean isRoutinesTopNode(RepositoryNode repositoryNode) {
+        return isTypeTopNode(repositoryNode, ERepositoryObjectType.ROUTINES);
+    }
+
 }

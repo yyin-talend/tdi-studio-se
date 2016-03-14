@@ -49,11 +49,8 @@ import org.talend.designer.core.model.utils.emf.talendfile.ProcessType;
  */
 public class ChangeSalesforceComponentsParametersToSerializedMigrationTask extends AbstractComponentParametersMigrationTask {
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.talend.core.model.migration.AbstractItemMigrationTask#execute(org.talend.core.model.properties.Item)
-     */
+    private String[] filterComponentNames = new String[] {};
+
     @Override
     public ExecutionResult execute(final Item item) {
         final ProcessType processType = getProcessType(item);
@@ -108,7 +105,7 @@ public class ChangeSalesforceComponentsParametersToSerializedMigrationTask exten
             }
         };
 
-        for (String name : salesforceComponentsName) {
+        for (String name : filterComponentNames) {
             IComponentFilter filter = new NameComponentFilter(name);
             try {
                 ModifyComponentsAction.searchAndModify(item, processType, filter,
@@ -121,11 +118,6 @@ public class ChangeSalesforceComponentsParametersToSerializedMigrationTask exten
         return ExecutionResult.SUCCESS_NO_ALERT;
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.talend.migration.IMigrationTask#getOrder()
-     */
     @Override
     public Date getOrder() {
         GregorianCalendar gc = new GregorianCalendar(2015, 11, 18, 12, 0, 0);

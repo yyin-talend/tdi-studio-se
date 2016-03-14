@@ -137,11 +137,13 @@
             name="SCHEMA_REFERENCE"
             widgetType="SCHEMA_REFERENCE">
       </Mapping>
+      <!--Need implement table type on task TUP-4162 ,then disable first.
       <Mapping
             mapFieldType="TABLE"
             name="TABLE"
             widgetType="TABLE">
       </Mapping>
+      -->
        <Mapping
             mapFieldType="HIDDEN_TEXT"
             name="HIDDEN_TEXT"

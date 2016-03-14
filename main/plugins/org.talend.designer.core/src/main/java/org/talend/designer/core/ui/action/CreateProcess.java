@@ -74,7 +74,8 @@ public class CreateProcess extends AContextualAction implements IIntroAction {
 
     public CreateProcess() {
         super();
-        if (PluginChecker.isStormPluginLoader() || PluginChecker.isMapReducePluginLoader()) {
+        if (PluginChecker.isStormPluginLoader() || PluginChecker.isMapReducePluginLoader()
+                || PluginChecker.isJobLetPluginLoaded()) {
             this.setText(CREATE_STANDARD_LABEL);
             this.setToolTipText(CREATE_STANDARD_LABEL);
         } else {
@@ -133,8 +134,8 @@ public class CreateProcess extends AContextualAction implements IIntroAction {
                 // Set readonly to false since created job will always be editable.
                 fileEditorInput = new ProcessEditorInput(processWizard.getProcess(), false, true, false);
 
-                IRepositoryNode repositoryNode = RepositorySeekerManager.getInstance().searchRepoViewNode(fileEditorInput.getItem()
-                    .getProperty().getId(), false);
+                IRepositoryNode repositoryNode = RepositorySeekerManager.getInstance().searchRepoViewNode(
+                        fileEditorInput.getItem().getProperty().getId(), false);
                 fileEditorInput.setRepositoryNode(repositoryNode);
 
                 IWorkbenchPage page = getActivePage();
@@ -231,8 +232,7 @@ public class CreateProcess extends AContextualAction implements IIntroAction {
         if (view != null) {
             Object type = params.get("type");
             if (getProcessType().name().equals(type)) {
-                IRepositoryNode processNode = ((ProjectRepositoryNode) view.getRoot())
-                        .getRootRepositoryNode(getProcessType());
+                IRepositoryNode processNode = ((ProjectRepositoryNode) view.getRoot()).getRootRepositoryNode(getProcessType());
                 if (processNode != null) {
                     setWorkbenchPart(view);
                     final StructuredViewer viewer = view.getViewer();

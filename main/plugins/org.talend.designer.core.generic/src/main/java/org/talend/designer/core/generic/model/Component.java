@@ -32,6 +32,7 @@ import org.talend.components.api.component.Connector;
 import org.talend.components.api.component.Trigger;
 import org.talend.components.api.properties.ComponentProperties;
 import org.talend.components.api.service.ComponentService;
+import org.talend.components.api.wizard.ComponentWizard;
 import org.talend.core.CorePlugin;
 import org.talend.core.GlobalServiceRegister;
 import org.talend.core.model.components.EComponentType;
@@ -52,7 +53,6 @@ import org.talend.core.ui.services.IComponentsLocalProviderService;
 import org.talend.daikon.NamedThing;
 import org.talend.daikon.properties.Property;
 import org.talend.daikon.properties.presentation.Form;
-import org.talend.daikon.schema.SchemaElement;
 import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.generic.constants.IGenericConstants;
 import org.talend.designer.core.generic.context.ComponentContextPropertyValueEvaluator;
@@ -132,6 +132,7 @@ public class Component extends AbstractComponent {
 
     @Override
     public List<ElementParameter> createElementParameters(INode node) {
+        node.setComponentProperties(ComponentsUtils.getComponentProperties(getName()));
         List<ElementParameter> listParam;
         listParam = new ArrayList<>();
         addMainParameters(listParam, node);
@@ -543,6 +544,7 @@ public class Component extends AbstractComponent {
         param.setRepositoryValue(getRepositoryType());
         param.setValue("");//$NON-NLS-1$
         param.setNumRow(2);
+        param.setShow(checkAssociatedFromComponentProperties(node.getComponentProperties()));
 
         ElementParameter newParam = new ElementParameter(node);
         newParam.setCategory(EComponentCategory.BASIC);
@@ -582,14 +584,31 @@ public class Component extends AbstractComponent {
         listParam.add(param);
     }
 
+    private boolean checkAssociatedFromComponentProperties(ComponentProperties componentProperties) {
+        if (componentProperties == null) {
+            return false;
+        }
+        ComponentService service = ComponentsUtils.getComponentService();
+        List<ComponentWizard> componentWizards = service.getComponentWizardsForProperties(componentProperties, null);
+        if (componentWizards != null && !componentWizards.isEmpty()) {
+            return true;
+        }
+        List<NamedThing> namedThings = componentProperties.getProperties();
+        for (NamedThing namedThing : namedThings) {
+            if (namedThing instanceof ComponentProperties) {
+                boolean associated = checkAssociatedFromComponentProperties((ComponentProperties) namedThing);
+                if (associated) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
     private void addPropertyParameters(final List<ElementParameter> listParam, final INode node, String formName,
             EComponentCategory category) {
-        ComponentProperties props = ComponentsUtils.getComponentProperties(getName());
+        ComponentProperties props = node.getComponentProperties();
         Form form = props.getForm(formName);
-        if (node.getComponentProperties() != null) {
-            props = node.getComponentProperties();
-            form = props.getForm(formName);
-        }
         List<ElementParameter> parameters = ComponentsUtils.getParametersFromForm(node, category, node.getComponentProperties(),
                 null, form, null, null);
         ComponentService componentService = new ComponentServiceWithValueEvaluator(ComponentsUtils.getComponentService(),
@@ -1028,11 +1047,11 @@ public class Component extends AbstractComponent {
         return propsList;
     }
 
-    public String getCodegenValue(SchemaElement property, String value) {
-        if (property.getType() == SchemaElement.Type.ENUM) {
+    public String getCodegenValue(Property property, String value) {
+        if (property.getType() == Property.Type.ENUM) {
             return "\"" + value + "\"";//$NON-NLS-1$ //$NON-NLS-2$
         }
-        if (property.getType() == SchemaElement.Type.SCHEMA) {
+        if (property.getType() == Property.Type.SCHEMA) {
             // Handles embedded escaped quotes which might occur
             return "\"" + value.replace("\\\"", "\\\\\"").replace("\"", "\\\"") + "\"";//$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$
         }

@@ -35,14 +35,13 @@ import org.talend.core.model.process.EParameterFieldType;
 import org.talend.core.model.process.IElement;
 import org.talend.core.model.process.INode;
 import org.talend.core.ui.component.ComponentsFactoryProvider;
+import org.talend.core.utils.TalendQuoteUtils;
 import org.talend.daikon.NamedThing;
 import org.talend.daikon.properties.PresentationItem;
 import org.talend.daikon.properties.Properties.Deserialized;
 import org.talend.daikon.properties.Property;
 import org.talend.daikon.properties.presentation.Form;
 import org.talend.daikon.properties.presentation.Widget;
-import org.talend.daikon.schema.SchemaElement;
-import org.talend.daikon.schema.SchemaElement.Type;
 import org.talend.designer.core.generic.constants.IGenericConstants;
 import org.talend.designer.core.generic.model.Component;
 import org.talend.designer.core.generic.model.GenericElementParameter;
@@ -109,10 +108,11 @@ public class ComponentsUtils {
             }
         }
     }
-
+   
+    // FIXME - this does not appear to be used, can it be deleted?
     public static List<ElementParameter> getParametersFromForm(IElement element, EComponentCategory category, Form form,
-            Widget parentWidget, AtomicInteger lastRowNum) {
-        return getParametersFromForm(element, category, null, null, form, parentWidget, lastRowNum);
+    		Widget parentWidget, AtomicInteger lastRowNum) {
+    	return getParametersFromForm(element, category, null, null, form, parentWidget, lastRowNum);
     }
 
     /**
@@ -147,6 +147,7 @@ public class ComponentsUtils {
         }
         if (element instanceof INode) {
             INode node = (INode) element;
+            // FIXME - this should be able to be removed TUP-4053
             // Set the properties only one time to get the top-level properties object
             if (node.getComponentProperties() == null) {
                 node.setComponentProperties(componentProperties);
@@ -201,8 +202,7 @@ public class ComponentsUtils {
             } else {
                 Property property = (Property) widgetProperty;
                 param.setRequired(property.isRequired());
-                param.setDefaultValue(property.getDefaultValue());
-                param.setValue(property.getValue());
+                param.setValue(getParameterValue(property));
                 param.setSupportContext(isSupportContext(property));
                 // TCOMP-96
                 param.setContext(EConnectionType.FLOW_MAIN.getName());
@@ -236,6 +236,27 @@ public class ComponentsUtils {
             elementParameters.add(param);
         }
         return elementParameters;
+    }
+
+    public static Object getParameterValue(Property property) {
+        Object paramValue = property.getValue() != null ? property.getValue() : property.getDefaultValue();
+        Property.Type propertyType = property.getType();
+        switch (propertyType) {
+        case STRING:
+            paramValue = TalendQuoteUtils.addQuotesIfNotExist((String) paramValue);
+            break;
+        case ENUM:
+            if (paramValue == null) {// TUP-4145
+                List<?> possibleValues = property.getPossibleValues();
+                if (possibleValues != null && possibleValues.size() > 0) {
+                    paramValue = possibleValues.get(0);
+                }
+            }
+            break;
+        default:
+            break;
+        }
+        return paramValue;
     }
 
     private static String getPropertiesPath(String parentPropertiesPath, String currentPropertiesName) {
@@ -373,8 +394,8 @@ public class ComponentsUtils {
         return propertyName;
     }
 
-    public static boolean isSupportContext(SchemaElement schemaElement) {
-        Type type = schemaElement.getType();
+    public static boolean isSupportContext(Property schemaElement) {
+        Property.Type type = schemaElement.getType();
         switch (type) {
         case STRING:
         case INT:

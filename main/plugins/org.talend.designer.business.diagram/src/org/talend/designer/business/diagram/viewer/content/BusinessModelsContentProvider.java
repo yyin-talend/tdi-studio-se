@@ -10,17 +10,17 @@
 // 9 rue Pages 92150 Suresnes, France
 //
 // ============================================================================
-package org.talend.repository.view.di.viewer.content;
+package org.talend.designer.business.diagram.viewer.content;
 
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.repository.model.ProjectRepositoryNode;
 import org.talend.repository.model.RepositoryNode;
-import org.talend.repository.viewer.content.ProjectRepoDirectChildrenNodeContentProvider;
+import org.talend.repository.view.di.viewer.content.doc.AbstractDocContentProvider;
 
 /**
  * DOC ggu class global comment. Detailled comment
  */
-public class BusinessModelsContentProvider extends ProjectRepoDirectChildrenNodeContentProvider {
+public class BusinessModelsContentProvider extends AbstractDocContentProvider {
 
     /*
      * (non-Javadoc)

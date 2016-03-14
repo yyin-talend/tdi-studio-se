@@ -393,7 +393,7 @@ class ImportItemWizardPage extends WizardPage {
         // hide the generated documentation node , avoid to import .
         if (element != null && element instanceof TypeNode) {
             ERepositoryObjectType type = ((TypeNode) element).type;
-            if (ERepositoryObjectType.JOB_DOC.equals(type) || ERepositoryObjectType.JOBLET_DOC.equals(type)) {
+            if (type.equals(ERepositoryObjectType.JOB_DOC) || type.equals(ERepositoryObjectType.JOBLET_DOC)) {
                 return false;
             }
         }
@@ -402,14 +402,14 @@ class ImportItemWizardPage extends WizardPage {
             for (Object node : importElement) {
                 if (node != null && node instanceof ItemRecord) {
                     ERepositoryObjectType type = ((ItemRecord) node).getType();
-                    if (ERepositoryObjectType.JOB_DOC.equals(type) || ERepositoryObjectType.JOBLET_DOC.equals(type)) {
+                    if (type.equals(ERepositoryObjectType.JOB_DOC) || type.equals(ERepositoryObjectType.JOBLET_DOC)) {
                         return false;
                     }
                 }
             }
         } else if (element instanceof ItemRecord) {
             ERepositoryObjectType type = ((ItemRecord) element).getType();
-            if (ERepositoryObjectType.JOB_DOC.equals(type) || ERepositoryObjectType.JOBLET_DOC.equals(type)) {
+            if (type.equals(ERepositoryObjectType.JOB_DOC) || type.equals(ERepositoryObjectType.JOBLET_DOC)) {
                 return false;
             }
         }

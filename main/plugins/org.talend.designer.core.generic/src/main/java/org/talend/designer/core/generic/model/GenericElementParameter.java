@@ -18,6 +18,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import org.apache.avro.Schema;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.gef.commands.CommandStack;
 import org.eclipse.jface.dialogs.ProgressMonitorDialog;
@@ -35,10 +36,10 @@ import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.IProcess;
 import org.talend.daikon.NamedThing;
 import org.talend.daikon.properties.PresentationItem;
+import org.talend.daikon.properties.Properties;
 import org.talend.daikon.properties.Property;
 import org.talend.daikon.properties.presentation.Form;
 import org.talend.daikon.properties.presentation.Widget;
-import org.talend.daikon.schema.Schema;
 import org.talend.designer.core.generic.constants.IElementParameterEventProperties;
 import org.talend.designer.core.generic.constants.IGenericConstants;
 import org.talend.designer.core.generic.utils.ComponentsUtils;
@@ -243,23 +244,23 @@ public class GenericElementParameter extends ElementParameter {
     }
 
     private void updateSchema() {
-        Object schemaObj = null;
-        try {
-            schemaObj = ComponentsUtils.getGenericPropertyValue(componentProperties, "schema.schema"); //$NON-NLS-1$
-        } catch (Exception e) {
-            // do nothing
-        }
-        if (schemaObj != null && schemaObj instanceof Schema) {
-            MetadataTable metadataTable = SchemaUtils
-                    .createSchema(String.valueOf(getValue()), componentProperties.toSerialized());
-            SchemaUtils.convertComponentSchemaIntoTalendSchema((Schema) schemaObj, metadataTable);
-            IMetadataTable newTable = MetadataToolHelper.convert(metadataTable);
-            IElement element = this.getElement();
-            if (element instanceof Node) {
-                Node node = (Node) element;
-                List<IMetadataTable> metadataList = node.getMetadataList();
-                if (metadataList.size() > 0) {
-                    IMetadataTable oldTable = metadataList.get(0);
+        IElement element = this.getElement();
+        if (element instanceof Node) {
+            Node node = (Node) element;
+            List<IMetadataTable> metadataList = node.getMetadataList();
+            if (metadataList.size() > 0) {
+                IMetadataTable oldTable = metadataList.get(0);
+                String schemaPropertyName = oldTable.getAdditionalProperties().get(IGenericConstants.COMPONENT_SCHEMA_TAG);
+                Object schemaObj = null;
+                try {
+                    schemaObj = ComponentsUtils.getGenericPropertyValue(componentProperties, schemaPropertyName);
+                } catch (Exception e) {
+                    // do nothing
+                }
+                if (schemaObj != null && schemaObj instanceof Schema) {
+                    MetadataTable metadataTable = SchemaUtils.createSchema(String.valueOf(getValue()), componentProperties,
+                            schemaPropertyName);
+                    IMetadataTable newTable = MetadataToolHelper.convert(metadataTable);
                     if (!newTable.sameMetadataAs(oldTable)) {
                         IElementParameter schemaParameter = node.getElementParameterFromField(EParameterFieldType.SCHEMA_TYPE);
                         ChangeMetadataCommand cmd = new ChangeMetadataCommand(node, schemaParameter, oldTable, newTable, null);
@@ -277,16 +278,8 @@ public class GenericElementParameter extends ElementParameter {
 
     private String getParameterName() {
         String paramName = getName();
-        if (paramName.indexOf(IGenericConstants.UNDERLINE_SEPARATOR) != -1) {
-            paramName = paramName.substring(paramName.lastIndexOf(IGenericConstants.UNDERLINE_SEPARATOR) + 1);
-        }
-        // Reset some param name
-        ComponentProperties currentComponentProperties = ComponentsUtils.getCurrentComponentProperties(componentProperties,
-                paramName);
-        if (currentComponentProperties == null) {
-            if (paramName.startsWith(componentProperties.getName())) {
-                paramName = ComponentsUtils.getPropertyName(paramName);
-            }
+        if (paramName.indexOf(IGenericConstants.EXP_SEPARATOR) != -1) {
+            paramName = paramName.substring(paramName.lastIndexOf(IGenericConstants.EXP_SEPARATOR) + 1);
         }
         return paramName;
     }
