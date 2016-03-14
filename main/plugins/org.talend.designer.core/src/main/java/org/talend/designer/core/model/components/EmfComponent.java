@@ -1737,10 +1737,12 @@ public class EmfComponent extends AbstractComponent {
                     // Compose the ComponentCondition to display a version.
                     ComponentCondition condition;
                     org.talend.hadoop.distribution.condition.Expression e = new BasicExpression(
-                            componentType.getDistributionParameter(), that.getDistributionName(), EqualityOperator.EQ);
+                            componentType.getDistributionParameter(), EqualityOperator.EQ, that.getDistributionName());
                     if (additionalCondition != null) {
-                        condition = new MultiComponentCondition(new SimpleComponentCondition(e), new NestedComponentCondition(
-                                additionalCondition), BooleanOperator.AND);
+                        condition = new MultiComponentCondition( //
+                                new SimpleComponentCondition(e), //
+                                BooleanOperator.AND, //
+                                new NestedComponentCondition(additionalCondition));
                     } else {
                         condition = new SimpleComponentCondition(e);
                     }
@@ -1763,9 +1765,9 @@ public class EmfComponent extends AbstractComponent {
 
                             ComponentCondition condition;
                             org.talend.hadoop.distribution.condition.Expression e1 = new BasicExpression(
-                                    componentType.getDistributionParameter(), that.getDistributionName(), EqualityOperator.EQ);
+                                    componentType.getDistributionParameter(), EqualityOperator.EQ, that.getDistributionName());
                             org.talend.hadoop.distribution.condition.Expression e2 = new BasicExpression(
-                                    componentType.getVersionParameter(), that.getName(), EqualityOperator.EQ);
+                                    componentType.getVersionParameter(), EqualityOperator.EQ, that.getName());
                             org.talend.hadoop.distribution.condition.Expression e3 = new ShowExpression(
                                     componentType.getDistributionParameter());
                             org.talend.hadoop.distribution.condition.Expression e4 = new ShowExpression(
@@ -1775,14 +1777,22 @@ public class EmfComponent extends AbstractComponent {
                             // if the Distribution and Version parameters are shown. The second condition to take the
                             // USE_EXISTING_CONNECTIOn into account.
 
-                            condition = new MultiComponentCondition(new SimpleComponentCondition(e1),
-                                    new MultiComponentCondition(new SimpleComponentCondition(e2), new MultiComponentCondition(
-                                            new SimpleComponentCondition(e3), new SimpleComponentCondition(e4),
-                                            BooleanOperator.AND), BooleanOperator.AND), BooleanOperator.AND);
+                            condition = new MultiComponentCondition( //
+                                    new SimpleComponentCondition(e1), //
+                                    BooleanOperator.AND, //
+                                    new MultiComponentCondition( //
+                                            new SimpleComponentCondition(e2), //
+                                            BooleanOperator.AND, //
+                                            new MultiComponentCondition( //
+                                                    new SimpleComponentCondition(e3), //
+                                                    BooleanOperator.AND, //
+                                                    new SimpleComponentCondition(e4))));
 
                             if (group.getRequiredIf() != null) {
-                                condition = new MultiComponentCondition(condition, new NestedComponentCondition(
-                                        group.getRequiredIf()), BooleanOperator.AND);
+                                condition = new MultiComponentCondition( //
+                                        condition, //
+                                        BooleanOperator.AND, //
+                                        new NestedComponentCondition(group.getRequiredIf()));
                             }
 
                             importType.setREQUIREDIF(condition.getConditionString());
@@ -1832,7 +1842,7 @@ public class EmfComponent extends AbstractComponent {
                     defaultType.setDefaultValue(defaultValuePerDistrib);
                 }
                 defaultType.setIfCondition(new SimpleComponentCondition(new BasicExpression(componentType
-                        .getDistributionParameter(), b.getName(), EqualityOperator.EQ)).getConditionString());
+                        .getDistributionParameter(), EqualityOperator.EQ, b.getName())).getConditionString());
                 newParam.getDefaultValues().add(defaultType);
             }
 
