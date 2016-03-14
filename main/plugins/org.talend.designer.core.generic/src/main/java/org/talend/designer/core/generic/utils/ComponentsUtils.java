@@ -130,6 +130,7 @@ public class ComponentsUtils {
             ComponentProperties compProperties, String parentPropertiesPath, Form form, Widget parentWidget,
             AtomicInteger lastRowNum) {
         List<ElementParameter> elementParameters = new ArrayList<>();
+        List<String> parameterNames = new ArrayList<>();
         EComponentCategory compCategory = category;
         if (compCategory == null) {
             compCategory = EComponentCategory.BASIC;
@@ -233,7 +234,11 @@ public class ComponentsUtils {
             if (EParameterFieldType.SCHEMA_TYPE.equals(param.getFieldType())) {
                 String propertyName = componentProperties.getName();
             }
-            elementParameters.add(param);
+            // Avoid adding duplicate prameter.
+            if (!parameterNames.contains(parameterName)) {
+                elementParameters.add(param);
+                parameterNames.add(parameterName);
+            }
         }
         return elementParameters;
     }
