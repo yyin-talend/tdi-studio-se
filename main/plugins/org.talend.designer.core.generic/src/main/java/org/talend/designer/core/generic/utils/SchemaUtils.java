@@ -50,10 +50,10 @@ public class SchemaUtils {
         schemaPropertyTV.setTag(IGenericConstants.COMPONENT_SCHEMA_TAG);
         schemaPropertyTV.setValue(schemaPropertyName);
         metadataTable.getTaggedValue().add(schemaPropertyTV);
-        // FIXME: need to use the new implementation from components framework(Avro schema --> MetadataTable).
         Object schemaObj = ComponentsUtils.getGenericPropertyValue(properties, schemaPropertyName);
-        if (schemaObj instanceof Schema) {
-            convertComponentSchemaIntoTalendSchema((Schema) schemaObj, metadataTable);
+        if (schemaObj instanceof String) {
+            Schema avroSchema = new Schema.Parser().parse((String) schemaObj);
+            convertComponentSchemaIntoTalendSchema(avroSchema, metadataTable);
         }
         return metadataTable;
     }
