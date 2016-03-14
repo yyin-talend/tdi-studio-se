@@ -17,7 +17,6 @@ import java.util.List;
 
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerFilter;
-import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.view.di.viewer.tester.JobTopNodesPropertyTester;
 import org.talend.repository.viewer.filter.PerspectiveFilterHelper;
 import org.talend.repository.viewer.filter.RepositoryNodeFilterHelper;
@@ -26,6 +25,9 @@ public class StandardJobNodeFilter extends ViewerFilter {
 
     private JobTopNodesPropertyTester jobTopTester = new JobTopNodesPropertyTester();
 
+    /**
+     * only check for standard node only,when the repository filter was enabled
+     */
     @Override
     public boolean select(Viewer viewer, Object parentElement, Object element) {
         if (jobTopTester.isStandardNode(element) && RepositoryNodeFilterHelper.isActivedFilter()) {
@@ -37,11 +39,6 @@ public class StandardJobNodeFilter extends ViewerFilter {
                 if (filterList.contains(element.getClass().getName())) {
                     return false;
                 }
-            }
-        } else if (element instanceof RepositoryNode) {
-            RepositoryNode repositoryNode = (RepositoryNode) element;
-            if (repositoryNode.getParent() != null && jobTopTester.isJobDesignsNode(repositoryNode.getParent())) {
-                return false;
             }
         }
         return true;
