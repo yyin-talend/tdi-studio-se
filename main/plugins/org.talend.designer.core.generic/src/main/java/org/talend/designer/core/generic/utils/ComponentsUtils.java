@@ -112,10 +112,11 @@ public class ComponentsUtils {
             }
         }
     }
-
+   
+    // FIXME - this does not appear to be used, can it be deleted?
     public static List<ElementParameter> getParametersFromForm(IElement element, EComponentCategory category, Form form,
-            Widget parentWidget, AtomicInteger lastRowNum) {
-        return getParametersFromForm(element, category, null, null, form, parentWidget, lastRowNum);
+    		Widget parentWidget, AtomicInteger lastRowNum) {
+    	return getParametersFromForm(element, category, null, null, form, parentWidget, lastRowNum);
     }
 
     /**
@@ -150,6 +151,7 @@ public class ComponentsUtils {
         }
         if (element instanceof INode) {
             INode node = (INode) element;
+            // FIXME - this should be able to be removed TUP-4053
             // Set the properties only one time to get the top-level properties object
             if (node.getComponentProperties() == null) {
                 node.setComponentProperties(componentProperties);
