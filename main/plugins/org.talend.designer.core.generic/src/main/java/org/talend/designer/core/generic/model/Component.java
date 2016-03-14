@@ -720,13 +720,13 @@ public class Component extends AbstractComponent {
         List<NodeConnector> listConnector = new ArrayList<NodeConnector>();
 
         for (Connector connector : componentDefinition.getConnectors()) {
-            if (ComponentUtils.isAValidConnector(connector, getName())) {
-                listConnector.add(ComponentUtils.generateNodeConnectorFromConnector(connector, parentNode));
+            if (ComponentsUtils.isAValidConnector(connector, getName())) {
+                listConnector.add(ComponentsUtils.generateNodeConnectorFromConnector(connector, parentNode));
             }
         }
         for (Trigger trigger : componentDefinition.getTriggers()) {
-            if (ComponentUtils.isAValidTrigger(trigger, getName())) {
-                listConnector.add(ComponentUtils.generateNodeConnectorFromTrigger(trigger, parentNode));
+            if (ComponentsUtils.isAValidTrigger(trigger, getName())) {
+                listConnector.add(ComponentsUtils.generateNodeConnectorFromTrigger(trigger, parentNode));
             }
         }
 
@@ -1200,7 +1200,7 @@ public class Component extends AbstractComponent {
      *
      * @return the log
      */
-    static Logger getLog() {
+    public static Logger getLog() {
         return log;
     }
 }
