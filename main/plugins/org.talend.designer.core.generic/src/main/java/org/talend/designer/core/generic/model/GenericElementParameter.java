@@ -278,15 +278,8 @@ public class GenericElementParameter extends ElementParameter {
 
     private String getParameterName() {
         String paramName = getName();
-        if (paramName.indexOf(IGenericConstants.UNDERLINE_SEPARATOR) != -1) {
-            paramName = paramName.substring(paramName.lastIndexOf(IGenericConstants.UNDERLINE_SEPARATOR) + 1);
-        }
-        // Reset some param name
-        Properties currentComponentProperties = ComponentsUtils.getCurrentComponentProperties(componentProperties, paramName);
-        if (currentComponentProperties == null) {
-            if (paramName.startsWith(componentProperties.getName())) {
-                paramName = ComponentsUtils.getPropertyName(paramName);
-            }
+        if (paramName.indexOf(IGenericConstants.EXP_SEPARATOR) != -1) {
+            paramName = paramName.substring(paramName.lastIndexOf(IGenericConstants.EXP_SEPARATOR) + 1);
         }
         return paramName;
     }
