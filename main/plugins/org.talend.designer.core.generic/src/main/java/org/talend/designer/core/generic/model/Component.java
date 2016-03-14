@@ -33,6 +33,7 @@ import org.talend.components.api.component.Trigger;
 import org.talend.components.api.properties.ComponentProperties;
 import org.talend.components.api.service.ComponentService;
 import org.talend.components.api.wizard.ComponentWizard;
+import org.talend.components.api.wizard.ComponentWizardDefinition;
 import org.talend.core.CorePlugin;
 import org.talend.core.GlobalServiceRegister;
 import org.talend.core.model.components.EComponentType;
@@ -547,15 +548,16 @@ public class Component extends AbstractComponent {
         param.setReadOnly(true);
         listParam.add(param);
 
+        ComponentWizardDefinition wizardDefinition = getWizardDefinition(node.getComponentProperties());
         param = new ElementParameter(node);
         param.setName("PROPERTY");//$NON-NLS-1$
         param.setCategory(EComponentCategory.BASIC);
         param.setDisplayName(EParameterName.PROPERTY_TYPE.getDisplayName());
         param.setFieldType(EParameterFieldType.PROPERTY_TYPE);
-        param.setRepositoryValue(getRepositoryType());
+        param.setRepositoryValue(wizardDefinition.getName());
         param.setValue("");//$NON-NLS-1$
         param.setNumRow(2);
-        param.setShow(checkAssociatedFromComponentProperties(node.getComponentProperties()));
+        param.setShow(wizardDefinition != null);
 
         ElementParameter newParam = new ElementParameter(node);
         newParam.setCategory(EComponentCategory.BASIC);
@@ -595,25 +597,26 @@ public class Component extends AbstractComponent {
         listParam.add(param);
     }
 
-    private boolean checkAssociatedFromComponentProperties(ComponentProperties componentProperties) {
+    private ComponentWizardDefinition getWizardDefinition(ComponentProperties componentProperties) {
         if (componentProperties == null) {
-            return false;
+            return null;
         }
         ComponentService service = ComponentsUtils.getComponentService();
         List<ComponentWizard> componentWizards = service.getComponentWizardsForProperties(componentProperties, null);
-        if (componentWizards != null && !componentWizards.isEmpty()) {
-            return true;
+        for (ComponentWizard componentWizard : componentWizards) {
+            ComponentWizardDefinition definition = componentWizard.getDefinition();
+            // Can we ensure it is the same wizard with metadata connection wizard by this way?
+            if (definition.isTopLevel()) {
+                return definition;
+            }
         }
         List<NamedThing> namedThings = componentProperties.getProperties();
         for (NamedThing namedThing : namedThings) {
             if (namedThing instanceof ComponentProperties) {
-                boolean associated = checkAssociatedFromComponentProperties((ComponentProperties) namedThing);
-                if (associated) {
-                    return true;
-                }
+                return getWizardDefinition((ComponentProperties) namedThing);
             }
         }
-        return false;
+        return null;
     }
 
     private void addPropertyParameters(final List<ElementParameter> listParam, final INode node, String formName,
