@@ -132,8 +132,8 @@ public class Component extends AbstractComponent {
 
     @Override
     public List<ElementParameter> createElementParameters(INode node) {
-    	node.setComponentProperties(ComponentsUtils.getComponentProperties(getName()));
-    	List<ElementParameter> listParam;
+        node.setComponentProperties(ComponentsUtils.getComponentProperties(getName()));
+        List<ElementParameter> listParam;
         listParam = new ArrayList<>();
         addMainParameters(listParam, node);
         addPropertyParameters(listParam, node, Form.MAIN, EComponentCategory.BASIC);
@@ -154,11 +154,15 @@ public class Component extends AbstractComponent {
             NodeReturn nodeRet = null;
             for (Property children : returns.getChildren()) {
                 nodeRet = new NodeReturn();
-                // Set "AFTER" as default since not the availability yet
-                nodeRet.setAvailability("AFTER"); //$NON-NLS-1$
                 nodeRet.setType(children.getType().name());
                 nodeRet.setDisplayName(children.getDisplayName());
                 nodeRet.setName(children.getName());
+                Object object = children.getTaggedValue(IGenericConstants.AVAILABILITY);
+                if (object != null) {
+                    nodeRet.setAvailability(object.toString());
+                } else {
+                    nodeRet.setAvailability("AFTER"); //$NON-NLS-1$
+                }
                 listReturn.add(nodeRet);
             }
         }
