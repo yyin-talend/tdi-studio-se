@@ -47,4 +47,9 @@ public interface IGenericConstants {
      */
     public static final String REPOSITORY_VALUE = "REPOSITORY_VALUE";//$NON-NLS-1$
 
+    /**
+     * Tag key of property's availability value.
+     */
+    public static final String AVAILABILITY = "AVAILABILITY";//$NON-NLS-1$
+
 }

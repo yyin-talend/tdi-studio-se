@@ -132,8 +132,8 @@ public class Component extends AbstractComponent {
 
     @Override
     public List<ElementParameter> createElementParameters(INode node) {
-    	node.setComponentProperties(ComponentsUtils.getComponentProperties(getName()));
-    	List<ElementParameter> listParam;
+        node.setComponentProperties(ComponentsUtils.getComponentProperties(getName()));
+        List<ElementParameter> listParam;
         listParam = new ArrayList<>();
         addMainParameters(listParam, node);
         addPropertyParameters(listParam, node, Form.MAIN, EComponentCategory.BASIC);
@@ -147,16 +147,25 @@ public class Component extends AbstractComponent {
 
     @Override
     public List<NodeReturn> createReturns() {
-        // TUP-4148
-        List<NodeReturn> listReturn = new ArrayList<NodeReturn>();
-        // ****************** add standard returns ******************
-        NodeReturn nodeRet = new NodeReturn();
-        nodeRet.setAvailability("AFTER"); //$NON-NLS-1$
-        nodeRet.setType(STRING_TYPE);
-        nodeRet.setVarName("ERROR_MESSAGE"); //$NON-NLS-1$
-        nodeRet.setDisplayName("Error Message"); //$NON-NLS-1$
-        nodeRet.setName("ERROR_MESSAGE"); //$NON-NLS-1$
-        listReturn.add(nodeRet);
+        List<NodeReturn> listReturn = new ArrayList<>();
+        ComponentProperties props = ComponentsUtils.getComponentProperties(getName());
+        Property returns = props.returns;
+        if (returns != null) {
+            NodeReturn nodeRet = null;
+            for (Property children : returns.getChildren()) {
+                nodeRet = new NodeReturn();
+                nodeRet.setType(children.getType().name());
+                nodeRet.setDisplayName(children.getDisplayName());
+                nodeRet.setName(children.getName());
+                Object object = children.getTaggedValue(IGenericConstants.AVAILABILITY);
+                if (object != null) {
+                    nodeRet.setAvailability(object.toString());
+                } else {
+                    nodeRet.setAvailability("AFTER"); //$NON-NLS-1$
+                }
+                listReturn.add(nodeRet);
+            }
+        }
         return listReturn;
     }
 
