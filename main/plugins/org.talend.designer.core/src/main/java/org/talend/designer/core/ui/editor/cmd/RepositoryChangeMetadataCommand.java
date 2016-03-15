@@ -197,11 +197,6 @@ public class RepositoryChangeMetadataCommand extends ChangeMetadataCommand {
                 if (orginalTable != null && orginalTable instanceof SAPBWTable) {
                     String innerIOType = ((SAPBWTable) orginalTable).getInnerIOType();
                     if (innerIOType != null) {
-                        if (innerIOType.equals("ATTRIBUTES")) { //$NON-NLS-1$
-                            innerIOType = "ATTRIBUTE"; //$NON-NLS-1$
-                        } else if (innerIOType.equals("TEXTS")) { //$NON-NLS-1$
-                            innerIOType = "TEXT"; //$NON-NLS-1$
-                        }
                         node.getElementParameter("INFO_OBJECT_TYPE").setValue(innerIOType); //$NON-NLS-1$
                     }
                 }

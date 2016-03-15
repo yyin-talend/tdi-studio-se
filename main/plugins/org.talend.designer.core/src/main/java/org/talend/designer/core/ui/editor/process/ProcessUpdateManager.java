@@ -1315,16 +1315,10 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
                                         innerIOType = (String) param.getValue();
                                     }
                                     if (innerIOType != null) {
-                                        if (innerIOType.equals("ATTRIBUTE")) { //$NON-NLS-1$
-                                            innerIOType = "ATTRIBUTES"; //$NON-NLS-1$
-                                        }
-                                        if (innerIOType.equals("TEXT")) { //$NON-NLS-1$
-                                            innerIOType = "TEXTS"; //$NON-NLS-1$
-                                        }
                                         Connection connection = connectionItem.getConnection();
                                         if (connection != null) {
-                                            final EList tables = MetadataToolHelper.getMetadataTableFromConnection(
-                                                    connection, schemaName);
+                                            final EList tables = MetadataToolHelper.getMetadataTableFromConnection(connection,
+                                                    schemaName);
                                             if (tables != null && tables.size() > 0) {
                                                 Object tableObject = tables.get(0);
                                                 if (tableObject instanceof SAPBWTable) {
@@ -1334,8 +1328,7 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
                                                             if (GlobalServiceRegister.getDefault().isServiceRegistered(
                                                                     IMetadataManagmentService.class)) {
                                                                 IMetadataManagmentService mmService = (IMetadataManagmentService) GlobalServiceRegister
-                                                                        .getDefault().getService(
-                                                                                IMetadataManagmentService.class);
+                                                                        .getDefault().getService(IMetadataManagmentService.class);
                                                                 table = mmService.convertMetadataTable(bwTable);
                                                             }
                                                         }
