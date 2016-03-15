@@ -420,7 +420,6 @@ public class SchemaReferenceController extends AbstractRepositoryController {
 
     @Override
     protected Command createButtonCommand(Button button) {
-        // see 0003766: Problems with the read only mode of the properties on repository mode.
         if (checkForRepositoryShema(button)) {
             return null;
         }

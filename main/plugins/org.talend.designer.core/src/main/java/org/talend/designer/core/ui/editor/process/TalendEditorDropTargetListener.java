@@ -1618,6 +1618,10 @@ public class TalendEditorDropTargetListener extends TemplateTransferDropTargetLi
             if (table != null) {
                 String value = connectionItem.getProperty().getId() + " - " + table.getLabel(); //$NON-NLS-1$
                 IElementParameter schemaParam = node.getElementParameterFromField(EParameterFieldType.SCHEMA_TYPE);
+                if (schemaParam == null) {
+                    schemaParam = node.getElementParameterFromField(EParameterFieldType.SCHEMA_REFERENCE);
+                }
+
                 IElementParameter queryParam = node.getElementParameterFromField(EParameterFieldType.QUERYSTORE_TYPE);
                 if (queryParam != null) {
                     queryParam = queryParam.getChildParameters().get(EParameterName.QUERYSTORE_TYPE.getName());

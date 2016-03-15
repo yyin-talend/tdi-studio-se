@@ -687,7 +687,8 @@ public class ChangeValuesFromRepository extends ChangeMetadataCommand {
                 metadataInput = true;
             }
 
-            boolean hasSchema = elem.getElementParameterFromField(EParameterFieldType.SCHEMA_TYPE) != null;
+            boolean hasSchema = elem.getElementParameterFromField(EParameterFieldType.SCHEMA_TYPE) != null ? true : elem
+                    .getElementParameterFromField(EParameterFieldType.SCHEMA_REFERENCE) != null;
             if (value.equals(EmfComponent.BUILTIN)) {
                 if (!metadataInput && hasSchema) {
                     elem.setPropertyValue(EParameterName.SCHEMA_TYPE.getName(), value);
@@ -696,7 +697,8 @@ public class ChangeValuesFromRepository extends ChangeMetadataCommand {
             } else {
                 if (hasSchema) {
                     for (IElementParameter param : elem.getElementParameters()) {
-                        if (param.getFieldType().equals(EParameterFieldType.SCHEMA_TYPE)) {
+                        if (param.getFieldType().equals(EParameterFieldType.SCHEMA_TYPE)
+                                || param.getFieldType().equals(EParameterFieldType.SCHEMA_REFERENCE)) {
                             if (!metadataInput) {
                                 IElementParameter repositorySchemaTypeParameter = param.getChildParameters().get(
                                         EParameterName.REPOSITORY_SCHEMA_TYPE.getName());
