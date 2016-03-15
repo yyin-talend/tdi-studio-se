@@ -17,9 +17,10 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.avro.Schema;
+import org.eclipse.emf.common.util.EList;
 import org.talend.components.api.properties.ComponentProperties;
 import org.talend.core.model.metadata.IMetadataTable;
-import org.talend.core.model.metadata.MetadataToolHelper;
+import org.talend.core.model.metadata.MetadataToolAvroHelper;
 import org.talend.core.model.metadata.builder.connection.Connection;
 import org.talend.core.model.metadata.builder.connection.ConnectionFactory;
 import org.talend.core.model.metadata.builder.connection.MetadataColumn;
@@ -27,6 +28,7 @@ import org.talend.core.model.metadata.builder.connection.MetadataTable;
 import org.talend.core.repository.model.ProxyRepositoryFactory;
 import org.talend.core.repository.model.repositoryObject.MetadataTableRepositoryObject;
 import org.talend.cwm.helper.PackageHelper;
+import org.talend.daikon.properties.Properties;
 import org.talend.daikon.properties.Properties.Deserialized;
 import org.talend.designer.core.generic.constants.IGenericConstants;
 import org.talend.repository.model.IProxyRepositoryFactory;
@@ -60,7 +62,7 @@ public class SchemaUtils {
 
     private static void convertComponentSchemaIntoTalendSchema(Schema schema, MetadataTable metadataTable) {
         for (Schema.Field field : schema.getFields()) {
-            MetadataColumn metadataColumn = MetadataToolHelper.convertFromAvro(field);
+            MetadataColumn metadataColumn = MetadataToolAvroHelper.convertFromAvro(field);
             metadataTable.getColumns().add(metadataColumn);
         }
     }
@@ -69,7 +71,42 @@ public class SchemaUtils {
         if (metadataTable == null) {
             return null;
         }
-        return MetadataToolHelper.convertToAvro(metadataTable);
+        return MetadataToolAvroHelper.convertToAvro(metadataTable);
+    }
+
+    /**
+     * DOC ycbai Comment method "updateComponentSchema".
+     * <p>
+     * Recreate a component schema by <code>metadataTable<code> and save it back into the <code>metadataTable<code>.
+     * 
+     * @param metadataTable
+     */
+    public static void updateComponentSchema(MetadataTable metadataTable) {
+        String componentPropertiesStr = null;
+        String schemaPropertyName = null;
+        TaggedValue componentPropertiesTaggedValue = null;
+        EList<TaggedValue> taggedValues = metadataTable.getTaggedValue();
+        for (TaggedValue taggedValue : taggedValues) {
+            String tag = taggedValue.getTag();
+            String tagValue = taggedValue.getValue();
+            if (IGenericConstants.COMPONENT_PROPERTIES_TAG.equals(tag)) {
+                componentPropertiesStr = tagValue;
+                componentPropertiesTaggedValue = taggedValue;
+            } else if (IGenericConstants.COMPONENT_SCHEMA_TAG.equals(tag)) {
+                schemaPropertyName = tagValue;
+            }
+        }
+        if (componentPropertiesStr != null && componentPropertiesTaggedValue != null) {
+            Deserialized<ComponentProperties> fromSerialized = Properties.fromSerialized(componentPropertiesStr,
+                    ComponentProperties.class);
+            if (fromSerialized != null) {
+                ComponentProperties componentProperties = fromSerialized.properties;
+                if (schemaPropertyName != null) {
+                    componentProperties.setValue(schemaPropertyName, convertTalendSchemaIntoComponentSchema(metadataTable));
+                    componentPropertiesTaggedValue.setValue(componentProperties.toSerialized());
+                }
+            }
+        }
     }
 
     public static ComponentProperties getCurrentComponentProperties(IMetadataTable table) {

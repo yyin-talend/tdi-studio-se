@@ -51,3 +51,4 @@ Export-Package: com.ice.util,
  net.sourceforge.squirrel_sql.fw.util.beanwrapper,
  net.sourceforge.squirrel_sql.fw.util.log,
  net.sourceforge.squirrel_sql.fw.xml
+Require-Bundle: org.apache.log4j

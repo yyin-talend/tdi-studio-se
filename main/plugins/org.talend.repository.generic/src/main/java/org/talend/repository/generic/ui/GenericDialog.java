@@ -29,8 +29,8 @@ import org.talend.components.api.service.ComponentService;
 import org.talend.core.model.process.EComponentCategory;
 import org.talend.core.model.process.Element;
 import org.talend.daikon.properties.presentation.Form;
+import org.talend.designer.core.generic.model.FakeElement;
 import org.talend.repository.generic.internal.service.GenericWizardInternalService;
-import org.talend.repository.generic.model.FakeElement;
 
 /**
  * created by ycbai on 2015年10月12日 Detailled comment

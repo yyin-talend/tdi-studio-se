@@ -1,0 +1,344 @@
+<%@ jet 
+imports="
+    	org.talend.core.model.process.INode 
+    	org.talend.core.model.process.ElementParameterParser
+    	org.talend.designer.codegen.config.CodeGeneratorArgument
+        org.talend.core.model.process.IConnection
+        org.talend.core.model.process.IConnectionCategory
+        org.talend.core.model.metadata.IMetadataColumn
+        org.talend.core.model.metadata.IMetadataTable
+        org.talend.core.model.metadata.types.JavaTypesManager
+		org.talend.core.model.metadata.types.JavaType
+        java.util.List
+        java.util.Map
+		"
+%>
+<%@ include file="@{org.talend.designer.components.localprovider}/components/templates/Log4j/LogUtil.javajet"%>
+<%
+CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+INode node = (INode)codeGenArgument.getArgument();
+LogUtil logUtil = new LogUtil(node);
+String cid = node.getUniqueName();
+boolean isLog4jEnabled = ("true").equals(ElementParameterParser.getValue(node.getProcess(), "__LOG4J_ACTIVATE__"));
+
+List<IMetadataTable> metadatas = node.getMetadataList();
+if ((metadatas != null) && (metadatas.size() > 0)) {
+	IMetadataTable metadata = metadatas.get(0);
+	
+	if (metadata != null) {
+	
+		List<IMetadataColumn> columnList = metadata.getListColumns();
+		List<? extends IConnection> outgoingConns = node.getOutgoingSortedConnections();
+
+		// if output columns are defined
+		if (outgoingConns != null && outgoingConns.size() > 0) {
+		
+			IConnection outgoingConn = outgoingConns.get(0);
+			if(outgoingConn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) { // start 1
+	
+				String mdmUrl = ElementParameterParser.getValue(node, "__MDMURL__");
+				String username = ElementParameterParser.getValue(node, "__USERNAME__");
+
+				String dataCluster = ElementParameterParser.getValue(node, "__DATACLUSTER__");
+				String containerType = ElementParameterParser.getValue(node, "__CONTAINER_TYPE__");
+				boolean retrieveFullRecord = ("true").equals(ElementParameterParser.getValue(node,"__RETRIEVE_FULL_RECORD__"));
+				String xmlField = ElementParameterParser.getValue(node, "__XMLFIELD__");
+				String acceptType = retrieveFullRecord ? ElementParameterParser.getValue(node, "__ACCEPT_TYPE__") : "application/json";
+				boolean returnXml = ("application/xml").equals(acceptType);
+				String queryText = ElementParameterParser.getValue(node, "__QUERY_TEXT__");	
+				queryText = queryText.replaceAll(" ","").replaceAll("\n","").replaceAll("\r","").replaceAll("\"", "'");	
+				%>       
+					int nb_line_<%=cid %> = 0;
+					int totalCount_<%=cid%> = -1;
+					<% logUtil.debug("\"Initializing data service base from URL: \"", mdmUrl,"\".\"");%>
+	                <% String passwordFieldName = "__PASSWORD__"; %>
+	                <%@ include file="@{org.talend.designer.components.localprovider}/components/templates/password.javajet"%>
+	
+	                java.util.Map<String, String> connConfig_<%=cid%> = new java.util.HashMap<String, String>();
+	                connConfig_<%=cid%>.put("url", <%=mdmUrl%>);
+	                connConfig_<%=cid%>.put("username", <%=username %>);
+	                connConfig_<%=cid%>.put("password", decryptedPassword_<%=cid%>);
+				    org.apache.cxf.jaxrs.client.WebClient webClient_<%=cid%> = org.apache.cxf.jaxrs.client.WebClient.create(connConfig_<%=cid%>.get("url"), java.util.Arrays.asList(new com.fasterxml.jackson.jaxrs.json.JacksonJaxbJsonProvider()), connConfig_<%=cid%>.get("username"), connConfig_<%=cid%>.get("password"), null);
+	                org.apache.cxf.jaxrs.impl.ResponseImpl response_<%=cid%> = (org.apache.cxf.jaxrs.impl.ResponseImpl)webClient_<%=cid%>.path("data/"+<%=dataCluster%>+"/query").query("container", "<%=containerType%>").type("application/json").accept("<%=acceptType%>").put("<%=queryText%>");
+	                String queryResult_<%=cid%> = response_<%=cid%>.readEntity(String.class);
+	                webClient_<%=cid%>.reset();
+	                if(response_<%=cid%>.getStatus() != 200) {
+	                	<% logUtil.error("queryResult_" + cid);%>
+	                	throw new RuntimeException(queryResult_<%=cid%>);
+	                }
+	                
+	                <% logUtil.debug("\"Query result from server:\" + queryResult_" + cid);%>
+                              	
+				<%if(retrieveFullRecord && returnXml){%>
+					// inner class begin
+					class XMLStreamUnwrapper_<%=cid%> implements java.util.Enumeration<String> {
+
+					    private static final int RECORD_LEVEL = 1;
+					
+					    private final javax.xml.stream.XMLEventReader reader;
+
+					    private final ResettableStringWriter_<%=cid%> stringWriter = new ResettableStringWriter_<%=cid%>();
+					
+					    private final javax.xml.stream.XMLOutputFactory xmlOutputFactory;
+					
+					    private int level = 0;
+					
+					    public XMLStreamUnwrapper_<%=cid%>(java.io.InputStream stream) {
+					        try {
+					            reader = javax.xml.stream.XMLInputFactory.newFactory().createXMLEventReader(stream);
+					            // Skip to first record
+					            while (reader.hasNext() && level < RECORD_LEVEL) {
+					                final javax.xml.stream.events.XMLEvent event = reader.nextEvent();
+					                if (event.isStartElement()) {
+					                    level++;
+					                }
+					            }
+					            xmlOutputFactory = javax.xml.stream.XMLOutputFactory.newFactory();
+					        } catch (javax.xml.stream.XMLStreamException e) {
+					            throw new RuntimeException("Unexpected parsing configuration error.", e);
+					        }
+					    }
+					
+					    @Override
+					    public boolean hasMoreElements() {
+					        moveToNext();
+					        return stringWriter.getBuffer().length() > 0;
+					    }
+					
+					    @Override
+					    public String nextElement() {
+					        return stringWriter.reset();
+					    }
+					
+					    /**
+					     * Moves to next record in stream and stores it in {@link #stringWriter}.
+					     */
+					    private void moveToNext() {
+					        try {
+					            javax.xml.stream.XMLStreamWriter writer = xmlOutputFactory.createXMLStreamWriter(stringWriter);
+					            boolean hasMadeChanges;
+					            do {
+					                if (!reader.hasNext()) {
+					                    break;
+					                }
+					                hasMadeChanges = false; // Keep a state to skip line feeds
+					                final javax.xml.stream.events.XMLEvent event = reader.nextEvent();
+					                if (event.isEndElement()) {
+					                    level--;
+					                } else if (event.isStartElement()) {
+					                    level++;
+					                } else if (event.isEndDocument()) {
+					                    level--;
+					                }
+					                if (level >= RECORD_LEVEL) {
+					                    if (event.isEndElement()) {
+					                        writer.writeEndElement();
+					                        hasMadeChanges = true;
+					                    } else if (event.isStartElement()) {
+					                        final javax.xml.stream.events.StartElement startElement = event.asStartElement();
+					                        final javax.xml.namespace.QName name = startElement.getName();
+					                        writer.writeStartElement(name.getNamespaceURI(), name.getLocalPart());
+					                        // Declare namespaces (if any)
+					                        final java.util.Iterator namespaces = startElement.getNamespaces();
+					                        while (namespaces.hasNext()) {
+					                            javax.xml.stream.events.Namespace namespace = (javax.xml.stream.events.Namespace) namespaces.next();
+					                            writer.writeNamespace(namespace.getPrefix(), namespace.getNamespaceURI());
+					                        }
+					                        // Write attributes
+					                        final java.util.Iterator attributes = startElement.getAttributes();
+					                        while (attributes.hasNext()) {
+					                            javax.xml.stream.events.Attribute attribute = (javax.xml.stream.events.Attribute) attributes.next();
+					                            javax.xml.namespace.QName attributeName = attribute.getName();
+					                            String value = attribute.getValue();
+					                            if (attributeName.getNamespaceURI() != null && attributeName.getNamespaceURI().length() > 0) {
+					                                writer.writeAttribute(attributeName.getLocalPart(), value);
+					                            } else {
+					                                writer.writeAttribute(attributeName.getNamespaceURI(), attributeName.getLocalPart(), value);
+					                            }
+					                        }
+					                        hasMadeChanges = true;
+					                    } else if (event.isCharacters()) {
+					                        final String text = event.asCharacters().getData().trim();
+					                        if (!text.isEmpty()) {
+					                            writer.writeCharacters(text);
+					                            hasMadeChanges = true;
+					                        }
+					                    }
+					                }
+					            } while (level > RECORD_LEVEL || !hasMadeChanges);
+					            writer.flush();
+					        } catch (javax.xml.stream.XMLStreamException e) {
+					            throw new RuntimeException("Unexpected parsing exception.", e);
+					        }
+					    }
+					    class ResettableStringWriter_<%=cid%> extends java.io.StringWriter {
+				
+						    private java.io.StringWriter delegate = new java.io.StringWriter();
+						
+						    private int currentLength = 0;
+						
+						    private int maxLength = -1;
+						
+						    public ResettableStringWriter_<%=cid%>() {
+						    }
+						
+						    public String reset() {
+						        if (currentLength > maxLength) {
+						            maxLength = currentLength;
+						        }
+						        currentLength = 0;
+						        String result = delegate.toString();
+						        delegate = new java.io.StringWriter(maxLength);
+						        return result;
+						    }
+						
+						    @Override
+						    public void write(int c) {
+						        currentLength++;
+						        delegate.write(c);
+						    }
+						
+						    @Override
+						    public void write(char[] cbuf, int off, int len) {
+						        currentLength += len;
+						        delegate.write(cbuf, off, len);
+						    }
+						
+						    @Override
+						    public void write(String str) {
+						        currentLength += str.length();
+						        delegate.write(str);
+						    }
+						
+						    @Override
+						    public void write(String str, int off, int len) {
+						        currentLength += len;
+						        delegate.write(str, off, len);
+						    }
+						
+						    @Override
+						    public void write(char[] cbuf) throws java.io.IOException {
+						        currentLength += cbuf.length;
+						        delegate.write(cbuf);
+						    }
+						
+						    @Override
+						    public java.io.StringWriter append(CharSequence csq) {
+						        currentLength += csq.length();
+						        return delegate.append(csq);
+						    }
+						
+						    @Override
+						    public java.io.StringWriter append(CharSequence csq, int start, int end) {
+						        currentLength += csq.length();
+						        return delegate.append(csq, start, end);
+						    }
+						
+						    @Override
+						    public java.io.StringWriter append(char c) {
+						        currentLength++;
+						        return delegate.append(c);
+						    }
+						
+						    @Override
+						    public String toString() {
+						        return delegate.toString();
+						    }
+						
+						    @Override
+						    public StringBuffer getBuffer() {
+						        return delegate.getBuffer();
+						    }
+						
+						    @Override
+						    public void flush() {
+						        delegate.flush();
+						    }
+						
+						    @Override
+						    public void close() throws java.io.IOException {
+						        delegate.close();
+						    }
+				    	}
+					}
+					// inner class end
+					java.util.List<String> items_<%=cid%> = new java.util.ArrayList<String>();
+                	try {
+                		java.io.InputStream content_<%=cid%> = new java.io.ByteArrayInputStream(queryResult_<%=cid%>.getBytes());
+                		XMLStreamUnwrapper_<%=cid%> tokenizer_<%=cid%> = new XMLStreamUnwrapper_<%=cid%>(content_<%=cid%>);
+                		while (tokenizer_<%=cid%>.hasMoreElements()) {
+			                items_<%=cid%>.add(tokenizer_<%=cid%>.nextElement());
+			            }
+                	} catch (Exception xe) {
+                		<% logUtil.error("\"Parsing query XML result failed:\" + queryResult_" + cid);%>
+                		throw new RuntimeException("Parsing query XML result failed:" + queryResult_<%=cid%>, xe);
+                	}
+				<%}else{%>
+					java.util.List<org.json.simple.JSONObject> items_<%=cid%> = new java.util.ArrayList<org.json.simple.JSONObject>();
+					org.json.simple.parser.JSONParser parser_<%=cid%> = new org.json.simple.parser.JSONParser();
+					try {
+						org.json.simple.JSONArray array_<%=cid%> = (org.json.simple.JSONArray) parser_<%=cid%>.parse(queryResult_<%=cid%>);
+					<%if(!retrieveFullRecord){%>
+						for(Object obj_<%=cid%> : array_<%=cid%>) {
+							org.json.simple.JSONObject jsonObj_<%=cid%> = (org.json.simple.JSONObject) obj_<%=cid%>;
+							items_<%=cid%>.add((org.json.simple.JSONObject)jsonObj_<%=cid%>.get(jsonObj_<%=cid%>.keySet().iterator().next()));
+						}
+					<%}else{%>
+						items_<%=cid%> = array_<%=cid%>;
+					<%}%>
+					} catch (org.json.simple.parser.ParseException pe) {
+						<% logUtil.error("\"Parsing query JSON result failed:\" + queryResult_" + cid);%>
+						throw new RuntimeException("Parsing query JSON result failed:" + queryResult_<%=cid%>, pe);
+					}
+				<%}%>
+                	
+	            	<% logUtil.debug("\"MDM query executed successfully.\"");%>
+					
+					if(totalCount_<%=cid%> < 0) {
+						totalCount_<%=cid%> = items_<%=cid%>.size();
+						<% logUtil.info("\"Get item count :\" + totalCount_" + cid);%>
+					}
+				
+					for(int i_<%=cid %>=0; i_<%=cid %> < items_<%=cid %>.size(); i_<%=cid %>++) {
+						nb_line_<%=cid %> ++;
+						<%if(retrieveFullRecord){%>
+							<%=outgoingConn.getName() %>.<%=xmlField %> = items_<%=cid %>.get(i_<%=cid %>).toString();
+						<%}else {
+							for(IMetadataColumn column : columnList){
+								String typeToGenerate = JavaTypesManager.getTypeToGenerate(column.getTalendType(), column.isNullable());
+								JavaType javaType = JavaTypesManager.getJavaTypeFromId(column.getTalendType());
+								String patternValue = column.getPattern() == null || column.getPattern().trim().length() == 0 ? null : column.getPattern();
+								String defaultValue = column.getDefault();
+								String defaultValueToSet = (column.isNullable() || (defaultValue != null && defaultValue.length() > 0)) ? defaultValue : "\"" + JavaTypesManager.getDefaultValueFromJavaType(typeToGenerate) + "\"";
+								String labelValue = column.getLabel();
+								String key1 = labelValue.toLowerCase(); // id
+								String key2 = "metadata:" + key1; // metadata:timestamp
+								String key3 = key2.replaceAll("_", ""); // metadata:taskid
+						%>
+								String obj_<%=cid%>_<%=labelValue%> = null;
+								if (items_<%=cid %>.get(i_<%=cid %>).containsKey("<%=key1%>")) {
+									obj_<%=cid%>_<%=labelValue%> = (String)items_<%=cid %>.get(i_<%=cid %>).get("<%=key1%>");
+								} else if(items_<%=cid %>.get(i_<%=cid %>).containsKey("<%=key2%>")) {
+									obj_<%=cid%>_<%=labelValue%> = (String)items_<%=cid %>.get(i_<%=cid %>).get("<%=key2%>");
+								} else {
+									obj_<%=cid%>_<%=labelValue%> = (String)items_<%=cid %>.get(i_<%=cid %>).get("<%=key3%>");
+								}
+								if(org.apache.commons.lang.StringUtils.isEmpty(obj_<%=cid%>_<%=labelValue%>)) {
+									obj_<%=cid%>_<%=labelValue%> = <%=defaultValueToSet%>;
+								}
+								<% if(javaType == JavaTypesManager.STRING || javaType == JavaTypesManager.OBJECT) {//_1 %>
+									<%=outgoingConn.getName() %>.<%=labelValue%> = obj_<%=cid%>_<%=labelValue%>;
+								<%} else {//_1
+									if(javaType == JavaTypesManager.DATE) {//_2  %>
+										<%=outgoingConn.getName() %>.<%=labelValue%> = org.apache.commons.lang.StringUtils.isEmpty(obj_<%=cid%>_<%=labelValue%>) ? null : ParserUtils.parseTo_Date(obj_<%=cid%>_<%=labelValue%>, <%=patternValue%>);
+									<%} else {//_2  %>
+										<%=outgoingConn.getName() %>.<%=labelValue%> = org.apache.commons.lang.StringUtils.isEmpty(obj_<%=cid%>_<%=labelValue%>) ? null : ParserUtils.parseTo_<%=typeToGenerate %>(obj_<%=cid%>_<%=labelValue%>);
+									<%}//_2
+								}//_1
+							}
+				}
+			}
+		}
+	}
+}
+%>
