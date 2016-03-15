@@ -23,11 +23,13 @@ import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.ui.swt.dialogs.ErrorDialogWidthDetailArea;
 import org.talend.core.model.metadata.IMetadataTable;
+import org.talend.core.model.metadata.MetadataToolHelper;
 import org.talend.core.model.metadata.builder.ConvertionHelper;
 import org.talend.core.model.metadata.builder.connection.MetadataTable;
 import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.runtime.CoreRuntimePlugin;
 import org.talend.designer.core.generic.constants.IGenericConstants;
+import org.talend.designer.core.generic.utils.SchemaUtils;
 import org.talend.metadata.managment.ui.wizard.CheckLastVersionRepositoryWizard;
 import org.talend.repository.generic.i18n.Messages;
 import org.talend.repository.generic.update.GenericUpdateManager;
@@ -85,6 +87,10 @@ public class GenericSchemaWizard extends CheckLastVersionRepositoryWizard implem
     public boolean performFinish() {
         if (tableWizardPage.isPageComplete()) {
             GenericUpdateManager.updateSingleSchema(connectionItem, metadataTable, oldMetadataTable, oldTableMap);
+            IMetadataTable newTable = MetadataToolHelper.convert(metadataTable);
+            if (!newTable.sameMetadataAs(oldMetadataTable)) {
+                SchemaUtils.updateComponentSchema(metadataTable);
+            }
             IProxyRepositoryFactory factory = CoreRuntimePlugin.getInstance().getProxyRepositoryFactory();
             try {
                 factory.save(connectionItem);
