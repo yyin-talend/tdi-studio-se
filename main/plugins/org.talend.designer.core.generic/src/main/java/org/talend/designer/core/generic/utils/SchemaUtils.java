@@ -19,7 +19,7 @@ import java.util.Map;
 import org.apache.avro.Schema;
 import org.talend.components.api.properties.ComponentProperties;
 import org.talend.core.model.metadata.IMetadataTable;
-import org.talend.core.model.metadata.MetadataToolHelper;
+import org.talend.core.model.metadata.MetadataToolAvroHelper;
 import org.talend.core.model.metadata.builder.connection.Connection;
 import org.talend.core.model.metadata.builder.connection.ConnectionFactory;
 import org.talend.core.model.metadata.builder.connection.MetadataColumn;
@@ -60,7 +60,7 @@ public class SchemaUtils {
 
     private static void convertComponentSchemaIntoTalendSchema(Schema schema, MetadataTable metadataTable) {
         for (Schema.Field field : schema.getFields()) {
-            MetadataColumn metadataColumn = MetadataToolHelper.convertFromAvro(field);
+            MetadataColumn metadataColumn = MetadataToolAvroHelper.convertFromAvro(field);
             metadataTable.getColumns().add(metadataColumn);
         }
     }
@@ -69,7 +69,7 @@ public class SchemaUtils {
         if (metadataTable == null) {
             return null;
         }
-        return MetadataToolHelper.convertToAvro(metadataTable);
+        return MetadataToolAvroHelper.convertToAvro(metadataTable);
     }
 
     public static ComponentProperties getCurrentComponentProperties(IMetadataTable table) {
