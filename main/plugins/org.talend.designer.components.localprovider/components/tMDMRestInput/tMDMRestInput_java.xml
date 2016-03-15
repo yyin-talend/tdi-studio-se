@@ -1,0 +1,241 @@
+<COMPONENT>
+	<HEADER 
+	   PLATEFORM="ALL" 
+	   SERIAL="" 
+	   VERSION="0.101" 
+	   STATUS="ALPHA" 
+	   COMPATIBILITY="ALL" 
+	   AUTHOR="Talend" 
+	   RELEASE_DATE="20160320A" 
+	   STARTABLE="true"
+	   LOG4J_ENABLED="true" 
+	   HAS_CONDITIONAL_OUTPUTS="true" 
+	   IS_MULTIPLYING_OUTPUTS="true"
+	   >
+	   <SIGNATURE></SIGNATURE>
+	</HEADER>
+
+	<FAMILIES>
+	   <FAMILY>Talend MDM</FAMILY>
+	</FAMILIES>
+
+	<DOCUMENTATION>
+		<URL />
+	</DOCUMENTATION>
+
+	<CONNECTORS>
+		<CONNECTOR CTYPE="FLOW" MAX_INPUT="0" MAX_OUTPUT="1"/>
+        <CONNECTOR NAME="REJECT" NOT_SHOW_IF="(DIE_ON_ERROR == 'true')" CTYPE="FLOW" MAX_INPUT="1" MAX_OUTPUT="1" LINE_STYLE="2" COLOR="FF0000" BASE_SCHEMA="FLOW" />
+		<CONNECTOR CTYPE="ITERATE" MAX_OUTPUT="1" MAX_INPUT="1" />
+		<CONNECTOR CTYPE="SUBJOB_OK" MAX_INPUT="1" />
+		<CONNECTOR CTYPE="SUBJOB_ERROR" MAX_INPUT="1" />
+		<CONNECTOR CTYPE="COMPONENT_OK" />
+		<CONNECTOR CTYPE="COMPONENT_ERROR" />
+		<CONNECTOR CTYPE="RUN_IF" />
+	</CONNECTORS>
+
+	<PARAMETERS>
+	    <PARAMETER 
+	    	NAME="PROPERTY" 
+	    	FIELD="PROPERTY_TYPE" 
+	    	SHOW="true" 
+	    	NUM_ROW="1" 
+	    	REPOSITORY_VALUE="MDM">
+	    </PARAMETER>
+
+	    <PARAMETER 
+	    	NAME="SCHEMA" 
+	    	FIELD="SCHEMA_TYPE" 
+	    	REQUIRED="true" 
+	    	NUM_ROW="1"> 
+	    </PARAMETER>
+
+		<PARAMETER 
+			NAME="SCHEMA_REJECT" 
+			FIELD="SCHEMA_TYPE"
+			REQUIRED="true" 
+			NUM_ROW="2" 
+			CONTEXT="REJECT" 
+			SHOW="true">
+			<TABLE READONLY="true">
+				<COLUMN NAME="errorXMLField" TYPE="id_String" LENGTH="255" READONLY="false" CUSTOM="true" />
+				<COLUMN NAME="errorCode" TYPE="id_String" LENGTH="255" READONLY="false" CUSTOM="true" />
+				<COLUMN NAME="errorMessage" TYPE="id_String" LENGTH="255" READONLY="false" CUSTOM="true" />
+			</TABLE>
+		</PARAMETER>
+
+		<PARAMETER 
+			NAME="MDMURL" 
+			FIELD="TEXT" 
+			NUM_ROW="20"
+			REQUIRED="true" 
+			REPOSITORY_VALUE="MDMURL"> 
+			<DEFAULT>"http://localhost:8180/talendmdm/services/rest"</DEFAULT>
+		</PARAMETER>
+
+		<PARAMETER 
+			NAME="USERNAME" 
+			FIELD="TEXT" 
+			REQUIRED="true"
+			NUM_ROW="30" 
+			REPOSITORY_VALUE="USERNAME">
+			<DEFAULT>"userName"</DEFAULT>
+		</PARAMETER>
+
+		<PARAMETER 
+			NAME="PASSWORD" 
+			FIELD="PASSWORD" 
+			REQUIRED="true"
+			NUM_ROW="30" 
+			REPOSITORY_VALUE="PASSWORD">
+			<DEFAULT>"password"</DEFAULT>
+		</PARAMETER>
+	
+        <PARAMETER 
+        	NAME="DATACLUSTER" 
+        	FIELD="TEXT" 
+        	REQUIRED="true"
+            NUM_ROW="45" 
+            REPOSITORY_VALUE="DATACLUSTER">
+            <DEFAULT>""</DEFAULT>
+        </PARAMETER>
+
+        <PARAMETER 
+        	NAME="CONTAINER_TYPE" 
+        	FIELD="CLOSED_LIST" 
+        	NUM_ROW="45"
+            REQUIRED="true">
+            <ITEMS DEFAULT="MASTER">
+                <ITEM NAME="MASTER" VALUE="MASTER" />
+                <ITEM NAME="STAGING" VALUE="STAGING" />
+            </ITEMS>
+        </PARAMETER>
+
+        <PARAMETER
+	        NAME="RETRIEVE_FULL_RECORD"
+	        FIELD="CHECK"
+	        NUM_ROW="55">
+	        <DEFAULT>false</DEFAULT>
+	    </PARAMETER>
+
+		<PARAMETER
+	        NAME="XMLFIELD"
+	        FIELD="COLUMN_LIST"
+	        REQUIRED="true"
+	        NUM_ROW="55"
+	        SHOW_IF="RETRIEVE_FULL_RECORD == 'true'">
+	    </PARAMETER>
+
+	    <PARAMETER
+	        NAME="ACCEPT_TYPE"
+	        FIELD="CLOSED_LIST" 
+	        NUM_ROW="55"
+	        REQUIRED="true"
+	        SHOW_IF="RETRIEVE_FULL_RECORD == 'true'">
+            <ITEMS DEFAULT="JSON">
+                <ITEM NAME="JSON" VALUE="application/json" />
+                <ITEM NAME="XML" VALUE="application/xml" />
+            </ITEMS>
+	    </PARAMETER>
+
+	    <PARAMETER 
+	    	NAME="QUERY_TEXT" 
+	    	FIELD="MEMO" 
+	    	NUM_ROW="60"
+	    	NB_LINES="10">
+			<DEFAULT>{"select":{"from":["Type1"],"fields":[{"field":"Type1/Field1"}]}}</DEFAULT>
+  		</PARAMETER>
+		
+		<PARAMETER NAME="DIE_ON_ERROR" 
+			FIELD="CHECK" 
+			NUM_ROW="80">
+			<DEFAULT>false</DEFAULT>
+		</PARAMETER>		
+	</PARAMETERS>
+
+    <CODEGENERATION>
+		<IMPORTS>
+	        <IMPORT NAME="commons_lang" 
+	       		MODULE="commons-lang-2.6.jar" 
+	       		MVN="mvn:org.talend.libraries/commons-lang-2.6/6.2.0"  
+	       		UrlPath="platform:/plugin/org.talend.libraries.apache.common/lib/commons-lang-2.6.jar" 
+	       		REQUIRED="true"/> 
+	        <IMPORT NAME="json_simple" 
+	       		MODULE="json_simple-1.1.jar" 
+	       		MVN="mvn:org.talend.libraries/json_simple-1.1/6.2.0"  
+	       		UrlPath="platform:/plugin/org.talend.libraries.jackson/lib/json_simple-1.1.jar" 
+	       		REQUIRED="true" />
+	        <IMPORT NAME="cxf-core-3.1.4" 
+            	MODULE="cxf-core-3.1.4.jar"
+                MVN="mvn:org.talend.libraries/cxf-core-3.1.4/6.2.0"
+                UrlPath="platform:/plugin/org.talend.libraries.apache.cxf/cxf-core-3.1.4.jar" 
+                REQUIRED="true"/>
+            <IMPORT NAME="cxf-rt-frontend-jaxrs-3.1.4" 
+            	MODULE="cxf-rt-frontend-jaxrs-3.1.4.jar" 
+	        	MVN="mvn:org.talend.libraries/cxf-rt-frontend-jaxrs-3.1.4/6.2.0"
+                UrlPath="platform:/plugin/org.talend.libraries.apache.cxf/lib/cxf-rt-frontend-jaxrs-3.1.4.jar" 
+                REQUIRED="true"/>
+            <IMPORT NAME="cxf-rt-rs-client-3.1.4" 
+            	MODULE="cxf-rt-rs-client-3.1.4.jar"
+                MVN="mvn:org.talend.libraries/cxf-rt-rs-client-3.1.4/6.0.0"
+                UrlPath="platform:/plugin/org.talend.libraries.apache.cxf/cxf-rt-rs-client-3.1.4.jar" 
+                REQUIRED="true"/>
+            <IMPORT NAME="cxf-rt-transports-http-3.1.4" 
+            	MODULE="cxf-rt-transports-http-3.1.4.jar" 
+	        	MVN="mvn:org.talend.libraries/cxf-rt-transports-http-3.1.4/6.2.0"
+                UrlPath="platform:/plugin/org.talend.libraries.apache.cxf/lib/cxf-rt-transports-http-3.1.4.jar" 
+                REQUIRED="true"/>
+            <IMPORT NAME="stax2-api-3.1.4"
+                MODULE="stax2-api-3.1.4.jar"
+                MVN="mvn:org.talend.libraries/stax2-api-3.1.1/6.2.0"
+                UrlPath="platform:/plugin/org.talend.libraries.apache.cxf/lib/stax2-api-3.1.4.jar"
+                REQUIRED="true"/> 
+            <IMPORT NAME="woodstox-core-asl-4.4.1"
+                MODULE="woodstox-core-asl-4.4.1.jar"
+                MVN="mvn:org.talend.libraries/woodstox-core-asl-4.4.1/6.2.0"
+                UrlPath="platform:/plugin/org.talend.libraries.apache.cxf/lib/woodstox-core-asl-4.4.1.jar"
+                REQUIRED="true"/>
+			<IMPORT NAME="xmlschema-core-2.2.1"
+                MODULE="xmlschema-core-2.2.1.jar"
+                MVN="mvn:org.talend.libraries/xmlschema-core-2.2.1/6.2.0"
+                UrlPath="platform:/plugin/org.talend.libraries.apache.cxf/lib/xmlschema-core-2.2.1.jar"
+                REQUIRED="true"/>
+            <IMPORT NAME="wsdl4j-1.6.3"
+                MODULE="wsdl4j-1.6.3.jar"
+                MVN="mvn:org.talend.libraries/wsdl4j-1.6.3/6.0.0"
+                REQUIRED="true"/>
+            <IMPORT NAME="javax.ws.rs-api-2.0.1"
+                MODULE="javax.ws.rs-api-2.0.1.jar"
+                MVN="mvn:org.talend.libraries/javax.ws.rs-api-2.0.1/6.2.0"
+                REQUIRED="true"/>
+            <IMPORT NAME="javax.annotation-api-1.2"
+                MODULE="javax.annotation-api-1.2.jar"
+                MVN="mvn:org.talend.libraries/javax.annotation-api-1.2/6.2.0"
+                REQUIRED="true"/>
+            <IMPORT NAME="jackson-jaxrs-json-provider-2.4.2"
+                MODULE="jackson-jaxrs-json-provider-2.4.2.jar"
+                MVN="mvn:org.talend.libraries/jackson-jaxrs-json-provider-2.4.2/6.2.0"
+                REQUIRED="true"/>
+            <IMPORT NAME="jackson-jaxrs-base-2.4.2"
+                MODULE="jackson-jaxrs-base-2.4.2.jar"
+                MVN="mvn:org.talend.libraries/jackson-jaxrs-base-2.4.2/6.2.0"
+                REQUIRED="true"/>
+            <IMPORT NAME="jackson-core-2.4.2"
+                MODULE="jackson-core-2.4.2.jar"
+                MVN="mvn:org.talend.libraries/jackson-core-2.4.2/6.2.0"
+                REQUIRED="true"/>
+            <IMPORT NAME="jackson-databind-2.4.2"
+                MODULE="jackson-databind-2.4.2.jar"
+                MVN="mvn:org.talend.libraries/jackson-databind-2.4.2/6.2.0"
+                REQUIRED="true"/>
+            <IMPORT NAME="jackson-module-jaxb-annotations-2.4.2"
+                MODULE="jackson-module-jaxb-annotations-2.4.2.jar"
+                MVN="mvn:org.talend.libraries/jackson-module-jaxb-annotations-2.4.2/6.2.0"
+                REQUIRED="true"/>
+	    </IMPORTS>
+  </CODEGENERATION>
+
+	<RETURNS>
+		<RETURN NAME="NB_LINE" TYPE="id_Integer" AVAILABILITY="AFTER" />
+	</RETURNS>
+</COMPONENT>
