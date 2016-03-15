@@ -74,7 +74,7 @@ public abstract class AbstractRepositoryController extends AbstractElementProper
 
     protected static final String REPOSITORY_CHOICE = "REPOSITORY_CHOICE"; //$NON-NLS-1$
 
-    private static final int STANDARD_REPOSITORY_WIDTH = 250;
+    protected static final int STANDARD_REPOSITORY_WIDTH = 250;
 
     /**
      * DOC nrousseau AbstractRepositoryController constructor comment.
