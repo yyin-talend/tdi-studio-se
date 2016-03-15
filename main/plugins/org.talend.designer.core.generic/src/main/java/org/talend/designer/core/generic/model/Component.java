@@ -33,6 +33,7 @@ import org.talend.components.api.component.Trigger;
 import org.talend.components.api.properties.ComponentProperties;
 import org.talend.components.api.service.ComponentService;
 import org.talend.components.api.wizard.ComponentWizard;
+import org.talend.components.api.wizard.ComponentWizardDefinition;
 import org.talend.core.CorePlugin;
 import org.talend.core.GlobalServiceRegister;
 import org.talend.core.model.components.EComponentType;
@@ -132,8 +133,8 @@ public class Component extends AbstractComponent {
 
     @Override
     public List<ElementParameter> createElementParameters(INode node) {
-    	node.setComponentProperties(ComponentsUtils.getComponentProperties(getName()));
-    	List<ElementParameter> listParam;
+        node.setComponentProperties(ComponentsUtils.getComponentProperties(getName()));
+        List<ElementParameter> listParam;
         listParam = new ArrayList<>();
         addMainParameters(listParam, node);
         addPropertyParameters(listParam, node, Form.MAIN, EComponentCategory.BASIC);
@@ -147,16 +148,25 @@ public class Component extends AbstractComponent {
 
     @Override
     public List<NodeReturn> createReturns() {
-        // TUP-4148
-        List<NodeReturn> listReturn = new ArrayList<NodeReturn>();
-        // ****************** add standard returns ******************
-        NodeReturn nodeRet = new NodeReturn();
-        nodeRet.setAvailability("AFTER"); //$NON-NLS-1$
-        nodeRet.setType(STRING_TYPE);
-        nodeRet.setVarName("ERROR_MESSAGE"); //$NON-NLS-1$
-        nodeRet.setDisplayName("Error Message"); //$NON-NLS-1$
-        nodeRet.setName("ERROR_MESSAGE"); //$NON-NLS-1$
-        listReturn.add(nodeRet);
+        List<NodeReturn> listReturn = new ArrayList<>();
+        ComponentProperties props = ComponentsUtils.getComponentProperties(getName());
+        Property returns = props.returns;
+        if (returns != null) {
+            NodeReturn nodeRet = null;
+            for (Property children : returns.getChildren()) {
+                nodeRet = new NodeReturn();
+                nodeRet.setType(children.getType().name());
+                nodeRet.setDisplayName(children.getDisplayName());
+                nodeRet.setName(children.getName());
+                Object object = children.getTaggedValue(IGenericConstants.AVAILABILITY);
+                if (object != null) {
+                    nodeRet.setAvailability(object.toString());
+                } else {
+                    nodeRet.setAvailability("AFTER"); //$NON-NLS-1$
+                }
+                listReturn.add(nodeRet);
+            }
+        }
         return listReturn;
     }
 
@@ -538,15 +548,17 @@ public class Component extends AbstractComponent {
         param.setReadOnly(true);
         listParam.add(param);
 
+        ComponentWizardDefinition wizardDefinition = getWizardDefinition(node.getComponentProperties());
         param = new ElementParameter(node);
         param.setName("PROPERTY");//$NON-NLS-1$
         param.setCategory(EComponentCategory.BASIC);
         param.setDisplayName(EParameterName.PROPERTY_TYPE.getDisplayName());
         param.setFieldType(EParameterFieldType.PROPERTY_TYPE);
-        param.setRepositoryValue(getRepositoryType());
+        if (wizardDefinition != null)
+        	param.setRepositoryValue(wizardDefinition.getName());
         param.setValue("");//$NON-NLS-1$
         param.setNumRow(2);
-        param.setShow(checkAssociatedFromComponentProperties(node.getComponentProperties()));
+        param.setShow(wizardDefinition != null);
 
         ElementParameter newParam = new ElementParameter(node);
         newParam.setCategory(EComponentCategory.BASIC);
@@ -586,25 +598,26 @@ public class Component extends AbstractComponent {
         listParam.add(param);
     }
 
-    private boolean checkAssociatedFromComponentProperties(ComponentProperties componentProperties) {
+    private ComponentWizardDefinition getWizardDefinition(ComponentProperties componentProperties) {
         if (componentProperties == null) {
-            return false;
+            return null;
         }
         ComponentService service = ComponentsUtils.getComponentService();
         List<ComponentWizard> componentWizards = service.getComponentWizardsForProperties(componentProperties, null);
-        if (componentWizards != null && !componentWizards.isEmpty()) {
-            return true;
+        for (ComponentWizard componentWizard : componentWizards) {
+            ComponentWizardDefinition definition = componentWizard.getDefinition();
+            // Can we ensure it is the same wizard with metadata connection wizard by this way?
+            if (definition.isTopLevel()) {
+                return definition;
+            }
         }
         List<NamedThing> namedThings = componentProperties.getProperties();
         for (NamedThing namedThing : namedThings) {
             if (namedThing instanceof ComponentProperties) {
-                boolean associated = checkAssociatedFromComponentProperties((ComponentProperties) namedThing);
-                if (associated) {
-                    return true;
-                }
+                return getWizardDefinition((ComponentProperties) namedThing);
             }
         }
-        return false;
+        return null;
     }
 
     private void addPropertyParameters(final List<ElementParameter> listParam, final INode node, String formName,
@@ -711,13 +724,13 @@ public class Component extends AbstractComponent {
         List<NodeConnector> listConnector = new ArrayList<NodeConnector>();
 
         for (Connector connector : componentDefinition.getConnectors()) {
-            if (ComponentUtils.isAValidConnector(connector, getName())) {
-                listConnector.add(ComponentUtils.generateNodeConnectorFromConnector(connector, parentNode));
+            if (ComponentsUtils.isAValidConnector(connector, getName())) {
+                listConnector.add(ComponentsUtils.generateNodeConnectorFromConnector(connector, parentNode));
             }
         }
         for (Trigger trigger : componentDefinition.getTriggers()) {
-            if (ComponentUtils.isAValidTrigger(trigger, getName())) {
-                listConnector.add(ComponentUtils.generateNodeConnectorFromTrigger(trigger, parentNode));
+            if (ComponentsUtils.isAValidTrigger(trigger, getName())) {
+                listConnector.add(ComponentsUtils.generateNodeConnectorFromTrigger(trigger, parentNode));
             }
         }
 
@@ -1191,7 +1204,7 @@ public class Component extends AbstractComponent {
      *
      * @return the log
      */
-    static Logger getLog() {
+    public static Logger getLog() {
         return log;
     }
 }
