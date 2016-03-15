@@ -47,6 +47,7 @@ import org.talend.daikon.properties.presentation.Widget;
 import org.talend.designer.core.generic.constants.IGenericConstants;
 import org.talend.designer.core.generic.i18n.Messages;
 import org.talend.designer.core.generic.model.Component;
+import org.talend.designer.core.generic.model.FakeElement;
 import org.talend.designer.core.generic.model.GenericElementParameter;
 import org.talend.designer.core.generic.model.mapping.WidgetFieldTypeMapper;
 import org.talend.designer.core.model.components.ElementParameter;
@@ -112,11 +113,11 @@ public class ComponentsUtils {
             }
         }
     }
-   
+
     // FIXME - this does not appear to be used, can it be deleted?
     public static List<ElementParameter> getParametersFromForm(IElement element, EComponentCategory category, Form form,
-    		Widget parentWidget, AtomicInteger lastRowNum) {
-    	return getParametersFromForm(element, category, null, null, form, parentWidget, lastRowNum);
+            Widget parentWidget, AtomicInteger lastRowNum) {
+        return getParametersFromForm(element, category, null, null, form, parentWidget, lastRowNum);
     }
 
     /**
@@ -207,7 +208,7 @@ public class ComponentsUtils {
             } else {
                 Property property = (Property) widgetProperty;
                 param.setRequired(property.isRequired());
-                param.setValue(getParameterValue(property));
+                param.setValue(getParameterValue(element, property));
                 param.setSupportContext(isSupportContext(property));
                 // TCOMP-96
                 param.setContext(EConnectionType.FLOW_MAIN.getName());
@@ -247,12 +248,14 @@ public class ComponentsUtils {
         return elementParameters;
     }
 
-    public static Object getParameterValue(Property property) {
+    public static Object getParameterValue(IElement element, Property property) {
         Object paramValue = property.getValue() != null ? property.getValue() : property.getDefaultValue();
         Property.Type propertyType = property.getType();
         switch (propertyType) {
         case STRING:
-            paramValue = TalendQuoteUtils.addQuotesIfNotExist((String) paramValue);
+            if (!(element instanceof FakeElement)) {
+                paramValue = TalendQuoteUtils.addQuotesIfNotExist((String) paramValue);
+            }
             break;
         case ENUM:
             if (paramValue == null) {// TUP-4145
