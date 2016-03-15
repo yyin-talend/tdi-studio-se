@@ -44,6 +44,7 @@ import org.talend.daikon.properties.presentation.Form;
 import org.talend.designer.core.generic.constants.IContextEventProperties;
 import org.talend.designer.core.generic.constants.IElementParameterEventProperties;
 import org.talend.designer.core.generic.context.ComponentContextPropertyValueEvaluator;
+import org.talend.designer.core.generic.model.FakeElement;
 import org.talend.designer.core.generic.model.GenericElementParameter;
 import org.talend.designer.core.generic.utils.ComponentsUtils;
 import org.talend.designer.core.model.components.EParameterName;
@@ -54,7 +55,6 @@ import org.talend.metadata.managment.ui.wizard.context.MetadataContextPropertyVa
 import org.talend.repository.generic.i18n.Messages;
 import org.talend.repository.generic.internal.IGenericWizardInternalService;
 import org.talend.repository.generic.internal.service.GenericWizardInternalService;
-import org.talend.repository.generic.model.FakeElement;
 import org.talend.repository.generic.model.genericMetadata.GenericConnection;
 
 /**
