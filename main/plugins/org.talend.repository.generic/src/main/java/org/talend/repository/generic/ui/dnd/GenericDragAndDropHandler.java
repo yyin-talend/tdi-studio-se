@@ -52,6 +52,7 @@ import org.talend.repository.generic.model.genericMetadata.GenericConnectionItem
 import org.talend.repository.generic.model.genericMetadata.SubContainer;
 import org.talend.repository.model.RepositoryNode;
 import orgomg.cwm.objectmodel.core.ModelElement;
+import orgomg.cwm.objectmodel.core.TaggedValue;
 
 /**
  * 
@@ -94,10 +95,20 @@ public class GenericDragAndDropHandler extends AbstractDragAndDropServiceHandler
             object = ComponentsUtils.getGenericPropertyValue(componentProperties, value);
         } else {
             for (ModelElement modelElement : connection.getOwnedElement()) {
+                ComponentProperties subComponentProperties = null;
                 if (modelElement instanceof SubContainer) {
                     SubContainer subContainer = (SubContainer) modelElement;
-                    ComponentProperties subComponentProperties = ComponentsUtils
-                            .getComponentPropertiesFromSerialized(subContainer.getCompProperties());
+                    subComponentProperties = ComponentsUtils.getComponentPropertiesFromSerialized(subContainer
+                            .getCompProperties());
+                } else if (modelElement instanceof MetadataTable) {
+                    MetadataTable metadataTable = (MetadataTable) modelElement;
+                    for (TaggedValue taggedValue : metadataTable.getTaggedValue()) {
+                        if (IGenericConstants.COMPONENT_PROPERTIES_TAG.equals(taggedValue.getTag())) {
+                            subComponentProperties = ComponentsUtils.getComponentPropertiesFromSerialized(taggedValue.getValue());
+                        }
+                    }
+                }
+                if (subComponentProperties != null) {
                     if (value.indexOf(IGenericConstants.EXP_SEPARATOR) != -1) {
                         value = value.substring(value.indexOf(IGenericConstants.EXP_SEPARATOR) + 1, value.length());
                     }
@@ -135,10 +146,20 @@ public class GenericDragAndDropHandler extends AbstractDragAndDropServiceHandler
             }
         }
         for (ModelElement modelElement : connection.getOwnedElement()) {
+            ComponentProperties subComponentProperties = null;
             if (modelElement instanceof SubContainer) {
                 SubContainer subContainer = (SubContainer) modelElement;
-                ComponentProperties subComponentProperties = ComponentsUtils.getComponentPropertiesFromSerialized(subContainer
-                        .getCompProperties());
+                subComponentProperties = ComponentsUtils.getComponentPropertiesFromSerialized(subContainer.getCompProperties());
+            } else if (modelElement instanceof MetadataTable) {
+                MetadataTable metadataTable = (MetadataTable) modelElement;
+                for (TaggedValue taggedValue : metadataTable.getTaggedValue()) {
+                    if (IGenericConstants.COMPONENT_PROPERTIES_TAG.equals(taggedValue.getTag())) {
+                        subComponentProperties = ComponentsUtils.getComponentPropertiesFromSerialized(taggedValue.getValue());
+                        break;
+                    }
+                }
+            }
+            if (subComponentProperties != null) {
                 List<Property> subPropertyValues = ComponentsUtils.getAllValuedProperties(subComponentProperties);
                 for (Property subProperty : subPropertyValues) {
                     paramName = ComponentsUtils.getPropertyName(paramName);
