@@ -100,6 +100,10 @@ class XMLTool{
 %>
 			<%=connName%>.<%=column.getLabel()%>.toPlainString()
 <%
+        }else if (javaType == JavaTypesManager.BYTE_ARRAY) {
+%>
+            new String(<%=connName%>.<%=column.getLabel()%>)
+<%
         }else{
 %>
             <%=connName%>.<%=column.getLabel()%>.toString()
