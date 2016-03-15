@@ -1703,7 +1703,7 @@ public class TalendEditorDropTargetListener extends TemplateTransferDropTargetLi
                     RepositoryChangeMetadataCommand changeValueCmd = new RepositoryChangeMetadataCommand(node,
                             schemaParam.getName() + ":" //$NON-NLS-1$
                                     + EParameterName.REPOSITORY_SCHEMA_TYPE.getName(), value, ConvertionHelper.convert(table),
-                            null, connectionItem.getConnection());
+                            null, connectionItem.getConnection(), table);
                     cc.add(changeValueCmd);
                 }
 
