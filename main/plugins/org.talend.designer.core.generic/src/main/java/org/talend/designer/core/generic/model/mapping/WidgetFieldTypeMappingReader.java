@@ -71,9 +71,6 @@ class WidgetFieldTypeMappingReader extends RegistryReader {
                 @Override
                 public void run() throws Exception {
                     String name = element.getAttribute("name"); //$NON-NLS-1$
-                    String descption = element.getAttribute("descption"); //$NON-NLS-1$
-                    String widgetType = element.getAttribute("widgetType"); //$NON-NLS-1$
-                    String schemaType = element.getAttribute("schemaType"); //$NON-NLS-1$
                     String mapFieldType = element.getAttribute("mapFieldType"); //$NON-NLS-1$
                     allDynamicWidgetFieldType.put(name, mapFieldType);
                 }
@@ -102,8 +99,6 @@ class WidgetFieldTypeMappingReader extends RegistryReader {
             } else {
                 return EParameterFieldType.TEXT.getName();
             }
-        } else if (Widget.WidgetType.HIDDEN_TEXT.name().equals(widgetType)) {
-            return EParameterFieldType.HIDDEN_TEXT.getName();
         } else {
             return this.allDynamicWidgetFieldType.get(widgetType);
         }

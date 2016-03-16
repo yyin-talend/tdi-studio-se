@@ -1212,6 +1212,9 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
 
         // check the metadata from the repository to see if it's up to date.
         List<IElementParameter> schemaTypeParams = node.getElementParametersFromField(EParameterFieldType.SCHEMA_TYPE);
+        if (schemaTypeParams.isEmpty()) {
+            schemaTypeParams = node.getElementParametersFromField(EParameterFieldType.SCHEMA_REFERENCE);
+        }
         // IElementParameter schemaTypeParam = node.getElementParameterFromField(EParameterFieldType.SCHEMA_TYPE);
         if (schemaTypeParams != null) {
             for (IElementParameter schemaTypeParam : schemaTypeParams) {
