@@ -554,8 +554,9 @@ public class Component extends AbstractComponent {
         param.setCategory(EComponentCategory.BASIC);
         param.setDisplayName(EParameterName.PROPERTY_TYPE.getDisplayName());
         param.setFieldType(EParameterFieldType.PROPERTY_TYPE);
-        if (wizardDefinition != null)
-        	param.setRepositoryValue(wizardDefinition.getName());
+        if (wizardDefinition != null) {
+            param.setRepositoryValue(wizardDefinition.getName());
+        }
         param.setValue("");//$NON-NLS-1$
         param.setNumRow(2);
         param.setShow(wizardDefinition != null);
@@ -599,13 +600,14 @@ public class Component extends AbstractComponent {
     }
 
     private ComponentWizardDefinition getWizardDefinition(ComponentProperties componentProperties) {
+        ComponentWizardDefinition definition = null;
         if (componentProperties == null) {
             return null;
         }
         ComponentService service = ComponentsUtils.getComponentService();
         List<ComponentWizard> componentWizards = service.getComponentWizardsForProperties(componentProperties, null);
         for (ComponentWizard componentWizard : componentWizards) {
-            ComponentWizardDefinition definition = componentWizard.getDefinition();
+            definition = componentWizard.getDefinition();
             // Can we ensure it is the same wizard with metadata connection wizard by this way?
             if (definition.isTopLevel()) {
                 return definition;
@@ -614,7 +616,10 @@ public class Component extends AbstractComponent {
         List<NamedThing> namedThings = componentProperties.getProperties();
         for (NamedThing namedThing : namedThings) {
             if (namedThing instanceof ComponentProperties) {
-                return getWizardDefinition((ComponentProperties) namedThing);
+                definition = getWizardDefinition((ComponentProperties) namedThing);
+                if (definition != null && definition.isTopLevel()) {
+                    return definition;
+                }
             }
         }
         return null;
