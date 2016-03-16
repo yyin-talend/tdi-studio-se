@@ -15,12 +15,15 @@ package org.talend.designer.core.generic.utils;
 import static org.junit.Assert.*;
 
 import java.util.List;
+import java.util.Map;
 
 import org.apache.avro.Schema;
 import org.apache.avro.SchemaBuilder;
 import org.eclipse.emf.common.util.EList;
 import org.junit.Test;
 import org.talend.components.api.properties.ComponentProperties;
+import org.talend.core.model.metadata.IMetadataTable;
+import org.talend.core.model.metadata.MetadataToolHelper;
 import org.talend.core.model.metadata.builder.connection.ConnectionFactory;
 import org.talend.core.model.metadata.builder.connection.MetadataColumn;
 import org.talend.core.model.metadata.builder.connection.MetadataTable;
@@ -106,10 +109,15 @@ public class SchemaUtilsTest {
 
     @Test
     public void testUpdateComponentSchema() {
+        String TEST_TABLE_NAME = "testTable"; //$NON-NLS-1$
+        String TEST_COL_NAME = "userId"; //$NON-NLS-1$
+        String ADDED_COL_NAME = "added"; //$NON-NLS-1$
+        String SCHEMA_PROP_NAME = "schema.schema"; //$NON-NLS-1$
+
         // Create the test MetadataTable.
-        MetadataTable table = createMetadataTable("testTable"); //$NON-NLS-1$
+        MetadataTable table = createMetadataTable(TEST_TABLE_NAME);
         MetadataColumn testColumn = ConnectionFactory.eINSTANCE.createMetadataColumn();
-        testColumn.setName("userId"); //$NON-NLS-1$
+        testColumn.setName(TEST_COL_NAME);
         testColumn.setLabel(testColumn.getName());
         testColumn.setDefaultValue("1"); //$NON-NLS-1$
         testColumn.setTalendType(JavaTypesManager.STRING.getId());
@@ -117,7 +125,8 @@ public class SchemaUtilsTest {
 
         // Create one component properties which has one schema property.
         TestProperties props = (TestProperties) new TestProperties("test").init(); //$NON-NLS-1$
-        Schema oldSchema = SchemaBuilder.record("testTable").fields().name("userId").type().stringType().noDefault().endRecord(); //$NON-NLS-1$ //$NON-NLS-2$
+        Schema oldSchema = SchemaBuilder.record(TEST_TABLE_NAME).fields().name(TEST_COL_NAME).type().stringType().noDefault()
+                .endRecord();
         props.schema.schema.setValue(oldSchema);
 
         // Set the component properties and schema property name into MetadataTable.
@@ -127,12 +136,12 @@ public class SchemaUtilsTest {
         table.getTaggedValue().add(serializedPropsTV);
         TaggedValue schemaPropertyTV = CoreFactory.eINSTANCE.createTaggedValue();
         schemaPropertyTV.setTag(IGenericConstants.COMPONENT_SCHEMA_TAG);
-        schemaPropertyTV.setValue("schema.schema"); //$NON-NLS-1$
+        schemaPropertyTV.setValue(SCHEMA_PROP_NAME);
         table.getTaggedValue().add(schemaPropertyTV);
 
         // Add another MetadataColumn into MetadataTable.
         MetadataColumn addedColumn = ConnectionFactory.eINSTANCE.createMetadataColumn();
-        addedColumn.setName("added"); //$NON-NLS-1$
+        addedColumn.setName(ADDED_COL_NAME);
         addedColumn.setLabel(addedColumn.getName());
         addedColumn.setDefaultValue("x"); //$NON-NLS-1$
         addedColumn.setTalendType(JavaTypesManager.STRING.getId());
@@ -157,9 +166,24 @@ public class SchemaUtilsTest {
         Deserialized<ComponentProperties> fromSerialized = Properties.fromSerialized(componentPropertiesStr,
                 ComponentProperties.class);
         ComponentProperties componentProperties = fromSerialized.properties;
-        Object value = componentProperties.getValuedProperty(schemaPropertyName).getValue();
-        Schema avroSchema = new Schema.Parser().parse((String) value);
-        assertNotNull(avroSchema.getField("added")); //$NON-NLS-1$
+        Object schemaValueStr = componentProperties.getValuedProperty(schemaPropertyName).getValue();
+        Schema avroSchema = new Schema.Parser().parse((String) schemaValueStr);
+        assertNotNull(avroSchema.getField(ADDED_COL_NAME));
+
+        // Test method updateComponentSchema(ComponentProperties componentProperties, String schemaPropertyName,
+        // IMetadataTable metadataTable)
+        IMetadataTable iMetadataTable = MetadataToolHelper.convert(table);
+        SchemaUtils.updateComponentSchema(props, SCHEMA_PROP_NAME, iMetadataTable);
+        Map<String, String> additionalProperties = iMetadataTable.getAdditionalProperties();
+        componentPropertiesStr = additionalProperties.get(IGenericConstants.COMPONENT_PROPERTIES_TAG);
+        fromSerialized = Properties.fromSerialized(componentPropertiesStr, ComponentProperties.class);
+        componentProperties = fromSerialized.properties;
+        schemaPropertyName = additionalProperties.get(IGenericConstants.COMPONENT_SCHEMA_TAG);
+        schemaValueStr = componentProperties.getValuedProperty(schemaPropertyName).getValue();
+        avroSchema = new Schema.Parser().parse((String) schemaValueStr);
+        assertNotNull(avroSchema.getField(TEST_COL_NAME));
+        assertNotNull(avroSchema.getField(ADDED_COL_NAME));
+        assertEquals(2, avroSchema.getFields().size());
     }
 
     /**

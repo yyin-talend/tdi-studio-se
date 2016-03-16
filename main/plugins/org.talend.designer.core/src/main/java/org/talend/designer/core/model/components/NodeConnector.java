@@ -377,6 +377,9 @@ public class NodeConnector implements INodeConnector {
     @Override
     public boolean isMultiSchema() {
         IElementParameter schemaParam = parentNode.getElementParameterFromField(EParameterFieldType.SCHEMA_TYPE);
+        if (schemaParam == null) {
+            schemaParam = parentNode.getElementParameterFromField(EParameterFieldType.SCHEMA_REFERENCE);
+        }
         if (schemaParam != null && schemaParam.getContext() != null && schemaParam.getContext().equals("FLOW")) {
             if (schemaParam.isShow(parentNode.getElementParameters())) {
                 return false;
