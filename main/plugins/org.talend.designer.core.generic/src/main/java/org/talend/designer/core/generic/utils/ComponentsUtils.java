@@ -262,6 +262,7 @@ public class ComponentsUtils {
                 List<?> possibleValues = property.getPossibleValues();
                 if (possibleValues != null && possibleValues.size() > 0) {
                     paramValue = possibleValues.get(0);
+                    property.setValue(paramValue);
                 }
             }
             break;
@@ -344,7 +345,6 @@ public class ComponentsUtils {
     }
 
     public static Object getGenericPropertyValue(ComponentProperties componentProperties, String paramName) {
-        Object obj = null;
         if (componentProperties == null || paramName == null) {
             return null;
         }
@@ -354,9 +354,9 @@ public class ComponentsUtils {
         }
         Property property = componentProperties.getValuedProperty(paramName);
         if (property != null) {
-            obj = property.getValue();
+            return property.getValue() != null ? property.getValue() : property.getDefaultValue();
         }
-        return obj;
+        return null;
     }
 
     public static void setGenericPropertyValue(ComponentProperties componentProperties, String paramName, Object value) {
