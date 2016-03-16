@@ -588,7 +588,7 @@ public abstract class AbstractSchemaController extends AbstractRepositoryControl
         return stop;
     }
 
-    private void copySchemaFromChildJob(Node runJobNode, final Item item) {
+    public void copySchemaFromChildJob(Node runJobNode, final Item item) {
         // 0004322: tRunJob can import the tBufferOutput schema from the son job
         if (runJobNode != null && item instanceof ProcessItem) {
             IDesignerCoreService service = CorePlugin.getDefault().getDesignerCoreService();
