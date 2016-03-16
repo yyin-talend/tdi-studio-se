@@ -24,11 +24,11 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Text;
+import org.talend.components.api.properties.ComponentProperties;
 import org.talend.core.model.metadata.IMetadataColumn;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.metadata.MetadataTable;
 import org.talend.core.model.metadata.MetadataToolHelper;
-import org.talend.core.model.metadata.builder.ConvertionHelper;
 import org.talend.core.model.process.EConnectionType;
 import org.talend.core.model.process.EParameterFieldType;
 import org.talend.core.model.process.IConnection;
@@ -46,6 +46,7 @@ import org.talend.core.ui.metadata.dialog.MetadataDialog;
 import org.talend.core.ui.metadata.dialog.MetadataDialogForMerge;
 import org.talend.core.ui.properties.tab.IDynamicProperty;
 import org.talend.designer.core.generic.i18n.Messages;
+import org.talend.designer.core.generic.model.GenericElementParameter;
 import org.talend.designer.core.generic.utils.SchemaUtils;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.model.components.EmfComponent;
@@ -313,7 +314,18 @@ public class SchemaReferenceController extends AbstractSchemaController {
                             inputNode = inputConec.getSource();
                         }
                         // update the component schema
-                        SchemaUtils.updateComponentSchema(ConvertionHelper.convert(outputMetaCopy));
+                        if (param instanceof GenericElementParameter) {
+                            GenericElementParameter genericElementParameter = (GenericElementParameter) param;
+                            String paramName = genericElementParameter.getName();
+                            ComponentProperties componentProperties = node.getComponentProperties();
+                            if (componentProperties != null) {
+                                org.talend.daikon.properties.Property schemaProperty = componentProperties
+                                        .getValuedProperty(paramName);
+                                if (schemaProperty != null) {
+                                    SchemaUtils.updateComponentSchema(componentProperties, paramName, outputMetaCopy);
+                                }
+                            }
+                        }
                         ChangeMetadataCommand changeMetadataCommand = new ChangeMetadataCommand(node, param, inputNode,
                                 inputMetadata, inputMetaCopy, originaleOutputTable, outputMetaCopy);
                         return changeMetadataCommand;
