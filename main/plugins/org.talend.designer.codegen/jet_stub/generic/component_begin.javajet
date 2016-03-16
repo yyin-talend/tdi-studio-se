@@ -193,7 +193,15 @@ if(metadata != null){
                         <% 
                         }else{
                         %>
-                        	<%=outgoingConn.getName()%>.<%=columnName%> = (<%=typeToGenerate%>)(current_<%=cid%>.get(<%=i%>));
+                        	if(current_<%=cid%>.get(<%=i%>) == null){
+                        		<%=outgoingConn.getName()%>.<%=columnName%> = <%=JavaTypesManager.getDefaultValueFromJavaType(typeToGenerate)%>;
+                        	}else{
+                        		<%if(javaType == JavaTypesManager.STRING){%>
+                        			<%=outgoingConn.getName()%>.<%=columnName%> = String.valueOf(current_<%=cid%>.get(<%=i%>));
+                        		<%}else{%>
+	                        		<%=outgoingConn.getName()%>.<%=columnName%> = (<%=typeToGenerate%>)(current_<%=cid%>.get(<%=i%>));
+	                        	<%}%>
+                        	}
                     	<%
                     	}
                     }
