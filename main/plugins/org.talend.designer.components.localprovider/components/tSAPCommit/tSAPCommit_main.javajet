@@ -22,7 +22,7 @@ imports="
     
     String VERSION_SAP3 = "sapjco3.jar";
     
-    String version = null;
+    String version = VERSION_SAP3;
     List<? extends INode> nodes = node.getProcess().getGeneratingNodes();
     for(INode targetNode : nodes){
     	if (targetNode.getUniqueName().equals(connection)) {
