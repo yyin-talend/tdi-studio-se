@@ -35,10 +35,10 @@ import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.ui.views.properties.tabbed.ITabbedPropertyConstants;
+import org.talend.components.api.properties.ComponentReferenceProperties;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.INode;
 import org.talend.core.ui.properties.tab.IDynamicProperty;
-import org.talend.daikon.NamedThing;
 import org.talend.designer.core.generic.model.GenericElementParameter;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.model.components.EParameterName;
@@ -207,7 +207,8 @@ public class ComponentRefController extends AbstractElementPropertySectionContro
 
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
-        // TODO Auto-generated method stub
+    	// FIXME - update the ComponentReferenceProperties object
+    	System.out.println("Property change: " + evt) ;
     }
 
     private Command createCommand(SelectionEvent event) {
@@ -220,6 +221,9 @@ public class ComponentRefController extends AbstractElementPropertySectionContro
 
     @Override
     public void refresh(IElementParameter param, boolean check) {
+        GenericElementParameter gParam = (GenericElementParameter) param;
+        ComponentReferenceProperties props = (ComponentReferenceProperties) gParam.getWidget().getContent(); 
+
         String paramName = param.getName();
         CCombo combo = (CCombo) hashCurControls.get(paramName);
         if (combo == null || combo.isDisposed()) {
@@ -227,9 +231,11 @@ public class ComponentRefController extends AbstractElementPropertySectionContro
         }
         INode currentNode = (INode) elem;
         Object value = param.getValue();
-        List<INode> refNodes = getRefNodes(param);
+        List<INode> refNodes = getRefNodes(param, props);
         List<String> itemsLabel = new ArrayList<>();
         List<String> itemsValue = new ArrayList<>();
+        itemsLabel.add(props.getDisplayName());
+        itemsValue.add(currentNode.getUniqueName());
         for (INode node : refNodes) {
             final String uniqueName = node.getUniqueName();
             if (uniqueName.equals(currentNode.getUniqueName())) {
@@ -246,14 +252,6 @@ public class ComponentRefController extends AbstractElementPropertySectionContro
             }
             itemsLabel.add(displayName);
             itemsValue.add(uniqueName);
-        }
-        if (param instanceof GenericElementParameter) {
-            GenericElementParameter gParam = (GenericElementParameter) param;
-            NamedThing namedThing = gParam.getWidget().getContent();
-            if (namedThing != null) {
-                itemsLabel.add(namedThing.getDisplayName());
-                itemsValue.add(currentNode.getUniqueName());
-            }
         }
         param.setListItemsDisplayName(itemsLabel.toArray(new String[0]));
         param.setListItemsDisplayCodeName(itemsLabel.toArray(new String[0]));
@@ -272,13 +270,13 @@ public class ComponentRefController extends AbstractElementPropertySectionContro
         }
     }
 
-    private List<INode> getRefNodes(IElementParameter param) {
+    private List<INode> getRefNodes(IElementParameter param, ComponentReferenceProperties props) {
         List<INode> refNodes = new ArrayList<>();
         if (param instanceof GenericElementParameter) {
             GenericElementParameter gParameter = (GenericElementParameter) param;
             if (gParameter != null && gParameter.getElement() != null && gParameter.getElement() instanceof Node) {
                 Node node = (Node) gParameter.getElement();
-                refNodes = (List<INode>) node.getProcess().getNodesOfType(gParameter.getWidget().getReferencedComponentName());
+                refNodes = (List<INode>) node.getProcess().getNodesOfType(props.componentType.getStringValue());
             }
         }
         return refNodes;
