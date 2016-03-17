@@ -399,7 +399,7 @@ public class ProblemsManager {
     }
 
     public boolean checkLookupExpressionProblem() {
-        if (mapperManager.isMRProcess()) {
+        if (mapperManager.isBigDataProcess()) {
             List<DataMapTableView> inputsTablesView = mapperManager.getUiManager().getInputsTablesView();
             List<DataMapTableView> lookupTables = new ArrayList<DataMapTableView>();
             List<IColumnEntry> entityWithoutProblem = new ArrayList<IColumnEntry>();
