@@ -1007,7 +1007,7 @@ public class Process extends Element implements IProcess2, IGEFProcess, ILastVer
                     }
                 }
                 // save the schema type
-                if (EParameterFieldType.SCHEMA_TYPE.equals(param.getFieldType())) {
+                if (EParameterFieldType.SCHEMA_REFERENCE.equals(param.getFieldType())) {
                     for (String key : param.getChildParameters().keySet()) {
                         saveElementParameter(param.getChildParameters().get(key), process, fileFact, paramList, listParamType);
                     }
@@ -1439,6 +1439,8 @@ public class Process extends Element implements IProcess2, IGEFProcess, ILastVer
                 } else {
                     param.setValue(pType.getRawValue());
                 }
+            } else if (param.getFieldType().equals(EParameterFieldType.SCHEMA_REFERENCE)) {
+                elemParam.setPropertyValue(key, object);
             } else if (!param.getFieldType().equals(EParameterFieldType.SCHEMA_TYPE)) {
                 if (param.getFieldType().equals(EParameterFieldType.COLOR)) {
                     if (value != null && value.length() > 2) {
@@ -1447,8 +1449,6 @@ public class Process extends Element implements IProcess2, IGEFProcess, ILastVer
                 } else {
                     elemParam.setPropertyValue(key, value);
                 }
-            } else if (param.getFieldType().equals(EParameterFieldType.SCHEMA_TYPE)) {
-                elemParam.setPropertyValue(key, object);
             }
         } else if (UpdateTheJobsActionsOnTable.isClear && "CLEAR_TABLE".equals(key) //$NON-NLS-1$
                 && "true".equals(pType.getValue()) //$NON-NLS-1$
