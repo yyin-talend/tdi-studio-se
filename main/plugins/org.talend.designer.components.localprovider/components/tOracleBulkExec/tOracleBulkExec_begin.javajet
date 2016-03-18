@@ -728,17 +728,22 @@ int countLines_<%=cid %> =0;//log file lines count
 //1
 class LogUtil_<%=cid%>{
     public int getNumber(java.io.BufferedReader br)  throws java.io.IOException {
-        int number=0;
-        java.util.regex.Pattern pattern = java.util.regex.Pattern.compile("\\d{1,}");
         String tempLine = br.readLine();
-        if(tempLine!=null){
-            String str_number = tempLine.substring(tempLine.indexOf(":") + 1).trim();
-            boolean isNumber= pattern.matcher(str_number).matches();
-            if(isNumber){
-                number = Integer.parseInt(str_number);
-            }
-        }
-        return number;
+		return getNumber(tempLine);
+    }
+    
+    public int getNumber(String tempLine) {
+    	int number=0;
+    	java.util.regex.Pattern pattern = java.util.regex.Pattern.compile("\\d{1,}");
+    	
+    	if(tempLine!=null){
+			String str_number = tempLine.substring(tempLine.indexOf(":") + 1).trim();
+			boolean isNumber= pattern.matcher(str_number).matches();
+			if(isNumber){
+				number = Integer.parseInt(str_number);
+			}
+		}
+		return number;
     }
 }
 int lastTableLine_<%=cid%> = 0;//Line Number of the last table name
@@ -758,21 +763,21 @@ for (int i_<%=cid %>=0; i_<%=cid %><= lastTableLine_<%=cid%>; i_<%=cid %>++) {
     tempLine_<%=cid %> = lr_<%=cid %>.readLine();
     int emptyLineNum_<%=cid%> =0;//The number of empty block
     boolean isFirstEmptyLine_<%=cid%> = false;//Is the first empty line of empty block
-for (int i_<%=cid %>=lastTableLine_<%=cid%>+2; i_<%=cid %><= countLines_<%=cid %>; i_<%=cid %>++) {
-    tempLine_<%=cid %> = lr_<%=cid %>.readLine();
-    if(tempLine_<%=cid %>!=null && tempLine_<%=cid %>.trim().length()>0){
-        if(emptyLineNum_<%=cid%>==2){
-            break;
-        }
-        isFirstEmptyLine_<%=cid%> = false;
-        continue;//skip rows now empty
-    }else if (!isFirstEmptyLine_<%=cid%>){//skip empty rows
-        isFirstEmptyLine_<%=cid%> = true;
-        emptyLineNum_<%=cid%>++;
-    }
+
+String keyword_<%=cid%> = "Total logical records read";
+String nb_line_data_str_<%=cid%> = null;
+for (int i_<%=cid%> = lastTableLine_<%=cid%> + 2; i_<%=cid%> <= countLines_<%=cid%>; i_<%=cid%>++) {
+	tempLine_<%=cid%> = lr_<%=cid%>.readLine();
+										
+	if(tempLine_<%=cid%> != null && tempLine_<%=cid%>.indexOf(keyword_<%=cid%>) != -1)
+	{
+		nb_line_data_str_<%=cid%> = tempLine_<%=cid%>;
+		break;
+	}
+
 }
     LogUtil_<%=cid%> lu_<%=cid%> = new LogUtil_<%=cid%>();
-    nb_line_data_<%=cid %> = lu_<%=cid%>.getNumber(lr_<%=cid %>);//get the number of data line
+    nb_line_data_<%=cid %> = lu_<%=cid%>.getNumber(nb_line_data_str_<%=cid%>);//get the number of data line
     nb_line_bad_<%=cid %> = lu_<%=cid%>.getNumber(lr_<%=cid %>);//get the number of reject data line
     nb_line_discarded_<%=cid %> = lu_<%=cid%>.getNumber(lr_<%=cid %>);//get the number of discarded data line
     nb_line_inserted_<%=cid %> = nb_line_data_<%=cid %> - nb_line_bad_<%=cid %> - nb_line_discarded_<%=cid %>;
