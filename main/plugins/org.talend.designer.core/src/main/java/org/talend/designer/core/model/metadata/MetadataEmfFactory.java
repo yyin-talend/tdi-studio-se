@@ -19,8 +19,10 @@ import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import org.eclipse.emf.common.util.EList;
+import org.eclipse.emf.common.util.EMap;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.talend.core.PluginChecker;
@@ -64,6 +66,7 @@ public class MetadataEmfFactory {
         metadataType.setLabel(metadataTable.getLabel());
         metadataType.setConnector(metadataTable.getAttachedConnector());
         metadataType.setType(metadataTable.getTableType());
+        metadataType.getAdditionalProperties().putAll(metadataTable.getAdditionalProperties());
         listColType = metadataType.getColumn();
 
         if (metadataTable.getListColumns(true) != null) {
@@ -118,6 +121,7 @@ public class MetadataEmfFactory {
         setMetadataTypeCommon(metadataType);
     }
 
+    @SuppressWarnings("unchecked")
     private void setMetadataTypeCommon(final MetadataType metadataType) {
         this.metadataType = metadataType;
 
@@ -130,6 +134,12 @@ public class MetadataEmfFactory {
         metadataTable.setTableName(metadataType.getName());
         metadataTable.setLabel(metadataType.getLabel());
         metadataTable.setTableType(metadataType.getType());
+        EMap<String, String> properties = metadataType.getAdditionalProperties();
+        if (properties != null) {
+            for (Map.Entry<String, String> entry : properties.entrySet()) {
+                metadataTable.getAdditionalProperties().put(entry.getKey(), entry.getValue());
+            }
+        }
         if (metadataType.getConnector() != null) {
             metadataTable.setAttachedConnector(metadataType.getConnector());
         } else {
