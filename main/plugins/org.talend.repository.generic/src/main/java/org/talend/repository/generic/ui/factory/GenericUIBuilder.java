@@ -12,7 +12,7 @@
 // ============================================================================
 package org.talend.repository.generic.ui.factory;
 
-import java.util.List;
+import java.util.Collection;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.swt.SWT;
@@ -46,7 +46,7 @@ public class GenericUIBuilder {
     }
 
     public Composite build(Form form) {
-        List<Widget> widgets = form.getWidgets();
+        Collection<Widget> widgets = form.getWidgets();
         for (Widget widget : widgets) {
             int row = widget.getRow();
             if (rowNum < row) {

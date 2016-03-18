@@ -13,6 +13,7 @@
 package org.talend.designer.core.generic.utils;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -164,7 +165,7 @@ public class ComponentsUtils {
         componentProperties.setValueEvaluator(null);
 
         // Have to initialize for the messages
-        List<Widget> formWidgets = form.getWidgets();
+        Collection<Widget> formWidgets = form.getWidgets();
         for (Widget widget : formWidgets) {
             NamedThing widgetProperty = widget.getContent();
 

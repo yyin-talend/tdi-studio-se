@@ -1874,7 +1874,7 @@ public class UIManager extends AbstractUIManager {
 
     @Override
     public void openPropertySetDialog() {
-        if (mapperManager.isMRProcess()) {
+        if (mapperManager.isBigDataProcess()) {
             new MapReducePropertySetDialog(getShell(), mapperManager).open();
         } else {
             new PropertySetDialog(getShell(), mapperManager).open();
