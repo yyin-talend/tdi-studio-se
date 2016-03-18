@@ -57,7 +57,7 @@ public class ComponentRefController extends AbstractElementPropertySectionContro
         super(dp);
     }
 
-    public Command createComboCommand(SelectionEvent event) {
+    public Command createComboCommand(SelectionEvent event, GenericElementParameter gParam, ComponentReferenceProperties props) {
         Set<String> elementsName;
         Control ctrl;
         elementsName = hashCurControls.keySet();
@@ -82,9 +82,27 @@ public class ComponentRefController extends AbstractElementPropertySectionContro
                             IElementParameter param = params.get(i);
                             if (param.getName().equals(name)) {
                                 for (int j = 0; j < param.getListItemsValue().length; j++) {
-                                    if (j < param.getListItemsDisplayName().length
-                                            && ((CCombo) ctrl).getText().equals(param.getListItemsDisplayName()[j])) {
+                                    if (((CCombo) ctrl).getText().equals(param.getListItemsDisplayName()[j])) {
                                         value = (String) param.getListItemsValue()[j];
+                                        if (j == 0) {
+                                        	// The first item in the combo is this component
+                                        	props.referenceType.setValue(ComponentReferenceProperties.ReferenceType.THIS_COMPONENT);
+                                        	props.componentInstanceId.setValue(null);
+                                        	props.componentProperties = null;
+                                        } else {
+                                        	props.referenceType.setValue(ComponentReferenceProperties.ReferenceType.COMPONENT_INSTANCE);
+                                        	props.componentInstanceId.setValue(value);
+                                            GenericElementParameter gParameter = (GenericElementParameter) param;
+                                            if (gParameter != null && gParameter.getElement() != null && gParameter.getElement() instanceof Node) {
+                                                Node node = (Node) gParameter.getElement();
+                                                List<INode> refNodes = (List<INode>) node.getProcess().getNodesOfType(props.componentType.getStringValue());
+                                                for (INode refNode : refNodes) {
+                                                	if (refNode.getLabel().equals(value)) {
+                                                		props.componentProperties = refNode.getComponentProperties();
+                                                	}
+                                                }
+                                            }
+                                        }
                                     }
                                 }
                             }
@@ -139,7 +157,11 @@ public class ComponentRefController extends AbstractElementPropertySectionContro
 
             @Override
             public void widgetSelected(SelectionEvent event) {
-                Command cmd = createCommand(event);
+                if (!(event.getSource() instanceof CCombo))
+                	return;
+                GenericElementParameter gParam = (GenericElementParameter) param;
+                ComponentReferenceProperties props = (ComponentReferenceProperties) gParam.getWidget().getContent(); 
+                Command cmd = createComboCommand(event, gParam, props);
                 executeCommand(cmd);
             }
         });
@@ -206,20 +228,6 @@ public class ComponentRefController extends AbstractElementPropertySectionContro
     }
 
     @Override
-    public void propertyChange(PropertyChangeEvent evt) {
-    	// FIXME - update the ComponentReferenceProperties object
-    	System.out.println("Property change: " + evt) ;
-    }
-
-    private Command createCommand(SelectionEvent event) {
-        Command cmd = null;
-        if (event.getSource() instanceof CCombo) {
-            cmd = createComboCommand(event);
-        }
-        return cmd;
-    }
-
-    @Override
     public void refresh(IElementParameter param, boolean check) {
         GenericElementParameter gParam = (GenericElementParameter) param;
         ComponentReferenceProperties props = (ComponentReferenceProperties) gParam.getWidget().getContent(); 
@@ -234,8 +242,11 @@ public class ComponentRefController extends AbstractElementPropertySectionContro
         List<INode> refNodes = getRefNodes(param, props);
         List<String> itemsLabel = new ArrayList<>();
         List<String> itemsValue = new ArrayList<>();
+        
+        // First item is this component (see also createComboCommand)
         itemsLabel.add(props.getDisplayName());
         itemsValue.add(currentNode.getUniqueName());
+
         for (INode node : refNodes) {
             final String uniqueName = node.getUniqueName();
             if (uniqueName.equals(currentNode.getUniqueName())) {
@@ -281,4 +292,8 @@ public class ComponentRefController extends AbstractElementPropertySectionContro
         }
         return refNodes;
     }
+
+	@Override
+	public void propertyChange(PropertyChangeEvent evt) {
+	}
 }
