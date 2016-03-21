@@ -101,7 +101,12 @@ public abstract class AbstractRoutineAction extends AContextualAction {
             if (!flag) { // is ref project
                 file = routineSynchronizer.getRoutinesFile(routineItem);
             } else {// need open from item file with multiple version
-                routineSynchronizer.syncRoutine(routineItem, true);
+                boolean needForceRefresh = false;
+                if (!ProxyRepositoryFactory.getInstance().isLocalConnectionProvider()) {
+                    // in case only routine.item file modified, better refresh every time, especially for git mode
+                    needForceRefresh = true;
+                }
+                routineSynchronizer.syncRoutine(routineItem, true, needForceRefresh);
                 ProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
                 String lastVersion = factory.getLastVersion(routineItem.getProperty().getId()).getVersion();
                 String curVersion = routineItem.getProperty().getVersion();
@@ -116,13 +121,14 @@ public abstract class AbstractRoutineAction extends AContextualAction {
             }
             RepositoryEditorInput input = new RoutineEditorInput(file, routineItem);
             input.setReadOnly(readOnly);
-            talendEditor = page.openEditor(input, talendEditorID); //$NON-NLS-1$            
+            talendEditor = page.openEditor(input, talendEditorID); 
         }
 
         return talendEditor;
 
     }
 
+    @Override
     public void init(TreeViewer viewer, IStructuredSelection selection) {
         setEnabled(false);
         Object o = selection.getFirstElement();
