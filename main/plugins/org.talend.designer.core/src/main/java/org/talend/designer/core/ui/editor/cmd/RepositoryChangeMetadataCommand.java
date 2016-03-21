@@ -42,6 +42,7 @@ import org.talend.core.model.utils.ContextParameterUtils;
 import org.talend.core.model.utils.IDragAndDropServiceHandler;
 import org.talend.core.repository.seeker.RepositorySeekerManager;
 import org.talend.core.utils.TalendQuoteUtils;
+import org.talend.cwm.helper.SAPBWTableHelper;
 import org.talend.cwm.helper.TaggedValueHelper;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.model.components.EmfComponent;
@@ -198,6 +199,11 @@ public class RepositoryChangeMetadataCommand extends ChangeMetadataCommand {
                     String innerIOType = ((SAPBWTable) orginalTable).getInnerIOType();
                     if (innerIOType != null) {
                         node.getElementParameter("INFO_OBJECT_TYPE").setValue(innerIOType); //$NON-NLS-1$
+                        IElementParameter schemaTypeParam = node.getElementParameterFromField(EParameterFieldType.SCHEMA_TYPE);
+                        if (schemaTypeParam != null) {
+                            IMetadataTable metadataTable = node.getMetadataFromConnector(schemaTypeParam.getContext());
+                            metadataTable.getAdditionalProperties().put(SAPBWTableHelper.SAP_INFOOBJECT_INNER_TYPE, innerIOType);
+                        }
                     }
                 }
             }
