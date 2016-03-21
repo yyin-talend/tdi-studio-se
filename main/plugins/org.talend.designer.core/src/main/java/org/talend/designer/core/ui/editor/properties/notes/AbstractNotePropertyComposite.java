@@ -14,6 +14,7 @@ package org.talend.designer.core.ui.editor.properties.notes;
 
 import org.eclipse.gef.commands.CommandStack;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetWidgetFactory;
 import org.talend.core.ui.properties.tab.HorizontalTabFactory;
@@ -30,7 +31,7 @@ public abstract class AbstractNotePropertyComposite {
 
     private HorizontalTabFactory tabFactory;
 
-    private AbstractMultiPageTalendEditor multiPageTalendEditor;
+    private IEditorPart multiPageTalendEditor;
 
     public static final int STANDARD_LABEL_WIDTH = 85;
 
@@ -41,8 +42,7 @@ public abstract class AbstractNotePropertyComposite {
      */
     public AbstractNotePropertyComposite(Composite parent, Note note, HorizontalTabFactory tabFactory) {
 
-        multiPageTalendEditor = (AbstractMultiPageTalendEditor) PlatformUI.getWorkbench().getActiveWorkbenchWindow()
-                .getActivePage().getActiveEditor();
+        multiPageTalendEditor = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getActiveEditor();
         this.note = note;
         this.tabFactory = tabFactory;
         createControl(parent);
@@ -55,7 +55,10 @@ public abstract class AbstractNotePropertyComposite {
     }
 
     protected CommandStack getCommandStack() {
-        return (CommandStack) multiPageTalendEditor.getTalendEditor().getAdapter(CommandStack.class);
+        if (multiPageTalendEditor instanceof AbstractMultiPageTalendEditor) {
+            return (CommandStack) ((AbstractMultiPageTalendEditor) multiPageTalendEditor).getTalendEditor().getAdapter(
+                    CommandStack.class);
+        }
+        return null;
     }
-
 }
