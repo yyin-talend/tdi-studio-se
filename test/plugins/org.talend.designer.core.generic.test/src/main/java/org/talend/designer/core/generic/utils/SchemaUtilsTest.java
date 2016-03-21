@@ -13,22 +13,34 @@
 package org.talend.designer.core.generic.utils;
 
 import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
 
 import java.util.List;
+import java.util.Map;
 
-import org.eclipse.emf.common.util.BasicEList;
+import org.apache.avro.Schema;
+import org.apache.avro.SchemaBuilder;
+import org.eclipse.emf.common.util.EList;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.powermock.modules.junit4.PowerMockRunner;
+import org.talend.components.api.properties.ComponentProperties;
+import org.talend.core.model.metadata.IMetadataTable;
+import org.talend.core.model.metadata.MetadataToolHelper;
+import org.talend.core.model.metadata.builder.connection.ConnectionFactory;
+import org.talend.core.model.metadata.builder.connection.MetadataColumn;
 import org.talend.core.model.metadata.builder.connection.MetadataTable;
+import org.talend.core.model.metadata.types.JavaTypesManager;
+import org.talend.daikon.properties.Properties;
+import org.talend.daikon.properties.Properties.Deserialized;
+import org.talend.designer.core.generic.constants.IGenericConstants;
+import org.talend.designer.core.generic.testproperties.TestProperties;
+import orgomg.cwm.objectmodel.core.CoreFactory;
 import orgomg.cwm.objectmodel.core.Package;
+import orgomg.cwm.objectmodel.core.TaggedValue;
+import orgomg.cwm.objectmodel.core.impl.PackageImpl;
 
 /**
  * created by ycbai on 2016年3月3日 Detailled comment
  *
  */
-@RunWith(PowerMockRunner.class)
 public class SchemaUtilsTest {
 
     @Test
@@ -52,21 +64,17 @@ public class SchemaUtilsTest {
         // ... table3
         //
         // ///////////////////////////////////
-        Package parentPackage = mock(Package.class);
-        when(parentPackage.getOwnedElement()).thenReturn(new BasicEList<>());
+        Package parentPackage = CoreFactory.eINSTANCE.createPackage();
         parentPackage.getOwnedElement().add(table1);
 
-        Package container1 = mock(TestContainer.class);
-        when(container1.getOwnedElement()).thenReturn(new BasicEList<>());
+        Package container1 = new TestContainer();
         container1.getOwnedElement().add(table2);
-        Package container1_1 = mock(TestContainer.class);
-        when(container1_1.getOwnedElement()).thenReturn(new BasicEList<>());
+        Package container1_1 = new TestContainer();
         container1_1.getOwnedElement().add(table4);
         container1.getOwnedElement().add(container1_1);
         parentPackage.getOwnedElement().add(container1);
 
-        Package container2 = mock(OtherTestContainer.class);
-        when(container2.getOwnedElement()).thenReturn(new BasicEList<>());
+        Package container2 = new OtherTestContainer();
         container2.getOwnedElement().add(table3);
         parentPackage.getOwnedElement().add(container2);
 
@@ -93,23 +101,102 @@ public class SchemaUtilsTest {
     }
 
     private MetadataTable createMetadataTable(String name) {
-        MetadataTable table = mock(MetadataTable.class);
-        when(table.getName()).thenReturn(name);
-        when(table.getLabel()).thenReturn(name);
+        MetadataTable table = ConnectionFactory.eINSTANCE.createMetadataTable();
+        table.setName(name);
+        table.setLabel(table.getName());
         return table;
+    }
+
+    @Test
+    public void testUpdateComponentSchema() {
+        String TEST_TABLE_NAME = "testTable"; //$NON-NLS-1$
+        String TEST_COL_NAME = "userId"; //$NON-NLS-1$
+        String ADDED_COL_NAME = "added"; //$NON-NLS-1$
+        String SCHEMA_PROP_NAME = "schema.schema"; //$NON-NLS-1$
+
+        // Create the test MetadataTable.
+        MetadataTable table = createMetadataTable(TEST_TABLE_NAME);
+        MetadataColumn testColumn = ConnectionFactory.eINSTANCE.createMetadataColumn();
+        testColumn.setName(TEST_COL_NAME);
+        testColumn.setLabel(testColumn.getName());
+        testColumn.setDefaultValue("1"); //$NON-NLS-1$
+        testColumn.setTalendType(JavaTypesManager.STRING.getId());
+        table.getColumns().add(testColumn);
+
+        // Create one component properties which has one schema property.
+        TestProperties props = (TestProperties) new TestProperties("test").init(); //$NON-NLS-1$
+        Schema oldSchema = SchemaBuilder.record(TEST_TABLE_NAME).fields().name(TEST_COL_NAME).type().stringType().noDefault()
+                .endRecord();
+        props.schema.schema.setValue(oldSchema);
+
+        // Set the component properties and schema property name into MetadataTable.
+        TaggedValue serializedPropsTV = CoreFactory.eINSTANCE.createTaggedValue();
+        serializedPropsTV.setTag(IGenericConstants.COMPONENT_PROPERTIES_TAG);
+        serializedPropsTV.setValue(props.toSerialized());
+        table.getTaggedValue().add(serializedPropsTV);
+        TaggedValue schemaPropertyTV = CoreFactory.eINSTANCE.createTaggedValue();
+        schemaPropertyTV.setTag(IGenericConstants.COMPONENT_SCHEMA_TAG);
+        schemaPropertyTV.setValue(SCHEMA_PROP_NAME);
+        table.getTaggedValue().add(schemaPropertyTV);
+
+        // Add another MetadataColumn into MetadataTable.
+        MetadataColumn addedColumn = ConnectionFactory.eINSTANCE.createMetadataColumn();
+        addedColumn.setName(ADDED_COL_NAME);
+        addedColumn.setLabel(addedColumn.getName());
+        addedColumn.setDefaultValue("x"); //$NON-NLS-1$
+        addedColumn.setTalendType(JavaTypesManager.STRING.getId());
+        table.getColumns().add(addedColumn);
+
+        // Invoke updateComponentSchema() method.
+        SchemaUtils.updateComponentSchema(table);
+
+        // Check if the schema object is updated correctly.
+        String componentPropertiesStr = null;
+        String schemaPropertyName = null;
+        EList<TaggedValue> taggedValues = table.getTaggedValue();
+        for (TaggedValue taggedValue : taggedValues) {
+            String tag = taggedValue.getTag();
+            String tagValue = taggedValue.getValue();
+            if (IGenericConstants.COMPONENT_PROPERTIES_TAG.equals(tag)) {
+                componentPropertiesStr = tagValue;
+            } else if (IGenericConstants.COMPONENT_SCHEMA_TAG.equals(tag)) {
+                schemaPropertyName = tagValue;
+            }
+        }
+        Deserialized<ComponentProperties> fromSerialized = Properties.fromSerialized(componentPropertiesStr,
+                ComponentProperties.class);
+        ComponentProperties componentProperties = fromSerialized.properties;
+        Object schemaValueStr = componentProperties.getValuedProperty(schemaPropertyName).getValue();
+        Schema avroSchema = new Schema.Parser().parse((String) schemaValueStr);
+        assertNotNull(avroSchema.getField(ADDED_COL_NAME));
+
+        // Test method updateComponentSchema(ComponentProperties componentProperties, String schemaPropertyName,
+        // IMetadataTable metadataTable)
+        IMetadataTable iMetadataTable = MetadataToolHelper.convert(table);
+        SchemaUtils.updateComponentSchema(props, SCHEMA_PROP_NAME, iMetadataTable);
+        Map<String, String> additionalProperties = iMetadataTable.getAdditionalProperties();
+        componentPropertiesStr = additionalProperties.get(IGenericConstants.COMPONENT_PROPERTIES_TAG);
+        fromSerialized = Properties.fromSerialized(componentPropertiesStr, ComponentProperties.class);
+        componentProperties = fromSerialized.properties;
+        schemaPropertyName = additionalProperties.get(IGenericConstants.COMPONENT_SCHEMA_TAG);
+        schemaValueStr = componentProperties.getValuedProperty(schemaPropertyName).getValue();
+        avroSchema = new Schema.Parser().parse((String) schemaValueStr);
+        assertNotNull(avroSchema.getField(TEST_COL_NAME));
+        assertNotNull(avroSchema.getField(ADDED_COL_NAME));
+        assertEquals(2, avroSchema.getFields().size());
     }
 
     /**
      * A container interface only for test.
      */
-    interface TestContainer extends Package {
+    class TestContainer extends PackageImpl {
         // only for test.
     }
 
     /**
      * A container interface only for test.
      */
-    interface OtherTestContainer extends Package {
+    class OtherTestContainer extends PackageImpl {
         // only for test.
     }
 

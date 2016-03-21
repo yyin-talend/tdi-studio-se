@@ -1618,6 +1618,10 @@ public class TalendEditorDropTargetListener extends TemplateTransferDropTargetLi
             if (table != null) {
                 String value = connectionItem.getProperty().getId() + " - " + table.getLabel(); //$NON-NLS-1$
                 IElementParameter schemaParam = node.getElementParameterFromField(EParameterFieldType.SCHEMA_TYPE);
+                if (schemaParam == null) {
+                    schemaParam = node.getElementParameterFromField(EParameterFieldType.SCHEMA_REFERENCE);
+                }
+
                 IElementParameter queryParam = node.getElementParameterFromField(EParameterFieldType.QUERYSTORE_TYPE);
                 if (queryParam != null) {
                     queryParam = queryParam.getChildParameters().get(EParameterName.QUERYSTORE_TYPE.getName());
@@ -1703,7 +1707,7 @@ public class TalendEditorDropTargetListener extends TemplateTransferDropTargetLi
                     RepositoryChangeMetadataCommand changeValueCmd = new RepositoryChangeMetadataCommand(node,
                             schemaParam.getName() + ":" //$NON-NLS-1$
                                     + EParameterName.REPOSITORY_SCHEMA_TYPE.getName(), value, ConvertionHelper.convert(table),
-                            null, connectionItem.getConnection());
+                            null, connectionItem.getConnection(), table);
                     cc.add(changeValueCmd);
                 }
 

@@ -74,7 +74,7 @@ public abstract class AbstractRepositoryController extends AbstractElementProper
 
     protected static final String REPOSITORY_CHOICE = "REPOSITORY_CHOICE"; //$NON-NLS-1$
 
-    private static final int STANDARD_REPOSITORY_WIDTH = 250;
+    protected static final int STANDARD_REPOSITORY_WIDTH = 250;
 
     /**
      * DOC nrousseau AbstractRepositoryController constructor comment.
@@ -123,6 +123,7 @@ public abstract class AbstractRepositoryController extends AbstractElementProper
         if (!propertyTypeParameter.isReadOnly()) {
             if (param.getFieldType() == EParameterFieldType.PROPERTY_TYPE
                     || param.getFieldType() == EParameterFieldType.SCHEMA_TYPE
+                    || param.getFieldType() == EParameterFieldType.SCHEMA_REFERENCE
                     || param.getFieldType() == EParameterFieldType.QUERYSTORE_TYPE) {
                 combo.setEnabled(ExtractMetaDataUtils.getInstance().haveLoadMetadataNode());
             }
@@ -244,7 +245,7 @@ public abstract class AbstractRepositoryController extends AbstractElementProper
         return btn;
     }
 
-    SelectionListener listenerSelection = new SelectionListener() {
+    protected SelectionListener listenerSelection = new SelectionListener() {
 
         @Override
         public void widgetDefaultSelected(SelectionEvent e) {

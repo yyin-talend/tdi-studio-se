@@ -139,7 +139,7 @@ public class Component extends AbstractComponent {
         addMainParameters(listParam, node);
         addPropertyParameters(listParam, node, Form.MAIN, EComponentCategory.BASIC);
         addPropertyParameters(listParam, node, Form.ADVANCED, EComponentCategory.ADVANCED);
-        initializePropertyParameters(listParam, node);
+        initializeParametersForSchema(listParam, node);
         addViewParameters(listParam, node);
         addDocParameters(listParam, node);
         addValidationRulesParameters(listParam, node);
@@ -171,9 +171,7 @@ public class Component extends AbstractComponent {
     }
 
     private void addDocParameters(final List<ElementParameter> listParam, INode node) {
-        ElementParameter param;
-
-        param = new ElementParameter(node);
+        ElementParameter param = new ElementParameter(node);
         param.setName(EParameterName.INFORMATION.getName());
         param.setValue(new Boolean(false));
         param.setDisplayName(EParameterName.INFORMATION.getDisplayName());
@@ -554,8 +552,9 @@ public class Component extends AbstractComponent {
         param.setCategory(EComponentCategory.BASIC);
         param.setDisplayName(EParameterName.PROPERTY_TYPE.getDisplayName());
         param.setFieldType(EParameterFieldType.PROPERTY_TYPE);
-        if (wizardDefinition != null)
-        	param.setRepositoryValue(wizardDefinition.getName());
+        if (wizardDefinition != null) {
+            param.setRepositoryValue(wizardDefinition.getName());
+        }
         param.setValue("");//$NON-NLS-1$
         param.setNumRow(2);
         param.setShow(wizardDefinition != null);
@@ -599,13 +598,14 @@ public class Component extends AbstractComponent {
     }
 
     private ComponentWizardDefinition getWizardDefinition(ComponentProperties componentProperties) {
+        ComponentWizardDefinition definition = null;
         if (componentProperties == null) {
             return null;
         }
         ComponentService service = ComponentsUtils.getComponentService();
         List<ComponentWizard> componentWizards = service.getComponentWizardsForProperties(componentProperties, null);
         for (ComponentWizard componentWizard : componentWizards) {
-            ComponentWizardDefinition definition = componentWizard.getDefinition();
+            definition = componentWizard.getDefinition();
             // Can we ensure it is the same wizard with metadata connection wizard by this way?
             if (definition.isTopLevel()) {
                 return definition;
@@ -614,7 +614,10 @@ public class Component extends AbstractComponent {
         List<NamedThing> namedThings = componentProperties.getProperties();
         for (NamedThing namedThing : namedThings) {
             if (namedThing instanceof ComponentProperties) {
-                return getWizardDefinition((ComponentProperties) namedThing);
+                definition = getWizardDefinition((ComponentProperties) namedThing);
+                if (definition != null && definition.isTopLevel()) {
+                    return definition;
+                }
             }
         }
         return null;
@@ -637,20 +640,14 @@ public class Component extends AbstractComponent {
         listParam.addAll(parameters);
     }
 
-    private void initializePropertyParameters(List<ElementParameter> listParam, final INode node) {
-        initializePropertyParametersForSchema(listParam, node);
-    }
-
     /**
      * Sometimes the property parameters of schema are base on other parameters,but they might be initialized after the
      * schema. So there need to initialize the schema's again.
      *
-     * @param listParam
      */
-    private void initializePropertyParametersForSchema(List<ElementParameter> listParam, final INode node) {
+    private void initializeParametersForSchema(List<ElementParameter> listParam, final INode node) {
         for (ElementParameter param : listParam) { // TUP-4161
-            if (param.getFieldType().equals(EParameterFieldType.SCHEMA_TYPE)
-                    || param.getFieldType().equals(EParameterFieldType.DCSCHEMA)) {
+            if (EParameterFieldType.SCHEMA_REFERENCE.equals(param.getFieldType())) {
                 ElementParameter newParam = new ElementParameter(node);
                 newParam.setCategory(EComponentCategory.BASIC);
                 newParam.setName(EParameterName.SCHEMA_TYPE.getName());

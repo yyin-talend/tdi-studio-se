@@ -25,6 +25,8 @@ import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.metadata.MetadataToolHelper;
 import org.talend.core.model.metadata.builder.connection.Connection;
 import org.talend.core.model.metadata.builder.connection.DatabaseConnection;
+import org.talend.core.model.metadata.builder.connection.MetadataTable;
+import org.talend.core.model.metadata.builder.connection.SAPBWTable;
 import org.talend.core.model.metadata.builder.connection.SalesforceSchemaConnection;
 import org.talend.core.model.metadata.builder.connection.XmlFileConnection;
 import org.talend.core.model.metadata.designerproperties.PropertyConstants.CDCTypeMode;
@@ -40,6 +42,7 @@ import org.talend.core.model.utils.ContextParameterUtils;
 import org.talend.core.model.utils.IDragAndDropServiceHandler;
 import org.talend.core.repository.seeker.RepositorySeekerManager;
 import org.talend.core.utils.TalendQuoteUtils;
+import org.talend.cwm.helper.SAPBWTableHelper;
 import org.talend.cwm.helper.TaggedValueHelper;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.model.components.EmfComponent;
@@ -64,6 +67,8 @@ public class RepositoryChangeMetadataCommand extends ChangeMetadataCommand {
 
     private final Node node;
 
+    private MetadataTable orginalTable;
+
     private String newRepositoryIdValue, oldRepositoryIdValue;
 
     private final Connection connection;
@@ -84,6 +89,12 @@ public class RepositoryChangeMetadataCommand extends ChangeMetadataCommand {
         this.newRepositoryIdValue = newRepositoryIdValue;
         this.setRepositoryMode(true);
         this.connection = connection;
+    }
+
+    public RepositoryChangeMetadataCommand(Node node, String propName, Object propValue, IMetadataTable newOutputMetadata,
+            String newRepositoryIdValue, Connection connection, MetadataTable orginalTable) {
+        this(node, propName, propValue, newOutputMetadata, newRepositoryIdValue, connection);
+        this.orginalTable = orginalTable;
     }
 
     @Override
@@ -182,6 +193,19 @@ public class RepositoryChangeMetadataCommand extends ChangeMetadataCommand {
             IElementParameter parameter = node.getElementParameter("SAP_FUNCTION");//$NON-NLS-1$
             if (parameter != null) {
                 setSAPFunctionName(node, parameter.getValue() == null ? null : (String) parameter.getValue());
+            }
+            if (newPropValue instanceof String) {
+                if (orginalTable != null && orginalTable instanceof SAPBWTable) {
+                    String innerIOType = ((SAPBWTable) orginalTable).getInnerIOType();
+                    if (innerIOType != null) {
+                        node.getElementParameter("INFO_OBJECT_TYPE").setValue(innerIOType); //$NON-NLS-1$
+                        IElementParameter schemaTypeParam = node.getElementParameterFromField(EParameterFieldType.SCHEMA_TYPE);
+                        if (schemaTypeParam != null) {
+                            IMetadataTable metadataTable = node.getMetadataFromConnector(schemaTypeParam.getContext());
+                            metadataTable.getAdditionalProperties().put(SAPBWTableHelper.SAP_INFOOBJECT_INNER_TYPE, innerIOType);
+                        }
+                    }
+                }
             }
             setTableRelevantParameterValues();
         }

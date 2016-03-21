@@ -113,6 +113,13 @@ public class MapperManager extends AbstractMapperManager {
 
     private Map<String, Object> defaultSettingMap = new HashMap<String, Object>();
 
+    /**
+     * True if the process is big data, which has a constraint that all join keys must be consistent between lookup
+     * tables, and a different properties dialog.
+     */
+    private boolean isBigDataProcess;
+
+    /** True if the process is MapReduce, which has different defaults for match mode. */
     private boolean isMRProcess;
 
     private boolean isSearchOption = false;
@@ -125,6 +132,8 @@ public class MapperManager extends AbstractMapperManager {
         problemsManager = new ProblemsManager(this);
         IProcess process = getAbstractMapComponent().getProcess();
         isMRProcess = ComponentCategory.CATEGORY_4_MAPREDUCE.getName().equals(process.getComponentsType());
+        isBigDataProcess = isMRProcess || ComponentCategory.CATEGORY_4_SPARK.getName().equals(process.getComponentsType())
+                || ComponentCategory.CATEGORY_4_SPARKSTREAMING.getName().equals(process.getComponentsType());
         getDefaultSetting();
     }
 
@@ -1166,6 +1175,10 @@ public class MapperManager extends AbstractMapperManager {
 
     public boolean isMRProcess() {
         return this.isMRProcess;
+    }
+
+    public boolean isBigDataProcess() {
+        return this.isBigDataProcess;
     }
 
     public boolean isSearchOption() {

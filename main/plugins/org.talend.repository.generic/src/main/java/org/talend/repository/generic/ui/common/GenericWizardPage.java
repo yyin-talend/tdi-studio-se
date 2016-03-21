@@ -13,6 +13,7 @@
 package org.talend.repository.generic.ui.common;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import org.eclipse.jface.wizard.WizardPage;
@@ -88,7 +89,7 @@ public abstract class GenericWizardPage extends WizardPage {
     }
 
     private boolean hasValidateWidget() {
-        List<Widget> widgets = form.getWidgets();
+        Collection<Widget> widgets = form.getWidgets();
         for (Widget widget : widgets) {
             if (widget.isCallValidate()) {
                 return true;

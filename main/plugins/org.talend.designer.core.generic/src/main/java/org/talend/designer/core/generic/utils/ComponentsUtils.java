@@ -13,6 +13,7 @@
 package org.talend.designer.core.generic.utils;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -47,6 +48,7 @@ import org.talend.daikon.properties.presentation.Widget;
 import org.talend.designer.core.generic.constants.IGenericConstants;
 import org.talend.designer.core.generic.i18n.Messages;
 import org.talend.designer.core.generic.model.Component;
+import org.talend.designer.core.generic.model.FakeElement;
 import org.talend.designer.core.generic.model.GenericElementParameter;
 import org.talend.designer.core.generic.model.mapping.WidgetFieldTypeMapper;
 import org.talend.designer.core.model.components.ElementParameter;
@@ -112,11 +114,11 @@ public class ComponentsUtils {
             }
         }
     }
-   
+
     // FIXME - this does not appear to be used, can it be deleted?
     public static List<ElementParameter> getParametersFromForm(IElement element, EComponentCategory category, Form form,
-    		Widget parentWidget, AtomicInteger lastRowNum) {
-    	return getParametersFromForm(element, category, null, null, form, parentWidget, lastRowNum);
+            Widget parentWidget, AtomicInteger lastRowNum) {
+        return getParametersFromForm(element, category, null, null, form, parentWidget, lastRowNum);
     }
 
     /**
@@ -163,7 +165,7 @@ public class ComponentsUtils {
         componentProperties.setValueEvaluator(null);
 
         // Have to initialize for the messages
-        List<Widget> formWidgets = form.getWidgets();
+        Collection<Widget> formWidgets = form.getWidgets();
         for (Widget widget : formWidgets) {
             NamedThing widgetProperty = widget.getContent();
 
@@ -204,10 +206,10 @@ public class ComponentsUtils {
             param.setFieldType(fieldType != null ? fieldType : EParameterFieldType.TEXT);
             if (widgetProperty instanceof PresentationItem) {
                 param.setValue(widgetProperty.getDisplayName());
-            } else {
+            } else if (widgetProperty instanceof Property) {
                 Property property = (Property) widgetProperty;
                 param.setRequired(property.isRequired());
-                param.setValue(getParameterValue(property));
+                param.setValue(getParameterValue(element, property));
                 param.setSupportContext(isSupportContext(property));
                 // TCOMP-96
                 param.setContext(EConnectionType.FLOW_MAIN.getName());
@@ -230,6 +232,8 @@ public class ComponentsUtils {
                     param.setListItemsDisplayCodeName(possValsDisplay.toArray(new String[0]));
                     param.setListItemsValue(possVals.toArray(new String[0]));
                 }
+            } else {
+            	param.setComponentProperties((ComponentProperties) widgetProperty);
             }
             param.setReadOnly(false);
             param.setSerialized(true);
@@ -247,18 +251,21 @@ public class ComponentsUtils {
         return elementParameters;
     }
 
-    public static Object getParameterValue(Property property) {
+    public static Object getParameterValue(IElement element, Property property) {
         Object paramValue = property.getValue() != null ? property.getValue() : property.getDefaultValue();
         Property.Type propertyType = property.getType();
         switch (propertyType) {
         case STRING:
-            paramValue = TalendQuoteUtils.addQuotesIfNotExist((String) paramValue);
+            if (!(element instanceof FakeElement)) {
+                paramValue = TalendQuoteUtils.addQuotesIfNotExist((String) paramValue);
+            }
             break;
         case ENUM:
             if (paramValue == null) {// TUP-4145
                 List<?> possibleValues = property.getPossibleValues();
                 if (possibleValues != null && possibleValues.size() > 0) {
                     paramValue = possibleValues.get(0);
+                    property.setValue(paramValue);
                 }
             }
             break;
@@ -341,7 +348,6 @@ public class ComponentsUtils {
     }
 
     public static Object getGenericPropertyValue(ComponentProperties componentProperties, String paramName) {
-        Object obj = null;
         if (componentProperties == null || paramName == null) {
             return null;
         }
@@ -351,9 +357,9 @@ public class ComponentsUtils {
         }
         Property property = componentProperties.getValuedProperty(paramName);
         if (property != null) {
-            obj = property.getValue();
+            return property.getValue() != null ? property.getValue() : property.getDefaultValue();
         }
-        return obj;
+        return null;
     }
 
     public static void setGenericPropertyValue(ComponentProperties componentProperties, String paramName, Object value) {

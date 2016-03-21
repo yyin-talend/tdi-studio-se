@@ -17,9 +17,11 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.avro.Schema;
+import org.eclipse.emf.common.util.EList;
 import org.talend.components.api.properties.ComponentProperties;
 import org.talend.core.model.metadata.IMetadataTable;
-import org.talend.core.model.metadata.MetadataToolHelper;
+import org.talend.core.model.metadata.MetadataToolAvroHelper;
+import org.talend.core.model.metadata.builder.ConvertionHelper;
 import org.talend.core.model.metadata.builder.connection.Connection;
 import org.talend.core.model.metadata.builder.connection.ConnectionFactory;
 import org.talend.core.model.metadata.builder.connection.MetadataColumn;
@@ -60,7 +62,7 @@ public class SchemaUtils {
 
     private static void convertComponentSchemaIntoTalendSchema(Schema schema, MetadataTable metadataTable) {
         for (Schema.Field field : schema.getFields()) {
-            MetadataColumn metadataColumn = MetadataToolHelper.convertFromAvro(field);
+            MetadataColumn metadataColumn = MetadataToolAvroHelper.convertFromAvro(field);
             metadataTable.getColumns().add(metadataColumn);
         }
     }
@@ -69,7 +71,46 @@ public class SchemaUtils {
         if (metadataTable == null) {
             return null;
         }
-        return MetadataToolHelper.convertToAvro(metadataTable);
+        return MetadataToolAvroHelper.convertToAvro(metadataTable);
+    }
+
+    /**
+     * DOC ycbai Comment method "updateComponentSchema".
+     * <p>
+     * Recreate a component schema by <code>metadataTable<code> and save it back into the <code>metadataTable<code>.
+     * 
+     * @param metadataTable
+     */
+    public static void updateComponentSchema(MetadataTable metadataTable) {
+        String componentPropertiesStr = null;
+        String schemaPropertyName = null;
+        TaggedValue componentPropertiesTaggedValue = null;
+        EList<TaggedValue> taggedValues = metadataTable.getTaggedValue();
+        for (TaggedValue taggedValue : taggedValues) {
+            String tag = taggedValue.getTag();
+            String tagValue = taggedValue.getValue();
+            if (IGenericConstants.COMPONENT_PROPERTIES_TAG.equals(tag)) {
+                componentPropertiesStr = tagValue;
+                componentPropertiesTaggedValue = taggedValue;
+            } else if (IGenericConstants.COMPONENT_SCHEMA_TAG.equals(tag)) {
+                schemaPropertyName = tagValue;
+            }
+        }
+        if (componentPropertiesStr != null && componentPropertiesTaggedValue != null && schemaPropertyName != null) {
+            ComponentProperties componentProperties = ComponentsUtils
+                    .getComponentPropertiesFromSerialized(componentPropertiesStr);
+            componentProperties.setValue(schemaPropertyName, convertTalendSchemaIntoComponentSchema(metadataTable));
+            componentPropertiesTaggedValue.setValue(componentProperties.toSerialized());
+        }
+    }
+
+    public static void updateComponentSchema(ComponentProperties componentProperties, String schemaPropertyName,
+            IMetadataTable metadataTable) {
+        Schema schema = convertTalendSchemaIntoComponentSchema(ConvertionHelper.convert(metadataTable));
+        componentProperties.setValue(schemaPropertyName, schema);
+        Map<String, String> additionalProperties = metadataTable.getAdditionalProperties();
+        additionalProperties.put(IGenericConstants.COMPONENT_PROPERTIES_TAG, componentProperties.toSerialized());
+        additionalProperties.put(IGenericConstants.COMPONENT_SCHEMA_TAG, schemaPropertyName);
     }
 
     public static ComponentProperties getCurrentComponentProperties(IMetadataTable table) {
