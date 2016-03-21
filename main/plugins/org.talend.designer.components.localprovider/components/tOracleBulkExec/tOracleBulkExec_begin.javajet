@@ -761,28 +761,45 @@ java.io.File dscFileTemp_<%=cid %> = new java.io.File(dscf_<%=cid %>);
 java.io.BufferedReader dateFile_br_<%=cid %> = null;
 java.io.BufferedReader badFile_br_<%=cid %> = null;
 java.io.BufferedReader dscFile_br_<%=cid %> = null;
-								
-if(dateFileTemp_<%=cid %>.exists()){
-	dateFile_br_<%=cid %> = new java.io.BufferedReader(
-		new java.io.FileReader(dataf_<%=cid %>));
-}
+																
+try
+{																
+    if(dateFileTemp_<%=cid %>.exists()){
+	    dateFile_br_<%=cid %> = new java.io.BufferedReader(
+		    new java.io.FileReader(dataf_<%=cid %>));
+    }
 				
-if(badFileTemp_<%=cid %>.exists()){
-	badFile_br_<%=cid %> = new java.io.BufferedReader(
-		new java.io.FileReader(badf_<%=cid %>));
-}
+    if(badFileTemp_<%=cid %>.exists()){
+	    badFile_br_<%=cid %> = new java.io.BufferedReader(
+		    new java.io.FileReader(badf_<%=cid %>));
+    }
 				
-if(dscFileTemp_<%=cid %>.exists()){
-    dscFile_br_<%=cid %> = new java.io.BufferedReader(
-		new java.io.FileReader(dscf_<%=cid %>));
-}	
-			
+    if(dscFileTemp_<%=cid %>.exists()){
+        dscFile_br_<%=cid %> = new java.io.BufferedReader(
+		    new java.io.FileReader(dscf_<%=cid %>));
+    }  
+    
     LogUtil_<%=cid%> lu_<%=cid%> = new LogUtil_<%=cid%>();
     nb_line_data_<%=cid %> = lu_<%=cid%>.getNumber(dateFile_br_<%=cid %>);//get the number of data line
     nb_line_bad_<%=cid %> = lu_<%=cid%>.getNumber(badFile_br_<%=cid %>);//get the number of reject data line
     nb_line_discarded_<%=cid %> = lu_<%=cid%>.getNumber(dscFile_br_<%=cid %>);//get the number of discarded data line
-    nb_line_inserted_<%=cid %> = nb_line_data_<%=cid %> - nb_line_bad_<%=cid %> - nb_line_discarded_<%=cid %>;
-lr_<%=cid %>.close();
+    nb_line_inserted_<%=cid %> = nb_line_data_<%=cid %> - nb_line_bad_<%=cid %> - nb_line_discarded_<%=cid %>; 
+}    
+finally
+{
+	if(dateFile_br_<%=cid %> != null)
+	{
+		dateFile_br_<%=cid %>.close();
+	}
+	if(badFile_br_<%=cid %> != null)
+	{
+		badFile_br_<%=cid %>.close();
+	}
+	if(dscFile_br_<%=cid %> != null)
+	{
+		dscFile_br_<%=cid %>.close();
+	}
+}
 
 globalMap.put("<%=cid %>_NB_LINE_DATA", nb_line_data_<%=cid %>);
 
