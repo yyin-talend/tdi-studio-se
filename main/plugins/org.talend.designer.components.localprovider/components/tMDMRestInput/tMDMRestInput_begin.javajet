@@ -63,8 +63,21 @@ if ((metadatas != null) && (metadatas.size() > 0)) {
 	                String queryResult_<%=cid%> = response_<%=cid%>.readEntity(String.class);
 	                webClient_<%=cid%>.reset();
 	                if(response_<%=cid%>.getStatus() != 200) {
-	                	<% logUtil.error("queryResult_" + cid);%>
-	                	throw new RuntimeException(queryResult_<%=cid%>);
+	                    if(response_<%=cid%>.getStatus() == 401) {
+	                        <% logUtil.error("\"Unauthorized! Invalid username and password.\"");%>
+	                        throw new RuntimeException("Unauthorized! Invalid username and password.");
+	                    } else if(response_<%=cid%>.getStatus() == 404) {
+	                        <% logUtil.error("\"Not found! URL is not correct.\"");%>
+	                        throw new RuntimeException("Not found! URL is not correct.");
+	                    <%if(dataCluster.replaceAll(" ","").equals("\"\"")){%>
+	                    } else if(response_<%=cid%>.getStatus() == 500) {
+	                        <% logUtil.error("\"Data container is empty or null.\"");%>
+	                        throw new RuntimeException("Data container is empty or null.");
+	                    <%}%>
+	                    } else {
+	                        <% logUtil.error("queryResult_" + cid);%>
+	                        throw new RuntimeException(queryResult_<%=cid%>);
+	                    }
 	                }
 	                
 	                <% logUtil.debug("\"Query result from server:\" + queryResult_" + cid);%>
