@@ -297,7 +297,6 @@ public class DataProcess implements IGeneratingProcess {
 
         dataNode.setMetadataList(metadataList);
         dataNode.setComponent(graphicalNode.getComponent());
-        dataNode.setComponentProperties(graphicalNode.getComponentProperties());
         dataNode.setElementParameters(graphicalNode.getComponent().createElementParameters(dataNode));
         dataNode.setListConnector(graphicalNode.getListConnector());
         dataNode.setSubProcessContainTraceBreakpoint(graphicalNode.isSubProcessContainTraceBreakpoint());
@@ -329,6 +328,7 @@ public class DataProcess implements IGeneratingProcess {
             }
         }
         dataNode.setDesignSubjobStartNode(graphicalNode.getDesignSubjobStartNode());
+        dataNode.setComponentProperties(graphicalNode.getComponentProperties());
 
         INode addedNode = addDataNode(dataNode);
         buildCheckMap.put(graphicalNode, addedNode);
@@ -3059,6 +3059,7 @@ public class DataProcess implements IGeneratingProcess {
         }
         newGraphicalNode.setActivate(graphicalNode.isActivate());
         newGraphicalNode.setStart(graphicalNode.isStart());
+        newGraphicalNode.setComponentProperties(graphicalNode.getComponentProperties());
 
         return newGraphicalNode;
     }

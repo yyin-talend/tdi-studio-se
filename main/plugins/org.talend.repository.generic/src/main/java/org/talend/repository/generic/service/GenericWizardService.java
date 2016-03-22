@@ -24,6 +24,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.talend.components.api.properties.ComponentProperties;
 import org.talend.components.api.wizard.ComponentWizardDefinition;
 import org.talend.components.api.wizard.WizardImageType;
+import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.metadata.builder.connection.Connection;
 import org.talend.core.model.metadata.builder.connection.MetadataTable;
 import org.talend.core.model.process.EComponentCategory;
@@ -165,6 +166,15 @@ public class GenericWizardService implements IGenericWizardService {
             }
         }
         return dynamicComposite;
+    }
+
+    public void updateComponentSchema(MetadataTable metadataTable) {
+        SchemaUtils.updateComponentSchema(metadataTable);
+    }
+
+    public void updateComponentSchema(ComponentProperties componentProperties, String schemaPropertyName,
+            IMetadataTable metadataTable) {
+        SchemaUtils.updateComponentSchema(componentProperties, schemaPropertyName, metadataTable);
     }
 
 }

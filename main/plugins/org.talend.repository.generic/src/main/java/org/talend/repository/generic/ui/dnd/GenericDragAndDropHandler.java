@@ -18,6 +18,7 @@ import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
 import org.talend.commons.exception.ExceptionHandler;
+import org.talend.commons.runtime.model.components.IComponentConstants;
 import org.talend.components.api.component.ComponentDefinition;
 import org.talend.components.api.properties.ComponentProperties;
 import org.talend.core.GlobalServiceRegister;
@@ -103,7 +104,7 @@ public class GenericDragAndDropHandler extends AbstractDragAndDropServiceHandler
                 } else if (modelElement instanceof MetadataTable) {
                     MetadataTable metadataTable = (MetadataTable) modelElement;
                     for (TaggedValue taggedValue : metadataTable.getTaggedValue()) {
-                        if (IGenericConstants.COMPONENT_PROPERTIES_TAG.equals(taggedValue.getTag())) {
+                        if (IComponentConstants.COMPONENT_PROPERTIES_TAG.equals(taggedValue.getTag())) {
                             subComponentProperties = ComponentsUtils.getComponentPropertiesFromSerialized(taggedValue.getValue());
                         }
                     }
@@ -153,7 +154,7 @@ public class GenericDragAndDropHandler extends AbstractDragAndDropServiceHandler
             } else if (modelElement instanceof MetadataTable) {
                 MetadataTable metadataTable = (MetadataTable) modelElement;
                 for (TaggedValue taggedValue : metadataTable.getTaggedValue()) {
-                    if (IGenericConstants.COMPONENT_PROPERTIES_TAG.equals(taggedValue.getTag())) {
+                    if (IComponentConstants.COMPONENT_PROPERTIES_TAG.equals(taggedValue.getTag())) {
                         subComponentProperties = ComponentsUtils.getComponentPropertiesFromSerialized(taggedValue.getValue());
                         break;
                     }
