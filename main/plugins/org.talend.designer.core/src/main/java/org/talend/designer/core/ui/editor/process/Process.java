@@ -125,7 +125,7 @@ import org.talend.core.utils.KeywordsValidator;
 import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.ITestContainerGEFService;
 import org.talend.designer.core.i18n.Messages;
-import org.talend.designer.core.model.components.AbstractComponent;
+import org.talend.designer.core.model.components.AbstractBasicComponent;
 import org.talend.designer.core.model.components.DummyComponent;
 import org.talend.designer.core.model.components.EOozieParameterName;
 import org.talend.designer.core.model.components.EParameterName;
@@ -991,9 +991,8 @@ public class Process extends Element implements IProcess2, IGEFProcess, ILastVer
                 if (serializedProperties == null) {
                     if (param.getElement() != null && param.getElement() instanceof INode) {
                         IComponent iComponent = ((INode) param.getElement()).getComponent();
-                        if (iComponent instanceof AbstractComponent) {
-                            AbstractComponent component = (AbstractComponent) iComponent;
-                            //
+                        if (iComponent instanceof AbstractBasicComponent) {
+                            AbstractBasicComponent component = (AbstractBasicComponent) iComponent;
                             for (IElementParameter parameter : paramList) {
                                 if (!param.isSerialized()) {
                                     continue;
@@ -1036,7 +1035,6 @@ public class Process extends Element implements IProcess2, IGEFProcess, ILastVer
             } else if (value instanceof String) {
                 pType.setValue((String) value);
             }
-
             listParamType.add(pType);
         }
     }
@@ -1218,8 +1216,8 @@ public class Process extends Element implements IProcess2, IGEFProcess, ILastVer
                     if ("PROPERTIES".equals(pType.getName())) {//$NON-NLS-1$
                         String pTypeValue = pType.getValue();
                         if (pTypeValue != null) {
-                            if (component != null && component instanceof AbstractComponent) {
-                                AbstractComponent comp = (AbstractComponent) component;
+                            if (component != null && component instanceof AbstractBasicComponent) {
+                                AbstractBasicComponent comp = (AbstractBasicComponent) component;
                                 comp.initNodePropertiesFromSerialized((INode) elemParam, pTypeValue);
                                 List<? extends IElementParameter> paramList = elemParam.getElementParameters();
                                 for (int m = 0; m < paramList.size(); m++) {
@@ -1486,16 +1484,15 @@ public class Process extends Element implements IProcess2, IGEFProcess, ILastVer
         saveProcessElementParameters(processType);
         saveRoutinesDependencies(processType);
         saveAdditionalProperties();
-        
-        String sourceJobType =   ConvertJobsUtil.getJobTypeFromFramework(this.getProperty().getItem());
+
+        String sourceJobType = ConvertJobsUtil.getJobTypeFromFramework(this.getProperty().getItem());
         String sourceJobFramework = (String) this.getProperty().getAdditionalProperties().get(ConvertJobsUtil.FRAMEWORK);
-        if(sourceJobType!=null){
+        if (sourceJobType != null) {
             processType.setJobType(sourceJobType.replaceAll(" ", "_"));
         }
-        if(sourceJobFramework!=null){
+        if (sourceJobFramework != null) {
             processType.setFramework(sourceJobFramework.replaceAll(" ", "_"));
         }
-       
 
         EList nList = processType.getNode();
         EList cList = processType.getConnection();
