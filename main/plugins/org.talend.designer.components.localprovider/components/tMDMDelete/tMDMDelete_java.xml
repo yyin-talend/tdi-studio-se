@@ -225,6 +225,7 @@
                     MVN="mvn:org.talend.libraries/xmlschema-core-2.2.1/6.0.0"
                     UrlPath="platform:/plugin/org.talend.libraries.apache.xml/lib/xmlschema-core-2.2.1.jar"
                     REQUIRED="true"
+                    BundleID=""
                     />
                  <IMPORT
                     NAME="woodstox-core-asl-4.4.1"
