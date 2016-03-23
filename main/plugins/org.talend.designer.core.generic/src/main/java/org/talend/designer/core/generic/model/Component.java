@@ -21,7 +21,6 @@ import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
-import org.eclipse.emf.common.util.EList;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.graphics.ImageData;
@@ -37,7 +36,6 @@ import org.talend.components.api.wizard.ComponentWizardDefinition;
 import org.talend.core.CorePlugin;
 import org.talend.core.GlobalServiceRegister;
 import org.talend.core.model.components.EComponentType;
-import org.talend.core.model.components.IMultipleComponentManager;
 import org.talend.core.model.general.ModuleNeeded;
 import org.talend.core.model.param.ERepositoryCategoryType;
 import org.talend.core.model.process.EComponentCategory;
@@ -46,7 +44,6 @@ import org.talend.core.model.process.EParameterFieldType;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.INode;
 import org.talend.core.model.process.INodeConnector;
-import org.talend.core.model.process.IProcess;
 import org.talend.core.model.temp.ECodePart;
 import org.talend.core.prefs.ITalendCorePrefConstants;
 import org.talend.core.runtime.services.ComponentServiceWithValueEvaluator;
@@ -58,7 +55,7 @@ import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.generic.constants.IGenericConstants;
 import org.talend.designer.core.generic.context.ComponentContextPropertyValueEvaluator;
 import org.talend.designer.core.generic.utils.ComponentsUtils;
-import org.talend.designer.core.model.components.AbstractComponent;
+import org.talend.designer.core.model.components.AbstractBasicComponent;
 import org.talend.designer.core.model.components.DummyComponent;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.model.components.ElementParameter;
@@ -71,7 +68,7 @@ import org.talend.designer.core.ui.preferences.TalendDesignerPrefConstants;
  * created by hcyi on Sep 10, 2015 Detailled comment
  *
  */
-public class Component extends AbstractComponent {
+public class Component extends AbstractBasicComponent {
 
     private static Logger log = Logger.getLogger(Component.class);
 
@@ -81,7 +78,7 @@ public class Component extends AbstractComponent {
 
     private ComponentsProvider provider;
 
-    private Map<String, String> translatedMap = new HashMap<String, String>();
+    private Map<String, String> translatedMap = new HashMap<>();
 
     public Component(ComponentDefinition componentDefinition) throws BusinessException {
         this.componentDefinition = componentDefinition;
@@ -688,11 +685,6 @@ public class Component extends AbstractComponent {
     }
 
     @Override
-    public boolean hasConditionalOutputs() {
-        return false;
-    }
-
-    @Override
     public String getShortName() {
         String originalComponentName = getName();
         String calculatedShortName = "";//$NON-NLS-1$
@@ -772,11 +764,6 @@ public class Component extends AbstractComponent {
     }
 
     @Override
-    public String getPluginExtension() {
-        return null;
-    }
-
-    @Override
     public boolean isSchemaAutoPropagated() {
         return componentDefinition.isSchemaAutoPropagate();
     }
@@ -784,26 +771,6 @@ public class Component extends AbstractComponent {
     @Override
     public boolean isDataAutoPropagated() {
         return componentDefinition.isDataAutoPropagate();
-    }
-
-    @Override
-    public boolean isVisible() {
-        return true;
-    }
-
-    @Override
-    public boolean isVisible(String family) {
-        return true;
-    }
-
-    @Override
-    public boolean isVisibleInComponentDefinition() {
-        return false;
-    }
-
-    @Override
-    public String getVersion() {
-        return "";//$NON-NLS-1$
     }
 
     @Override
@@ -820,26 +787,6 @@ public class Component extends AbstractComponent {
             }
             return componentImportNeedsList;
         }
-    }
-
-    @Override
-    public List<IMultipleComponentManager> getMultipleComponentManagers() {
-        return new ArrayList<>();
-    }
-
-    @Override
-    public boolean isLoaded() {
-        return true;
-    }
-
-    @Override
-    public void setImageRegistry(Map<String, ImageDescriptor> imageRegistry) {
-        this.imageRegistry = imageRegistry;
-    }
-
-    @Override
-    public Map<String, ImageDescriptor> getImageRegistry() {
-        return imageRegistry;
     }
 
     @Override
@@ -875,11 +822,6 @@ public class Component extends AbstractComponent {
         return new DummyComponent("dummy").getIcon32();//$NON-NLS-1$
     }
 
-    @Override
-    public String getPathSource() {
-        return null;
-    }
-
     private ArrayList<ECodePart> createCodePartList() {
         ArrayList<ECodePart> theCodePartList = new ArrayList<>();
         theCodePartList.add(ECodePart.BEGIN);
@@ -897,122 +839,8 @@ public class Component extends AbstractComponent {
     }
 
     @Override
-    public List<String> getPluginDependencies() {
-        return new ArrayList<>();
-    }
-
-    @Override
-    public boolean useMerge() {
-        // TUP-4149
-        return false;
-    }
-
-    public boolean useFlow() {
-        // TUP-4149
-        return false;
-    }
-
-    public boolean useSchema() {
-        // TUP-4149
-        return false;
-    }
-
-    @Override
-    public boolean isMultiplyingOutputs() {
-        // TUP-4150
-        return false;
-    }
-
-    @Override
-    public boolean isMultipleOutput() {
-        // TUP-4150
-        return false;
-    }
-
-    public boolean isMultiSchemaOutput() {
-        // TUP-4150
-        return false;
-    }
-
-    @Override
-    public boolean useLookup() {
-        return false;
-    }
-
-    @Override
-    public boolean useImport() {
-        return false;
-    }
-
-    @Override
     public EComponentType getComponentType() {
         return EComponentType.GENERIC;
-    }
-
-    @Override
-    public boolean isHashComponent() {
-        return false;
-    }
-
-    @Override
-    public boolean isTechnical() {
-        return false;
-    }
-
-    @Override
-    public boolean isSingleton() {
-        return false;
-    }
-
-    @Override
-    public boolean isMainCodeCalled() {
-        return false;
-    }
-
-    @Override
-    public boolean canParallelize() {
-        return false;
-    }
-
-    @Override
-    public String getCombine() {
-        return "";//$NON-NLS-1$
-    }
-
-    @Override
-    public IProcess getProcess() {
-        return null;
-    }
-
-    @Override
-    public String getType() {
-        // TCOMP-92
-        return "DI";//$NON-NLS-1$
-    }
-
-    @Override
-    public String getInputType() {
-        return "";//$NON-NLS-1$
-    }
-
-    @Override
-    public String getOutputType() {
-        return "";//$NON-NLS-1$
-    }
-
-    @Override
-    public boolean isReduce() {
-        return false;
-    }
-
-    @Override
-    public boolean isSparkAction() {
-        return false;
-    }
-
-    @Override
-    public String getPartitioning() {
-        return "";//$NON-NLS-1$
     }
 
     public ComponentsProvider getProvider() {
@@ -1021,11 +849,6 @@ public class Component extends AbstractComponent {
 
     public void setProvider(ComponentsProvider provider) {
         this.provider = provider;
-    }
-
-    @Override
-    public boolean isSupportDbType() {
-        return false;
     }
 
     public static class CodegenPropInfo {
@@ -1117,20 +940,6 @@ public class Component extends AbstractComponent {
             return false;
         }
         return true;
-    }
-
-    @Override
-    public boolean isLog4JEnabled() {
-        return false;
-    }
-
-    public String getEquivalent() {
-        return "";//$NON-NLS-1$
-    }
-
-    @Override
-    public EList getCONNECTORList() {
-        return null;
     }
 
     @Override
