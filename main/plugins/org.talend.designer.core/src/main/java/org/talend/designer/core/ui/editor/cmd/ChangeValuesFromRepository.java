@@ -20,6 +20,7 @@ import java.util.Map;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.widgets.Shell;
 import org.talend.commons.runtime.xml.XmlUtil;
+import org.talend.components.api.properties.ComponentProperties;
 import org.talend.core.GlobalServiceRegister;
 import org.talend.core.hadoop.HadoopConstants;
 import org.talend.core.model.components.ComponentCategory;
@@ -56,6 +57,7 @@ import org.talend.core.model.properties.ContextItem;
 import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.SAPConnectionItem;
 import org.talend.core.model.utils.TalendTextUtils;
+import org.talend.core.runtime.services.IGenericWizardService;
 import org.talend.core.service.IJsonFileService;
 import org.talend.core.utils.TalendQuoteUtils;
 import org.talend.designer.core.i18n.Messages;
@@ -286,6 +288,15 @@ public class ChangeValuesFromRepository extends ChangeMetadataCommand {
             }
         } else {
             oldValues.clear();
+            List<ComponentProperties> componentProperties = null;
+            IGenericWizardService wizardService = null;
+            if (GlobalServiceRegister.getDefault().isServiceRegistered(IGenericWizardService.class)) {
+                wizardService = (IGenericWizardService) GlobalServiceRegister.getDefault()
+                        .getService(IGenericWizardService.class);
+            }
+            if (wizardService != null && wizardService.isGenericConnection(connection)) {
+                componentProperties = wizardService.getAllComponentProperties(connection);
+            }
             IElementParameter propertyParam = elem.getElementParameter(propertyName);
             List<IElementParameter> elementParameters = new ArrayList<>(elem.getElementParameters());
             for (IElementParameter param : elementParameters) {
@@ -294,7 +305,7 @@ public class ChangeValuesFromRepository extends ChangeMetadataCommand {
                     continue;
                 }
                 boolean isGenericRepositoryValue = RepositoryToComponentProperty.isGenericRepositoryValue(connection,
-                        param.getName());
+                        componentProperties, param.getName());
                 if (repositoryValue == null && isGenericRepositoryValue) {
                     repositoryValue = param.getName();
                     param.setRepositoryValue(repositoryValue);

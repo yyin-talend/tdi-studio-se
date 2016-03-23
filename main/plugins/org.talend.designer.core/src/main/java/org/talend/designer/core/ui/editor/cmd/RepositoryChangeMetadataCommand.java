@@ -216,7 +216,11 @@ public class RepositoryChangeMetadataCommand extends ChangeMetadataCommand {
                 wizardService = (IGenericWizardService) GlobalServiceRegister.getDefault()
                         .getService(IGenericWizardService.class);
             }
-            if (wizardService != null && wizardService.isGenericConnection(connection)) {
+            Connection conn = connection;
+            if (conn == null) {
+                conn = getConnection();
+            }
+            if (wizardService != null && wizardService.isGenericConnection(conn)) {
                 wizardService
                         .updateComponentSchema(node.getComponentProperties(), getSchemaElementParamName(), newOutputMetadata);
             }

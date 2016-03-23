@@ -15,8 +15,12 @@ package org.talend.repository.generic.ui.dnd;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.junit.Before;
 import org.junit.Test;
+import org.talend.components.api.properties.ComponentProperties;
 import org.talend.core.model.metadata.builder.connection.Connection;
 import org.talend.core.model.utils.AbstractDragAndDropServiceHandler;
 import org.talend.repository.generic.model.genericMetadata.GenericConnection;
@@ -35,7 +39,9 @@ public class GenericDragAndDropHandlerTest {
     public void testIsGenericRepositoryValue() {
         Connection connection = mock(Connection.class);
         AbstractDragAndDropServiceHandler abstractDragAndDropServiceHandler = mock(AbstractDragAndDropServiceHandler.class);
-        boolean isGenericRepositoryValue = abstractDragAndDropServiceHandler.isGenericRepositoryValue(connection, "paramName1");//$NON-NLS-1$
+        List<ComponentProperties> componentProsList = new ArrayList<>();
+        boolean isGenericRepositoryValue = abstractDragAndDropServiceHandler.isGenericRepositoryValue(componentProsList,
+                "paramName1");//$NON-NLS-1$
         assertEquals(false, isGenericRepositoryValue);
 
         connection = mock(GenericConnection.class);
