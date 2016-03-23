@@ -142,7 +142,7 @@ import org.talend.hadoop.distribution.condition.ComponentCondition;
 import org.talend.hadoop.distribution.condition.EqualityOperator;
 import org.talend.hadoop.distribution.condition.NestedComponentCondition;
 import org.talend.hadoop.distribution.condition.SimpleComponentCondition;
-import org.talend.hadoop.distribution.helper.DistributionsHelper;
+import org.talend.hadoop.distribution.helper.DistributionsManager;
 import org.talend.hadoop.distribution.model.DistributionBean;
 import org.talend.hadoop.distribution.model.DistributionVersion;
 import org.talend.hadoop.distribution.model.DistributionVersionModule;
@@ -1550,7 +1550,7 @@ public class EmfComponent extends AbstractBasicComponent {
             }
         } else if (type == EParameterFieldType.HADOOP_DISTRIBUTION) {
             ComponentType componentType = ComponentType.getComponentType(parentParam.getName());
-            DistributionsHelper distributionsHelper = new DistributionsHelper(componentType);
+            DistributionsManager distributionsHelper = new DistributionsManager(componentType);
             final DistributionBean[] hadoopDistributions = distributionsHelper.getDistributions();
 
             ElementParameter newParam = new ElementParameter(node);
@@ -1572,8 +1572,9 @@ public class EmfComponent extends AbstractBasicComponent {
 
                 showIfVersion[i] = that.getDisplayShowIf();
                 notShowIfVersion[i] = null;
-
-                versionsList.addAll(Arrays.asList(that.getVersions()));
+                if (!that.useCustom()) { // ignore custom version, because it's fake one
+                    versionsList.addAll(Arrays.asList(that.getVersions()));
+                }
             }
 
             String defaultValue = itemValue[0];
@@ -1596,15 +1597,17 @@ public class EmfComponent extends AbstractBasicComponent {
 
             listParam.add(newParam);
 
+            if (!areHadoopDistribsLoaded) {
+                hadoopDistributionImportNeedsList = new ArrayList<>();
+            }
+
             displayName = new String[versionsList.size()];
             itemValue = new String[versionsList.size()];
             showIfVersion = new String[versionsList.size()];
             notShowIfVersion = new String[versionsList.size()];
-            Iterator<DistributionVersion> versionIter = versionsList.iterator();
+
             int index = 0;
-            if (!areHadoopDistribsLoaded) {
-                hadoopDistributionImportNeedsList = new ArrayList<>();
-            }
+            Iterator<DistributionVersion> versionIter = versionsList.iterator();
             while (versionIter.hasNext()) {
                 DistributionVersion that = versionIter.next();
                 itemValue[index] = that.version;
