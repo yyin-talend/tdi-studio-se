@@ -66,6 +66,8 @@ public abstract class AbstractBuildJobHandler implements IBuildJobHandler {
     protected Map<ExportChoice, Object> exportChoice;
 
     protected ITalendProcessJavaProject talendProcessJavaProject;
+    
+    private boolean itemDependencies;
 
     public AbstractBuildJobHandler(ProcessItem processItem, String version, String contextName,
             Map<ExportChoice, Object> exportChoiceMap) {
@@ -89,6 +91,14 @@ public abstract class AbstractBuildJobHandler implements IBuildJobHandler {
             }
         }
         return false;
+    }
+    
+    public boolean hasItemDependencies() {
+        return itemDependencies;
+    }
+    
+    protected void setNeedItemDependencies(boolean itemDependencies){
+        this.itemDependencies = itemDependencies;
     }
 
     protected Project getProject(Item item) {
@@ -151,7 +161,7 @@ public abstract class AbstractBuildJobHandler implements IBuildJobHandler {
         // if not binaries, need add maven resources
         boolean isBinaries = isOptionChoosed(ExportChoice.binaries);
         addArg(profileBuffer, !isBinaries, TalendMavenConstants.PROFILE_INCLUDE_MAVEN_RESOURCES);
-        addArg(profileBuffer, isOptionChoosed(ExportChoice.needJobItem), TalendMavenConstants.PROFILE_INCLUDE_ITEMS);
+        addArg(profileBuffer, isOptionChoosed(ExportChoice.needJobItem) || itemDependencies, TalendMavenConstants.PROFILE_INCLUDE_ITEMS);
 
         // for binaries
         addArg(profileBuffer, isOptionChoosed(ExportChoice.includeLibs), TalendMavenConstants.PROFILE_INCLUDE_LIBS);
