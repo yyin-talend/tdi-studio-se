@@ -728,18 +728,22 @@ int countLines_<%=cid %> =0;//log file lines count
 //1
 class LogUtil_<%=cid%>{
     public int getNumber(java.io.BufferedReader br)  throws java.io.IOException {
-        int number=0;
-        java.util.regex.Pattern pattern = java.util.regex.Pattern.compile("\\d{1,}");
-        String tempLine = br.readLine();
-        if(tempLine!=null){
-            String str_number = tempLine.substring(tempLine.indexOf(":") + 1).trim();
-            boolean isNumber= pattern.matcher(str_number).matches();
-            if(isNumber){
-                number = Integer.parseInt(str_number);
-            }
-        }
-        return number;
+		if(br == null)
+		{
+			return 0;
+		}
+		
+		String tempLine = br.readLine();				
+		int count = 0;
+		while(tempLine != null){
+			count++;
+			tempLine = br.readLine();
+		}
+		br.close();
+		
+		return count;
     }
+ 
 }
 int lastTableLine_<%=cid%> = 0;//Line Number of the last table name
 while ((tempLine_<%=cid %> = lr_<%=cid %>.readLine() )!= null) {
@@ -749,34 +753,53 @@ while ((tempLine_<%=cid %> = lr_<%=cid %>.readLine() )!= null) {
     }
 }
 lr_<%=cid %>.close();
-//need new instance to readLine .
-lr_<%=cid %> = new java.io.BufferedReader(new java.io.FileReader(logf_<%=cid %>));
-for (int i_<%=cid %>=0; i_<%=cid %><= lastTableLine_<%=cid%>; i_<%=cid %>++) {
-    lr_<%=cid %>.readLine();
-}
-    boolean isNumber_<%=cid%>=false;
-    tempLine_<%=cid %> = lr_<%=cid %>.readLine();
-    int emptyLineNum_<%=cid%> =0;//The number of empty block
-    boolean isFirstEmptyLine_<%=cid%> = false;//Is the first empty line of empty block
-for (int i_<%=cid %>=lastTableLine_<%=cid%>+2; i_<%=cid %><= countLines_<%=cid %>; i_<%=cid %>++) {
-    tempLine_<%=cid %> = lr_<%=cid %>.readLine();
-    if(tempLine_<%=cid %>!=null && tempLine_<%=cid %>.trim().length()>0){
-        if(emptyLineNum_<%=cid%>==2){
-            break;
-        }
-        isFirstEmptyLine_<%=cid%> = false;
-        continue;//skip rows now empty
-    }else if (!isFirstEmptyLine_<%=cid%>){//skip empty rows
-        isFirstEmptyLine_<%=cid%> = true;
-        emptyLineNum_<%=cid%>++;
+
+java.io.File dateFileTemp_<%=cid %> = new java.io.File(dataf_<%=cid %>);
+java.io.File badFileTemp_<%=cid %> = new java.io.File(badf_<%=cid %>);
+java.io.File dscFileTemp_<%=cid %> = new java.io.File(dscf_<%=cid %>);
+		
+java.io.BufferedReader dateFile_br_<%=cid %> = null;
+java.io.BufferedReader badFile_br_<%=cid %> = null;
+java.io.BufferedReader dscFile_br_<%=cid %> = null;
+																
+try
+{																
+    if(dateFileTemp_<%=cid %>.exists()){
+	    dateFile_br_<%=cid %> = new java.io.BufferedReader(
+		    new java.io.FileReader(dataf_<%=cid %>));
     }
-}
+				
+    if(badFileTemp_<%=cid %>.exists()){
+	    badFile_br_<%=cid %> = new java.io.BufferedReader(
+		    new java.io.FileReader(badf_<%=cid %>));
+    }
+				
+    if(dscFileTemp_<%=cid %>.exists()){
+        dscFile_br_<%=cid %> = new java.io.BufferedReader(
+		    new java.io.FileReader(dscf_<%=cid %>));
+    }  
+    
     LogUtil_<%=cid%> lu_<%=cid%> = new LogUtil_<%=cid%>();
-    nb_line_data_<%=cid %> = lu_<%=cid%>.getNumber(lr_<%=cid %>);//get the number of data line
-    nb_line_bad_<%=cid %> = lu_<%=cid%>.getNumber(lr_<%=cid %>);//get the number of reject data line
-    nb_line_discarded_<%=cid %> = lu_<%=cid%>.getNumber(lr_<%=cid %>);//get the number of discarded data line
-    nb_line_inserted_<%=cid %> = nb_line_data_<%=cid %> - nb_line_bad_<%=cid %> - nb_line_discarded_<%=cid %>;
-lr_<%=cid %>.close();
+    nb_line_data_<%=cid %> = lu_<%=cid%>.getNumber(dateFile_br_<%=cid %>);//get the number of data line
+    nb_line_bad_<%=cid %> = lu_<%=cid%>.getNumber(badFile_br_<%=cid %>);//get the number of reject data line
+    nb_line_discarded_<%=cid %> = lu_<%=cid%>.getNumber(dscFile_br_<%=cid %>);//get the number of discarded data line
+    nb_line_inserted_<%=cid %> = nb_line_data_<%=cid %> - nb_line_bad_<%=cid %> - nb_line_discarded_<%=cid %>; 
+}    
+finally
+{
+	if(dateFile_br_<%=cid %> != null)
+	{
+		dateFile_br_<%=cid %>.close();
+	}
+	if(badFile_br_<%=cid %> != null)
+	{
+		badFile_br_<%=cid %>.close();
+	}
+	if(dscFile_br_<%=cid %> != null)
+	{
+		dscFile_br_<%=cid %>.close();
+	}
+}
 
 globalMap.put("<%=cid %>_NB_LINE_DATA", nb_line_data_<%=cid %>);
 
