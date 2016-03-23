@@ -31,7 +31,7 @@ import org.talend.core.model.metadata.builder.connection.MetadataTable;
 import org.talend.core.model.metadata.types.JavaTypesManager;
 import org.talend.daikon.properties.Properties;
 import org.talend.daikon.properties.Properties.Deserialized;
-import org.talend.designer.core.generic.testproperties.TestProperties;
+import org.talend.test.utils.testproperties.TestProperties;
 import orgomg.cwm.objectmodel.core.CoreFactory;
 import orgomg.cwm.objectmodel.core.Package;
 import orgomg.cwm.objectmodel.core.TaggedValue;

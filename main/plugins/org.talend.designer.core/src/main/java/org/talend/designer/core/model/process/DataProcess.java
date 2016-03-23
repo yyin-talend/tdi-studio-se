@@ -2983,6 +2983,9 @@ public class DataProcess implements IGeneratingProcess {
 
     @SuppressWarnings("unchecked")
     public INode buildNodeFromNode(final INode graphicalNode, final IProcess process) {
+        if (buildCheckMap == null) {
+            initialize();
+        }
         if (buildGraphicalMap.containsKey(graphicalNode)) {
             return (INode) buildGraphicalMap.get(graphicalNode);
         }
