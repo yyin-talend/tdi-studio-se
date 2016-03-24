@@ -17,6 +17,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang.StringUtils;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.widgets.Shell;
 import org.talend.commons.runtime.xml.XmlUtil;
@@ -56,6 +57,7 @@ import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.model.properties.ContextItem;
 import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.SAPConnectionItem;
+import org.talend.core.model.utils.ContextParameterUtils;
 import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.core.runtime.services.IGenericWizardService;
 import org.talend.core.service.IJsonFileService;
@@ -535,6 +537,14 @@ public class ChangeValuesFromRepository extends ChangeMetadataCommand {
                             if (param.getFieldType().equals(EParameterFieldType.FILE)) {
                                 if (objectValue != null) {
                                     objectValue = objectValue.toString().replace("\\", "/");
+                                }
+                            } else if (param.getFieldType().equals(EParameterFieldType.TEXT)
+                                    || param.getFieldType().equals(EParameterFieldType.HIDDEN_TEXT)) {
+                                if (isGenericRepositoryValue && objectValue != null && objectValue instanceof String) {
+                                    if (!ContextParameterUtils.isContextMode(connection,
+                                            StringUtils.trimToNull(objectValue.toString()))) {
+                                        objectValue = TalendQuoteUtils.addQuotesIfNotExist(objectValue.toString());
+                                    }
                                 }
                             }
                             elem.setPropertyValue(param.getName(), objectValue);
