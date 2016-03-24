@@ -13,6 +13,7 @@
 package org.talend.designer.core.generic.utils;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -164,7 +165,7 @@ public class ComponentsUtils {
         componentProperties.setValueEvaluator(null);
 
         // Have to initialize for the messages
-        List<Widget> formWidgets = form.getWidgets();
+        Collection<Widget> formWidgets = form.getWidgets();
         for (Widget widget : formWidgets) {
             NamedThing widgetProperty = widget.getContent();
 
@@ -205,7 +206,7 @@ public class ComponentsUtils {
             param.setFieldType(fieldType != null ? fieldType : EParameterFieldType.TEXT);
             if (widgetProperty instanceof PresentationItem) {
                 param.setValue(widgetProperty.getDisplayName());
-            } else {
+            } else if (widgetProperty instanceof Property) {
                 Property property = (Property) widgetProperty;
                 param.setRequired(property.isRequired());
                 param.setValue(getParameterValue(element, property));
@@ -231,6 +232,8 @@ public class ComponentsUtils {
                     param.setListItemsDisplayCodeName(possValsDisplay.toArray(new String[0]));
                     param.setListItemsValue(possVals.toArray(new String[0]));
                 }
+            } else {
+            	param.setComponentProperties((ComponentProperties) widgetProperty);
             }
             param.setReadOnly(false);
             param.setSerialized(true);

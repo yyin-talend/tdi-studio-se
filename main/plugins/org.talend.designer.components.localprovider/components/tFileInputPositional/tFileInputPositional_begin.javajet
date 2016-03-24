@@ -93,26 +93,44 @@
     		if(("").equals(footer)){
     			footer = "0";
     		}
-    		
-    		boolean useStar = false;
-    		
-    		String pattern=TalendTextUtils.removeQuotes(pattern1);
-    		String[] positions=(pattern.trim()).split(",");
-    		for(int i=0;i<positions.length;i++){
-            	if(("").equals(positions[i])){
-               	 	positions[i]="0";
+    		%>
+    		boolean useStar_<%=cid%> = false;
+    		<%
+    		//now we have to support the three kinds of setting, but it's not good:
+    		//"1,2,*"
+    		//1,2,*
+    		//context.var
+            if(!advanced) {
+            	if(java.util.regex.Pattern.compile("[0-9,*].*").matcher(pattern1).matches()) {
+            	%>
+            	String pattern_<%=cid%> = "<%=pattern1%>";
+            	<%
+            	} else {
+            	%>
+            	String pattern_<%=cid%> = <%=pattern1%>;
+            	<%
             	}
-            	if(("*").equals(positions[i])){
-            		useStar = true;
-            	}
+            	%>
+                final String[] positions_<%=cid%> = pattern_<%=cid%>.trim().split(",");
+                for(int i_<%=cid%>=0;i_<%=cid%><positions_<%=cid%>.length;i_<%=cid%>++){
+                	if("".equals(positions_<%=cid%>[i_<%=cid%>])){
+                   	 	positions_<%=cid%>[i_<%=cid%>]="0";
+                	}
+                	if("*".equals(positions_<%=cid%>[i_<%=cid%>])){
+                		useStar_<%=cid%> = true;
+                	}
+                }
+            <%
             }
+            
 			boolean hasDynamic = metadata.isDynamicSchema();
 			String dynamic = ElementParameterParser.getValue(node, "__DYNAMIC__");
 			boolean useExistingDynamic = "true".equals(ElementParameterParser.getValue(node, "__USE_EXISTING_DYNAMIC__"));
             String dyn = dynamic+"_DYNAMIC";
 			if(useExistingDynamic){
-				useStar = true;
 				%>
+				useStar_<%=cid%> = true;
+				
 				routines.system.Dynamic dynamic_<%=cid %> = (routines.system.Dynamic)globalMap.get("<%=dyn%>");
 				int maxColumnCount_<%=cid %> = dynamic_<%=cid %>.getColumnCount();
 				dynamic_<%=cid %>.clearColumnValues();
@@ -143,6 +161,11 @@
 			%>
 
 			class PositionalUtil_<%=cid%>{
+				private boolean useStar = false;
+                				
+				public void setUseStar(boolean useStar) {
+					this.useStar = useStar;
+				}
                 <%
                 String firstConnName = "";
                 if (conns!=null) {
@@ -153,6 +176,10 @@
                             List<IMetadataColumn> listColumns = metadata.getListColumns();
             				int sizeListColumns = listColumns.size();
                 			if(advanced){// custom part start
+                				%>
+                				private final int sizeListColumns = <%=sizeListColumns%>;
+                				private int currentRow = 0;
+                				<%
                 				for (int valueN=0; valueN<sizeListColumns; valueN++) {
                 					String paddingChar = formats.get(valueN).get("PADDING_CHAR");
                 					String align = formats.get(valueN).get("ALIGN");
@@ -166,11 +193,14 @@
                 					if(valueN%100==0){
     						        %>
                   						void setValue_<%=(valueN/100)%>(<%=firstConnName %>Struct <%=firstConnName %>,int[] begins_<%=cid %>,int[] ends_<%=cid %>,int rowLen_<%=cid %>,
-                  						<% if(useByte){ %>byte[] byteArray_<%=cid %>,Arrays_<%=cid %> arrays_<%=cid %>,<% } %>String column_<%=cid %>,String row_<%=cid %>)throws java.lang.Exception {             
+                  						<% if(useByte){ %>byte[] byteArray_<%=cid %>,Arrays_<%=cid %> arrays_<%=cid %>,<% } %>String column_<%=cid %>,String row_<%=cid %>)throws java.lang.Exception {  
 									<%
 									}
-    								if(valueN == sizeListColumns - 1 && useStar){ //last column
 									%>
+									
+									currentRow = <%=valueN%>;
+									
+									if((currentRow == (sizeListColumns-1)) && useStar) {
     									if(begins_<%=cid %>[<%=valueN %>] < rowLen_<%=cid %>){
         									<%
         									if(useByte){
@@ -187,9 +217,9 @@
                                         }else{
                                         	column_<%=cid %> = "";
                                         }
-									<%
-									}else{//other column
-										if(useByte){
+                                    } else {
+                                    	<%
+                                    	if(useByte){
 										%>
 											if(begins_<%=cid %>[<%=valueN %>] < rowLen_<%=cid %>){
         										if(ends_<%=cid %>[<%=valueN %>] <= rowLen_<%=cid %>){
@@ -215,7 +245,10 @@
 											}
 										<%
 										}
-									}
+                                    	%>
+                                    }
+                                        
+									<%
 									if(isTrimAll || ("true").equals(trimSelects.get(valueN).get("TRIM"))){
 									%>
 										column_<%=cid %> = column_<%=cid %>.trim();
@@ -325,121 +358,112 @@
 								}
 							}//custom end
 							else{//custom not check
-								if(java.util.regex.Pattern.compile("[0-9]*").matcher(positions[0]).matches()){
-									List<IMetadataColumn> columnList = metadata.getListColumns();
-    								for(int i=0;i <	columnList.size();i++){
-										if(i % 100 == 0){
-                            		    %>
-                            		    	int parseValue_<%=i%>(String row_<%=cid%>, int substringBegin<%=cid%>, int substringEnd<%=cid%>, int rowLen_<%=cid%>, String[] columnValue<%=cid%> <%if(useByte){%>, Arrays_<%=cid%> arrays_<%=cid%>, byte[][] byteArray_<%=cid%><%}%><%if(useExistingDynamic){%>, routines.system.Dynamic dynamic_<%=cid%><%}%>)throws java.lang.Exception{
-                            		    <%
-                            		    }
-                            		    IMetadataColumn column = columnList.get(i);
-										boolean isDynamic = "id_Dynamic".equals(column.getTalendType()) && useExistingDynamic;
-                            		    if(isDynamic){
-                            				String paddingChar = formats.get(i).get("PADDING_CHAR");
-                            				String align = formats.get(i).get("ALIGN");
-    										%> 	
-                            				dynamic_<%=cid %>.clearColumnValues();
-                            				int maxColumnCount_<%=cid %> = dynamic_<%=cid %>.getColumnCount();
-                            				for (int i<%=cid%>=0;i<%=cid%><maxColumnCount_<%=cid %>;i<%=cid%>++) {
-                            					routines.system.DynamicMetadata dynamicMetadataColumn_<%=cid%> = dynamic_<%=cid %>.getColumnMetadata(i<%=cid%>);
-                            					int currentFieldLength_<%=cid%> = dynamicMetadataColumn_<%=cid%>.getLength();
-                            					substringEnd<%=cid %> = substringBegin<%=cid %>+currentFieldLength_<%=cid%>;
-                            					if(substringEnd<%=cid %> > rowLen_<%=cid %>){
-                            						substringEnd<%=cid %> = rowLen_<%=cid %>;
-                            					}
-    											<%
-    											if(useByte){
-    											%>
-                        							byte[] temp_byteArray_<%=cid %>= arrays_<%=cid %>.copyOfRange(row_<%=cid %>.getBytes(<%=encoding %>),substringBegin<%=cid %>, substringEnd<%=cid %>);
-    	                    						String currentColumnValue_<%=cid%> = new String(temp_byteArray_<%=cid %>,<%=encoding %>);						
-    											<%
-    											}else{
-    											%>
-    												String currentColumnValue_<%=cid%> = row_<%=cid %>.substring(substringBegin<%=cid %>, substringEnd<%=cid %>);
-    											<%
-                            					}
-                            					if(isTrimAll || (hasDynamic &&(("true").equals(trimSelects.get(trimSelects.size()-1).get("TRIM"))))){
-    											%>			
-    												currentColumnValue_<%=cid%> = currentColumnValue_<%=cid%>.trim();
-    											<%
-    											}
-    											if(advanced){
-    											%> 
-    												currentColumnValue_<%=cid%> = TalendString.talendTrim(currentColumnValue_<%=cid%>, <%=paddingChar %>, <%=align %>);
-    											<%
-    											}
-    											if(advancedSeparator) { 
-    											%>
-                            						String type_<%=cid%> = dynamicMetadataColumn_<%=cid%>.getType();
-                            						if("id_Short".equals(type_<%=cid%>) || "id_Integer".equals(type_<%=cid%>) || "id_Double".equals(type_<%=cid%>) || "id_Float".equals(type_<%=cid%>) || "id_Long".equals(type_<%=cid%>) || "id_BigDecimal".equals(type_<%=cid%>)){
-                            							currentColumnValue_<%=cid%> = ParserUtils.parseTo_Number(currentColumnValue_<%=cid%>, <%= thousandsSeparator %>, <%= decimalSeparator %>);
-    	                    						}	
-    											<%
-    											}
-    											%>
-                            					dynamic_<%=cid %>.addColumnValue(currentColumnValue_<%=cid%>);
-                            					substringBegin<%=cid %> = substringEnd<%=cid %>;
+								List<IMetadataColumn> columnList = metadata.getListColumns();
+								for(int i=0;i <	columnList.size();i++){
+									if(i % 100 == 0){
+                        		    %>
+                        		    	int parseValue_<%=i%>(String row_<%=cid%>, int substringBegin<%=cid%>, int substringEnd<%=cid%>, int rowLen_<%=cid%>, String[] columnValue<%=cid%> <%if(useByte){%>, Arrays_<%=cid%> arrays_<%=cid%>, byte[][] byteArray_<%=cid%><%}%><%if(useExistingDynamic){%>, routines.system.Dynamic dynamic_<%=cid%><%}%>)throws java.lang.Exception{
+                        		    <%
+                        		    }
+                        		    IMetadataColumn column = columnList.get(i);
+									boolean isDynamic = "id_Dynamic".equals(column.getTalendType()) && useExistingDynamic;
+                        		    if(isDynamic){
+                        				String paddingChar = formats.get(i).get("PADDING_CHAR");
+                        				String align = formats.get(i).get("ALIGN");
+										%> 	
+                        				dynamic_<%=cid %>.clearColumnValues();
+                        				int maxColumnCount_<%=cid %> = dynamic_<%=cid %>.getColumnCount();
+                        				for (int i<%=cid%>=0;i<%=cid%><maxColumnCount_<%=cid %>;i<%=cid%>++) {
+                        					routines.system.DynamicMetadata dynamicMetadataColumn_<%=cid%> = dynamic_<%=cid %>.getColumnMetadata(i<%=cid%>);
+                        					int currentFieldLength_<%=cid%> = dynamicMetadataColumn_<%=cid%>.getLength();
+                        					substringEnd<%=cid %> = substringBegin<%=cid %>+currentFieldLength_<%=cid%>;
+                        					if(substringEnd<%=cid %> > rowLen_<%=cid %>){
+                        						substringEnd<%=cid %> = rowLen_<%=cid %>;
+                        					}
+											<%
+											if(useByte){
+											%>
+                    							byte[] temp_byteArray_<%=cid %>= arrays_<%=cid %>.copyOfRange(row_<%=cid %>.getBytes(<%=encoding %>),substringBegin<%=cid %>, substringEnd<%=cid %>);
+	                    						String currentColumnValue_<%=cid%> = new String(temp_byteArray_<%=cid %>,<%=encoding %>);						
+											<%
+											}else{
+											%>
+												String currentColumnValue_<%=cid%> = row_<%=cid %>.substring(substringBegin<%=cid %>, substringEnd<%=cid %>);
+											<%
+                        					}
+                        					if(isTrimAll || (hasDynamic &&(("true").equals(trimSelects.get(trimSelects.size()-1).get("TRIM"))))){
+											%>			
+												currentColumnValue_<%=cid%> = currentColumnValue_<%=cid%>.trim();
+											<%
+											}
+											if(advanced){
+											%> 
+												currentColumnValue_<%=cid%> = TalendString.talendTrim(currentColumnValue_<%=cid%>, <%=paddingChar %>, <%=align %>);
+											<%
+											}
+											if(advancedSeparator) { 
+											%>
+                        						String type_<%=cid%> = dynamicMetadataColumn_<%=cid%>.getType();
+                        						if("id_Short".equals(type_<%=cid%>) || "id_Integer".equals(type_<%=cid%>) || "id_Double".equals(type_<%=cid%>) || "id_Float".equals(type_<%=cid%>) || "id_Long".equals(type_<%=cid%>) || "id_BigDecimal".equals(type_<%=cid%>)){
+                        							currentColumnValue_<%=cid%> = ParserUtils.parseTo_Number(currentColumnValue_<%=cid%>, <%= thousandsSeparator %>, <%= decimalSeparator %>);
+	                    						}	
+											<%
+											}
+											%>
+                        					dynamic_<%=cid %>.addColumnValue(currentColumnValue_<%=cid%>);
+                        					substringBegin<%=cid %> = substringEnd<%=cid %>;
+										}
+                    				<%
+                    				} else {
+									%>
+										if(positions_<%=cid%>.length <= <%=i%>) {
+											columnValue<%=cid %>[<%=i%>]="";
+										} else if(substringBegin<%=cid %> >= rowLen_<%=cid %>){
+                            		    	columnValue<%=cid %>[<%=i%>]= "";
+                                		}else{
+                                			if("*".equals(positions_<%=cid%>[<%=i%>])){
+        			 							substringEnd<%=cid %>=rowLen_<%=cid %>;
+            								} else {
+            									substringEnd<%=cid %> = substringEnd<%=cid %> + Integer.parseInt(positions_<%=cid%>[<%=i%>]);
+                        				        if(substringEnd<%=cid %> > rowLen_<%=cid %>){
+                        				        	substringEnd<%=cid %> = rowLen_<%=cid %>;
+                        				    	}
+                        				    }
+    										<%
+                        					if(useByte){
+    										%>
+                            					byteArray_<%=cid %>[<%=i%>] = arrays_<%=cid %>.copyOfRange(row_<%=cid %>.getBytes(<%=encoding %>),substringBegin<%=cid %>, substringEnd<%=cid %>);
+                            					columnValue<%=cid %>[<%=i%>] = new String(byteArray_<%=cid %>[<%=i%>],<%=encoding %>);
+    										<%
+    										}else{
+    										%>
+            									columnValue<%=cid %>[<%=i%>] = row_<%=cid %>.substring(substringBegin<%=cid %>, substringEnd<%=cid %>);
+    										<% 
     										}
-                        				<%
-                        				}else if(i >= positions.length){
-    									%>	
-    										columnValue<%=cid %>[<%=i%>]="";
-    									<%
-    									}else{
-    									%>
-                                		    if(substringBegin<%=cid %> >= rowLen_<%=cid %>){
-                                		    	columnValue<%=cid %>[<%=i%>]= "";
-                                    		}else{
-        										<%
-        										if(("*").equals(positions[i])){
-        										%>
-            			 							substringEnd<%=cid %>=rowLen_<%=cid %>;
-        										<%
-        										} else{
-        										%>
-                									substringEnd<%=cid %> = substringEnd<%=cid %> + <%=positions[i]%>;
-                
-                            				        if(substringEnd<%=cid %> > rowLen_<%=cid %>){
-                            				        	substringEnd<%=cid %> = rowLen_<%=cid %>;
-                            				    	}
-        										<%
-                            					}
-                            					if(useByte){
-        										%>
-                                					byteArray_<%=cid %>[<%=i%>] = arrays_<%=cid %>.copyOfRange(row_<%=cid %>.getBytes(<%=encoding %>),substringBegin<%=cid %>, substringEnd<%=cid %>);
-                                					columnValue<%=cid %>[<%=i%>] = new String(byteArray_<%=cid %>[<%=i%>],<%=encoding %>);
-        										<%
-        										}else{
-        										%>
-                									columnValue<%=cid %>[<%=i%>] = row_<%=cid %>.substring(substringBegin<%=cid %>, substringEnd<%=cid %>);
-        										<% 
-        										}
-               									if(isTrimAll || ("true").equals(trimSelects.get(i).get("TRIM"))){
-        										%>
-        											columnValue<%=cid %>[<%=i%>] = columnValue<%=cid %>[<%=i%>].trim();
-        										<%
-        										}
-        										%>    	
-                								substringBegin<%=cid %> = substringEnd<%=cid %>;
-        									}
-    									<%
+           									if(isTrimAll || ("true").equals(trimSelects.get(i).get("TRIM"))){
+    										%>
+    											columnValue<%=cid %>[<%=i%>] = columnValue<%=cid %>[<%=i%>].trim();
+    										<%
+    										}
+    										%>    	
+            								substringBegin<%=cid %> = substringEnd<%=cid %>;
     									}
-    									if((i+1) % 100 == 0){
-                            		    %>
-                            		    		return substringBegin<%=cid%>;
-                            		    	}
-                        		    	<%
-                            		    }
-    								}//for(...)
-                					if(columnList.size()>0&&(columnList.size()%100)>0){
-    								%>
-    										return substringBegin<%=cid%>;
-                         				}
-    								<%
-             						}
-    							}
-							
+									<%
+									}
+									if((i+1) % 100 == 0){
+                        		    %>
+                        		    		return substringBegin<%=cid%>;
+                        		    	}
+                    		    	<%
+                        		    }
+								}//for(...)
+            					if(columnList.size()>0&&(columnList.size()%100)>0){
+								%>
+										return substringBegin<%=cid%>;
+                     				}
+								<%
+         						}
+         						
                 				for (int valueN=0; valueN<sizeListColumns; valueN++) {	
                 				    if(valueN%100==0){
                 					%>
@@ -519,6 +543,7 @@
 			}
 
 			PositionalUtil_<%=cid%> positionalUtil_<%=cid%>=new PositionalUtil_<%=cid%>();
+			positionalUtil_<%=cid%>.setUseStar(useStar_<%=cid%>);
 
 			<%
 			if(advanced){
@@ -530,12 +555,18 @@
 				<%
 				for(int i = 0; i < formats.size(); i++){ 
     				if(i == formats.size() - 1 && !(("").equals(rowSeparator) || ("\"\"").equals(rowSeparator))){
-    					if(("*").equals(formats.get(i).get("SIZE"))){ 
-    						useStar = true;
+    					//now we have to treat the empty string as star, please check the tujs. It's not good.
+    					if("*".equals(formats.get(i).get("SIZE")) || "".equals(formats.get(i).get("SIZE"))){
+    					%>
+    					useStar_<%=cid%> = true;
+    					positionalUtil_<%=cid%>.setUseStar(useStar_<%=cid%>);
+    					sizes_<%=cid %>[<%=i %>] = -1;
+    					<%
+    					} else {
+    					%>
+    					sizes_<%=cid %>[<%=i %>] = <%=formats.get(i).get("SIZE")%>;
+    					<%
     					}
-						%>
-						sizes_<%=cid %>[<%=i %>] = <%=useStar ? -1 :  formats.get(i).get("SIZE") %>;
-					<%
 					}else{
 					%>
 						sizes_<%=cid %>[<%=i %>] = <%=formats.get(i).get("SIZE") %>;				
@@ -548,10 +579,15 @@
 						begins_<%=cid %>[<%=i %>] = 0;
 						ends_<%=cid %>[<%=i %>] = sizes_<%=cid %>[<%=i %>];
 					<%
-					}else if(i == formats.size() - 1 && useStar){
+					}else if(i == formats.size() - 1){
 					%>
-						begins_<%=cid %>[<%=i %>] = begins_<%=cid %>[<%=i-1 %>] + sizes_<%=cid %>[<%=i-1 %>];
-						ends_<%=cid %>[<%=i %>] = -1;
+						if(useStar_<%=cid%>) {
+							begins_<%=cid %>[<%=i %>] = begins_<%=cid %>[<%=i-1 %>] + sizes_<%=cid %>[<%=i-1 %>];
+							ends_<%=cid %>[<%=i %>] = -1;
+						} else {
+    						begins_<%=cid %>[<%=i %>] = begins_<%=cid %>[<%=i-1 %>] + sizes_<%=cid %>[<%=i-1 %>];
+                            ends_<%=cid %>[<%=i %>] = ends_<%=cid %>[<%=i-1 %>] + sizes_<%=cid %>[<%=i %>];
+						}
 					<%
 					}else{
 					%>
@@ -682,11 +718,11 @@
 					<%
 					}
 				}else{
-					for(int i=0;i<positions.length;i++){
 					%>
-						rowLength_<%=cid %> += <%=positions[i] %>;
+					for(int i_<%=cid%>=0;i_<%=cid%><positions_<%=cid%>.length;i_<%=cid%>++){
+						rowLength_<%=cid %> += Integer.parseInt(positions_<%=cid%>[i_<%=cid%>]);
+					}
 					<%
-        			}
 				}
 				%>
 				reader_<%=cid %> = new org.talend.fileprocess.delimited.RowParser(in_<%=cid %>, rowLength_<%=cid %>);
@@ -737,32 +773,7 @@
     			System.err.println(e.getMessage());
         	<% } %>
         }
-
-        <%
-        if ( !(java.util.regex.Pattern.compile("[0-9]*").matcher(positions[0]).matches() )){
-        	if(pattern1.startsWith("\"")){
-    		%>
-        		String arrFieldSeparator<%=cid%>[] = "<%=positions[0] %>".split(",");
-        	<% 
-        	}else{
-        	%>		
-        		String arrFieldSeparator<%=cid%>[] = <%=positions[0]%>.split(",");
-        	<% 
-        	}
-        	%> 
-
-            Integer star_<%=cid %> = Integer.valueOf(-1);																				
-            Integer[] tmpAry_<%=cid %> = new Integer[arrFieldSeparator<%=cid %>.length];																						
-            for (int i<%=cid%> = 0; i<%=cid%> < arrFieldSeparator<%=cid %>.length; i<%=cid%>++ ){																						
-            	if (("*").equals(arrFieldSeparator<%=cid %>[i<%=cid%>])) {																					
-            		tmpAry_<%=cid %>[i<%=cid%>] = star_<%=cid %>;																				
-            	}else{																					
-            		tmpAry_<%=cid %>[i<%=cid%>] = Integer.parseInt(arrFieldSeparator<%=cid %>[i<%=cid%>]);																				
-            	}																					
-            }	
-        <%
-        }	
-        %>
+		
         while (nb_limit_<%=cid %> != 0 && reader_<%=cid %>!=null && reader_<%=cid %>.readRecord()) {
         	row_<%=cid %> = reader_<%=cid %>.getRowRecord();
 			<%
@@ -811,9 +822,9 @@
             			try {
     			
     						<%
+    						List<IMetadataColumn> listColumns = metadata.getListColumns();
+           				    int sizeListColumns = listColumns.size();
                 			if(advanced){
-                				List<IMetadataColumn> listColumns = metadata.getListColumns();
-               				    int sizeListColumns = listColumns.size();
                 				for (int valueN=0; valueN<sizeListColumns; valueN++) {
                 					String paddingChar = formats.get(valueN).get("PADDING_CHAR");
                 					String align = formats.get(valueN).get("ALIGN");
@@ -835,117 +846,18 @@
     						%>
                             	int substringBegin<%=cid %>=0,substringEnd<%=cid %>=0;
                             	int[]begin_end_<%=cid %>=new int[2];
+                            	
         						<%
-        						///////////////////
-                            	//Branch: first item is a numberic, not '((String)globalMap.get("global_variable"))' or 'context.Separator'
-                            	if ( java.util.regex.Pattern.compile("[0-9]*").matcher(positions[0]).matches() ){
-                            	///////////////////
-                            	    List<IMetadataColumn> columnList = metadata.getListColumns();
-                            		for(int i=0; i < columnList.size(); i++){
-                            			IMetadataColumn column = columnList.get(i);
-                        				if(i % 100 == 0){
-                        				%>
-                            				substringBegin<%=cid%> = positionalUtil_<%=cid%>.parseValue_<%=i%>(row_<%=cid%>, substringBegin<%=cid%>, substringEnd<%=cid%>, rowLen_<%=cid%>, columnValue<%=cid%> <%if(useByte){%>, arrays_<%=cid%>, byteArray_<%=cid%><%}%><%if(useExistingDynamic){%>, dynamic_<%=cid%><%}%>);
-                            				substringEnd<%=cid%> = substringBegin<%=cid%>;
-                        				<%
-                            			}
-                            		}
-                            	///////////////
-                            	} else{
-                            	    List<IMetadataColumn> listColumns = metadata.getListColumns();
-                            	    int column_index=listColumns.size()-1;
-                            	    for(int i = 0;i<listColumns.size();i++){
-                            	        if("id_Dynamic".equals(listColumns.get(i).getTalendType())){
-                            	            column_index = i;
-                            	        }
-                            	    }
-    								%>
-                            		for (int i_<%=cid %> = 0; i_<%=cid %> < <%=metadata.getListColumns().size()%>; i_<%=cid %>++) {
-                            			if (i_<%=cid %> >= arrFieldSeparator<%=cid%>.length ){
-                            				columnValue<%=cid %>[i_<%=cid %>]="";
-                            				continue;
-                            			}
-    			 
-    									<%
-                            			if(useExistingDynamic){
-                            				String paddingChar = formats.get(formats.size()-1).get("PADDING_CHAR");
-                            				String align = formats.get(formats.size()-1).get("ALIGN");
-    										%>
-                            				if(i_<%=cid %>==<%=column_index%>){
-                            					dynamic_<%=cid %>.clearColumnValues();
-                            			 		for (int i<%=cid%>=0;i<%=cid%><maxColumnCount_<%=cid %>;i<%=cid%>++) {
-                            						routines.system.DynamicMetadata dynamicMetadataColumn_<%=cid%> = dynamic_<%=cid %>.getColumnMetadata(i<%=cid%>);
-                            						int currentFieldLength_<%=cid%> = dynamicMetadataColumn_<%=cid%>.getLength();
-                            						substringEnd<%=cid %> = substringBegin<%=cid %>+currentFieldLength_<%=cid%>;
-                            						if(substringEnd<%=cid %> > rowLen_<%=cid %>){
-                            							substringEnd<%=cid %> = rowLen_<%=cid %>;
-                            						}
-    												<%
-    												if(useByte){
-    												%>
-                            							byte[] temp_byteArray_<%=cid %> = arrays_<%=cid %>.copyOfRange(row_<%=cid %>.getBytes(<%=encoding %>),substringBegin<%=cid %>, substringEnd<%=cid %>);
-                            							String currentColumnValue_<%=cid%> = new String(temp_byteArray_<%=cid %>,<%=encoding %>);						
-    												<%
-    												}else{
-    												%>
-    													String currentColumnValue_<%=cid%> = row_<%=cid %>.substring(substringBegin<%=cid %>, substringEnd<%=cid %>);
-    												<%
-    												}
-    												if(advanced){
-    												%>
-    													currentColumnValue_<%=cid%> = TalendString.talendTrim(currentColumnValue_<%=cid%>, <%=paddingChar %>, <%=align %>);
-    												<%
-    												}
-    												if(advancedSeparator) { 
-    												%>
-                            							String type_<%=cid%> = dynamicMetadataColumn_<%=cid%>.getType();
-                            							if("id_Short".equals(type_<%=cid%>) || "id_Integer".equals(type_<%=cid%>) || "id_Double".equals(type_<%=cid%>) || "id_Float".equals(type_<%=cid%>) || "id_Long".equals(type_<%=cid%>) || "id_BigDecimal".equals(type_<%=cid%>)){
-                            								currentColumnValue_<%=cid%> = ParserUtils.parseTo_Number(currentColumnValue_<%=cid%>, <%= thousandsSeparator %>, <%= decimalSeparator %>);
-                            							}
-    												<%
-    												}
-    												%>
-    												dynamic_<%=cid %>.addColumnValue(currentColumnValue_<%=cid%>);
-    												substringBegin<%=cid %> = substringEnd<%=cid %>; 
-    											}
-    										}
-    									<%
-    									}
-    									%>
-                            		    if (substringBegin<%=cid %> >= rowLen_<%=cid %>) {
-                            		    	columnValue<%=cid %>[i_<%=cid %>] = "";
-                            		    } else{
-                            		    
-                            				if ((star_<%=cid %>).equals(tmpAry_<%=cid %>[i_<%=cid %>])){
-                            					substringEnd<%=cid %> = rowLen_<%=cid %>;
-                            				} else{
-                            	    			substringEnd<%=cid %> = substringEnd<%=cid %> +tmpAry_<%=cid %>[i_<%=cid %>];
-                            			        if(substringEnd<%=cid %> > rowLen_<%=cid %>)
-                            			        	substringEnd<%=cid %> = rowLen_<%=cid %>;
-                            				}
-                            				<%
-    										if(useByte){
-    										%>
-                                				byteArray_<%=cid %>[i_<%=cid %>] = arrays_<%=cid %>.copyOfRange(row_<%=cid %>.getBytes(<%=encoding %>),substringBegin<%=cid %>, substringEnd<%=cid %>);
-                                				columnValue<%=cid %>[i_<%=cid %>] = new String(byteArray_<%=cid %>[i_<%=cid %>],<%=encoding %>);
-    										<%
-    										}else{
-    										%>
-    	        								columnValue<%=cid %>[i_<%=cid %>] = row_<%=cid %>.substring(substringBegin<%=cid %>, substringEnd<%=cid %>);	
-    										<%
-    										}
-    										%>
-                            	        	if (<%=isTrimAll%>)
-                            	        		columnValue<%=cid %>[i_<%=cid %>] = columnValue<%=cid %>[i_<%=cid %>].trim();
-    		        	
-    							        	substringBegin<%=cid %> = substringEnd<%=cid %>;
-                            	        }
-                            		}
-                            	<%
-                            	}
-                            	///////////////
-                            	List<IMetadataColumn> listColumns = metadata.getListColumns();
-                            	int sizeListColumns = listColumns.size();
+                        	    List<IMetadataColumn> columnList = metadata.getListColumns();
+                        		for(int i=0; i < columnList.size(); i++){
+                        			IMetadataColumn column = columnList.get(i);
+                    				if(i % 100 == 0){
+                    				%>
+                        				substringBegin<%=cid%> = positionalUtil_<%=cid%>.parseValue_<%=i%>(row_<%=cid%>, substringBegin<%=cid%>, substringEnd<%=cid%>, rowLen_<%=cid%>, columnValue<%=cid%> <%if(useByte){%>, arrays_<%=cid%>, byteArray_<%=cid%><%}%><%if(useExistingDynamic){%>, dynamic_<%=cid%><%}%>);
+                        				substringEnd<%=cid%> = substringBegin<%=cid%>;
+                    				<%
+                        			}
+                        		}
                             	
                             	for (int valueN=0; valueN<sizeListColumns; valueN++) {	
                             		if(valueN%100==0){

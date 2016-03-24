@@ -18,9 +18,11 @@ import java.util.Map;
 
 import org.apache.avro.Schema;
 import org.eclipse.emf.common.util.EList;
+import org.talend.commons.runtime.model.components.IComponentConstants;
 import org.talend.components.api.properties.ComponentProperties;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.metadata.MetadataToolAvroHelper;
+import org.talend.core.model.metadata.builder.ConvertionHelper;
 import org.talend.core.model.metadata.builder.connection.Connection;
 import org.talend.core.model.metadata.builder.connection.ConnectionFactory;
 import org.talend.core.model.metadata.builder.connection.MetadataColumn;
@@ -28,9 +30,7 @@ import org.talend.core.model.metadata.builder.connection.MetadataTable;
 import org.talend.core.repository.model.ProxyRepositoryFactory;
 import org.talend.core.repository.model.repositoryObject.MetadataTableRepositoryObject;
 import org.talend.cwm.helper.PackageHelper;
-import org.talend.daikon.properties.Properties;
 import org.talend.daikon.properties.Properties.Deserialized;
-import org.talend.designer.core.generic.constants.IGenericConstants;
 import org.talend.repository.model.IProxyRepositoryFactory;
 import orgomg.cwm.objectmodel.core.CoreFactory;
 import orgomg.cwm.objectmodel.core.TaggedValue;
@@ -45,11 +45,11 @@ public class SchemaUtils {
         metadataTable.setLabel(name);
         metadataTable.setSourceName(name);
         TaggedValue serializedPropsTV = CoreFactory.eINSTANCE.createTaggedValue();
-        serializedPropsTV.setTag(IGenericConstants.COMPONENT_PROPERTIES_TAG);
+        serializedPropsTV.setTag(IComponentConstants.COMPONENT_PROPERTIES_TAG);
         serializedPropsTV.setValue(properties.toSerialized());
         metadataTable.getTaggedValue().add(serializedPropsTV);
         TaggedValue schemaPropertyTV = CoreFactory.eINSTANCE.createTaggedValue();
-        schemaPropertyTV.setTag(IGenericConstants.COMPONENT_SCHEMA_TAG);
+        schemaPropertyTV.setTag(IComponentConstants.COMPONENT_SCHEMA_TAG);
         schemaPropertyTV.setValue(schemaPropertyName);
         metadataTable.getTaggedValue().add(schemaPropertyTV);
         Object schemaObj = ComponentsUtils.getGenericPropertyValue(properties, schemaPropertyName);
@@ -89,24 +89,28 @@ public class SchemaUtils {
         for (TaggedValue taggedValue : taggedValues) {
             String tag = taggedValue.getTag();
             String tagValue = taggedValue.getValue();
-            if (IGenericConstants.COMPONENT_PROPERTIES_TAG.equals(tag)) {
+            if (IComponentConstants.COMPONENT_PROPERTIES_TAG.equals(tag)) {
                 componentPropertiesStr = tagValue;
                 componentPropertiesTaggedValue = taggedValue;
-            } else if (IGenericConstants.COMPONENT_SCHEMA_TAG.equals(tag)) {
+            } else if (IComponentConstants.COMPONENT_SCHEMA_TAG.equals(tag)) {
                 schemaPropertyName = tagValue;
             }
         }
-        if (componentPropertiesStr != null && componentPropertiesTaggedValue != null) {
-            Deserialized<ComponentProperties> fromSerialized = Properties.fromSerialized(componentPropertiesStr,
-                    ComponentProperties.class);
-            if (fromSerialized != null) {
-                ComponentProperties componentProperties = fromSerialized.properties;
-                if (schemaPropertyName != null) {
-                    componentProperties.setValue(schemaPropertyName, convertTalendSchemaIntoComponentSchema(metadataTable));
-                    componentPropertiesTaggedValue.setValue(componentProperties.toSerialized());
-                }
-            }
+        if (componentPropertiesStr != null && componentPropertiesTaggedValue != null && schemaPropertyName != null) {
+            ComponentProperties componentProperties = ComponentsUtils
+                    .getComponentPropertiesFromSerialized(componentPropertiesStr);
+            componentProperties.setValue(schemaPropertyName, convertTalendSchemaIntoComponentSchema(metadataTable));
+            componentPropertiesTaggedValue.setValue(componentProperties.toSerialized());
         }
+    }
+
+    public static void updateComponentSchema(ComponentProperties componentProperties, String schemaPropertyName,
+            IMetadataTable metadataTable) {
+        Schema schema = convertTalendSchemaIntoComponentSchema(ConvertionHelper.convert(metadataTable));
+        componentProperties.setValue(schemaPropertyName, schema);
+        Map<String, String> additionalProperties = metadataTable.getAdditionalProperties();
+        additionalProperties.put(IComponentConstants.COMPONENT_PROPERTIES_TAG, componentProperties.toSerialized());
+        additionalProperties.put(IComponentConstants.COMPONENT_SCHEMA_TAG, schemaPropertyName);
     }
 
     public static ComponentProperties getCurrentComponentProperties(IMetadataTable table) {
@@ -117,7 +121,7 @@ public class SchemaUtils {
                 MetadataTable metadataTable = metaTableRepObj.getTable();
                 if (metadataTable != null && metadataTable.getTaggedValue() != null) {
                     for (TaggedValue serializedProps : metadataTable.getTaggedValue()) {
-                        if (IGenericConstants.COMPONENT_PROPERTIES_TAG.equals(serializedProps.getTag())) {
+                        if (IComponentConstants.COMPONENT_PROPERTIES_TAG.equals(serializedProps.getTag())) {
                             serializedProperties = serializedProps.getValue();
                             break;
                         }
@@ -126,7 +130,7 @@ public class SchemaUtils {
             } else if (table instanceof org.talend.core.model.metadata.MetadataTable) {
                 org.talend.core.model.metadata.MetadataTable metaTable = (org.talend.core.model.metadata.MetadataTable) table;
                 Map<String, String> additionalProperties = metaTable.getAdditionalProperties();
-                serializedProperties = additionalProperties.get(IGenericConstants.COMPONENT_PROPERTIES_TAG);
+                serializedProperties = additionalProperties.get(IComponentConstants.COMPONENT_PROPERTIES_TAG);
             }
             if (serializedProperties != null) {
                 Deserialized<ComponentProperties> fromSerializedProperties = ComponentProperties.fromSerialized(

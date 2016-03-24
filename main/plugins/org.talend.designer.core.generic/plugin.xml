@@ -133,7 +133,7 @@
              widgetType="SCHEMA_EDITOR">
        </Mapping>
        <Mapping
-            mapFieldType="SCHEMA_TYPE"
+            mapFieldType="SCHEMA_REFERENCE"
             name="SCHEMA_REFERENCE"
             widgetType="SCHEMA_REFERENCE">
       </Mapping>
@@ -177,6 +177,12 @@
             mapping="HIDDEN_TEXT"
             name="Hidden Text">
       </generator>
+      <generator
+            class="org.talend.designer.core.generic.controller.generator.SchemaReferenceGenerator"
+            mapping="SCHEMA_REFERENCE"
+            name="Schema Reference">
+      </generator>
+      
    </extension>
 
 </plugin>

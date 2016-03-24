@@ -105,13 +105,23 @@ public class DynamicComposite extends MultipleThreadDynamicComposite implements 
     }
 
     public List<ElementParameter> resetParameters() {
-        Connection connection = null;
-        if (connectionItem != null) {
-            connection = connectionItem.getConnection();
+        final List<ElementParameter> newParameters = new ArrayList<>();
+        List<ElementParameter> currentParameters = (List<ElementParameter>) element.getElementParameters();
+        List<ElementParameter> parameters = new ArrayList<>();
+        ComponentService componentService = null;
+        if (element instanceof FakeElement) {
+            if (connectionItem != null) {
+                componentService = new ComponentServiceWithValueEvaluator(internalService.getComponentService(),
+                        new MetadataContextPropertyValueEvaluator(connectionItem.getConnection()));
+                parameters = ComponentsUtils.getParametersFromForm(element, null, form, null, null);
+                parameters.add(getUpdateParameter());
+            }
+        } else {
+            componentService = new ComponentServiceWithValueEvaluator(internalService.getComponentService(),
+                    new ComponentContextPropertyValueEvaluator((INode) element));
+            parameters = ComponentsUtils.getParametersFromForm(element, section, ((INode) element).getComponentProperties(),
+                    null, form, null, null);
         }
-        ComponentService componentService = new ComponentServiceWithValueEvaluator(internalService.getComponentService(),
-                new MetadataContextPropertyValueEvaluator(connection));
-        List<ElementParameter> parameters = ComponentsUtils.getParametersFromForm(element, null, form, null, null);
         for (ElementParameter parameter : parameters) {
             if (parameter instanceof GenericElementParameter) {
                 GenericElementParameter genericElementParameter = (GenericElementParameter) parameter;
@@ -119,94 +129,62 @@ public class DynamicComposite extends MultipleThreadDynamicComposite implements 
                 genericElementParameter.setDrivedByForm(drivedByForm);
                 genericElementParameter.callBeforePresent();
                 genericElementParameter.addPropertyChangeListener(this);
-            }
-        }
-        parameters.add(getUpdateParameter());
-        element.setElementParameters(parameters);
-        return parameters;
-    }
-
-    // TUP-4160
-    public List<ElementParameter> resetElementParameters() {
-        ComponentService componentService = null;
-        List<ElementParameter> oldParameters = (List<ElementParameter>) element.getElementParameters();
-        final List<ElementParameter> newParameters = new ArrayList<ElementParameter>();
-        ComponentProperties props = null;
-        if (element instanceof INode) {
-            INode node = (INode) element;
-            if (node.getComponentProperties() != null) {
-                props = node.getComponentProperties();
-            }
-            componentService = new ComponentServiceWithValueEvaluator(internalService.getComponentService(),
-                    new ComponentContextPropertyValueEvaluator(node));
-        }
-        List<ElementParameter> parameters = ComponentsUtils
-                .getParametersFromForm(element, section, props, null, form, null, null);
-        for (ElementParameter parameter : parameters) {
-            if (parameter instanceof GenericElementParameter) {
-                ((GenericElementParameter) parameter).callBeforePresent();
-                ((GenericElementParameter) parameter).addPropertyChangeListener(this);
-            }
-        }
-        for (ElementParameter oldParameter : oldParameters) {
-            if (EParameterName.UPDATE_COMPONENTS.getName().equals(oldParameter.getName())) {
-                oldParameter.setValue(true);
-            }
-            boolean added = false;
-            for (ElementParameter parameter : parameters) {
-                if (oldParameter.getCategory() != null && oldParameter.getCategory().equals(parameter.getCategory())
-                        && oldParameter.getName() != null && oldParameter.getName().equals(parameter.getName())) {
-                    if (EParameterFieldType.SCHEMA_TYPE.equals(parameter.getFieldType())) {
-                        if (oldParameter instanceof GenericElementParameter && parameter instanceof GenericElementParameter) {
-                            ComponentProperties oldProperties = ((GenericElementParameter) oldParameter).getComponentProperties();
-                            ComponentProperties newProperties = ((GenericElementParameter) parameter).getComponentProperties();
-                            if (oldProperties != null && oldProperties.getName() != null && newProperties != null
-                                    && newProperties.getName() != null && oldProperties.getName().equals(newProperties.getName())) {
-                                if (parameter.getChildParameters().size() == 0) {
-                                    parameter.getChildParameters().putAll(oldParameter.getChildParameters());
-                                }
-                            }
+                if (EParameterFieldType.SCHEMA_REFERENCE.equals(parameter.getFieldType())) {
+                    if (parameter.getChildParameters().size() == 0) {
+                        IElementParameter schemaParameter = element.getElementParameterFromField(
+                                EParameterFieldType.SCHEMA_REFERENCE, section);
+                        parameter.getChildParameters().putAll(schemaParameter.getChildParameters());
+                    }
+                }
+                if (isRepository(element)) {
+                    String repositoryValue = parameter.getRepositoryValue();
+                    if (repositoryValue == null) {
+                        if (parameter.getValue() != null) {
+                            parameter.setRepositoryValue(parameter.getName());
+                            repositoryValue = parameter.getRepositoryValue();
                         }
                     }
-                    // Repository
-                    IElementParameter property = element.getElementParameterFromField(EParameterFieldType.PROPERTY_TYPE, section);
-                    if (property != null) {
-                        Map<String, IElementParameter> childParameters = property.getChildParameters();
-                        if (childParameters != null) {
-                            IElementParameter elementParameter = childParameters.get(EParameterName.PROPERTY_TYPE.getName());
-                            if (elementParameter != null && EmfComponent.REPOSITORY.equals(elementParameter.getValue())) {
-                                String repositoryValue = parameter.getRepositoryValue();
-                                if (repositoryValue == null) {
-                                    if (parameter.getValue() != null) {
-                                        parameter.setRepositoryValue(parameter.getName());
-                                        repositoryValue = parameter.getRepositoryValue();
-                                    }
-                                }
-                                if (oldParameter.isShow(oldParameters) && (repositoryValue != null)
-                                        && (!parameter.getName().equals(EParameterName.PROPERTY_TYPE.getName()))
-                                        && parameter.getCategory() == section) {
-                                    parameter.setRepositoryValueUsed(true);
-                                    parameter.setReadOnly(true);
-                                }
-                            }
-                        }
+                    if (parameter.isShow(currentParameters) && (repositoryValue != null)
+                            && (!parameter.getName().equals(EParameterName.PROPERTY_TYPE.getName()))
+                            && parameter.getCategory() == section) {
+                        parameter.setRepositoryValueUsed(true);
+                        parameter.setReadOnly(true);
                     }
-                    if (componentService != null && parameter instanceof GenericElementParameter) {
-                        ((GenericElementParameter) parameter).setComponentService(componentService);
-                    }
-                    newParameters.add(parameter);
+                }
+            }
+        }
+        //
+        boolean added = false;
+        for (ElementParameter currentParameter : currentParameters) {
+            if (EParameterName.UPDATE_COMPONENTS.getName().equals(currentParameter.getName())) {
+                currentParameter.setValue(true);
+            }
+            if (currentParameter.isSerialized() && currentParameter.getCategory().equals(section)) {
+                if (!added) {
+                    newParameters.addAll(parameters);
                     added = true;
                 }
+                continue;
             }
-            if (!added) {
-                if (componentService != null && oldParameter instanceof GenericElementParameter) {
-                    ((GenericElementParameter) oldParameter).setComponentService(componentService);
-                }
-                newParameters.add(oldParameter);
-            }
+            newParameters.add(currentParameter);
+        }
+        if (element instanceof FakeElement) {
+            newParameters.addAll(parameters);
         }
         element.setElementParameters(newParameters);
         return newParameters;
+    }
+
+    private boolean isRepository(Element element) {
+        IElementParameter property = element.getElementParameterFromField(EParameterFieldType.PROPERTY_TYPE, section);
+        if (property != null) {
+            Map<String, IElementParameter> childParameters = property.getChildParameters();
+            if (childParameters != null) {
+                IElementParameter elementParameter = childParameters.get(EParameterName.PROPERTY_TYPE.getName());
+                return elementParameter != null && EmfComponent.REPOSITORY.equals(elementParameter.getValue());
+            }
+        }
+        return false;
     }
 
     private void updateProperty(String newPropertyName) {
@@ -293,11 +271,7 @@ public class DynamicComposite extends MultipleThreadDynamicComposite implements 
     }
 
     private void reset(boolean refresh) {
-        if (element instanceof FakeElement) {
-            resetParameters();
-        } else {
-            resetElementParameters();
-        }
+        resetParameters();
         if (refresh) {
             Display.getDefault().asyncExec(new Runnable() {
 

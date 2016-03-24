@@ -19,6 +19,7 @@ import java.util.Map;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PlatformUI;
 import org.talend.commons.runtime.xml.XmlUtil;
+import org.talend.core.GlobalServiceRegister;
 import org.talend.core.model.metadata.ColumnNameChanged;
 import org.talend.core.model.metadata.IMetadataColumn;
 import org.talend.core.model.metadata.IMetadataTable;
@@ -41,7 +42,9 @@ import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.model.utils.ContextParameterUtils;
 import org.talend.core.model.utils.IDragAndDropServiceHandler;
 import org.talend.core.repository.seeker.RepositorySeekerManager;
+import org.talend.core.runtime.services.IGenericWizardService;
 import org.talend.core.utils.TalendQuoteUtils;
+import org.talend.cwm.helper.SAPBWTableHelper;
 import org.talend.cwm.helper.TaggedValueHelper;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.model.components.EmfComponent;
@@ -113,7 +116,6 @@ public class RepositoryChangeMetadataCommand extends ChangeMetadataCommand {
                 }
             }
         }
-
         if (node.isExternalNode() && !node.isELTComponent()) {
             for (IElementParameter parameter : node.getElementParameters()) {
                 if (parameter.getFieldType() == EParameterFieldType.TABLE) {
@@ -198,11 +200,32 @@ public class RepositoryChangeMetadataCommand extends ChangeMetadataCommand {
                     String innerIOType = ((SAPBWTable) orginalTable).getInnerIOType();
                     if (innerIOType != null) {
                         node.getElementParameter("INFO_OBJECT_TYPE").setValue(innerIOType); //$NON-NLS-1$
+                        IElementParameter schemaTypeParam = node.getElementParameterFromField(EParameterFieldType.SCHEMA_TYPE);
+                        if (schemaTypeParam != null) {
+                            IMetadataTable metadataTable = node.getMetadataFromConnector(schemaTypeParam.getContext());
+                            metadataTable.getAdditionalProperties().put(SAPBWTableHelper.SAP_INFOOBJECT_INNER_TYPE, innerIOType);
+                        }
                     }
                 }
             }
             setTableRelevantParameterValues();
         }
+        if (!node.getMetadataList().isEmpty() && !node.getMetadataList().get(0).sameMetadataAs(newOutputMetadata)) {
+            IGenericWizardService wizardService = null;
+            if (GlobalServiceRegister.getDefault().isServiceRegistered(IGenericWizardService.class)) {
+                wizardService = (IGenericWizardService) GlobalServiceRegister.getDefault()
+                        .getService(IGenericWizardService.class);
+            }
+            Connection conn = connection;
+            if (conn == null) {
+                conn = getConnection();
+            }
+            if (wizardService != null && wizardService.isGenericConnection(conn)) {
+                wizardService
+                        .updateComponentSchema(node.getComponentProperties(), getSchemaElementParamName(), newOutputMetadata);
+            }
+        }
+        super.setConnection(connection);
         super.execute();
         String propertyType = (String) node.getPropertyValue(EParameterName.PROPERTY_TYPE.getName());
         if (propertyType != null) {
@@ -261,6 +284,10 @@ public class RepositoryChangeMetadataCommand extends ChangeMetadataCommand {
             }
         }
         node.setPropertyValue(EParameterName.UPDATE_COMPONENTS.getName(), Boolean.TRUE);
+    }
+
+    private String getSchemaElementParamName() {
+        return propName == null ? "" : propName.substring(0, propName.indexOf(":")); //$NON-NLS-1$//$NON-NLS-2$
     }
 
     protected void setTableRelevantParameterValues() {

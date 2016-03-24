@@ -155,7 +155,7 @@ import org.talend.librariesmanager.prefs.LibrariesManagerUtils;
  * Component manager that read each information in a xml file with Emf. <br/>
  * $Id$
  */
-public class EmfComponent extends AbstractComponent {
+public class EmfComponent extends AbstractBasicComponent {
 
     private static Logger log = Logger.getLogger(EmfComponent.class);
 
@@ -171,8 +171,6 @@ public class EmfComponent extends AbstractComponent {
             areHadoopDistribsImported = false;
 
     private COMPONENTType compType;
-
-    private Map<String, ImageDescriptor> imageRegistry = new HashMap<String, ImageDescriptor>();
 
     public static final String BUILTIN = "BUILT_IN"; //$NON-NLS-1$
 
@@ -206,8 +204,6 @@ public class EmfComponent extends AbstractComponent {
 
     private String pathSource;
 
-    private List<ECodePart> codePartListX;
-
     private Boolean useMerge = null;
 
     private Boolean useLookup = null;
@@ -220,7 +216,7 @@ public class EmfComponent extends AbstractComponent {
 
     private Boolean technical = null;
 
-    private Map<String, String> translatedMap = new HashMap<String, String>();
+    private Map<String, String> translatedMap = new HashMap<>();
 
     private String translatedFamilyName;
 
@@ -3666,6 +3662,7 @@ public class EmfComponent extends AbstractComponent {
         return useMerge;
     }
 
+    @Override
     public boolean useFlow() {
         boolean useFlow = false;
         if (compType == null) {
@@ -3693,6 +3690,7 @@ public class EmfComponent extends AbstractComponent {
         return useFlow;
     }
 
+    @Override
     public boolean useSchema() {
         boolean useSchema = false;
         if (compType == null) {
@@ -3760,6 +3758,7 @@ public class EmfComponent extends AbstractComponent {
         return false;
     }
 
+    @Override
     public boolean isMultiSchemaOutput() {
         if (compType == null) {
             isLoaded = false;

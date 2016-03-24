@@ -103,6 +103,7 @@ import org.talend.core.service.IMetadataManagmentService;
 import org.talend.core.ui.ICDCProviderService;
 import org.talend.core.ui.IJobletProviderService;
 import org.talend.core.ui.component.ComponentsFactoryProvider;
+import org.talend.cwm.helper.SAPBWTableHelper;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.model.components.ElementParameter;
@@ -1212,6 +1213,9 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
 
         // check the metadata from the repository to see if it's up to date.
         List<IElementParameter> schemaTypeParams = node.getElementParametersFromField(EParameterFieldType.SCHEMA_TYPE);
+        if (schemaTypeParams.isEmpty()) {
+            schemaTypeParams = node.getElementParametersFromField(EParameterFieldType.SCHEMA_REFERENCE);
+        }
         // IElementParameter schemaTypeParam = node.getElementParameterFromField(EParameterFieldType.SCHEMA_TYPE);
         if (schemaTypeParams != null) {
             for (IElementParameter schemaTypeParam : schemaTypeParams) {
@@ -1309,11 +1313,10 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
                                         }
                                     }
                                 } else {
-                                    IElementParameter param = node.getElementParameter("INFO_OBJECT_TYPE"); //$NON-NLS-1$
                                     String innerIOType = null;
-                                    if (param != null) {
-                                        innerIOType = (String) param.getValue();
-                                    }
+                                    IMetadataTable metadataTable = node.getMetadataFromConnector(schemaTypeParam.getContext());
+                                    innerIOType = metadataTable.getAdditionalProperties().get(
+                                            SAPBWTableHelper.SAP_INFOOBJECT_INNER_TYPE);
                                     if (innerIOType != null) {
                                         Connection connection = connectionItem.getConnection();
                                         if (connection != null) {

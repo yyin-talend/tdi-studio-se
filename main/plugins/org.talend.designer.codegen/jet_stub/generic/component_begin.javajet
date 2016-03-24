@@ -74,6 +74,8 @@ for (Component.CodegenPropInfo propInfo : propsToProcess) { // propInfo
 	for (NamedThing prop : properties) { // property
         if (prop instanceof Property) { // if, only deal with valued Properties
             Property property = (Property)prop;
+            if (property.getFlags() != null && property.getFlags().contains(Property.Flags.DESIGN_TIME_ONLY))
+            	continue;
 		    Object value = property.getValue();
 		    if (value != null && (!(value instanceof String) || !((String)value).equals(""))) { // if
 					%>
@@ -85,8 +87,19 @@ for (Component.CodegenPropInfo propInfo : propsToProcess) { // propInfo
 	} // property
 } // propInfo
 %>
+
 org.talend.components.api.container.RuntimeContainer container_<%=cid%> = new org.talend.components.api.container.RuntimeContainer() { 
-    // Nothing here for now
+    public Object getComponentData(String componentId, String key) {
+        return globalMap.get(componentId + key);
+    }
+
+    public void setComponentData(String componentId, String key, Object data) {
+        globalMap.put(componentId + key, data);
+    }
+
+    public String getCurrentComponentId() {
+        return "<%=cid%>";
+    }
 };
 
 <%
