@@ -21,9 +21,11 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.ImageData;
 import org.eclipse.swt.widgets.Composite;
+import org.talend.commons.runtime.model.components.IComponentConstants;
 import org.talend.components.api.properties.ComponentProperties;
 import org.talend.components.api.wizard.ComponentWizardDefinition;
 import org.talend.components.api.wizard.WizardImageType;
+import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.metadata.builder.connection.Connection;
 import org.talend.core.model.metadata.builder.connection.MetadataTable;
 import org.talend.core.model.process.EComponentCategory;
@@ -39,11 +41,13 @@ import org.talend.designer.core.generic.utils.SchemaUtils;
 import org.talend.designer.core.model.components.ElementParameter;
 import org.talend.repository.generic.internal.IGenericWizardInternalService;
 import org.talend.repository.generic.internal.service.GenericWizardInternalService;
+import org.talend.repository.generic.model.genericMetadata.GenericConnection;
 import org.talend.repository.generic.model.genericMetadata.GenericMetadataPackage;
 import org.talend.repository.generic.model.genericMetadata.SubContainer;
 import org.talend.repository.generic.ui.DynamicComposite;
 import org.talend.repository.model.IRepositoryNode.ENodeType;
 import org.talend.repository.model.RepositoryNode;
+import orgomg.cwm.objectmodel.core.TaggedValue;
 
 /**
  * created by ycbai on 2015年9月9日 Detailled comment
@@ -165,6 +169,43 @@ public class GenericWizardService implements IGenericWizardService {
             }
         }
         return dynamicComposite;
+    }
+
+    @Override
+    public void updateComponentSchema(MetadataTable metadataTable) {
+        SchemaUtils.updateComponentSchema(metadataTable);
+    }
+
+    @Override
+    public void updateComponentSchema(ComponentProperties componentProperties, String schemaPropertyName,
+            IMetadataTable metadataTable) {
+        SchemaUtils.updateComponentSchema(componentProperties, schemaPropertyName, metadataTable);
+    }
+
+    @Override
+    public List<ComponentProperties> getAllComponentProperties(Connection connection) {
+        List<ComponentProperties> componentProperties = new ArrayList<>();
+        if (isGenericConnection(connection)) {
+            GenericConnection genericConnection = (GenericConnection) connection;
+            String compProperties = genericConnection.getCompProperties();
+            ComponentProperties cp = ComponentsUtils.getComponentPropertiesFromSerialized(compProperties);
+            if (cp != null) {
+                componentProperties.add(cp);
+            }
+            List<MetadataTable> metadataTables = SchemaUtils.getMetadataTables(genericConnection, SubContainer.class);
+            for (MetadataTable metadataTable : metadataTables) {
+                for (TaggedValue taggedValue : metadataTable.getTaggedValue()) {
+                    if (IComponentConstants.COMPONENT_PROPERTIES_TAG.equals(taggedValue.getTag())) {
+                        ComponentProperties compPros = ComponentsUtils.getComponentPropertiesFromSerialized(taggedValue
+                                .getValue());
+                        if (compPros != null && !componentProperties.contains(compPros)) {
+                            componentProperties.add(compPros);
+                        }
+                    }
+                }
+            }
+        }
+        return componentProperties;
     }
 
 }

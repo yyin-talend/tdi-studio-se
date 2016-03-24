@@ -18,6 +18,7 @@ import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
 import org.talend.commons.exception.ExceptionHandler;
+import org.talend.commons.runtime.model.components.IComponentConstants;
 import org.talend.components.api.component.ComponentDefinition;
 import org.talend.components.api.properties.ComponentProperties;
 import org.talend.core.GlobalServiceRegister;
@@ -103,7 +104,7 @@ public class GenericDragAndDropHandler extends AbstractDragAndDropServiceHandler
                 } else if (modelElement instanceof MetadataTable) {
                     MetadataTable metadataTable = (MetadataTable) modelElement;
                     for (TaggedValue taggedValue : metadataTable.getTaggedValue()) {
-                        if (IGenericConstants.COMPONENT_PROPERTIES_TAG.equals(taggedValue.getTag())) {
+                        if (IComponentConstants.COMPONENT_PROPERTIES_TAG.equals(taggedValue.getTag())) {
                             subComponentProperties = ComponentsUtils.getComponentPropertiesFromSerialized(taggedValue.getValue());
                         }
                     }
@@ -125,47 +126,12 @@ public class GenericDragAndDropHandler extends AbstractDragAndDropServiceHandler
     }
 
     @Override
-    public boolean isGenericRepositoryValue(Connection connection, String paramName) {
-        if (paramName != null && canHandle(connection)) {
-            return isGenericRepositoryValue((GenericConnection) connection, paramName);
-        }
-        return false;
-    }
-
-    public boolean isGenericRepositoryValue(GenericConnection connection, String paramName) {
-        if (connection == null) {
-            return false;
-        }
-        ComponentProperties componentProperties = ComponentsUtils.getComponentPropertiesFromSerialized(connection
-                .getCompProperties());
-        List<Property> propertyValues = ComponentsUtils.getAllValuedProperties(componentProperties);
-        for (Property property : propertyValues) {
-            paramName = ComponentsUtils.getPropertyName(paramName);
-            if (property.getName().equals(paramName)) {
-                return property.getTaggedValue(IGenericConstants.REPOSITORY_VALUE) != null;
-            }
-        }
-        for (ModelElement modelElement : connection.getOwnedElement()) {
-            ComponentProperties subComponentProperties = null;
-            if (modelElement instanceof SubContainer) {
-                SubContainer subContainer = (SubContainer) modelElement;
-                subComponentProperties = ComponentsUtils.getComponentPropertiesFromSerialized(subContainer.getCompProperties());
-            } else if (modelElement instanceof MetadataTable) {
-                MetadataTable metadataTable = (MetadataTable) modelElement;
-                for (TaggedValue taggedValue : metadataTable.getTaggedValue()) {
-                    if (IGenericConstants.COMPONENT_PROPERTIES_TAG.equals(taggedValue.getTag())) {
-                        subComponentProperties = ComponentsUtils.getComponentPropertiesFromSerialized(taggedValue.getValue());
-                        break;
-                    }
-                }
-            }
-            if (subComponentProperties != null) {
-                List<Property> subPropertyValues = ComponentsUtils.getAllValuedProperties(subComponentProperties);
-                for (Property subProperty : subPropertyValues) {
-                    paramName = ComponentsUtils.getPropertyName(paramName);
-                    if (subProperty.getName().equals(paramName)) {
-                        return subProperty.getTaggedValue(IGenericConstants.REPOSITORY_VALUE) != null;
-                    }
+    public boolean isGenericRepositoryValue(List<ComponentProperties> componentProperties, String paramName) {
+        if (componentProperties != null && paramName != null) {
+            for (ComponentProperties compPro : componentProperties) {
+                Property property = compPro.getValuedProperty(paramName);
+                if (property != null) {
+                    return property.getTaggedValue(IGenericConstants.REPOSITORY_VALUE) != null;
                 }
             }
         }
