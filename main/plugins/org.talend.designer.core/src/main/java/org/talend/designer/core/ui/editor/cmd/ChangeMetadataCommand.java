@@ -41,6 +41,7 @@ import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.INode;
 import org.talend.core.model.process.INodeConnector;
 import org.talend.core.model.utils.TalendTextUtils;
+import org.talend.core.runtime.services.IGenericWizardService;
 import org.talend.core.service.IDbMapService;
 import org.talend.core.service.ISparkMapService;
 import org.talend.core.service.IXmlMapService;
@@ -587,6 +588,14 @@ public class ChangeMetadataCommand extends Command {
                 }
             }
             MetadataToolHelper.copyTable(newOutputMetadata, currentOutputMetadata);
+            IGenericWizardService wizardService = null;
+            if (GlobalServiceRegister.getDefault().isServiceRegistered(IGenericWizardService.class)) {
+                wizardService = (IGenericWizardService) GlobalServiceRegister.getDefault()
+                        .getService(IGenericWizardService.class);
+            }
+            if (wizardService != null && wizardService.isGenericConnection(connection)) {
+                wizardService.updateComponentSchema(node.getComponentProperties(), schemaParam.getName(), currentOutputMetadata);
+            }
         }
         if (inputSchemaParam != null
                 && inputSchemaParam.getChildParameters().get(EParameterName.SCHEMA_TYPE.getName()) != null

@@ -14,6 +14,7 @@ package org.talend.designer.core.ui.editor.properties.controllers;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -43,6 +44,7 @@ import org.talend.commons.ui.swt.dialogs.ModelSelectionDialog;
 import org.talend.commons.ui.swt.dialogs.ModelSelectionDialog.EEditSelection;
 import org.talend.commons.ui.swt.dialogs.ModelSelectionDialog.ESelectionType;
 import org.talend.core.CorePlugin;
+import org.talend.core.GlobalServiceRegister;
 import org.talend.core.model.metadata.IMetadataColumn;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.metadata.MetadataSchemaType;
@@ -70,6 +72,8 @@ import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.core.repository.model.ProxyRepositoryFactory;
 import org.talend.core.repository.model.repositoryObject.MetadataTableRepositoryObject;
+import org.talend.core.repository.seeker.RepositorySeekerManager;
+import org.talend.core.runtime.services.IGenericWizardService;
 import org.talend.core.ui.CoreUIPlugin;
 import org.talend.core.ui.metadata.dialog.MetadataDialog;
 import org.talend.core.ui.metadata.dialog.MetadataDialogForMerge;
@@ -93,7 +97,6 @@ import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.IRepositoryNode;
 import org.talend.repository.model.IRepositoryNode.EProperties;
 import org.talend.repository.model.RepositoryNode;
-import org.talend.repository.model.RepositoryNodeUtilities;
 import org.talend.repository.ui.dialog.RepositoryReviewDialog;
 
 /**
@@ -513,10 +516,15 @@ public abstract class AbstractSchemaController extends AbstractRepositoryControl
         }
         // find IRepositoryObject from repository that contains current connection
         IRepositoryViewObject node = findRepositoryObject(schemaId);
-
-        RepositoryNode repositoryNode = RepositoryNodeUtilities.getRepositoryNode(node);
+        RepositoryNode repositoryNode = null;
+        IRepositoryNode iRepNode = RepositorySeekerManager.getInstance().searchRepoViewNode(node.getProperty().getId());
+        if (iRepNode instanceof RepositoryNode) {
+            repositoryNode = (RepositoryNode) iRepNode;
+        }
+        if (repositoryNode == null) {
+            return;
+        }
         RepositoryNode metadataNode = null;
-
         metadataNode = findRepositoryNode(names[1], names[0], repositoryNode);
         if (metadataNode != null) {
             final IMetadataService metadataService = CorePlugin.getDefault().getMetadataService();
@@ -1217,8 +1225,18 @@ public abstract class AbstractSchemaController extends AbstractRepositoryControl
                     }
                     if (item != null && item instanceof ConnectionItem) {
                         boolean findTable = false;
-                        for (org.talend.core.model.metadata.builder.connection.MetadataTable table : ConnectionHelper
-                                .getTables(connection)) {
+                        Set<org.talend.core.model.metadata.builder.connection.MetadataTable> tables = null;
+                        IGenericWizardService wizardService = null;
+                        if (GlobalServiceRegister.getDefault().isServiceRegistered(IGenericWizardService.class)) {
+                            wizardService = (IGenericWizardService) GlobalServiceRegister.getDefault().getService(
+                                    IGenericWizardService.class);
+                        }
+                        if (wizardService != null && wizardService.isGenericItem(item)) {
+                            tables = new HashSet<>(wizardService.getMetadataTables(connection));
+                        } else {
+                            tables = ConnectionHelper.getTables(connection);
+                        }
+                        for (org.talend.core.model.metadata.builder.connection.MetadataTable table : tables) {
                             if (table.getLabel().equals(tableLabel)) {
                                 repositoryMetadata = ConvertionHelper.convert(table);
                                 newRepositoryIdValue = schemaSelected;

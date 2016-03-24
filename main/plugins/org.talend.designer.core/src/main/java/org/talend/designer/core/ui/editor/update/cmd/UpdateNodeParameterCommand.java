@@ -614,6 +614,9 @@ public class UpdateNodeParameterCommand extends Command {
                             if (nodeConnector != null) {
                                 List<IElementParameter> params = node
                                         .getElementParametersFromField(EParameterFieldType.SCHEMA_TYPE);
+                                if (params == null || params.isEmpty()) {
+                                    params = node.getElementParametersFromField(EParameterFieldType.SCHEMA_REFERENCE);
+                                }
                                 // IElementParameter param =
                                 // node.getElementParameterFromField(EParameterFieldType.SCHEMA_TYPE);
                                 if (params != null) {

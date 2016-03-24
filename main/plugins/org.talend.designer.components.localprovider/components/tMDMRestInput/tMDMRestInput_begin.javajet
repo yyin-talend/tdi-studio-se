@@ -41,9 +41,9 @@ if ((metadatas != null) && (metadatas.size() > 0)) {
 
 				String dataCluster = ElementParameterParser.getValue(node, "__DATACLUSTER__");
 				String containerType = ElementParameterParser.getValue(node, "__CONTAINER_TYPE__");
-				boolean retrieveFullRecord = ("true").equals(ElementParameterParser.getValue(node,"__RETRIEVE_FULL_RECORD__"));
+				boolean retrieveRawData = ("true").equals(ElementParameterParser.getValue(node,"__RETRIEVE_RAW_DATA__"));
 				String xmlField = ElementParameterParser.getValue(node, "__XMLFIELD__");
-				String acceptType = retrieveFullRecord ? ElementParameterParser.getValue(node, "__ACCEPT_TYPE__") : "application/json";
+				String acceptType = retrieveRawData ? ElementParameterParser.getValue(node, "__ACCEPT_TYPE__") : "application/json";
 				boolean returnXml = ("application/xml").equals(acceptType);
 				String queryText = ElementParameterParser.getValue(node, "__QUERY_TEXT__");	
 				queryText = queryText.replaceAll(" ","").replaceAll("\n","").replaceAll("\r","").replaceAll("\"", "'");	
@@ -63,13 +63,26 @@ if ((metadatas != null) && (metadatas.size() > 0)) {
 	                String queryResult_<%=cid%> = response_<%=cid%>.readEntity(String.class);
 	                webClient_<%=cid%>.reset();
 	                if(response_<%=cid%>.getStatus() != 200) {
-	                	<% logUtil.error("queryResult_" + cid);%>
-	                	throw new RuntimeException(queryResult_<%=cid%>);
+	                    if(response_<%=cid%>.getStatus() == 401) {
+	                        <% logUtil.error("\"Unauthorized! Invalid username and password.\"");%>
+	                        throw new RuntimeException("Unauthorized! Invalid username and password.");
+	                    } else if(response_<%=cid%>.getStatus() == 404) {
+	                        <% logUtil.error("\"Not found! URL is not correct.\"");%>
+	                        throw new RuntimeException("Not found! URL is not correct.");
+	                    <%if(dataCluster.replaceAll(" ","").equals("\"\"")){%>
+	                    } else if(response_<%=cid%>.getStatus() == 500) {
+	                        <% logUtil.error("\"Data container is empty or null.\"");%>
+	                        throw new RuntimeException("Data container is empty or null.");
+	                    <%}%>
+	                    } else {
+	                        <% logUtil.error("queryResult_" + cid);%>
+	                        throw new RuntimeException(queryResult_<%=cid%>);
+	                    }
 	                }
 	                
 	                <% logUtil.debug("\"Query result from server:\" + queryResult_" + cid);%>
                               	
-				<%if(retrieveFullRecord && returnXml){%>
+				<%if(retrieveRawData && returnXml){%>
 					// inner class begin
 					class XMLStreamUnwrapper_<%=cid%> implements java.util.Enumeration<String> {
 
@@ -278,7 +291,7 @@ if ((metadatas != null) && (metadatas.size() > 0)) {
 					org.json.simple.parser.JSONParser parser_<%=cid%> = new org.json.simple.parser.JSONParser();
 					try {
 						org.json.simple.JSONArray array_<%=cid%> = (org.json.simple.JSONArray) parser_<%=cid%>.parse(queryResult_<%=cid%>);
-					<%if(!retrieveFullRecord){%>
+					<%if(!retrieveRawData){%>
 						for(Object obj_<%=cid%> : array_<%=cid%>) {
 							org.json.simple.JSONObject jsonObj_<%=cid%> = (org.json.simple.JSONObject) obj_<%=cid%>;
 							items_<%=cid%>.add((org.json.simple.JSONObject)jsonObj_<%=cid%>.get(jsonObj_<%=cid%>.keySet().iterator().next()));
@@ -301,7 +314,7 @@ if ((metadatas != null) && (metadatas.size() > 0)) {
 				
 					for(int i_<%=cid %>=0; i_<%=cid %> < items_<%=cid %>.size(); i_<%=cid %>++) {
 						nb_line_<%=cid %> ++;
-						<%if(retrieveFullRecord){%>
+						<%if(retrieveRawData){%>
 							<%=outgoingConn.getName() %>.<%=xmlField %> = items_<%=cid %>.get(i_<%=cid %>).toString();
 						<%}else {
 							for(IMetadataColumn column : columnList){
