@@ -20,7 +20,7 @@ INode node = (INode)codeGenArgument.getArgument();
 LogUtil logUtil = new LogUtil(node);
 String cid = node.getUniqueName();
 boolean isLog4jEnabled = ("true").equals(ElementParameterParser.getValue(node.getProcess(), "__LOG4J_ACTIVATE__"));
-
+boolean dieOnError = ("true").equals(ElementParameterParser.getValue(node,"__DIE_ON_ERROR__"));
 List<IMetadataTable> metadatas = node.getMetadataList();
 if ((metadatas != null) && (metadatas.size() > 0)) {
 	IMetadataTable metadata = metadatas.get(0);
@@ -90,28 +90,40 @@ if ((metadatas != null) && (metadatas.size() > 0)) {
                                 orgStart = (Long) select.get("start");
                                 orgLimit = (Long) select.get("limit");
                             } catch (org.json.simple.parser.ParseException e) {
+                            <%if(dieOnError){%>
                                 throw new RuntimeException("Query text is not a valid JSON string.", e);
+                            <%}else{%>
+                                <% logUtil.error("\"Query text is not a valid JSON string.\"");%>
+                                e.printStackTrace();
+                            <%}%>
                             }
                         }
 
                         @SuppressWarnings("unchecked")
                         public org.json.simple.JSONObject getCountQuery() {
-                            org.json.simple.JSONObject orgSelect = (org.json.simple.JSONObject) queryObject.get("select");
-                            org.json.simple.JSONArray orgFrom = (org.json.simple.JSONArray) orgSelect.get("from");
-                            org.json.simple.JSONObject orgWhere = (org.json.simple.JSONObject) orgSelect.get("where");
-                            org.json.simple.JSONObject select = new org.json.simple.JSONObject();
-                            if (orgFrom != null)
-                                select.put("from", orgFrom);
-                            if (orgWhere != null)
-                                select.put("where", orgSelect.get("where"));
-                            try {
-                                select.put("fields", parser.parse("[{\"count\":{}}]"));
-                            } catch (org.json.simple.parser.ParseException e) {
-                                throw new RuntimeException("Failed to get count query JSON.", e);
+                            org.json.simple.JSONObject countQuery = null;
+                            if (queryObject != null) {
+                                org.json.simple.JSONObject orgSelect = (org.json.simple.JSONObject) queryObject.get("select");
+                                org.json.simple.JSONArray orgFrom = (org.json.simple.JSONArray) orgSelect.get("from");
+                                org.json.simple.JSONObject orgWhere = (org.json.simple.JSONObject) orgSelect.get("where");
+                                org.json.simple.JSONObject select = new org.json.simple.JSONObject();
+                                if (orgFrom != null)
+                                    select.put("from", orgFrom);
+                                if (orgWhere != null)
+                                    select.put("where", orgSelect.get("where"));
+                                try {
+                                    select.put("fields", parser.parse("[{\"count\":{}}]"));
+                                } catch (org.json.simple.parser.ParseException e) {
+                                <%if(dieOnError){%>
+                                    throw new RuntimeException("Failed to get count query JSON.", e);
+                                <%}else{%>
+                                    <% logUtil.error("\"Failed to get count query JSON.\"");%>
+                                    e.printStackTrace();
+                                <%}%>
+                                }
+                                countQuery = new org.json.simple.JSONObject();
+                                countQuery.put("select", select);
                             }
-                            org.json.simple.JSONObject countQuery = new org.json.simple.JSONObject();
-                            countQuery.put("select", select);
-
                             return countQuery;
                         }
 
@@ -127,33 +139,63 @@ if ((metadatas != null) && (metadatas.size() > 0)) {
                                 }
                             }
                             <% logUtil.debug("\"Execute query:\" + queryObj.toJSONString()");%>
-                            javax.ws.rs.core.Response response = webClient.put(queryObj.toJSONString());
-                            String queryResult = response.readEntity(String.class);
-                            int statusCode = response.getStatus();
-                            webClient.reset();
-                            if (statusCode == 200) {
-                                return queryResult;
-                            } else {
-                                if (statusCode == 401) {
-                                    throw new RuntimeException("Unauthorized! Invalid username and password.");
-                                } else if (statusCode == 404) {
-                                    throw new RuntimeException("Not found! URL is not correct.");
-                                } else if (statusCode == 500 && org.apache.commons.lang.StringUtils.isBlank(dataCluster)) {
-                                    throw new RuntimeException("Data container is empty or null.");
+                            try {
+                                javax.ws.rs.core.Response response = webClient.put(queryObj.toJSONString());
+                                String queryResult = response.readEntity(String.class);
+                                int statusCode = response.getStatus();
+                                webClient.reset();
+                                if (statusCode == 200) {
+                                    return queryResult;
                                 } else {
-                                    throw new RuntimeException(queryResult);
+                                <%if(dieOnError){%>
+                                    if (statusCode == 401) {
+                                        throw new RuntimeException("Unauthorized! Invalid username and password.");
+                                    } else if (statusCode == 404) {
+                                        throw new RuntimeException("Not found! URL is not correct.");
+                                    } else if (statusCode == 500 && org.apache.commons.lang.StringUtils.isBlank(dataCluster)) {
+                                        throw new RuntimeException("Data container is empty or null.");
+                                    } else {
+                                        throw new RuntimeException(queryResult);
+                                    }
+                                <%}else{%>
+                                    if (statusCode == 401) {
+                                        <% logUtil.error("\"Unauthorized! Invalid username and password.\"");%>
+                                    } else if (statusCode == 404) {
+                                        <% logUtil.error("\"Not found! URL is not correct.\"");%>
+                                    } else if (statusCode == 500 && org.apache.commons.lang.StringUtils.isBlank(dataCluster)) {
+                                        <% logUtil.error("\"Data container is empty or null.\"");%>
+                                    } else {
+                                        <% logUtil.error("queryResult");%>
+                                    }
+                                    return null;
+                                <%}%>
                                 }
+                            } catch(Exception e) {
+                            <%if(dieOnError){%>
+                                throw new RuntimeException("Unexpected exception.", e);
+                            <%}else{%>
+                                <% logUtil.error("\"Unexpected exception.\" + e.getMessage()");%>
+                                e.printStackTrace();
+                                return null;
+                            <%}%>
                             }
                         }
 
                         public int getTotalCount() {
-                            String dbCountResult = executeQuery(getCountQuery(), true);
-                            int dbTotalCount = Integer.parseInt(dbCountResult.replaceAll("<results><result><count>", "").replaceAll("</count></result></results>", ""));
-                            if (orgLimit == null || orgLimit > dbTotalCount) {
-                                return dbTotalCount;
-                            } else {
-                                return orgLimit.intValue();
+                            int totalCount = -1;
+                            org.json.simple.JSONObject countQuery = getCountQuery();
+                            if (countQuery != null) {
+                                String dbCountResult = executeQuery(countQuery, true);
+                                if (dbCountResult != null) {
+                                    int dbTotalCount = Integer.parseInt(dbCountResult.replaceAll("<results><result><count>", "").replaceAll("</count></result></results>", ""));
+                                    if (orgLimit == null || orgLimit > dbTotalCount) {
+                                        totalCount = dbTotalCount;
+                                    } else {
+                                        totalCount = orgLimit.intValue();
+                                    }
+                                }
                             }
+                            return totalCount;
                         }
 
                         @SuppressWarnings("unchecked")
@@ -196,7 +238,12 @@ if ((metadatas != null) && (metadatas.size() > 0)) {
 					            }
 					            xmlOutputFactory = javax.xml.stream.XMLOutputFactory.newFactory();
 					        } catch (javax.xml.stream.XMLStreamException e) {
-					            throw new RuntimeException("Unexpected parsing configuration error.", e);
+					        <%if(dieOnError){%>
+                                throw new RuntimeException("Unexpected parsing configuration error.", e);
+                            <%}else{%>
+                                <% logUtil.error("\"Unexpected parsing configuration error.\"+ e.getMessage()");%>
+                                e.printStackTrace();
+                            <%}%>
 					        }
 					    }
 					
@@ -269,7 +316,12 @@ if ((metadatas != null) && (metadatas.size() > 0)) {
 					            } while (level > RECORD_LEVEL || !hasMadeChanges);
 					            writer.flush();
 					        } catch (javax.xml.stream.XMLStreamException e) {
-					            throw new RuntimeException("Unexpected parsing exception.", e);
+					        <%if(dieOnError){%>
+                                throw new RuntimeException("Unexpected parsing exception.", e);
+                            <%}else{%>
+                                <% logUtil.error("\"Unexpected parsing exception.\" + e.getMessage()");%>
+                                e.printStackTrace();
+                            <%}%>
 					        }
 					    }
 					    class ResettableStringWriter_<%=cid%> extends java.io.StringWriter {
@@ -388,6 +440,7 @@ if ((metadatas != null) && (metadatas.size() > 0)) {
                     for(int loopInd_<%=cid%> = 0; loopInd_<%=cid%> < totalLoop_<%=cid%>; loopInd_<%=cid%> ++) {
                         String pagedResult_<%=cid%> = queryDelegater_<%=cid%>.getPagedResult(totalCount_<%=cid%>, loopInd_<%=cid%>);
                         <% logUtil.debug("\"Query page\" + loopInd_" + cid + " + \" result from server:\" + pagedResult_" + cid);%>
+                        if(pagedResult_<%=cid%> != null) {
                         <%if(retrieveRawData && returnXml){%>
                             java.util.List<String> items_<%=cid%> = new java.util.ArrayList<String>();
                             try {
@@ -396,8 +449,13 @@ if ((metadatas != null) && (metadatas.size() > 0)) {
                                 while (tokenizer_<%=cid%>.hasMoreElements()) {
                                     items_<%=cid%>.add(tokenizer_<%=cid%>.nextElement());
                                 }
-                            } catch (Exception xe) {
-                                throw new RuntimeException("Parsing query XML result failed:" + pagedResult_<%=cid%>, xe);
+                            } catch (Exception e) {
+                            <%if(dieOnError){%>
+                                throw new RuntimeException("Parsing query XML result failed.", e);
+                            <%}else{%>
+                                <% logUtil.error("\"Parsing query XML result failed.\" + e.getMessage()");%>
+                                e.printStackTrace();
+                            <%}%>
                             }
 						<%}else{%>
                             java.util.List<org.json.simple.JSONObject> items_<%=cid%> = new java.util.ArrayList<org.json.simple.JSONObject>();
@@ -412,8 +470,13 @@ if ((metadatas != null) && (metadatas.size() > 0)) {
                             <%}else{%>
                                 items_<%=cid%> = array_<%=cid%>;
                             <%}%>
-                            } catch (org.json.simple.parser.ParseException pe) {
-                                throw new RuntimeException("Parsing query JSON result failed:" + pagedResult_<%=cid%>, pe);
+                            } catch (org.json.simple.parser.ParseException e) {
+                            <%if(dieOnError){%>
+                                throw new RuntimeException("Parsing query JSON result failed.", e);
+                            <%}else{%>
+                                <% logUtil.error("\"Parsing query JSON result failed.\" + e.getMessage()");%>
+                                e.printStackTrace();
+                            <%}%>
                             }
                         <%}%>
 						for(int i_<%=cid %>=0; i_<%=cid %> < items_<%=cid %>.size(); i_<%=cid %>++) {
