@@ -13,12 +13,22 @@
 package org.talend.componentdesigner.ui.action.provider;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FilenameFilter;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.IWorkspace;
+import org.eclipse.core.resources.IWorkspaceRunnable;
+import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.IMenuManager;
@@ -28,6 +38,9 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.navigator.CommonActionProvider;
 import org.eclipse.ui.navigator.ICommonActionExtensionSite;
 import org.eclipse.ui.navigator.ICommonViewerWorkbenchSite;
+import org.talend.commons.exception.ExceptionHandler;
+import org.talend.commons.exception.PersistenceException;
+import org.talend.commons.utils.workbench.resources.ResourceUtils;
 import org.talend.componentdesigner.ComponentDesigenerPlugin;
 import org.talend.componentdesigner.PluginConstant;
 import org.talend.componentdesigner.i18n.internal.Messages;
@@ -37,8 +50,14 @@ import org.talend.core.CorePlugin;
 import org.talend.core.GlobalServiceRegister;
 import org.talend.core.model.components.IComponent;
 import org.talend.core.model.components.IComponentsFactory;
+import org.talend.core.model.general.Project;
+import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.ui.component.ComponentsFactoryProvider;
 import org.talend.core.ui.services.IComponentsLocalProviderService;
+import org.talend.repository.ProjectManager;
+import org.talend.repository.RepositoryWorkUnit;
+import org.talend.repository.model.IProxyRepositoryFactory;
+import org.talend.repository.model.IRepositoryService;
 
 /**
  * DOC slanglois class global comment. Detailled comment
@@ -138,12 +157,12 @@ public class PushToPaletteActionProvider extends CommonActionProvider {
                         File sourceFile = selectedFolder.getRawLocation().toFile();
                         String sourceComponentFolder = sourceFile.getAbsolutePath();
                         String targetComponentFolder = targetFile.getAbsolutePath() + File.separator + sourceFile.getName();
-
+                        org.talend.utils.io.FilesUtils.deleteFolder(new File(targetComponentFolder), true);
                         FileCopy.copyComponentFolder(sourceComponentFolder, targetComponentFolder, true);
 
                     }
                 }
-
+                refreshSharedComponents();
                 // add for bug TDI-26719, clear image cash from EmfComponent
                 IComponentsFactory components = ComponentsFactoryProvider.getInstance();
                 List<IComponent> comList = components.getCustomComponents();
@@ -178,6 +197,65 @@ public class PushToPaletteActionProvider extends CommonActionProvider {
             }
 
         }
+        
+        private void refreshSharedComponents(){
+            IRepositoryService service = CorePlugin.getDefault().getRepositoryService();
+            IProxyRepositoryFactory factory = service.getProxyRepositoryFactory();
+            IWorkspace workspace = ResourcesPlugin.getWorkspace();
+            RepositoryWorkUnit repositoryWorkUnit = new RepositoryWorkUnit("Update custom components") {
+                @Override
+                public void run()  {
+                    final IWorkspaceRunnable operation = new IWorkspaceRunnable() {
+                        @Override
+                        public void run(IProgressMonitor subMonitor) throws CoreException {
+                            Project project = ProjectManager.getInstance().getCurrentProject();
+                            String projectLabel = project.getTechnicalLabel();
+                            IProject eclipseProject = workspace.getRoot().getProject(projectLabel);
+                         
+                            try {
+                                IFolder componentsFolder = ResourceUtils.getFolder(eclipseProject, ERepositoryObjectType.getFolderName(ERepositoryObjectType.COMPONENTS), true);
+                                if(!componentsFolder.exists()){
+                                    return;
+                                }
+                                for (IFolder selectedFolder : selectedFolderList) {
+                                    IFolder comFolder = componentsFolder.getFolder(selectedFolder.getName());
+                                    if(!comFolder.exists()){
+                                        continue;
+                                    }
+                                  
+                                  for(IResource svnResource:comFolder.members()){
+                                      svnResource.delete(true, null);
+                                  }
+                                  
+                                  for(IResource resource: selectedFolder.members()){
+                                      if(!(resource instanceof IFile)){
+                                          continue;
+                                      }
+                                      IFile targetSource = comFolder.getFile(resource.getName());
+                                      if (targetSource.exists()) {
+                                          targetSource.delete(true, null);
+                                      }
+                                      File file = new File(resource.getLocationURI());
+                                      targetSource.create(new FileInputStream(file), true, null);
+                                  }
+                                  
+                                }
+                            } catch (PersistenceException | FileNotFoundException e) {
+                                ExceptionHandler.process(e);
+                            }
+                        }
+                    };
+                    try {
+                        workspace.run(operation, null);
+                    } catch (CoreException e) {
+                        ExceptionHandler.process(e);
+                    }
+                }
+            };
+            repositoryWorkUnit.setAvoidUnloadResources(true);
+            factory.executeRepositoryWorkUnit(repositoryWorkUnit);
+        }
+
 
         private List<String> checkComponentXMLinFolder(String folderPath) {
 
