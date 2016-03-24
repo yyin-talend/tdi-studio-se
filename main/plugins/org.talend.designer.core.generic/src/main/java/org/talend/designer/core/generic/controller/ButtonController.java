@@ -45,6 +45,7 @@ public class ButtonController extends AbstractElementPropertySectionController {
     public Command createCommand(Button button) {
         IElementParameter parameter = (IElementParameter) button.getData();
         if (parameter != null) {
+            callBeforeActive(parameter);
             parameter.setValue(null); // so as to invoke listeners to perform some actions.
         }
         return null;

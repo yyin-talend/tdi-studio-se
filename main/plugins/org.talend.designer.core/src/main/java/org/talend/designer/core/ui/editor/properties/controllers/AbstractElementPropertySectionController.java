@@ -110,6 +110,7 @@ import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.model.utils.ContextParameterUtils;
 import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.core.repository.model.ProxyRepositoryFactory;
+import org.talend.core.runtime.services.IGenericService;
 import org.talend.core.sqlbuilder.util.ConnectionParameters;
 import org.talend.core.sqlbuilder.util.TextUtil;
 import org.talend.core.ui.process.IGraphicalNode;
@@ -2346,4 +2347,15 @@ public abstract class AbstractElementPropertySectionController implements Proper
         }
         return null;
     }
+
+    protected void callBeforeActive(IElementParameter param) {
+        IGenericService service = null;
+        if (GlobalServiceRegister.getDefault().isServiceRegistered(IGenericService.class)) {
+            service = (IGenericService) GlobalServiceRegister.getDefault().getService(IGenericService.class);
+        }
+        if (service != null) {
+            service.callBeforeActivate(param);
+        }
+    }
+
 }
