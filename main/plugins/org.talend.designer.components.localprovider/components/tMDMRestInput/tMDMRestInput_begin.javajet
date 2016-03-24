@@ -45,45 +45,133 @@ if ((metadatas != null) && (metadatas.size() > 0)) {
 				String xmlField = ElementParameterParser.getValue(node, "__XMLFIELD__");
 				String acceptType = retrieveRawData ? ElementParameterParser.getValue(node, "__ACCEPT_TYPE__") : "application/json";
 				boolean returnXml = ("application/xml").equals(acceptType);
-				String queryText = ElementParameterParser.getValue(node, "__QUERY_TEXT__");	
-				queryText = queryText.replaceAll(" ","").replaceAll("\n","").replaceAll("\r","").replaceAll("\"", "'");	
-				%>       
-					int nb_line_<%=cid %> = 0;
-					int totalCount_<%=cid%> = -1;
-					<% logUtil.debug("\"Initializing data service base from URL: \"", mdmUrl,"\".\"");%>
-	                <% String passwordFieldName = "__PASSWORD__"; %>
-	                <%@ include file="@{org.talend.designer.components.localprovider}/components/templates/password.javajet"%>
-	
-	                java.util.Map<String, String> connConfig_<%=cid%> = new java.util.HashMap<String, String>();
-	                connConfig_<%=cid%>.put("url", <%=mdmUrl%>);
-	                connConfig_<%=cid%>.put("username", <%=username %>);
-	                connConfig_<%=cid%>.put("password", decryptedPassword_<%=cid%>);
-				    org.apache.cxf.jaxrs.client.WebClient webClient_<%=cid%> = org.apache.cxf.jaxrs.client.WebClient.create(connConfig_<%=cid%>.get("url"), java.util.Arrays.asList(new com.fasterxml.jackson.jaxrs.json.JacksonJaxbJsonProvider()), connConfig_<%=cid%>.get("username"), connConfig_<%=cid%>.get("password"), null);
-	                org.apache.cxf.jaxrs.impl.ResponseImpl response_<%=cid%> = (org.apache.cxf.jaxrs.impl.ResponseImpl)webClient_<%=cid%>.path("data/"+<%=dataCluster%>+"/query").query("container", "<%=containerType%>").type("application/json").accept("<%=acceptType%>").put("<%=queryText%>");
-	                String queryResult_<%=cid%> = response_<%=cid%>.readEntity(String.class);
-	                webClient_<%=cid%>.reset();
-	                if(response_<%=cid%>.getStatus() != 200) {
-	                    if(response_<%=cid%>.getStatus() == 401) {
-	                        <% logUtil.error("\"Unauthorized! Invalid username and password.\"");%>
-	                        throw new RuntimeException("Unauthorized! Invalid username and password.");
-	                    } else if(response_<%=cid%>.getStatus() == 404) {
-	                        <% logUtil.error("\"Not found! URL is not correct.\"");%>
-	                        throw new RuntimeException("Not found! URL is not correct.");
-	                    <%if(dataCluster.replaceAll(" ","").equals("\"\"")){%>
-	                    } else if(response_<%=cid%>.getStatus() == 500) {
-	                        <% logUtil.error("\"Data container is empty or null.\"");%>
-	                        throw new RuntimeException("Data container is empty or null.");
-	                    <%}%>
-	                    } else {
-	                        <% logUtil.error("queryResult_" + cid);%>
-	                        throw new RuntimeException(queryResult_<%=cid%>);
-	                    }
-	                }
-	                
-	                <% logUtil.debug("\"Query result from server:\" + queryResult_" + cid);%>
-                              	
-				<%if(retrieveRawData && returnXml){%>
-					// inner class begin
+				String queryText = ElementParameterParser.getValue(node, "__QUERY_TEXT__").replaceAll(" ","").replaceAll("\n","").replaceAll("\r","").replaceAll("\"", "'");
+				String fetchSize = ElementParameterParser.getValue(node, "__FETCHSIZE__");
+				%>
+				    class QueryDelegater_<%=cid%> {
+
+                        private org.json.simple.parser.JSONParser parser = new org.json.simple.parser.JSONParser();
+
+                        private org.json.simple.JSONObject queryObject;
+
+                        private String dataCluster;
+
+                        private String containerType;
+
+                        private boolean retrieveRawData;
+
+                        private String acceptType;
+
+                        private Long orgStart;
+
+                        private Long orgLimit;
+
+                        private int fetchSize;
+
+                        private org.apache.cxf.jaxrs.client.WebClient  webClient;
+
+                        public QueryDelegater_<%=cid%>(java.util.Map<String, String> connConfig, String dataCluster, String containerType, String queryText,
+                            boolean retrieveRawData, String acceptType, int fetchSize) {
+                            this.initQueryObject(queryText);
+                            this.dataCluster = dataCluster;
+                            this.containerType = containerType;
+                            this.retrieveRawData = retrieveRawData;
+                            this.acceptType = acceptType;
+                            this.fetchSize = fetchSize;
+                            webClient = org.apache.cxf.jaxrs.client.WebClient.create(connConfig.get("url"),
+                                java.util.Arrays.asList(new com.fasterxml.jackson.jaxrs.json.JacksonJaxbJsonProvider()),
+                                connConfig.get("username"), connConfig.get("password"), null);
+                        }
+
+                        private void initQueryObject(String queryText) {
+                            try {
+                                queryObject = (org.json.simple.JSONObject) parser.parse(queryText.replaceAll("'", "\""));
+                                org.json.simple.JSONObject select = (org.json.simple.JSONObject) queryObject.get("select");
+                                orgStart = (Long) select.get("start");
+                                orgLimit = (Long) select.get("limit");
+                            } catch (org.json.simple.parser.ParseException e) {
+                                throw new RuntimeException("Query text is not a valid JSON string.", e);
+                            }
+                        }
+
+                        @SuppressWarnings("unchecked")
+                        public org.json.simple.JSONObject getCountQuery() {
+                            org.json.simple.JSONObject orgSelect = (org.json.simple.JSONObject) queryObject.get("select");
+                            org.json.simple.JSONArray orgFrom = (org.json.simple.JSONArray) orgSelect.get("from");
+                            org.json.simple.JSONObject orgWhere = (org.json.simple.JSONObject) orgSelect.get("where");
+                            org.json.simple.JSONObject select = new org.json.simple.JSONObject();
+                            if (orgFrom != null)
+                                select.put("from", orgFrom);
+                            if (orgWhere != null)
+                                select.put("where", orgSelect.get("where"));
+                            try {
+                                select.put("fields", parser.parse("[{\"count\":{}}]"));
+                            } catch (org.json.simple.parser.ParseException e) {
+                                throw new RuntimeException("Failed to get count query JSON.", e);
+                            }
+                            org.json.simple.JSONObject countQuery = new org.json.simple.JSONObject();
+                            countQuery.put("select", select);
+
+                            return countQuery;
+                        }
+
+                        public String executeQuery(org.json.simple.JSONObject queryObj, boolean isCount) {
+                            webClient.path("data/" + dataCluster + "/query").query("container", containerType).type("application/json");
+                            if (isCount) {
+                                webClient.accept("application/xml");
+                            } else {
+                                if (retrieveRawData) {
+                                    webClient.accept(acceptType);
+                                } else {
+                                    webClient.accept("application/json");
+                                }
+                            }
+                            <% logUtil.debug("\"Execute query:\" + queryObj.toJSONString()");%>
+                            javax.ws.rs.core.Response response = webClient.put(queryObj.toJSONString());
+                            String queryResult = response.readEntity(String.class);
+                            int statusCode = response.getStatus();
+                            webClient.reset();
+                            if (statusCode == 200) {
+                                return queryResult;
+                            } else {
+                                if (statusCode == 401) {
+                                    throw new RuntimeException("Unauthorized! Invalid username and password.");
+                                } else if (statusCode == 404) {
+                                    throw new RuntimeException("Not found! URL is not correct.");
+                                } else if (statusCode == 500 && org.apache.commons.lang.StringUtils.isBlank(dataCluster)) {
+                                    throw new RuntimeException("Data container is empty or null.");
+                                } else {
+                                    throw new RuntimeException(queryResult);
+                                }
+                            }
+                        }
+
+                        public int getTotalCount() {
+                            String dbCountResult = executeQuery(getCountQuery(), true);
+                            int dbTotalCount = Integer.parseInt(dbCountResult.replaceAll("<results><result><count>", "").replaceAll("</count></result></results>", ""));
+                            if (orgLimit == null || orgLimit > dbTotalCount) {
+                                return dbTotalCount;
+                            } else {
+                                return orgLimit.intValue();
+                            }
+                        }
+
+                        @SuppressWarnings("unchecked")
+                        public String getPagedResult(int totalCount, int loopInd) {
+                            int start = fetchSize * loopInd + (orgStart == null ? 0 : orgStart.intValue());
+                            int limit = totalCount > fetchSize * (loopInd + 1) ? fetchSize : totalCount - fetchSize * loopInd;
+                            org.json.simple.JSONObject select = (org.json.simple.JSONObject)queryObject.get("select");
+                            select.put("start", start);
+                            select.put("limit", limit);
+                            return executeQuery(queryObject, false);
+                        }
+
+                        public int getTotalLoop(int totalCount) {
+                            return (int) Math.ceil((totalCount + fetchSize - 1) / fetchSize);
+                        }
+                    }
+
+                    <%if(retrieveRawData && returnXml){%>
 					class XMLStreamUnwrapper_<%=cid%> implements java.util.Enumeration<String> {
 
 					    private static final int RECORD_LEVEL = 1;
@@ -274,46 +362,62 @@ if ((metadatas != null) && (metadatas.size() > 0)) {
 						    }
 				    	}
 					}
-					// inner class end
-					java.util.List<String> items_<%=cid%> = new java.util.ArrayList<String>();
-                	try {
-                		java.io.InputStream content_<%=cid%> = new java.io.ByteArrayInputStream(queryResult_<%=cid%>.getBytes());
-                		XMLStreamUnwrapper_<%=cid%> tokenizer_<%=cid%> = new XMLStreamUnwrapper_<%=cid%>(content_<%=cid%>);
-                		while (tokenizer_<%=cid%>.hasMoreElements()) {
-			                items_<%=cid%>.add(tokenizer_<%=cid%>.nextElement());
-			            }
-                	} catch (Exception xe) {
-                		<% logUtil.error("\"Parsing query XML result failed:\" + queryResult_" + cid);%>
-                		throw new RuntimeException("Parsing query XML result failed:" + queryResult_<%=cid%>, xe);
-                	}
-				<%}else{%>
-					java.util.List<org.json.simple.JSONObject> items_<%=cid%> = new java.util.ArrayList<org.json.simple.JSONObject>();
-					org.json.simple.parser.JSONParser parser_<%=cid%> = new org.json.simple.parser.JSONParser();
-					try {
-						org.json.simple.JSONArray array_<%=cid%> = (org.json.simple.JSONArray) parser_<%=cid%>.parse(queryResult_<%=cid%>);
-					<%if(!retrieveRawData){%>
-						for(Object obj_<%=cid%> : array_<%=cid%>) {
-							org.json.simple.JSONObject jsonObj_<%=cid%> = (org.json.simple.JSONObject) obj_<%=cid%>;
-							items_<%=cid%>.add((org.json.simple.JSONObject)jsonObj_<%=cid%>.get(jsonObj_<%=cid%>.keySet().iterator().next()));
-						}
-					<%}else{%>
-						items_<%=cid%> = array_<%=cid%>;
 					<%}%>
-					} catch (org.json.simple.parser.ParseException pe) {
-						<% logUtil.error("\"Parsing query JSON result failed:\" + queryResult_" + cid);%>
-						throw new RuntimeException("Parsing query JSON result failed:" + queryResult_<%=cid%>, pe);
-					}
-				<%}%>
-                	
-	            	<% logUtil.debug("\"MDM query executed successfully.\"");%>
-					
-					if(totalCount_<%=cid%> < 0) {
-						totalCount_<%=cid%> = items_<%=cid%>.size();
-						<% logUtil.info("\"Get item count :\" + totalCount_" + cid);%>
-					}
-				
-					for(int i_<%=cid %>=0; i_<%=cid %> < items_<%=cid %>.size(); i_<%=cid %>++) {
-						nb_line_<%=cid %> ++;
+                    int nb_line_<%=cid %> = 0;
+                    <% logUtil.debug("\"Initializing data service base from URL: \"", mdmUrl,"\".\"");%>
+                    <% String passwordFieldName = "__PASSWORD__"; %>
+                    <%@ include file="@{org.talend.designer.components.localprovider}/components/templates/password.javajet"%>
+
+                    java.util.Map<String, String> connConfig_<%=cid%> = new java.util.HashMap<String, String>();
+                    connConfig_<%=cid%>.put("url", <%=mdmUrl%>);
+                    connConfig_<%=cid%>.put("username", <%=username %>);
+                    connConfig_<%=cid%>.put("password", decryptedPassword_<%=cid%>);
+                    String dataCluster_<%=cid%> = <%=dataCluster%>;
+                    String containerType_<%=cid%> = "<%=containerType%>";
+                    String queryText_<%=cid%> = "<%=queryText%>";
+                    boolean retrieveRawData_<%=cid%> = <%=retrieveRawData%>;
+                    String acceptType_<%=cid%> = "<%=acceptType%>";
+                    int fetchSize_<%=cid%> = <%=fetchSize%>;
+
+                    QueryDelegater_<%=cid%> queryDelegater_<%=cid%> = new QueryDelegater_<%=cid%>(connConfig_<%=cid%>, dataCluster_<%=cid%>, containerType_<%=cid%>, queryText_<%=cid%>, retrieveRawData_<%=cid%>, acceptType_<%=cid%>, fetchSize_<%=cid%>);
+                    int totalCount_<%=cid%> = queryDelegater_<%=cid%>.getTotalCount();
+                    int totalLoop_<%=cid%> = queryDelegater_<%=cid%>.getTotalLoop(totalCount_<%=cid%>);
+
+                    <% logUtil.info("\"Get item count: \" + totalCount_" + cid);%>
+
+                    for(int loopInd_<%=cid%> = 0; loopInd_<%=cid%> < totalLoop_<%=cid%>; loopInd_<%=cid%> ++) {
+                        String pagedResult_<%=cid%> = queryDelegater_<%=cid%>.getPagedResult(totalCount_<%=cid%>, loopInd_<%=cid%>);
+                        <% logUtil.debug("\"Query page\" + loopInd_" + cid + " + \" result from server:\" + pagedResult_" + cid);%>
+                        <%if(retrieveRawData && returnXml){%>
+                            java.util.List<String> items_<%=cid%> = new java.util.ArrayList<String>();
+                            try {
+                                java.io.InputStream content_<%=cid%> = new java.io.ByteArrayInputStream(pagedResult_<%=cid%>.getBytes());
+                                XMLStreamUnwrapper_<%=cid%> tokenizer_<%=cid%> = new XMLStreamUnwrapper_<%=cid%>(content_<%=cid%>);
+                                while (tokenizer_<%=cid%>.hasMoreElements()) {
+                                    items_<%=cid%>.add(tokenizer_<%=cid%>.nextElement());
+                                }
+                            } catch (Exception xe) {
+                                throw new RuntimeException("Parsing query XML result failed:" + pagedResult_<%=cid%>, xe);
+                            }
+						<%}else{%>
+                            java.util.List<org.json.simple.JSONObject> items_<%=cid%> = new java.util.ArrayList<org.json.simple.JSONObject>();
+                            org.json.simple.parser.JSONParser parser_<%=cid%> = new org.json.simple.parser.JSONParser();
+                            try {
+                                org.json.simple.JSONArray array_<%=cid%> = (org.json.simple.JSONArray) parser_<%=cid%>.parse(pagedResult_<%=cid%>);
+                            <%if(!retrieveRawData){%>
+                                for(Object obj_<%=cid%> : array_<%=cid%>) {
+                                    org.json.simple.JSONObject jsonObj_<%=cid%> = (org.json.simple.JSONObject) obj_<%=cid%>;
+                                    items_<%=cid%>.add((org.json.simple.JSONObject)jsonObj_<%=cid%>.get(jsonObj_<%=cid%>.keySet().iterator().next()));
+                                }
+                            <%}else{%>
+                                items_<%=cid%> = array_<%=cid%>;
+                            <%}%>
+                            } catch (org.json.simple.parser.ParseException pe) {
+                                throw new RuntimeException("Parsing query JSON result failed:" + pagedResult_<%=cid%>, pe);
+                            }
+                        <%}%>
+						for(int i_<%=cid %>=0; i_<%=cid %> < items_<%=cid %>.size(); i_<%=cid %>++) {
+						    nb_line_<%=cid %> ++;
 						<%if(retrieveRawData){%>
 							<%=outgoingConn.getName() %>.<%=xmlField %> = items_<%=cid %>.get(i_<%=cid %>).toString();
 						<%}else {
