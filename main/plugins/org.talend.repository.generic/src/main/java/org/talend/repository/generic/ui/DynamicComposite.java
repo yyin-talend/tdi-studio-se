@@ -115,6 +115,7 @@ public class DynamicComposite extends MultipleThreadDynamicComposite implements 
                         new MetadataContextPropertyValueEvaluator(connectionItem.getConnection()));
                 parameters = ComponentsUtils.getParametersFromForm(element, null, form, null, null);
                 parameters.add(getUpdateParameter());
+                currentParameters.clear();
             }
         } else {
             componentService = new ComponentServiceWithValueEvaluator(internalService.getComponentService(),

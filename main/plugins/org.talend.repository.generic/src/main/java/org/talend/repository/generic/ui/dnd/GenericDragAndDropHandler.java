@@ -16,9 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.commons.lang.StringUtils;
 import org.talend.commons.exception.ExceptionHandler;
-import org.talend.commons.runtime.model.components.IComponentConstants;
 import org.talend.components.api.component.ComponentDefinition;
 import org.talend.components.api.properties.ComponentProperties;
 import org.talend.core.GlobalServiceRegister;
@@ -42,6 +40,7 @@ import org.talend.core.model.utils.IComponentName;
 import org.talend.core.repository.RepositoryComponentSetting;
 import org.talend.core.repository.model.repositoryObject.MetadataColumnRepositoryObject;
 import org.talend.core.repository.model.repositoryObject.MetadataTableRepositoryObject;
+import org.talend.core.runtime.services.IGenericWizardService;
 import org.talend.daikon.properties.Property;
 import org.talend.designer.core.generic.constants.IGenericConstants;
 import org.talend.designer.core.generic.model.Component;
@@ -50,10 +49,8 @@ import org.talend.designer.core.generic.utils.ComponentsUtils;
 import org.talend.designer.core.generic.utils.SchemaUtils;
 import org.talend.repository.generic.model.genericMetadata.GenericConnection;
 import org.talend.repository.generic.model.genericMetadata.GenericConnectionItem;
-import org.talend.repository.generic.model.genericMetadata.SubContainer;
 import org.talend.repository.model.RepositoryNode;
 import orgomg.cwm.objectmodel.core.ModelElement;
-import orgomg.cwm.objectmodel.core.TaggedValue;
 
 /**
  * 
@@ -70,75 +67,51 @@ public class GenericDragAndDropHandler extends AbstractDragAndDropServiceHandler
     @Override
     public Object getComponentValue(Connection connection, String value, IMetadataTable table, String targetComponent) {
         if (value != null && canHandle(connection)) {
-            return getGenericRepositoryValue((GenericConnection) connection, value, table);
+            if (GlobalServiceRegister.getDefault().isServiceRegistered(IGenericWizardService.class)) {
+                IGenericWizardService wizardService = (IGenericWizardService) GlobalServiceRegister.getDefault().getService(
+                        IGenericWizardService.class);
+                if (wizardService != null && wizardService.isGenericConnection(connection)) {
+                    return getGenericRepositoryValue(wizardService.getAllComponentProperties(connection), value, table);
+                }
+            }
         }
         return null;
     }
 
-    private Object getGenericRepositoryValue(GenericConnection connection, String value, IMetadataTable table) {
-        ComponentProperties componentProperties = ComponentsUtils.getComponentPropertiesFromSerialized(connection
-                .getCompProperties());
-        String paramName = ComponentsUtils.getPropertyName(value);
-        if (value != null && value.startsWith(componentProperties.getName())) {
-            if (value.indexOf(IGenericConstants.EXP_SEPARATOR) != -1) {
-                value = value.substring(componentProperties.getName().length() + 1, value.length());
-            }
-        }
-        boolean found = false;
-        List<Property> allValuedProperties = ComponentsUtils.getAllValuedProperties(componentProperties);
-        for (Property property : allValuedProperties) {
-            if (paramName != null && paramName.equals(property.getName())) {
-                found = true;
-            }
-        }
-        Object object = null;
-        if (found) {
-            object = ComponentsUtils.getGenericPropertyValue(componentProperties, value);
-        } else {
-            String seletetedMetadataTableName = null;
-            if (table != null) {
-                if (table instanceof MetadataTableRepositoryObject) {
-                    MetadataTableRepositoryObject metaTableRepObj = (MetadataTableRepositoryObject) table;
-                    if (metaTableRepObj.getTable() != null) {
-                        seletetedMetadataTableName = metaTableRepObj.getTable().getName();
-                    }
-                } else if (table instanceof org.talend.core.model.metadata.MetadataTable) {
-                    seletetedMetadataTableName = table.getLabel();
-                }
-            }
-            for (ModelElement modelElement : connection.getOwnedElement()) {
-                ComponentProperties subComponentProperties = null;
-                if (modelElement instanceof SubContainer) {
-                    SubContainer subContainer = (SubContainer) modelElement;
-                    subComponentProperties = ComponentsUtils.getComponentPropertiesFromSerialized(subContainer
-                            .getCompProperties());
-                } else if (modelElement instanceof MetadataTable) {
-                    MetadataTable metadataTable = (MetadataTable) modelElement;
-                    for (TaggedValue taggedValue : metadataTable.getTaggedValue()) {
-                        if (IComponentConstants.COMPONENT_PROPERTIES_TAG.equals(taggedValue.getTag())) {
-                            subComponentProperties = ComponentsUtils.getComponentPropertiesFromSerialized(taggedValue.getValue());
-                        }
-                    }
-                }
+    private Object getGenericRepositoryValue(List<ComponentProperties> componentProperties, String value, IMetadataTable table) {
+        if (componentProperties != null && value != null) {
+            String seletetedMetadataTableName = getSeletetedMetadataTableName(table);
+            for (ComponentProperties compPro : componentProperties) {
                 if (seletetedMetadataTableName != null) {
-                    if (!modelElement.getName().equals(seletetedMetadataTableName)) {
+                    if (!compPro.getName().equals(seletetedMetadataTableName)) {
                         continue;
                     }
                 }
-                if (subComponentProperties != null) {
-                    if (value.indexOf(IGenericConstants.EXP_SEPARATOR) != -1) {
-                        value = value.substring(value.indexOf(IGenericConstants.EXP_SEPARATOR) + 1, value.length());
-                    }
-                    return ComponentsUtils.getGenericPropertyValue(subComponentProperties, value);
+                Property property = compPro.getValuedProperty(value);
+                if (property != null) {
+                    return property.getValue() != null ? property.getValue() : property.getDefaultValue();
                 }
             }
-        }
-        if (object != null) {
-            if (object instanceof String && value != null && value.indexOf(IGenericConstants.EXP_SEPARATOR) != -1) {
-                return getRepositoryValueOfStringType(connection, StringUtils.trimToNull(object.toString()));
+            if (value.indexOf(IGenericConstants.EXP_SEPARATOR) != -1) {
+                return getGenericRepositoryValue(componentProperties,
+                        value.substring(value.indexOf(IGenericConstants.EXP_SEPARATOR) + 1), table);
             }
         }
-        return ComponentsUtils.getGenericPropertyValue(componentProperties, value);
+        return null;
+    }
+
+    private String getSeletetedMetadataTableName(IMetadataTable table) {
+        if (table != null) {
+            if (table instanceof MetadataTableRepositoryObject) {
+                MetadataTableRepositoryObject metaTableRepObj = (MetadataTableRepositoryObject) table;
+                if (metaTableRepObj.getTable() != null) {
+                    return metaTableRepObj.getTable().getName();
+                }
+            } else if (table instanceof org.talend.core.model.metadata.MetadataTable) {
+                return table.getLabel();
+            }
+        }
+        return null;
     }
 
     @Override
@@ -149,6 +122,10 @@ public class GenericDragAndDropHandler extends AbstractDragAndDropServiceHandler
                 if (property != null) {
                     return property.getTaggedValue(IGenericConstants.REPOSITORY_VALUE) != null;
                 }
+            }
+            if (paramName.indexOf(IGenericConstants.EXP_SEPARATOR) != -1) {
+                return isGenericRepositoryValue(componentProperties,
+                        paramName.substring(paramName.indexOf(IGenericConstants.EXP_SEPARATOR) + 1));
             }
         }
         return false;
