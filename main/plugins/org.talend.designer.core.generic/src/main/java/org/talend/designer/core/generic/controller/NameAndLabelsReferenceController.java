@@ -68,7 +68,7 @@ public class NameAndLabelsReferenceController extends AbstractElementPropertySec
         if (curParameter instanceof GenericElementParameter) {
             GenericElementParameter gParam = (GenericElementParameter) curParameter;
             if (gParam != null) {
-                gParam.callBeforeActivate();
+                callBeforeActive(gParam);
                 List<?> possibleValues = gParam.getPossibleValues();
                 if (possibleValues != null) {
                     for (Object object : possibleValues) {
@@ -131,13 +131,13 @@ public class NameAndLabelsReferenceController extends AbstractElementPropertySec
 
         DecoratedField dField = new DecoratedField(subComposite, SWT.BORDER, new SelectAllTextControlCreator());
         if (param.isRequired()) {
-            FieldDecoration decoration = FieldDecorationRegistry.getDefault()
-                    .getFieldDecoration(FieldDecorationRegistry.DEC_REQUIRED);
+            FieldDecoration decoration = FieldDecorationRegistry.getDefault().getFieldDecoration(
+                    FieldDecorationRegistry.DEC_REQUIRED);
             dField.addFieldDecoration(decoration, SWT.RIGHT | SWT.TOP, false);
         }
         if (param.isRepositoryValueUsed()) {
-            FieldDecoration decoration = FieldDecorationRegistry.getDefault()
-                    .getFieldDecoration(FieldDecorationRegistry.DEC_CONTENT_PROPOSAL);
+            FieldDecoration decoration = FieldDecorationRegistry.getDefault().getFieldDecoration(
+                    FieldDecorationRegistry.DEC_CONTENT_PROPOSAL);
             decoration.setDescription(Messages.getString("FileController.decoration.description")); //$NON-NLS-1$
             dField.addFieldDecoration(decoration, SWT.RIGHT | SWT.BOTTOM, false);
         }
