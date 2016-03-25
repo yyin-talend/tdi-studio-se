@@ -79,6 +79,7 @@ import org.talend.designer.core.model.components.ComponentBundleToPath;
 import org.talend.designer.core.model.components.ComponentFilesNaming;
 import org.talend.designer.core.model.components.EmfComponent;
 import org.talend.designer.core.model.process.AbstractProcessProvider;
+import org.talend.designer.core.model.process.GenericProcessProvider;
 
 /**
  * Component factory that look for each component and load their information. <br/>
@@ -338,6 +339,7 @@ public class ComponentsFactory implements IComponentsFactory {
      */
     private void loadComponentsFromExtensions() {
         AbstractProcessProvider.loadComponentsFromProviders();
+        GenericProcessProvider.getInstance().loadComponentsFromProviders();
     }
 
     private void loadComponentsFromFolder(String pathSource, AbstractComponentsProvider provider) {
