@@ -14,20 +14,19 @@ package org.talend.designer.core.model.process;
 
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.Platform;
-import org.eclipse.gef.palette.PaletteEntry;
 import org.talend.commons.exception.ExceptionHandler;
+import org.talend.core.model.process.IGenericProvider;
 
 /**
  * created by hcyi on Mar 23, 2016 Detailled comment
  *
  */
-public abstract class AbstractGenericProvider {
+public class GenericProcessProvider {
 
     public static final String EXTENSION_ID = "org.talend.designer.core.process_provider"; //$NON-NLS-1$
 
@@ -35,24 +34,33 @@ public abstract class AbstractGenericProvider {
 
     public static final String ATTR_PID = "pluginId"; //$NON-NLS-1$
 
-    public static Map<String, AbstractGenericProvider> providerMap = new HashMap<>();
+    private static GenericProcessProvider singleton;
 
-    public static AbstractGenericProvider findProcessProviderFromPID(String pid) {
+    public static Map<String, IGenericProvider> providerMap = new HashMap<>();
+
+    public static synchronized GenericProcessProvider getInstance() {
+        if (singleton == null) {
+            singleton = new GenericProcessProvider();
+        }
+        return singleton;
+    }
+
+    public IGenericProvider findProcessProviderFromPID(String pid) {
         if (providerMap == null || !providerMap.containsKey(pid)) {
             findAllProcessProviders();
         }
         return providerMap.get(pid);
     }
 
-    public static Collection<AbstractGenericProvider> findAllProcessProviders() {
+    public Collection<IGenericProvider> findAllProcessProviders() {
         if (providerMap.isEmpty()) {
             IConfigurationElement[] elems = Platform.getExtensionRegistry().getConfigurationElementsFor(EXTENSION_ID);
             for (IConfigurationElement elem : elems) {
                 String pid = elem.getAttribute(ATTR_PID);
                 try {
                     Object provider = elem.createExecutableExtension(ATTR_CLASS);
-                    if (provider instanceof AbstractGenericProvider) {
-                        AbstractGenericProvider createExecutableExtension = (AbstractGenericProvider) provider;
+                    if (provider instanceof IGenericProvider) {
+                        IGenericProvider createExecutableExtension = (IGenericProvider) provider;
                         providerMap.put(pid, createExecutableExtension);
                     }
                 } catch (CoreException ex) {
@@ -63,17 +71,9 @@ public abstract class AbstractGenericProvider {
         return providerMap.values();
     }
 
-    public static void loadComponentsFromProviders() {
-        for (AbstractGenericProvider processProvider : findAllProcessProviders()) {
+    public void loadComponentsFromProviders() {
+        for (IGenericProvider processProvider : findAllProcessProviders()) {
             processProvider.loadComponentsFromExtensionPoint();
         }
-    }
-
-    public void loadComponentsFromExtensionPoint() {
-        // do nothing.
-    }
-
-    public List<PaletteEntry> addPaletteEntry() {
-        return null;
     }
 }

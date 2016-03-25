@@ -15,9 +15,9 @@ package org.talend.designer.core.generic.model;
 import java.util.List;
 
 import org.eclipse.gef.palette.PaletteEntry;
+import org.talend.core.model.process.IGenericProvider;
 import org.talend.designer.core.generic.palette.ComponentsPaletteFactory;
 import org.talend.designer.core.generic.utils.ComponentsUtils;
-import org.talend.designer.core.model.process.AbstractGenericProvider;
 import org.talend.repository.ProjectManager;
 
 /**
@@ -25,7 +25,7 @@ import org.talend.repository.ProjectManager;
  *
  */
 // TUP-4152
-public class ComponentsProvider extends AbstractGenericProvider {
+public class ComponentsProvider implements IGenericProvider {
 
     @Override
     public void loadComponentsFromExtensionPoint() {

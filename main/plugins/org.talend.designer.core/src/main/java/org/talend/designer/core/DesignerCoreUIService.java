@@ -13,6 +13,7 @@
 package org.talend.designer.core;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import org.eclipse.gef.commands.Command;
@@ -22,10 +23,11 @@ import org.eclipse.gef.palette.PaletteRoot;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.util.IPropertyChangeListener;
 import org.talend.core.model.components.IComponentsFactory;
+import org.talend.core.model.process.IGenericProvider;
 import org.talend.core.ui.process.IGEFProcess;
 import org.talend.core.ui.services.IDesignerCoreUIService;
-import org.talend.designer.core.model.process.AbstractGenericProvider;
 import org.talend.designer.core.model.process.AbstractProcessProvider;
+import org.talend.designer.core.model.process.GenericProcessProvider;
 import org.talend.designer.core.ui.editor.TalendEditorPaletteFactory;
 import org.talend.designer.core.ui.editor.palette.TalendPaletteDrawer;
 
@@ -90,8 +92,8 @@ public class DesignerCoreUIService implements IDesignerCoreUIService {
         for (AbstractProcessProvider provider : AbstractProcessProvider.findAllProcessProviders()) {
             list.addAll(provider.addJobletEntry());
         }
-        for (AbstractGenericProvider provider : AbstractGenericProvider.findAllProcessProviders()) {
-            list.addAll(provider.addPaletteEntry());
+        for (IGenericProvider provider : GenericProcessProvider.getInstance().findAllProcessProviders()) {
+            list.addAll((Collection<? extends PaletteEntry>) provider.addPaletteEntry());
         }
         return list;
     }
