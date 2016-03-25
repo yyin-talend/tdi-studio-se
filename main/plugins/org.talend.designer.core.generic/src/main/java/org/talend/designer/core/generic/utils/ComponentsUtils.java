@@ -233,10 +233,11 @@ public class ComponentsUtils {
                     param.setListItemsValue(possVals.toArray(new String[0]));
                 }
             } else {
-            	param.setComponentProperties((ComponentProperties) widgetProperty);
+                param.setComponentProperties((ComponentProperties) widgetProperty);
             }
             param.setReadOnly(false);
             param.setSerialized(true);
+            param.setDynamicSettings(true);
             // TCOMP-96
             // Set param context when multiple schema
             if (EParameterFieldType.SCHEMA_TYPE.equals(param.getFieldType())) {
