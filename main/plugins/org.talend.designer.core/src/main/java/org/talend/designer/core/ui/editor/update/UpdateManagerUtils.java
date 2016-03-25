@@ -34,6 +34,7 @@ import org.talend.commons.runtime.model.repository.ERepositoryStatus;
 import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.commons.ui.swt.dialogs.ProgressDialog;
 import org.talend.core.CorePlugin;
+import org.talend.core.GlobalServiceRegister;
 import org.talend.core.model.components.IComponent;
 import org.talend.core.model.context.JobContext;
 import org.talend.core.model.metadata.IMetadataTable;
@@ -54,6 +55,7 @@ import org.talend.core.model.update.UpdatesConstants;
 import org.talend.core.model.update.extension.UpdateManagerProviderDetector;
 import org.talend.core.repository.model.ProxyRepositoryFactory;
 import org.talend.core.ui.CoreUIPlugin;
+import org.talend.core.ui.ITestContainerProviderService;
 import org.talend.core.ui.component.ComponentPaletteUtilities;
 import org.talend.core.ui.context.view.AbstractContextView;
 import org.talend.core.ui.context.view.Contexts;
@@ -384,13 +386,24 @@ public final class UpdateManagerUtils {
                                     result.setJob(null);
                                 }
                             }
+                            boolean isTestContainer = false;
+                            ITestContainerProviderService testContainerService = null;
+                            if (GlobalServiceRegister.getDefault().isServiceRegistered(ITestContainerProviderService.class)) {
+                                testContainerService = (ITestContainerProviderService) GlobalServiceRegister
+                                        .getDefault().getService(ITestContainerProviderService.class);
+                                if (testContainerService != null ) {
+                                    isTestContainer = testContainerService.isTestContainerItem(item);
+                                }
+                            }
 
                             if (closedItem && process instanceof IProcess2) {
                                 IProcess2 process2 = (IProcess2) process;
                                 ProcessType processType;
                                 try {
                                     processType = process2.saveXmlFile(false);
-                                    if (item instanceof JobletProcessItem) {
+                                    if(isTestContainer){
+                                        testContainerService.setTestContainerProcess(processType,item);
+                                    }else if (item instanceof JobletProcessItem) {
                                         ((JobletProcessItem) item).setJobletProcess((JobletProcess) processType);
                                     } else {
                                         ((ProcessItem) item).setProcess(processType);
