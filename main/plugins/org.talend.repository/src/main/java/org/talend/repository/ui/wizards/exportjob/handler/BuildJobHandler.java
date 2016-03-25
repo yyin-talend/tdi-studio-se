@@ -180,9 +180,6 @@ public class BuildJobHandler extends AbstractBuildJobHandler {
 
     @Override
     public void generateItemFiles(boolean withDependencies, IProgressMonitor monitor) throws Exception {
-        if (!isOptionChoosed(ExportChoice.needJobItem)) {
-            return;
-        }
         IFolder baseFolder = talendProcessJavaProject.getItemsFolder();
         baseFolder = baseFolder.getFolder(JavaResourcesHelper.getJobFolderName(processItem.getProperty().getLabel(), processItem
                 .getProperty().getVersion()));
@@ -195,16 +192,18 @@ public class BuildJobHandler extends AbstractBuildJobHandler {
         itemsFolder.create(true, true, monitor);
         List<Item> items = new ArrayList<Item>();
         items.add(processItem);
-        ExportItemUtil exportItemUtil = new ExportItemUtil();
-        if (withDependencies) {
-            Collection<IRepositoryViewObject> allProcessDependencies = ProcessUtils.getAllProcessDependencies(items);
-            for (IRepositoryViewObject repositoryObject : allProcessDependencies) {
-                items.add(repositoryObject.getProperty().getItem());
+        if (isOptionChoosed(ExportChoice.needJobItem)) {
+            ExportItemUtil exportItemUtil = new ExportItemUtil();
+            if (withDependencies) {
+                Collection<IRepositoryViewObject> allProcessDependencies = ProcessUtils.getAllProcessDependencies(items);
+                for (IRepositoryViewObject repositoryObject : allProcessDependencies) {
+                    items.add(repositoryObject.getProperty().getItem());
+                }
             }
+            File destination = new File(itemsFolder.getLocation().toFile().getAbsolutePath());
+            exportItemUtil.setProjectNameAsLowerCase(isProjectNameLowerCase());
+            exportItemUtil.exportItems(destination, new ArrayList<Item>(items), false, new NullProgressMonitor());
         }
-        File destination = new File(itemsFolder.getLocation().toFile().getAbsolutePath());
-        exportItemUtil.setProjectNameAsLowerCase(isProjectNameLowerCase());
-        exportItemUtil.exportItems(destination, new ArrayList<Item>(items), false, new NullProgressMonitor());
         addDQDependencies(itemsFolder, items);
         addTDMDependencies(itemsFolder, items);
     }
@@ -252,6 +251,7 @@ public class BuildJobHandler extends AbstractBuildJobHandler {
             // make sure to export again.
             for (Item item : items) {
                 if (tdmService != null && tdmService.isTransformItem(item)) {
+                    setNeedItemDependencies(true);
                     String itemProjectFolder = getProject(item).getTechnicalLabel();
                     if (isProjectNameLowerCase()) {// should be same as ExportItemUtil.getProjectOutputPath
                         itemProjectFolder = itemProjectFolder.toLowerCase();
@@ -300,6 +300,7 @@ public class BuildJobHandler extends AbstractBuildJobHandler {
                     ITDQItemService.class);
             for (Item item : items) {
                 if (tdqItemService != null && tdqItemService.hasProcessItemDependencies(Arrays.asList(new Item[] { item }))) {
+                    setNeedItemDependencies(true);
                     // add .Talend.definition file
                     String defIdxFolderName = "TDQ_Libraries"; //$NON-NLS-1$
                     String defIdxFileName = ".Talend.definition"; //$NON-NLS-1$
