@@ -34,6 +34,8 @@ if ((metadatas != null) && (metadatas.size() > 0)) {
 			IConnection outgoingConn = outgoingConns.get(0);
 			if(outgoingConn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) { // start 1
 			%>
+                    }
+                }
 				globalMap.put("<%=cid %>_NB_LINE",nb_line_<%=cid %>);   
 			<%
 			}
