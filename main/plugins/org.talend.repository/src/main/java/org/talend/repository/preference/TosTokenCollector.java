@@ -12,16 +12,16 @@
 // ============================================================================
 package org.talend.repository.preference;
 
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.ui.IEditorReference;
+import org.eclipse.ui.IWorkbenchPage;
+import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.runtime.model.repository.ERepositoryStatus;
@@ -30,7 +30,8 @@ import org.talend.core.model.process.IProcess2;
 import org.talend.core.model.properties.FolderItem;
 import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.ProcessItem;
-import org.talend.core.model.properties.PropertiesPackage;
+import org.talend.core.model.relationship.Relation;
+import org.talend.core.model.relationship.RelationshipItemBuilder;
 import org.talend.core.model.repository.DynaEnum;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryViewObject;
@@ -55,29 +56,15 @@ public class TosTokenCollector extends AbstractTokenCollector {
 
     private static final String PREF_TOS_JOBS_RECORDS = "TOS_Jobs_Records"; //$NON-NLS-1$
 
-    private static final TokenKey TOS_COUNT_LOCALPROJECTS = new TokenKey("tos.count.localProjects"); //$NON-NLS-1$
+    private static final TokenKey TOS_COUNT_PROJECTS = new TokenKey("nb.projects"); //$NON-NLS-1$
 
-    private static final TokenKey TOS_COUNT_JOBS = new TokenKey("tos.count.jobs"); //$NON-NLS-1$
-
-    private static final TokenKey TOS_COUNT_JOBS_PER_PROJECT = new TokenKey("tos.count.jobsPerProject"); //$NON-NLS-1$
-
-    private static final TokenKey TOS_COUNT_COMPONENTS = new TokenKey("tos.count.components"); //$NON-NLS-1$
+    private static final TokenKey TOS_COUNT_JOBS_PER_PROJECT = new TokenKey("jobsPerProject"); //$NON-NLS-1$
 
     private static final TokenKey TOS_COUNT_COMPONENTS_PER_JOB = new TokenKey("tos.count.componentsPerJob"); //$NON-NLS-1$
 
     private static final TokenKey TOS_COUNT_CONTEXT_VARIABLES = new TokenKey("tos.count.contextVariables"); //$NON-NLS-1$
 
     private static final TokenKey TOS_COUNT_CONTEXT_VARIABLES_PER_JOB = new TokenKey("tos.count.contextVariablesPerJob"); //$NON-NLS-1$
-
-    private static final TokenKey TOS_JOB_TOP20_COMPONENTS = new TokenKey("tos.job.frequentComponents"); //$NON-NLS-1$
-
-    private static final TokenKey TOS_COUNT_GENERATED_JOB_DOCS = new TokenKey("tos.count.generatedJobDocs"); //$NON-NLS-1$
-
-    private static final TokenKey TOS_COUNT_BUSINESS_MODELS = new TokenKey("tos.count.businessModels"); //$NON-NLS-1$
-
-    private static final TokenKey TOS_COUNT_METADATAS = new TokenKey("tos.count.metadatas"); //$NON-NLS-1$
-
-    public static final int TOP_USED_COMPONENTS_MAX = 20;
 
     /**
      * ggu JobTokenCollector constructor comment.
@@ -100,7 +87,8 @@ public class TosTokenCollector extends AbstractTokenCollector {
             allProjectRecords = new JSONObject();
         }
 
-        JSONObject currentProjectObject = collectJobDetails();
+        JSONObject currentProjectObject = collectProjectDetails();
+        System.out.println("project=" + currentProjectObject.toString());
 
         Project currentProject = ProjectManager.getInstance().getCurrentProject();
         allProjectRecords.put(currentProject.getTechnicalLabel(), currentProjectObject);
@@ -109,162 +97,155 @@ public class TosTokenCollector extends AbstractTokenCollector {
         preferenceStore.setValue(PREF_TOS_JOBS_RECORDS, allProjectRecords.toString());
     }
 
-    private JSONObject collectJobDetails() throws PersistenceException, JSONException {
+    private JSONObject collectProjectDetails() throws PersistenceException, JSONException {
         JSONObject jObject = new JSONObject();
 
         Project currentProject = ProjectManager.getInstance().getCurrentProject();
         final IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
 
-        int jobsNum = 0;
-        int componentsNum = 0;
-        int contextVarsNum = 0;
-        int businessModelsNum = 0;
-        int generatedJobDocsNum = 0;
-        int metadatasNum = 0;
+        JSONObject repoStats = new JSONObject();
+        // metadata
+        for (DynaEnum type : ERepositoryObjectType.values()) {
+            if (type instanceof ERepositoryObjectType) {
+                List<IRepositoryViewObject> all = factory.getAll(currentProject, (ERepositoryObjectType) type);
 
-        Map<String, Integer> numComponentMap = new HashMap<String, Integer>();
-        IEditorReference[] reference = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getEditorReferences();
+                int nb = all.size();
+                if (nb > 0) {
+                    repoStats.put(type.getType(), nb);
+                    if (ERepositoryObjectType.getAllTypesOfProcess().contains(type)) {
+                        JSONObject jobDetails = new JSONObject();
+                        collectJobDetails(all, jobDetails);
+                        repoStats.put("details", jobDetails);
+                    } else {
+                        int nbUsed = 0;
+                        for (IRepositoryViewObject object : all) {
+                            List<Relation> relations = RelationshipItemBuilder.getInstance().getItemsHaveRelationWith(
+                                    object.getId());
+                            nbUsed = nbUsed + relations.size();
+                        }
+                        repoStats.put("nb.used", nbUsed);
+                    }
+                }
+            }
+        }
+        jObject.put("repository", repoStats);
+        jObject.put("type", ProjectManager.getInstance().getProjectType(currentProject));
+        int nbRef = ProjectManager.getInstance().getAllReferencedProjects().size();
+        if (nbRef > 0) {
+            jObject.put("nb.refProjects", nbRef);
+        }
+
+        return jObject;
+    }
+
+    /**
+     * DOC nrousseau Comment method "collectJobDetails".
+     * 
+     * @param all
+     * @param jobDetails
+     * @throws JSONException
+     */
+    private void collectJobDetails(List<IRepositoryViewObject> allRvo, JSONObject jobDetails) throws JSONException {
+        IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
+        IWorkbenchWindow ww = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
+        IEditorReference[] reference = new IEditorReference[0];
+        if (ww != null) {
+            IWorkbenchPage page = ww.getActivePage();
+            reference = page.getEditorReferences();
+        }
         List<IProcess2> processes = RepositoryPlugin.getDefault().getDesignerCoreService().getOpenedProcess(reference);
         Set<String> idsOpened = new HashSet<String>();
         for (IProcess2 process : processes) {
             idsOpened.add(process.getId());
         }
-        // jobs
-        ERepositoryObjectType jobType = ERepositoryObjectType.PROCESS;
-        if (jobType != null) {
-            List<IRepositoryViewObject> all = factory.getAll(currentProject, jobType);
-            jobsNum += all.size();
 
-            for (IRepositoryViewObject rvo : all) {
-                Item item = rvo.getProperty().getItem();
-                if (item.eClass() == PropertiesPackage.Literals.PROCESS_ITEM) {
-                    ProcessType processType = ((ProcessItem) item).getProcess();
+        JSONObject components = new JSONObject();
 
-                    componentsNum += processType.getNode().size();
-                    // components name
-                    for (NodeType node : (List<NodeType>) processType.getNode()) {
-                        String componentName = node.getComponentName();
-                        Integer integer = numComponentMap.get(componentName);
-                        if (integer == null) {
-                            numComponentMap.put(componentName, 1);
-                        } else {
-                            numComponentMap.put(componentName, integer + 1);
-                        }
+        int contextVarsNum = 0;
+        int nbComponentsUsed = 0;
+        for (IRepositoryViewObject rvo : allRvo) {
+            Item item = rvo.getProperty().getItem();
+            if (item instanceof ProcessItem) {
+                ProcessType processType = ((ProcessItem) item).getProcess();
+
+                for (NodeType node : (List<NodeType>) processType.getNode()) {
+                    String componentName = node.getComponentName();
+                    int nbComp = 0;
+                    if (components.has(componentName)) {
+                        nbComp = components.getInt(componentName);
                     }
-                    // context variable per job
-                    EList contexts = processType.getContext();
-                    if (contexts.size() > 0) {
-                        ContextType contextType = (ContextType) contexts.get(0);
-                        contextVarsNum += contextType.getContextParameter().size();
-                    }
-
+                    components.put(componentName, nbComp + 1);
+                    nbComponentsUsed++;
                 }
-                if (factory.getStatus(item) != ERepositoryStatus.LOCK_BY_USER && !idsOpened.contains(item.getProperty().getId())) {
-                    // job is not locked and not opened by editor, so we can unload.
-                    if (item.getParent() instanceof FolderItem) {
-                        ((FolderItem) item.getParent()).getChildren().remove(item);
-                        item.setParent(null);
-                    }
-                    item.eResource().unload();
+                // context variable per job
+                EList contexts = processType.getContext();
+                if (contexts.size() > 0) {
+                    ContextType contextType = (ContextType) contexts.get(0);
+                    contextVarsNum += contextType.getContextParameter().size();
                 }
 
             }
-        }
-        // business model
-        ERepositoryObjectType bmType = ERepositoryObjectType.BUSINESS_PROCESS;
-        if (bmType != null) {
-            businessModelsNum += factory.getAll(currentProject, bmType).size();
-        }
-        // generated job docs
-        ERepositoryObjectType jobDocType = ERepositoryObjectType.JOB_DOC;
-        if (jobDocType != null) {
-            generatedJobDocsNum += factory.getAll(currentProject, jobDocType).size();
-        }
-        // metadata
-        for (DynaEnum type : ERepositoryObjectType.values()) {
-            if (type instanceof ERepositoryObjectType) {
-                ERepositoryObjectType repType = (ERepositoryObjectType) type;
-                String folder = repType.getFolder();
-                if (repType.isDIItemType() && repType.isResouce() && folder != null
-                        && folder.startsWith(ERepositoryObjectType.METADATA.getFolder())) {
-                    metadatasNum += factory.getAll(currentProject, repType).size();
+            if (factory.getStatus(item) != ERepositoryStatus.LOCK_BY_USER && !idsOpened.contains(item.getProperty().getId())) {
+                // job is not locked and not opened by editor, so we can unload.
+                if (item.getParent() instanceof FolderItem) {
+                    ((FolderItem) item.getParent()).getChildren().remove(item);
+                    item.setParent(null);
                 }
+                item.eResource().unload();
             }
         }
-
-        jObject.put(TOS_COUNT_JOBS.getKey(), jobsNum);
-        jObject.put(TOS_COUNT_BUSINESS_MODELS.getKey(), businessModelsNum);
-        jObject.put(TOS_COUNT_GENERATED_JOB_DOCS.getKey(), generatedJobDocsNum);
-        jObject.put(TOS_COUNT_METADATAS.getKey(), metadatasNum);
-        jObject.put(TOS_COUNT_CONTEXT_VARIABLES.getKey(), contextVarsNum);
-        jObject.put(TOS_COUNT_COMPONENTS.getKey(), componentsNum);
-
-        // top 20 component
-        jObject.put(TOS_JOB_TOP20_COMPONENTS.getKey(),
-                TokenInforUtil.convertTopComponents(numComponentMap, TOP_USED_COMPONENTS_MAX));
-
-        return jObject;
+        jobDetails.put("components", components);
+        jobDetails.put("nb.contextVars", contextVarsNum);
+        jobDetails.put("nb.components", nbComponentsUsed);
     }
 
     @Override
     protected void collectProperties(JSONObject propertiesObject) throws Exception {
         // number of projects
-        int projectsNum = 0, jobsNum = 0, businessModelsNum = 0, generatedJobDocsNum = 0;
-        int metadatasNum = 0, contextVarsNum = 0, componentsNum = 0;
-        Map<String, Integer> numComponentMap = new HashMap<String, Integer>();
+        int projectsNum = 0;
+        
+        JSONObject mergedData = new JSONObject();
 
         IPreferenceStore preferenceStore = RepositoryPlugin.getDefault().getPreferenceStore();
         String records = preferenceStore.getString(PREF_TOS_JOBS_RECORDS);
-        try {
-            JSONObject allProjectRecords = new JSONObject(records);
-            Iterator<String> keys = allProjectRecords.keys();
-            while (keys.hasNext()) {
-                String projectName = keys.next();
-                projectsNum++;
-
-                JSONObject object = (JSONObject) allProjectRecords.get(projectName);
-                if (object != null) {
-                    jobsNum += object.getInt(TOS_COUNT_JOBS.getKey());
-                    businessModelsNum += object.getInt(TOS_COUNT_BUSINESS_MODELS.getKey());
-                    generatedJobDocsNum += object.getInt(TOS_COUNT_GENERATED_JOB_DOCS.getKey());
-                    metadatasNum += object.getInt(TOS_COUNT_METADATAS.getKey());
-                    contextVarsNum += object.getInt(TOS_COUNT_CONTEXT_VARIABLES.getKey());
-                    componentsNum += object.getInt(TOS_COUNT_COMPONENTS.getKey());
-
-                    JSONObject top20Components = (JSONObject) object.get(TOS_JOB_TOP20_COMPONENTS.getKey());
-                    if (top20Components != null && top20Components.length() > 0) {
-                        Iterator<String> componentKeys = top20Components.keys();
-                        while (componentKeys.hasNext()) {
-                            String componentName = componentKeys.next();
-                            int num = top20Components.getInt(componentName);
-                            if (numComponentMap.containsKey(componentName)) {
-                                Integer old = numComponentMap.get(componentName);
-                                if (old != null) {
-                                    num += old.intValue();
-                                }
-                            }
-                            numComponentMap.put(componentName, num);
-                        }
-                    }
-                }
-            }
-        } catch (Exception e) {
-            // the value is not set, or is empty
+        JSONObject allProjectRecords = new JSONObject(records);
+        Iterator<String> keys = allProjectRecords.keys();
+        while (keys.hasNext()) {
+            String projectName = keys.next();
+             JSONObject object = (JSONObject) allProjectRecords.get(projectName); 
+             if (object != null) {
+                 TokenInforUtil.mergeJSON(object, mergedData);
+             }
+            projectsNum++;
         }
+        // object.getInt(TOS_COUNT_JOBS.getKey()); businessModelsNum +=
+        // object.getInt(TOS_COUNT_BUSINESS_MODELS.getKey()); generatedJobDocsNum +=
+        // object.getInt(TOS_COUNT_GENERATED_JOB_DOCS.getKey()); metadatasNum +=
+        // object.getInt(TOS_COUNT_METADATAS.getKey()); contextVarsNum +=
+        // object.getInt(TOS_COUNT_CONTEXT_VARIABLES.getKey()); componentsNum +=
+        // object.getInt(TOS_COUNT_COMPONENTS.getKey());
+        //
+        // JSONObject top20Components = (JSONObject) object.get(TOS_JOB_TOP20_COMPONENTS.getKey()); if (top20Components
+        // != null && top20Components.length() > 0) { Iterator<String> componentKeys = top20Components.keys(); while
+        // (componentKeys.hasNext()) { String componentName = componentKeys.next(); int num =
+        // top20Components.getInt(componentName); if (numComponentMap.containsKey(componentName)) { Integer old =
+        // numComponentMap.get(componentName); if (old != null) { num += old.intValue(); } }
+        // numComponentMap.put(componentName, num); } } } } } catch (Exception e) { // the value is not set, or is empty
+        // }
 
-        propertiesObject.put(TOS_COUNT_LOCALPROJECTS.getKey(), projectsNum);
-        propertiesObject.put(TOS_COUNT_JOBS.getKey(), jobsNum);
-        propertiesObject.put(TOS_COUNT_BUSINESS_MODELS.getKey(), businessModelsNum);
-        propertiesObject.put(TOS_COUNT_GENERATED_JOB_DOCS.getKey(), generatedJobDocsNum);
-        propertiesObject.put(TOS_COUNT_METADATAS.getKey(), metadatasNum);
-        propertiesObject.put(TOS_COUNT_JOBS_PER_PROJECT.getKey(), TokenInforUtil.calcAverageToStr(jobsNum, projectsNum));
-        propertiesObject.put(TOS_COUNT_COMPONENTS_PER_JOB.getKey(), TokenInforUtil.calcAverageToStr(componentsNum, jobsNum));
-        propertiesObject.put(TOS_COUNT_CONTEXT_VARIABLES_PER_JOB.getKey(),
-                TokenInforUtil.calcAverageToStr(contextVarsNum, jobsNum));
+        // propertiesObject.put(TOS_COUNT_LOCALPROJECTS.getKey(), projectsNum);
+        // propertiesObject.put(TOS_COUNT_JOBS.getKey(), jobsNum);
+        // propertiesObject.put(TOS_COUNT_BUSINESS_MODELS.getKey(), businessModelsNum);
+        // propertiesObject.put(TOS_COUNT_GENERATED_JOB_DOCS.getKey(), generatedJobDocsNum);
+        // propertiesObject.put(TOS_COUNT_METADATAS.getKey(), metadatasNum);
+        // propertiesObject.put(TOS_COUNT_JOBS_PER_PROJECT.getKey(), TokenInforUtil.calcAverageToStr(jobsNum,
+        // projectsNum)); propertiesObject.put(TOS_COUNT_COMPONENTS_PER_JOB.getKey(),
+        // TokenInforUtil.calcAverageToStr(componentsNum, jobsNum));
+        // propertiesObject.put(TOS_COUNT_CONTEXT_VARIABLES_PER_JOB.getKey(),
+        // TokenInforUtil.calcAverageToStr(contextVarsNum, jobsNum));
+        //
+        // // top20 propertiesObject.put(TOS_JOB_TOP20_COMPONENTS.getKey(),
+        // TokenInforUtil.convertTopComponentsArray(numComponentMap, TOP_USED_COMPONENTS_MAX));
 
-        // top20
-        propertiesObject.put(TOS_JOB_TOP20_COMPONENTS.getKey(),
-                TokenInforUtil.convertTopComponentsArray(numComponentMap, TOP_USED_COMPONENTS_MAX));
     }
-
 }

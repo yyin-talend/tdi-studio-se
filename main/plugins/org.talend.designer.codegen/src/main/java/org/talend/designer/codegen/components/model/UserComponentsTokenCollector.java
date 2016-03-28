@@ -18,7 +18,6 @@ import org.talend.core.model.components.IComponent;
 import org.talend.core.ui.component.ComponentsFactoryProvider;
 import org.talend.core.ui.token.AbstractTokenCollector;
 import org.talend.core.ui.token.TokenKey;
-import org.talend.repository.preference.TosTokenCollector;
 
 import us.monoid.json.JSONArray;
 import us.monoid.json.JSONObject;
@@ -48,9 +47,6 @@ public class UserComponentsTokenCollector extends AbstractTokenCollector {
         if (customComponents != null) {
             for (int i = 0; i < customComponents.size(); i++) {
                 customComponentsArray.put(customComponents.get(i).getName());
-                if (i > TosTokenCollector.TOP_USED_COMPONENTS_MAX) {
-                    break;
-                }
             }
         }
         propertiesObject.put(TOS_COUNT_USER_COMPONENTS.getKey(), customComponentsArray.length());
