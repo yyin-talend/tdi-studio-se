@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.commons.lang.StringUtils;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.components.api.component.ComponentDefinition;
 import org.talend.components.api.properties.ComponentProperties;
@@ -71,14 +72,16 @@ public class GenericDragAndDropHandler extends AbstractDragAndDropServiceHandler
                 IGenericWizardService wizardService = (IGenericWizardService) GlobalServiceRegister.getDefault().getService(
                         IGenericWizardService.class);
                 if (wizardService != null && wizardService.isGenericConnection(connection)) {
-                    return getGenericRepositoryValue(wizardService.getAllComponentProperties(connection), value, table);
+                    return getGenericRepositoryValue((GenericConnection) connection,
+                            wizardService.getAllComponentProperties(connection), value, table);
                 }
             }
         }
         return null;
     }
 
-    private Object getGenericRepositoryValue(List<ComponentProperties> componentProperties, String value, IMetadataTable table) {
+    private Object getGenericRepositoryValue(GenericConnection connection, List<ComponentProperties> componentProperties,
+            String value, IMetadataTable table) {
         if (componentProperties != null && value != null) {
             String seletetedMetadataTableName = getSeletetedMetadataTableName(table);
             for (ComponentProperties compPro : componentProperties) {
@@ -89,11 +92,15 @@ public class GenericDragAndDropHandler extends AbstractDragAndDropServiceHandler
                 }
                 Property property = compPro.getValuedProperty(value);
                 if (property != null) {
-                    return property.getValue() != null ? property.getValue() : property.getDefaultValue();
+                    Object paramValue = property.getValue() != null ? property.getValue() : property.getDefaultValue();
+                    if (Property.Type.STRING.equals(property.getType()) && paramValue != null) {
+                        return getRepositoryValueOfStringType(connection, StringUtils.trimToNull(paramValue.toString()));
+                    }
+                    return paramValue;
                 }
             }
             if (value.indexOf(IGenericConstants.EXP_SEPARATOR) != -1) {
-                return getGenericRepositoryValue(componentProperties,
+                return getGenericRepositoryValue(connection, componentProperties,
                         value.substring(value.indexOf(IGenericConstants.EXP_SEPARATOR) + 1), table);
             }
         }
