@@ -50,6 +50,10 @@ String readTimeOut = ElementParameterParser.getValue(node, "__READ_TIMEOUT__");
 boolean createDirs = "true".equals(ElementParameterParser.getValue(node, "__CREATE_DIRS__"));
 boolean dieOnError = "true".equals(ElementParameterParser.getValue(node, "__DIE_ON_ERROR__"));
 %>
+
+int connectTimeOut_<%=cid%> = Integer.valueOf(<%=connectTimeOut%>)*1000;
+int readTimeOut_<%=cid%> = Integer.valueOf(<%=readTimeOut%>)*1000;
+
 java.net.URL url_<%=cid%> = new java.net.URL(<%=sURI%>);
 
 <%if (bNeedAuthentication){%>
@@ -77,8 +81,8 @@ urlConn_<%=cid%>.setDoOutput(true);
 urlConn_<%=cid%>.setDoInput(true);
 urlConn_<%=cid%>.setUseCaches(false);
 <%if(isTimeOutSetting){%>
-	urlConn_<%=cid%>.setConnectTimeout(<%=connectTimeOut%>*1000);
-	urlConn_<%=cid%>.setReadTimeout(<%=readTimeOut%>*1000);
+	urlConn_<%=cid%>.setConnectTimeout(connectTimeOut_<%=cid%>);
+	urlConn_<%=cid%>.setReadTimeout(readTimeOut_<%=cid%>);
 <%}%>
 
 <%for (Map<String, String> header : headerParams){ // set request properties%>
