@@ -18,16 +18,21 @@ import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.viewers.IBaseLabelProvider;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Shell;
+import org.talend.commons.ui.swt.formtools.LabelledText;
 import org.talend.core.ui.composite.ElementsSelectionComposite;
 import org.talend.daikon.NamedThing;
+import org.talend.designer.core.generic.i18n.Messages;
 
 /**
  * created by ycbai on 2015年10月12日 Detailled comment
@@ -40,6 +45,8 @@ public class NameAndLabelsDialog extends Dialog {
     private String result;
 
     private ElementsSelectionComposite<NamedThing> selectionComposite;
+
+    private LabelledText customObjNameText;
 
     public NameAndLabelsDialog(Shell parentShell, List<NamedThing> nameAndLabels) {
         super(parentShell);
@@ -82,7 +89,27 @@ public class NameAndLabelsDialog extends Dialog {
         selectionComposite.setLayoutData(new GridData(GridData.FILL_BOTH));
         selectionComposite.setViewerData(nameAndLabels);
 
+        Composite customComposite = new Composite(comp, SWT.NONE);
+        customComposite.setLayout(new GridLayout());
+        customComposite.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+        Button useCustomBtn = new Button(customComposite, SWT.CHECK);
+        useCustomBtn.setText(Messages.getString("NameAndLabelsDialog.custom.button")); //$NON-NLS-1$
+        useCustomBtn.addSelectionListener(new SelectionAdapter() {
+
+            @Override
+            public void widgetSelected(SelectionEvent e) {
+                updateFieldsStatus(useCustomBtn.getSelection());
+            }
+        });
+        customObjNameText = new LabelledText(customComposite, Messages.getString("NameAndLabelsDialog.custom.text")); //$NON-NLS-1$
+        updateFieldsStatus(useCustomBtn.getSelection());
+
         return composite;
+    }
+
+    private void updateFieldsStatus(boolean isUseCustom) {
+        selectionComposite.setEnabled(!isUseCustom);
+        customObjNameText.getTextControl().setEditable(isUseCustom);
     }
 
     @Override
@@ -100,9 +127,13 @@ public class NameAndLabelsDialog extends Dialog {
     }
 
     private String getSelectedName() {
-        List<NamedThing> selectedElements = selectionComposite.getSelectedElements();
-        if (selectedElements.size() > 0) {
-            return selectedElements.get(0).getName();
+        if (selectionComposite.isEnabled()) {
+            List<NamedThing> selectedElements = selectionComposite.getSelectedElements();
+            if (selectedElements.size() > 0) {
+                return selectedElements.get(0).getName();
+            }
+        } else { // Custom object
+            return customObjNameText.getText();
         }
         return ""; //$NON-NLS-1$
     }

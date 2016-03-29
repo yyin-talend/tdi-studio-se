@@ -557,6 +557,7 @@ public class ComboController extends AbstractElementPropertySectionController {
     }
 
     private String[] getListToDisplay(IElementParameter param) {
+        callBeforeActive(param);
         String[] originalList = param.getListItemsDisplayName();
         List<String> stringToDisplay = new ArrayList<String>();
         String[] itemsShowIf = param.getListItemsShowIf();

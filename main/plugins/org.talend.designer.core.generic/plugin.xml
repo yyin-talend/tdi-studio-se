@@ -184,5 +184,12 @@
       </generator>
       
    </extension>
+   <extension
+         point="org.talend.core.runtime.service">
+      <Service
+            class="org.talend.designer.core.generic.service.GenericService"
+            serviceId="IGenericService">
+      </Service>
+   </extension>
 
 </plugin>

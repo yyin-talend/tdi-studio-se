@@ -32,8 +32,8 @@ import org.talend.metadata.managment.ui.model.IConnParamName;
 import org.talend.metadata.managment.ui.utils.GenericConnParamName;
 import org.talend.repository.generic.model.genericMetadata.GenericConnection;
 import org.talend.repository.generic.model.genericMetadata.GenericMetadataFactory;
-import org.talend.repository.generic.testproperties.TestNestedProperties;
-import org.talend.repository.generic.testproperties.TestProperties;
+import org.talend.test.utils.testproperties.TestNestedProperties;
+import org.talend.test.utils.testproperties.TestProperties;
 
 /**
  * created by ycbai on 2016年2月16日 Detailled comment

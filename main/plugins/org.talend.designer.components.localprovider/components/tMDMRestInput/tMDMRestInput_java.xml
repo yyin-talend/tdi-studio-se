@@ -48,7 +48,7 @@
             REQUIRED="true"
             NUM_ROW="1">
         </PARAMETER>
-	    
+
         <PARAMETER 
             NAME="SCHEMA_REJECT"
             FIELD="SCHEMA_TYPE"
@@ -62,7 +62,7 @@
                 <COLUMN NAME="errorMessage" TYPE="id_String" LENGTH="255" READONLY="false" CUSTOM="true" />
             </TABLE>
         </PARAMETER>
-		
+
         <PARAMETER 
             NAME="MDMURL"
             FIELD="TEXT"
@@ -89,7 +89,7 @@
             REPOSITORY_VALUE="PASSWORD">
             <DEFAULT>"password"</DEFAULT>
         </PARAMETER>
-	
+
         <PARAMETER 
             NAME="DATACLUSTER"
             FIELD="TEXT"
@@ -111,7 +111,7 @@
         </PARAMETER>
 
         <PARAMETER
-            NAME="RETRIEVE_FULL_RECORD"
+            NAME="RETRIEVE_RAW_DATA"
             FIELD="CHECK"
             NUM_ROW="55">
             <DEFAULT>false</DEFAULT>
@@ -122,7 +122,7 @@
             FIELD="COLUMN_LIST"
             REQUIRED="true"
             NUM_ROW="55"
-            SHOW_IF="RETRIEVE_FULL_RECORD == 'true'">
+            SHOW_IF="RETRIEVE_RAW_DATA == 'true'">
         </PARAMETER>
 
         <PARAMETER
@@ -130,7 +130,7 @@
             FIELD="CLOSED_LIST"
             NUM_ROW="55"
             REQUIRED="true"
-            SHOW_IF="RETRIEVE_FULL_RECORD == 'true'">
+            SHOW_IF="RETRIEVE_RAW_DATA == 'true'">
             <ITEMS DEFAULT="JSON">
                 <ITEM NAME="JSON" VALUE="application/json" />
                 <ITEM NAME="XML" VALUE="application/xml" />
@@ -144,7 +144,7 @@
             NB_LINES="10">
             <DEFAULT>{"select":{"from":["Type1"],"fields":[{"field":"Type1/Field1"}]}}</DEFAULT>
         </PARAMETER>
-		
+
         <PARAMETER 
             NAME="DIE_ON_ERROR"
             FIELD="CHECK"
@@ -152,6 +152,15 @@
             <DEFAULT>false</DEFAULT>
         </PARAMETER>
     </PARAMETERS>
+
+    <ADVANCED_PARAMETERS>
+        <PARAMETER
+            NAME="FETCHSIZE"
+            FIELD="TEXT"
+            NUM_ROW="10">
+            <DEFAULT>50</DEFAULT>
+        </PARAMETER>
+    </ADVANCED_PARAMETERS>
 
     <CODEGENERATION>
         <IMPORTS>

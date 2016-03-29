@@ -17,7 +17,6 @@ import junit.framework.Assert;
 import org.junit.Test;
 import org.talend.daikon.NamedThing;
 import org.talend.daikon.SimpleNamedThing;
-import org.talend.designer.core.generic.model.mapping.WidgetFieldTypeMappingReader;
 
 /**
  * created by hcyi on Feb 16, 2016 Detailled comment
@@ -37,6 +36,6 @@ public class WidgetFieldTypeMappingReaderTest {
         fieldType = mappingReader.getFieldType("DEFAULT", nameAndLabel, null);//$NON-NLS-1$
         Assert.assertEquals("LABEL", fieldType);//$NON-NLS-1$
         fieldType = mappingReader.getFieldType("HIDDEN_TEXT", nameAndLabel, "HIDDEN_TEXT");//$NON-NLS-1$//$NON-NLS-2$
-        Assert.assertEquals("PASSWORD", fieldType);//$NON-NLS-1$
+        Assert.assertEquals("HIDDEN_TEXT", fieldType);//$NON-NLS-1$
     }
 }

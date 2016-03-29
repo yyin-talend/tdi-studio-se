@@ -21,6 +21,7 @@ import org.apache.avro.Schema;
 import org.apache.avro.SchemaBuilder;
 import org.eclipse.emf.common.util.EList;
 import org.junit.Test;
+import org.talend.commons.runtime.model.components.IComponentConstants;
 import org.talend.components.api.properties.ComponentProperties;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.metadata.MetadataToolHelper;
@@ -30,8 +31,7 @@ import org.talend.core.model.metadata.builder.connection.MetadataTable;
 import org.talend.core.model.metadata.types.JavaTypesManager;
 import org.talend.daikon.properties.Properties;
 import org.talend.daikon.properties.Properties.Deserialized;
-import org.talend.designer.core.generic.constants.IGenericConstants;
-import org.talend.designer.core.generic.testproperties.TestProperties;
+import org.talend.test.utils.testproperties.TestProperties;
 import orgomg.cwm.objectmodel.core.CoreFactory;
 import orgomg.cwm.objectmodel.core.Package;
 import orgomg.cwm.objectmodel.core.TaggedValue;
@@ -131,11 +131,11 @@ public class SchemaUtilsTest {
 
         // Set the component properties and schema property name into MetadataTable.
         TaggedValue serializedPropsTV = CoreFactory.eINSTANCE.createTaggedValue();
-        serializedPropsTV.setTag(IGenericConstants.COMPONENT_PROPERTIES_TAG);
+        serializedPropsTV.setTag(IComponentConstants.COMPONENT_PROPERTIES_TAG);
         serializedPropsTV.setValue(props.toSerialized());
         table.getTaggedValue().add(serializedPropsTV);
         TaggedValue schemaPropertyTV = CoreFactory.eINSTANCE.createTaggedValue();
-        schemaPropertyTV.setTag(IGenericConstants.COMPONENT_SCHEMA_TAG);
+        schemaPropertyTV.setTag(IComponentConstants.COMPONENT_SCHEMA_TAG);
         schemaPropertyTV.setValue(SCHEMA_PROP_NAME);
         table.getTaggedValue().add(schemaPropertyTV);
 
@@ -157,9 +157,9 @@ public class SchemaUtilsTest {
         for (TaggedValue taggedValue : taggedValues) {
             String tag = taggedValue.getTag();
             String tagValue = taggedValue.getValue();
-            if (IGenericConstants.COMPONENT_PROPERTIES_TAG.equals(tag)) {
+            if (IComponentConstants.COMPONENT_PROPERTIES_TAG.equals(tag)) {
                 componentPropertiesStr = tagValue;
-            } else if (IGenericConstants.COMPONENT_SCHEMA_TAG.equals(tag)) {
+            } else if (IComponentConstants.COMPONENT_SCHEMA_TAG.equals(tag)) {
                 schemaPropertyName = tagValue;
             }
         }
@@ -175,10 +175,10 @@ public class SchemaUtilsTest {
         IMetadataTable iMetadataTable = MetadataToolHelper.convert(table);
         SchemaUtils.updateComponentSchema(props, SCHEMA_PROP_NAME, iMetadataTable);
         Map<String, String> additionalProperties = iMetadataTable.getAdditionalProperties();
-        componentPropertiesStr = additionalProperties.get(IGenericConstants.COMPONENT_PROPERTIES_TAG);
+        componentPropertiesStr = additionalProperties.get(IComponentConstants.COMPONENT_PROPERTIES_TAG);
         fromSerialized = Properties.fromSerialized(componentPropertiesStr, ComponentProperties.class);
         componentProperties = fromSerialized.properties;
-        schemaPropertyName = additionalProperties.get(IGenericConstants.COMPONENT_SCHEMA_TAG);
+        schemaPropertyName = additionalProperties.get(IComponentConstants.COMPONENT_SCHEMA_TAG);
         schemaValueStr = componentProperties.getValuedProperty(schemaPropertyName).getValue();
         avroSchema = new Schema.Parser().parse((String) schemaValueStr);
         assertNotNull(avroSchema.getField(TEST_COL_NAME));

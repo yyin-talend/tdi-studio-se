@@ -25,6 +25,7 @@ import org.eclipse.jface.dialogs.ProgressMonitorDialog;
 import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.ui.PlatformUI;
 import org.talend.commons.exception.ExceptionHandler;
+import org.talend.commons.runtime.model.components.IComponentConstants;
 import org.talend.components.api.properties.ComponentProperties;
 import org.talend.components.api.service.ComponentService;
 import org.talend.core.model.metadata.IMetadataTable;
@@ -36,7 +37,6 @@ import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.IProcess;
 import org.talend.daikon.NamedThing;
 import org.talend.daikon.properties.PresentationItem;
-import org.talend.daikon.properties.Properties;
 import org.talend.daikon.properties.Property;
 import org.talend.daikon.properties.presentation.Form;
 import org.talend.daikon.properties.presentation.Widget;
@@ -243,7 +243,7 @@ public class GenericElementParameter extends ElementParameter {
             List<IMetadataTable> metadataList = node.getMetadataList();
             if (metadataList.size() > 0) {
                 IMetadataTable oldTable = metadataList.get(0);
-                String schemaPropertyName = oldTable.getAdditionalProperties().get(IGenericConstants.COMPONENT_SCHEMA_TAG);
+                String schemaPropertyName = oldTable.getAdditionalProperties().get(IComponentConstants.COMPONENT_SCHEMA_TAG);
                 Object schemaObj = null;
                 try {
                     schemaObj = ComponentsUtils.getGenericPropertyValue(componentProperties, schemaPropertyName);

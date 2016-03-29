@@ -838,7 +838,7 @@
         <libraryNeeded
             context="plugin:org.talend.libraries.hadoop.hdp.2.3"
             id="talend-spark-assembly-HDP_2_3"
-            name="talend-spark-assembly-1.4.1.2.3.2.0-2950-hadoop2.7.1.2.3.2.0-2950.jar" mvn_uri="mvn:org.talend.libraries/talend-spark-assembly-1.4.1.2.3.2.0-2950-hadoop2.7.1.2.3.2.0-2950/6.1.0">
+            name="talend-spark-assembly-1.4.1.2.3.2.0-2950-hadoop2.7.1.2.3.2.0-2950-without-parquet.jar" mvn_uri="mvn:org.talend.libraries/talend-spark-assembly-1.4.1.2.3.2.0-2950-hadoop2.7.1.2.3.2.0-2950-without-parquet/6.1.0">
         </libraryNeeded>
 
         <libraryNeeded
@@ -1290,7 +1290,7 @@
         <libraryNeeded
             context="plugin:org.talend.libraries.hadoop.emr.4.0.0"
             id="talend-spark-assembly-emr400-latest"
-            name="talend-spark-assembly-1.4.1-hadoop2.6.0-amzn-0.jar" mvn_uri="mvn:org.talend.libraries/talend-spark-assembly-1.4.1-hadoop2.6.0-amzn-0/6.0.0">
+            name="talend-spark-assembly-1.4.1-hadoop2.6.0-amzn-0-without-parquet.jar" mvn_uri="mvn:org.talend.libraries/talend-spark-assembly-1.4.1-hadoop2.6.0-amzn-0-without-parquet/6.0.0">
         </libraryNeeded>
 
         <libraryNeeded
