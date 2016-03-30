@@ -16,11 +16,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.lang.StringUtils;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PlatformUI;
 import org.talend.commons.runtime.xml.XmlUtil;
-import org.talend.components.api.properties.ComponentProperties;
 import org.talend.core.GlobalServiceRegister;
 import org.talend.core.model.metadata.ColumnNameChanged;
 import org.talend.core.model.metadata.IMetadataColumn;
@@ -212,15 +210,11 @@ public class RepositoryChangeMetadataCommand extends ChangeMetadataCommand {
             }
             setTableRelevantParameterValues();
         }
-        List<ComponentProperties> componentProperties = null;
         if (!node.getMetadataList().isEmpty() && !node.getMetadataList().get(0).sameMetadataAs(newOutputMetadata)) {
             IGenericWizardService wizardService = null;
             if (GlobalServiceRegister.getDefault().isServiceRegistered(IGenericWizardService.class)) {
                 wizardService = (IGenericWizardService) GlobalServiceRegister.getDefault()
                         .getService(IGenericWizardService.class);
-                if (wizardService != null && wizardService.isGenericConnection(connection)) {
-                    componentProperties = wizardService.getAllComponentProperties(connection);
-                }
             }
             Connection conn = connection;
             if (conn == null) {
@@ -279,17 +273,6 @@ public class RepositoryChangeMetadataCommand extends ChangeMetadataCommand {
                                     Object value = RepositoryToComponentProperty.getValue(
                                             ((ConnectionItem) item).getConnection(), param.getRepositoryValue(),
                                             newOutputMetadata);
-                                    boolean isGenericRepositoryValue = RepositoryToComponentProperty.isGenericRepositoryValue(
-                                            connection, componentProperties, param.getName());
-                                    if (param.getFieldType().equals(EParameterFieldType.TEXT)
-                                            || param.getFieldType().equals(EParameterFieldType.HIDDEN_TEXT)) {
-                                        if (isGenericRepositoryValue && value != null && value instanceof String) {
-                                            if (!ContextParameterUtils.isContextMode(connection,
-                                                    StringUtils.trimToNull(value.toString()))) {
-                                                value = TalendQuoteUtils.addQuotesIfNotExist(value.toString());
-                                            }
-                                        }
-                                    }
                                     if (value != null) {
                                         param.setValue(value);
                                     }
