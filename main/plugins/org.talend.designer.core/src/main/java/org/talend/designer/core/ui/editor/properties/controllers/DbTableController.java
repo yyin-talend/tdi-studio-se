@@ -166,9 +166,14 @@ public class DbTableController extends AbstractElementPropertySectionController 
             openListTable = addListTablesButton(subComposite, param, top, numInRow, nbInRow);
             lastDbControl = openListTable;
         }
+        boolean isHive = false;
+        IElementParameter typePara = elem.getElementParameter("TYPE"); //$NON-NLS-1$
+        if (typePara != null && "Hive".equalsIgnoreCase((String) typePara.getValue())) { //$NON-NLS-1$
+            isHive = true;
+        }
 
         Control openSqlBuilder = null;
-        if (!isContainSqlMemo() && !"DATABASE:CDC".equals(param.getFilter())) { //$NON-NLS-1$
+        if (!isContainSqlMemo() && !"DATABASE:CDC".equals(param.getFilter()) && !isHive) { //$NON-NLS-1$
             openSqlBuilder = addOpenSqlBulderButton(subComposite, param, top, numInRow, nbInRow);
             FormData data1 = new FormData();
             data1.right = new FormAttachment(100, -ITabbedPropertyConstants.HSPACE);
@@ -198,8 +203,7 @@ public class DbTableController extends AbstractElementPropertySectionController 
         }
 
         // TDI-25576 : just hide this button in Component View for Hive components , maybe later will remove this .
-        IElementParameter typePara = elem.getElementParameter("TYPE"); //$NON-NLS-1$
-        if (typePara != null && "Hive".equalsIgnoreCase((String) typePara.getValue())) { //$NON-NLS-1$
+        if (isHive) {
             openListTable.setVisible(false);
         }
 
