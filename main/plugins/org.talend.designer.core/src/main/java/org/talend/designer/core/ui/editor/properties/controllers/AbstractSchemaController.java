@@ -1197,6 +1197,9 @@ public abstract class AbstractSchemaController extends AbstractRepositoryControl
                 IElementParameter repositorySchemaType = param.getParentParameter().getChildParameters()
                         .get(EParameterName.REPOSITORY_SCHEMA_TYPE.getName());
                 String schemaSelected = (String) repositorySchemaType.getValue();
+                if (schemaSelected == null) {
+                    schemaSelected = ""; //$NON-NLS-1$
+                }
 
                 /* value can be devided means the value like "connectionid - label" */
                 String[] keySplitValues = schemaSelected.toString().split(" - "); //$NON-NLS-1$

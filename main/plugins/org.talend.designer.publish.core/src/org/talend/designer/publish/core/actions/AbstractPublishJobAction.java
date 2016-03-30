@@ -86,7 +86,7 @@ public abstract class AbstractPublishJobAction implements IRunnableWithProgress 
     }
 
     protected abstract void process(ProcessItem processItem, FeaturesModel featuresModel, IProgressMonitor monitor)
-            throws IOException;
+            throws IOException, InterruptedException;
 
     @Override
     public final void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
@@ -168,6 +168,8 @@ public abstract class AbstractPublishJobAction implements IRunnableWithProgress 
             monitor.beginTask("Deploy to Artifact Repository....", IProgressMonitor.UNKNOWN);
             FeaturesModel featuresModel = getFeatureModel(tmpJob);
             process(processItem, featuresModel, monitor);
+        } catch (InterruptedException e) {
+            throw e;
         } catch (Exception e) {
             throw new InvocationTargetException(e);
         } finally {

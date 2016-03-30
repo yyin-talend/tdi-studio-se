@@ -94,6 +94,7 @@ import org.talend.core.model.metadata.builder.connection.MdmConceptType;
 import org.talend.core.model.metadata.builder.connection.MetadataTable;
 import org.talend.core.model.metadata.builder.connection.Query;
 import org.talend.core.model.metadata.builder.connection.SAPFunctionUnit;
+import org.talend.core.model.metadata.builder.connection.SAPTable;
 import org.talend.core.model.metadata.builder.connection.SalesforceModuleUnit;
 import org.talend.core.model.metadata.builder.connection.XMLFileNode;
 import org.talend.core.model.metadata.builder.connection.impl.BRMSConnectionImpl;
@@ -136,6 +137,7 @@ import org.talend.core.model.utils.SQLPatternUtils;
 import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.core.repository.RepositoryComponentManager;
 import org.talend.core.repository.model.ProxyRepositoryFactory;
+import org.talend.core.repository.model.repositoryObject.MetadataColumnRepositoryObject;
 import org.talend.core.repository.model.repositoryObject.MetadataTableRepositoryObject;
 import org.talend.core.repository.model.repositoryObject.QueryRepositoryObject;
 import org.talend.core.repository.model.repositoryObject.SAPFunctionRepositoryObject;
@@ -193,6 +195,7 @@ import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.IRepositoryNode;
 import org.talend.repository.model.IRepositoryNode.EProperties;
 import org.talend.repository.model.RepositoryNode;
+
 import orgomg.cwm.objectmodel.core.ModelElement;
 
 /**
@@ -1525,6 +1528,9 @@ public class TalendEditorDropTargetListener extends TemplateTransferDropTargetLi
         // Noted by Marvin Wang on Jun. 29, 2012. The piece of code is used to judge if the selected node is SAP
         // Table node, if so, set up the table name to command.
         IRepositoryViewObject object = selectedNode.getObject();
+        if (object instanceof MetadataColumnRepositoryObject) {
+            object = selectedNode.getParent().getParent().getObject();
+        }
         SAPFunctionUnit unit = null;
         if (object != null) {
             if (object instanceof MetadataTableRepositoryObject) {
@@ -1537,6 +1543,8 @@ public class TalendEditorDropTargetListener extends TemplateTransferDropTargetLi
                     String currentTableName = unit.getLabel() + "/" + abstractMetadataObject.getTableType() + "/" //$NON-NLS-1$ //$NON-NLS-2$
                             + abstractMetadataObject.getLabel();
                     command.setCurrentTableName(currentTableName);
+                } else if (abstractMetadataObject instanceof SAPTable) {
+                    command.setCurrentTableName(abstractMetadataObject.getLabel());
                 }
             } else if (object instanceof SAPFunctionRepositoryObject) {
                 SAPFunctionRepositoryObject sapObj = (SAPFunctionRepositoryObject) object;
@@ -1569,6 +1577,12 @@ public class TalendEditorDropTargetListener extends TemplateTransferDropTargetLi
      */
     private void getChangeMetadataCommand(CompoundCommand cc, RepositoryNode selectedNode, Node node,
             ConnectionItem connectionItem) {
+        if (selectedNode.getProperties(EProperties.CONTENT_TYPE) == ERepositoryObjectType.METADATA_CON_COLUMN) {
+            RepositoryNode columnParentNode = selectedNode.getParent().getParent();
+            if (columnParentNode != null) {
+                selectedNode = columnParentNode;
+            }
+        }
         if (selectedNode.getProperties(EProperties.CONTENT_TYPE) == ERepositoryObjectType.METADATA_CON_TABLE
                 || selectedNode.getProperties(EProperties.CONTENT_TYPE) == ERepositoryObjectType.METADATA_SAP_FUNCTION
                 || selectedNode.getProperties(EProperties.CONTENT_TYPE) == ERepositoryObjectType.METADATA_SALESFORCE_MODULE) {

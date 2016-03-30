@@ -16,11 +16,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.lang.StringUtils;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PlatformUI;
 import org.talend.commons.runtime.xml.XmlUtil;
-import org.talend.components.api.properties.ComponentProperties;
 import org.talend.core.GlobalServiceRegister;
 import org.talend.core.model.metadata.ColumnNameChanged;
 import org.talend.core.model.metadata.IMetadataColumn;
@@ -43,6 +41,7 @@ import org.talend.core.model.repository.DragAndDropManager;
 import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.model.utils.ContextParameterUtils;
 import org.talend.core.model.utils.IDragAndDropServiceHandler;
+import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.core.repository.seeker.RepositorySeekerManager;
 import org.talend.core.runtime.services.IGenericWizardService;
 import org.talend.core.utils.TalendQuoteUtils;
@@ -200,27 +199,39 @@ public class RepositoryChangeMetadataCommand extends ChangeMetadataCommand {
             if (newPropValue instanceof String) {
                 if (orginalTable != null && orginalTable instanceof SAPBWTable) {
                     String innerIOType = ((SAPBWTable) orginalTable).getInnerIOType();
-                    if (innerIOType != null) {
-                        node.getElementParameter("INFO_OBJECT_TYPE").setValue(innerIOType); //$NON-NLS-1$
-                        IElementParameter schemaTypeParam = node.getElementParameterFromField(EParameterFieldType.SCHEMA_TYPE);
-                        if (schemaTypeParam != null) {
-                            IMetadataTable metadataTable = node.getMetadataFromConnector(schemaTypeParam.getContext());
-                            metadataTable.getAdditionalProperties().put(SAPBWTableHelper.SAP_INFOOBJECT_INNER_TYPE, innerIOType);
+                    String sourceSysName = ((SAPBWTable) orginalTable).getSourceSystemName();
+                    IElementParameter schemaTypeParam = node.getElementParameterFromField(EParameterFieldType.SCHEMA_TYPE);
+                    IMetadataTable metadataTable = null;
+                    if (schemaTypeParam != null) {
+                        metadataTable = node.getMetadataFromConnector(schemaTypeParam.getContext());
+                    }
+                    if (metadataTable != null) {
+                        if (innerIOType != null) {
+                            IElementParameter param = node.getElementParameter("INFO_OBJECT_TYPE"); //$NON-NLS-1$
+                            if (param != null) {
+                                param.setValue(innerIOType);
+                                metadataTable.getAdditionalProperties().put(SAPBWTableHelper.SAP_INFOOBJECT_INNER_TYPE,
+                                        innerIOType);
+                            }
+                        }
+                        if (sourceSysName != null) {
+                            IElementParameter param = node.getElementParameter("SOURCE_SYSTEM_NAME"); //$NON-NLS-1$
+                            if (param != null) {
+                                param.setValue(TalendTextUtils.addQuotes(sourceSysName));
+                                metadataTable.getAdditionalProperties().put(SAPBWTableHelper.SAP_DATASOURCE_SOURCESYSNAME,
+                                        sourceSysName);
+                            }
                         }
                     }
                 }
             }
             setTableRelevantParameterValues();
         }
-        List<ComponentProperties> componentProperties = null;
         if (!node.getMetadataList().isEmpty() && !node.getMetadataList().get(0).sameMetadataAs(newOutputMetadata)) {
             IGenericWizardService wizardService = null;
             if (GlobalServiceRegister.getDefault().isServiceRegistered(IGenericWizardService.class)) {
                 wizardService = (IGenericWizardService) GlobalServiceRegister.getDefault()
                         .getService(IGenericWizardService.class);
-                if (wizardService != null && wizardService.isGenericConnection(connection)) {
-                    componentProperties = wizardService.getAllComponentProperties(connection);
-                }
             }
             Connection conn = connection;
             if (conn == null) {
@@ -279,17 +290,6 @@ public class RepositoryChangeMetadataCommand extends ChangeMetadataCommand {
                                     Object value = RepositoryToComponentProperty.getValue(
                                             ((ConnectionItem) item).getConnection(), param.getRepositoryValue(),
                                             newOutputMetadata);
-                                    boolean isGenericRepositoryValue = RepositoryToComponentProperty.isGenericRepositoryValue(
-                                            connection, componentProperties, param.getName());
-                                    if (param.getFieldType().equals(EParameterFieldType.TEXT)
-                                            || param.getFieldType().equals(EParameterFieldType.HIDDEN_TEXT)) {
-                                        if (isGenericRepositoryValue && value != null && value instanceof String) {
-                                            if (!ContextParameterUtils.isContextMode(connection,
-                                                    StringUtils.trimToNull(value.toString()))) {
-                                                value = TalendQuoteUtils.addQuotesIfNotExist(value.toString());
-                                            }
-                                        }
-                                    }
                                     if (value != null) {
                                         param.setValue(value);
                                     }
