@@ -285,7 +285,8 @@ public class UpdateNodeParameterCommand extends Command {
 
                 // upgrade from repository
                 if (result.isChecked() && connectionItem != null) {
-                    for (IElementParameter param : node.getElementParameters()) {
+                    List<? extends IElementParameter> elemParameters = new ArrayList<>(node.getElementParameters());
+                    for (IElementParameter param : elemParameters) {
                         String repositoryValue = param.getRepositoryValue();
                         if (param.getRepositoryValue() == null
                                 || (curPropertyParam != null && param.getRepositoryProperty() != null && !param

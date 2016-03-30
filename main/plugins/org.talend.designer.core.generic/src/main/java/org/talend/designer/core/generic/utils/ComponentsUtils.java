@@ -37,6 +37,7 @@ import org.talend.core.model.process.EConnectionType;
 import org.talend.core.model.process.EParameterFieldType;
 import org.talend.core.model.process.IElement;
 import org.talend.core.model.process.INode;
+import org.talend.core.model.utils.ContextParameterUtils;
 import org.talend.core.ui.component.ComponentsFactoryProvider;
 import org.talend.core.utils.TalendQuoteUtils;
 import org.talend.daikon.NamedThing;
@@ -257,7 +258,7 @@ public class ComponentsUtils {
         Property.Type propertyType = property.getType();
         switch (propertyType) {
         case STRING:
-            if (!(element instanceof FakeElement)) {
+            if (!(element instanceof FakeElement || ContextParameterUtils.isContainContextParam((String) paramValue))) {
                 paramValue = TalendQuoteUtils.addQuotesIfNotExist((String) paramValue);
             }
             break;
