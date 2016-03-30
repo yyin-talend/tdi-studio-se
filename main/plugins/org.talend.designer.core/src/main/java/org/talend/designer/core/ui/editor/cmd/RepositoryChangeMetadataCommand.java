@@ -41,6 +41,7 @@ import org.talend.core.model.repository.DragAndDropManager;
 import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.model.utils.ContextParameterUtils;
 import org.talend.core.model.utils.IDragAndDropServiceHandler;
+import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.core.repository.seeker.RepositorySeekerManager;
 import org.talend.core.runtime.services.IGenericWizardService;
 import org.talend.core.utils.TalendQuoteUtils;
@@ -198,12 +199,28 @@ public class RepositoryChangeMetadataCommand extends ChangeMetadataCommand {
             if (newPropValue instanceof String) {
                 if (orginalTable != null && orginalTable instanceof SAPBWTable) {
                     String innerIOType = ((SAPBWTable) orginalTable).getInnerIOType();
-                    if (innerIOType != null) {
-                        node.getElementParameter("INFO_OBJECT_TYPE").setValue(innerIOType); //$NON-NLS-1$
-                        IElementParameter schemaTypeParam = node.getElementParameterFromField(EParameterFieldType.SCHEMA_TYPE);
-                        if (schemaTypeParam != null) {
-                            IMetadataTable metadataTable = node.getMetadataFromConnector(schemaTypeParam.getContext());
-                            metadataTable.getAdditionalProperties().put(SAPBWTableHelper.SAP_INFOOBJECT_INNER_TYPE, innerIOType);
+                    String sourceSysName = ((SAPBWTable) orginalTable).getSourceSystemName();
+                    IElementParameter schemaTypeParam = node.getElementParameterFromField(EParameterFieldType.SCHEMA_TYPE);
+                    IMetadataTable metadataTable = null;
+                    if (schemaTypeParam != null) {
+                        metadataTable = node.getMetadataFromConnector(schemaTypeParam.getContext());
+                    }
+                    if (metadataTable != null) {
+                        if (innerIOType != null) {
+                            IElementParameter param = node.getElementParameter("INFO_OBJECT_TYPE"); //$NON-NLS-1$
+                            if (param != null) {
+                                param.setValue(innerIOType);
+                                metadataTable.getAdditionalProperties().put(SAPBWTableHelper.SAP_INFOOBJECT_INNER_TYPE,
+                                        innerIOType);
+                            }
+                        }
+                        if (sourceSysName != null) {
+                            IElementParameter param = node.getElementParameter("SOURCE_SYSTEM_NAME"); //$NON-NLS-1$
+                            if (param != null) {
+                                param.setValue(TalendTextUtils.addQuotes(sourceSysName));
+                                metadataTable.getAdditionalProperties().put(SAPBWTableHelper.SAP_DATASOURCE_SOURCESYSNAME,
+                                        sourceSysName);
+                            }
                         }
                     }
                 }
