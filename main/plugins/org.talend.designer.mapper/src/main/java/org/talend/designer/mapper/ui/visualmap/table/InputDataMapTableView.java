@@ -159,7 +159,7 @@ public class InputDataMapTableView extends DataMapTableView {
 
         if (tableMapSettingEntriesModel != null) {
             if (!getInputTable().isMainConnection()) {
-                if (!getMapperManager().isBigDataProcess()) {
+                if (!getMapperManager().isMRProcess()) {
                     tableMapSettingEntriesModel.add(new GlobalMapEntry(abstractDataMapTable, LOOKUP_MODEL_SETTING, null));
                 }
                 tableMapSettingEntriesModel.add(new GlobalMapEntry(abstractDataMapTable, MATCH_MODEL_SETTING, null));
