@@ -45,18 +45,14 @@ public class ActivateQueryLogging extends AbstractJobMigrationTask {
 				
 				if(activateQueryLogging == null){
                     ComponentUtilities.addNodeProperty(node, "ACTIVATE_QUERY_LOGGING", "CHECK");
-                    ComponentUtilities.getNodeProperty(node, "ACTIVATE_QUERY_LOGGING").setValue("false");
+                    if(queryBand != null){
+    	                boolean queryBandActived = "true".equalsIgnoreCase(queryBand.getValue());
+    	                if(queryBandActived){
+    	                	ComponentUtilities.getNodeProperty(node, "ACTIVATE_QUERY_LOGGING").setValue("true");
+    	                }
+    				}
 				}
 				
-				if(queryBand == null){
-                    ComponentUtilities.addNodeProperty(node, "QUERY_BAND", "CHECK");
-                    ComponentUtilities.getNodeProperty(node, "QUERY_BAND").setValue("false");
-				}else{
-	                boolean queryBandActived = queryBand.getValue().equalsIgnoreCase("true");
-	                if(queryBandActived){
-	                	ComponentUtilities.getNodeProperty(node, "ACTIVATE_QUERY_LOGGING").setValue("true");
-	                }
-				}
 			}
 		};
 		
