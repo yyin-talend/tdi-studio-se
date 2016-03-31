@@ -62,8 +62,7 @@ public class SqlTemplateImportHandler extends ImportRepTypeHandler {
         if (valid) {
             Item item = importItem.getItem();
             if (item instanceof SQLPatternItem) {
-                SQLPatternItem patternItem = (SQLPatternItem) item;
-                if (patternItem.isSystem()) {
+                if (isSystemItem(item)) {
                     return false;
                 }
             }
@@ -71,4 +70,28 @@ public class SqlTemplateImportHandler extends ImportRepTypeHandler {
         return valid;
     }
 
+    @Override
+    public boolean isValidSystemItem(ImportItem importItem) {
+        boolean valid = super.valid(importItem);
+        if (!valid) {
+            return false;
+        }
+        Item item = importItem.getItem();
+        if (item instanceof SQLPatternItem) {
+            if (isSystemItem(item)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private boolean isSystemItem(Item item) {
+        if (item instanceof SQLPatternItem) {
+            SQLPatternItem patternItem = (SQLPatternItem) item;
+            if (patternItem.isSystem()) {
+                return true;
+            }
+        }
+        return false;
+    }
 }
