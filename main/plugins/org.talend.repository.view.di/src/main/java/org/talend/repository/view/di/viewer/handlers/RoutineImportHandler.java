@@ -242,13 +242,33 @@ public class RoutineImportHandler extends ImportRepTypeHandler implements IImpor
         boolean valid = super.valid(importItem);
         if (valid) {
             Item item = importItem.getItem();
-            if (item instanceof RoutineItem) {
-                RoutineItem routineItem = (RoutineItem) item;
-                if (routineItem.isBuiltIn()) {
-                    return false;
-                }
+            if (isBuiltIn(item)) {
+                return false;
             }
         }
         return valid;
+    }
+
+    @Override
+    public boolean isValidSystemItem(ImportItem importItem) {
+        boolean valid = super.valid(importItem);
+        if (!valid) {
+            return false;
+        }
+        Item item = importItem.getItem();
+        if (isBuiltIn(item)) {
+            return true;
+        }
+        return false;
+    }
+
+    private boolean isBuiltIn(Item item) {
+        if (item instanceof RoutineItem) {
+            RoutineItem routineItem = (RoutineItem) item;
+            if (routineItem.isBuiltIn()) {
+                return true;
+            }
+        }
+        return false;
     }
 }
