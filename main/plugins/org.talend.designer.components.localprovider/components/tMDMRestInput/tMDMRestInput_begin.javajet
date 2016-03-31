@@ -201,15 +201,20 @@ if ((metadatas != null) && (metadatas.size() > 0)) {
 
                         @SuppressWarnings("unchecked")
                         public String getPagedResult(int totalCount, int loopInd) {
-                            int start = fetchSize * loopInd + (orgStart == null ? 0 : orgStart.intValue());
-                            int limit = totalCount > fetchSize * (loopInd + 1) ? fetchSize : totalCount - fetchSize * loopInd;
                             org.json.simple.JSONObject select = (org.json.simple.JSONObject)queryObject.get("select");
-                            select.put("start", start);
-                            select.put("limit", limit);
+                            if(fetchSize > 0) {
+                                int start = fetchSize * loopInd + (orgStart == null ? 0 : orgStart.intValue());
+                                int limit = totalCount > fetchSize * (loopInd + 1) ? fetchSize : totalCount - fetchSize * loopInd;
+                                select.put("start", start);
+                                select.put("limit", limit);
+                            }
                             return executeQuery(queryObject, false);
                         }
 
                         public int getTotalLoop(int totalCount) {
+                            if(fetchSize <= 0) {
+                                return 1;
+                            }
                             return (int) Math.ceil((totalCount + fetchSize - 1) / fetchSize);
                         }
                     }
