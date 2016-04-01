@@ -12,6 +12,7 @@
 // ============================================================================
 package org.talend.repository.preference;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -23,13 +24,18 @@ import org.eclipse.ui.IEditorReference;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
+import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.runtime.model.repository.ERepositoryStatus;
 import org.talend.core.model.general.Project;
+import org.talend.core.model.metadata.builder.connection.DatabaseConnection;
 import org.talend.core.model.process.IProcess2;
+import org.talend.core.model.properties.DatabaseConnectionItem;
 import org.talend.core.model.properties.FolderItem;
 import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.ProcessItem;
+import org.talend.core.model.properties.RoutineItem;
+import org.talend.core.model.properties.SQLPatternItem;
 import org.talend.core.model.relationship.Relation;
 import org.talend.core.model.relationship.RelationshipItemBuilder;
 import org.talend.core.model.repository.DynaEnum;
@@ -45,6 +51,7 @@ import org.talend.designer.core.model.utils.emf.talendfile.ProcessType;
 import org.talend.repository.ProjectManager;
 import org.talend.repository.RepositoryPlugin;
 import org.talend.repository.model.IProxyRepositoryFactory;
+import org.talend.utils.json.JSONArray;
 
 import us.monoid.json.JSONException;
 import us.monoid.json.JSONObject;
@@ -106,29 +113,92 @@ public class TosTokenCollector extends AbstractTokenCollector {
         JSONObject repoStats = new JSONObject();
         // metadata
         for (DynaEnum type : ERepositoryObjectType.values()) {
-            if (type instanceof ERepositoryObjectType) {
-                List<IRepositoryViewObject> all = factory.getAll(currentProject, (ERepositoryObjectType) type);
+            if (type instanceof ERepositoryObjectType && ((ERepositoryObjectType) type).isResourceItem()) {
+                try {
+                    List<IRepositoryViewObject> all = factory.getAll(currentProject, (ERepositoryObjectType) type);
 
-                int nb = all.size();
-                if (nb > 0) {
-                    repoStats.put(type.getType(), nb);
-                    if (ERepositoryObjectType.getAllTypesOfProcess().contains(type)) {
-                        JSONObject jobDetails = new JSONObject();
-                        collectJobDetails(all, jobDetails);
-                        repoStats.put("details", jobDetails);
-                    } else {
-                        int nbUsed = 0;
-                        for (IRepositoryViewObject object : all) {
-                            List<Relation> relations = RelationshipItemBuilder.getInstance().getItemsHaveRelationWith(
-                                    object.getId());
-                            nbUsed = nbUsed + relations.size();
-                        }
-                        repoStats.put("nb.used", nbUsed);
+                    int nb = all.size();
+                    if (ERepositoryObjectType.TDQ_INDICATOR_ELEMENT.equals(type)
+                            || ERepositoryObjectType.TDQ_PATTERN_ELEMENT.equals(type)
+                            || ERepositoryObjectType.TDQ_RULES.equals(type) || "TDQ_SOURCE_FILE_ELEMENT".equals(type.getType())) { //$NON-NLS-1$
+                        continue;
                     }
+                    if (ERepositoryObjectType.ROUTINES.equals(type)) {
+                        nb = 0;
+                        List<IRepositoryViewObject> newList = new ArrayList<IRepositoryViewObject>();
+                        for (IRepositoryViewObject object : all) {
+                            RoutineItem rItem = (RoutineItem) object.getProperty().getItem();
+                            if (!rItem.isBuiltIn()) {
+                                nb++;
+                                newList.add(object);
+                            }
+                        }
+                        all = newList;
+                    }
+                    if (ERepositoryObjectType.SQLPATTERNS.equals(type)) {
+                        nb = 0;
+                        for (IRepositoryViewObject object : all) {
+                            SQLPatternItem spItem = (SQLPatternItem) object.getProperty().getItem();
+                            if (!spItem.isSystem()) {
+                                nb++;
+                            }
+                        }
+                    }
+                    if ("MDM.DataModel".equals(type.getType())) { //$NON-NLS-1$
+                        nb = 0;
+                        for (IRepositoryViewObject object : all) {
+                            String path = object.getProperty().getItem().getState().getPath();
+                            if (!"System".equals(path)) { //$NON-NLS-1$
+                                nb++;
+                            }
+                        }
+                    }
+                    if (nb > 0) {
+                        JSONObject typeStats = new JSONObject();
+                        typeStats.put("nb", nb); //$NON-NLS-1$
+                        if (ERepositoryObjectType.getAllTypesOfProcess().contains(type)) {
+                            JSONObject jobDetails = new JSONObject();
+                            collectJobDetails(all, jobDetails);
+                            typeStats.put("details", jobDetails); //$NON-NLS-1$
+                        }
+
+                        if (ERepositoryObjectType.ROUTINES.equals(type)
+                                || ((ERepositoryObjectType) type).getFolder().startsWith("metadata/") //$NON-NLS-1$
+                                || ERepositoryObjectType.CONTEXT.equals(type)
+                                || ERepositoryObjectType.JOBLET.equals(type)) {
+                            int nbUsed = 0;
+                            for (IRepositoryViewObject object : all) {
+                                List<Relation> relations = RelationshipItemBuilder.getInstance().getItemsHaveRelationWith(
+                                        object.getId());
+                                relations.addAll(RelationshipItemBuilder.getInstance().getItemsHaveRelationWith(
+                                        object.getLabel()));
+                                if (relations.size() > 0) {
+                                    nbUsed++;
+                                }
+                            }
+                            typeStats.put("nb.used", nbUsed); //$NON-NLS-1$
+                        }
+                        if (ERepositoryObjectType.METADATA_CONNECTIONS.equals(type)) {
+                            JSONArray arrayTypes = new JSONArray();
+                            Set<String> dbTypes = new HashSet<String>();
+                            for (IRepositoryViewObject object : all) {
+                                DatabaseConnectionItem item = (DatabaseConnectionItem)object.getProperty().getItem();
+                                String dbType = ((DatabaseConnection)item.getConnection()).getDatabaseType();
+                                dbTypes.add(dbType);
+                            }
+                            for (String dbType: dbTypes) {
+                                arrayTypes.put(dbType);
+                            }
+                            typeStats.put("types", arrayTypes); //$NON-NLS-1$
+                        }
+                        repoStats.put(type.getType(), typeStats);
+                    }
+                } catch (Exception e) {
+                    ExceptionHandler.process(e);
                 }
             }
         }
-        jObject.put("repository", repoStats);
+        jObject.put("projects", repoStats); //$NON-NLS-1$
         jObject.put("type", ProjectManager.getInstance().getProjectType(currentProject));
         int nbRef = ProjectManager.getInstance().getAllReferencedProjects().size();
         if (nbRef > 0) {
@@ -199,53 +269,37 @@ public class TosTokenCollector extends AbstractTokenCollector {
         jobDetails.put("nb.components", nbComponentsUsed);
     }
 
+    /* (non-Javadoc)
+     * @see org.talend.core.ui.token.AbstractTokenCollector#collect()
+     */
     @Override
-    protected void collectProperties(JSONObject propertiesObject) throws Exception {
-        // number of projects
-        int projectsNum = 0;
-        
+    public JSONObject collect() throws Exception {
+        JSONObject finalToken = new JSONObject();
         JSONObject mergedData = new JSONObject();
 
         IPreferenceStore preferenceStore = RepositoryPlugin.getDefault().getPreferenceStore();
         String records = preferenceStore.getString(PREF_TOS_JOBS_RECORDS);
         JSONObject allProjectRecords = new JSONObject(records);
         Iterator<String> keys = allProjectRecords.keys();
+        JSONObject projectTypes = new JSONObject();
         while (keys.hasNext()) {
             String projectName = keys.next();
-             JSONObject object = (JSONObject) allProjectRecords.get(projectName); 
-             if (object != null) {
-                 TokenInforUtil.mergeJSON(object, mergedData);
-             }
-            projectsNum++;
+            JSONObject object = (JSONObject) allProjectRecords.get(projectName);
+            if (object != null) {
+                TokenInforUtil.mergeJSON(object, mergedData);
+                String type = object.getString("type");
+                // count the number of project for each type
+                if (!projectTypes.has(type)) {
+                    projectTypes.put(type, 1);
+                } else {
+                    int nb = projectTypes.getInt(type);
+                    nb++;
+                    projectTypes.put(type, nb);
+                }
+            }
         }
-        // object.getInt(TOS_COUNT_JOBS.getKey()); businessModelsNum +=
-        // object.getInt(TOS_COUNT_BUSINESS_MODELS.getKey()); generatedJobDocsNum +=
-        // object.getInt(TOS_COUNT_GENERATED_JOB_DOCS.getKey()); metadatasNum +=
-        // object.getInt(TOS_COUNT_METADATAS.getKey()); contextVarsNum +=
-        // object.getInt(TOS_COUNT_CONTEXT_VARIABLES.getKey()); componentsNum +=
-        // object.getInt(TOS_COUNT_COMPONENTS.getKey());
-        //
-        // JSONObject top20Components = (JSONObject) object.get(TOS_JOB_TOP20_COMPONENTS.getKey()); if (top20Components
-        // != null && top20Components.length() > 0) { Iterator<String> componentKeys = top20Components.keys(); while
-        // (componentKeys.hasNext()) { String componentName = componentKeys.next(); int num =
-        // top20Components.getInt(componentName); if (numComponentMap.containsKey(componentName)) { Integer old =
-        // numComponentMap.get(componentName); if (old != null) { num += old.intValue(); } }
-        // numComponentMap.put(componentName, num); } } } } } catch (Exception e) { // the value is not set, or is empty
-        // }
-
-        // propertiesObject.put(TOS_COUNT_LOCALPROJECTS.getKey(), projectsNum);
-        // propertiesObject.put(TOS_COUNT_JOBS.getKey(), jobsNum);
-        // propertiesObject.put(TOS_COUNT_BUSINESS_MODELS.getKey(), businessModelsNum);
-        // propertiesObject.put(TOS_COUNT_GENERATED_JOB_DOCS.getKey(), generatedJobDocsNum);
-        // propertiesObject.put(TOS_COUNT_METADATAS.getKey(), metadatasNum);
-        // propertiesObject.put(TOS_COUNT_JOBS_PER_PROJECT.getKey(), TokenInforUtil.calcAverageToStr(jobsNum,
-        // projectsNum)); propertiesObject.put(TOS_COUNT_COMPONENTS_PER_JOB.getKey(),
-        // TokenInforUtil.calcAverageToStr(componentsNum, jobsNum));
-        // propertiesObject.put(TOS_COUNT_CONTEXT_VARIABLES_PER_JOB.getKey(),
-        // TokenInforUtil.calcAverageToStr(contextVarsNum, jobsNum));
-        //
-        // // top20 propertiesObject.put(TOS_JOB_TOP20_COMPONENTS.getKey(),
-        // TokenInforUtil.convertTopComponentsArray(numComponentMap, TOP_USED_COMPONENTS_MAX));
-
+        finalToken.put(PROJECTS_REPOSITORY.getKey(), mergedData.get("projects"));
+        finalToken.put("projects.type", projectTypes);
+        return finalToken;
     }
 }
