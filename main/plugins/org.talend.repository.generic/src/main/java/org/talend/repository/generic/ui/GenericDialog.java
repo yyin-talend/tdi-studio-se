@@ -28,6 +28,7 @@ import org.talend.components.api.properties.ComponentProperties;
 import org.talend.components.api.service.ComponentService;
 import org.talend.core.model.process.EComponentCategory;
 import org.talend.core.model.process.Element;
+import org.talend.core.model.properties.ConnectionItem;
 import org.talend.daikon.properties.presentation.Form;
 import org.talend.designer.core.generic.model.FakeElement;
 import org.talend.repository.generic.internal.service.GenericWizardInternalService;
@@ -41,6 +42,8 @@ public class GenericDialog extends TitleAreaDialog {
     private Form form;
 
     private ComponentService componentService;
+
+    private ConnectionItem connectionItem;
 
     private DynamicComposite dynamicComposite;
 
@@ -81,6 +84,7 @@ public class GenericDialog extends TitleAreaDialog {
         data.top = new FormAttachment(0, 0);
         data.bottom = new FormAttachment(100, 0);
         dynamicComposite.setLayoutData(data);
+        dynamicComposite.setConnectionItem(connectionItem);
 
         init();
 
@@ -123,6 +127,10 @@ public class GenericDialog extends TitleAreaDialog {
     protected void cancelPressed() {
         componentService.cancelFormValues((ComponentProperties) form.getProperties(), form.getName());
         super.cancelPressed();
+    }
+
+    public void setConnectionItem(ConnectionItem connectionItem) {
+        this.connectionItem = connectionItem;
     }
 
 }

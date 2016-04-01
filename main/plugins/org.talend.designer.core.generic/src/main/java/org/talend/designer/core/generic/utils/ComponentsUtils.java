@@ -116,10 +116,13 @@ public class ComponentsUtils {
         }
     }
 
-    // FIXME - this does not appear to be used, can it be deleted?
-    public static List<ElementParameter> getParametersFromForm(IElement element, EComponentCategory category, Form form,
-            Widget parentWidget, AtomicInteger lastRowNum) {
-        return getParametersFromForm(element, category, null, null, form, parentWidget, lastRowNum);
+    public static List<ElementParameter> getParametersFromForm(IElement element, Form form) {
+        return getParametersFromForm(element, null, null, form);
+    }
+
+    public static List<ElementParameter> getParametersFromForm(IElement element, EComponentCategory category,
+            ComponentProperties compProperties, Form form) {
+        return getParametersFromForm(element, category, compProperties, null, form, null, null);
     }
 
     /**
@@ -133,7 +136,7 @@ public class ComponentsUtils {
      * @param form
      * @return parameters list
      */
-    public static List<ElementParameter> getParametersFromForm(IElement element, EComponentCategory category,
+    private static List<ElementParameter> getParametersFromForm(IElement element, EComponentCategory category,
             ComponentProperties compProperties, String parentPropertiesPath, Form form, Widget parentWidget,
             AtomicInteger lastRowNum) {
         List<ElementParameter> elementParameters = new ArrayList<>();
@@ -251,6 +254,32 @@ public class ComponentsUtils {
             }
         }
         return elementParameters;
+    }
+
+    /**
+     * DOC ycbai Comment method "getRelatedParameters".
+     * <p>
+     * Get all element parameters related to the <code>parameter<code>.
+     * For example the paramters from the form associated with PresentationItem type.
+     * 
+     * @param parameters
+     * @return
+     */
+    public static List<ElementParameter> getRelatedParameters(GenericElementParameter parameter) {
+        List<ElementParameter> params = new ArrayList<>();
+        if (parameter == null) {
+            return params;
+        }
+        Widget widget = parameter.getWidget();
+        NamedThing content = widget.getContent();
+        if (content instanceof PresentationItem) {
+            PresentationItem pi = (PresentationItem) content;
+            Form formtoShow = pi.getFormtoShow();
+            List<ElementParameter> parametersFromForm = getParametersFromForm(parameter.getElement(), parameter.getCategory(),
+                    parameter.getComponentProperties(), formtoShow);
+            params.addAll(parametersFromForm);
+        }
+        return params;
     }
 
     public static Object getParameterValue(IElement element, Property property) {
