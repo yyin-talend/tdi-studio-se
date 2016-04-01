@@ -15,12 +15,12 @@ package org.talend.designer.business.diagram.viewer.content;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.repository.model.ProjectRepositoryNode;
 import org.talend.repository.model.RepositoryNode;
-import org.talend.repository.view.di.viewer.content.doc.AbstractDocContentProvider;
+import org.talend.repository.viewer.content.ProjectRepoDirectChildrenNodeContentProvider;
 
 /**
  * DOC ggu class global comment. Detailled comment
  */
-public class BusinessModelsContentProvider extends AbstractDocContentProvider {
+public class BusinessModelsContentProvider extends ProjectRepoDirectChildrenNodeContentProvider {
 
     /*
      * (non-Javadoc)
