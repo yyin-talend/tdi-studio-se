@@ -529,6 +529,7 @@ public class MultipleThreadDynamicComposite extends ScrolledComposite implements
         for (IElementParameter elementParameter : elem.getElementParametersWithChildrens()) {
             if (elementParameter.getCategory().equals(section)
                     && (elementParameter.getFieldType() != EParameterFieldType.SCHEMA_TYPE)
+                    && (elementParameter.getFieldType() != EParameterFieldType.SCHEMA_REFERENCE)
                     && (elementParameter.getFieldType() != EParameterFieldType.QUERYSTORE_TYPE)) {
                 // if the component must be displayed, then check if the
                 // control exists or not.

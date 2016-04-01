@@ -416,6 +416,7 @@ public class PropertiesTableEditorView<B> extends AbstractDataTableEditorView<B>
                     column.setDisplayedValue(""); //$NON-NLS-1$
                     break;
                 case SCHEMA_TYPE:
+                case SCHEMA_REFERENCE:
                     column.setModifiable((!param.isRepositoryValueUsed()) && (!param.isReadOnly())
                             && (!currentParam.isReadOnly()));
                     final INode node = (INode) element;

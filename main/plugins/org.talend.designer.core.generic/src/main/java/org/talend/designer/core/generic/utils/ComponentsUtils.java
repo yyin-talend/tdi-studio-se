@@ -238,11 +238,6 @@ public class ComponentsUtils {
             param.setReadOnly(false);
             param.setSerialized(true);
             param.setDynamicSettings(true);
-            // TCOMP-96
-            // Set param context when multiple schema
-            if (EParameterFieldType.SCHEMA_TYPE.equals(param.getFieldType())) {
-                String propertyName = componentProperties.getName();
-            }
             // Avoid adding duplicate prameter.
             if (!parameterNames.contains(parameterName)) {
                 elementParameters.add(param);

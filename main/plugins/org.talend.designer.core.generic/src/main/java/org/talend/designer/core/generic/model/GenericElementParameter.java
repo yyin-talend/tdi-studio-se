@@ -255,7 +255,8 @@ public class GenericElementParameter extends ElementParameter {
                             schemaPropertyName);
                     IMetadataTable newTable = MetadataToolHelper.convert(metadataTable);
                     if (!newTable.sameMetadataAs(oldTable)) {
-                        IElementParameter schemaParameter = node.getElementParameterFromField(EParameterFieldType.SCHEMA_TYPE);
+                        IElementParameter schemaParameter = node
+                                .getElementParameterFromField(EParameterFieldType.SCHEMA_REFERENCE);
                         ChangeMetadataCommand cmd = new ChangeMetadataCommand(node, schemaParameter, oldTable, newTable, null);
                         IProcess process = node.getProcess();
                         if (process instanceof org.talend.designer.core.ui.editor.process.Process) {

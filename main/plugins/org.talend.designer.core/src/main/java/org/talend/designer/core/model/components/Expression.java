@@ -573,6 +573,7 @@ public final class Expression {
                         }
                     } else if (param.getFieldType().equals(EParameterFieldType.PROPERTY_TYPE)
                             || param.getFieldType().equals(EParameterFieldType.SCHEMA_TYPE)
+                            || param.getFieldType().equals(EParameterFieldType.SCHEMA_REFERENCE)
                             || param.getFieldType().equals(EParameterFieldType.QUERYSTORE_TYPE)
                             || param.getFieldType().equals(EParameterFieldType.ENCODING_TYPE)) {
 
@@ -761,8 +762,7 @@ public final class Expression {
      * except on an error case.
      * @return
      */
-    private static boolean executeBooleanMethod(String methodName, String distribution, String version,
-            boolean positiveAssertion) {
+    private static boolean executeBooleanMethod(String methodName, String distribution, String version, boolean positiveAssertion) {
         try {
             boolean ret = DistributionFactory.executeBooleanMethod(methodName, distribution, version);
             return positiveAssertion ? ret : !ret;

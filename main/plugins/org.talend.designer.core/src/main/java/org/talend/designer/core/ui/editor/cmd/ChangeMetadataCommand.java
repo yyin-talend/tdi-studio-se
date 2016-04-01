@@ -109,7 +109,8 @@ public class ChangeMetadataCommand extends Command {
         if (schemaParam == null) {
             currentConnector = EConnectionType.FLOW_MAIN.getName();
             for (IElementParameter param : node.getElementParameters()) {
-                if ((param.getFieldType().equals(EParameterFieldType.SCHEMA_TYPE) || param.getFieldType().equals(
+                if ((param.getFieldType().equals(EParameterFieldType.SCHEMA_TYPE)
+                        || param.getFieldType().equals(EParameterFieldType.SCHEMA_REFERENCE) || param.getFieldType().equals(
                         EParameterFieldType.DCSCHEMA))
                         && param.getContext().equals(currentConnector)) {
                     this.schemaParam = param;
@@ -161,7 +162,9 @@ public class ChangeMetadataCommand extends Command {
                 }
             }
             for (IElementParameter param : node.getElementParameters()) {
-                if (param.getFieldType().equals(EParameterFieldType.SCHEMA_TYPE) && param.getContext().equals(currentConnector)) {
+                if ((param.getFieldType().equals(EParameterFieldType.SCHEMA_TYPE) || param.getFieldType().equals(
+                        EParameterFieldType.SCHEMA_REFERENCE))
+                        && param.getContext().equals(currentConnector)) {
                     this.schemaParam = param;
                 }
             }
@@ -301,7 +304,9 @@ public class ChangeMetadataCommand extends Command {
 
     private void propagateDatas(boolean isExecute) {
         // update currentConnector when flow main type
-        if (schemaParam != null && schemaParam.getFieldType().equals(EParameterFieldType.SCHEMA_TYPE)
+        if (schemaParam != null
+                && (schemaParam.getFieldType().equals(EParameterFieldType.SCHEMA_TYPE) || schemaParam.getFieldType().equals(
+                        EParameterFieldType.SCHEMA_REFERENCE))
                 && EConnectionType.FLOW_MAIN.getDefaultMenuName().toUpperCase().equals(schemaParam.getContext())) {
             currentConnector = EConnectionType.FLOW_MAIN.getName();
         }

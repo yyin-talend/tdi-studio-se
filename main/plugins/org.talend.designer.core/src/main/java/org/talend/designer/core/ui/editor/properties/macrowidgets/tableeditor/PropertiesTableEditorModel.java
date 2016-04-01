@@ -204,7 +204,8 @@ public class PropertiesTableEditorModel<B> extends ExtendedTableModel<B> {
         for (Object object : elemParameter.getListItemsValue()) {
             if (object instanceof ElementParameter) {
                 ElementParameter param = (ElementParameter) object;
-                if (param.getFieldType().equals(EParameterFieldType.SCHEMA_TYPE)) {
+                if (param.getFieldType().equals(EParameterFieldType.SCHEMA_TYPE)
+                        || param.getFieldType().equals(EParameterFieldType.SCHEMA_REFERENCE)) {
                     schemaType = param.getName();
                     cancel = !MessageDialog.openQuestion(this.getTableViewer().getTable().getShell(),
                             Messages.getString("PropertiesTableEditorModel.removeSchema"), //$NON-NLS-1$
