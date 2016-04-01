@@ -1424,6 +1424,9 @@ public class HTMLDocGenerator implements IDocumentationGenerator {
      * @param projectElement
      */
     protected String getDocTypeAttribute() {
+        if (ERepositoryObjectType.JOB_DOC == null) {
+            return "Jobs"; //$NON-NLS-1$
+        }
         return ERepositoryObjectType.JOB_DOC.toString();
     }
 
