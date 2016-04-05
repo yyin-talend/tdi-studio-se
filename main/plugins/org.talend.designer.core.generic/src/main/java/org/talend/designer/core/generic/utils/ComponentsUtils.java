@@ -37,6 +37,7 @@ import org.talend.core.model.process.EConnectionType;
 import org.talend.core.model.process.EParameterFieldType;
 import org.talend.core.model.process.IElement;
 import org.talend.core.model.process.INode;
+import org.talend.core.model.utils.ContextParameterUtils;
 import org.talend.core.ui.component.ComponentsFactoryProvider;
 import org.talend.core.utils.TalendQuoteUtils;
 import org.talend.daikon.NamedThing;
@@ -115,10 +116,13 @@ public class ComponentsUtils {
         }
     }
 
-    // FIXME - this does not appear to be used, can it be deleted?
-    public static List<ElementParameter> getParametersFromForm(IElement element, EComponentCategory category, Form form,
-            Widget parentWidget, AtomicInteger lastRowNum) {
-        return getParametersFromForm(element, category, null, null, form, parentWidget, lastRowNum);
+    public static List<ElementParameter> getParametersFromForm(IElement element, Form form) {
+        return getParametersFromForm(element, null, null, form);
+    }
+
+    public static List<ElementParameter> getParametersFromForm(IElement element, EComponentCategory category,
+            ComponentProperties compProperties, Form form) {
+        return getParametersFromForm(element, category, compProperties, null, form, null, null);
     }
 
     /**
@@ -132,7 +136,7 @@ public class ComponentsUtils {
      * @param form
      * @return parameters list
      */
-    public static List<ElementParameter> getParametersFromForm(IElement element, EComponentCategory category,
+    private static List<ElementParameter> getParametersFromForm(IElement element, EComponentCategory category,
             ComponentProperties compProperties, String parentPropertiesPath, Form form, Widget parentWidget,
             AtomicInteger lastRowNum) {
         List<ElementParameter> elementParameters = new ArrayList<>();
@@ -252,12 +256,38 @@ public class ComponentsUtils {
         return elementParameters;
     }
 
+    /**
+     * DOC ycbai Comment method "getRelatedParameters".
+     * <p>
+     * Get all element parameters related to the <code>parameter<code>.
+     * For example the paramters from the form associated with PresentationItem type.
+     * 
+     * @param parameters
+     * @return
+     */
+    public static List<ElementParameter> getRelatedParameters(GenericElementParameter parameter) {
+        List<ElementParameter> params = new ArrayList<>();
+        if (parameter == null) {
+            return params;
+        }
+        Widget widget = parameter.getWidget();
+        NamedThing content = widget.getContent();
+        if (content instanceof PresentationItem) {
+            PresentationItem pi = (PresentationItem) content;
+            Form formtoShow = pi.getFormtoShow();
+            List<ElementParameter> parametersFromForm = getParametersFromForm(parameter.getElement(), parameter.getCategory(),
+                    parameter.getComponentProperties(), formtoShow);
+            params.addAll(parametersFromForm);
+        }
+        return params;
+    }
+
     public static Object getParameterValue(IElement element, Property property) {
         Object paramValue = property.getValue() != null ? property.getValue() : property.getDefaultValue();
         Property.Type propertyType = property.getType();
         switch (propertyType) {
         case STRING:
-            if (!(element instanceof FakeElement)) {
+            if (!(element instanceof FakeElement || ContextParameterUtils.isContainContextParam((String) paramValue))) {
                 paramValue = TalendQuoteUtils.addQuotesIfNotExist((String) paramValue);
             }
             break;

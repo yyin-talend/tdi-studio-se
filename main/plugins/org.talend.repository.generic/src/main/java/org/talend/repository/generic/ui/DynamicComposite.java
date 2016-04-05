@@ -110,18 +110,20 @@ public class DynamicComposite extends MultipleThreadDynamicComposite implements 
         List<ElementParameter> parameters = new ArrayList<>();
         ComponentService componentService = null;
         if (element instanceof FakeElement) {
+            Connection theConnection = null;
             if (connectionItem != null) {
-                componentService = new ComponentServiceWithValueEvaluator(internalService.getComponentService(),
-                        new MetadataContextPropertyValueEvaluator(connectionItem.getConnection()));
-                parameters = ComponentsUtils.getParametersFromForm(element, null, form, null, null);
-                parameters.add(getUpdateParameter());
-                currentParameters.clear();
+                theConnection = connectionItem.getConnection();
             }
+            componentService = new ComponentServiceWithValueEvaluator(internalService.getComponentService(),
+                    new MetadataContextPropertyValueEvaluator(theConnection));
+            parameters = ComponentsUtils.getParametersFromForm(element, form);
+            parameters.add(getUpdateParameter());
+            currentParameters.clear();
         } else {
             componentService = new ComponentServiceWithValueEvaluator(internalService.getComponentService(),
                     new ComponentContextPropertyValueEvaluator((INode) element));
-            parameters = ComponentsUtils.getParametersFromForm(element, section, ((INode) element).getComponentProperties(),
-                    null, form, null, null);
+            parameters = ComponentsUtils
+                    .getParametersFromForm(element, section, ((INode) element).getComponentProperties(), form);
         }
         for (ElementParameter parameter : parameters) {
             if (parameter instanceof GenericElementParameter) {
@@ -253,7 +255,9 @@ public class DynamicComposite extends MultipleThreadDynamicComposite implements 
         } else if (IElementParameterEventProperties.EVENT_SHOW_DIALOG.equals(propertyName)) {
             Object newValue = event.getNewValue();
             if (newValue instanceof Form) {
-                new GenericDialog(getShell(), (Form) newValue).open();
+                GenericDialog genericDialog = new GenericDialog(getShell(), (Form) newValue);
+                genericDialog.setConnectionItem(connectionItem);
+                genericDialog.open();
             }
         } else if (IContextEventProperties.EVENT_PROPERTY_EXPORT_CONTEXT.equals(propertyName)) {
             resetComponentProperties();

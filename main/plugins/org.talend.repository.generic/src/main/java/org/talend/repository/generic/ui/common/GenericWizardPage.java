@@ -27,6 +27,7 @@ import org.talend.core.ui.check.IChecker;
 import org.talend.daikon.properties.presentation.Form;
 import org.talend.daikon.properties.presentation.Widget;
 import org.talend.designer.core.generic.model.GenericElementParameter;
+import org.talend.designer.core.generic.utils.ComponentsUtils;
 import org.talend.designer.core.model.components.ElementParameter;
 import org.talend.repository.generic.handler.IContextHandler;
 import org.talend.repository.generic.model.genericMetadata.GenericConnection;
@@ -157,8 +158,15 @@ public abstract class GenericWizardPage extends WizardPage {
         for (ElementParameter parameter : parameters) {
             if (parameter instanceof GenericElementParameter) {
                 GenericElementParameter genericElementParameter = (GenericElementParameter) parameter;
-                if (genericElementParameter.isSupportContext() && genericElementParameter.isShow(parameters)) {
+                if (genericElementParameter.isSupportContext()) {
                     contextParameters.add(parameter);
+                }
+                List<ElementParameter> relatedParameters = ComponentsUtils.getRelatedParameters(genericElementParameter);
+                for (ElementParameter relatedParameter : relatedParameters) {
+                    if (relatedParameter instanceof GenericElementParameter
+                            && ((GenericElementParameter) relatedParameter).isSupportContext()) {
+                        contextParameters.add(relatedParameter);
+                    }
                 }
             }
         }
