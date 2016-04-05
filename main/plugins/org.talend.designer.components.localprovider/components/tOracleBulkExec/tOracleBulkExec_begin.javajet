@@ -300,16 +300,85 @@ if(columnList != null && columnList.size() > 0) {
 <%
 }
 %>
+
+String tempLine_<%=cid %> = "";
+
 <%
 //table atction end
+%>
 
+String ctlf_<%=cid %> = null;
+String logf_<%=cid %> = null;
+String dataf_<%=cid %> = null;
+String badf_<%=cid %> = null;
+String dscf_<%=cid %> = null;
+
+
+class ControlUtil_<%=cid%>{
+    public String getFilePath(String tempLine, String keyword) {		
+		int keywordIndex = tempLine.indexOf(keyword);
+		String resultStr = tempLine.substring(keyword.length());
+		resultStr = resultStr.trim();
+		if(resultStr.length()>0 && resultStr.charAt(0) == '\'' )
+		{
+			resultStr = resultStr.substring(1, resultStr.length());
+		}
+		if(resultStr.length()>0 && resultStr.charAt(resultStr.length()-1) == '\'' )
+		{
+			resultStr = resultStr.substring(0, resultStr.length()-1);
+		}					
+		return resultStr;
+    }
+}
+
+<%
 //////////////////////////////////////////////////////////////////////////////////////////////
 if(("true").equals(use_existing_ctl_file)) {
     String ctl_file = ElementParameterParser.getValue(node, "__CLT_FILE__");
     %>
-    String ctlf_<%=cid %> = <%=ctl_file %>;
-    String logf_<%=cid %> = <%=ctl_file %>+".log";
-    <%
+    ctlf_<%=cid %> = <%=ctl_file %>;
+    logf_<%=cid %> = <%=ctl_file %>+".log";
+	
+	java.io.BufferedReader ctlReader_<%=cid %> = new java.io.BufferedReader(new java.io.FileReader(ctlf_<%=cid %>));	
+	
+	int keywordIndex_<%=cid %> = -1;
+	
+	while ((tempLine_<%=cid %> = ctlReader_<%=cid %>.readLine() )!= null) {
+	
+		ControlUtil_<%=cid%> controlUtil_<%=cid%> = new ControlUtil_<%=cid%>();
+	
+		if(tempLine_<%=cid %>.indexOf("INFILE")>=0)
+		{
+			dataf_<%=cid %> = controlUtil_<%=cid%>.getFilePath(tempLine_<%=cid %>, "INFILE");	
+		}		
+	
+		else if(tempLine_<%=cid %>.indexOf("BADFILE")>=0)
+		{
+			badf_<%=cid %> = controlUtil_<%=cid%>.getFilePath(tempLine_<%=cid %>, "BADFILE");	
+		}
+		
+		else if(tempLine_<%=cid %>.indexOf("DISCARDFILE")>=0)
+		{
+			dscf_<%=cid %> = controlUtil_<%=cid%>.getFilePath(tempLine_<%=cid %>, "DISCARDFILE");	
+		}
+		
+	}
+	
+	
+	String path_<%=cid %> = <%=ctl_file %>.substring(0,<%=ctl_file %>.lastIndexOf("/"));
+	String dataFileName_<%=cid %> = dataf_<%=cid %>.substring(dataf_<%=cid %>.lastIndexOf("/"),dataf_<%=cid %>.lastIndexOf("."));
+
+	if(badf_<%=cid %> == null)
+	{
+		badf_<%=cid %> = path_<%=cid %> + dataFileName_<%=cid %> + ".bad";
+	}
+
+	if(dscf_<%=cid %> == null)
+	{
+		dscf_<%=cid %> = path_<%=cid %> + dataFileName_<%=cid %> + ".dsc";		
+	}
+	
+	<%
 } else {
     //options clause begin
     List<Map<String, String>> options = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__OPTIONS__");
@@ -397,23 +466,16 @@ if(("true").equals(use_existing_ctl_file)) {
     %>
     String dataf_<%=cid %> = <%=dataFile %> + Thread.currentThread().getId();
 
-    String ctlf_<%=cid %> = dataf_<%=cid %> + ".ctl";
+    ctlf_<%=cid %> = dataf_<%=cid %> + ".ctl";
 
-    String badf_<%=cid %> = dataf_<%=cid %> + ".bad";
+    badf_<%=cid %> = dataf_<%=cid %> + ".bad";
 
-    String dscf_<%=cid %> = dataf_<%=cid %> + ".dsc";
+    dscf_<%=cid %> = dataf_<%=cid %> + ".dsc";
 
-    String logf_<%=cid %> = dataf_<%=cid %> + ".log";
+    logf_<%=cid %> = dataf_<%=cid %> + ".log";
 
     dataf_<%=cid %> = <%=dataFile %>;
 
-    java.io.File badFile_<%=cid %> = new java.io.File(badf_<%=cid %>);
-
-    if(badFile_<%=cid %>.exists()){
-
-        badFile_<%=cid %>.delete();
-
-    }
     java.io.BufferedWriter bw_<%=cid %> = new java.io.BufferedWriter(new java.io.FileWriter(ctlf_<%=cid %>));
     java.io.PrintWriter pw_<%=cid%> = new java.io.PrintWriter(bw_<%=cid%> ,false) ;
 
@@ -554,6 +616,13 @@ if(("true").equals(use_existing_ctl_file)) {
     <%
 }
 %>
+if(badf_<%=cid %>!=null){
+	java.io.File badFile_<%=cid %> = new java.io.File(badf_<%=cid %>);
+	if(badFile_<%=cid %>.exists()){
+		badFile_<%=cid %>.delete();
+	}
+}
+
 String command_<%=cid %> = "sqlldr '" + dbUser_<%=cid %> + "/" + dbPwd_<%=cid %> + "@" + serviceUrl_<%=cid %> + "' CONTROL='" + ctlf_<%=cid %> + "' LOG='" + logf_<%=cid %> + "'";
 String printableCommand = "sqlldr '" + dbUser_<%=cid %> + "/" + "...." + "@" + serviceUrl_<%=cid %> + "' CONTROL='" + ctlf_<%=cid %> + "' LOG='" + logf_<%=cid %> + "'";
 
@@ -723,7 +792,7 @@ int nb_line_discarded_<%=cid %> = 0;
 /*  1.get log file all lines count
     2.get "Total logical records read" line number from file end.
     3.get "Total logical records read" and "Total logical records rejected" count. */
-String tempLine_<%=cid %> = "";
+
 int countLines_<%=cid %> =0;//log file lines count
 //1
 class LogUtil_<%=cid%>{
