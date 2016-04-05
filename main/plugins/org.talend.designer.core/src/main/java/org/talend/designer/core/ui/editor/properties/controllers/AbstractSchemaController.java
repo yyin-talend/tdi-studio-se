@@ -931,10 +931,10 @@ public abstract class AbstractSchemaController extends AbstractRepositoryControl
                 Property property = object.getProperty();
                 String id = property.getId();
                 String name = object.getLabel();// The name is Table Name.
+                org.talend.core.model.metadata.builder.connection.MetadataTable table = null;
                 if (property.getItem() instanceof SAPConnectionItem && object instanceof MetadataTableRepositoryObject) {
                     MetadataTableRepositoryObject metadataObject = (MetadataTableRepositoryObject) object;
-                    org.talend.core.model.metadata.builder.connection.MetadataTable table = (org.talend.core.model.metadata.builder.connection.MetadataTable) metadataObject
-                            .getModelElement();
+                    table = (org.talend.core.model.metadata.builder.connection.MetadataTable) metadataObject.getModelElement();
                     if (table.eContainer() instanceof SAPFunctionUnit) {
                         SAPFunctionUnit function = (SAPFunctionUnit) table.eContainer();
                         String tableType = table.getTableType() == null ? MetadataSchemaType.OUTPUT.name() : table.getTableType();
@@ -1067,7 +1067,7 @@ public abstract class AbstractSchemaController extends AbstractRepositoryControl
 
                     CompoundCommand cc = new CompoundCommand();
                     RepositoryChangeMetadataCommand changeMetadataCommand = new RepositoryChangeMetadataCommand((Node) elem,
-                            fullParamName, value, repositoryMetadata, null, null);
+                            fullParamName, value, repositoryMetadata, null, null, table);
                     changeMetadataCommand.setConnection(connection);
                     cc.add(changeMetadataCommand);
 
