@@ -23,7 +23,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.widgets.Display;
@@ -45,6 +44,7 @@ import org.talend.core.model.metadata.IMetadataColumn;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.metadata.MetadataToolHelper;
 import org.talend.core.model.metadata.QueryUtil;
+import org.talend.core.model.metadata.builder.ConvertionHelper;
 import org.talend.core.model.metadata.builder.connection.Connection;
 import org.talend.core.model.metadata.builder.connection.FTPConnection;
 import org.talend.core.model.metadata.builder.connection.HeaderFooterConnection;
@@ -1319,23 +1319,13 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
                                             SAPBWTableHelper.SAP_INFOOBJECT_INNER_TYPE);
                                     if (innerIOType != null) {
                                         Connection connection = connectionItem.getConnection();
-                                        if (connection != null) {
-                                            final EList tables = MetadataToolHelper.getMetadataTableFromConnection(connection,
-                                                    schemaName);
-                                            if (tables != null && tables.size() > 0) {
-                                                Object tableObject = tables.get(0);
-                                                if (tableObject instanceof SAPBWTable) {
-                                                    for (SAPBWTable bwTable : (List<SAPBWTable>) tables) {
-                                                        if (bwTable.getLabel().equals(schemaName)
-                                                                && innerIOType.equals(bwTable.getInnerIOType())) {
-                                                            if (GlobalServiceRegister.getDefault().isServiceRegistered(
-                                                                    IMetadataManagmentService.class)) {
-                                                                IMetadataManagmentService mmService = (IMetadataManagmentService) GlobalServiceRegister
-                                                                        .getDefault().getService(IMetadataManagmentService.class);
-                                                                table = mmService.convertMetadataTable(bwTable);
-                                                            }
-                                                        }
-                                                    }
+                                        if (connection != null && connection instanceof SAPConnection) {
+                                            List<SAPBWTable> bwTables = ((SAPConnection) connection).getBWInfoObjects();
+                                            for (SAPBWTable bwTable : bwTables) {
+                                                if (schemaName.equals(bwTable.getLabel())
+                                                        && innerIOType.equals(bwTable.getInnerIOType())) {
+                                                    table = ConvertionHelper.convert(bwTable);
+                                                    break;
                                                 }
                                             }
                                         }
