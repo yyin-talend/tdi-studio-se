@@ -847,6 +847,47 @@ public class Component extends AbstractBasicComponent {
         return this.provider;
     }
 
+    @Override
+    public boolean useMerge() {
+        for (Connector connector : componentDefinition.getConnectors()) {
+            if (ComponentsUtils.isAValidConnector(connector, getName())) {
+                if (connector.getType().equals(EConnectionType.FLOW_MERGE.getName())) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    @Override
+    public boolean useFlow() {
+        for (Connector connector : componentDefinition.getConnectors()) {
+            if (ComponentsUtils.isAValidConnector(connector, getName())) {
+                if (EConnectionType.FLOW_MAIN.getName().equals(connector.getType())
+                        && !(connector.getMaxInput() == 0 && connector.getMaxOutput() == 0)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    @Override
+    public boolean useSchema(Node node) {
+        boolean useSchema = false;
+        if (node != null) {
+            List<? extends IElementParameter> listParam = node.getElementParameters();
+            for (IElementParameter param : listParam) {
+                if (EParameterFieldType.SCHEMA_REFERENCE.equals(param.getFieldType()) && !param.isReadOnly()
+                        && (param.getContext() == null || EConnectionType.FLOW_MAIN.getName().equals(param.getContext()))) {
+                    useSchema = true;
+                    break;
+                }
+            }
+        }
+        return useSchema;
+    }
+
     public void setProvider(ComponentsProvider provider) {
         this.provider = provider;
     }

@@ -132,6 +132,7 @@ import org.talend.designer.core.model.utils.emf.component.TEMPLATESType;
 import org.talend.designer.core.model.utils.emf.component.TEMPLATEType;
 import org.talend.designer.core.model.utils.emf.component.impl.PLUGINDEPENDENCYTypeImpl;
 import org.talend.designer.core.model.utils.emf.component.util.ComponentResourceFactoryImpl;
+import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.preferences.TalendDesignerPrefConstants;
 import org.talend.designer.runprocess.ItemCacheManager;
 import org.talend.hadoop.distribution.ComponentType;
@@ -3691,7 +3692,7 @@ public class EmfComponent extends AbstractBasicComponent {
     }
 
     @Override
-    public boolean useSchema() {
+    public boolean useSchema(Node node) {
         boolean useSchema = false;
         if (compType == null) {
             isLoaded = false;

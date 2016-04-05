@@ -66,8 +66,8 @@ import org.talend.core.ui.properties.tab.TalendPropertyTabDescriptor;
 import org.talend.core.views.IComponentSettingsView;
 import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.i18n.Messages;
+import org.talend.designer.core.model.components.AbstractBasicComponent;
 import org.talend.designer.core.model.components.EParameterName;
-import org.talend.designer.core.model.components.EmfComponent;
 import org.talend.designer.core.ui.editor.connections.Connection;
 import org.talend.designer.core.ui.editor.connections.ConnectionLabel;
 import org.talend.designer.core.ui.editor.nodes.Node;
@@ -751,9 +751,9 @@ public class ComponentSettingsView extends ViewPart implements IComponentSetting
      */
     private boolean isSupportValidationRuleNode(Node node) {
         boolean hasFlow = false;
-        if (node.getComponent() != null && node.getComponent() instanceof EmfComponent) {
-            EmfComponent component = (EmfComponent) node.getComponent();
-            if (component.useLookup() || component.useMerge() || !component.useSchema()) {
+        if (node.getComponent() != null && node.getComponent() instanceof AbstractBasicComponent) {
+            AbstractBasicComponent component = (AbstractBasicComponent) node.getComponent();
+            if (component.useLookup() || component.useMerge() || !component.useSchema(node)) {
                 return false;
             }
             if (component.useFlow()) {
