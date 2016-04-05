@@ -2690,6 +2690,15 @@
               name="AddContextCommentValueMigrationTask"
               version="6.1.2">
         </projecttask>
+        <projecttask
+              beforeLogon="false"
+              breaks="6.2.0"
+              class="org.talend.repository.model.migration.ChangeLogLevel4tRedshiftInput"
+              description="Change log level"
+              id="org.talend.repository.model.migration.ChangeLogLevel4tRedshiftInput"
+              name="ChangeLogLevel4tRedshiftInput"
+              version="6.2.0">
+        </projecttask>
    </extension>
 
    <extension
