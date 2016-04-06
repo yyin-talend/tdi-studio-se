@@ -1,6 +1,6 @@
 // ============================================================================
 //
-// Copyright (C) 2006-2016 Talend Inc. - www.talend.com
+// Copyright (C) 2006-2015 Talend Inc. - www.talend.com
 //
 // This source code is available under agreement available at
 // %InstallDIR%\features\org.talend.rcp.branding.%PRODUCTNAME%\%PRODUCTNAME%license.txt
@@ -15,7 +15,7 @@
  * Executes EXASol bulk import and export commands
  * @author jlolling jan.lolling@cimt-ag.de
  */
-package org.talend.database.exasol;
+package org.talend.database.exasol.imp;
 
 import java.io.File;
 import java.sql.Connection;
@@ -29,10 +29,13 @@ import java.util.List;
 
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
-
+/**
+ * This class provides an IMPORT command for the EXASol database.
+ * @author Jan Lolling, jan.lolling@cimt-ag.de
+ */
 public class EXABulkUtil {
 	
-	private static Logger logger = Logger.getLogger(EXABulkUtil.class);
+	private static Logger logger = Logger.getLogger(EXABulkUtil.class); 
 	public static final String CSV = "CSV";
 	public static final String FBV = "FBV";
 	public static final String ORA = "ORA";
@@ -45,9 +48,6 @@ public class EXABulkUtil {
 	private boolean transferSecure = false;
 	private String fileType = CSV;
 	private String localFilePath = null;
-	private String remoteFileUrl = null;
-	private String remoteFileUser = null;
-	private String remoteFilePassword = null;
 	private String fileOptEncoding = "UTF8";
 	private Integer fileOptSkip = null;
 	private String fileOptNullIdentifier = null;
@@ -60,7 +60,8 @@ public class EXABulkUtil {
 	private String defaultNumericCharacters = ",."; // first is group separator, second is decimal point
 	private String dbmsSourceType = null;
 	private List<BulkExecStatement> statements = new ArrayList<BulkExecStatement>();
-	private List<Column> columns = new ArrayList<Column>();
+	private List<Column> targetColumns = new ArrayList<Column>();
+	private List<Column> remoteSourceColumns = new ArrayList<Column>();
 	private Connection connection;
 	private int countAffectedRows = 0;
 	private String errorTable = null;
@@ -68,6 +69,16 @@ public class EXABulkUtil {
 	private String localErrorFile = null;
 	private boolean localErrorFileWithCurrentTimestamp = false;
 	private Integer errorRejectLimit = null;
+	private String remoteExistingConnectionName = null;
+	private String remoteJdbcDriverClass = null;
+	private String remoteDbmsUrl = null;
+	private String remoteFileUrl = null;
+	private String remoteFileName = null;
+	private String remoteFileUrlParameters = null;
+	private String remoteUser = null;
+	private String remotePassword = null;
+	private String remoteSourceTable = null;
+	private String remoteSourceSelect = null;
 	
 	public void setDebug(boolean debug) {
 		if (debug) {
@@ -101,29 +112,42 @@ public class EXABulkUtil {
 	
 	public void addCSVNumberColumn(String dbColumnName, Integer sourceIndex, Integer length, Integer precision, String format) {
 		if (sourceIndex == null) {
-			sourceIndex = columns.size();
+			sourceIndex = targetColumns.size();
 		}
 		if (format == null || format.trim().isEmpty()) {
 			format = createNumberFormat(length, precision);
 		}
 		Column c = Column.getCSVColumn(dbColumnName, sourceIndex, format);
-		columns.add(c);
+		targetColumns.add(c);
 	}
 
 	public void addCSVDateColumn(String dbColumnName, Integer sourceIndex, String format) {
 		if (sourceIndex == null) {
-			sourceIndex = columns.size();
+			sourceIndex = targetColumns.size();
 		}
 		Column c = Column.getCSVColumn(dbColumnName, sourceIndex, translateDateFormat(format));
-		columns.add(c);
+		targetColumns.add(c);
 	}
 	
 	public void addCSVColumn(String dbColumnName, Integer sourceIndex) {
 		if (sourceIndex == null) {
-			sourceIndex = columns.size();
+			sourceIndex = targetColumns.size();
 		}
 		Column c = Column.getCSVColumn(dbColumnName, sourceIndex, null);
-		columns.add(c);
+		targetColumns.add(c);
+	}
+	
+	public void addRemoteSourceTableColumn(String targetColumnName, String sourceColumnName, Integer sourceIndex) {
+		if (sourceIndex == null) {
+			sourceIndex = remoteSourceColumns.size();
+		}
+		if (isEmpty(sourceColumnName)) {
+			sourceColumnName = targetColumnName;
+		}
+		Column cs = Column.getDbmsColumn(sourceColumnName, sourceIndex);
+		remoteSourceColumns.add(cs);
+		Column ct = Column.getDbmsColumn(targetColumnName, sourceIndex);
+		targetColumns.add(ct);
 	}
 
 	private void addStatement(String sql, boolean isDML) {
@@ -164,40 +188,161 @@ public class EXABulkUtil {
 	}
 	
 	private void buildImportStatement() {
-		if (columns.isEmpty() == false) {
+		if (targetColumns.isEmpty() == false) {
 			// sort the column list according to the index in the source file
-			Collections.sort(columns);
+			Collections.sort(targetColumns);
 		}
 		StringBuilder sql = new StringBuilder();
 		sql.append("IMPORT INTO ");
 		if (table == null) {
-			throw new IllegalStateException("No table set!");
+			throw new IllegalStateException("No target table set!");
 		}
 		sql.append(table);
 		sql.append(" ");
-		sql.append(buildDBColumnList());
+		sql.append(buildTargetDBColumnList());
 		sql.append("\nFROM ");
 		if (localFilePath != null) {
+			// read the file from the local file system
 			sql.append(buildLocalFile());
 		} else if (remoteFileUrl != null) {
-			// TODO
+			// read the file from a web service
+			sql.append(buildRemoteFile());
 		} else if (dbmsSourceType != null) {
-			// TODO
+			// use an remote dbms as source
+			sql.append(buildRemoteDbmsSource());
+		} else {
+			throw new IllegalStateException("No data source set. You have to setup as source local or remote fil or a remote database!");
 		}
 		sql.append(buildErrorDestination());
 		sql.append(buildErrorLimit());
 		addStatement(sql.toString(), true);
 	}
 	
-	private String buildDBColumnList() {
-		if (columns.isEmpty() == false) {
+	private String buildRemoteFile() {
+		// build an remote connection
+		StringBuilder sql = new StringBuilder();
+		sql.append(CSV);
+		sql.append(" AT ");
+		if (remoteExistingConnectionName != null) {
+			sql.append(remoteExistingConnectionName);
+		} else {
+			sql.append("'");
+			sql.append(remoteFileUrl);
+			sql.append("'");
+		}
+		// credentials can also applied to existing connections
+		if (remoteUser != null) {
+			sql.append(" USER '");
+			sql.append(remoteUser);
+			sql.append("' ");
+			if (remotePassword != null) {
+				sql.append("IDENTIFIED BY '");
+				sql.append(remotePassword);
+				sql.append("' ");
+			} else {
+				throw new IllegalStateException("Password not set for remote connection!");
+			}
+		}
+		if (remoteFileName == null) {
+			throw new IllegalStateException("Remote file name not set!");
+		}
+		sql.append("\nFILE '");
+		sql.append(remoteFileName);
+		if (remoteFileUrlParameters != null) {
+			sql.append("?");
+			sql.append(remoteFileUrlParameters);
+		}
+		sql.append("' ");
+		sql.append(buildFileColumnList());
+		sql.append(buildFileOpts());
+		return sql.toString();
+	}
+	
+	private String buildRemoteDbmsSource() {
+		// build an remote connection
+		StringBuilder sql = new StringBuilder();
+		if (EXA.equalsIgnoreCase(dbmsSourceType)) {
+			sql.append(EXA);
+			sql.append(" AT ");
+			if (remoteExistingConnectionName != null) {
+				sql.append(remoteExistingConnectionName);
+			} else {
+				if (remoteDbmsUrl == null) {
+					throw new IllegalStateException("URL for remote database not set!");
+				}
+				sql.append("'");
+				sql.append(remoteDbmsUrl);
+				sql.append("'");
+			}
+		} else if (ORA.equalsIgnoreCase(dbmsSourceType)) {
+			sql.append(ORA);
+			sql.append(" AT ");
+			if (remoteExistingConnectionName != null) {
+				sql.append(remoteExistingConnectionName);
+			} else {
+				if (remoteDbmsUrl == null) {
+					throw new IllegalStateException("URL for remote database not set!");
+				}
+				sql.append("'");
+				sql.append(remoteDbmsUrl);
+				sql.append("'");
+			}
+		} else if (JDBC.equalsIgnoreCase(dbmsSourceType)) {
+			sql.append(JDBC);
+			if (remoteJdbcDriverClass != null) {
+				sql.append(" DRIVER='");
+				sql.append(remoteJdbcDriverClass);
+				sql.append("'");
+			}
+			sql.append(" AT ");
+			if (remoteExistingConnectionName != null) {
+				sql.append(remoteExistingConnectionName);
+			} else {
+				if (remoteDbmsUrl == null) {
+					throw new IllegalStateException("URL for remote database not set!");
+				}
+				sql.append("'");
+				sql.append(remoteDbmsUrl);
+				sql.append("'");
+			}
+		}
+		// credentials can also applied to existing connections
+		if (remoteUser != null) {
+			sql.append(" USER '");
+			sql.append(remoteUser);
+			sql.append("'");
+			if (remotePassword != null) {
+				sql.append(" IDENTIFIED BY '");
+				sql.append(remotePassword);
+				sql.append("'");
+			} else {
+				throw new IllegalStateException("Password not set for remote connection!");
+			}
+		}
+		if (remoteSourceSelect != null) {
+			sql.append(" STATEMENT '");
+			sql.append(remoteSourceSelect); // escape the single quotas
+			sql.append("'");
+		} else if (remoteSourceTable != null) {
+			sql.append(" TABLE ");
+			sql.append(remoteSourceTable);
+			sql.append(" ");
+			sql.append(buildSourceDBColumnList());
+		} else {
+			throw new IllegalStateException("You use a remote database as source and have not set a source table or query!");
+		}
+		return sql.toString();
+	}
+	
+	private String buildTargetDBColumnList() {
+		if (targetColumns.isEmpty() == false) {
 			StringBuilder sb = new StringBuilder();
 			sb.append("(");
-			for (int i = 0; i < columns.size(); i++) {
+			for (int i = 0; i < targetColumns.size(); i++) {
 				if (i > 0) {
 					sb.append(",");
 				}
-				sb.append(columns.get(i).getName());
+				sb.append(targetColumns.get(i).getName());
 			}
 			sb.append(") ");
 			return sb.toString();
@@ -206,15 +351,32 @@ public class EXABulkUtil {
 		}
 	}
 	
-	private String buildFileColumnList() {
-		if (columns.isEmpty() == false) {
+	private String buildSourceDBColumnList() {
+		if (remoteSourceColumns.isEmpty() == false) {
 			StringBuilder sb = new StringBuilder();
 			sb.append("(");
-			for (int i = 0; i < columns.size(); i++) {
+			for (int i = 0; i < remoteSourceColumns.size(); i++) {
 				if (i > 0) {
 					sb.append(",");
 				}
-				Column c = columns.get(i);
+				sb.append(remoteSourceColumns.get(i).getName());
+			}
+			sb.append(") ");
+			return sb.toString();
+		} else {
+			return "";
+		}
+	}
+
+	private String buildFileColumnList() {
+		if (targetColumns.isEmpty() == false) {
+			StringBuilder sb = new StringBuilder();
+			sb.append("(");
+			for (int i = 0; i < targetColumns.size(); i++) {
+				if (i > 0) {
+					sb.append(",");
+				}
+				Column c = targetColumns.get(i);
 				sb.append(c.getSourceIndex() + 1);
 				if (c.getFormat() != null) {
 					sb.append(" FORMAT='");
@@ -363,7 +525,11 @@ public class EXABulkUtil {
 	}
 
 	private boolean isNotEmpty(String value) {
-		return (value != null) && (value.trim().isEmpty() == false);
+		return (value != null) && (value.trim().isEmpty() == false) && ("\"\"".equals(value) == false) && ("null".equals(value) == false);
+	}
+
+	private boolean isEmpty(String value) {
+		return isNotEmpty(value) == false;
 	}
 
 	/**
@@ -373,6 +539,8 @@ public class EXABulkUtil {
 	public void setTable(String table) {
 		if (isNotEmpty(table)) {
 			this.table = table.trim();
+		} else {
+			throw new IllegalArgumentException("Table name cannot be empty of null!");
 		}
 	}
 
@@ -580,7 +748,12 @@ public class EXABulkUtil {
 
 	public void setDbmsSourceType(String dbmsSourceType) {
 		if (isNotEmpty(dbmsSourceType)) {
-			this.dbmsSourceType = dbmsSourceType.trim();
+			dbmsSourceType = dbmsSourceType.trim();
+			if (EXA.equalsIgnoreCase(dbmsSourceType) || ORA.equalsIgnoreCase(dbmsSourceType) || JDBC.equalsIgnoreCase(dbmsSourceType)) {
+				this.dbmsSourceType = dbmsSourceType;
+			} else {
+				throw new IllegalArgumentException("Invalid source database type: " + dbmsSourceType + ", only EXA, ORA or JDBC are allowed");
+			}
 		}
 	}
 
@@ -601,7 +774,7 @@ public class EXABulkUtil {
 
 	public void setErrorTable(String errorTable) {
 		if (isNotEmpty(errorTable)) {
-			this.errorTable = errorTable.trim();
+			this.errorTable = errorTable.trim().toUpperCase();
 		}
 	}
 
@@ -660,30 +833,6 @@ public class EXABulkUtil {
 		return countAffectedRows;
 	}
 
-	public String getRemoteFileUrl() {
-		return remoteFileUrl;
-	}
-
-	public void setRemoteFileUrl(String remoteFileUrl) {
-		this.remoteFileUrl = remoteFileUrl;
-	}
-
-	public String getRemoteFileUser() {
-		return remoteFileUser;
-	}
-
-	public void setRemoteFileUser(String remoteFileUser) {
-		this.remoteFileUser = remoteFileUser;
-	}
-
-	public String getRemoteFilePassword() {
-		return remoteFilePassword;
-	}
-
-	public void setRemoteFilePassword(String remoteFilePassword) {
-		this.remoteFilePassword = remoteFilePassword;
-	}
-	
 	public void commitAndClose() {
 		if (connection != null) {
 			try {
@@ -713,6 +862,114 @@ public class EXABulkUtil {
 			} catch (SQLException e) {
 				// ignore
 			}
+		}
+	}
+
+	public String getRemoteJdbcDriverClass() {
+		return remoteJdbcDriverClass;
+	}
+
+	public void setRemoteJdbcDriverClass(String remoteJdbcDriverClass) {
+		if (isNotEmpty(remoteJdbcDriverClass)) {
+			this.remoteJdbcDriverClass = remoteJdbcDriverClass.trim();
+		}
+	}
+
+	public String getRemoteDbmsUrl() {
+		return remoteDbmsUrl;
+	}
+
+	public void setRemoteDbmsUrl(String remoteDbmsUrl) {
+		if (isNotEmpty(remoteDbmsUrl)) {
+			this.remoteDbmsUrl = remoteDbmsUrl.trim();
+		}
+	}
+
+	public String getRemoteUser() {
+		return remoteUser;
+	}
+
+	public void setRemoteUser(String remoteUser) {
+		if (isNotEmpty(remoteUser)) {
+			this.remoteUser = remoteUser.trim();
+		}
+	}
+
+	public String getRemotePassword() {
+		return remotePassword;
+	}
+
+	public void setRemotePassword(String remotePassword) {
+		if (isNotEmpty(remotePassword)) {
+			this.remotePassword = remotePassword.trim();
+		}
+	}
+
+	public String getRemoteExistingConnectionName() {
+		return remoteExistingConnectionName;
+	}
+
+	public void setRemoteExistingConnectionName(String remoteConnectionName) {
+		if (isNotEmpty(remoteConnectionName)) {
+			this.remoteExistingConnectionName = remoteConnectionName.trim();
+		}
+	}
+
+	public String getRemoteSourceTable() {
+		return remoteSourceTable;
+	}
+
+	public void setRemoteSourceTable(String remoteSchema, String remoteSourceTable) {
+		String schema = null;
+		if (isNotEmpty(remoteSchema)) {
+			schema = remoteSchema.trim();
+		}
+		if (isNotEmpty(remoteSourceTable)) {
+			if (schema != null) {
+				this.remoteSourceTable = schema + "." + remoteSourceTable.trim();
+			} else {
+				this.remoteSourceTable = remoteSourceTable.trim();
+			}
+		}
+	}
+
+	public String getRemoteSourceSelect() {
+		return remoteSourceSelect;
+	}
+
+	public void setRemoteSourceSelect(String remoteSourceSelect) {
+		if (isNotEmpty(remoteSourceSelect)) {
+			this.remoteSourceSelect = remoteSourceSelect.trim().replace("'", "''");
+		}
+	}
+
+	public String getRemoteFileUrl() {
+		return remoteFileUrl;
+	}
+
+	public void setRemoteFileUrl(String remoteFileUrl) {
+		if (isNotEmpty(remoteFileUrl)) {
+			this.remoteFileUrl = remoteFileUrl.trim();
+		}
+	}
+
+	public String getRemoteFileUrlParameters() {
+		return remoteFileUrlParameters;
+	}
+
+	public void setRemoteFileUrlParameters(String remoteFileUrlParameters) {
+		if (isNotEmpty(remoteFileUrlParameters)) {
+			this.remoteFileUrlParameters = remoteFileUrlParameters.trim();
+		}
+	}
+
+	public String getRemoteFileName() {
+		return remoteFileName;
+	}
+
+	public void setRemoteFileName(String remoteFileName) {
+		if (isNotEmpty(remoteFileName)) {
+			this.remoteFileName = remoteFileName.trim();
 		}
 	}
 	
