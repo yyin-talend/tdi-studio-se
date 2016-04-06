@@ -574,8 +574,9 @@ public class Node extends Element implements IGraphicalNode {
                 if (param.getFieldType().equals(EParameterFieldType.MAPPING_TYPE)) {
                     table.setDbms((String) param.getValue());
                 }
-                if ((param.getFieldType().equals(EParameterFieldType.SCHEMA_TYPE) || param.getFieldType().equals(
-                        EParameterFieldType.DCSCHEMA))
+                if ((param.getFieldType().equals(EParameterFieldType.SCHEMA_TYPE)
+                        || param.getFieldType().equals(EParameterFieldType.DCSCHEMA) || param.getFieldType().equals(
+                        EParameterFieldType.SCHEMA_REFERENCE))
                         && param.getContext() != null && param.getContext().equals(table.getAttachedConnector())) {
                     if (param.getValue() instanceof IMetadataTable) {
                         IMetadataTable paramTable = (IMetadataTable) param.getValue();
