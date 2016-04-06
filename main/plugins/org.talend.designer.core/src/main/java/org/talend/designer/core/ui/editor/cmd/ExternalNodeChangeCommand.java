@@ -153,6 +153,7 @@ public class ExternalNodeChangeCommand extends Command {
                     } else {
                         repositoryMetadata = repositoryMetadata.clone();
                         repositoryMetadata.setTableName(connection.getSource().getUniqueName());
+                        ((org.talend.core.model.metadata.MetadataTable) repositoryMetadata).setRepository(true);
                         if (!repositoryMetadata
                                 .sameMetadataAs(connection.getMetadataTable(), IMetadataColumn.OPTIONS_IGNORE_USED)) {
                             connection.getSource().setPropertyValue(EParameterName.SCHEMA_TYPE.getName(), EmfComponent.BUILTIN);
