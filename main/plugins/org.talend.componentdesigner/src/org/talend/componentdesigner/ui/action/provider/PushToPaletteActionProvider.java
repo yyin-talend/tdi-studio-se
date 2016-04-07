@@ -201,7 +201,7 @@ public class PushToPaletteActionProvider extends CommonActionProvider {
         private void refreshSharedComponents(){
             IRepositoryService service = CorePlugin.getDefault().getRepositoryService();
             IProxyRepositoryFactory factory = service.getProxyRepositoryFactory();
-            IWorkspace workspace = ResourcesPlugin.getWorkspace();
+            final IWorkspace workspace = ResourcesPlugin.getWorkspace();
             RepositoryWorkUnit repositoryWorkUnit = new RepositoryWorkUnit("Update custom components") {
                 @Override
                 public void run()  {
