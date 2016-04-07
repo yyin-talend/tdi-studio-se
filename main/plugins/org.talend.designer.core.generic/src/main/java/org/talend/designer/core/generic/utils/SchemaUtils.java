@@ -22,6 +22,7 @@ import org.talend.commons.runtime.model.components.IComponentConstants;
 import org.talend.components.api.properties.ComponentProperties;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.metadata.MetadataToolAvroHelper;
+import org.talend.core.model.metadata.MetadataToolHelper;
 import org.talend.core.model.metadata.builder.ConvertionHelper;
 import org.talend.core.model.metadata.builder.connection.Connection;
 import org.talend.core.model.metadata.builder.connection.ConnectionFactory;
@@ -38,12 +39,24 @@ import orgomg.cwm.objectmodel.core.TaggedValue;
 public class SchemaUtils {
 
     public static MetadataTable createSchema(String name, ComponentProperties properties, String schemaPropertyName) {
+        if (name == null || properties == null || schemaPropertyName == null) {
+            return null;
+        }
         IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
         MetadataTable metadataTable = ConnectionFactory.eINSTANCE.createMetadataTable();
         metadataTable.setId(factory.getNextId());
         metadataTable.setName(name);
         metadataTable.setLabel(name);
         metadataTable.setSourceName(name);
+        Object schemaObj = ComponentsUtils.getGenericPropertyValue(properties, schemaPropertyName);
+        if (schemaObj instanceof String) {
+            Schema avroSchema = new Schema.Parser().parse((String) schemaObj);
+            convertComponentSchemaIntoTalendSchema(avroSchema, metadataTable);
+        }
+        IMetadataTable iMetadataTable = MetadataToolHelper.convert(metadataTable);
+        updateComponentSchema(properties, schemaPropertyName, iMetadataTable);
+        metadataTable = ConvertionHelper.convert(iMetadataTable);
+        properties.setValue(schemaPropertyName, convertTalendSchemaIntoComponentSchema(metadataTable));
         TaggedValue serializedPropsTV = CoreFactory.eINSTANCE.createTaggedValue();
         serializedPropsTV.setTag(IComponentConstants.COMPONENT_PROPERTIES_TAG);
         serializedPropsTV.setValue(properties.toSerialized());
@@ -52,15 +65,13 @@ public class SchemaUtils {
         schemaPropertyTV.setTag(IComponentConstants.COMPONENT_SCHEMA_TAG);
         schemaPropertyTV.setValue(schemaPropertyName);
         metadataTable.getTaggedValue().add(schemaPropertyTV);
-        Object schemaObj = ComponentsUtils.getGenericPropertyValue(properties, schemaPropertyName);
-        if (schemaObj instanceof String) {
-            Schema avroSchema = new Schema.Parser().parse((String) schemaObj);
-            convertComponentSchemaIntoTalendSchema(avroSchema, metadataTable);
-        }
         return metadataTable;
     }
 
     private static void convertComponentSchemaIntoTalendSchema(Schema schema, MetadataTable metadataTable) {
+        if (schema == null || metadataTable == null) {
+            return;
+        }
         for (Schema.Field field : schema.getFields()) {
             MetadataColumn metadataColumn = MetadataToolAvroHelper.convertFromAvro(field);
             metadataTable.getColumns().add(metadataColumn);
@@ -82,6 +93,9 @@ public class SchemaUtils {
      * @param metadataTable
      */
     public static void updateComponentSchema(MetadataTable metadataTable) {
+        if (metadataTable == null) {
+            return;
+        }
         String componentPropertiesStr = null;
         String schemaPropertyName = null;
         TaggedValue componentPropertiesTaggedValue = null;
@@ -106,6 +120,9 @@ public class SchemaUtils {
 
     public static void updateComponentSchema(ComponentProperties componentProperties, String schemaPropertyName,
             IMetadataTable metadataTable) {
+        if (componentProperties == null || schemaPropertyName == null || metadataTable == null) {
+            return;
+        }
         Schema schema = convertTalendSchemaIntoComponentSchema(ConvertionHelper.convert(metadataTable));
         componentProperties.setValue(schemaPropertyName, schema);
         Map<String, String> additionalProperties = metadataTable.getAdditionalProperties();
