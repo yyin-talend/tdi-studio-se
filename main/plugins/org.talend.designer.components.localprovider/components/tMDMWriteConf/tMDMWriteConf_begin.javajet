@@ -30,6 +30,7 @@ imports="
 	String dataModel = ElementParameterParser.getValue(node, "__DATAMODEL__");
 	String dataCluster = ElementParameterParser.getValue(node, "__DATACLUSTER__");
 	boolean isStaging = "STAGING".equalsIgnoreCase(ElementParameterParser.getValue(node, "__CONTAINER_TYPE__"));
+	boolean isProvisioning = "\"PROVISIONING\"".equalsIgnoreCase(dataCluster);
 	
 	boolean withReport = ("true").equals(ElementParameterParser.getValue(node,"__WITHREPORT__"));
 	boolean isMassInsert =("true").equals(ElementParameterParser.getValue(node,"__EXTENDINSERT__"));
@@ -102,7 +103,19 @@ int nb_line_rejected_<%=cid%> = 0;
     <%@ include file="@{org.talend.designer.components.localprovider}/components/templates/password.javajet"%>
 	
 	context_<%=cid %>.put(javax.xml.ws.BindingProvider.PASSWORD_PROPERTY, decryptedPassword_<%=cid%>);
-	    
+<%}else if(isProvisioning){%>
+    javax.xml.ws.BindingProvider stub_<%=cid %>_<%=conn%> = (javax.xml.ws.BindingProvider) globalMap.get("<%=conn%>");
+    java.util.Map<String, Object> context_<%=cid %>_<%=conn%> = stub_<%=cid %>_<%=conn%>.getRequestContext();
+
+    org.talend.mdm.webservice.TMDMService_Service service_service_<%=cid %> = new org.talend.mdm.webservice.TMDMService_Service(null);
+    org.talend.mdm.webservice.TMDMService service_<%=cid %> = service_service_<%=cid %>.getTMDMPort();
+    javax.xml.ws.BindingProvider stub_<%=cid %> = (javax.xml.ws.BindingProvider) service_<%=cid %>;
+    stub_<%=cid %>.getRequestContext().put(javax.xml.ws.BindingProvider.SESSION_MAINTAIN_PROPERTY, false);
+
+    java.util.Map<String, Object> context_<%=cid %> = stub_<%=cid %>.getRequestContext();
+    context_<%=cid %>.put(javax.xml.ws.BindingProvider.USERNAME_PROPERTY, context_<%=cid %>_<%=conn%>.get(javax.xml.ws.BindingProvider.USERNAME_PROPERTY));
+    context_<%=cid %>.put(javax.xml.ws.BindingProvider.ENDPOINT_ADDRESS_PROPERTY, context_<%=cid %>_<%=conn%>.get(javax.xml.ws.BindingProvider.ENDPOINT_ADDRESS_PROPERTY));
+    context_<%=cid %>.put(javax.xml.ws.BindingProvider.PASSWORD_PROPERTY, context_<%=cid %>_<%=conn%>.get(javax.xml.ws.BindingProvider.PASSWORD_PROPERTY));	    
 <%}else{%>
 	org.talend.mdm.webservice.TMDMService service_<%=cid %> = (org.talend.mdm.webservice.TMDMService)globalMap.get("<%=conn%>");
 <%}%>
