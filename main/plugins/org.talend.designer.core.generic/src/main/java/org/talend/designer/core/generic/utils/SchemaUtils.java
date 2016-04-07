@@ -39,6 +39,9 @@ import orgomg.cwm.objectmodel.core.TaggedValue;
 public class SchemaUtils {
 
     public static MetadataTable createSchema(String name, ComponentProperties properties, String schemaPropertyName) {
+        if (name == null || properties == null || schemaPropertyName == null) {
+            return null;
+        }
         IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
         MetadataTable metadataTable = ConnectionFactory.eINSTANCE.createMetadataTable();
         metadataTable.setId(factory.getNextId());
@@ -66,6 +69,9 @@ public class SchemaUtils {
     }
 
     private static void convertComponentSchemaIntoTalendSchema(Schema schema, MetadataTable metadataTable) {
+        if (schema == null || metadataTable == null) {
+            return;
+        }
         for (Schema.Field field : schema.getFields()) {
             MetadataColumn metadataColumn = MetadataToolAvroHelper.convertFromAvro(field);
             metadataTable.getColumns().add(metadataColumn);
@@ -87,6 +93,9 @@ public class SchemaUtils {
      * @param metadataTable
      */
     public static void updateComponentSchema(MetadataTable metadataTable) {
+        if (metadataTable == null) {
+            return;
+        }
         String componentPropertiesStr = null;
         String schemaPropertyName = null;
         TaggedValue componentPropertiesTaggedValue = null;
@@ -111,6 +120,9 @@ public class SchemaUtils {
 
     public static void updateComponentSchema(ComponentProperties componentProperties, String schemaPropertyName,
             IMetadataTable metadataTable) {
+        if (componentProperties == null || schemaPropertyName == null || metadataTable == null) {
+            return;
+        }
         Schema schema = convertTalendSchemaIntoComponentSchema(ConvertionHelper.convert(metadataTable));
         componentProperties.setValue(schemaPropertyName, schema);
         Map<String, String> additionalProperties = metadataTable.getAdditionalProperties();
