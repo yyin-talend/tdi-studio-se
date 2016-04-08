@@ -1255,7 +1255,7 @@ public class Node extends Element implements IGraphicalNode {
                 }
 
                 if (!generatedByJobscriptBool && component.isSchemaAutoPropagated() && !repositoryMode
-                        && (inputTable.getListColumns().size() != 0)) {
+                        && (inputTable != null && inputTable.getListColumns().size() != 0)) {
 
                     // if the selected connector's schema type is in repository
                     // mode or read only, then don't propagate.
