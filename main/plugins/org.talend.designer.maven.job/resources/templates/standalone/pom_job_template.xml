@@ -28,6 +28,7 @@
 		<talend.job.date>@JobDate@</talend.job.date>
 		<talend.job.context>@JobContext@</talend.job.context>
 		<talend.job.id>@JobId@</talend.job.id>
+		<talend.job.type>@JobType@</talend.job.type>
 		<talend.job.class>@JobClass@</talend.job.class>
 		<talend.job.stat>@JobStat@</talend.job.stat>
 		<talend.job.applyContextToChildren>@JobApplyContextToChildren@</talend.job.applyContextToChildren>
