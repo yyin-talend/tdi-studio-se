@@ -60,7 +60,8 @@ public class GenericContextUtil {
                     ComponentProperties componentProperties = getComponentProperties((GenericConnection) connection);
                     Object paramValue = ComponentsUtils.getGenericPropertyValue(componentProperties, name);
                     paramName = paramPrefix + connParamName.getContextVar();
-                    ConnectionContextHelper.createParameters(varList, paramName, String.valueOf(paramValue));
+                    String value = paramValue == null ? null : String.valueOf(paramValue);
+                    ConnectionContextHelper.createParameters(varList, paramName, value);
                 }
             }
         }

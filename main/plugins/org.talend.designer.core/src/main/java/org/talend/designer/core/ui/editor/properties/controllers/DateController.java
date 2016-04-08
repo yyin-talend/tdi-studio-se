@@ -38,6 +38,7 @@ import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.core.ui.CoreUIPlugin;
 import org.talend.core.ui.properties.tab.IDynamicProperty;
+import org.talend.core.utils.TalendQuoteUtils;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.ui.editor.cmd.PropertyChangeCommand;
@@ -131,7 +132,8 @@ public class DateController extends AbstractElementPropertySectionController {
         gc.dispose();
         gc = new GC(dateText);
         Point defaultDateDateSize = gc.stringExtent("\"2007-06-22 00:00:00\""); // just an example of date //$NON-NLS-1$
-        Point currentDateSize = gc.stringExtent((String) param.getValue()); // current value
+        Object paramValue = param.getValue() != null ? param.getValue() : "";//$NON-NLS-1$
+        Point currentDateSize = gc.stringExtent((String) paramValue); // current value
         gc.dispose();
         int currentDateWidth = defaultDateDateSize.x + ITabbedPropertyConstants.HSPACE + STANDARD_TEXT_WIDTH_ADDITION;
         if ((currentDateSize.x + ITabbedPropertyConstants.HSPACE + STANDARD_TEXT_WIDTH_ADDITION) > currentDateWidth) {
@@ -190,7 +192,6 @@ public class DateController extends AbstractElementPropertySectionController {
         public void widgetSelected(SelectionEvent e) {
             Command cmd = createCommand((Button) e.getSource());
             executeCommand(cmd);
-
         }
 
     };
@@ -203,17 +204,13 @@ public class DateController extends AbstractElementPropertySectionController {
      */
     public Command createCommand(Button button) {
         DateDialog dateDial = new DateDialog(composite.getShell());
-        // String extractedFilePath = PathExtractor.extractPath(dateText.getText());
-        // dial.s
-        // dial.setFileName(new Path(extractedFilePath).toOSString());
         int returnValue = dateDial.open();
         if (returnValue == DateDialog.OK) {
             String propertyName = (String) button.getData(PARAMETER_NAME);
             String date = dateDial.getTalendDateString();
-            if (!elem.getPropertyValue(propertyName).equals(date)) {
+            if (date != null && !date.equals(elem.getPropertyValue(propertyName))) {
                 elem.setPropertyValue(EParameterName.UPDATE_COMPONENTS.getName(), Boolean.TRUE);
                 return new PropertyChangeCommand(elem, propertyName, TalendTextUtils.addQuotes(date));
-
             }
         }
         return null;
@@ -237,7 +234,7 @@ public class DateController extends AbstractElementPropertySectionController {
 
         boolean valueChanged = false;
         if (value == null) {
-            labelText.setText(""); //$NON-NLS-1$
+            labelText.setText(TalendQuoteUtils.addQuotes("")); //$NON-NLS-1$
         } else {
             if (!value.equals(labelText.getText())) {
                 labelText.setText((String) value);

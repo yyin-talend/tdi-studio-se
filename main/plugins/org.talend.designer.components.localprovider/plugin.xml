@@ -1822,6 +1822,13 @@
             uripath="platform:/plugin/org.talend.libraries.apache.common/lib/commons-collections-3.2.1.jar"
             bundleID="" />
 
+        <libraryNeeded
+            context="plugin:org.talend.libraries.apache.common"
+            id="commons-collections-3.2.2.jar"
+            name="commons-collections-3.2.2.jar" mvn_uri="mvn:org.talend.libraries/commons-collections-3.2.2/6.0.0"
+            uripath="platform:/plugin/org.talend.libraries.apache.common/lib/commons-collections-3.2.2.jar"
+            bundleID="" />            
+
 	   	<libraryNeeded
 	   		context="plugin:org.talend.libraries.guava"
         	id="guava-11.0.2.jar"

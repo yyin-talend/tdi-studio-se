@@ -153,6 +153,7 @@ public class ExternalNodeChangeCommand extends Command {
                     } else {
                         repositoryMetadata = repositoryMetadata.clone();
                         repositoryMetadata.setTableName(connection.getSource().getUniqueName());
+                        ((org.talend.core.model.metadata.MetadataTable) repositoryMetadata).setRepository(true);
                         if (!repositoryMetadata
                                 .sameMetadataAs(connection.getMetadataTable(), IMetadataColumn.OPTIONS_IGNORE_USED)) {
                             connection.getSource().setPropertyValue(EParameterName.SCHEMA_TYPE.getName(), EmfComponent.BUILTIN);
@@ -326,7 +327,8 @@ public class ExternalNodeChangeCommand extends Command {
                                 dataTable = tempTable;
                             }
                             for (IElementParameter param : ((Node) connection.getTarget()).getElementParameters()) {
-                                if (param.getFieldType().equals(EParameterFieldType.SCHEMA_TYPE)) {
+                                if (EParameterFieldType.SCHEMA_TYPE.equals(param.getFieldType())
+                                        || EParameterFieldType.SCHEMA_REFERENCE.equals(param.getFieldType())) {
                                     INodeConnector connector = connection.getTarget().getConnectorFromName(
                                             connection.getConnectorName());
                                     if (connector != null && param.getContext().equals(connector.getBaseSchema())) {

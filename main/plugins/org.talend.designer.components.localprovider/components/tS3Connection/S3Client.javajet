@@ -35,6 +35,16 @@
 
 		com.amazonaws.auth.AWSCredentials credentials_<%=cid%> = new com.amazonaws.auth.BasicAWSCredentials(<%=accessKey%>,decryptedPassword_<%=cid%>);
 		<%
+		boolean encrypt = "true".equals(ElementParameterParser.getValue(node,"__ENCRYPT__"));
+		String encrypted_key = ElementParameterParser.getValue(node,"__ENCRYPTED_KEY__");
+		if(encrypt) {
+		%>
+		String masterKey_<%=cid%> = <%=encrypted_key%>; 
+		javax.crypto.spec.SecretKeySpec symmetricKey_<%=cid%> = new javax.crypto.spec.SecretKeySpec(org.apache.commons.codec.binary.Base64.decodeBase64(masterKey_<%=cid%>.getBytes("UTF-8")), "AES");
+		com.amazonaws.services.s3.model.EncryptionMaterials encryptionMaterials_<%=cid%> = new com.amazonaws.services.s3.model.EncryptionMaterials(symmetricKey_<%=cid%>);
+		<%
+		}
+		
 		if(configClient && clientConfiguration.size()>0){
 		%>
 			com.amazonaws.ClientConfiguration cc_<%=cid%> = new com.amazonaws.ClientConfiguration();
@@ -73,13 +83,26 @@
 				cc_<%=cid%>.setSocketBufferSizeHints(scketSendBufferSizeHints_<%=cid%>,socketReceiveBufferSizeHints_<%=cid%>);
 			<%
 			}
+			
+			if(encrypt) {
+			%>
+				com.amazonaws.services.s3.AmazonS3Client conn_<%=cid%> = new com.amazonaws.services.s3.AmazonS3EncryptionClient(credentials_<%=cid%>,encryptionMaterials_<%=cid%>, cc_<%=cid%>,new com.amazonaws.services.s3.model.CryptoConfiguration());
+			<%
+			} else {
 			%>
 				com.amazonaws.services.s3.AmazonS3Client conn_<%=cid%> = new com.amazonaws.services.s3.AmazonS3Client(credentials_<%=cid%>,cc_<%=cid%>);
-		<%
+			<%
+			}
 		}else{
-		%>
-			com.amazonaws.services.s3.AmazonS3Client conn_<%=cid%> = new com.amazonaws.services.s3.AmazonS3Client(credentials_<%=cid%>);
-		<%
+			if(encrypt) {
+			%>
+				com.amazonaws.services.s3.AmazonS3Client conn_<%=cid%> = new com.amazonaws.services.s3.AmazonS3EncryptionClient(credentials_<%=cid%>, encryptionMaterials_<%=cid%>);
+			<%
+			} else {
+			%>
+				com.amazonaws.services.s3.AmazonS3Client conn_<%=cid%> = new com.amazonaws.services.s3.AmazonS3Client(credentials_<%=cid%>);
+			<%
+			}
 		}
 		if(region!=null && !region.isEmpty() && !"DEFAULT".equalsIgnoreCase(region)){
 		%>

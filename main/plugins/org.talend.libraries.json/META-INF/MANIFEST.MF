@@ -32,5 +32,4 @@ Export-Package: de.odysseus.staxon.base,
  nu.xom.jaxen.util,
  nu.xom.tests,
  nu.xom.xinclude,
- nu.xom.xslt,
- org.w3c.dom
+ nu.xom.xslt

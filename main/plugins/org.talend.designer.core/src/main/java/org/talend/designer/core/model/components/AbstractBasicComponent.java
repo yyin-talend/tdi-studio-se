@@ -24,6 +24,7 @@ import org.talend.core.model.process.INode;
 import org.talend.core.model.process.IProcess;
 import org.talend.core.model.temp.ECodePart;
 import org.talend.designer.core.i18n.Messages;
+import org.talend.designer.core.ui.editor.nodes.Node;
 
 /**
  * created by hcyi on Mar 22, 2016 Detailled comment
@@ -99,7 +100,7 @@ public abstract class AbstractBasicComponent extends AbstractComponent {
         return false;
     }
 
-    public boolean useSchema() {
+    public boolean useSchema(Node node) {
         // TUP-4149
         return false;
     }

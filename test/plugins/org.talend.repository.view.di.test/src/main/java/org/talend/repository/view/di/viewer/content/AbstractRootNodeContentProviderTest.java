@@ -35,6 +35,9 @@ public abstract class AbstractRootNodeContentProviderTest extends AbstractConten
 
     @Test
     public void testTopNodeLoad() {
+        if (contentProvider == null) {
+            return;
+        }
         final ERepositoryObjectType testType = getTestType();
         assertNotNull(testType);
         RepositoryNode testNode = ProjectRepositoryNode.getInstance().getRootRepositoryNode(testType);
