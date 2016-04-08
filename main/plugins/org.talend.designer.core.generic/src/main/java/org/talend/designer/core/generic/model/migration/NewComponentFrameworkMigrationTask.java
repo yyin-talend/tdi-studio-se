@@ -12,8 +12,6 @@
 // ============================================================================
 package org.talend.designer.core.generic.model.migration;
 
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -34,6 +32,7 @@ import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.metadata.MetadataTable;
 import org.talend.core.model.migration.AbstractJobMigrationTask;
 import org.talend.core.model.process.AbstractNode;
+import org.talend.core.model.process.EParameterFieldType;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.properties.Item;
 import org.talend.core.ui.component.ComponentsFactoryProvider;
@@ -43,6 +42,7 @@ import org.talend.designer.core.generic.constants.IGenericConstants;
 import org.talend.designer.core.generic.model.GenericElementParameter;
 import org.talend.designer.core.generic.utils.ComponentsUtils;
 import org.talend.designer.core.generic.utils.ParameterUtilTool;
+import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.model.utils.emf.talendfile.ElementParameterType;
 import org.talend.designer.core.model.utils.emf.talendfile.NodeType;
 import org.talend.designer.core.model.utils.emf.talendfile.ProcessType;
@@ -66,31 +66,45 @@ public abstract class NewComponentFrameworkMigrationTask extends AbstractJobMigr
                     return;
                 }
                 boolean modified = false;
-                String currentComponentName = nodeType.getComponentName();
-                String newComponentName = props.getProperty(currentComponentName);
+                String currComponentName = nodeType.getComponentName();
+                String newComponentName = props.getProperty(currComponentName);
                 nodeType.setComponentName(newComponentName);
                 IComponent component = ComponentsFactoryProvider.getInstance().get(newComponentName, category.getName());
-                ComponentProperties componentProperties = ComponentsUtils.getComponentProperties(newComponentName);
+                ComponentProperties compProperties = ComponentsUtils.getComponentProperties(newComponentName);
                 FakeNode fNode = new FakeNode(component);
-                for (IElementParameter elementParameter : fNode.getElementParameters()) {
-                    if (elementParameter instanceof GenericElementParameter) {
-                        NamedThing currentNamedThing = ComponentsUtils.getGenericSchemaElement(componentProperties,
-                                elementParameter.getName());
+                for (IElementParameter param : fNode.getElementParameters()) {
+                    if (param instanceof GenericElementParameter) {
+                        NamedThing currNamedThing = ComponentsUtils.getGenericSchemaElement(compProperties, param.getName());
                         // To update *.properties file
                         // System.out.println(currentComponentName + IGenericConstants.EXP_SEPARATOR +
                         // elementParameter.getName());
-                        String oldParameterName = props.getProperty(currentComponentName + IGenericConstants.EXP_SEPARATOR
-                                + elementParameter.getName());
-                        ElementParameterType paramType = ParameterUtilTool.findParameterType(nodeType, oldParameterName);
-                        if (paramType != null) {
-                            ((Property) currentNamedThing).setValue(ParameterUtilTool.convertParameterValue(paramType));
-                            ParameterUtilTool.removeParameterType(nodeType, paramType);
-                            modified = true;
+                        String oldParamName = props.getProperty(currComponentName + IGenericConstants.EXP_SEPARATOR
+                                + param.getName());
+                        if (oldParamName != null) {
+                            oldParamName = oldParamName.trim();
+                            ElementParameterType paramType = ParameterUtilTool.findParameterType(nodeType, oldParamName);
+                            if (paramType != null) {
+                                ((Property) currNamedThing).setValue(ParameterUtilTool.convertParameterValue(paramType));
+                                ParameterUtilTool.removeParameterType(nodeType, paramType);
+                                modified = true;
+                            }
+                            if (EParameterFieldType.SCHEMA_REFERENCE.equals(param.getFieldType())) {
+                                String schemaTypeName = ":" + EParameterName.SCHEMA_TYPE.getName();//$NON-NLS-1$
+                                String repSchemaTypeName = ":" + EParameterName.REPOSITORY_SCHEMA_TYPE.getName();//$NON-NLS-1$
+                                paramType = ParameterUtilTool.findParameterType(nodeType, oldParamName + schemaTypeName);
+                                if (paramType != null) {
+                                    paramType.setName(param.getName() + schemaTypeName);
+                                }
+                                paramType = ParameterUtilTool.findParameterType(nodeType, oldParamName + repSchemaTypeName);
+                                if (paramType != null) {
+                                    paramType.setName(param.getName() + repSchemaTypeName);
+                                }
+                            }
                         }
                     }
                 }
                 if (modified) {
-                    String serializedProperties = componentProperties.toSerialized();
+                    String serializedProperties = compProperties.toSerialized();
                     if (serializedProperties != null) {
                         ElementParameterType pType = ParameterUtilTool.createParameterType(null, "PROPERTIES", //$NON-NLS-1$
                                 serializedProperties);
@@ -127,15 +141,8 @@ public abstract class NewComponentFrameworkMigrationTask extends AbstractJobMigr
     }
 
     protected Properties getPropertiesFromFile() {
-        Properties props = new Properties();
-        InputStream in = getClass().getResourceAsStream("NewSalesforceMigrationTask.properties");//$NON-NLS-1$
-        try {
-            props.load(in);
-            in.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return props;
+        // with default implementation
+        return new Properties();
     }
 
     @Override
