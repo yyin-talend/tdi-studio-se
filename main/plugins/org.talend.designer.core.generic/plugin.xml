@@ -10,7 +10,8 @@
       </ProcessProvider>
    </extension>
    <extension
-         point="org.talend.core.migrationTask">     
+         point="org.talend.core.migrationTask">
+<!-- need to put the old Salesforce Component back in because our new components are not complete enough to make it into release. disabled first      
         <projecttask
             beforeLogon="false"
             breaks="6.1.0"
@@ -28,7 +29,8 @@
             id="org.talend.designer.core.generic.model.migration.NewSalesforceMigrationTask"
             name="NewSalesforceMigrationTask"
             version="6.1.0">
-        </projecttask>  
+        </projecttask> 
+ -->
    </extension>
    <extension
          point="org.talend.designer.core.generic.fieldType_mapping">
