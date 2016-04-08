@@ -586,7 +586,6 @@
             isResouce="true"
             key="repository.businessProcess"
             label="%repository.businessProcess"
-            parentNodeType="DOCUMENTATION"
             ordinal="1"
             products="DI"
             type="BUSINESS_PROCESS">
