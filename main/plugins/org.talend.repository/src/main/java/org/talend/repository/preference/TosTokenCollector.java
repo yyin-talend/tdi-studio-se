@@ -164,14 +164,13 @@ public class TosTokenCollector extends AbstractTokenCollector {
 
                         if (ERepositoryObjectType.ROUTINES.equals(type)
                                 || ((ERepositoryObjectType) type).getFolder().startsWith("metadata/") //$NON-NLS-1$
-                                || ERepositoryObjectType.CONTEXT.equals(type)
-                                || ERepositoryObjectType.JOBLET.equals(type)) {
+                                || ERepositoryObjectType.CONTEXT.equals(type) || ERepositoryObjectType.JOBLET.equals(type)) {
                             int nbUsed = 0;
                             for (IRepositoryViewObject object : all) {
                                 List<Relation> relations = RelationshipItemBuilder.getInstance().getItemsHaveRelationWith(
                                         object.getId());
-                                relations.addAll(RelationshipItemBuilder.getInstance().getItemsHaveRelationWith(
-                                        object.getLabel()));
+                                relations.addAll(RelationshipItemBuilder.getInstance()
+                                        .getItemsHaveRelationWith(object.getLabel()));
                                 if (relations.size() > 0) {
                                     nbUsed++;
                                 }
@@ -179,17 +178,15 @@ public class TosTokenCollector extends AbstractTokenCollector {
                             typeStats.put("nb.used", nbUsed); //$NON-NLS-1$
                         }
                         if (ERepositoryObjectType.METADATA_CONNECTIONS.equals(type)) {
-                            JSONArray arrayTypes = new JSONArray();
-                            Set<String> dbTypes = new HashSet<String>();
+                            JSONObject objects = new JSONObject();
                             for (IRepositoryViewObject object : all) {
-                                DatabaseConnectionItem item = (DatabaseConnectionItem)object.getProperty().getItem();
-                                String dbType = ((DatabaseConnection)item.getConnection()).getDatabaseType();
-                                dbTypes.add(dbType);
+                                DatabaseConnectionItem item = (DatabaseConnectionItem) object.getProperty().getItem();
+                                String dbType = ((DatabaseConnection) item.getConnection()).getDatabaseType();
+                                int nbDbTypes = objects.getInt(dbType);
+                                nbDbTypes++;
+                                objects.put(dbType, nbDbTypes);
                             }
-                            for (String dbType: dbTypes) {
-                                arrayTypes.put(dbType);
-                            }
-                            typeStats.put("types", arrayTypes); //$NON-NLS-1$
+                            typeStats.put("types", objects); //$NON-NLS-1$
                         }
                         repoStats.put(type.getType(), typeStats);
                     }
@@ -269,7 +266,9 @@ public class TosTokenCollector extends AbstractTokenCollector {
         jobDetails.put("nb.components", nbComponentsUsed);
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.talend.core.ui.token.AbstractTokenCollector#collect()
      */
     @Override
