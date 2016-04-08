@@ -12,13 +12,15 @@
 // ============================================================================
 package org.talend.designer.core.generic.model.migration;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
+import java.util.Properties;
 
-import org.eclipse.emf.common.util.EList;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.components.api.properties.ComponentProperties;
@@ -30,6 +32,7 @@ import org.talend.core.model.components.filters.IComponentFilter;
 import org.talend.core.model.components.filters.NameComponentFilter;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.metadata.MetadataTable;
+import org.talend.core.model.migration.AbstractJobMigrationTask;
 import org.talend.core.model.process.AbstractNode;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.properties.Item;
@@ -39,6 +42,7 @@ import org.talend.daikon.properties.Property;
 import org.talend.designer.core.generic.constants.IGenericConstants;
 import org.talend.designer.core.generic.model.GenericElementParameter;
 import org.talend.designer.core.generic.utils.ComponentsUtils;
+import org.talend.designer.core.generic.utils.ParameterUtilTool;
 import org.talend.designer.core.model.utils.emf.talendfile.ElementParameterType;
 import org.talend.designer.core.model.utils.emf.talendfile.NodeType;
 import org.talend.designer.core.model.utils.emf.talendfile.ProcessType;
@@ -47,50 +51,41 @@ import org.talend.designer.core.model.utils.emf.talendfile.ProcessType;
  * created by hcyi on Nov 18, 2015 Detailled comment
  *
  */
-public class ChangeSalesforceComponentsParametersToSerializedMigrationTask extends AbstractComponentParametersMigrationTask {
-
-    private String[] filterComponentNames = new String[] {};
+public abstract class NewComponentFrameworkMigrationTask extends AbstractJobMigrationTask {
 
     @Override
     public ExecutionResult execute(final Item item) {
         final ProcessType processType = getProcessType(item);
+        ComponentCategory category = ComponentCategory.getComponentCategoryFromItem(item);
+        Properties props = getPropertiesFromFile();
         IComponentConversion conversion = new IComponentConversion() {
 
             @Override
             public void transform(NodeType nodeType) {
-                if (nodeType == null) {
+                if (nodeType == null || props == null) {
                     return;
                 }
                 boolean modified = false;
-                ComponentProperties componentProperties = ComponentsUtils.getComponentProperties(nodeType.getComponentName());
-                ComponentCategory category = ComponentCategory.getComponentCategoryFromItem(item);
-                IComponent component = ComponentsFactoryProvider.getInstance().get(nodeType.getComponentName(),
-                        category.getName());
-                if (component == null) {
-                    return;
-                }
+                String currentComponentName = nodeType.getComponentName();
+                String newComponentName = props.getProperty(currentComponentName);
+                nodeType.setComponentName(newComponentName);
+                IComponent component = ComponentsFactoryProvider.getInstance().get(newComponentName, category.getName());
+                ComponentProperties componentProperties = ComponentsUtils.getComponentProperties(newComponentName);
                 FakeNode fNode = new FakeNode(component);
                 for (IElementParameter elementParameter : fNode.getElementParameters()) {
                     if (elementParameter instanceof GenericElementParameter) {
-                        ComponentProperties currentComponentProperties = ComponentsUtils.getCurrentComponentProperties(
-                                componentProperties, elementParameter.getName());
                         NamedThing currentNamedThing = ComponentsUtils.getGenericSchemaElement(componentProperties,
                                 elementParameter.getName());
-                        String oldParameterName = GenericParametersProvider.getString(nodeType.getComponentName()
-                                + IGenericConstants.EXP_SEPARATOR + elementParameter.getName());
-                        EList listParamType = nodeType.getElementParameter();
-                        for (Object param : listParamType) {
-                            ElementParameterType paramType = (ElementParameterType) param;
-                            String paramName = paramType.getName();
-                            if (paramName != null && paramName.equals(oldParameterName) && currentComponentProperties != null
-                                    && currentNamedThing != null && currentNamedThing instanceof Property) {
-                                ((Property) currentNamedThing).setValue(ParameterUtilTool.convertSpecialParameterValue(paramType
-                                        .getValue()));
-                                // Only remove the ElementParameterType if contains in the component properties
-                                listParamType.remove(processType);
-                                modified = true;
-                                break;
-                            }
+                        // To update *.properties file
+                        // System.out.println(currentComponentName + IGenericConstants.EXP_SEPARATOR +
+                        // elementParameter.getName());
+                        String oldParameterName = props.getProperty(currentComponentName + IGenericConstants.EXP_SEPARATOR
+                                + elementParameter.getName());
+                        ElementParameterType paramType = ParameterUtilTool.findParameterType(nodeType, oldParameterName);
+                        if (paramType != null) {
+                            ((Property) currentNamedThing).setValue(ParameterUtilTool.convertParameterValue(paramType));
+                            ParameterUtilTool.removeParameterType(nodeType, paramType);
+                            modified = true;
                         }
                     }
                 }
@@ -105,17 +100,42 @@ public class ChangeSalesforceComponentsParametersToSerializedMigrationTask exten
             }
         };
 
-        for (String name : filterComponentNames) {
-            IComponentFilter filter = new NameComponentFilter(name);
-            try {
-                ModifyComponentsAction.searchAndModify(item, processType, filter,
-                        Arrays.<IComponentConversion> asList(conversion));
-            } catch (PersistenceException e) {
-                ExceptionHandler.process(e);
-                return ExecutionResult.FAILURE;
+        if (processType != null) {
+            for (Object obj : processType.getNode()) {
+                if (obj != null && obj instanceof NodeType) {
+                    String componentName = ((NodeType) obj).getComponentName();
+                    String newComponentName = props.getProperty(componentName);
+                    if (newComponentName == null) {
+                        continue;
+                    }
+                    IComponentFilter filter = new NameComponentFilter(componentName);
+                    try {
+                        ModifyComponentsAction.searchAndModify(item, processType, filter,
+                                Arrays.<IComponentConversion> asList(conversion));
+                    } catch (PersistenceException e) {
+                        ExceptionHandler.process(e);
+                        return ExecutionResult.FAILURE;
+                    }
+                }
             }
         }
         return ExecutionResult.SUCCESS_NO_ALERT;
+    }
+
+    protected void migrateComponent(String componentName) {
+        // with default implementation
+    }
+
+    protected Properties getPropertiesFromFile() {
+        Properties props = new Properties();
+        InputStream in = getClass().getResourceAsStream("NewSalesforceMigrationTask.properties");//$NON-NLS-1$
+        try {
+            props.load(in);
+            in.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return props;
     }
 
     @Override
@@ -131,13 +151,13 @@ public class ChangeSalesforceComponentsParametersToSerializedMigrationTask exten
             setComponentName(component.getName());
             List<IMetadataTable> metaList = new ArrayList<IMetadataTable>();
             IMetadataTable metaTable = new MetadataTable();
-            metaTable.setTableName("test"); //$NON-NLS-1$
+            metaTable.setTableName("TableName_1"); //$NON-NLS-1$
             metaList.add(metaTable);
             setMetadataList(metaList);
             setComponent(component);
             setElementParameters(component.createElementParameters(this));
             setListConnector(component.createConnectors(this));
-            setUniqueName("test"); //$NON-NLS-1$
+            setUniqueName("UniqueName_1"); //$NON-NLS-1$
             setHasConditionalOutputs(component.hasConditionalOutputs());
             setIsMultiplyingOutputs(component.isMultiplyingOutputs());
         }

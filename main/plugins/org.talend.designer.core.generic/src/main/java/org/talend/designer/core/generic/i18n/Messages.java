@@ -15,6 +15,7 @@ package org.talend.designer.core.generic.i18n;
 import java.util.ResourceBundle;
 
 import org.talend.commons.i18n.MessagesCore;
+import org.talend.designer.core.generic.constants.IGenericConstants;
 
 /**
  * 
@@ -22,8 +23,6 @@ import org.talend.commons.i18n.MessagesCore;
  *
  */
 public class Messages extends MessagesCore {
-
-    private static final String PLUGIN_ID = "org.talend.designer.core.generic"; //$NON-NLS-1$
 
     private static final String BUNDLE_NAME = "messages"; //$NON-NLS-1$
 
@@ -37,7 +36,7 @@ public class Messages extends MessagesCore {
      * @see MessagesCore#getString(String, ResourceBundle)
      */
     public static String getString(final String key) {
-        return getString(key, PLUGIN_ID, RESOURCE_BUNDLE);
+        return getString(key, IGenericConstants.PLUGIN_ID, RESOURCE_BUNDLE);
     }
 
     /**
@@ -49,7 +48,7 @@ public class Messages extends MessagesCore {
      * @see MessagesCore#getString(String, ResourceBundle, Object[])
      */
     public static String getString(final String key, final Object... args) {
-        return getString(key, PLUGIN_ID, RESOURCE_BUNDLE, args);
+        return getString(key, IGenericConstants.PLUGIN_ID, RESOURCE_BUNDLE, args);
     }
 
 }
