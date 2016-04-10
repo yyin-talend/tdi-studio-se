@@ -38,6 +38,7 @@ import org.talend.core.model.process.EConnectionType;
 import org.talend.core.model.process.EParameterFieldType;
 import org.talend.core.model.process.IElement;
 import org.talend.core.model.process.INode;
+import org.talend.core.model.utils.ContextParameterUtils;
 import org.talend.core.ui.component.ComponentsFactoryProvider;
 import org.talend.core.utils.TalendQuoteUtils;
 import org.talend.daikon.NamedThing;
@@ -116,10 +117,13 @@ public class ComponentsUtils {
         }
     }
 
-    // FIXME - this does not appear to be used, can it be deleted?
-    public static List<ElementParameter> getParametersFromForm(IElement element, EComponentCategory category, Form form,
-            Widget parentWidget, AtomicInteger lastRowNum) {
-        return getParametersFromForm(element, category, null, null, form, parentWidget, lastRowNum);
+    public static List<ElementParameter> getParametersFromForm(IElement element, Form form) {
+        return getParametersFromForm(element, null, null, form);
+    }
+
+    public static List<ElementParameter> getParametersFromForm(IElement element, EComponentCategory category,
+            ComponentProperties compProperties, Form form) {
+        return getParametersFromForm(element, category, compProperties, null, form, null, null);
     }
 
     /**
@@ -133,7 +137,7 @@ public class ComponentsUtils {
      * @param form
      * @return parameters list
      */
-    public static List<ElementParameter> getParametersFromForm(IElement element, EComponentCategory category,
+    private static List<ElementParameter> getParametersFromForm(IElement element, EComponentCategory category,
             ComponentProperties compProperties, String parentPropertiesPath, Form form, Widget parentWidget,
             AtomicInteger lastRowNum) {
         List<ElementParameter> elementParameters = new ArrayList<>();
@@ -202,7 +206,7 @@ public class ComponentsUtils {
             param.setNumRow(rowNum);
             lastRN.set(rowNum);
             // handle form...
-
+            
             EParameterFieldType fieldType = getFieldType(widget, widgetProperty);
             param.setFieldType(fieldType != null ? fieldType : EParameterFieldType.TEXT);
             if (widgetProperty instanceof PresentationItem) {
@@ -210,8 +214,18 @@ public class ComponentsUtils {
             } else if (widgetProperty instanceof Property) {
                 Property property = (Property) widgetProperty;
                 param.setRequired(property.isRequired());
-                param.setValue(getParameterValue(element, property));
-                param.setSupportContext(isSupportContext(property));
+                if (fieldType != null && fieldType.equals(EParameterFieldType.TABLE)) {
+                    Object value = property.getValue();
+                    if (value == null) {
+                        param.setValue(new ArrayList<Map<String, Object>>());
+                    } else {
+                        param.setValue(value);
+                    }
+                    param.setSupportContext(false);
+                } else {
+                    param.setValue(getParameterValue(element, property));
+                    param.setSupportContext(isSupportContext(property));
+                }
                 // TCOMP-96
                 param.setContext(getConnectionType(property));
                 List<?> values = property.getPossibleValues();
@@ -233,6 +247,56 @@ public class ComponentsUtils {
                     param.setListItemsDisplayCodeName(possValsDisplay.toArray(new String[0]));
                     param.setListItemsValue(possVals.toArray(new String[0]));
                 }
+                if (fieldType != null && fieldType.equals(EParameterFieldType.TABLE)) {
+                    List<ElementParameter> possVals = new ArrayList<>();
+                    List<String> codeNames = new ArrayList<>();
+                    List<String> possValsDisplay = new ArrayList<>();
+                    for (Property curChildProp : property.getChildren()) {
+                        EParameterFieldType currentField = EParameterFieldType.TEXT;
+
+                        ElementParameter newParam = new ElementParameter(element);
+                        newParam.setName(curChildProp.getName());
+                        newParam.setFilter(null);
+                        newParam.setDisplayName(""); //$NON-NLS-1$
+                        newParam.setFieldType(currentField);
+                        newParam.setContext(null);
+                        newParam.setShowIf(null);
+                        newParam.setNotShowIf(null);
+                        newParam.setReadOnlyIf(null);
+                        newParam.setNotReadOnlyIf(null);
+                        newParam.setNoContextAssist(false);
+                        newParam.setRaw(false);
+                        newParam.setReadOnly(false);
+                        newParam.setValue(curChildProp.getDefaultValue());
+                        possVals.add(newParam);
+                        if (isPrevColumnList(curChildProp)) {
+                            // temporary code while waiting for TCOMP-143
+                            newParam.setFieldType(EParameterFieldType.PREV_COLUMN_LIST);
+                            newParam.setListItemsDisplayName(new String[0]);
+                            newParam.setListItemsDisplayCodeName(new String[0]);
+                            newParam.setListItemsValue(new String[0]);
+                            newParam.setListRepositoryItems(new String[0]);
+                            newParam.setListItemsShowIf(new String[0]);
+                            newParam.setListItemsNotShowIf(new String[0]);
+                            newParam.setListItemsNotReadOnlyIf(new String[0]);
+                            newParam.setListItemsReadOnlyIf(new String[0]);
+                        }
+                        if (curChildProp.getType().equals(Property.Type.BOOLEAN)) {
+                            newParam.setFieldType(EParameterFieldType.CHECK);
+                            newParam.setValue(new Boolean(curChildProp.getDefaultValue()));
+                        }
+                        codeNames.add(curChildProp.getName());
+                        possValsDisplay.add(curChildProp.getDisplayName());
+                    }
+                    param.setListItemsDisplayName(possValsDisplay.toArray(new String[0]));
+                    param.setListItemsDisplayCodeName(codeNames.toArray(new String[0]));
+                    param.setListItemsValue(possVals.toArray(new ElementParameter[0]));
+                    String[] listItemsShowIf = new String[property.getChildren().size()];
+                    String[] listItemsNotShowIf = new String[property.getChildren().size()];
+                    param.setListItemsShowIf(listItemsShowIf);
+                    param.setListItemsNotShowIf(listItemsNotShowIf);
+
+                }
             } else {
                 param.setComponentProperties((ComponentProperties) widgetProperty);
             }
@@ -248,12 +312,48 @@ public class ComponentsUtils {
         return elementParameters;
     }
 
+    /**
+     * DOC nrousseau Comment method "isPrevColumnList".
+     * 
+     * @param childProp
+     * @return
+     */
+    public static boolean isPrevColumnList(Property childProp) {
+        return "columnName".equals(childProp.getName());
+    }
+
+    /**
+     * DOC ycbai Comment method "getRelatedParameters".
+     * <p>
+     * Get all element parameters related to the <code>parameter<code>.
+     * For example the paramters from the form associated with PresentationItem type.
+     * 
+     * @param parameters
+     * @return
+     */
+    public static List<ElementParameter> getRelatedParameters(GenericElementParameter parameter) {
+        List<ElementParameter> params = new ArrayList<>();
+        if (parameter == null) {
+            return params;
+        }
+        Widget widget = parameter.getWidget();
+        NamedThing content = widget.getContent();
+        if (content instanceof PresentationItem) {
+            PresentationItem pi = (PresentationItem) content;
+            Form formtoShow = pi.getFormtoShow();
+            List<ElementParameter> parametersFromForm = getParametersFromForm(parameter.getElement(), parameter.getCategory(),
+                    parameter.getComponentProperties(), formtoShow);
+            params.addAll(parametersFromForm);
+        }
+        return params;
+    }
+
     public static Object getParameterValue(IElement element, Property property) {
         Object paramValue = property.getValue() != null ? property.getValue() : property.getDefaultValue();
         Property.Type propertyType = property.getType();
         switch (propertyType) {
         case STRING:
-            if (!(element instanceof FakeElement)) {
+            if (!(element instanceof FakeElement || ContextParameterUtils.isContainContextParam((String) paramValue))) {
                 paramValue = TalendQuoteUtils.addQuotesIfNotExist((String) paramValue);
             }
             break;

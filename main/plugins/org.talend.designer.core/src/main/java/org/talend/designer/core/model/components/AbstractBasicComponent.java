@@ -24,6 +24,7 @@ import org.talend.core.model.process.INode;
 import org.talend.core.model.process.IProcess;
 import org.talend.core.model.temp.ECodePart;
 import org.talend.designer.core.i18n.Messages;
+import org.talend.designer.core.ui.editor.nodes.Node;
 
 /**
  * created by hcyi on Mar 22, 2016 Detailled comment
@@ -43,6 +44,8 @@ public abstract class AbstractBasicComponent extends AbstractComponent {
 
     protected Map<String, ImageDescriptor> imageRegistry = new HashMap<>();
 
+    private List<IMultipleComponentManager> multipleComponentManagers;
+
     @Override
     public void setImageRegistry(Map<String, ImageDescriptor> imageRegistry) {
         this.imageRegistry = imageRegistry;
@@ -55,6 +58,13 @@ public abstract class AbstractBasicComponent extends AbstractComponent {
 
     @Override
     public List<IMultipleComponentManager> getMultipleComponentManagers() {
+        if (multipleComponentManagers == null) {
+            multipleComponentManagers = createMultipleComponentManagers();
+        }// else already exist so return it
+        return multipleComponentManagers;
+    }
+
+    protected List<IMultipleComponentManager> createMultipleComponentManagers() {
         return new ArrayList<>();
     }
 
@@ -99,7 +109,7 @@ public abstract class AbstractBasicComponent extends AbstractComponent {
         return false;
     }
 
-    public boolean useSchema() {
+    public boolean useSchema(Node node) {
         // TUP-4149
         return false;
     }

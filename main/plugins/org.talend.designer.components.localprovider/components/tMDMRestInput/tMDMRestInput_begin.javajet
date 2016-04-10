@@ -35,10 +35,12 @@ if ((metadatas != null) && (metadatas.size() > 0)) {
 		
 			IConnection outgoingConn = outgoingConns.get(0);
 			if(outgoingConn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) { // start 1
-	
+	            boolean useExistingConn = ("true").equals(ElementParameterParser.getValue(node,"__USE_EXISTING_CONNECTION__"));
+				String connection = ElementParameterParser.getValue(node,"__CONNECTION__");
+				String tmdmService = "TMDMService_" + connection;
+                String mdmTransaction = "mdmTransaction_" + connection;
 				String mdmUrl = ElementParameterParser.getValue(node, "__MDMURL__");
 				String username = ElementParameterParser.getValue(node, "__USERNAME__");
-
 				String dataCluster = ElementParameterParser.getValue(node, "__DATACLUSTER__");
 				String containerType = ElementParameterParser.getValue(node, "__CONTAINER_TYPE__");
 				boolean retrieveRawData = ("true").equals(ElementParameterParser.getValue(node,"__RETRIEVE_RAW_DATA__"));
@@ -68,6 +70,8 @@ if ((metadatas != null) && (metadatas.size() > 0)) {
 
                         private int fetchSize;
 
+                        private String transactionId;
+
                         private org.apache.cxf.jaxrs.client.WebClient  webClient;
 
                         public QueryDelegater_<%=cid%>(java.util.Map<String, String> connConfig, String dataCluster, String containerType, String queryText,
@@ -78,6 +82,7 @@ if ((metadatas != null) && (metadatas.size() > 0)) {
                             this.retrieveRawData = retrieveRawData;
                             this.acceptType = acceptType;
                             this.fetchSize = fetchSize;
+                            this.transactionId = connConfig.get("transactionId");
                             webClient = org.apache.cxf.jaxrs.client.WebClient.create(connConfig.get("url"),
                                 java.util.Arrays.asList(new com.fasterxml.jackson.jaxrs.json.JacksonJaxbJsonProvider()),
                                 connConfig.get("username"), connConfig.get("password"), null);
@@ -129,6 +134,9 @@ if ((metadatas != null) && (metadatas.size() > 0)) {
 
                         public String executeQuery(org.json.simple.JSONObject queryObj, boolean isCount) {
                             webClient.path("data/" + dataCluster + "/query").query("container", containerType).type("application/json");
+                            if(transactionId != null) {
+                                webClient.header("transaction-id", transactionId);
+                            }
                             if (isCount) {
                                 webClient.accept("application/xml");
                             } else {
@@ -200,15 +208,20 @@ if ((metadatas != null) && (metadatas.size() > 0)) {
 
                         @SuppressWarnings("unchecked")
                         public String getPagedResult(int totalCount, int loopInd) {
-                            int start = fetchSize * loopInd + (orgStart == null ? 0 : orgStart.intValue());
-                            int limit = totalCount > fetchSize * (loopInd + 1) ? fetchSize : totalCount - fetchSize * loopInd;
                             org.json.simple.JSONObject select = (org.json.simple.JSONObject)queryObject.get("select");
-                            select.put("start", start);
-                            select.put("limit", limit);
+                            if(fetchSize > 0) {
+                                int start = fetchSize * loopInd + (orgStart == null ? 0 : orgStart.intValue());
+                                int limit = totalCount > fetchSize * (loopInd + 1) ? fetchSize : totalCount - fetchSize * loopInd;
+                                select.put("start", start);
+                                select.put("limit", limit);
+                            }
                             return executeQuery(queryObject, false);
                         }
 
                         public int getTotalLoop(int totalCount) {
+                            if(fetchSize <= 0) {
+                                return 1;
+                            }
                             return (int) Math.ceil((totalCount + fetchSize - 1) / fetchSize);
                         }
                     }
@@ -218,11 +231,11 @@ if ((metadatas != null) && (metadatas.size() > 0)) {
 
 					    private static final int RECORD_LEVEL = 1;
 					
-					    private final javax.xml.stream.XMLEventReader reader;
+					    private javax.xml.stream.XMLEventReader reader;
 
-					    private final ResettableStringWriter_<%=cid%> stringWriter = new ResettableStringWriter_<%=cid%>();
+					    private ResettableStringWriter_<%=cid%> stringWriter = new ResettableStringWriter_<%=cid%>();
 					
-					    private final javax.xml.stream.XMLOutputFactory xmlOutputFactory;
+					    private javax.xml.stream.XMLOutputFactory xmlOutputFactory;
 					
 					    private int level = 0;
 					
@@ -417,13 +430,27 @@ if ((metadatas != null) && (metadatas.size() > 0)) {
 					<%}%>
                     int nb_line_<%=cid %> = 0;
                     <% logUtil.debug("\"Initializing data service base from URL: \"", mdmUrl,"\".\"");%>
-                    <% String passwordFieldName = "__PASSWORD__"; %>
-                    <%@ include file="@{org.talend.designer.components.localprovider}/components/templates/password.javajet"%>
-
                     java.util.Map<String, String> connConfig_<%=cid%> = new java.util.HashMap<String, String>();
-                    connConfig_<%=cid%>.put("url", <%=mdmUrl%>);
-                    connConfig_<%=cid%>.put("username", <%=username %>);
-                    connConfig_<%=cid%>.put("password", decryptedPassword_<%=cid%>);
+                    <%if(useExistingConn){%>
+                        javax.xml.ws.BindingProvider tmdmService_<%=cid %> = (javax.xml.ws.BindingProvider) globalMap.get("<%=tmdmService%>");
+                        if(tmdmService_<%=cid %> != null) {
+                            java.util.Map<String, Object> context_<%=cid %> = tmdmService_<%=cid %>.getRequestContext();
+                            connConfig_<%=cid%>.put("url", ((String)context_<%=cid %>.get(javax.xml.ws.BindingProvider.ENDPOINT_ADDRESS_PROPERTY)).replace("/soap", "/rest"));
+                            connConfig_<%=cid%>.put("username", (String)context_<%=cid %>.get(javax.xml.ws.BindingProvider.USERNAME_PROPERTY));
+                            connConfig_<%=cid%>.put("password", (String)context_<%=cid %>.get(javax.xml.ws.BindingProvider.PASSWORD_PROPERTY));
+                            com.talend.mdm.transaction.client.MDMTransaction mdmTransaction_<%=cid%> = (com.talend.mdm.transaction.client.MDMTransaction)globalMap.get("<%=mdmTransaction%>");
+                            if(mdmTransaction_<%=cid%> != null) {
+                                connConfig_<%=cid%>.put("transactionId", mdmTransaction_<%=cid%>.getId());
+                            }
+                        }
+                    <%}else{%>
+                        <% String passwordFieldName = "__PASSWORD__"; %>
+                        <%@ include file="@{org.talend.designer.components.localprovider}/components/templates/password.javajet"%>
+                        connConfig_<%=cid%>.put("url", <%=mdmUrl%>);
+                        connConfig_<%=cid%>.put("username", <%=username %>);
+                        connConfig_<%=cid%>.put("password", decryptedPassword_<%=cid%>);
+                    <%}%>
+
                     String dataCluster_<%=cid%> = <%=dataCluster%>;
                     String containerType_<%=cid%> = "<%=containerType%>";
                     String queryText_<%=cid%> = "<%=queryText%>";

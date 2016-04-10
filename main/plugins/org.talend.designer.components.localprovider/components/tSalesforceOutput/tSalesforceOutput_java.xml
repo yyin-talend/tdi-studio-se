@@ -3471,6 +3471,7 @@
             SHOW_IF="ACTION=='upsert'">
             <ITEMS>
                 <ITEM NAME="COLUMN_NAME" FIELD="PREV_COLUMN_LIST"/>
+                <ITEM NAME="FIELD_NAME" SHOW_IF="(IGNORE_NULL=='false')"/>
                 <ITEM NAME="LOOKUP_FIELD_NAME" />
                 <ITEM NAME="LOOKUP_FIELD_MODULE_NAME" />
                 <ITEM NAME="LOOKUP_FIELD_EXTERNAL_ID_NAME" />

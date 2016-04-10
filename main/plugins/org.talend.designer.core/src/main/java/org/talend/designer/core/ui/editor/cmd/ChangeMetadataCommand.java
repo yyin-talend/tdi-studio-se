@@ -593,14 +593,6 @@ public class ChangeMetadataCommand extends Command {
                 }
             }
             MetadataToolHelper.copyTable(newOutputMetadata, currentOutputMetadata);
-            IGenericWizardService wizardService = null;
-            if (GlobalServiceRegister.getDefault().isServiceRegistered(IGenericWizardService.class)) {
-                wizardService = (IGenericWizardService) GlobalServiceRegister.getDefault()
-                        .getService(IGenericWizardService.class);
-            }
-            if (wizardService != null && wizardService.isGenericConnection(connection)) {
-                wizardService.updateComponentSchema(node.getComponentProperties(), schemaParam.getName(), currentOutputMetadata);
-            }
         }
         if (inputSchemaParam != null
                 && inputSchemaParam.getChildParameters().get(EParameterName.SCHEMA_TYPE.getName()) != null
@@ -645,6 +637,8 @@ public class ChangeMetadataCommand extends Command {
             }
         }
 
+        updateComponentSchema();
+
         List<ColumnNameChanged> columnNameChanged = MetadataToolHelper.getColumnNameChanged(oldOutputMetadata, newOutputMetadata);
         ColumnListController.updateColumnList(node, columnNameChanged, true);
 
@@ -665,6 +659,16 @@ public class ChangeMetadataCommand extends Command {
             ((Process) node.getProcess()).checkProcess();
         }
         refreshMetadataChanged();
+    }
+
+    private void updateComponentSchema() {
+        IGenericWizardService wizardService = null;
+        if (GlobalServiceRegister.getDefault().isServiceRegistered(IGenericWizardService.class)) {
+            wizardService = (IGenericWizardService) GlobalServiceRegister.getDefault().getService(IGenericWizardService.class);
+        }
+        if (wizardService != null && schemaParam != null) {
+            wizardService.updateComponentSchema(node.getComponentProperties(), schemaParam.getName(), currentOutputMetadata);
+        }
     }
 
     private org.talend.core.model.metadata.builder.connection.Connection connection;

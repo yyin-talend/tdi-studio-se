@@ -28,6 +28,8 @@ import org.eclipse.emf.common.util.EMap;
 import org.eclipse.ui.IEditorPart;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.ui.runtime.exception.ExceptionHandler;
+import org.talend.components.api.properties.ComponentProperties;
+import org.talend.components.api.properties.VirtualComponentProperties;
 import org.talend.core.PluginChecker;
 import org.talend.core.model.components.ComponentCategory;
 import org.talend.core.model.components.EComponentType;
@@ -76,6 +78,7 @@ import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.core.repository.model.ProxyRepositoryFactory;
 import org.talend.core.ui.component.ComponentsFactoryProvider;
 import org.talend.designer.core.i18n.Messages;
+import org.talend.designer.core.model.components.AbstractBasicComponent;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.model.components.ElementParameter;
 import org.talend.designer.core.model.process.jobsettings.JobSettingsManager;
@@ -852,6 +855,8 @@ public class DataProcess implements IGeneratingProcess {
                 curNode.setMetadataList(metaList);
             }
 
+            updateVirtualComponentProperties(graphicalNode.getComponentProperties(), curItem, curNode);
+
             curNode.setActivate(graphicalNode.isActivate());
             IMetadataTable newMetadata = null;
             if (multipleComponentManager.isSetConnector()) {
@@ -923,6 +928,18 @@ public class DataProcess implements IGeneratingProcess {
         }
     }
 
+    private void updateVirtualComponentProperties(ComponentProperties componentProperties, IMultipleComponentItem curItem,
+            INode curNode) {
+        if (componentProperties instanceof VirtualComponentProperties) {
+            VirtualComponentProperties virtualComponentProperties = (VirtualComponentProperties) componentProperties;
+            if (curItem.getOutputConnections().size() > 0) { // input
+                curNode.setComponentProperties(virtualComponentProperties.getInputComponentProperties());
+            } else { // output
+                curNode.setComponentProperties(virtualComponentProperties.getOutputComponentProperties());
+            }
+        }
+    }
+
     /**
      * nrousseau Comment method "setMultipleComponentParameters".
      * 
@@ -932,7 +949,7 @@ public class DataProcess implements IGeneratingProcess {
      */
     private void setMultipleComponentParameters(IMultipleComponentManager multipleComponentManager,
             Map<IMultipleComponentItem, AbstractNode> itemsMap, INode graphicalNode) {
-
+        updateGenericComponentParameters(itemsMap, graphicalNode);
         List<IMultipleComponentItem> itemList = multipleComponentManager.getItemList();
         boolean targetFound;
         INode targetNode = null;
@@ -1038,6 +1055,26 @@ public class DataProcess implements IGeneratingProcess {
                     if (paramTarget != null) {
                         paramTarget.setValue(param.getSourceValue());
                     }
+                }
+            }
+        }
+    }
+
+    private void updateGenericComponentParameters(Map<IMultipleComponentItem, AbstractNode> itemsMap, INode graphicalNode) {
+        IComponent component = graphicalNode.getComponent();
+        if (component instanceof AbstractBasicComponent && EComponentType.GENERIC.equals(component.getComponentType())) {
+            AbstractBasicComponent theComponnent = (AbstractBasicComponent) component;
+            Iterator<Entry<IMultipleComponentItem, AbstractNode>> itemsIterator = itemsMap.entrySet().iterator();
+            while (itemsIterator.hasNext()) {
+                Entry<IMultipleComponentItem, AbstractNode> itemsEntry = itemsIterator.next();
+                AbstractNode node = itemsEntry.getValue();
+                List<? extends IElementParameter> paramList = node.getElementParameters();
+                for (IElementParameter param : paramList) {
+                    if (!param.isSerialized()) {
+                        continue;
+                    }
+                    Object object = theComponnent.getElementParameterValueFromComponentProperties(node, param);
+                    param.setValue(object);
                 }
             }
         }
