@@ -494,7 +494,8 @@ public class DesignerCoreService implements IDesignerCoreService {
         final List<IElementParameter> repositoryParam = new ArrayList<IElementParameter>();
 
         for (IElementParameter param : node.getElementParameters()) {
-            if (param.getFieldType().equals(EParameterFieldType.SCHEMA_TYPE)) {
+            if (param.getFieldType().equals(EParameterFieldType.SCHEMA_TYPE)
+                    || param.getFieldType().equals(EParameterFieldType.SCHEMA_REFERENCE)) {
                 String value = (String) param.getChildParameters().get(EParameterName.SCHEMA_TYPE.getName()).getValue();
 
                 if (value.equals(EmfComponent.REPOSITORY)) {
@@ -690,11 +691,11 @@ public class DesignerCoreService implements IDesignerCoreService {
     @Override
     public void reloadParamFromProjectSettings(ParametersType processType, String paramName) {
         if (EParameterName.STATANDLOG_USE_PROJECT_SETTINGS.getName().equals(paramName)) {
-            ProjectSettingManager.reloadStatsAndLogFromProjectSettings(processType,
-                    ProjectManager.getInstance().getCurrentProject());
+            ProjectSettingManager.reloadStatsAndLogFromProjectSettings(processType, ProjectManager.getInstance()
+                    .getCurrentProject());
         } else if (EParameterName.IMPLICITCONTEXT_USE_PROJECT_SETTINGS.getName().equals(paramName)) {
-            ProjectSettingManager.reloadImplicitValuesFromProjectSettings(processType,
-                    ProjectManager.getInstance().getCurrentProject());
+            ProjectSettingManager.reloadImplicitValuesFromProjectSettings(processType, ProjectManager.getInstance()
+                    .getCurrentProject());
         }
 
     }

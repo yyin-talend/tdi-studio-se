@@ -506,7 +506,8 @@ public class Node extends Element implements IGraphicalNode {
         boolean hasSchemaType = false;
         for (IElementParameter param : getElementParameters()) {
             if (param.getFieldType().equals(EParameterFieldType.SCHEMA_TYPE)
-                    || param.getFieldType().equals(EParameterFieldType.DCSCHEMA)) {
+                    || param.getFieldType().equals(EParameterFieldType.DCSCHEMA)
+                    || param.getFieldType().equals(EParameterFieldType.SCHEMA_REFERENCE)) {
                 IMetadataTable table = getNewMetadataTable();
                 table.setAttachedConnector(param.getContext());
                 metadataList.add(table);
@@ -573,8 +574,9 @@ public class Node extends Element implements IGraphicalNode {
                 if (param.getFieldType().equals(EParameterFieldType.MAPPING_TYPE)) {
                     table.setDbms((String) param.getValue());
                 }
-                if ((param.getFieldType().equals(EParameterFieldType.SCHEMA_TYPE) || param.getFieldType().equals(
-                        EParameterFieldType.DCSCHEMA))
+                if ((param.getFieldType().equals(EParameterFieldType.SCHEMA_TYPE)
+                        || param.getFieldType().equals(EParameterFieldType.DCSCHEMA) || param.getFieldType().equals(
+                        EParameterFieldType.SCHEMA_REFERENCE))
                         && param.getContext() != null && param.getContext().equals(table.getAttachedConnector())) {
                     if (param.getValue() instanceof IMetadataTable) {
                         IMetadataTable paramTable = (IMetadataTable) param.getValue();
@@ -1225,8 +1227,8 @@ public class Node extends Element implements IGraphicalNode {
                 boolean repositoryMode = false;
                 IMetadataTable mainTargetTable = this.getMetadataFromConnector(mainConnector.getName());
                 for (IElementParameter param : getElementParameters()) {
-                    if ((param.getFieldType().equals(EParameterFieldType.SCHEMA_TYPE))
-                            && (param.getContext().equals(mainConnector.getName()))) {
+                    if ((EParameterFieldType.SCHEMA_TYPE.equals(param.getFieldType()) || EParameterFieldType.SCHEMA_REFERENCE
+                            .equals(param.getFieldType())) && (param.getContext().equals(mainConnector.getName()))) {
                         IElementParameter schemaTypeParam = param.getChildParameters().get(EParameterName.SCHEMA_TYPE.getName());
                         if (schemaTypeParam.getValue().equals(EmfComponent.REPOSITORY)) {
                             repositoryMode = true;
@@ -1247,8 +1249,8 @@ public class Node extends Element implements IGraphicalNode {
                 IElementParameter inputSchemaParam = null;
 
                 for (IElementParameter param : conn.getSource().getElementParameters()) {
-                    if ((param.getFieldType().equals(EParameterFieldType.SCHEMA_TYPE))
-                            && (param.getContext().equals(inputConnector))) {
+                    if ((EParameterFieldType.SCHEMA_TYPE.equals(param.getFieldType()) || EParameterFieldType.SCHEMA_REFERENCE
+                            .equals(param.getFieldType())) && (param.getContext().equals(inputConnector))) {
                         inputSchemaParam = param;
                         break;
                     }
@@ -1426,7 +1428,9 @@ public class Node extends Element implements IGraphicalNode {
     @Override
     public IElementParameter getSchemaParameterFromConnector(String connector) {
         for (IElementParameter param : getElementParameters()) {
-            if (param.getFieldType().equals(EParameterFieldType.SCHEMA_TYPE) && param.getContext().equals(connector)) {
+            if ((param.getFieldType().equals(EParameterFieldType.SCHEMA_TYPE) || param.getFieldType().equals(
+                    EParameterFieldType.SCHEMA_REFERENCE))
+                    && param.getContext().equals(connector)) {
                 return param;
             }
         }
@@ -2752,6 +2756,8 @@ public class Node extends Element implements IGraphicalNode {
                     break;
                 case SCHEMA_TYPE:
                     break;
+                case SCHEMA_REFERENCE:
+                    break;
                 case DCSCHEMA:
                     // IMetadataTable metadataTable = getMetadataTable(getUniqueName());
                     // if(metadataTable == null || !(metadataTable.getListColumns().size() > 0)) {
@@ -3497,7 +3503,9 @@ public class Node extends Element implements IGraphicalNode {
         boolean canEditSchema = false;
         boolean noSchema = false;
         for (IElementParameter param : this.getElementParameters()) {
-            if (param.isShow(getElementParameters()) && param.getFieldType().equals(EParameterFieldType.SCHEMA_TYPE)) {
+            if (param.isShow(getElementParameters())
+                    && (param.getFieldType().equals(EParameterFieldType.SCHEMA_TYPE) || param.getFieldType().equals(
+                            EParameterFieldType.SCHEMA_REFERENCE))) {
                 canEditSchema = true;
                 break;
             }
@@ -3959,7 +3967,9 @@ public class Node extends Element implements IGraphicalNode {
             // for each schema in the component, check if for the connector there is the option INPUT_LINK_SELECTION
             // if there is, check that the schema of the link selection is the same
             for (IElementParameter param : this.getElementParameters()) {
-                if (param.isShow(getElementParameters()) && param.getFieldType().equals(EParameterFieldType.SCHEMA_TYPE)) {
+                if (param.isShow(getElementParameters())
+                        && (param.getFieldType().equals(EParameterFieldType.SCHEMA_TYPE) || param.getFieldType().equals(
+                                EParameterFieldType.SCHEMA_REFERENCE))) {
                     IMetadataTable table = getMetadataFromConnector(param.getContext());
                     IElementParameter connParam = param.getChildParameters().get(EParameterName.CONNECTION.getName());
                     if (table != null && connParam != null && !StringUtils.isEmpty((String) connParam.getValue())) {
@@ -4215,7 +4225,8 @@ public class Node extends Element implements IGraphicalNode {
         for (int i = 0; i < listParam.size(); i++) {
             IElementParameter param = listParam.get(i);
             if (param.isShow(listParam)) {
-                if (param.getFieldType().equals(EParameterFieldType.SCHEMA_TYPE)) {
+                if (param.getFieldType().equals(EParameterFieldType.SCHEMA_TYPE)
+                        || param.getFieldType().equals(EParameterFieldType.SCHEMA_REFERENCE)) {
                     canModifySchema = true;
                 }
             }
@@ -4718,6 +4729,9 @@ public class Node extends Element implements IGraphicalNode {
         if (getComponent().getName().contains("EBCDIC")) { //$NON-NLS-1$
             String connector = meta.getAttachedConnector();
             IElementParameter param = getElementParameterFromField(EParameterFieldType.SCHEMA_TYPE);
+            if (param == null) {
+                param = getElementParameterFromField(EParameterFieldType.SCHEMA_REFERENCE);
+            }
             // get the element parameter attached to the current metadata.
             // context normally should hold the connector information.
             if (param != null && StringUtils.equals(connector, param.getContext())) {

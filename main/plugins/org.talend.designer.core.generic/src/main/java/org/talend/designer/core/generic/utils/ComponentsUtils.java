@@ -27,6 +27,7 @@ import org.osgi.framework.ServiceReference;
 import org.talend.commons.exception.BusinessException;
 import org.talend.components.api.component.ComponentDefinition;
 import org.talend.components.api.component.Connector;
+import org.talend.components.api.component.StudioConstants;
 import org.talend.components.api.component.Trigger;
 import org.talend.components.api.properties.ComponentProperties;
 import org.talend.components.api.service.ComponentService;
@@ -226,7 +227,7 @@ public class ComponentsUtils {
                     param.setSupportContext(isSupportContext(property));
                 }
                 // TCOMP-96
-                param.setContext(EConnectionType.FLOW_MAIN.getName());
+                param.setContext(getConnectionType(property));
                 List<?> values = property.getPossibleValues();
                 if (values != null) {
                     param.setPossibleValues(values);
@@ -302,11 +303,6 @@ public class ComponentsUtils {
             param.setReadOnly(false);
             param.setSerialized(true);
             param.setDynamicSettings(true);
-            // TCOMP-96
-            // Set param context when multiple schema
-            if (EParameterFieldType.SCHEMA_TYPE.equals(param.getFieldType())) {
-                String propertyName = componentProperties.getName();
-            }
             // Avoid adding duplicate prameter.
             if (!parameterNames.contains(parameterName)) {
                 elementParameters.add(param);
@@ -374,6 +370,17 @@ public class ComponentsUtils {
             break;
         }
         return paramValue;
+    }
+
+    public static String getConnectionType(Property property) {
+        String connectionType = EConnectionType.FLOW_MAIN.getName();
+        if (property != null) {
+            Object connectionTypeObj = property.getTaggedValue(StudioConstants.CONNECTOR_TYPE_SCHEMA_KEY);
+            if (connectionTypeObj != null) {
+                connectionType = connectionTypeObj.toString();
+            }
+        }
+        return connectionType;
     }
 
     private static String getPropertiesPath(String parentPropertiesPath, String currentPropertiesName) {

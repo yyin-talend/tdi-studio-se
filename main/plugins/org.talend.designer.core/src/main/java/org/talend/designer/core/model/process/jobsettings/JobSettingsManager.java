@@ -1107,7 +1107,8 @@ public class JobSettingsManager {
         DataNode tmpNode = new DataNode(tmpComponent, "tmp"); //$NON-NLS-1$
         for (int k = 0; k < tmpNode.getElementParameters().size(); k++) {
             IElementParameter currentParam = tmpNode.getElementParameters().get(k);
-            if (currentParam.getFieldType().equals(EParameterFieldType.SCHEMA_TYPE)) {
+            if (currentParam.getFieldType().equals(EParameterFieldType.SCHEMA_TYPE)
+                    || currentParam.getFieldType().equals(EParameterFieldType.SCHEMA_REFERENCE)) {
                 Object value = currentParam.getValue();
                 if (value instanceof IMetadataTable) {
                     IMetadataTable table = null;

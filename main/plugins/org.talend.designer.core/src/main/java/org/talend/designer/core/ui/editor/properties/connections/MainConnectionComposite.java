@@ -64,7 +64,7 @@ public class MainConnectionComposite extends MultipleThreadDynamicComposite {
 
                 if (cur.getCategory() == this.section) {
 
-                    if ((cur.getFieldType() == EParameterFieldType.SCHEMA_TYPE)
+                    if ((cur.getFieldType() == EParameterFieldType.SCHEMA_TYPE || cur.getFieldType() == EParameterFieldType.SCHEMA_REFERENCE)
                             && (cur.getContext().equals(((Connection) elem).getConnectorName()))) {
                         AbstractElementPropertySectionController contorller = generator.getController(
                                 EParameterFieldType.SCHEMA_TYPE, this);

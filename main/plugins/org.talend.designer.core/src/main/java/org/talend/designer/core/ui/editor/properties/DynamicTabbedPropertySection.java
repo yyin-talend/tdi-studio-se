@@ -106,6 +106,7 @@ import org.talend.repository.model.IProxyRepositoryFactory;
  * 
  * @deprecated use MultipleThreadDynamicComposite instead.
  */
+@Deprecated
 public class DynamicTabbedPropertySection extends AbstractPropertySection implements IDynamicProperty {
 
     protected AbstractMultiPageTalendEditor part;
@@ -246,7 +247,7 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection implem
 
         for (String name : processNameList) {
             IRepositoryViewObject process = processMap.get(name);
-            processValueList.add(process.getLabel()); //$NON-NLS-1$ //$NON-NLS-2$
+            processValueList.add(process.getLabel());
         }
         String[] processTableNameList = processNameList.toArray(new String[0]);
         String[] processTableValueList = processValueList.toArray(new String[0]);
@@ -271,6 +272,7 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection implem
     private void sortList(List<String> compareList) {
         Collections.sort(compareList, new Comparator<String>() {
 
+            @Override
             public int compare(String str1, String str2) {
 
                 // For example: avoid job name "a_b_c" before "a_b" in the job
@@ -316,7 +318,7 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection implem
                             if (o instanceof ContextType) {
                                 ContextType context = (ContextType) o;
                                 contextNameList.add(context.getName());
-                                contextValueList.add(context.getName()); //$NON-NLS-1$ //$NON-NLS-2$
+                                contextValueList.add(context.getName());
                             }
                         }
                     }
@@ -348,6 +350,7 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection implem
 
     }
 
+    @Override
     public String getRepositoryAliasName(ConnectionItem connectionItem) {
         ERepositoryObjectType repositoryObjectType = ERepositoryObjectType.getItemType(connectionItem);
         String aliasName = repositoryObjectType.getAlias();
@@ -366,7 +369,7 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection implem
     /**
      * ftang Comment method "updateRepositoryList".
      */
-    @SuppressWarnings("unchecked")//$NON-NLS-1$
+    @SuppressWarnings("unchecked")
     public void updateRepositoryList() {
         IProxyRepositoryFactory factory = DesignerPlugin.getDefault().getProxyRepositoryFactory();
         tableIdAndDbTypeMap = new HashMap<String, String>();
@@ -452,7 +455,8 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection implem
         initMaps();
         for (int i = 0; i < elem.getElementParameters().size(); i++) {
             IElementParameter param = elem.getElementParameters().get(i);
-            if (param.getFieldType().equals(EParameterFieldType.SCHEMA_TYPE)) {
+            if (param.getFieldType().equals(EParameterFieldType.SCHEMA_TYPE)
+                    || param.getFieldType().equals(EParameterFieldType.SCHEMA_REFERENCE)) {
                 IElementParameter repositorySchemaType = param.getChildParameters().get(
                         EParameterName.REPOSITORY_SCHEMA_TYPE.getName());
                 repositorySchemaType.setListItemsDisplayName(repositoryTableNameList);
@@ -618,6 +622,7 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection implem
      * 
      * @return an instance of Element
      */
+    @Override
     public Element getElement() {
         return elem;
     }
@@ -697,6 +702,7 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection implem
             for (IElementParameter elementParameter : elem.getElementParametersWithChildrens()) {
                 if (elementParameter.getCategory().equals(section)
                         && (elementParameter.getFieldType() != EParameterFieldType.SCHEMA_TYPE)
+                        && (elementParameter.getFieldType() != EParameterFieldType.SCHEMA_REFERENCE)
                         && (elementParameter.getFieldType() != EParameterFieldType.QUERYSTORE_TYPE)) {
                     // if the component must be displayed, then check if the
                     // control exists or not.
@@ -726,8 +732,8 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection implem
         if (reInitialize) {
             if (currentComponent != null && composite != null) {
                 Control[] ct = composite.getChildren();
-                for (int i = 0; i < ct.length; i++) {
-                    ct[i].dispose();
+                for (Control element : ct) {
+                    element.dispose();
                 }
             }
         } else {
@@ -1074,6 +1080,7 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection implem
 
     private static final Listener REFRESH_LISTENER = new Listener() {
 
+        @Override
         public void handleEvent(Event event) {
             REFRESH_LIMITER.resetTimer();
             REFRESH_LIMITER.startIfExecutable(true, null);
@@ -1091,6 +1098,7 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection implem
 
             currentComposite.getDisplay().asyncExec(new Runnable() {
 
+                @Override
                 public void run() {
                     TabbedPropertyComposite tabbedComposite = lastPropertyUsed.getTabbedPropertyComposite();
                     if (tabbedComposite != null) {
@@ -1137,6 +1145,7 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection implem
      * 
      * @param curRowSize int
      */
+    @Override
     public void setCurRowSize(int curRowSize) {
         this.curRowSize = curRowSize;
     }
@@ -1167,6 +1176,7 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection implem
      * 
      * @return the composite
      */
+    @Override
     public Composite getComposite() {
         return this.composite;
     }
@@ -1185,6 +1195,7 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection implem
      * 
      * @return the curRowSize
      */
+    @Override
     public int getCurRowSize() {
         return this.curRowSize;
     }
@@ -1194,6 +1205,7 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection implem
      * 
      * @return the hashCurControls
      */
+    @Override
     public BidiMap getHashCurControls() {
         return this.hashCurControls;
     }
@@ -1213,6 +1225,7 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection implem
      * 
      * @return the section
      */
+    @Override
     public EComponentCategory getSection() {
         return this.section;
     }
@@ -1245,6 +1258,7 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection implem
 
             DynamicTabbedPropertySection.commandStackEventListener = new CommandStackEventListener() {
 
+                @Override
                 public void stackChanged(CommandStackEvent event) {
                     int detail = event.getDetail();
                     if (lastPropertyUsed != null) {
@@ -1291,7 +1305,7 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection implem
         if (sql.startsWith("'") || sql.startsWith("\"")) { //$NON-NLS-1$ //$NON-NLS-2$
             return sql;
         }
-        return TalendTextUtils.addQuotes(sql); //$NON-NLS-1$ //$NON-NLS-2$
+        return TalendTextUtils.addQuotes(sql);
     }
 
     /**
@@ -1385,6 +1399,7 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection implem
      * 
      * @return the tableIdAndDbTypeMap
      */
+    @Override
     public Map<String, String> getTableIdAndDbTypeMap() {
         return this.tableIdAndDbTypeMap;
     }
@@ -1394,6 +1409,7 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection implem
      * 
      * @return the tableIdAndDbSchemaMap
      */
+    @Override
     public Map<String, String> getTableIdAndDbSchemaMap() {
         return this.tableIdAndDbSchemaMap;
     }

@@ -117,6 +117,9 @@ public class ConvertRepositoryNodeToProcessNode {
         }
         IElementParameter propertyParam = ((Node) node).getElementParameterFromField(EParameterFieldType.PROPERTY_TYPE);
         IElementParameter schemaParam = ((Node) node).getElementParameterFromField(EParameterFieldType.SCHEMA_TYPE);
+        if (schemaParam == null) {
+            schemaParam = ((Node) node).getElementParameterFromField(EParameterFieldType.SCHEMA_REFERENCE);
+        }
         String propertyId = connectionItem.getProperty().getId();
         String schema = databaseConnection.getUiSchema();
         String dbType = databaseConnection.getDatabaseType();

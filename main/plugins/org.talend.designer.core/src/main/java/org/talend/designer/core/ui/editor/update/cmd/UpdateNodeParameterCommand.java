@@ -962,6 +962,9 @@ public class UpdateNodeParameterCommand extends Command {
                 if (metadataTable != null) {
                     Node target = (Node) conn.getTarget();
                     IElementParameter schemaTypeParam = target.getElementParameterFromField(EParameterFieldType.SCHEMA_TYPE);
+                    if (schemaTypeParam == null) {
+                        schemaTypeParam = target.getElementParameterFromField(EParameterFieldType.SCHEMA_REFERENCE);
+                    }
                     if (schemaTypeParam != null) {
                         ChangeMetadataCommand cmd = new ChangeMetadataCommand(target, schemaTypeParam, null, metadataTable);
                         cmd.setRepositoryMode(true);

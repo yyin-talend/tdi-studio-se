@@ -240,7 +240,8 @@ public class DataProcess implements IGeneratingProcess {
         ((List<IElementParameter>) combinedParameters.getValue()).add(combinedComponent);
 
         for (IElementParameter sourceParam : sourceElement.getElementParameters()) {
-            if (sourceParam.getFieldType() == EParameterFieldType.SCHEMA_TYPE) {
+            if (sourceParam.getFieldType() == EParameterFieldType.SCHEMA_TYPE
+                    || sourceParam.getFieldType() == EParameterFieldType.SCHEMA_REFERENCE) {
                 if ("".equals(sourceParam.getContext()) || sourceParam.getContext() == null) {
                     sourceParam.setValue(sourceElement.getMetadataList().get(0));
                 } else {

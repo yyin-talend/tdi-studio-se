@@ -657,7 +657,8 @@ public class PropertyChangeCommand extends Command {
             oldElementValues.put(testedParam, testedParam.getValue());
 
             // if the field is not a schema type, then use standard "set value".
-            if (!testedParam.getFieldType().equals(EParameterFieldType.SCHEMA_TYPE)) {
+            if (!(testedParam.getFieldType().equals(EParameterFieldType.SCHEMA_TYPE) || testedParam.getFieldType().equals(
+                    EParameterFieldType.SCHEMA_REFERENCE))) {
                 String oldMapping = ""; //$NON-NLS-1$
                 if (!testedParam.getFieldType().equals(EParameterFieldType.CHECK)
                         && !testedParam.getFieldType().equals(EParameterFieldType.RADIO)) {

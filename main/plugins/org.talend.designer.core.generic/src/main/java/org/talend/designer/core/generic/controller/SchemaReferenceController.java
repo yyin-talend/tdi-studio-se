@@ -136,7 +136,7 @@ public class SchemaReferenceController extends AbstractSchemaController {
                         inputReadOnlyNode = true;
                     } else {
                         for (IElementParameter curParam : connec.getSource().getElementParameters()) {
-                            if (curParam.getFieldType() == EParameterFieldType.SCHEMA_TYPE) {
+                            if (curParam.getFieldType() == EParameterFieldType.SCHEMA_REFERENCE) {
                                 if (curParam.isReadOnly()) {
                                     inputReadOnlyParam = true;
                                 }
