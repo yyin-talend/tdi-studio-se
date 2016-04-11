@@ -44,6 +44,7 @@ import org.eclipse.ui.views.properties.tabbed.ITabbedPropertyConstants;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.commons.ui.swt.colorstyledtext.ColorStyledText;
+import org.talend.commons.utils.system.EnvironmentUtils;
 import org.talend.core.GlobalServiceRegister;
 import org.talend.core.ITDQPatternService;
 import org.talend.core.ITDQRuleService;
@@ -232,6 +233,16 @@ public class ComboController extends AbstractElementPropertySectionController {
 
         Point initialSize = dField.getLayoutControl().computeSize(SWT.DEFAULT, SWT.DEFAULT);
         dynamicProperty.setCurRowSize(initialSize.y + ITabbedPropertyConstants.VSPACE);
+        if (isInWizard()) {
+            data.right = new FormAttachment(100, 0);
+            data.left = null;
+            data = (FormData) labelLabel.getLayoutData();
+            data.left = new FormAttachment(cLayout, -(currentLabelWidth + 5), SWT.LEFT);
+        }
+        if (EnvironmentUtils.isMacOsSytem()) {
+            data = (FormData) labelLabel.getLayoutData();
+            data.top = new FormAttachment(cLayout, -3, SWT.TOP);
+        }
         return cLayout;
     }
 
@@ -247,7 +258,6 @@ public class ComboController extends AbstractElementPropertySectionController {
         DecoratedField dField = new DecoratedField(subComposite, SWT.BORDER, cbCtrl);
         Point initialSize = dField.getLayoutControl().computeSize(SWT.DEFAULT, SWT.DEFAULT);
         dField.getLayoutControl().dispose();
-
         return initialSize.y + ITabbedPropertyConstants.VSPACE;
     }
 

@@ -135,7 +135,7 @@ public class TextController extends AbstractElementPropertySectionController {
         }
         data.top = new FormAttachment(0, top);
         labelLabel.setLayoutData(data);
-        if (numInRow != 1) {
+        if (isInWizard()) {
             labelLabel.setAlignment(SWT.RIGHT);
         }
         // *********************
@@ -144,8 +144,8 @@ public class TextController extends AbstractElementPropertySectionController {
         GC gc = new GC(labelLabel);
         Point labelSize = gc.stringExtent(param.getDisplayName());
         gc.dispose();
-        if ((labelSize.x + ITabbedPropertyConstants.HSPACE) > currentLabelWidth) {
-            currentLabelWidth = labelSize.x + ITabbedPropertyConstants.HSPACE;
+        if ((labelSize.x + (ITabbedPropertyConstants.HSPACE*2)) > currentLabelWidth) {
+            currentLabelWidth = labelSize.x + (ITabbedPropertyConstants.HSPACE*2);
         }
 
         if (numInRow == 1) {
@@ -168,6 +168,19 @@ public class TextController extends AbstractElementPropertySectionController {
         Point initialSize = cLayout.computeSize(SWT.DEFAULT, SWT.DEFAULT);
         // curRowSize = initialSize.y + ITabbedPropertyConstants.VSPACE;
         dynamicProperty.setCurRowSize(initialSize.y + ITabbedPropertyConstants.VSPACE);
+        if (isInWizard()) {
+            data.left = new FormAttachment(lastControl, currentLabelWidth + (ITabbedPropertyConstants.HSPACE * 2));
+            data = (FormData) labelLabel.getLayoutData();
+            if (lastControl == null) {
+                data.right = new FormAttachment(cLayout, -ITabbedPropertyConstants.HSPACE);
+            } else {
+                data.left = new FormAttachment(lastControl, ITabbedPropertyConstants.HSPACE, SWT.RIGHT);
+                data.right = new FormAttachment(lastControl, currentLabelWidth + (ITabbedPropertyConstants.HSPACE *2), SWT.RIGHT);
+            }
+
+            // data.left = new FormAttachment(cLayout, -(currentLabelWidth + 5), SWT.LEFT);
+            // data.top = new FormAttachment(cLayout, -2, SWT.TOP);
+        }
         return cLayout;
     }
 
