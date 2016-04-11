@@ -56,6 +56,8 @@ public class TextController extends AbstractElementPropertySectionController {
 
     protected static int rowSize = 0;
 
+    protected Text labelText;
+
     public static boolean dragAndDropAction = false;
 
     /**
@@ -79,7 +81,6 @@ public class TextController extends AbstractElementPropertySectionController {
         this.curParameter = param;
         this.paramFieldType = param.getFieldType();
         FormData data;
-        final Text labelText;
 
         final DecoratedField dField = new DecoratedField(subComposite, SWT.BORDER, new SelectAllTextControlCreator());
         if (param.isRequired()) {

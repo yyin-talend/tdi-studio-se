@@ -121,6 +121,7 @@ import org.talend.cwm.helper.ConnectionHelper;
 import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.IMultiPageTalendEditor;
 import org.talend.designer.core.i18n.Messages;
+import org.talend.designer.core.model.FakeElement;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.model.components.EmfComponent;
 import org.talend.designer.core.model.process.jobsettings.JobSettingsConstants;
@@ -247,6 +248,16 @@ public abstract class AbstractElementPropertySectionController implements Proper
     protected int getColorStyledTextRowSize(int nbLines) {
 
         return 0;
+    }
+
+    protected boolean isInWizard() {
+        if (dynamicProperty != null) {
+            Element element = dynamicProperty.getElement();
+            if (element instanceof FakeElement) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**

@@ -53,15 +53,18 @@ public class GenericHiddenTextController extends TextController {
 
     @Override
     protected boolean isReadOnly() {
-        return true;
+        return !isInWizard();
     }
 
     @Override
     public Control createControl(Composite subComposite, IElementParameter param, int numInRow, int nbInRow, int top,
             Control lastControl) {
         Control lastControlUsed = super.createControl(subComposite, param, numInRow, nbInRow, top, lastControl);
+        if (labelText != null) {
+            labelText.setEchoChar('*');
+        }
         FormData data = (FormData) lastControlUsed.getLayoutData();
-        if (!param.isRepositoryValueUsed()) {
+        if (!param.isRepositoryValueUsed() && !isInWizard()) {
             data.right = new FormAttachment((numInRow * MAX_PERCENT) / nbInRow, -STANDARD_BUTTON_WIDTH);
             lastControlUsed = addButton(subComposite, param, lastControlUsed, numInRow, nbInRow, top);
         }

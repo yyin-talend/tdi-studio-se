@@ -49,9 +49,9 @@ import org.talend.daikon.properties.presentation.Widget;
 import org.talend.designer.core.generic.constants.IGenericConstants;
 import org.talend.designer.core.generic.i18n.Messages;
 import org.talend.designer.core.generic.model.Component;
-import org.talend.designer.core.generic.model.FakeElement;
 import org.talend.designer.core.generic.model.GenericElementParameter;
 import org.talend.designer.core.generic.model.mapping.WidgetFieldTypeMapper;
+import org.talend.designer.core.model.FakeElement;
 import org.talend.designer.core.model.components.ElementParameter;
 import org.talend.designer.core.model.components.NodeConnector;
 
