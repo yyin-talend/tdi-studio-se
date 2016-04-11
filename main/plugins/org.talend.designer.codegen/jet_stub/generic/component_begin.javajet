@@ -6,6 +6,7 @@ imports="
         java.util.HashMap
         java.util.Stack
         org.talend.components.api.component.ComponentDefinition
+        org.talend.components.api.component.EndpointComponentDefinition
         org.talend.components.api.component.InputComponentDefinition
         org.talend.components.api.component.OutputComponentDefinition
         org.talend.components.api.properties.ComponentProperties
@@ -127,19 +128,29 @@ org.talend.components.api.container.RuntimeContainer container_<%=cid%> = new or
 };
 
 <%
-if(metadata != null){
+if (def instanceof InputComponentDefinition) {
 %>
-	<%
-	if(def instanceof InputComponentDefinition){
-	%>
-		<%//take care SourceOrSink.validate will change the schema if it contains include-all-fields, so need to get design Avro schema before it%>
-		org.talend.daikon.talend6.Talend6OutgoingSchemaEnforcer current_<%=cid%> = new org.talend.daikon.talend6.Talend6OutgoingSchemaEnforcer(props_<%=cid%>.getSchemas().get(0), false);
-		org.talend.components.api.component.runtime.Source source_<%=cid%> = ((org.talend.components.api.component.InputComponentDefinition)def_<%=cid%>).getRuntime();
-		source_<%=cid%>.initialize(container_<%=cid%>, props_<%=cid%>);
-		org.talend.daikon.properties.ValidationResult vr_<%=cid%> = source_<%=cid%>.validate(container_<%=cid%>);
-		if(vr_<%=cid%>.getStatus() == org.talend.daikon.properties.ValidationResult.Result.ERROR){
-			throw new RuntimeException(vr_<%=cid%>.getMessage());
-		}
+	<% //take care SourceOrSink.validate will change the schema if it contains include-all-fields, so need to get design Avro schema before validate %>
+	org.talend.daikon.talend6.Talend6OutgoingSchemaEnforcer current_<%=cid%> = new org.talend.daikon.talend6.Talend6OutgoingSchemaEnforcer(props_<%=cid%>.getSchemas().get(0), false);
+
+<%
+}
+	
+if (def instanceof EndpointComponentDefinition) {
+%>
+	org.talend.components.api.component.runtime.SourceOrSink sourceOrSink_<%=cid%> = ((org.talend.components.api.component.EndpointComponentDefinition)def_<%=cid%>).getRuntime();
+	sourceOrSink_<%=cid%>.initialize(container_<%=cid%>, props_<%=cid%>);
+	org.talend.daikon.properties.ValidationResult vr_<%=cid%> = sourceOrSink_<%=cid%>.validate(container_<%=cid%>);
+	if (vr_<%=cid%>.getStatus() == org.talend.daikon.properties.ValidationResult.Result.ERROR ) {
+		throw new RuntimeException(vr_<%=cid%>.getMessage());
+	}
+<%
+}
+
+if (metadata != null) {
+	if (def instanceof InputComponentDefinition) {
+%>
+		org.talend.components.api.component.runtime.Source source_<%=cid%> = (org.talend.components.api.component.runtime.Source)sourceOrSink_<%=cid%>;
 		org.talend.components.api.component.runtime.Reader reader_<%=cid%> = source_<%=cid%>.createReader(container_<%=cid%>);
 		
 		<%
@@ -238,14 +249,9 @@ if(metadata != null){
                     }
 			}
 		}
-	}else if(def instanceof OutputComponentDefinition){
+	} else if (def instanceof OutputComponentDefinition) {
 	%>
-		org.talend.components.api.component.runtime.Sink sink_<%=cid%> = ((org.talend.components.api.component.OutputComponentDefinition)def_<%=cid%>).getRuntime();
-		sink_<%=cid%>.initialize(container_<%=cid%>, props_<%=cid%>);
-		org.talend.daikon.properties.ValidationResult vr_<%=cid%> = sink_<%=cid%>.validate(container_<%=cid%>);
-		if(vr_<%=cid%>.getStatus() == org.talend.daikon.properties.ValidationResult.Result.ERROR){
-			throw new RuntimeException(vr_<%=cid%>.getMessage());
-		}
+		org.talend.components.api.component.runtime.Sink sink_<%=cid%> = (org.talend.components.api.component.runtime.Sink)sourceOrSink_<%=cid%>;
 		org.talend.components.api.component.runtime.WriteOperation writeOperation_<%=cid%> = sink_<%=cid%>.createWriteOperation();
 		writeOperation_<%=cid%>.initialize(container_<%=cid%>);<%//create folder for file; create database/table for db%>
 		org.talend.components.api.component.runtime.Writer writer_<%=cid%> = writeOperation_<%=cid%>.createWriter(container_<%=cid%>);
