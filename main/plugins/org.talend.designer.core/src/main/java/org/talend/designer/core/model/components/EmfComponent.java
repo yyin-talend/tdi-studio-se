@@ -194,8 +194,6 @@ public class EmfComponent extends AbstractBasicComponent {
 
     private static final String STRING_TYPE = "String"; //$NON-NLS-1$
 
-    private List<IMultipleComponentManager> multipleComponentManagers;
-
     private static final boolean ADVANCED_PROPERTY = true;
 
     private static final boolean NORMAL_PROPERTY = false;
@@ -3209,20 +3207,13 @@ public class EmfComponent extends AbstractBasicComponent {
         return list;
     }
 
-    @Override
-    public List<IMultipleComponentManager> getMultipleComponentManagers() {
-        if (multipleComponentManagers == null) {
-            multipleComponentManagers = createMultipleComponentManagerFromTemplates();
-        }// else already exist so return it
-        return multipleComponentManagers;
-    }
-
     /**
-     * DOC nrousseau Comment method "loadMultipleComponentManagerFromTemplates".
+     * DOC nrousseau Comment method "createMultipleComponentManagers".
      * 
      * @return
      */
-    private ArrayList<IMultipleComponentManager> createMultipleComponentManagerFromTemplates() {
+    @Override
+    protected ArrayList<IMultipleComponentManager> createMultipleComponentManagers() {
         if (compType == null) {
             isLoaded = false;
             try {

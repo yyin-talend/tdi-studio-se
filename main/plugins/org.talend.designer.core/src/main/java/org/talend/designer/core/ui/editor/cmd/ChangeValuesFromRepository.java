@@ -1042,6 +1042,10 @@ public class ChangeValuesFromRepository extends ChangeMetadataCommand {
                 currentParam.setValue(EmfComponent.BUILTIN);
                 IElementParameter schemaParam = elem.getElementParameterFromField(EParameterFieldType.SCHEMA_TYPE,
                         currentParam.getCategory());
+                if (schemaParam == null) {
+                    schemaParam = elem.getElementParameterFromField(EParameterFieldType.SCHEMA_REFERENCE,
+                            currentParam.getCategory());
+                }
                 if (schemaParam != null) {
                     IElementParameter schemaType = schemaParam.getChildParameters().get(EParameterName.SCHEMA_TYPE.getName());
                     schemaType.setValue(EmfComponent.BUILTIN);

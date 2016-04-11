@@ -187,12 +187,6 @@
             mapping="SCHEMA_REFERENCE"
             name="Schema Reference">
       </generator>
-      <generator
-            class="org.talend.designer.core.generic.controller.generator.GenericTableGenerator"
-            mapping="GENERIC_TABLE"
-            name="Generic Table">
-      </generator>
-      
    </extension>
    <extension
          point="org.talend.core.runtime.service">

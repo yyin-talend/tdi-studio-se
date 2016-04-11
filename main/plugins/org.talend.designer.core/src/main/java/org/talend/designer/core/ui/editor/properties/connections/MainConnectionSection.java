@@ -61,7 +61,7 @@ public class MainConnectionSection extends DynamicTabbedPropertySection {
 
             generator.initController(this);
             for (IElementParameter cur : listParam) {
-                if ((cur.getFieldType() == EParameterFieldType.SCHEMA_TYPE)
+                if ((cur.getFieldType() == EParameterFieldType.SCHEMA_TYPE || cur.getFieldType() == EParameterFieldType.SCHEMA_REFERENCE)
                         && (cur.getContext().equals(((Connection) elem).getConnectorName()))) {
                     AbstractElementPropertySectionController contorller = generator.getController(
                             EParameterFieldType.SCHEMA_TYPE, this);
@@ -110,8 +110,8 @@ public class MainConnectionSection extends DynamicTabbedPropertySection {
     private void disposeChildren() {
         // Empty the composite before use (kinda refresh) :
         Control[] ct = composite.getChildren();
-        for (int i = 0; i < ct.length; i++) {
-            ct[i].dispose();
+        for (Control element : ct) {
+            element.dispose();
         }
     }
 

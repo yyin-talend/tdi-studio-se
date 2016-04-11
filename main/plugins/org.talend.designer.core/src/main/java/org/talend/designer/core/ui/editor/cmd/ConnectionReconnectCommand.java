@@ -254,6 +254,9 @@ public class ConnectionReconnectCommand extends Command {
                     if (!sameFlag && oldTarget.getComponent().isSchemaAutoPropagated()
                             && (oldMetadataTable.getListColumns().isEmpty() || getPropagateDialog())) {
                         IElementParameter param = newTarget.getElementParameterFromField(EParameterFieldType.SCHEMA_TYPE);
+                        if (param == null) {
+                            param = newTarget.getElementParameterFromField(EParameterFieldType.SCHEMA_REFERENCE);
+                        }
                         if (param != null && param.getContext() != null
                                 && !param.getContext().equals(connection.getLineStyle().getName())) {
                             param = null;

@@ -684,7 +684,8 @@ public abstract class AbstractSchemaController extends AbstractRepositoryControl
                         inputReadOnlyNode = true;
                     } else {
                         for (IElementParameter curParam : connec.getSource().getElementParameters()) {
-                            if (curParam.getFieldType() == EParameterFieldType.SCHEMA_TYPE) {
+                            if (curParam.getFieldType() == EParameterFieldType.SCHEMA_TYPE
+                                    || curParam.getFieldType() == EParameterFieldType.SCHEMA_REFERENCE) {
                                 if (curParam.isReadOnly()) {
                                     inputReadOnlyParam = true;
                                 }
