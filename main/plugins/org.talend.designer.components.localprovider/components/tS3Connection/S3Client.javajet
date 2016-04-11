@@ -9,6 +9,9 @@
 	String useExistingConn = ElementParameterParser.getValue(node,"__USE_EXISTING_CONNECTION__");
 	List<Map<String,String>> clientConfiguration = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node,"__CLIENT_CONFIGURATION__");
 	String region = ElementParameterParser.getValue(node,"__REGION__");
+	
+	boolean set_region = (region!=null && !region.isEmpty() && !"DEFAULT".equalsIgnoreCase(region));
+	
 	if(("true").equals(useExistingConn)) {
 		String connection = ElementParameterParser.getValue(node,"__CONNECTION__");
 		String conn = "conn_" + connection;;
@@ -34,14 +37,114 @@
     	<%@ include file="@{org.talend.designer.components.localprovider}/components/templates/password.javajet"%>
 
 		com.amazonaws.auth.AWSCredentials credentials_<%=cid%> = new com.amazonaws.auth.BasicAWSCredentials(<%=accessKey%>,decryptedPassword_<%=cid%>);
+		
 		<%
 		boolean encrypt = "true".equals(ElementParameterParser.getValue(node,"__ENCRYPT__"));
+		
+		//work for tRedshiftOutputBulk
 		String encrypted_key = ElementParameterParser.getValue(node,"__ENCRYPTED_KEY__");
-		if(encrypt) {
+		
+		//work for s3 components
+		String key_type = ElementParameterParser.getValue(node,"__KEY_TYPE__");
+		String algorithm_symmetric_master_key = ElementParameterParser.getValue(node,"__ALGORITHM_SYMMETRIC_MASTER_KEY__");
+		String algorithm_asymmetric_master_key = ElementParameterParser.getValue(node,"__ALGORITHM_ASYMMETRIC_MASTER_KEY__");
+		String encoding = ElementParameterParser.getValue(node,"__ENCODING__");
+		
+		String encrypted_key_x509 = ElementParameterParser.getValue(node,"__ENCRYPTED_KEY_X509__");
+		String public_key = ElementParameterParser.getValue(node,"__PUBLIC_KEY__");
+		String private_key = ElementParameterParser.getValue(node,"__PRIVATE_KEY__");
+		
+		if(encrypt && cid.startsWith("tRedshift")) {
 		%>
-		String masterKey_<%=cid%> = <%=encrypted_key%>; 
-		javax.crypto.spec.SecretKeySpec symmetricKey_<%=cid%> = new javax.crypto.spec.SecretKeySpec(org.apache.commons.codec.binary.Base64.decodeBase64(masterKey_<%=cid%>.getBytes("UTF-8")), "AES");
-		com.amazonaws.services.s3.model.EncryptionMaterials encryptionMaterials_<%=cid%> = new com.amazonaws.services.s3.model.EncryptionMaterials(symmetricKey_<%=cid%>);
+			String masterKey_<%=cid%> = <%=encrypted_key%>; 
+			javax.crypto.spec.SecretKeySpec symmetricKey_<%=cid%> = new javax.crypto.spec.SecretKeySpec(org.apache.commons.codec.binary.Base64.decodeBase64(masterKey_<%=cid%>.getBytes("UTF-8")), "AES");
+			com.amazonaws.services.s3.model.EncryptionMaterials encryptionMaterials_<%=cid%> = new com.amazonaws.services.s3.model.EncryptionMaterials(symmetricKey_<%=cid%>);
+			com.amazonaws.services.s3.model.StaticEncryptionMaterialsProvider encryptionMaterialsProvider_<%=cid%> = new com.amazonaws.services.s3.model.StaticEncryptionMaterialsProvider(encryptionMaterials_<%=cid%>);
+		<%
+		} else if(encrypt && "KMS_CMK".equals(key_type)) {//KMS
+		%>
+			<%if (ElementParameterParser.canEncrypt(node, passwordFieldName)) {%> 
+			final String kms_cmk_<%=cid%> = routines.system.PasswordEncryptUtil.decryptPassword(<%=ElementParameterParser.getEncryptedValue(node, "__ENCRYPTED_KEY_CMK__")%>);
+			<%} else {%>
+			final String kms_cmk_<%=cid%> = <%= ElementParameterParser.getValue(node, "__ENCRYPTED_KEY_CMK__")%>; 
+			<%}%>
+			
+			com.amazonaws.services.s3.model.KMSEncryptionMaterialsProvider encryptionMaterialsProvider_<%=cid%> = new com.amazonaws.services.s3.model.KMSEncryptionMaterialsProvider(kms_cmk_<%=cid%>);
+		<%
+		} else if(encrypt && "SYMMETRIC_MASTER_KEY".equals(key_type)) {//symmetric master key
+			if("AES".equals(algorithm_symmetric_master_key) && "BASE64".equals(encoding)) {
+			%>
+				<%if (ElementParameterParser.canEncrypt(node, passwordFieldName)) {%> 
+				final String smk_<%=cid%> = routines.system.PasswordEncryptUtil.decryptPassword(<%=ElementParameterParser.getEncryptedValue(node, "__ENCRYPTED_KEY_BASE64__")%>);
+				<%} else {%>
+				final String smk_<%=cid%> = <%= ElementParameterParser.getValue(node, "__ENCRYPTED_KEY_BASE64__")%>; 
+				<%}%>
+				
+				javax.crypto.spec.SecretKeySpec symmetricKey_<%=cid%> = new javax.crypto.spec.SecretKeySpec(org.apache.commons.codec.binary.Base64.decodeBase64(smk_<%=cid%>.getBytes("UTF-8")), "AES");
+				com.amazonaws.services.s3.model.EncryptionMaterials encryptionMaterials_<%=cid%> = new com.amazonaws.services.s3.model.EncryptionMaterials(symmetricKey_<%=cid%>);
+				com.amazonaws.services.s3.model.StaticEncryptionMaterialsProvider encryptionMaterialsProvider_<%=cid%> = new com.amazonaws.services.s3.model.StaticEncryptionMaterialsProvider(encryptionMaterials_<%=cid%>);
+			<%
+			} else if("AES".equals(algorithm_symmetric_master_key) && "X509".equals(encoding)) {
+			%>
+				java.io.File keyFile_<%=cid%> = new java.io.File(<%=encrypted_key_x509%>);
+				java.io.FileInputStream keyfis_<%=cid%> = null;
+				javax.crypto.spec.SecretKeySpec symmetricKey_<%=cid%> = null;
+				try {
+			        keyfis_<%=cid%> = new java.io.FileInputStream(keyFile_<%=cid%>);
+			        byte[] encodedPrivateKey_<%=cid%> = new byte[(int)keyFile_<%=cid%>.length()];
+			        keyfis_<%=cid%>.read(encodedPrivateKey_<%=cid%>);
+			        symmetricKey_<%=cid%> = new javax.crypto.spec.SecretKeySpec(encodedPrivateKey_<%=cid%>, "AES");
+		        } finally {
+		        	if(keyfis_<%=cid%>!=null) {
+		        		keyfis_<%=cid%>.close();
+		        	}
+		        }
+		        
+		        com.amazonaws.services.s3.model.EncryptionMaterials encryptionMaterials_<%=cid%> = new com.amazonaws.services.s3.model.EncryptionMaterials(symmetricKey_<%=cid%>);
+				com.amazonaws.services.s3.model.StaticEncryptionMaterialsProvider encryptionMaterialsProvider_<%=cid%> = new com.amazonaws.services.s3.model.StaticEncryptionMaterialsProvider(encryptionMaterials_<%=cid%>);
+			<%
+			}
+		} else if(encrypt && "ASYMMETRIC_MASTER_KEY".equals(key_type)) {//asymmetric master key
+		%>
+			java.io.File filePublicKey_<%=cid%> = new java.io.File(<%=public_key%>);
+			java.io.FileInputStream fis_<%=cid%> = null;
+			byte[] encodedPublicKey_<%=cid%> = null;
+			try {
+		        fis_<%=cid%> = new java.io.FileInputStream(filePublicKey_<%=cid%>);
+		        encodedPublicKey_<%=cid%> = new byte[(int) filePublicKey_<%=cid%>.length()];
+		        fis_<%=cid%>.read(encodedPublicKey_<%=cid%>);
+	        } finally {
+	        	if(fis_<%=cid%>!=null) {
+	        		fis_<%=cid%>.close();
+	        	}
+	        }
+	
+	        java.io.File filePrivateKey_<%=cid%> = new java.io.File(<%=private_key%>);
+	        byte[] encodedPrivateKey_<%=cid%> = null;
+	        try {
+		        fis_<%=cid%> = new java.io.FileInputStream(filePrivateKey_<%=cid%>);
+		        encodedPrivateKey_<%=cid%> = new byte[(int) filePrivateKey_<%=cid%>.length()];
+		        fis_<%=cid%>.read(encodedPrivateKey_<%=cid%>);
+	        } finally {
+	        	if(fis_<%=cid%>!=null) {
+	        		fis_<%=cid%>.close();
+	        	}
+	        }
+	
+	        java.security.KeyFactory keyFactory_<%=cid%> = java.security.KeyFactory.getInstance("<%=algorithm_asymmetric_master_key%>");
+	        
+	        java.security.spec.X509EncodedKeySpec publicKeySpec_<%=cid%> = new java.security.spec.X509EncodedKeySpec(
+	                encodedPublicKey_<%=cid%>);
+	        java.security.PublicKey publicKey_<%=cid%> = keyFactory_<%=cid%>.generatePublic(publicKeySpec_<%=cid%>);
+	
+	        java.security.spec.PKCS8EncodedKeySpec privateKeySpec_<%=cid%> = new java.security.spec.PKCS8EncodedKeySpec(
+	                encodedPrivateKey_<%=cid%>);
+	        java.security.PrivateKey privateKey_<%=cid%> = keyFactory_<%=cid%>.generatePrivate(privateKeySpec_<%=cid%>);
+	
+	        java.security.KeyPair asymmetricKey_<%=cid%> = new java.security.KeyPair(publicKey_<%=cid%>, privateKey_<%=cid%>);
+	        
+	        com.amazonaws.services.s3.model.EncryptionMaterials encryptionMaterials_<%=cid%> = new com.amazonaws.services.s3.model.EncryptionMaterials(asymmetricKey_<%=cid%>);
+			com.amazonaws.services.s3.model.StaticEncryptionMaterialsProvider encryptionMaterialsProvider_<%=cid%> = new com.amazonaws.services.s3.model.StaticEncryptionMaterialsProvider(encryptionMaterials_<%=cid%>);
 		<%
 		}
 		
@@ -86,7 +189,12 @@
 			
 			if(encrypt) {
 			%>
-				com.amazonaws.services.s3.AmazonS3Client conn_<%=cid%> = new com.amazonaws.services.s3.AmazonS3EncryptionClient(credentials_<%=cid%>,encryptionMaterials_<%=cid%>, cc_<%=cid%>,new com.amazonaws.services.s3.model.CryptoConfiguration());
+				com.amazonaws.services.s3.AmazonS3Client conn_<%=cid%> = new com.amazonaws.services.s3.AmazonS3EncryptionClient(credentials_<%=cid%>,encryptionMaterialsProvider_<%=cid%>, cc_<%=cid%>,
+					new com.amazonaws.services.s3.model.CryptoConfiguration()
+						<%if("KMS_CMK".equals(key_type) && set_region) {%>
+						.withAwsKmsRegion(com.amazonaws.regions.RegionUtils.getRegion(<%=region%>))
+						<%}%>
+				);
 			<%
 			} else {
 			%>
@@ -96,7 +204,12 @@
 		}else{
 			if(encrypt) {
 			%>
-				com.amazonaws.services.s3.AmazonS3Client conn_<%=cid%> = new com.amazonaws.services.s3.AmazonS3EncryptionClient(credentials_<%=cid%>, encryptionMaterials_<%=cid%>);
+				com.amazonaws.services.s3.AmazonS3Client conn_<%=cid%> = new com.amazonaws.services.s3.AmazonS3EncryptionClient(credentials_<%=cid%>, encryptionMaterialsProvider_<%=cid%>,
+					new com.amazonaws.services.s3.model.CryptoConfiguration()
+						<%if("KMS_CMK".equals(key_type) && set_region) {%>
+						.withAwsKmsRegion(com.amazonaws.regions.RegionUtils.getRegion(<%=region%>))
+						<%}%>
+				);
 			<%
 			} else {
 			%>
@@ -104,7 +217,7 @@
 			<%
 			}
 		}
-		if(region!=null && !region.isEmpty() && !"DEFAULT".equalsIgnoreCase(region)){
+		if(set_region){
 		%>
 			conn_<%=cid%>.setRegion(com.amazonaws.regions.RegionUtils.getRegion(<%=region%>));
 		<%
