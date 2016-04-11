@@ -95,7 +95,6 @@ public class TosTokenCollector extends AbstractTokenCollector {
         }
 
         JSONObject currentProjectObject = collectProjectDetails();
-        System.out.println("project=" + currentProjectObject.toString());
 
         Project currentProject = ProjectManager.getInstance().getCurrentProject();
         allProjectRecords.put(currentProject.getTechnicalLabel(), currentProjectObject);
