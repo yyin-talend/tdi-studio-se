@@ -54,6 +54,7 @@ String passwordFieldName="__PASS__";
 //New Feature TDI-29325 begin
 List<String>  intAttrisList = null;
 List<String>  arrayAttrisList = null;
+List<String> tableNameAttrisList = null;
 Map<String,String> attrisMap = null;
 if(applyOptionalAttributes){
 	List<Map<String,String>> additionalList = null;
@@ -88,7 +89,8 @@ if(applyOptionalAttributes){
 										"SKIPROWS","TIMEOUT","VIGILELAPSEDTIME",
 										"VIGILMAXFILES","VIGILWAITTIME"
 								  );
-    arrayAttrisList = Arrays.asList("TRACELEVEL","TARGETTABLE","ERRORTABLE1","ERRORTABLE2","WORKTABLE");
+    arrayAttrisList = Arrays.asList("TRACELEVEL");
+    tableNameAttrisList = Arrays.asList("TARGETTABLE","ERRORTABLE1","ERRORTABLE2","WORKTABLE");
 }
 //end
 
@@ -244,11 +246,11 @@ try{
 				fw_<%=cid %>.write("  		VARCHAR PauseAcq, <%=lineSeparator%>");
 				fw_<%=cid %>.write("  		VARCHAR QueryBandSessInfo, <%=lineSeparator%>");
 				fw_<%=cid %>.write("  		VARCHAR QueueErrorTable, <%=lineSeparator%>");
-				fw_<%=cid %>.write("  		VARCHAR ARRAY WorkTable, <%=lineSeparator%>");
+				fw_<%=cid %>.write("  		VARCHAR WorkTable, <%=lineSeparator%>");
 				fw_<%=cid %>.write("  		VARCHAR WorkingDatabase, <%=lineSeparator%>");
-				fw_<%=cid %>.write("  		VARCHAR ARRAY TargetTable, <%=lineSeparator%>");
-				fw_<%=cid %>.write("  		VARCHAR ARRAY ErrorTable1, <%=lineSeparator%>");
-				fw_<%=cid %>.write("  		VARCHAR ARRAY ErrorTable2 <%=lineSeparator%>");
+				fw_<%=cid %>.write("  		VARCHAR TargetTable, <%=lineSeparator%>");
+				fw_<%=cid %>.write("  		VARCHAR ErrorTable1, <%=lineSeparator%>");
+				fw_<%=cid %>.write("  		VARCHAR ErrorTable2 <%=lineSeparator%>");
 				fw_<%=cid %>.write("  	);<%=lineSeparator%>");
 				fw_<%=cid %>.write("  <%=lineSeparator%>");
 				<%}else if("Stream".equals(operatorType)){%>
@@ -471,7 +473,7 @@ try{
                 	<% if(specifyLogTable){ %>                	    
                 	    fw_<%=cid %>.write("            ,LogTable = '" + logTable_<%= cid %> + "'<%=lineSeparator%>");
                 	<% } %>
-                		fw_<%=cid %>.write("            ,TargetTable = ['" + tableFullName_<%=cid%> + "']<%=lineSeparator%>");
+                		fw_<%=cid %>.write("            ,TargetTable = '" + tableFullName_<%=cid%> + "'<%=lineSeparator%>");
                 <%} if("Stream".equals(operatorType)){%>
                 	<% if(specifyLogTable){ %>
                 	    fw_<%=cid %>.write("            ,LogTable = '" + logTable_<%= cid %> + "'<%=lineSeparator%>");
@@ -490,8 +492,9 @@ try{
 								<%
 							}else{
 								isArrType = arrayAttrisList.contains(key);
-								if(!isArrType){//Varchar
-									if("ERRORTABLE".equalsIgnoreCase(key)){
+								if(!isArrType){//Varchar or table name
+									boolean isTableType = tableNameAttrisList.contains(key);
+									if(isTableType || "ERRORTABLE".equalsIgnoreCase(key)){
 									%>
 									   fw_<%=cid %>.write("            ,<%= key %> = '"+<%= dbname %>+"."+<%= value %>+"'<%=lineSeparator%>");
 									<%
@@ -501,19 +504,9 @@ try{
 									<%
 									}
 								}else{//Array
-											if(!operatorType.equalsIgnoreCase("LOAD")){ // The Type Of ErrorTable1 and  ErrorTable2 and TargetTable are Array
-													%>
-													   fw_<%=cid %>.write("            ,<%= key %> = "+<%= value %>+"<%=lineSeparator%>");
-													<%
-											}else if("TRACELEVEL".equalsIgnoreCase(key)){ // The Type Of ErrorTable1 and  ErrorTable2 and TargetTable are Varchar for Load
-														%>
-														   fw_<%=cid %>.write("            ,<%= key %> = "+<%= value %>+"<%=lineSeparator%>");
-														<%
-											}else{// Just for ErrorTable1 and ErrorTable2
-													%>
-													   fw_<%=cid %>.write("            ,<%= key %> = '"+<%= dbname %>+"."+<%= value %>+"'<%=lineSeparator%>");
-													<%
-											}
+										%>
+										   fw_<%=cid %>.write("            ,<%= key %> = "+<%= value %>+"<%=lineSeparator%>");
+										<%
 									}
 								}
 							}
