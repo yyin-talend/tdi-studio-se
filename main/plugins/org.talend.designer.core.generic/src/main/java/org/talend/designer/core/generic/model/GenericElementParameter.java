@@ -132,7 +132,7 @@ public class GenericElementParameter extends ElementParameter {
                 if (isDrivedByForm()) {
                     form.setValue(se.getName(), newValue);
                 } else {
-                    if (newValue instanceof List) {
+                    if (newValue instanceof List && WidgetType.TABLE.equals(widget.getWidgetType())) {
                         setTableValues(se, (List<Map<String, Object>>) newValue);
                     } else {
                         se.setValue(newValue);
