@@ -18,7 +18,6 @@ import org.talend.core.model.components.IComponent;
 import org.talend.core.ui.component.ComponentsFactoryProvider;
 import org.talend.core.ui.token.AbstractTokenCollector;
 import org.talend.core.ui.token.TokenKey;
-import org.talend.repository.preference.TosTokenCollector;
 
 import us.monoid.json.JSONArray;
 import us.monoid.json.JSONObject;
@@ -30,9 +29,7 @@ import us.monoid.json.JSONObject;
  */
 public class UserComponentsTokenCollector extends AbstractTokenCollector {
 
-    private static final TokenKey TOS_COUNT_USER_COMPONENTS = new TokenKey("tos.count.usercomponents"); //$NON-NLS-1$
-
-    private static final TokenKey TOS_USER_COMPONENTS = new TokenKey("tos.user.components"); //$NON-NLS-1$
+    private static final TokenKey USER_COMPONENTS = new TokenKey("user.components"); //$NON-NLS-1$
 
     /**
      * ggu UserComponentTokenCollector constructor comment.
@@ -41,20 +38,21 @@ public class UserComponentsTokenCollector extends AbstractTokenCollector {
         //
     }
 
+    /* (non-Javadoc)
+     * @see org.talend.core.ui.token.AbstractTokenCollector#collect()
+     */
     @Override
-    protected void collectProperties(JSONObject propertiesObject) throws Exception {
+    public JSONObject collect() throws Exception {
+        JSONObject object = new JSONObject();
         List<IComponent> customComponents = ComponentsFactoryProvider.getInstance().getCustomComponents();
         JSONArray customComponentsArray = new JSONArray();
         if (customComponents != null) {
             for (int i = 0; i < customComponents.size(); i++) {
                 customComponentsArray.put(customComponents.get(i).getName());
-                if (i > TosTokenCollector.TOP_USED_COMPONENTS_MAX) {
-                    break;
-                }
             }
         }
-        propertiesObject.put(TOS_COUNT_USER_COMPONENTS.getKey(), customComponentsArray.length());
-        propertiesObject.put(TOS_USER_COMPONENTS.getKey(), customComponentsArray);
+        object.put(USER_COMPONENTS.getKey(), customComponentsArray);
+        return object;
     }
 
 }
