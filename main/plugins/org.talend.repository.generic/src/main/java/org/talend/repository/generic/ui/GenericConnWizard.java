@@ -90,7 +90,7 @@ public class GenericConnWizard extends CheckLastVersionRepositoryWizard {
 
     private String originalVersion;
 
-    private String originalPurpose;
+    private String originalPurpose; 
 
     private String originalDescription;
 
@@ -109,7 +109,6 @@ public class GenericConnWizard extends CheckLastVersionRepositoryWizard {
         this.existingNames = existingNames;
         repNode = node;
         wizardService = GenericWizardServiceFactory.getGenericWizardService();
-        setNeedsProgressMonitor(true);
         ENodeType nodeType = node.getType();
         switch (nodeType) {
         case SIMPLE_FOLDER:

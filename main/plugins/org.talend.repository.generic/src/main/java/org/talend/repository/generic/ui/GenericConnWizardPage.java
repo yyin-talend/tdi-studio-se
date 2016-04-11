@@ -19,12 +19,13 @@ import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Display;
 import org.talend.components.api.service.ComponentService;
 import org.talend.core.model.process.EComponentCategory;
 import org.talend.core.model.process.Element;
 import org.talend.core.model.properties.ConnectionItem;
 import org.talend.daikon.properties.presentation.Form;
-import org.talend.designer.core.generic.model.FakeElement;
+import org.talend.designer.core.model.FakeElement;
 import org.talend.repository.generic.ui.common.GenericWizardPage;
 import org.talend.repository.generic.ui.context.ContextComposite;
 
