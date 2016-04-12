@@ -10,36 +10,26 @@
 // 9 rue Pages 92150 Suresnes, France
 //
 // ============================================================================
-package org.talend.designer.core.generic.model;
+package org.talend.designer.core.generic.controller;
 
-import org.talend.core.model.process.Element;
+import org.talend.core.ui.properties.tab.IDynamicProperty;
+import org.talend.designer.core.ui.editor.properties.controllers.TableController;
+
 
 /**
- * created by ycbai on 2015年9月23日 Detailled comment
+ * created by nrousseau on Apr 6, 2016
+ * Detailled comment
  *
  */
-public class FakeElement extends Element {
+public class GenericTableController extends TableController {
 
-    private String name;
-
-    public FakeElement(String name) {
-        super();
-        this.name = name;
-    }
-
-    @Override
-    public boolean isReadOnly() {
-        return false;
-    }
-
-    @Override
-    public void setReadOnly(boolean readOnly) {
-        return;
-    }
-
-    @Override
-    public String getElementName() {
-        return name;
+    /**
+     * DOC nrousseau GenericTableController constructor comment.
+     * @param dp
+     */
+    public GenericTableController(IDynamicProperty dp) {
+        super(dp);
+        // TODO Auto-generated constructor stub
     }
 
 }

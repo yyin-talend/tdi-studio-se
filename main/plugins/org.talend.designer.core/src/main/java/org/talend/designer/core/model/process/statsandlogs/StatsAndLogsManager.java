@@ -650,7 +650,8 @@ public class StatsAndLogsManager {
         boolean found = false;
         for (int k = 0; k < tmpNode.getElementParameters().size() && !found; k++) {
             IElementParameter currentParam = tmpNode.getElementParameters().get(k);
-            if (currentParam.getFieldType().equals(EParameterFieldType.SCHEMA_TYPE)) {
+            if (currentParam.getFieldType().equals(EParameterFieldType.SCHEMA_TYPE)
+                    || currentParam.getFieldType().equals(EParameterFieldType.SCHEMA_REFERENCE)) {
                 Object value = currentParam.getValue();
                 if (value instanceof IMetadataTable) {
                     IMetadataTable table = ((IMetadataTable) value).clone();
@@ -680,7 +681,8 @@ public class StatsAndLogsManager {
         boolean found = false;
         for (int k = 0; k < tmpNode.getElementParameters().size() && !found; k++) {
             IElementParameter currentParam = tmpNode.getElementParameters().get(k);
-            if (currentParam.getFieldType().equals(EParameterFieldType.SCHEMA_TYPE)) {
+            if (currentParam.getFieldType().equals(EParameterFieldType.SCHEMA_TYPE)
+                    || currentParam.getFieldType().equals(EParameterFieldType.SCHEMA_REFERENCE)) {
                 Object value = currentParam.getValue();
                 if (value instanceof IMetadataTable) {
                     IMetadataTable table = ((IMetadataTable) value).clone();
@@ -710,7 +712,8 @@ public class StatsAndLogsManager {
         boolean found = false;
         for (int k = 0; k < tmpNode.getElementParameters().size() && !found; k++) {
             IElementParameter currentParam = tmpNode.getElementParameters().get(k);
-            if (currentParam.getFieldType().equals(EParameterFieldType.SCHEMA_TYPE)) {
+            if (currentParam.getFieldType().equals(EParameterFieldType.SCHEMA_TYPE)
+                    || currentParam.getFieldType().equals(EParameterFieldType.SCHEMA_REFERENCE)) {
                 Object value = currentParam.getValue();
                 if (value instanceof IMetadataTable) {
                     IMetadataTable table = ((IMetadataTable) value).clone();

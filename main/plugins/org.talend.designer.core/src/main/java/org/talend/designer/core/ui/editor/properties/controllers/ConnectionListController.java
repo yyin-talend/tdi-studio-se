@@ -306,7 +306,8 @@ public class ConnectionListController extends AbstractElementPropertySectionCont
                                 }
                             }
                         }
-                        if (param.getFieldType().equals(EParameterFieldType.SCHEMA_TYPE)) {
+                        if (param.getFieldType().equals(EParameterFieldType.SCHEMA_TYPE)
+                                || param.getFieldType().equals(EParameterFieldType.SCHEMA_REFERENCE)) {
                             List<Map<String, Object>> tableValues = (List<Map<String, Object>>) curParam.getValue();
                             for (Map<String, Object> curLine : tableValues) {
                                 Object value = curLine.get(param.getName());

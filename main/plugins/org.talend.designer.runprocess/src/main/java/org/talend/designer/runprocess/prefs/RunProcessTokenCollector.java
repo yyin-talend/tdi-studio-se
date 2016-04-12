@@ -34,14 +34,21 @@ public class RunProcessTokenCollector extends AbstractTokenCollector {
     public RunProcessTokenCollector() {
     }
 
+    /* (non-Javadoc)
+     * @see org.talend.core.ui.token.AbstractTokenCollector#collect()
+     */
     @Override
-    protected void collectProperties(JSONObject propertiesObject) throws Exception {
+    public JSONObject collect() throws Exception {
+        JSONObject object = new JSONObject();
+        
         IPreferenceStore preferenceStore = RunProcessPlugin.getDefault().getPreferenceStore();
         int numRun = preferenceStore.getInt(TOS_COUNT_RUNS.getPrefKey());
-        propertiesObject.put(TOS_COUNT_RUNS.getKey(), numRun);
+        object.put(TOS_COUNT_RUNS.getKey(), numRun);
 
         int numDebugRun = preferenceStore.getInt(TOS_COUNT_DEBUG_RUNS.getPrefKey());
-        propertiesObject.put(TOS_COUNT_DEBUG_RUNS.getKey(), numDebugRun);
+        object.put(TOS_COUNT_DEBUG_RUNS.getKey(), numDebugRun);
+        
+        return object;
     }
 
 }

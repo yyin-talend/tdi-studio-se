@@ -29,6 +29,7 @@ import org.talend.components.api.component.ComponentDefinition;
 import org.talend.components.api.component.ComponentImageType;
 import org.talend.components.api.component.Connector;
 import org.talend.components.api.component.Trigger;
+import org.talend.components.api.component.VirtualComponentDefinition;
 import org.talend.components.api.properties.ComponentProperties;
 import org.talend.components.api.service.ComponentService;
 import org.talend.components.api.wizard.ComponentWizard;
@@ -36,6 +37,8 @@ import org.talend.components.api.wizard.ComponentWizardDefinition;
 import org.talend.core.CorePlugin;
 import org.talend.core.GlobalServiceRegister;
 import org.talend.core.model.components.EComponentType;
+import org.talend.core.model.components.IMultipleComponentItem;
+import org.talend.core.model.components.IMultipleComponentManager;
 import org.talend.core.model.general.ModuleNeeded;
 import org.talend.core.model.param.ERepositoryCategoryType;
 import org.talend.core.model.process.EComponentCategory;
@@ -48,6 +51,7 @@ import org.talend.core.model.temp.ECodePart;
 import org.talend.core.prefs.ITalendCorePrefConstants;
 import org.talend.core.runtime.services.ComponentServiceWithValueEvaluator;
 import org.talend.core.ui.services.IComponentsLocalProviderService;
+import org.talend.core.utils.TalendQuoteUtils;
 import org.talend.daikon.NamedThing;
 import org.talend.daikon.properties.Property;
 import org.talend.daikon.properties.presentation.Form;
@@ -59,6 +63,8 @@ import org.talend.designer.core.model.components.AbstractBasicComponent;
 import org.talend.designer.core.model.components.DummyComponent;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.model.components.ElementParameter;
+import org.talend.designer.core.model.components.MultipleComponentConnection;
+import org.talend.designer.core.model.components.MultipleComponentManager;
 import org.talend.designer.core.model.components.NodeConnector;
 import org.talend.designer.core.model.components.NodeReturn;
 import org.talend.designer.core.ui.editor.nodes.Node;
@@ -130,7 +136,9 @@ public class Component extends AbstractBasicComponent {
 
     @Override
     public List<ElementParameter> createElementParameters(INode node) {
-        node.setComponentProperties(ComponentsUtils.getComponentProperties(getName()));
+        if (node.getComponentProperties() == null) {
+            node.setComponentProperties(ComponentsUtils.getComponentProperties(getName()));
+        }
         List<ElementParameter> listParam;
         listParam = new ArrayList<>();
         addMainParameters(listParam, node);
@@ -848,6 +856,37 @@ public class Component extends AbstractBasicComponent {
     }
 
     @Override
+    protected List<IMultipleComponentManager> createMultipleComponentManagers() {
+        List<IMultipleComponentManager> multipleComponentManagers = new ArrayList<>();
+        if (componentDefinition instanceof VirtualComponentDefinition) {
+            VirtualComponentDefinition definition = (VirtualComponentDefinition) componentDefinition;
+            String inputComponentName = null;
+            String outputComponentName = null;
+            ComponentDefinition inputComponentDefinition = definition.getInputComponentDefinition();
+            if (inputComponentDefinition != null) {
+                inputComponentName = inputComponentDefinition.getName();
+            }
+            ComponentDefinition outputComponentDefinition = definition.getOutputComponentDefinition();
+            if (outputComponentDefinition != null) {
+                outputComponentName = outputComponentDefinition.getName();
+            }
+            if (inputComponentName == null || outputComponentName == null) {
+                return multipleComponentManagers;
+            }
+            IMultipleComponentManager multipleComponentManager = new MultipleComponentManager(inputComponentName,
+                    outputComponentName);
+            IMultipleComponentItem inputItem = multipleComponentManager.addItem(inputComponentName, inputComponentName);
+            multipleComponentManager.setExistsLinkTo(true);
+            String cType = EConnectionType.ON_ROWS_END.getName(); // FIXME: should get the connector type by other way.
+            inputItem.getOutputConnections().add(new MultipleComponentConnection(cType, outputComponentName));
+            multipleComponentManager.addItem(outputComponentName, outputComponentName);
+            multipleComponentManager.validateItems();
+            multipleComponentManagers.add(multipleComponentManager);
+        }
+        return multipleComponentManagers;
+    }
+
+    @Override
     public boolean useMerge() {
         for (Connector connector : componentDefinition.getConnectors()) {
             if (ComponentsUtils.isAValidConnector(connector, getName())) {
@@ -927,6 +966,14 @@ public class Component extends AbstractBasicComponent {
         propsList.add(propInfo);
         processCodegenPropInfos(propsList, props, propInfo.fieldName);
         return propsList;
+    }
+
+    public Object getTableValue(Property property, String key, Object value) {
+        if (ComponentsUtils.isPrevColumnList(property.getChildMap().get(key))) {
+            return TalendQuoteUtils.addQuotes(value.toString());
+        } else {
+            return value;
+        }
     }
 
     public String getCodegenValue(Property property, String value) {

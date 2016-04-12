@@ -109,7 +109,8 @@ public class ChangeMetadataCommand extends Command {
         if (schemaParam == null) {
             currentConnector = EConnectionType.FLOW_MAIN.getName();
             for (IElementParameter param : node.getElementParameters()) {
-                if ((param.getFieldType().equals(EParameterFieldType.SCHEMA_TYPE) || param.getFieldType().equals(
+                if ((param.getFieldType().equals(EParameterFieldType.SCHEMA_TYPE)
+                        || param.getFieldType().equals(EParameterFieldType.SCHEMA_REFERENCE) || param.getFieldType().equals(
                         EParameterFieldType.DCSCHEMA))
                         && param.getContext().equals(currentConnector)) {
                     this.schemaParam = param;
@@ -161,7 +162,9 @@ public class ChangeMetadataCommand extends Command {
                 }
             }
             for (IElementParameter param : node.getElementParameters()) {
-                if (param.getFieldType().equals(EParameterFieldType.SCHEMA_TYPE) && param.getContext().equals(currentConnector)) {
+                if ((param.getFieldType().equals(EParameterFieldType.SCHEMA_TYPE) || param.getFieldType().equals(
+                        EParameterFieldType.SCHEMA_REFERENCE))
+                        && param.getContext().equals(currentConnector)) {
                     this.schemaParam = param;
                 }
             }
@@ -301,7 +304,9 @@ public class ChangeMetadataCommand extends Command {
 
     private void propagateDatas(boolean isExecute) {
         // update currentConnector when flow main type
-        if (schemaParam != null && schemaParam.getFieldType().equals(EParameterFieldType.SCHEMA_TYPE)
+        if (schemaParam != null
+                && (schemaParam.getFieldType().equals(EParameterFieldType.SCHEMA_TYPE) || schemaParam.getFieldType().equals(
+                        EParameterFieldType.SCHEMA_REFERENCE))
                 && EConnectionType.FLOW_MAIN.getDefaultMenuName().toUpperCase().equals(schemaParam.getContext())) {
             currentConnector = EConnectionType.FLOW_MAIN.getName();
         }
@@ -588,14 +593,6 @@ public class ChangeMetadataCommand extends Command {
                 }
             }
             MetadataToolHelper.copyTable(newOutputMetadata, currentOutputMetadata);
-            IGenericWizardService wizardService = null;
-            if (GlobalServiceRegister.getDefault().isServiceRegistered(IGenericWizardService.class)) {
-                wizardService = (IGenericWizardService) GlobalServiceRegister.getDefault()
-                        .getService(IGenericWizardService.class);
-            }
-            if (wizardService != null && wizardService.isGenericConnection(connection)) {
-                wizardService.updateComponentSchema(node.getComponentProperties(), schemaParam.getName(), currentOutputMetadata);
-            }
         }
         if (inputSchemaParam != null
                 && inputSchemaParam.getChildParameters().get(EParameterName.SCHEMA_TYPE.getName()) != null
@@ -640,6 +637,8 @@ public class ChangeMetadataCommand extends Command {
             }
         }
 
+        updateComponentSchema();
+
         List<ColumnNameChanged> columnNameChanged = MetadataToolHelper.getColumnNameChanged(oldOutputMetadata, newOutputMetadata);
         ColumnListController.updateColumnList(node, columnNameChanged, true);
 
@@ -660,6 +659,16 @@ public class ChangeMetadataCommand extends Command {
             ((Process) node.getProcess()).checkProcess();
         }
         refreshMetadataChanged();
+    }
+
+    private void updateComponentSchema() {
+        IGenericWizardService wizardService = null;
+        if (GlobalServiceRegister.getDefault().isServiceRegistered(IGenericWizardService.class)) {
+            wizardService = (IGenericWizardService) GlobalServiceRegister.getDefault().getService(IGenericWizardService.class);
+        }
+        if (wizardService != null && schemaParam != null) {
+            wizardService.updateComponentSchema(node.getComponentProperties(), schemaParam.getName(), currentOutputMetadata);
+        }
     }
 
     private org.talend.core.model.metadata.builder.connection.Connection connection;

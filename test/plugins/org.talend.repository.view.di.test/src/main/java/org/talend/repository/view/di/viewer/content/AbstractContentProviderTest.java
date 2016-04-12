@@ -39,6 +39,9 @@ public abstract class AbstractContentProviderTest {
     @BeforeClass
     public static void setup() {
         IRepositoryView repoView = RepositoryManagerHelper.findRepositoryView();
+        if (repoView == null) {
+            return;
+        }
         assertNotNull("Must open the DI repository view to test", repoView);
         assertEquals("Must test in DI repository view", IRepositoryView.VIEW_ID, repoView.getViewSite().getId());
 

@@ -27,6 +27,7 @@ import org.osgi.framework.ServiceReference;
 import org.talend.commons.exception.BusinessException;
 import org.talend.components.api.component.ComponentDefinition;
 import org.talend.components.api.component.Connector;
+import org.talend.components.api.component.StudioConstants;
 import org.talend.components.api.component.Trigger;
 import org.talend.components.api.properties.ComponentProperties;
 import org.talend.components.api.service.ComponentService;
@@ -49,9 +50,9 @@ import org.talend.daikon.properties.presentation.Widget;
 import org.talend.designer.core.generic.constants.IGenericConstants;
 import org.talend.designer.core.generic.i18n.Messages;
 import org.talend.designer.core.generic.model.Component;
-import org.talend.designer.core.generic.model.FakeElement;
 import org.talend.designer.core.generic.model.GenericElementParameter;
 import org.talend.designer.core.generic.model.mapping.WidgetFieldTypeMapper;
+import org.talend.designer.core.model.FakeElement;
 import org.talend.designer.core.model.components.ElementParameter;
 import org.talend.designer.core.model.components.NodeConnector;
 
@@ -205,7 +206,7 @@ public class ComponentsUtils {
             param.setNumRow(rowNum);
             lastRN.set(rowNum);
             // handle form...
-
+            
             EParameterFieldType fieldType = getFieldType(widget, widgetProperty);
             param.setFieldType(fieldType != null ? fieldType : EParameterFieldType.TEXT);
             if (widgetProperty instanceof PresentationItem) {
@@ -213,10 +214,20 @@ public class ComponentsUtils {
             } else if (widgetProperty instanceof Property) {
                 Property property = (Property) widgetProperty;
                 param.setRequired(property.isRequired());
-                param.setValue(getParameterValue(element, property));
-                param.setSupportContext(isSupportContext(property));
+                if (fieldType != null && fieldType.equals(EParameterFieldType.TABLE)) {
+                    Object value = property.getValue();
+                    if (value == null) {
+                        param.setValue(new ArrayList<Map<String, Object>>());
+                    } else {
+                        param.setValue(value);
+                    }
+                    param.setSupportContext(false);
+                } else {
+                    param.setValue(getParameterValue(element, property));
+                    param.setSupportContext(isSupportContext(property));
+                }
                 // TCOMP-96
-                param.setContext(EConnectionType.FLOW_MAIN.getName());
+                param.setContext(getConnectionType(property));
                 List<?> values = property.getPossibleValues();
                 if (values != null) {
                     param.setPossibleValues(values);
@@ -236,17 +247,62 @@ public class ComponentsUtils {
                     param.setListItemsDisplayCodeName(possValsDisplay.toArray(new String[0]));
                     param.setListItemsValue(possVals.toArray(new String[0]));
                 }
+                if (fieldType != null && fieldType.equals(EParameterFieldType.TABLE)) {
+                    List<ElementParameter> possVals = new ArrayList<>();
+                    List<String> codeNames = new ArrayList<>();
+                    List<String> possValsDisplay = new ArrayList<>();
+                    for (Property curChildProp : property.getChildren()) {
+                        EParameterFieldType currentField = EParameterFieldType.TEXT;
+
+                        ElementParameter newParam = new ElementParameter(element);
+                        newParam.setName(curChildProp.getName());
+                        newParam.setFilter(null);
+                        newParam.setDisplayName(""); //$NON-NLS-1$
+                        newParam.setFieldType(currentField);
+                        newParam.setContext(null);
+                        newParam.setShowIf(null);
+                        newParam.setNotShowIf(null);
+                        newParam.setReadOnlyIf(null);
+                        newParam.setNotReadOnlyIf(null);
+                        newParam.setNoContextAssist(false);
+                        newParam.setRaw(false);
+                        newParam.setReadOnly(false);
+                        newParam.setValue(curChildProp.getDefaultValue());
+                        possVals.add(newParam);
+                        if (isPrevColumnList(curChildProp)) {
+                            // temporary code while waiting for TCOMP-143
+                            newParam.setFieldType(EParameterFieldType.PREV_COLUMN_LIST);
+                            newParam.setListItemsDisplayName(new String[0]);
+                            newParam.setListItemsDisplayCodeName(new String[0]);
+                            newParam.setListItemsValue(new String[0]);
+                            newParam.setListRepositoryItems(new String[0]);
+                            newParam.setListItemsShowIf(new String[0]);
+                            newParam.setListItemsNotShowIf(new String[0]);
+                            newParam.setListItemsNotReadOnlyIf(new String[0]);
+                            newParam.setListItemsReadOnlyIf(new String[0]);
+                        }
+                        if (curChildProp.getType().equals(Property.Type.BOOLEAN)) {
+                            newParam.setFieldType(EParameterFieldType.CHECK);
+                            newParam.setValue(new Boolean(curChildProp.getDefaultValue()));
+                        }
+                        codeNames.add(curChildProp.getName());
+                        possValsDisplay.add(curChildProp.getDisplayName());
+                    }
+                    param.setListItemsDisplayName(possValsDisplay.toArray(new String[0]));
+                    param.setListItemsDisplayCodeName(codeNames.toArray(new String[0]));
+                    param.setListItemsValue(possVals.toArray(new ElementParameter[0]));
+                    String[] listItemsShowIf = new String[property.getChildren().size()];
+                    String[] listItemsNotShowIf = new String[property.getChildren().size()];
+                    param.setListItemsShowIf(listItemsShowIf);
+                    param.setListItemsNotShowIf(listItemsNotShowIf);
+
+                }
             } else {
                 param.setComponentProperties((ComponentProperties) widgetProperty);
             }
             param.setReadOnly(false);
             param.setSerialized(true);
             param.setDynamicSettings(true);
-            // TCOMP-96
-            // Set param context when multiple schema
-            if (EParameterFieldType.SCHEMA_TYPE.equals(param.getFieldType())) {
-                String propertyName = componentProperties.getName();
-            }
             // Avoid adding duplicate prameter.
             if (!parameterNames.contains(parameterName)) {
                 elementParameters.add(param);
@@ -254,6 +310,16 @@ public class ComponentsUtils {
             }
         }
         return elementParameters;
+    }
+
+    /**
+     * DOC nrousseau Comment method "isPrevColumnList".
+     * 
+     * @param childProp
+     * @return
+     */
+    public static boolean isPrevColumnList(Property childProp) {
+        return "columnName".equals(childProp.getName());
     }
 
     /**
@@ -304,6 +370,17 @@ public class ComponentsUtils {
             break;
         }
         return paramValue;
+    }
+
+    public static String getConnectionType(Property property) {
+        String connectionType = EConnectionType.FLOW_MAIN.getName();
+        if (property != null) {
+            Object connectionTypeObj = property.getTaggedValue(StudioConstants.CONNECTOR_TYPE_SCHEMA_KEY);
+            if (connectionTypeObj != null) {
+                connectionType = connectionTypeObj.toString();
+            }
+        }
+        return connectionType;
     }
 
     private static String getPropertiesPath(String parentPropertiesPath, String currentPropertiesName) {

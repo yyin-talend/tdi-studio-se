@@ -573,6 +573,7 @@ public final class Expression {
                         }
                     } else if (param.getFieldType().equals(EParameterFieldType.PROPERTY_TYPE)
                             || param.getFieldType().equals(EParameterFieldType.SCHEMA_TYPE)
+                            || param.getFieldType().equals(EParameterFieldType.SCHEMA_REFERENCE)
                             || param.getFieldType().equals(EParameterFieldType.QUERYSTORE_TYPE)
                             || param.getFieldType().equals(EParameterFieldType.ENCODING_TYPE)) {
 

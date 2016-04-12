@@ -66,7 +66,8 @@
         <PARAMETER
             NAME="USE_EXISTING_CONNECTION"
             FIELD="CHECK"
-            NUM_ROW="10">
+            NUM_ROW="10"
+            GROUP="CONNECTION_GRP">
             <DEFAULT>false</DEFAULT>
         </PARAMETER>
 
@@ -74,9 +75,10 @@
             NAME="CONNECTION"
             FIELD="COMPONENT_LIST"
             REQUIRED="true"
-            FILTER="tMDMRestConnection"
+            FILTER="tMDMConnection"
             NUM_ROW="15"
-            SHOW_IF="USE_EXISTING_CONNECTION == 'true'">
+            SHOW_IF="USE_EXISTING_CONNECTION == 'true'"
+            GROUP="CONNECTION_GRP">
         </PARAMETER>
 
         <PARAMETER 
@@ -85,7 +87,8 @@
             NUM_ROW="20"
             REQUIRED="true"
             REPOSITORY_VALUE="MDMURL"
-            SHOW_IF="USE_EXISTING_CONNECTION == 'false'">
+            SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
+            GROUP="CONNECTION_GRP">
             <DEFAULT>"http://localhost:8180/talendmdm/services/rest"</DEFAULT>
         </PARAMETER>
 
@@ -95,7 +98,8 @@
             REQUIRED="true"
             NUM_ROW="30"
             REPOSITORY_VALUE="USERNAME"
-            SHOW_IF="USE_EXISTING_CONNECTION == 'false'">
+            SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
+            GROUP="CONNECTION_GRP">
             <DEFAULT>"userName"</DEFAULT>
         </PARAMETER>
 
@@ -105,7 +109,8 @@
             REQUIRED="true"
             NUM_ROW="30"
             REPOSITORY_VALUE="PASSWORD"
-            SHOW_IF="USE_EXISTING_CONNECTION == 'false'">
+            SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
+            GROUP="CONNECTION_GRP">
             <DEFAULT>"password"</DEFAULT>
         </PARAMETER>
 
@@ -236,25 +241,32 @@
                 MODULE="javax.annotation-api-1.2.jar"
                 MVN="mvn:org.talend.libraries/javax.annotation-api-1.2/6.2.0"
                 REQUIRED="true"/>
-            <IMPORT NAME="jackson-jaxrs-json-provider-2.4.2"
-                MODULE="jackson-jaxrs-json-provider-2.4.2.jar"
-                MVN="mvn:org.talend.libraries/jackson-jaxrs-json-provider-2.4.2/6.2.0"
+            <IMPORT NAME="jackson-annotations-2.5.3"
+                MODULE="jackson-annotations-2.5.3.jar"
+                MVN="mvn:org.talend.libraries/jackson-annotations-2.5.3/6.2.0"
+                UrlPath="platform:/plugin/org.talend.libraries.jackson/lib/jackson-annotations-2.5.3.jar"
                 REQUIRED="true"/>
-            <IMPORT NAME="jackson-jaxrs-base-2.4.2"
-                MODULE="jackson-jaxrs-base-2.4.2.jar"
-                MVN="mvn:org.talend.libraries/jackson-jaxrs-base-2.4.2/6.2.0"
+            <IMPORT NAME="jackson-core-2.5.3"
+                MODULE="jackson-core-2.5.3.jar"
+                MVN="mvn:org.talend.libraries/jackson-core-2.5.3/6.2.0"
+                UrlPath="platform:/plugin/org.talend.libraries.jackson/lib/jackson-core-2.5.3.jar"
                 REQUIRED="true"/>
-            <IMPORT NAME="jackson-core-2.4.2"
-                MODULE="jackson-core-2.4.2.jar"
-                MVN="mvn:org.talend.libraries/jackson-core-2.4.2/6.2.0"
+            <IMPORT NAME="jackson-databind-2.5.3"
+                MODULE="jackson-databind-2.5.3.jar"
+                MVN="mvn:org.talend.libraries/jackson-databind-2.5.3/6.2.0"
+                UrlPath="platform:/plugin/org.talend.libraries.jackson/lib/jackson-databind-2.5.3.jar"
                 REQUIRED="true"/>
-            <IMPORT NAME="jackson-databind-2.4.2"
-                MODULE="jackson-databind-2.4.2.jar"
-                MVN="mvn:org.talend.libraries/jackson-databind-2.4.2/6.2.0"
+            <IMPORT NAME="jackson-jaxrs-json-provider-2.5.3"
+                MODULE="jackson-jaxrs-json-provider-2.5.3.jar"
+                MVN="mvn:org.talend.libraries/jackson-jaxrs-json-provider-2.5.3/6.2.0"
                 REQUIRED="true"/>
-            <IMPORT NAME="jackson-module-jaxb-annotations-2.4.2"
-                MODULE="jackson-module-jaxb-annotations-2.4.2.jar"
-                MVN="mvn:org.talend.libraries/jackson-module-jaxb-annotations-2.4.2/6.2.0"
+            <IMPORT NAME="jackson-jaxrs-base-2.5.3"
+                MODULE="jackson-jaxrs-base-2.5.3.jar"
+                MVN="mvn:org.talend.libraries/jackson-jaxrs-base-2.5.3/6.2.0"
+                REQUIRED="true"/>
+            <IMPORT NAME="jackson-module-jaxb-annotations-2.5.3"
+                MODULE="jackson-module-jaxb-annotations-2.5.3.jar"
+                MVN="mvn:org.talend.libraries/jackson-module-jaxb-annotations-2.5.3/6.2.0"
                 REQUIRED="true"/>
         </IMPORTS>
     </CODEGENERATION>

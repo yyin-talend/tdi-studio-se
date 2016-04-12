@@ -1055,6 +1055,7 @@ public class Process extends Element implements IProcess2, IGEFProcess, ILastVer
         }
 
         if (param.getFieldType().equals(EParameterFieldType.SCHEMA_TYPE)
+                || param.getFieldType().equals(EParameterFieldType.SCHEMA_REFERENCE)
                 || param.getFieldType().equals(EParameterFieldType.PROPERTY_TYPE)
                 || param.getFieldType().equals(EParameterFieldType.VALIDATION_RULE_TYPE)
                 || param.getName().equals(EParameterName.UPDATE_COMPONENTS.getName())) {
@@ -1232,7 +1233,7 @@ public class Process extends Element implements IProcess2, IGEFProcess, ILastVer
                                     }
                                     Object object = comp
                                             .getElementParameterValueFromComponentProperties((INode) elemParam, param);
-                                    loadElementParameters(elemParam, pType, param, param.getName(), object, false);
+                                    param.setValue(object);
                                 }
                             }
                         }

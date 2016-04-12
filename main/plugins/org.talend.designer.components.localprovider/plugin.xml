@@ -1829,8 +1829,8 @@
             uripath="platform:/plugin/org.talend.libraries.apache.common/lib/commons-collections-3.2.2.jar"
             bundleID="" />            
 
-	   	<libraryNeeded
-	   		context="plugin:org.talend.libraries.guava"
+	<libraryNeeded
+	   	context="plugin:org.talend.libraries.guava"
         	id="guava-11.0.2.jar"
          	name="guava-11.0.2.jar" mvn_uri="mvn:org.talend.libraries/guava-11.0.2/6.0.0"
          	uripath="platform:/plugin/org.talend.libraries.guava/lib/guava-11.0.2.jar">
@@ -8091,7 +8091,7 @@
                 description="HD Insight common libraries"
                 id="HD_INSIGHT_COMMON_LIBRARIES_LATEST"
                 name="HD_INSIGHT_COMMON_LIBRARIES_LATEST">
-            <library id="talend-bigdata-launcher-1.0.0-20150922.jar" />
+            <library id="talend-bigdata-launcher-1.1.0-2016040.jar" />
             <library id="cxf-api-2.7.7.jar" />
             <library id="cxf-rt-bindings-xml-2.7.7.jar" />
             <library id="cxf-rt-core-2.7.7.jar" />
