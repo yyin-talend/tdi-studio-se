@@ -43,6 +43,7 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 import org.talend.commons.ui.utils.PathUtils;
+import org.talend.core.model.metadata.builder.connection.DatabaseConnection;
 import org.talend.core.model.param.EConnectionParameterName;
 import org.talend.core.model.process.IContext;
 import org.talend.core.model.process.IContextManager;
@@ -52,6 +53,7 @@ import org.talend.core.model.utils.ContextParameterUtils;
 import org.talend.core.model.utils.PathExtractor;
 import org.talend.core.sqlbuilder.util.ConnectionParameters;
 import org.talend.designer.core.i18n.Messages;
+import org.talend.designer.core.ui.editor.connections.TracesConnectionUtils;
 import org.talend.designer.core.ui.editor.properties.controllers.AbstractElementPropertySectionController;
 
 /**
@@ -472,9 +474,12 @@ public class ConfigureConnParamDialog extends Dialog {
         GridData data = new GridData(GridData.FILL_HORIZONTAL);
         // GridDataFactory.swtDefaults().hint(LABEL_DEFAULT_X, DEFAULT_HEIGHT).applyTo(hostLabel);
         hostLabel.setLayoutData(data);
-
-        final Text host = new Text(hostComposite, SWT.BORDER);
-
+        boolean isContext = ContextParameterUtils.isContainContextParam(pvValues.get(key));
+        int passStyle = SWT.BORDER;
+        if((key == EConnectionParameterName.PASSWORD)&&!isContext){
+            passStyle = SWT.PASSWORD; 
+        }
+        final Text host = new Text(hostComposite, passStyle);
         host.setText(pvValues.get(key));
         if (host.getText().trim().length() == 0) {
             host.setBackground(ColorConstants.red);
@@ -483,12 +488,31 @@ public class ConfigureConnParamDialog extends Dialog {
         // GridDataFactory.swtDefaults().hint(TEXT_DEFAULT_X, DEFAULT_HEIGHT).applyTo(host);
         gridData = new GridData(GridData.FILL_HORIZONTAL);
         host.setLayoutData(gridData);
-        final Text hostText = new Text(hostComposite, SWT.NONE);
+        
+        Composite contextComposite = new Composite(hostComposite, SWT.NULL);
+        GridLayout naviCommonCompLayout = new GridLayout(2, false);
+        naviCommonCompLayout.marginWidth = 0;
+        naviCommonCompLayout.marginHeight = 0;
+        contextComposite.setLayout(naviCommonCompLayout);
+        contextComposite.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+        contextComposite.setVisible(isContext);
+        
+        final Text hostText = new Text(contextComposite, SWT.NONE);
         hostText.setEditable(false);
-        gridData = new GridData(GridData.FILL_HORIZONTAL);
+        gridData = new GridData();
         hostText.setLayoutData(gridData);
-        hostText.setText(CONTEXT_WITH + ContextParameterUtils.parseScriptContextCode(host.getText(), defaultContext));
-        host.setData(TEXT_CONTROL, hostText);
+        hostText.setText(CONTEXT_WITH);
+        
+        passStyle = SWT.NONE;
+        if(key == EConnectionParameterName.PASSWORD){
+            passStyle = SWT.PASSWORD; 
+        }
+        final Text hostValue = new Text(contextComposite, passStyle);
+        hostValue.setEditable(false);
+        gridData = new GridData(GridData.FILL_HORIZONTAL);
+        hostValue.setLayoutData(gridData);
+        hostValue.setText(ContextParameterUtils.parseScriptContextCode(host.getText(), defaultContext));
+        host.setData(TEXT_CONTROL, hostValue);
         host.setData(key);
         allParamText.add(host);
         host.addKeyListener(new KeyAdapter() {
@@ -508,7 +532,7 @@ public class ConfigureConnParamDialog extends Dialog {
                         host.setBackground(ColorConstants.white);
                         host.redraw();
                     }
-                    resetValues(host, hostText);
+                    resetValues(host, hostValue);
                 }
             }
 
@@ -614,7 +638,7 @@ public class ConfigureConnParamDialog extends Dialog {
      */
     private void resetValues(final Text key, final Text value) {
         final IContext context = contextManager.getContext(contextCombo.getItem(contextCombo.getSelectionIndex()));
-        value.setText(CONTEXT_WITH + ContextParameterUtils.parseScriptContextCode(key.getText(), context));
+        value.setText(ContextParameterUtils.parseScriptContextCode(key.getText(), context));
     }
 
 }
