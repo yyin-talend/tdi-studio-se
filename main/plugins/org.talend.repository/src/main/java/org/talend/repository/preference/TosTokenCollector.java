@@ -51,7 +51,6 @@ import org.talend.designer.core.model.utils.emf.talendfile.ProcessType;
 import org.talend.repository.ProjectManager;
 import org.talend.repository.RepositoryPlugin;
 import org.talend.repository.model.IProxyRepositoryFactory;
-import org.talend.utils.json.JSONArray;
 
 import us.monoid.json.JSONException;
 import us.monoid.json.JSONObject;
@@ -181,8 +180,11 @@ public class TosTokenCollector extends AbstractTokenCollector {
                             for (IRepositoryViewObject object : all) {
                                 DatabaseConnectionItem item = (DatabaseConnectionItem) object.getProperty().getItem();
                                 String dbType = ((DatabaseConnection) item.getConnection()).getDatabaseType();
-                                int nbDbTypes = objects.getInt(dbType);
-                                nbDbTypes++;
+                                int nbDbTypes = 1;
+                                if (objects.has(dbType)) {
+                                    nbDbTypes = objects.getInt(dbType);
+                                    nbDbTypes++;
+                                }
                                 objects.put(dbType, nbDbTypes);
                             }
                             typeStats.put("types", objects); //$NON-NLS-1$
