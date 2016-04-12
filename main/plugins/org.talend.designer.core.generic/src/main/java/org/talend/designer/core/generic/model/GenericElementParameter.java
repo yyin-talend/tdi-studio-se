@@ -42,6 +42,7 @@ import org.talend.daikon.properties.PresentationItem;
 import org.talend.daikon.properties.Property;
 import org.talend.daikon.properties.presentation.Form;
 import org.talend.daikon.properties.presentation.Widget;
+import org.talend.daikon.properties.presentation.Widget.WidgetType;
 import org.talend.designer.core.generic.constants.IElementParameterEventProperties;
 import org.talend.designer.core.generic.constants.IGenericConstants;
 import org.talend.designer.core.generic.utils.ComponentsUtils;
