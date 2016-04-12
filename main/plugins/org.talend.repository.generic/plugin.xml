@@ -155,4 +155,16 @@
             name="Generic Connection">
       </seeker>
    </extension>
+   <extension
+         point="org.talend.core.migrationTask">
+        <projecttask
+            beforeLogon="false"
+            breaks="6.1.0"
+            class="org.talend.repository.generic.model.migration.NewSalesforceWizardMigrationTask"
+            description="New salesforce connection migration task"
+            id="org.talend.repository.generic.model.migration.NewSalesforceMigrationTask"
+            name="NewGenericWizardMigrationTask"
+            version="6.1.0">
+        </projecttask>
+   </extension>
 </plugin>
