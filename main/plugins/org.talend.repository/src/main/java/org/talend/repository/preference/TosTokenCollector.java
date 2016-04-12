@@ -162,7 +162,7 @@ public class TosTokenCollector extends AbstractTokenCollector {
 
                         if (ERepositoryObjectType.ROUTINES.equals(type)
                                 || ((ERepositoryObjectType) type).getFolder().startsWith("metadata/") //$NON-NLS-1$
-                                || ERepositoryObjectType.CONTEXT.equals(type) || ERepositoryObjectType.JOBLET.equals(type)) {
+                                || ERepositoryObjectType.CONTEXT.equals(type) || type.equals(ERepositoryObjectType.JOBLET)) {
                             int nbUsed = 0;
                             for (IRepositoryViewObject object : all) {
                                 List<Relation> relations = RelationshipItemBuilder.getInstance().getItemsHaveRelationWith(
@@ -279,7 +279,15 @@ public class TosTokenCollector extends AbstractTokenCollector {
 
         IPreferenceStore preferenceStore = RepositoryPlugin.getDefault().getPreferenceStore();
         String records = preferenceStore.getString(PREF_TOS_JOBS_RECORDS);
-        JSONObject allProjectRecords = new JSONObject(records);
+        JSONObject allProjectRecords = null;
+        try {
+            // reset
+            allProjectRecords = new JSONObject(records);
+        } catch (Exception e) {
+            // the value is not set, or is empty
+            allProjectRecords = new JSONObject();
+        }
+
         Iterator<String> keys = allProjectRecords.keys();
         JSONObject projectTypes = new JSONObject();
         while (keys.hasNext()) {
