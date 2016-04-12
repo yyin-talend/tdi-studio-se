@@ -42,7 +42,6 @@ import org.talend.daikon.properties.PresentationItem;
 import org.talend.daikon.properties.Property;
 import org.talend.daikon.properties.presentation.Form;
 import org.talend.daikon.properties.presentation.Widget;
-import org.talend.daikon.properties.presentation.Widget.WidgetType;
 import org.talend.designer.core.generic.constants.IElementParameterEventProperties;
 import org.talend.designer.core.generic.constants.IGenericConstants;
 import org.talend.designer.core.generic.utils.ComponentsUtils;
@@ -50,10 +49,6 @@ import org.talend.designer.core.generic.utils.SchemaUtils;
 import org.talend.designer.core.model.components.ElementParameter;
 import org.talend.designer.core.ui.editor.cmd.ChangeMetadataCommand;
 import org.talend.designer.core.ui.editor.nodes.Node;
-
-import us.monoid.json.JSONArray;
-import us.monoid.json.JSONException;
-import us.monoid.json.JSONObject;
 
 /**
  * created by ycbai on 2015年9月24日 Detailled comment
@@ -104,7 +99,7 @@ public class GenericElementParameter extends ElementParameter {
     @Override
     public void setValue(Object o) {
         super.setValue(o);
-        if (!isFirstCall) {
+        if (!isFirstCall || widget.getContent() instanceof ComponentProperties) {
             updateProperty(o);
             boolean calledValidate = callValidate();
             if (calledValidate) {
@@ -264,6 +259,9 @@ public class GenericElementParameter extends ElementParameter {
                 Object schemaObj = null;
                 try {
                     schemaObj = ComponentsUtils.getGenericPropertyValue(componentProperties, schemaPropertyName);
+                    if (schemaObj instanceof String) {
+                        schemaObj = new Schema.Parser().parse((String) schemaObj);
+                    }
                 } catch (Exception e) {
                     // do nothing
                 }
