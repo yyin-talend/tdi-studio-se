@@ -105,7 +105,7 @@ public class ComponentRefController extends AbstractElementPropertySectionContro
                                         } else {
                                             props.referenceType
                                                     .setValue(ComponentReferenceProperties.ReferenceType.COMPONENT_INSTANCE);
-                                            props.componentInstanceId.setValue(TalendTextUtils.addQuotes(value));
+                                            props.componentInstanceId.setValue(value);
                                             GenericElementParameter gParameter = (GenericElementParameter) param;
                                             if (gParameter != null && gParameter.getElement() != null
                                                     && gParameter.getElement() instanceof Node) {
