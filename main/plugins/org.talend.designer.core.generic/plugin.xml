@@ -11,26 +11,15 @@
    </extension>
    <extension
          point="org.talend.core.migrationTask">
-      <!-- need to put the old Salesforce Component back in because our new components are not complete enough to make it into this 6.1.1 release. disabled first 
         <projecttask
             beforeLogon="false"
-            breaks="6.1.0"
-            class="org.talend.designer.core.generic.model.migration.UpdateComponentParametersMigrationTask"
-            description="convert element parameters to serialized"
-            id="org.talend.designer.core.generic.model.migration.UpdateComponentParametersMigrationTask"
-            name="UpdateComponentParametersMigrationTask"
-            version="6.1.0">
-        </projecttask>       
-        <projecttask
-            beforeLogon="false"
-            breaks="6.1.0"
-            class="org.talend.designer.core.generic.model.migration.ChangeSalesforceComponentsParametersToSerializedMigrationTask"
-            description="convert element parameters to serialized"
-            id="org.talend.designer.core.generic.model.migration.ChangeComponentParametersToSerializedMigrationTask"
-            name="ChangeSalesforceComponentsParametersToSerializedMigrationTask"
-            version="6.1.0">
-        </projecttask>
-       -->
+            breaks="6.2.0"
+            class="org.talend.designer.core.generic.model.migration.NewSalesforceMigrationTask"
+            description="New salesforce migration task"
+            id="org.talend.designer.core.generic.model.migration.NewSalesforceMigrationTask"
+            name="NewSalesforceMigrationTask"
+            version="6.2.0">
+        </projecttask> 
    </extension>
    <extension
          point="org.talend.designer.core.generic.fieldType_mapping">
