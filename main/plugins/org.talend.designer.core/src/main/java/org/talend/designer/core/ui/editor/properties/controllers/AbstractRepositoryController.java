@@ -417,7 +417,13 @@ public abstract class AbstractRepositoryController extends AbstractElementProper
 
             String displayName = dynamicProperty.getRepositoryAliasName(lastItemUsed) + ":" //$NON-NLS-1$
                     + lastItemUsed.getProperty().getLabel() + " - " + tableName; //$NON-NLS-1$
-
+            IElementParameter infoObjectTypeParam = param.getElement().getElementParameter("INFO_OBJECT_TYPE"); //$NON-NLS-1$
+            if (infoObjectTypeParam != null) {
+                String innerIOType = (String) infoObjectTypeParam.getValue();
+                if (innerIOType != null) {
+                    displayName = displayName + " (" + innerIOType + ")"; //$NON-NLS-1$ //$NON-NLS-2$
+                }
+            }
             param.setListItemsDisplayName(new String[] { displayName });
             param.setListItemsValue(new String[] { (String) param.getValue() });
         }
