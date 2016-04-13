@@ -62,15 +62,9 @@ public class TosTokenCollector extends AbstractTokenCollector {
 
     private static final String PREF_TOS_JOBS_RECORDS = "TOS_Jobs_Records"; //$NON-NLS-1$
 
-    private static final TokenKey TOS_COUNT_PROJECTS = new TokenKey("nb.projects"); //$NON-NLS-1$
+    private static final TokenKey PROJECTS = new TokenKey("projects"); //$NON-NLS-1$
 
-    private static final TokenKey TOS_COUNT_JOBS_PER_PROJECT = new TokenKey("jobsPerProject"); //$NON-NLS-1$
-
-    private static final TokenKey TOS_COUNT_COMPONENTS_PER_JOB = new TokenKey("tos.count.componentsPerJob"); //$NON-NLS-1$
-
-    private static final TokenKey TOS_COUNT_CONTEXT_VARIABLES = new TokenKey("tos.count.contextVariables"); //$NON-NLS-1$
-
-    private static final TokenKey TOS_COUNT_CONTEXT_VARIABLES_PER_JOB = new TokenKey("tos.count.contextVariablesPerJob"); //$NON-NLS-1$
+    private static final TokenKey TYPE = new TokenKey("type"); //$NON-NLS-1$
 
     /**
      * ggu JobTokenCollector constructor comment.
@@ -196,8 +190,8 @@ public class TosTokenCollector extends AbstractTokenCollector {
                 }
             }
         }
-        jObject.put("projects", repoStats); //$NON-NLS-1$
-        jObject.put("type", ProjectManager.getInstance().getProjectType(currentProject));
+        jObject.put(PROJECTS.getKey(), repoStats); //$NON-NLS-1$
+        jObject.put(TYPE.getKey(), ProjectManager.getInstance().getProjectType(currentProject));
         int nbRef = ProjectManager.getInstance().getAllReferencedProjects().size();
         if (nbRef > 0) {
             jObject.put("nb.refProjects", nbRef);
@@ -295,18 +289,22 @@ public class TosTokenCollector extends AbstractTokenCollector {
             JSONObject object = (JSONObject) allProjectRecords.get(projectName);
             if (object != null) {
                 TokenInforUtil.mergeJSON(object, mergedData);
-                String type = object.getString("type");
-                // count the number of project for each type
-                if (!projectTypes.has(type)) {
-                    projectTypes.put(type, 1);
-                } else {
-                    int nb = projectTypes.getInt(type);
-                    nb++;
-                    projectTypes.put(type, nb);
+                if (object.has(TYPE.getKey())) {
+                    String type = object.getString(TYPE.getKey());
+                    // count the number of project for each type
+                    if (!projectTypes.has(type)) {
+                        projectTypes.put(type, 1);
+                    } else {
+                        int nb = projectTypes.getInt(type);
+                        nb++;
+                        projectTypes.put(type, nb);
+                    }
                 }
             }
         }
-        finalToken.put(PROJECTS_REPOSITORY.getKey(), mergedData.get("projects"));
+        if (mergedData.has(PROJECTS.getKey())) {
+            finalToken.put(PROJECTS_REPOSITORY.getKey(), mergedData.get(PROJECTS.getKey()));
+        }
         finalToken.put("projects.type", projectTypes);
         return finalToken;
     }
