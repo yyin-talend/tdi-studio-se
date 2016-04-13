@@ -48,4 +48,9 @@ public interface IGenericConstants {
      */
     public static final String AVAILABILITY = "AVAILABILITY";//$NON-NLS-1$
 
+    /**
+     * Tag key which estimates whether need to add quotes for property value.
+     */
+    public static final String ADD_QUOTES = "ADD_QUOTES"; //$NON-NLS-1$
+
 }

@@ -981,7 +981,7 @@ public class Component extends AbstractBasicComponent {
     }
 
     public String getCodegenValue(Property property, String value) {
-        if (property.getFlags() != null && property.getFlags().contains(Property.Flags.RAW)) {
+        if (Boolean.valueOf(String.valueOf(property.getTaggedValue(IGenericConstants.ADD_QUOTES)))) {
             return "\"" + value + "\"";//$NON-NLS-1$ //$NON-NLS-2$ 
         }
         if (property.getType() == Property.Type.ENUM) {

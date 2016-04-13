@@ -42,6 +42,7 @@ import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.INode;
 import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.core.ui.properties.tab.IDynamicProperty;
+import org.talend.designer.core.generic.constants.IGenericConstants;
 import org.talend.designer.core.generic.model.GenericElementParameter;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.model.components.EParameterName;
@@ -178,6 +179,11 @@ public class ComponentRefController extends AbstractElementPropertySectionContro
         combo.setEditable(false);
         cLayout.setBackground(subComposite.getBackground());
         combo.setEnabled(!param.isReadOnly());
+
+        GenericElementParameter gParam = (GenericElementParameter) param;
+        ComponentReferenceProperties props = (ComponentReferenceProperties) gParam.getWidget().getContent();
+        props.componentInstanceId.setTaggedValue(IGenericConstants.ADD_QUOTES, true);
+
         combo.addSelectionListener(new SelectionAdapter() {
 
             @Override
@@ -185,8 +191,6 @@ public class ComponentRefController extends AbstractElementPropertySectionContro
                 if (!(event.getSource() instanceof CCombo)) {
                     return;
                 }
-                GenericElementParameter gParam = (GenericElementParameter) param;
-                ComponentReferenceProperties props = (ComponentReferenceProperties) gParam.getWidget().getContent();
                 Command cmd = createComboCommand(event, gParam, props);
                 executeCommand(cmd);
             }
