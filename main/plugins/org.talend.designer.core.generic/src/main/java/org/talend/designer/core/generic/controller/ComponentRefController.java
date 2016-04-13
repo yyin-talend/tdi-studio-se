@@ -14,7 +14,9 @@ package org.talend.designer.core.generic.controller;
 
 import java.beans.PropertyChangeEvent;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
@@ -40,6 +42,7 @@ import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.INode;
 import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.core.ui.properties.tab.IDynamicProperty;
+import org.talend.designer.core.generic.constants.IGenericConstants;
 import org.talend.designer.core.generic.model.GenericElementParameter;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.model.components.EParameterName;
@@ -53,6 +56,8 @@ import org.talend.designer.core.ui.editor.properties.controllers.AbstractElement
  *
  */
 public class ComponentRefController extends AbstractElementPropertySectionController {
+
+    private Map<String, String> labelToValueMap = new HashMap<>();
 
     public ComponentRefController(IDynamicProperty dp) {
         super(dp);
@@ -76,7 +81,12 @@ public class ComponentRefController extends AbstractElementPropertySectionContro
                     continue;
                 }
                 if (data != null && data.equals(combo.getData(PARAMETER_NAME))) {
-                    if (!((CCombo) ctrl).getText().equals(elem.getPropertyValue(name))) {
+                    String newValue = ((CCombo) ctrl).getText();
+                    String v = labelToValueMap.get(newValue);
+                    if (v != null) {
+                        newValue = v;
+                    }
+                    if (!newValue.equals(elem.getPropertyValue(name))) {
                         String value = ""; //$NON-NLS-1$
                         List<? extends IElementParameter> params = elem.getElementParametersWithChildrens();
                         boolean done = false;
@@ -96,7 +106,7 @@ public class ComponentRefController extends AbstractElementPropertySectionContro
                                         } else {
                                             props.referenceType
                                                     .setValue(ComponentReferenceProperties.ReferenceType.COMPONENT_INSTANCE);
-                                            props.componentInstanceId.setValue(TalendTextUtils.addQuotes(value));
+                                            props.componentInstanceId.setValue(value);
                                             GenericElementParameter gParameter = (GenericElementParameter) param;
                                             if (gParameter != null && gParameter.getElement() != null
                                                     && gParameter.getElement() instanceof Node) {
@@ -169,6 +179,11 @@ public class ComponentRefController extends AbstractElementPropertySectionContro
         combo.setEditable(false);
         cLayout.setBackground(subComposite.getBackground());
         combo.setEnabled(!param.isReadOnly());
+
+        GenericElementParameter gParam = (GenericElementParameter) param;
+        ComponentReferenceProperties props = (ComponentReferenceProperties) gParam.getWidget().getContent();
+        props.componentInstanceId.setTaggedValue(IGenericConstants.ADD_QUOTES, true);
+
         combo.addSelectionListener(new SelectionAdapter() {
 
             @Override
@@ -176,8 +191,6 @@ public class ComponentRefController extends AbstractElementPropertySectionContro
                 if (!(event.getSource() instanceof CCombo)) {
                     return;
                 }
-                GenericElementParameter gParam = (GenericElementParameter) param;
-                ComponentReferenceProperties props = (ComponentReferenceProperties) gParam.getWidget().getContent();
                 Command cmd = createComboCommand(event, gParam, props);
                 executeCommand(cmd);
             }
@@ -266,9 +279,9 @@ public class ComponentRefController extends AbstractElementPropertySectionContro
         String selectedValue;
         Object referenceType = props.referenceType.getValue();
         if (referenceType != null && referenceType.equals(ComponentReferenceProperties.ReferenceType.COMPONENT_INSTANCE)) {
-            selectedValue = currentNode.getUniqueName();
-        } else {
             selectedValue = TalendTextUtils.removeQuotes(props.componentInstanceId.getStringValue());
+        } else {
+            selectedValue = currentNode.getUniqueName();
         }
 
         for (INode node : refNodes) {
@@ -287,6 +300,7 @@ public class ComponentRefController extends AbstractElementPropertySectionContro
             }
             itemsLabel.add(displayName);
             itemsValue.add(uniqueName);
+            labelToValueMap.put(displayName, uniqueName);
         }
         param.setListItemsDisplayName(itemsLabel.toArray(new String[0]));
         param.setListItemsDisplayCodeName(itemsLabel.toArray(new String[0]));
@@ -296,7 +310,8 @@ public class ComponentRefController extends AbstractElementPropertySectionContro
         int selection = 0;
         for (int i = 0; i < itemsValue.size(); i++) {
             String iValue = itemsValue.get(i);
-            if ((selectedValue == null && iValue == null) || (selectedValue != null && selectedValue.equals(iValue))) {
+            if ((selectedValue == null && (((INode) elem).getUniqueName()).equals(iValue))
+                    || (selectedValue != null && selectedValue.equals(iValue))) {
                 iLabel = itemsLabel.get(i);
                 break;
             }

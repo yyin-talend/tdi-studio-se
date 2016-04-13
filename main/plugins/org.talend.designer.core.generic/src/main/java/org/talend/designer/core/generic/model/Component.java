@@ -31,6 +31,7 @@ import org.talend.components.api.component.Connector;
 import org.talend.components.api.component.Trigger;
 import org.talend.components.api.component.VirtualComponentDefinition;
 import org.talend.components.api.properties.ComponentProperties;
+import org.talend.components.api.properties.ComponentReferenceProperties;
 import org.talend.components.api.service.ComponentService;
 import org.talend.components.api.wizard.ComponentWizard;
 import org.talend.components.api.wizard.ComponentWizardDefinition;
@@ -943,6 +944,9 @@ public class Component extends AbstractBasicComponent {
     protected void processCodegenPropInfos(List<CodegenPropInfo> propList, ComponentProperties props, String fieldString) {
         for (NamedThing prop : props.getProperties()) {
             if (prop instanceof ComponentProperties) {
+                if (prop instanceof ComponentReferenceProperties) {
+                    ((ComponentReferenceProperties) prop).componentProperties = null;
+                }
                 CodegenPropInfo childPropInfo = new CodegenPropInfo();
                 if (fieldString.equals("")) {//$NON-NLS-1$
                     childPropInfo.fieldName = "." + prop.getName();//$NON-NLS-1$
@@ -977,6 +981,9 @@ public class Component extends AbstractBasicComponent {
     }
 
     public String getCodegenValue(Property property, String value) {
+        if (Boolean.valueOf(String.valueOf(property.getTaggedValue(IGenericConstants.ADD_QUOTES)))) {
+            return "\"" + value + "\"";//$NON-NLS-1$ //$NON-NLS-2$ 
+        }
         if (property.getType() == Property.Type.ENUM) {
             return "\"" + value + "\"";//$NON-NLS-1$ //$NON-NLS-2$
         }
