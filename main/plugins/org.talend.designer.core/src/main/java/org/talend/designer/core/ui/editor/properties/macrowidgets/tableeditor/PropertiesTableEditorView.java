@@ -586,6 +586,8 @@ public class PropertiesTableEditorView<B> extends AbstractDataTableEditorView<B>
                     }
                     if (tcEditor != null) {
                         column.setCellEditor(tcEditor);
+                        column.setModifiable((!param.isRepositoryValueUsed()) && (!param.isReadOnly())
+                                && (!currentParam.isReadOnly()));
                     }
                 }
                 // for all kinds of column, check if read only or not when edit the field.
