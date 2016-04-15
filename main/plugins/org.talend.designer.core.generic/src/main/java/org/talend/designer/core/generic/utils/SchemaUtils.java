@@ -28,6 +28,7 @@ import org.talend.core.model.metadata.builder.connection.Connection;
 import org.talend.core.model.metadata.builder.connection.ConnectionFactory;
 import org.talend.core.model.metadata.builder.connection.MetadataColumn;
 import org.talend.core.model.metadata.builder.connection.MetadataTable;
+import org.talend.core.model.process.IElementParameter;
 import org.talend.core.repository.model.ProxyRepositoryFactory;
 import org.talend.core.repository.model.repositoryObject.MetadataTableRepositoryObject;
 import org.talend.cwm.helper.PackageHelper;
@@ -120,6 +121,11 @@ public class SchemaUtils {
 
     public static void updateComponentSchema(ComponentProperties componentProperties, String schemaPropertyName,
             IMetadataTable metadataTable) {
+        updateComponentSchema(componentProperties, schemaPropertyName, metadataTable, null);
+    }
+
+    public static void updateComponentSchema(ComponentProperties componentProperties, String schemaPropertyName,
+            IMetadataTable metadataTable, IElementParameter param) {
         if (componentProperties == null || schemaPropertyName == null || metadataTable == null) {
             return;
         }
@@ -128,6 +134,9 @@ public class SchemaUtils {
         Map<String, String> additionalProperties = metadataTable.getAdditionalProperties();
         additionalProperties.put(IComponentConstants.COMPONENT_PROPERTIES_TAG, componentProperties.toSerialized());
         additionalProperties.put(IComponentConstants.COMPONENT_SCHEMA_TAG, schemaPropertyName);
+        if (param != null) {
+            param.setValue(schema.toString());
+        }
     }
 
     public static ComponentProperties getCurrentComponentProperties(IMetadataTable table) {

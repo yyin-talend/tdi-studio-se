@@ -30,6 +30,7 @@ import org.talend.core.model.metadata.builder.connection.Connection;
 import org.talend.core.model.metadata.builder.connection.MetadataTable;
 import org.talend.core.model.process.EComponentCategory;
 import org.talend.core.model.process.Element;
+import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.INode;
 import org.talend.core.model.properties.Item;
 import org.talend.core.model.repository.ERepositoryObjectType;
@@ -178,8 +179,8 @@ public class GenericWizardService implements IGenericWizardService {
 
     @Override
     public void updateComponentSchema(ComponentProperties componentProperties, String schemaPropertyName,
-            IMetadataTable metadataTable) {
-        SchemaUtils.updateComponentSchema(componentProperties, schemaPropertyName, metadataTable);
+            IMetadataTable metadataTable, IElementParameter param) {
+        SchemaUtils.updateComponentSchema(componentProperties, schemaPropertyName, metadataTable, param);
     }
 
     @Override
