@@ -70,34 +70,39 @@ public class DocumentExtractor {
 			return result;
 		}
 
-		Element tablesOrChangingElement = functionElement.element("TABLES");
-		if (tablesOrChangingElement == null) {
-			tablesOrChangingElement = functionElement.element("CHANGING");
-		}
-		
-		if(tablesOrChangingElement == null) {
-			return result;
-		}
+		List<Element> tablesAndChangingElements = new ArrayList<Element>(3);
+		tablesAndChangingElements.add(functionElement.element("TABLES"));
+		tablesAndChangingElements.add(functionElement.element("CHANGING"));
 
-		Element tableElement = tablesOrChangingElement.element(tableName);
-
-		if (tableElement == null) {
-			return result;
-		}
-		
-		List<Element> elements = tableElement.elements("item");
-		
-		for(Element element : elements) {
-			List<String> row = new ArrayList<String>();
-			for(String name : names) {
-				Element subElement = element.element(name);
-				if(subElement == null) {
-					row.add(null);
-				} else {
-					row.add(subElement.getText());
-				}
+		for(Element tablesOrChangingElement : tablesAndChangingElements) {
+			if (tablesOrChangingElement == null) {
+				continue;
 			}
-			result.add(row);
+			
+			Element tableElement = tablesOrChangingElement.element(tableName);
+		
+			if (tableElement == null) {
+				continue;
+			}
+			
+			List<Element> elements = tableElement.elements("item");
+			
+			if(elements == null) {
+				continue;
+			}
+			
+			for(Element element : elements) {
+				List<String> row = new ArrayList<String>();
+				for(String name : names) {
+					Element subElement = element.element(name);
+					if(subElement == null) {
+						row.add(null);
+					} else {
+						row.add(subElement.getText());
+					}
+				}
+				result.add(row);
+			}
 		}
 		
 		return result;
