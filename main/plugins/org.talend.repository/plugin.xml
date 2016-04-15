@@ -2672,6 +2672,15 @@
               name="ChangeOptionDefaultValueForFileArchive"
               version="6.1.0">
         </projecttask>
+        <projecttask
+              beforeLogon="false"
+              breaks="6.1.0"
+              class="org.talend.repository.model.migration.UncheckQueryLogging4TPS1357"
+              description="uncheck query logging for teradata components for TPS1357"
+              id="org.talend.repository.model.migration.UncheckQueryLogging4TPS1357"
+              name="UncheckQueryLogging4TPS1357"
+              version="6.1.1">
+        </projecttask>
    </extension>
 
    <extension
