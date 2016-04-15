@@ -667,7 +667,8 @@ public class ChangeMetadataCommand extends Command {
             wizardService = (IGenericWizardService) GlobalServiceRegister.getDefault().getService(IGenericWizardService.class);
         }
         if (wizardService != null && schemaParam != null) {
-            wizardService.updateComponentSchema(node.getComponentProperties(), schemaParam.getName(), currentOutputMetadata);
+            wizardService.updateComponentSchema(node.getComponentProperties(), schemaParam.getName(), currentOutputMetadata,
+                    schemaParam);
         }
     }
 

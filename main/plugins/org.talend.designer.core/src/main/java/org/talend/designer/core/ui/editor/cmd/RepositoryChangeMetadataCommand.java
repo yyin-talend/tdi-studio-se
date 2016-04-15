@@ -238,8 +238,11 @@ public class RepositoryChangeMetadataCommand extends ChangeMetadataCommand {
                 conn = getConnection();
             }
             if (wizardService != null && wizardService.isGenericConnection(conn)) {
-                wizardService
-                        .updateComponentSchema(node.getComponentProperties(), getSchemaElementParamName(), newOutputMetadata);
+                IElementParameter schemaParam = node.getElementParameter(getSchemaElementParamName());
+                if (schemaParam != null) {
+                    wizardService.updateComponentSchema(node.getComponentProperties(), getSchemaElementParamName(),
+                            newOutputMetadata, schemaParam);
+                }
             }
         }
         super.setConnection(connection);
