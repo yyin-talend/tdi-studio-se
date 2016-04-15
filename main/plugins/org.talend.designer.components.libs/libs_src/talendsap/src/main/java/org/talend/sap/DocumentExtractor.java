@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.dom4j.Document;
+import org.dom4j.Element;
 import org.dom4j.Node;
 import org.dom4j.XPath;
 
@@ -62,31 +63,46 @@ public class DocumentExtractor {
 	}
 	
 	public List<List<String>> getTableResult(String tableName,List<String> names) {
-		XPath xpath = org.dom4j.DocumentHelper.createXPath(
-			sb.append("/").append(function).append("/TABLES/").append(tableName).append("/item")
-			.append("|")
-			.append("/").append(function).append("/CHANGING/").append(tableName).append("/item")
-			.toString()
-		);
-		sb.setLength(0);
-		List<Node> nodes = xpath.selectNodes(doc);
-		if(nodes == null || nodes.isEmpty()) {
-			return null;
-		}
-		
 		List<List<String>> result = new ArrayList<List<String>>();
 		
-		for(Node node : nodes) {
-			List<String> row = new ArrayList<String>();
-			for(String name : names) {
-				Node subNode = node.selectSingleNode(name);
-				if(subNode == null) {
-					row.add(null);
-				} else {
-					row.add(subNode.getText());
-				}
+		Element functionElement = doc.getRootElement();
+		if (functionElement == null) {
+			return result;
+		}
+
+		List<Element> tablesAndChangingElements = new ArrayList<Element>(3);
+		tablesAndChangingElements.add(functionElement.element("TABLES"));
+		tablesAndChangingElements.add(functionElement.element("CHANGING"));
+
+		for(Element tablesOrChangingElement : tablesAndChangingElements) {
+			if (tablesOrChangingElement == null) {
+				continue;
 			}
-			result.add(row);
+			
+			Element tableElement = tablesOrChangingElement.element(tableName);
+		
+			if (tableElement == null) {
+				continue;
+			}
+			
+			List<Element> elements = tableElement.elements("item");
+			
+			if(elements == null) {
+				continue;
+			}
+			
+			for(Element element : elements) {
+				List<String> row = new ArrayList<String>();
+				for(String name : names) {
+					Element subElement = element.element(name);
+					if(subElement == null) {
+						row.add(null);
+					} else {
+						row.add(subElement.getText());
+					}
+				}
+				result.add(row);
+			}
 		}
 		
 		return result;

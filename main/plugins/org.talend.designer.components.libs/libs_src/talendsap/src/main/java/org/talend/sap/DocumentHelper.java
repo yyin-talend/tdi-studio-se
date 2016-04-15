@@ -120,10 +120,16 @@ public class DocumentHelper {
 		helper.addStructChildParameter("NAME1", "momo");
 
 		helper.addTableParameter("TABLE1", false);
-		for (int i = 0; i < 2; i++) {
+		for (int i = 0; i < 200000; i++) {
 			helper.addTableRow();
-			helper.addTableRowChildParameter("ID4", i + "");
-			helper.addTableRowChildParameter("NAME4", "wangwei" + i);
+			helper.addTableRowChildParameter("c1", i + "");
+			helper.addTableRowChildParameter("c2", "wangwei" + i);
+			helper.addTableRowChildParameter("c3", "wangwei" + i);
+			helper.addTableRowChildParameter("c4", "wangwei" + i);
+			helper.addTableRowChildParameter("c5", "wangwei" + i);
+			helper.addTableRowChildParameter("c6", "wangwei" + i);
+			helper.addTableRowChildParameter("c7", "wangwei" + i);
+			helper.addTableRowChildParameter("c8", "wangwei" + i);
 		}
 
 		helper.addTableParameter("TABLE2", false);
@@ -133,12 +139,12 @@ public class DocumentHelper {
 			helper.addTableRowChildParameter("NAME4", "gaoyan" + i);
 		}
 
-		StringWriter sw = new StringWriter();
-		OutputFormat format = OutputFormat.createPrettyPrint();
-		XMLWriter writer = new XMLWriter(sw, format);
+//		StringWriter sw = new StringWriter();
+//		OutputFormat format = OutputFormat.createPrettyPrint();
+//		XMLWriter writer = new XMLWriter(sw, format);
 		Document doc = helper.getDocument();
-		writer.write(doc);
-		System.out.println(sw.toString());
+//		writer.write(doc);
+//		System.out.println(sw.toString());
 		
 		DocumentExtractor ext = new DocumentExtractor(doc,"READ_TABLE_FUNCTION");
 		String single = ext.getSingleResult("ID");
@@ -147,8 +153,10 @@ public class DocumentHelper {
 		List<String> struct = ext.getStructureResult("INFO", Arrays.asList("ID","NAME"));
 		System.out.println(struct);
 		
-		List<List<String>> table = ext.getTableResult("TABLE1", Arrays.asList("ID4","NAME4"));
-		System.out.println(table);
+		List<List<String>> table = ext.getTableResult("TABLE1", Arrays.asList("c1","c2","c3","c4","c5","c6","c7","c8"));
+		for(List<String> row : table) {
+			System.out.println(row);
+		}
 
 	}
 }
