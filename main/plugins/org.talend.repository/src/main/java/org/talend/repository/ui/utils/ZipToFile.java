@@ -215,7 +215,7 @@ public class ZipToFile {
         while (zList.hasMoreElements()) {
             ze = (ZipEntry) zList.nextElement();
             if (ze.isDirectory()) {
-                File f = new File(unzipdir + ze.getName());
+                File f = new File(unzipdir + File.separator+ze.getName());
                 f.mkdirs();
                 continue;
             }
