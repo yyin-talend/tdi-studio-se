@@ -535,14 +535,18 @@ public class ComponentBuilder {
             Part part = (Part) iter.next();
             String partName = part.getName();
             String partElement = null;
+            String namespace = null;
             if (part.getElementName() != null) {
                 partElement = part.getElementName().getLocalPart();
+                namespace = part.getElementName().getNamespaceURI();
             } else if (part.getTypeName() != null) {
                 partElement = part.getTypeName().getLocalPart();
+                namespace = part.getTypeName().getNamespaceURI();
             }
             // add first parameter from message.
             ParameterInfo parameterRoot = new ParameterInfo();
             parameterRoot.setName(partName);
+            parameterRoot.setNameSpace(namespace);
             if (manner == 1) {
                 operationInfo.addInparameter(parameterRoot);
             } else {
@@ -566,7 +570,7 @@ public class ComponentBuilder {
 
             } else if (allXmlSchemaType.size() > 0) {
 
-                buileParameterFromTypes(partElement, parameterRoot, manner);
+                buileParameterFromTypes(namespace, partElement, parameterRoot, manner);
             }
             operationInfo.setWsdltype(wsdlTypes);
         }
@@ -599,9 +603,10 @@ public class ComponentBuilder {
                                 }
                             } else if (xmlSchemaElement.getSchemaTypeName() != null) {
                                 String paraTypeName = xmlSchemaElement.getSchemaTypeName().getLocalPart();
+                                String paraTypeNamespace = xmlSchemaElement.getSchemaTypeName().getNamespaceURI();
                                 if (paraTypeName != null) {
                                     parameterRoot.setType(paraTypeName);
-                                    buileParameterFromTypes(paraTypeName, parameterRoot, ioOrRecursion);
+                                    buileParameterFromTypes(paraTypeNamespace, paraTypeName, parameterRoot, ioOrRecursion);
                                 }
                             }
                         } else if (xmlSchemaElement.getSchemaType() instanceof XmlSchemaSimpleType) {
@@ -618,9 +623,10 @@ public class ComponentBuilder {
 
                     } else if (xmlSchemaElement.getSchemaTypeName() != null) {
                         String paraTypeName = xmlSchemaElement.getSchemaTypeName().getLocalPart();
+                        String paraTypeNamespace = xmlSchemaElement.getSchemaTypeName().getNamespaceURI();
                         if (paraTypeName != null) {
                             parameterRoot.setType(paraTypeName);
-                            buileParameterFromTypes(paraTypeName, parameterRoot, ioOrRecursion);
+                            buileParameterFromTypes(paraTypeNamespace, paraTypeName, parameterRoot, ioOrRecursion);
                         }
                     }
                 }
@@ -637,7 +643,7 @@ public class ComponentBuilder {
      * @param operationInfo
      * @param i
      */
-    private void buileParameterFromTypes(String paraType, ParameterInfo parameter, int ioOrRecursion) {
+    private void buileParameterFromTypes(String paraNamespace, String paraType, ParameterInfo parameter, int ioOrRecursion) {
         if (ioOrRecursion < 3) {
             parametersName.clear();
             parametersName.add(parameter.getName());
@@ -647,7 +653,7 @@ public class ComponentBuilder {
         for (int i = 0; i < allXmlSchemaType.size(); i++) {
             XmlSchemaType type = allXmlSchemaType.get(i);
             String typeName = type.getName();
-            if (paraType.equals(typeName)) {
+            if (paraType.equals(typeName) && paraNamespace.equals(type.getQName().getNamespaceURI())) {
                 if (type instanceof XmlSchemaComplexType) {
                     XmlSchemaComplexType xmlSchemaComplexType = (XmlSchemaComplexType) type;
                     XmlSchemaParticle xmlSchemaParticle = xmlSchemaComplexType.getParticle();
@@ -657,7 +663,8 @@ public class ComponentBuilder {
                         if (obj instanceof XmlSchemaComplexContentExtension) {
                             XmlSchemaComplexContentExtension xscce = (XmlSchemaComplexContentExtension) obj;
                             if (xscce.getBaseTypeName() != null) {
-                                buileParameterFromTypes(xscce.getBaseTypeName().getLocalPart(), parameter, ioOrRecursion);
+                                buileParameterFromTypes(xscce.getBaseTypeName().getNamespaceURI(), xscce.getBaseTypeName()
+                                        .getLocalPart(), parameter, ioOrRecursion);
                             }
                             if (xscce != null) {
                                 xmlSchemaParticle = xscce.getParticle();
@@ -769,6 +776,7 @@ public class ComponentBuilder {
                 ParameterInfo parameterSon = new ParameterInfo();
                 parameterSon.setName(elementName);
                 parameterSon.setParent(parameter);
+                parameterSon.setNameSpace(((XmlSchemaElement) xmlSchemaObject).getQName().getNamespaceURI());
                 Long min = xmlSchemaElement.getMinOccurs();
                 Long max = xmlSchemaElement.getMaxOccurs();
                 if (max - min > 1) {
@@ -797,8 +805,10 @@ public class ComponentBuilder {
                         parameterSon.setName(xmlSchemaElement.getName() + ":anyType");
                     }
                     parameterSon.setType(elementTypeName);
+                    parameterSon.setNameSpace(xmlSchemaElement.getQName().getNamespaceURI());
                     if (!isHave && !WsdlTypeUtil.isJavaBasicType(elementTypeName)) {
-                        buileParameterFromTypes(elementTypeName, parameterSon, ioOrRecursion);
+                        buileParameterFromTypes(xmlSchemaElement.getQName().getNamespaceURI(), elementTypeName, parameterSon,
+                                ioOrRecursion);
                     }
                 } else if (xmlSchemaElement.getSchemaType() != null) {
                     if (xmlSchemaElement.getSchemaType() instanceof XmlSchemaComplexType) {
@@ -812,9 +822,10 @@ public class ComponentBuilder {
                             }
                         } else if (xmlSchemaElement.getSchemaTypeName() != null) {
                             String paraTypeName = xmlSchemaElement.getSchemaTypeName().getLocalPart();
+                            String paraTypeNamespace = xmlSchemaElement.getSchemaTypeName().getNamespaceURI();
                             if (paraTypeName != null && !isHave) {
                                 parameter.setType(paraTypeName);
-                                buileParameterFromTypes(paraTypeName, parameterSon, ioOrRecursion);
+                                buileParameterFromTypes(paraTypeNamespace, paraTypeName, parameterSon, ioOrRecursion);
                             }
                         }
                     } else if (xmlSchemaElement.getSchemaType() instanceof XmlSchemaSimpleType) {
@@ -856,9 +867,10 @@ public class ComponentBuilder {
                 }
                 if (xmlSchemaAttribute.getSchemaTypeName() != null) {
                     String elementTypeName = xmlSchemaAttribute.getSchemaTypeName().getLocalPart();
+                    String elementTypeNamespace = xmlSchemaAttribute.getSchemaTypeName().getNamespaceURI();
                     parameterSon.setType(elementTypeName);
                     if (!isHave && !WsdlTypeUtil.isJavaBasicType(elementTypeName)) {
-                        buileParameterFromTypes(elementTypeName, parameterSon, ioOrRecursion);
+                        buileParameterFromTypes(elementTypeNamespace, elementTypeName, parameterSon, ioOrRecursion);
                     }
                 } else if (xmlSchemaAttribute.getRefName() != null) {
                     String refName = xmlSchemaAttribute.getRefName().getLocalPart();
@@ -940,9 +952,10 @@ public class ComponentBuilder {
                             }
                         } else if (xmlSchemaElement.getSchemaTypeName() != null) {
                             String paraTypeName = xmlSchemaElement.getSchemaTypeName().getLocalPart();
+                            String paraTypeNamespace = xmlSchemaElement.getSchemaTypeName().getNamespaceURI();
                             if (paraTypeName != null && !isHave) {
                                 parameter.setType(paraTypeName);
-                                buileParameterFromTypes(paraTypeName, parameterSon, ioOrRecursion);
+                                buileParameterFromTypes(paraTypeNamespace, paraTypeName, parameterSon, ioOrRecursion);
                             }
                         }
                     } else if (xmlSchemaElement.getSchemaType() instanceof XmlSchemaSimpleType) {
@@ -978,9 +991,10 @@ public class ComponentBuilder {
                 }
                 if (xmlSchemaAttribute.getSchemaTypeName() != null) {
                     String elementTypeName = xmlSchemaAttribute.getSchemaTypeName().getLocalPart();
+                    String elementTypeNamespace = xmlSchemaAttribute.getSchemaTypeName().getNamespaceURI();
                     parameterSon.setType(elementTypeName);
                     if (!isHave && !WsdlTypeUtil.isJavaBasicType(elementTypeName)) {
-                        buileParameterFromTypes(elementTypeName, parameterSon, ioOrRecursion);
+                        buileParameterFromTypes(elementTypeNamespace, elementTypeName, parameterSon, ioOrRecursion);
                     }
                 } else if (xmlSchemaAttribute.getRefName() != null) {
                     String refName = xmlSchemaAttribute.getRefName().getLocalPart();
