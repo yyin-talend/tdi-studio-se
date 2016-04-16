@@ -43,6 +43,7 @@ import org.talend.daikon.properties.ValidationResult.Result;
 import org.talend.daikon.properties.presentation.Form;
 import org.talend.designer.core.generic.constants.IContextEventProperties;
 import org.talend.designer.core.generic.constants.IElementParameterEventProperties;
+import org.talend.designer.core.generic.constants.IGenericConstants;
 import org.talend.designer.core.generic.context.ComponentContextPropertyValueEvaluator;
 import org.talend.designer.core.generic.model.GenericElementParameter;
 import org.talend.designer.core.generic.utils.ComponentsUtils;
@@ -110,6 +111,7 @@ public class DynamicComposite extends MultipleThreadDynamicComposite implements 
         List<ElementParameter> currentParameters = (List<ElementParameter>) element.getElementParameters();
         List<ElementParameter> parameters = new ArrayList<>();
         ComponentService componentService = null;
+        ComponentProperties componentProperties = null;
         if (element instanceof FakeElement) {
             Connection theConnection = null;
             if (connectionItem != null) {
@@ -125,6 +127,7 @@ public class DynamicComposite extends MultipleThreadDynamicComposite implements 
                     new ComponentContextPropertyValueEvaluator((INode) element));
             parameters = ComponentsUtils
                     .getParametersFromForm(element, section, ((INode) element).getComponentProperties(), form);
+            componentProperties = ((INode) element).getComponentProperties();
         }
         for (ElementParameter parameter : parameters) {
             if (parameter instanceof GenericElementParameter) {
@@ -140,7 +143,7 @@ public class DynamicComposite extends MultipleThreadDynamicComposite implements 
                         parameter.getChildParameters().putAll(schemaParameter.getChildParameters());
                     }
                 }
-                if (isRepository(element)) {
+                if (componentProperties != null && isRepository(element)) {
                     String repositoryValue = parameter.getRepositoryValue();
                     if (repositoryValue == null) {
                         if (parameter.getValue() != null) {
@@ -151,8 +154,11 @@ public class DynamicComposite extends MultipleThreadDynamicComposite implements 
                     if (parameter.isShow(currentParameters) && (repositoryValue != null)
                             && (!parameter.getName().equals(EParameterName.PROPERTY_TYPE.getName()))
                             && parameter.getCategory() == section) {
-                        parameter.setRepositoryValueUsed(true);
-                        parameter.setReadOnly(true);
+                        org.talend.daikon.properties.Property property = componentProperties.getValuedProperty(parameter.getName());
+                        if (property.getTaggedValue(IGenericConstants.REPOSITORY_VALUE) != null) {
+                            parameter.setRepositoryValueUsed(true);
+                            parameter.setReadOnly(true);
+                        }
                     }
                 }
             }
