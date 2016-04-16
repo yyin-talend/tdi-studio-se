@@ -92,6 +92,7 @@ public class DynamicComposite extends MultipleThreadDynamicComposite implements 
         if (drivedByForm) {
             internalService.getComponentService().makeFormCancelable((ComponentProperties) form.getProperties(), form.getName());
         }
+        resetParameters();
     }
 
     private void resetComponentProperties() {
