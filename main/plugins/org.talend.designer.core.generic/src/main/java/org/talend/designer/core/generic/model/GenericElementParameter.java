@@ -267,7 +267,7 @@ public class GenericElementParameter extends ElementParameter {
                     // do nothing
                 }
                 if (schemaObj != null && schemaObj instanceof Schema) {
-                    MetadataTable metadataTable = SchemaUtils.createSchema(String.valueOf(getValue()), componentProperties,
+                    MetadataTable metadataTable = SchemaUtils.createSchema(oldTable.getTableName(), componentProperties,
                             schemaPropertyName);
                     IMetadataTable newTable = MetadataToolHelper.convert(metadataTable);
                     if (!newTable.sameMetadataAs(oldTable)) {
