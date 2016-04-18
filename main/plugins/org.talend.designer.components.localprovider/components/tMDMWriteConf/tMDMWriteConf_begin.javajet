@@ -28,6 +28,7 @@ imports="
 	String dataModule = ElementParameterParser.getValue(node, "__DATAMODEL__");
 	String dataCluster = ElementParameterParser.getValue(node, "__DATACLUSTER__");
 	boolean isStaging = "STAGING".equalsIgnoreCase(ElementParameterParser.getValue(node, "__CONTAINER_TYPE__"));
+	boolean isProvisioning = "\"PROVISIONING\"".equalsIgnoreCase(dataCluster);
 	
 	boolean withReport = ("true").equals(ElementParameterParser.getValue(node,"__WITHREPORT__"));
 	boolean isMassInsert =("true").equals(ElementParameterParser.getValue(node,"__EXTENDINSERT__"));
@@ -91,6 +92,15 @@ int nb_line_rejected_<%=cid%> = 0;
     <%@ include file="@{org.talend.designer.components.localprovider}/components/templates/password.javajet"%>
 	
 	stub_<%=cid %>.setPassword(decryptedPassword_<%=cid%>);
+<%}else if(isProvisioning){%>
+	org.talend.mdm.webservice.TMDMServiceSoapBindingStub stub_<%=cid %>_<%=conn %> = (org.talend.mdm.webservice.TMDMServiceSoapBindingStub) globalMap.get("<%=conn%>");
+
+	org.talend.mdm.webservice.TMDMService_ServiceLocator tmdmService_<%=cid %> = new org.talend.mdm.webservice.TMDMService_ServiceLocator();
+	tmdmService_<%=cid %>.setTMDMPortEndpointAddress(stub_<%=cid %>_<%=conn %>._getProperty("javax.xml.rpc.service.endpoint.address").toString());
+	org.talend.mdm.webservice.TMDMService_PortType tmdmWS_<%=cid %> = tmdmService_<%=cid %>.getTMDMPort();
+	org.talend.mdm.webservice.TMDMServiceSoapBindingStub stub_<%=cid %> = (org.talend.mdm.webservice.TMDMServiceSoapBindingStub)tmdmWS_<%=cid %>;
+	stub_<%=cid %>.setUsername(stub_<%=cid %>_<%=conn %>.getUsername());
+	stub_<%=cid %>.setPassword(stub_<%=cid %>_<%=conn %>.getPassword());
 <%}else{%>
 	org.talend.mdm.webservice.TMDMService_PortType tmdmWS_<%=cid %> = (org.talend.mdm.webservice.TMDMService_PortType)globalMap.get("<%=conn%>");
 <%}%>
