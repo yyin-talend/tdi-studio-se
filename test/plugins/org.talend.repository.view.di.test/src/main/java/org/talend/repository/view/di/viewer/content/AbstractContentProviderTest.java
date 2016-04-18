@@ -55,9 +55,13 @@ public abstract class AbstractContentProviderTest {
 
     @AfterClass
     public static void clean() {
-        contentProvider.dispose();
-        contentProvider = null;
-        navContentService.dispose();
-        navContentService = null;
+        if (contentProvider != null) {
+            contentProvider.dispose();
+            contentProvider = null;
+        }
+        if (navContentService != null) {
+            navContentService.dispose();
+            navContentService = null;
+        }
     }
 }
