@@ -74,6 +74,35 @@ public class ComponentsUtils {
         return compService;
     }
 
+    private static Widget findWidgetFromForm(Form form, String propertyName, Property property) {
+        for (Widget widget : form.getWidgets()) {
+            if (widget.getContent() instanceof Property) {
+                Property myProperty = (Property) widget.getContent();
+                if (myProperty != null && myProperty.equals(property)) {
+                    return widget;
+                }
+            }
+            if (widget.getContent() instanceof Form) {
+                Form myForm = (Form) widget.getContent();
+                Widget myWidget = findWidgetFromForm(myForm, propertyName, property);
+                if (myWidget != null) {
+                    return myWidget;
+                }
+            }
+        }
+        return null;
+    }
+
+    public static Widget getWidgetFromPropertyName(ComponentProperties properties, String propertyName) {
+        for (Form form : properties.getForms()) {
+            Widget widget = findWidgetFromForm(form, propertyName, form.getProperties().getValuedProperty(propertyName));
+            if (widget != null) {
+                return widget;
+            }
+        }
+        return null;
+    }
+
     public static ComponentProperties getComponentProperties(String compName) {
         return getComponentService().getComponentProperties(compName);
     }
@@ -206,7 +235,7 @@ public class ComponentsUtils {
             param.setNumRow(rowNum);
             lastRN.set(rowNum);
             // handle form...
-            
+
             EParameterFieldType fieldType = getFieldType(widget, widgetProperty);
             param.setFieldType(fieldType != null ? fieldType : EParameterFieldType.TEXT);
             if (widgetProperty instanceof PresentationItem) {

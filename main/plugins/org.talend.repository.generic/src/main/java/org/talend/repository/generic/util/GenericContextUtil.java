@@ -22,6 +22,8 @@ import org.talend.components.api.properties.ComponentProperties;
 import org.talend.core.language.ECodeLanguage;
 import org.talend.core.model.context.ContextUtils;
 import org.talend.core.model.metadata.builder.connection.Connection;
+import org.talend.core.model.metadata.types.JavaType;
+import org.talend.core.model.metadata.types.JavaTypesManager;
 import org.talend.core.model.process.IContextParameter;
 import org.talend.core.model.properties.ContextItem;
 import org.talend.core.model.utils.ContextParameterUtils;
@@ -30,6 +32,8 @@ import org.talend.core.utils.TalendQuoteUtils;
 import org.talend.daikon.NamedThing;
 import org.talend.daikon.properties.Properties.Deserialized;
 import org.talend.daikon.properties.Property;
+import org.talend.daikon.properties.presentation.Widget;
+import org.talend.daikon.properties.presentation.Widget.WidgetType;
 import org.talend.designer.core.generic.utils.ComponentsUtils;
 import org.talend.designer.core.model.utils.emf.talendfile.ContextType;
 import org.talend.metadata.managment.ui.model.IConnParamName;
@@ -58,10 +62,17 @@ public class GenericContextUtil {
                     GenericConnParamName connParamName = (GenericConnParamName) param;
                     String name = connParamName.getName();
                     ComponentProperties componentProperties = getComponentProperties((GenericConnection) connection);
+                    JavaType type = JavaTypesManager.STRING;
+                    Widget widget = ComponentsUtils.getWidgetFromPropertyName(componentProperties, name);
+                    if (widget != null) {
+                        if (widget.getWidgetType() == WidgetType.HIDDEN_TEXT) {
+                            type = JavaTypesManager.PASSWORD;
+                        }
+                    }
                     Object paramValue = ComponentsUtils.getGenericPropertyValue(componentProperties, name);
                     paramName = paramPrefix + connParamName.getContextVar();
                     String value = paramValue == null ? null : String.valueOf(paramValue);
-                    ConnectionContextHelper.createParameters(varList, paramName, value);
+                    ConnectionContextHelper.createParameters(varList, paramName, value, type);
                 }
             }
         }
