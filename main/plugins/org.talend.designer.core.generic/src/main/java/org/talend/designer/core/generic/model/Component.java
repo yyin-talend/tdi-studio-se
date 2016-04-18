@@ -161,7 +161,7 @@ public class Component extends AbstractBasicComponent {
             NodeReturn nodeRet = null;
             for (Property children : returns.getChildren()) {
                 nodeRet = new NodeReturn();
-                nodeRet.setType(children.getType().name());
+                nodeRet.setType(ComponentsUtils.getTalendTypeFromPropertyType(children.getType()).getId());
                 nodeRet.setDisplayName(children.getDisplayName());
                 nodeRet.setName(children.getName());
                 Object object = children.getTaggedValue(IGenericConstants.AVAILABILITY);

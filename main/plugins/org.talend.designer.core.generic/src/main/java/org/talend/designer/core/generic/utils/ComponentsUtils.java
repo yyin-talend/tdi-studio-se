@@ -33,6 +33,8 @@ import org.talend.components.api.properties.ComponentProperties;
 import org.talend.components.api.service.ComponentService;
 import org.talend.core.model.components.IComponent;
 import org.talend.core.model.components.IComponentsFactory;
+import org.talend.core.model.metadata.types.JavaType;
+import org.talend.core.model.metadata.types.JavaTypesManager;
 import org.talend.core.model.process.EComponentCategory;
 import org.talend.core.model.process.EConnectionType;
 import org.talend.core.model.process.EParameterFieldType;
@@ -544,6 +546,30 @@ public class ComponentsUtils {
             propertyName = propertyName.substring(propertyName.lastIndexOf(IGenericConstants.EXP_SEPARATOR) + 1);
         }
         return propertyName;
+    }
+
+    public static JavaType getTalendTypeFromPropertyType(Property.Type type) {
+        switch (type) {
+        case BOOLEAN:
+            return JavaTypesManager.BOOLEAN;
+        case BYTE_ARRAY:
+            return JavaTypesManager.BYTE_ARRAY;
+        case DATE:
+        case DATETIME:
+            return JavaTypesManager.DATE;
+        case DECIMAL:
+            return JavaTypesManager.BIGDECIMAL;
+        case DOUBLE:
+            return JavaTypesManager.DOUBLE;
+        case DYNAMIC:
+            return JavaTypesManager.DYNAMIC;
+        case FLOAT:
+            return JavaTypesManager.FLOAT;
+        case INT:
+            return JavaTypesManager.INTEGER;
+        default:
+            return JavaTypesManager.STRING;
+        }
     }
 
     public static boolean isSupportContext(Property schemaElement) {
