@@ -1,67 +1,67 @@
 <COMPONENT>
-	<HEADER 
-	   PLATEFORM="ALL" 
-	   SERIAL="" 
-	   VERSION="0.101" 
-	   STATUS="ALPHA" 
-	   COMPATIBILITY="ALL" 
-	   AUTHOR="Talend" 
-	   RELEASE_DATE="20090320A" 
-	   STARTABLE="true"
-	   LOG4J_ENABLED="true">
-		<SIGNATURE></SIGNATURE>
-	</HEADER>
+    <HEADER 
+       PLATEFORM="ALL" 
+       SERIAL="" 
+       VERSION="0.101" 
+       STATUS="ALPHA" 
+       COMPATIBILITY="ALL" 
+       AUTHOR="Talend" 
+       RELEASE_DATE="20090320A" 
+       STARTABLE="true"
+       LOG4J_ENABLED="true">
+        <SIGNATURE></SIGNATURE>
+    </HEADER>
 
   <FAMILIES>
     <FAMILY>Talend MDM</FAMILY>
   </FAMILIES>
-	<DOCUMENTATION>
-		<URL />
-	</DOCUMENTATION>
-	<CONNECTORS>
-		<CONNECTOR CTYPE="FLOW" MAX_INPUT="0" MAX_OUTPUT="1"/>
-		<CONNECTOR CTYPE="ITERATE" MAX_OUTPUT="1" MAX_INPUT="1" />
-		<CONNECTOR CTYPE="SUBJOB_OK" MAX_INPUT="1" />
-		<CONNECTOR CTYPE="SUBJOB_ERROR" MAX_INPUT="1" />
-		<CONNECTOR CTYPE="COMPONENT_OK" />
-		<CONNECTOR CTYPE="COMPONENT_ERROR" />
-		<CONNECTOR CTYPE="RUN_IF" />
-	</CONNECTORS>
+    <DOCUMENTATION>
+        <URL />
+    </DOCUMENTATION>
+    <CONNECTORS>
+        <CONNECTOR CTYPE="FLOW" MAX_INPUT="0" MAX_OUTPUT="1"/>
+        <CONNECTOR CTYPE="ITERATE" MAX_OUTPUT="1" MAX_INPUT="1" />
+        <CONNECTOR CTYPE="SUBJOB_OK" MAX_INPUT="1" />
+        <CONNECTOR CTYPE="SUBJOB_ERROR" MAX_INPUT="1" />
+        <CONNECTOR CTYPE="COMPONENT_OK" />
+        <CONNECTOR CTYPE="COMPONENT_ERROR" />
+        <CONNECTOR CTYPE="RUN_IF" />
+    </CONNECTORS>
 
-	<PARAMETERS>
+    <PARAMETERS>
 
-		<PARAMETER
-	      NAME="SCHEMA"
-	      FIELD="SCHEMA_TYPE"
-	      REQUIRED="true"
-	      NUM_ROW="1"
-	    >
-	    </PARAMETER>
+        <PARAMETER
+          NAME="SCHEMA"
+          FIELD="SCHEMA_TYPE"
+          REQUIRED="true"
+          NUM_ROW="1"
+        >
+        </PARAMETER>
 
-	    <PARAMETER
-	      NAME="XMLFIELD"
-	      FIELD="COLUMN_LIST"
-	      REQUIRED="true"
-	      NUM_ROW="5"
-	    >
-	    </PARAMETER>
+        <PARAMETER
+          NAME="XMLFIELD"
+          FIELD="COLUMN_LIST"
+          REQUIRED="true"
+          NUM_ROW="5"
+        >
+        </PARAMETER>
 
-		<PARAMETER
-	      NAME="USE_EXISTING_CONNECTION"
-	      FIELD="CHECK"
-	      NUM_ROW="10"
-	   >
-	      <DEFAULT>false</DEFAULT>
-	   </PARAMETER>
-	   <PARAMETER
-	      NAME="CONNECTION"
-	      FIELD="COMPONENT_LIST"
-	      REQUIRED="true" FILTER="tMDMConnection"
-	      NUM_ROW="15"
-	      SHOW_IF="USE_EXISTING_CONNECTION == 'true'"
-	    />
-	    
-	    <PARAMETER NAME="SERVERVERSION" FIELD="CLOSED_LIST" NUM_ROW="12" REQUIRED="true" SHOW_IF="USE_EXISTING_CONNECTION == 'false'" REPOSITORY_VALUE="MDM_VERSION">
+        <PARAMETER
+          NAME="USE_EXISTING_CONNECTION"
+          FIELD="CHECK"
+          NUM_ROW="10"
+       >
+          <DEFAULT>false</DEFAULT>
+       </PARAMETER>
+       <PARAMETER
+          NAME="CONNECTION"
+          FIELD="COMPONENT_LIST"
+          REQUIRED="true" FILTER="tMDMConnection"
+          NUM_ROW="15"
+          SHOW_IF="USE_EXISTING_CONNECTION == 'true'"
+        />
+        
+        <PARAMETER NAME="SERVERVERSION" FIELD="CLOSED_LIST" NUM_ROW="12" REQUIRED="true" SHOW_IF="USE_EXISTING_CONNECTION == 'false'" REPOSITORY_VALUE="MDM_VERSION">
             <ITEMS DEFAULT="SERVER_6_0">
                 <ITEM NAME="SERVER_6_0" VALUE="s60" />
                 <ITEM NAME="SERVER_5_6" VALUE="s56" />
@@ -72,20 +72,20 @@
             <DEFAULT>suggest to use 6.0 url</DEFAULT>
         </PARAMETER>
 
-		<PARAMETER NAME="MDMURL" FIELD="TEXT" NUM_ROW="20"
-			REQUIRED="true" SHOW_IF="USE_EXISTING_CONNECTION == 'false'">
-			<DEFAULT>"http://localhost:8180/talendmdm/services/soap"</DEFAULT>
-		</PARAMETER>
+        <PARAMETER NAME="MDMURL" FIELD="TEXT" NUM_ROW="20"
+            REQUIRED="true" SHOW_IF="USE_EXISTING_CONNECTION == 'false'">
+            <DEFAULT>"http://localhost:8180/talendmdm/services/soap"</DEFAULT>
+        </PARAMETER>
 
-		<PARAMETER NAME="USERNAME" FIELD="TEXT" REQUIRED="true"
-			NUM_ROW="30" SHOW_IF="USE_EXISTING_CONNECTION == 'false'">
-			<DEFAULT>"userName"</DEFAULT>
-		</PARAMETER>
+        <PARAMETER NAME="USERNAME" FIELD="TEXT" REQUIRED="true"
+            NUM_ROW="30" SHOW_IF="USE_EXISTING_CONNECTION == 'false'">
+            <DEFAULT>"userName"</DEFAULT>
+        </PARAMETER>
 
-		<PARAMETER NAME="PASSWORD" FIELD="PASSWORD" REQUIRED="true"
-			NUM_ROW="30" SHOW_IF="USE_EXISTING_CONNECTION == 'false'">
-			<DEFAULT>"password"</DEFAULT>
-		</PARAMETER>
+        <PARAMETER NAME="PASSWORD" FIELD="PASSWORD" REQUIRED="true"
+            NUM_ROW="30" SHOW_IF="USE_EXISTING_CONNECTION == 'false'">
+            <DEFAULT>"password"</DEFAULT>
+        </PARAMETER>
 
         <PARAMETER NAME="DATACLUSTER" FIELD="TEXT" REQUIRED="true"
             NUM_ROW="35">
@@ -99,77 +99,78 @@
             </ITEMS>
         </PARAMETER>
 
-		<PARAMETER NAME="VIEWNAME" FIELD="TEXT" REQUIRED="true"
-			NUM_ROW="40">
-			<DEFAULT>""</DEFAULT>
-		</PARAMETER>
+        <PARAMETER NAME="VIEWNAME" FIELD="TEXT" REQUIRED="true"
+            NUM_ROW="40">
+            <DEFAULT>""</DEFAULT>
+        </PARAMETER>
 
-		<PARAMETER NAME="OPERATIONS" FIELD="TABLE" NUM_ROW="50" >
-	      <ITEMS>
-	        <ITEM NAME="XPATH" FIELD="TEXT" />
+        <PARAMETER NAME="OPERATIONS" FIELD="TABLE" NUM_ROW="50" >
+          <ITEMS>
+            <ITEM NAME="XPATH" FIELD="TEXT" />
 
-	        <ITEM NAME="FUNCTION" FIELD="CLOSED_LIST">
-	          <ITEMS DEFAULT="CONTAINS">
-	            <ITEM NAME="CONTAINS"  VALUE="CONTAINS"/>
-	            <ITEM NAME="JOIN" VALUE="JOIN" />
-	            <ITEM NAME="STARTSWITH"    VALUE="STARTSWITH"/>
-	            <ITEM NAME="EQUAL"    VALUE="EQUALS"/>
-	            <ITEM NAME="NOTEQUAL"    VALUE="NOT_EQUALS"/>
-	            <ITEM NAME="GREATER"    VALUE="GREATER_THAN"/>
-	            <ITEM NAME="GREATEROREQUAL"    VALUE="GREATER_THAN_OR_EQUAL"/>
-	            <ITEM NAME="LOWER"    VALUE="LOWER_THAN"/>
-	            <ITEM NAME="LOWEROREQUAL"    VALUE="LOWER_THAN_OR_EQUAL"/>
+            <ITEM NAME="FUNCTION" FIELD="CLOSED_LIST">
+              <ITEMS DEFAULT="CONTAINS">
+                <ITEM NAME="CONTAINS"  VALUE="CONTAINS"/>
+                <ITEM NAME="CONTAINS_SENTENCE"  VALUE="CONTAINS_SENTENCE"/>
+                <ITEM NAME="JOIN" VALUE="JOIN" />
+                <ITEM NAME="STARTSWITH"    VALUE="STARTSWITH"/>
+                <ITEM NAME="EQUAL"    VALUE="EQUALS"/>
+                <ITEM NAME="NOTEQUAL"    VALUE="NOT_EQUALS"/>
+                <ITEM NAME="GREATER"    VALUE="GREATER_THAN"/>
+                <ITEM NAME="GREATEROREQUAL"    VALUE="GREATER_THAN_OR_EQUAL"/>
+                <ITEM NAME="LOWER"    VALUE="LOWER_THAN"/>
+                <ITEM NAME="LOWEROREQUAL"    VALUE="LOWER_THAN_OR_EQUAL"/>
                 <ITEM NAME="FULLTEXTSEARCH" VALUE="FULLTEXTSEARCH" />
                 <ITEM NAME="EMPTYNULL" VALUE="EMPTY_NULL"/>
-	          </ITEMS>
-	        </ITEM>
+              </ITEMS>
+            </ITEM>
 
-	        <ITEM NAME="VALUE" FIELD="TEXT" />
+            <ITEM NAME="VALUE" FIELD="TEXT" />
 
-	        <ITEM NAME="PREDICATE" FIELD="CLOSED_LIST">
-	        	<ITEMS DEFAULT="NONE">
-	        		<ITEM NAME="NONE" VALUE="NONE" />
-	        		<ITEM NAME="OR" VALUE="OR" />
-	        		<ITEM NAME="AND" VALUE="AND" />
-	        		<ITEM NAME="STRICTAND" VALUE="STRICTAND" />
-	        		<ITEM NAME="EXACTLY" VALUE="EXACTLY" />
-	        		<ITEM NAME="NOT" VALUE="NOT" />
-	        	</ITEMS>
-	        </ITEM>
-	      </ITEMS>
-		</PARAMETER>
+            <ITEM NAME="PREDICATE" FIELD="CLOSED_LIST">
+                <ITEMS DEFAULT="NONE">
+                    <ITEM NAME="NONE" VALUE="NONE" />
+                    <ITEM NAME="OR" VALUE="OR" />
+                    <ITEM NAME="AND" VALUE="AND" />
+                    <ITEM NAME="STRICTAND" VALUE="STRICTAND" />
+                    <ITEM NAME="EXACTLY" VALUE="EXACTLY" />
+                    <ITEM NAME="NOT" VALUE="NOT" />
+                </ITEMS>
+            </ITEM>
+          </ITEMS>
+        </PARAMETER>
 
-		<PARAMETER NAME="ORDER_TABLE" FIELD="TABLE" NUM_ROW="60" >
-	      <ITEMS>
-	      	<ITEM NAME="XPATH" FIELD="TEXT" />
-	      	<ITEM NAME="ORDER" FIELD="CLOSED_LIST">
-	        	<ITEMS DEFAULT="ASC">
-	        		<ITEM NAME="ASC" VALUE="ascending" />
-	        		<ITEM NAME="DESC" VALUE="descending" />
-	        	</ITEMS>
-	        </ITEM>
-	      </ITEMS>
-		</PARAMETER>
+        <PARAMETER NAME="ORDER_TABLE" FIELD="TABLE" NUM_ROW="60" >
+          <ITEMS>
+            <ITEM NAME="XPATH" FIELD="TEXT" />
+            <ITEM NAME="ORDER" FIELD="CLOSED_LIST">
+                <ITEMS DEFAULT="ASC">
+                    <ITEM NAME="ASC" VALUE="ascending" />
+                    <ITEM NAME="DESC" VALUE="descending" />
+                </ITEMS>
+            </ITEM>
+          </ITEMS>
+        </PARAMETER>
 
-		<PARAMETER NAME="SPELLTHREHOLD" FIELD="TEXT" NUM_ROW="70">
-			<DEFAULT>-1</DEFAULT>
-		</PARAMETER>
-		<PARAMETER NAME="SKIP" FIELD="TEXT" NUM_ROW="70">
-			<DEFAULT>0</DEFAULT>
-		</PARAMETER>
+        <PARAMETER NAME="SPELLTHREHOLD" FIELD="TEXT" NUM_ROW="70">
+            <DEFAULT>-1</DEFAULT>
+        </PARAMETER>
+        <PARAMETER NAME="SKIP" FIELD="TEXT" NUM_ROW="70">
+            <DEFAULT>0</DEFAULT>
+        </PARAMETER>
 
-		<PARAMETER NAME="MAXVALUE" FIELD="TEXT" NUM_ROW="70">
-			<DEFAULT>-1</DEFAULT>
-		</PARAMETER>
+        <PARAMETER NAME="MAXVALUE" FIELD="TEXT" NUM_ROW="70">
+            <DEFAULT>-1</DEFAULT>
+        </PARAMETER>
 
 
-	</PARAMETERS>
+    </PARAMETERS>
 
-	<ADVANCED_PARAMETERS>
-		<PARAMETER NAME="FETCHSIZE" FIELD="TEXT" NUM_ROW="20" >
-			<DEFAULT>-1</DEFAULT>
-		</PARAMETER>
-	</ADVANCED_PARAMETERS>
+    <ADVANCED_PARAMETERS>
+        <PARAMETER NAME="FETCHSIZE" FIELD="TEXT" NUM_ROW="20" >
+            <DEFAULT>-1</DEFAULT>
+        </PARAMETER>
+    </ADVANCED_PARAMETERS>
 
   <CODEGENERATION>
     <IMPORTS>
@@ -394,7 +395,7 @@
     </IMPORTS>
   </CODEGENERATION>
 
-	<RETURNS>
-		<RETURN NAME="NB_LINE" TYPE="id_Integer" AVAILABILITY="AFTER" />
-	</RETURNS>
+    <RETURNS>
+        <RETURN NAME="NB_LINE" TYPE="id_Integer" AVAILABILITY="AFTER" />
+    </RETURNS>
 </COMPONENT>
