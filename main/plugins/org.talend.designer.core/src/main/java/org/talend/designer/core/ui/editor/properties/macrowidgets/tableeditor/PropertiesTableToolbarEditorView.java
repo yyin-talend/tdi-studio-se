@@ -102,7 +102,7 @@ public class PropertiesTableToolbarEditorView extends ExtendedToolbarView {
                 if (model != null
                         && !model.getElemParameter().getElement().isReadOnly()
                         && (model.getElemParameter().getName().equals("HADOOP_ADVANCED_PROPERTIES") || model.getElemParameter()
-                                .getName().equals("HBASE_PARAMETERS"))) {
+                                .getName().equals("HBASE_PARAMETERS")) && !model.getElemParameter().isRepositoryValueUsed()) {
                     return true;
                 }
                 return super.getEnabledState() && (model == null || !model.getElemParameter().isBasedOnSubjobStarts());
