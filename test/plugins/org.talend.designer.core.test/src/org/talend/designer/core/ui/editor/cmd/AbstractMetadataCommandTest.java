@@ -33,10 +33,10 @@ import org.talend.daikon.properties.Properties.Deserialized;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.model.components.ElementParameter;
 import org.talend.designer.core.model.components.EmfComponent;
+import org.talend.designer.core.test.util.IMetadataTableConstants;
+import org.talend.designer.core.test.util.MetadataUtils;
 import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.process.Process;
-import org.talend.test.utils.MetadataUtils;
-import org.talend.test.utils.constants.IMetadataTableConstants;
 import org.talend.test.utils.testproperties.SchemaProperties;
 
 /**
