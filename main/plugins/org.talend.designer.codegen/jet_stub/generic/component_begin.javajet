@@ -103,7 +103,12 @@ for (Component.CodegenPropInfo propInfo : propsToProcess) { // propInfo
                     %>
                     props_<%=cid %><%=propInfo.fieldName%>.setValue("<%=property.getName()%>",table_<%=cid %><%=propInfo.fieldName%>);                    
                     <%
-            } else if (value != null && (!(value instanceof String) || !((String)value).equals(""))) { // if
+            }  else if (property.isFlag(Property.Flags.ENCRYPT) && ElementParameterParser.canEncryptValue(property.getStringValue())) {
+                    %>
+                    props_<%=cid %><%=propInfo.fieldName%>.setValue("<%=property.getName()%>",
+                    routines.system.PasswordEncryptUtil.decryptPassword(<%=component.getCodegenValue(property, property.getStringValue())%>));
+                    <%
+            } else if (value != null && (!(value instanceof String) || !((String)value).equals(""))) { // if                    
 					%>
                     props_<%=cid %><%=propInfo.fieldName%>.setValue("<%=property.getName()%>",
                     <%=component.getCodegenValue(property, property.getStringValue())%>);

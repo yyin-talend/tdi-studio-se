@@ -45,6 +45,7 @@ import org.talend.core.model.param.ERepositoryCategoryType;
 import org.talend.core.model.process.EComponentCategory;
 import org.talend.core.model.process.EConnectionType;
 import org.talend.core.model.process.EParameterFieldType;
+import org.talend.core.model.process.ElementParameterParser;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.INode;
 import org.talend.core.model.process.INodeConnector;
@@ -981,6 +982,9 @@ public class Component extends AbstractBasicComponent {
     }
 
     public String getCodegenValue(Property property, String value) {
+        if (property.isFlag(Property.Flags.ENCRYPT)) {
+            return ElementParameterParser.getEncryptedValue(value);
+        }
         if (Boolean.valueOf(String.valueOf(property.getTaggedValue(IGenericConstants.ADD_QUOTES)))) {
             return "\"" + value + "\"";//$NON-NLS-1$ //$NON-NLS-2$ 
         }
