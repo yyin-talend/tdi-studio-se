@@ -22,6 +22,8 @@ import org.talend.components.api.properties.ComponentProperties;
 import org.talend.core.language.ECodeLanguage;
 import org.talend.core.model.context.ContextUtils;
 import org.talend.core.model.metadata.builder.connection.Connection;
+import org.talend.core.model.metadata.types.JavaType;
+import org.talend.core.model.metadata.types.JavaTypesManager;
 import org.talend.core.model.process.IContextParameter;
 import org.talend.core.model.properties.ContextItem;
 import org.talend.core.model.utils.ContextParameterUtils;
@@ -58,10 +60,14 @@ public class GenericContextUtil {
                     GenericConnParamName connParamName = (GenericConnParamName) param;
                     String name = connParamName.getName();
                     ComponentProperties componentProperties = getComponentProperties((GenericConnection) connection);
-                    Object paramValue = ComponentsUtils.getGenericPropertyValue(componentProperties, name);
+                    Property property = componentProperties.getValuedProperty(name);
                     paramName = paramPrefix + connParamName.getContextVar();
-                    String value = paramValue == null ? null : String.valueOf(paramValue);
-                    ConnectionContextHelper.createParameters(varList, paramName, value);
+                    JavaType type = JavaTypesManager.STRING;
+                    if (property.isFlag(Property.Flags.ENCRYPT)) {
+                        type = JavaTypesManager.PASSWORD;
+                    }
+                    String value = property == null || property.getValue() == null ? null : String.valueOf(property.getValue());
+                    ConnectionContextHelper.createParameters(varList, paramName, value, type);
                 }
             }
         }
