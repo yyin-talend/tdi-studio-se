@@ -102,10 +102,14 @@ public class FileController extends AbstractElementPropertySectionController {
         String file = dial.open();
         if (file != null) {
             if (!file.equals("")) { //$NON-NLS-1$
-                if (!elem.getPropertyValue(propertyName).equals(file)) {
+                if (!file.equals(elem.getPropertyValue(propertyName))) {
                     String portableValue = Path.fromOSString(file).toPortableString();
                     filePathText.setText(TalendTextUtils.addQuotes(portableValue));
-                    return new PropertyChangeCommand(elem, propertyName, TalendTextUtils.addQuotes(portableValue));
+                    if (isInWizard()) {
+                        return new PropertyChangeCommand(elem, propertyName, portableValue);
+                    } else {
+                        return new PropertyChangeCommand(elem, propertyName, TalendTextUtils.addQuotes(portableValue));
+                    }
                 }
             }
         }
