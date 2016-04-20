@@ -743,7 +743,7 @@ if(isLog4jEnabled){
 <%
 }
 %>
-java.io.BufferedReader lr_<%=cid %> = new java.io.BufferedReader(new java.io.FileReader(logf_<%=cid %>));
+java.io.BufferedReader lr_<%=cid %> = null;
 int nb_line_data_<%=cid %> = 0;
 int nb_line_bad_<%=cid %> = 0;
 int nb_line_inserted_<%=cid %> = 0;
@@ -770,10 +770,10 @@ class LogUtil_<%=cid%>{
         return number;
     }
 	
-	public java.io.BufferedReader parseLogFileWithDirect(java.io.BufferedReader lr, String logf) throws java.io.IOException
+	public java.io.BufferedReader parseLogFileWithDirect(String logf) throws java.io.IOException
 	{
 		String tempLine = "";
-		lr = new java.io.BufferedReader(new java.io.FileReader(logf));
+		java.io.BufferedReader lr = new java.io.BufferedReader(new java.io.FileReader(logf));
 		java.util.List<String> logLineList = new java.util.ArrayList<String>();
 		while ((tempLine = lr.readLine() )!= null) {
 			logLineList.add(tempLine);
@@ -807,9 +807,10 @@ class LogUtil_<%=cid%>{
 		return lr;
 	}
 	
-	public java.io.BufferedReader parseLogFileWithoutDirect(java.io.BufferedReader lr, String logf, String tableName) throws java.io.IOException
+	public java.io.BufferedReader parseLogFileWithoutDirect(String logf, String tableName) throws java.io.IOException
 	{
 		String tempLine = "";
+		java.io.BufferedReader lr = new java.io.BufferedReader(new java.io.FileReader(logf));
 		int countLines =0;//log file lines count
 		int lastTableLine = 0;//Line Number of the last table name
 		while ((tempLine = lr.readLine() )!= null) {
@@ -850,10 +851,10 @@ class LogUtil_<%=cid%>{
 LogUtil_<%=cid%> lu_<%=cid%> = new LogUtil_<%=cid%>();
 
 if(isDirect){
-	lr_<%=cid %> = lu_<%=cid%>.parseLogFileWithDirect(lr_<%=cid %>, logf_<%=cid %>);		
+	lr_<%=cid %> = lu_<%=cid%>.parseLogFileWithDirect(logf_<%=cid %>);		
 }		
 else{
-	lr_<%=cid %> = lu_<%=cid%>.parseLogFileWithoutDirect(lr_<%=cid %>, logf_<%=cid %>, tableName_<%=cid%>);	
+	lr_<%=cid %> = lu_<%=cid%>.parseLogFileWithoutDirect(logf_<%=cid %>, tableName_<%=cid%>);	
 }
 
 nb_line_data_<%=cid %> = lu_<%=cid%>.getNumber(lr_<%=cid %>);//get the number of data line
