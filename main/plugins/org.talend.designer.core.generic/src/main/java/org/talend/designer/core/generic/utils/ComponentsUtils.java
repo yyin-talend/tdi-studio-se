@@ -21,6 +21,7 @@ import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.apache.commons.lang.StringUtils;
+import org.eclipse.swt.graphics.RGB;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.FrameworkUtil;
 import org.osgi.framework.ServiceReference;
@@ -622,12 +623,17 @@ public class ComponentsUtils {
         if (nodeConnector.getName() == null) {
             nodeConnector.setName(originalConnectorName);
             nodeConnector.setBaseSchema(currentType.getName());
-            if (IGenericConstants.REJECT_CONNECTOR_NAME.equals(originalConnectorName)) {
-                nodeConnector.setMenuName("Reject"); //$NON-NLS-1$
-                nodeConnector.setLinkName("Reject"); //$NON-NLS-1$
-            }
         }
-        setConnectionProperty(currentType, nodeConnector);
+        if (IGenericConstants.REJECT_CONNECTOR_NAME.equals(originalConnectorName)) {
+            // set default color / name setup for reject links
+            RGB rgb = new RGB(255, 0, 0);
+            nodeConnector.addConnectionProperty(currentType, rgb, 2);
+            nodeConnector.getConnectionProperty(currentType).setRGB(rgb);
+            nodeConnector.setMenuName("Reject"); //$NON-NLS-1$
+            nodeConnector.setLinkName("Reject"); //$NON-NLS-1$
+        } else {
+            setConnectionProperty(currentType, nodeConnector);
+        }
 
         // if kind is "flow" (main type), then add the same for the lookup and merge.
         setConnectionProperty(EConnectionType.FLOW_REF, nodeConnector);
