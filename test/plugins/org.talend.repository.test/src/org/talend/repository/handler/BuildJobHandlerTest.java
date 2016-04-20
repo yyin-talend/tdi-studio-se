@@ -1,6 +1,6 @@
 package org.talend.repository.handler;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 import java.io.File;
 import java.net.URL;
@@ -61,7 +61,7 @@ public class BuildJobHandlerTest {
     }
 
     @Test
-    public void testBuildJobDenpendenciesCheck() throws Exception {
+    public void testBuildJob() throws Exception {
         Map<ExportChoice, Object> exportChoiceMap = new HashMap<ExportChoice, Object>();
         exportChoiceMap.put(ExportChoice.needLauncher, true);
         exportChoiceMap.put(ExportChoice.needSystemRoutine, true);
