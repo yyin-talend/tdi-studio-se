@@ -733,6 +733,12 @@ public class Component extends AbstractBasicComponent {
             }
         }
 
+        addTypeIfNeeded(listConnector, EConnectionType.RUN_IF, parentNode);
+        addTypeIfNeeded(listConnector, EConnectionType.ON_COMPONENT_OK, parentNode);
+        addTypeIfNeeded(listConnector, EConnectionType.ON_COMPONENT_ERROR, parentNode);
+        addTypeIfNeeded(listConnector, EConnectionType.ON_SUBJOB_OK, parentNode);
+        addTypeIfNeeded(listConnector, EConnectionType.ON_SUBJOB_ERROR, parentNode);
+
         for (int i = 0; i < EConnectionType.values().length; i++) {
             EConnectionType currentType = EConnectionType.values()[i];
 
@@ -771,6 +777,34 @@ public class Component extends AbstractBasicComponent {
             }
         }
         return listConnector;
+    }
+
+    /**
+     * Add default connector type, if not already defined by component.
+     * 
+     * @param listConnector
+     * @param type
+     * @param parentNode
+     * @return
+     */
+    private boolean addTypeIfNeeded(List<NodeConnector> listConnector, EConnectionType type, INode parentNode) {
+        boolean typeNeeded = true;
+        for (NodeConnector connector : listConnector) {
+            if (connector.getDefaultConnectionType().equals(type)) {
+                typeNeeded = false;
+                break;
+            }
+        }
+        if (typeNeeded) {
+            NodeConnector nodeConnector = new NodeConnector(parentNode);
+            nodeConnector.setName(type.getName());
+            nodeConnector.setDefaultConnectionType(type);
+            nodeConnector.setLinkName(type.getDefaultLinkName());
+            nodeConnector.setMenuName(type.getDefaultMenuName());
+            nodeConnector.addConnectionProperty(type, type.getRGB(), type.getDefaultLineStyle());
+            listConnector.add(nodeConnector);
+        }
+        return false;
     }
 
     @Override
