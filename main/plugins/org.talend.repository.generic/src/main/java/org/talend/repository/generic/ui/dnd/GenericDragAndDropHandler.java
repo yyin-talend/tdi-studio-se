@@ -222,7 +222,7 @@ public class GenericDragAndDropHandler extends AbstractDragAndDropServiceHandler
         if (connection != null && param != null && param instanceof GenericElementParameter) {
             if (connection.getCompProperties() == null) {
                 GenericElementParameter genericParam = (GenericElementParameter) param;
-                connection.setCompProperties(genericParam.getComponentProperties().toSerialized());
+                connection.setCompProperties(genericParam.getRootProperties().toSerialized());
             }
         }
     }

@@ -120,12 +120,12 @@ public class ComponentsUtils {
     }
 
     public static List<ElementParameter> getParametersFromForm(IElement element, Form form) {
-        return getParametersFromForm(element, null, null, form);
+        return getParametersFromForm(element, null, (ComponentProperties) form.getProperties(), form);
     }
 
     public static List<ElementParameter> getParametersFromForm(IElement element, EComponentCategory category,
             ComponentProperties compProperties, Form form) {
-        return getParametersFromForm(element, category, compProperties, null, form, null, null);
+        return getParametersFromForm(element, category, compProperties, compProperties, null, form, null, null);
     }
 
     /**
@@ -140,8 +140,8 @@ public class ComponentsUtils {
      * @return parameters list
      */
     private static List<ElementParameter> getParametersFromForm(IElement element, EComponentCategory category,
-            ComponentProperties compProperties, String parentPropertiesPath, Form form, Widget parentWidget,
-            AtomicInteger lastRowNum) {
+            ComponentProperties rootProperty, ComponentProperties compProperties, String parentPropertiesPath, Form form,
+            Widget parentWidget, AtomicInteger lastRowNum) {
         List<ElementParameter> elementParameters = new ArrayList<>();
         List<String> parameterNames = new ArrayList<>();
         EComponentCategory compCategory = category;
@@ -184,12 +184,12 @@ public class ComponentsUtils {
                 if (!isSameComponentProperties(componentProperties, widgetProperty)) {
                     propertiesPath = getPropertiesPath(parentPropertiesPath, subProperties.getName());
                 }
-                elementParameters.addAll(getParametersFromForm(element, compCategory, subProperties, propertiesPath, subForm,
-                        widget, lastRN));
+                elementParameters.addAll(getParametersFromForm(element, compCategory, rootProperty, subProperties,
+                        propertiesPath, subForm, widget, lastRN));
                 continue;
             }
 
-            GenericElementParameter param = new GenericElementParameter(element, componentProperties, form, widget,
+            GenericElementParameter param = new GenericElementParameter(element, rootProperty, form, widget,
                     getComponentService());
             String parameterName = propertiesPath.concat(param.getName());
             param.setName(parameterName);
@@ -208,7 +208,7 @@ public class ComponentsUtils {
             param.setNumRow(rowNum);
             lastRN.set(rowNum);
             // handle form...
-            
+
             EParameterFieldType fieldType = getFieldType(widget, widgetProperty);
             param.setFieldType(fieldType != null ? fieldType : EParameterFieldType.TEXT);
             if (widgetProperty instanceof PresentationItem) {
@@ -299,8 +299,6 @@ public class ComponentsUtils {
                     param.setListItemsNotShowIf(listItemsNotShowIf);
 
                 }
-            } else {
-                param.setComponentProperties((ComponentProperties) widgetProperty);
             }
             param.setReadOnly(false);
             param.setSerialized(true);
@@ -344,7 +342,7 @@ public class ComponentsUtils {
             PresentationItem pi = (PresentationItem) content;
             Form formtoShow = pi.getFormtoShow();
             List<ElementParameter> parametersFromForm = getParametersFromForm(parameter.getElement(), parameter.getCategory(),
-                    parameter.getComponentProperties(), formtoShow);
+                    parameter.getRootProperties(), formtoShow);
             params.addAll(parametersFromForm);
         }
         return params;
@@ -427,7 +425,7 @@ public class ComponentsUtils {
         return null;
     }
 
-    public static ComponentProperties getCurrentComponentPropertiesSpecial(ComponentProperties componentProperties,
+    private static ComponentProperties getCurrentComponentPropertiesSpecial(ComponentProperties componentProperties,
             String paramName) {
         ComponentProperties currentComponentProperties = null;
         if (componentProperties == null || paramName == null) {

@@ -1066,7 +1066,6 @@ public class Component extends AbstractBasicComponent {
                 ComponentProperties paramComponentProperties = ComponentsUtils.getCurrentComponentProperties(
                         iNodeComponentProperties, param.getName());
                 if (paramComponentProperties != null) {
-                    ((GenericElementParameter) param).setComponentProperties(paramComponentProperties);
                     // update repository value
                     Property property = iNodeComponentProperties.getValuedProperty(param.getName());
                     if (property != null) {

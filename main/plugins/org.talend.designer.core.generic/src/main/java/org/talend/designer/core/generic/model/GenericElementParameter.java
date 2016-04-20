@@ -57,7 +57,7 @@ import org.talend.designer.core.ui.editor.nodes.Node;
  */
 public class GenericElementParameter extends ElementParameter {
 
-    private ComponentProperties componentProperties;
+    private ComponentProperties rootProperties;
 
     private Form form;
 
@@ -75,10 +75,10 @@ public class GenericElementParameter extends ElementParameter {
 
     private boolean drivedByForm;
 
-    public GenericElementParameter(IElement element, ComponentProperties componentProperties, Form form, Widget widget,
+    public GenericElementParameter(IElement element, ComponentProperties rootProperties, Form form, Widget widget,
             ComponentService componentService) {
         super(element);
-        this.componentProperties = componentProperties;
+        this.rootProperties = rootProperties;
         this.form = form;
         this.widget = widget;
         this.componentService = componentService;
@@ -115,7 +115,7 @@ public class GenericElementParameter extends ElementParameter {
     }
 
     private void updateProperty(Object newValue) {
-        if (componentProperties == null) {
+        if (getSubProperties() == null) {
             return;
         }
 
@@ -124,7 +124,7 @@ public class GenericElementParameter extends ElementParameter {
             Property se = (Property) widgetProperty;
             Object oldValue = se.getValue();
             if (newValue != null && !newValue.equals(oldValue)) {
-                se = (Property) componentProperties.getProperty(se.getName());
+                se = (Property) getSubProperties().getProperty(se.getName());
                 if (isDrivedByForm()) {
                     form.setValue(se.getName(), newValue);
                 } else {
@@ -140,7 +140,7 @@ public class GenericElementParameter extends ElementParameter {
             PresentationItem pi = (PresentationItem) widgetProperty;
             Form formtoShow = pi.getFormtoShow();
             if (formtoShow != null) {
-                fireShowDialogEvent(componentProperties.getForm(formtoShow.getName()));
+                fireShowDialogEvent(getSubProperties().getForm(formtoShow.getName()));
             }
         }
     }
@@ -157,13 +157,13 @@ public class GenericElementParameter extends ElementParameter {
     private void fireValidateStatusEvent() {
         if (hasPropertyChangeListener()) {
             this.pcs.firePropertyChange(IElementParameterEventProperties.EVENT_VALIDATE_RESULT_UPDATE, null,
-                    componentProperties.getValidationResult());
+                    getSubProperties().getValidationResult());
         }
     }
 
     private void fireValueChangedEvent() {
         if (hasPropertyChangeListener()) {
-            List<Form> forms = componentProperties.getForms();
+            List<Form> forms = getSubProperties().getForms();
             for (Form f : forms) {
                 if (f.isRefreshUI()) {
                     this.pcs.firePropertyChange(IElementParameterEventProperties.EVENT_PROPERTY_VALUE_CHANGED, null, null);
@@ -191,7 +191,7 @@ public class GenericElementParameter extends ElementParameter {
 
                 @Override
                 protected void doWork() throws Throwable {
-                    componentProperties = componentService.beforePropertyPresent(getParameterName(), componentProperties);
+                    componentService.beforePropertyPresent(getParameterName(), getSubProperties());
                 }
             }.call();
         }
@@ -204,7 +204,7 @@ public class GenericElementParameter extends ElementParameter {
 
                 @Override
                 protected void doWork() throws Throwable {
-                    componentProperties = componentService.beforePropertyActivate(getParameterName(), componentProperties);
+                    componentService.beforePropertyActivate(getParameterName(), getSubProperties());
                     update();
                 }
             }.call();
@@ -213,7 +213,7 @@ public class GenericElementParameter extends ElementParameter {
     }
 
     private void update() {
-        NamedThing property = componentProperties.getProperty(getParameterName());
+        NamedThing property = getSubProperties().getProperty(getParameterName());
         if (property != null && property instanceof Property) {
             List<?> values = ((Property) property).getPossibleValues();
             if (values != null) {
@@ -228,7 +228,7 @@ public class GenericElementParameter extends ElementParameter {
 
                 @Override
                 protected void doWork() throws Throwable {
-                    componentProperties = componentService.validateProperty(getParameterName(), componentProperties);
+                    componentService.validateProperty(getParameterName(), getSubProperties());
                 }
             }.call();
         }
@@ -241,7 +241,7 @@ public class GenericElementParameter extends ElementParameter {
 
                 @Override
                 protected void doWork() throws Throwable {
-                    componentProperties = componentService.afterProperty(getParameterName(), componentProperties);
+                    componentService.afterProperty(getParameterName(), getSubProperties());
                     updateSchema();
                 }
             }.call();
@@ -259,7 +259,7 @@ public class GenericElementParameter extends ElementParameter {
                 String schemaPropertyName = oldTable.getAdditionalProperties().get(IComponentConstants.COMPONENT_SCHEMA_TAG);
                 Object schemaObj = null;
                 try {
-                    schemaObj = ComponentsUtils.getGenericPropertyValue(componentProperties, schemaPropertyName);
+                    schemaObj = ComponentsUtils.getGenericPropertyValue(rootProperties, schemaPropertyName);
                     if (schemaObj instanceof String) {
                         schemaObj = new Schema.Parser().parse((String) schemaObj);
                     }
@@ -267,7 +267,7 @@ public class GenericElementParameter extends ElementParameter {
                     // do nothing
                 }
                 if (schemaObj != null && schemaObj instanceof Schema) {
-                    MetadataTable metadataTable = SchemaUtils.createSchema(oldTable.getTableName(), componentProperties,
+                    MetadataTable metadataTable = SchemaUtils.createSchema(oldTable.getTableName(), rootProperties,
                             schemaPropertyName);
                     IMetadataTable newTable = MetadataToolHelper.convert(metadataTable);
                     if (!newTable.sameMetadataAs(oldTable)) {
@@ -379,13 +379,17 @@ public class GenericElementParameter extends ElementParameter {
     public Widget getWidget() {
         return this.widget;
     }
-
-    public ComponentProperties getComponentProperties() {
-        return this.componentProperties;
+    
+    private ComponentProperties getSubProperties() {
+        return ComponentsUtils.getCurrentComponentProperties(rootProperties, getName());
+    }
+    
+    public ComponentProperties getRootProperties() {
+        return this.rootProperties;
     }
 
-    public void setComponentProperties(ComponentProperties componentProperties) {
-        this.componentProperties = componentProperties;
+    public void setRootProperties(ComponentProperties rootProperties) {
+        this.rootProperties = rootProperties;
     }
 
     public boolean isSupportContext() {
