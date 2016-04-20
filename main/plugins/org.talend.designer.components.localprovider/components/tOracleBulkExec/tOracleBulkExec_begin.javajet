@@ -743,7 +743,7 @@ if(isLog4jEnabled){
 <%
 }
 %>
-java.io.BufferedReader lr_<%=cid %> = null;
+
 int nb_line_data_<%=cid %> = 0;
 int nb_line_bad_<%=cid %> = 0;
 int nb_line_inserted_<%=cid %> = 0;
@@ -849,21 +849,22 @@ class LogUtil_<%=cid%>{
 }
 
 LogUtil_<%=cid%> lu_<%=cid%> = new LogUtil_<%=cid%>();
+java.io.BufferedReader lr_<%=cid %> = null;
+try {
+	if(isDirect){
+		lr_<%=cid %> = lu_<%=cid%>.parseLogFileWithDirect(logf_<%=cid %>);		
+	}		
+	else{
+		lr_<%=cid %> = lu_<%=cid%>.parseLogFileWithoutDirect(logf_<%=cid %>, tableName_<%=cid%>);	
+	}
 
-if(isDirect){
-	lr_<%=cid %> = lu_<%=cid%>.parseLogFileWithDirect(logf_<%=cid %>);		
-}		
-else{
-	lr_<%=cid %> = lu_<%=cid%>.parseLogFileWithoutDirect(logf_<%=cid %>, tableName_<%=cid%>);	
+	nb_line_data_<%=cid %> = lu_<%=cid%>.getNumber(lr_<%=cid %>);//get the number of data line
+	nb_line_bad_<%=cid %> = lu_<%=cid%>.getNumber(lr_<%=cid %>);//get the number of reject data line
+	nb_line_discarded_<%=cid %> = lu_<%=cid%>.getNumber(lr_<%=cid %>);//get the number of discarded data line
+	nb_line_inserted_<%=cid %> = nb_line_data_<%=cid %> - nb_line_bad_<%=cid %> - nb_line_discarded_<%=cid %>;
+} finally {
+	lr_<%=cid %>.close();
 }
-
-nb_line_data_<%=cid %> = lu_<%=cid%>.getNumber(lr_<%=cid %>);//get the number of data line
-nb_line_bad_<%=cid %> = lu_<%=cid%>.getNumber(lr_<%=cid %>);//get the number of reject data line
-nb_line_discarded_<%=cid %> = lu_<%=cid%>.getNumber(lr_<%=cid %>);//get the number of discarded data line
-nb_line_inserted_<%=cid %> = nb_line_data_<%=cid %> - nb_line_bad_<%=cid %> - nb_line_discarded_<%=cid %>;
-
-lr_<%=cid %>.close();
-
 globalMap.put("<%=cid %>_NB_LINE_DATA", nb_line_data_<%=cid %>);
 
 globalMap.put("<%=cid %>_NB_LINE_BAD", nb_line_bad_<%=cid %>);
