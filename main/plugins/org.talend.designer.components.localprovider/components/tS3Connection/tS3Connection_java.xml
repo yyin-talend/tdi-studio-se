@@ -41,6 +41,7 @@
       FIELD="TEXT"
       NUM_ROW="20"
       REQUIRED="true"
+      SHOW_IF="INHERIT_CREDENTIALS == 'false'"
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
@@ -50,15 +51,25 @@
       FIELD="PASSWORD"
       NUM_ROW="20"
       REQUIRED="true"
+      SHOW_IF="INHERIT_CREDENTIALS == 'false'"
     >
       <DEFAULT>""</DEFAULT>
+    </PARAMETER>
+    
+    <PARAMETER
+      NAME="INHERIT_CREDENTIALS"
+      FIELD="CHECK"
+      NUM_ROW="21"
+      REQUIRED="true"
+    >
+      <DEFAULT>false</DEFAULT>
     </PARAMETER>
     
     <PARAMETER 
 	    NAME="REGION" 
 	    FIELD="OPENED_LIST" 
 	    RAW="true" 
-	    NUM_ROW="21" 
+	    NUM_ROW="22" 
 	    REQUIRED="true" 
 	 >
      	<ITEMS DEFAULT="DEFAULT">

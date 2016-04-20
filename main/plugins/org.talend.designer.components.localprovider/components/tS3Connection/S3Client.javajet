@@ -31,14 +31,22 @@
 			log.info("<%=cid%> - Creating new connection.");
 		<%
 		}
-	    String passwordFieldName = "__SECRET_KEY__";
-	    %>
-    
-    	<%@ include file="@{org.talend.designer.components.localprovider}/components/templates/password.javajet"%>
-
-		com.amazonaws.auth.AWSCredentials credentials_<%=cid%> = new com.amazonaws.auth.BasicAWSCredentials(<%=accessKey%>,decryptedPassword_<%=cid%>);
 		
+		boolean inherit_credentials = "true".equals(ElementParameterParser.getValue(node, "__INHERIT_CREDENTIALS__"));
+		if(!inherit_credentials) {
+	    	String passwordFieldName = "__SECRET_KEY__";
+	    	%>
+    
+    		<%@ include file="@{org.talend.designer.components.localprovider}/components/templates/password.javajet"%>
+
+			com.amazonaws.auth.AWSCredentials credentials_<%=cid%> = new com.amazonaws.auth.BasicAWSCredentials(<%=accessKey%>,decryptedPassword_<%=cid%>);
 		<%
+		} else {
+		%>
+		com.amazonaws.auth.AWSCredentialsProvider credentialsProvider_<%=cid%> = new com.amazonaws.auth.InstanceProfileCredentialsProvider();
+		<%
+		}
+		
 		boolean encrypt = "true".equals(ElementParameterParser.getValue(node,"__ENCRYPT__"));
 		
 		//work for tRedshiftOutputBulk
@@ -63,7 +71,7 @@
 		<%
 		} else if(encrypt && "KMS_CMK".equals(key_type)) {//KMS
 		%>
-			<%if (ElementParameterParser.canEncrypt(node, passwordFieldName)) {%> 
+			<%if (ElementParameterParser.canEncrypt(node, "__ENCRYPTED_KEY_CMK__")) {%> 
 			final String kms_cmk_<%=cid%> = routines.system.PasswordEncryptUtil.decryptPassword(<%=ElementParameterParser.getEncryptedValue(node, "__ENCRYPTED_KEY_CMK__")%>);
 			<%} else {%>
 			final String kms_cmk_<%=cid%> = <%= ElementParameterParser.getValue(node, "__ENCRYPTED_KEY_CMK__")%>; 
@@ -74,7 +82,7 @@
 		} else if(encrypt && "SYMMETRIC_MASTER_KEY".equals(key_type)) {//symmetric master key
 			if("AES".equals(algorithm_symmetric_master_key) && "BASE64".equals(encoding)) {
 			%>
-				<%if (ElementParameterParser.canEncrypt(node, passwordFieldName)) {%> 
+				<%if (ElementParameterParser.canEncrypt(node, "__ENCRYPTED_KEY_BASE64__")) {%> 
 				final String smk_<%=cid%> = routines.system.PasswordEncryptUtil.decryptPassword(<%=ElementParameterParser.getEncryptedValue(node, "__ENCRYPTED_KEY_BASE64__")%>);
 				<%} else {%>
 				final String smk_<%=cid%> = <%= ElementParameterParser.getValue(node, "__ENCRYPTED_KEY_BASE64__")%>; 
@@ -189,7 +197,10 @@
 			
 			if(encrypt) {
 			%>
-				com.amazonaws.services.s3.AmazonS3Client conn_<%=cid%> = new com.amazonaws.services.s3.AmazonS3EncryptionClient(credentials_<%=cid%>,encryptionMaterialsProvider_<%=cid%>, cc_<%=cid%>,
+				com.amazonaws.services.s3.AmazonS3Client conn_<%=cid%> = new com.amazonaws.services.s3.AmazonS3EncryptionClient(
+					<%if(!inherit_credentials) {%>credentials_<%=cid%><%} else {%>credentialsProvider_<%=cid%><%}%>,
+					encryptionMaterialsProvider_<%=cid%>, 
+					cc_<%=cid%>,
 					new com.amazonaws.services.s3.model.CryptoConfiguration()
 						<%if("KMS_CMK".equals(key_type) && set_region) {%>
 						.withAwsKmsRegion(com.amazonaws.regions.RegionUtils.getRegion(<%=region%>))
@@ -198,13 +209,18 @@
 			<%
 			} else {
 			%>
-				com.amazonaws.services.s3.AmazonS3Client conn_<%=cid%> = new com.amazonaws.services.s3.AmazonS3Client(credentials_<%=cid%>,cc_<%=cid%>);
+				com.amazonaws.services.s3.AmazonS3Client conn_<%=cid%> = new com.amazonaws.services.s3.AmazonS3Client(
+					<%if(!inherit_credentials) {%>credentials_<%=cid%><%} else {%>credentialsProvider_<%=cid%><%}%>,
+					cc_<%=cid%>
+				);
 			<%
 			}
 		}else{
 			if(encrypt) {
 			%>
-				com.amazonaws.services.s3.AmazonS3Client conn_<%=cid%> = new com.amazonaws.services.s3.AmazonS3EncryptionClient(credentials_<%=cid%>, encryptionMaterialsProvider_<%=cid%>,
+				com.amazonaws.services.s3.AmazonS3Client conn_<%=cid%> = new com.amazonaws.services.s3.AmazonS3EncryptionClient(
+					<%if(!inherit_credentials) {%>credentials_<%=cid%><%} else {%>credentialsProvider_<%=cid%><%}%>, 
+					encryptionMaterialsProvider_<%=cid%>,
 					new com.amazonaws.services.s3.model.CryptoConfiguration()
 						<%if("KMS_CMK".equals(key_type) && set_region) {%>
 						.withAwsKmsRegion(com.amazonaws.regions.RegionUtils.getRegion(<%=region%>))
@@ -213,7 +229,9 @@
 			<%
 			} else {
 			%>
-				com.amazonaws.services.s3.AmazonS3Client conn_<%=cid%> = new com.amazonaws.services.s3.AmazonS3Client(credentials_<%=cid%>);
+				com.amazonaws.services.s3.AmazonS3Client conn_<%=cid%> = new com.amazonaws.services.s3.AmazonS3Client(
+					<%if(!inherit_credentials) {%>credentials_<%=cid%><%} else {%>credentialsProvider_<%=cid%><%}%>
+				);
 			<%
 			}
 		}
