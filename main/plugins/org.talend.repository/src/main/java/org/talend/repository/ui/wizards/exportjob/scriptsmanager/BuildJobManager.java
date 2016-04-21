@@ -14,8 +14,11 @@ package org.talend.repository.ui.wizards.exportjob.scriptsmanager;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IWorkspace;
@@ -32,6 +35,7 @@ import org.eclipse.jface.viewers.StructuredSelection;
 import org.osgi.framework.FrameworkUtil;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.core.CorePlugin;
+import org.talend.core.model.process.JobInfo;
 import org.talend.core.model.process.ProcessUtils;
 import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.model.relationship.RelationshipItemBuilder;
@@ -41,6 +45,7 @@ import org.talend.core.runtime.process.IBuildJobHandler;
 import org.talend.core.ui.CoreUIPlugin;
 import org.talend.core.ui.services.IDesignerCoreUIService;
 import org.talend.designer.runprocess.ItemCacheManager;
+import org.talend.designer.runprocess.ProcessorUtilities;
 import org.talend.repository.ProjectManager;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.IRepositoryNode;
@@ -217,8 +222,20 @@ public class BuildJobManager {
                 creator.deleteTempFiles();
             }
             // TBD-2500
-            BDJobReArchieveCreator bdRecreator = new BDJobReArchieveCreator(processItem);
-            bdRecreator.create(jobZipFile);
+            Set<ProcessItem> processItems = new HashSet<ProcessItem>();
+            processItems.add(processItem);
+            // We get the father job childs.
+            Set<JobInfo> infos = ProcessorUtilities.getChildrenJobInfo(processItem);
+            Iterator<JobInfo> infoIterator = infos.iterator();
+            while (infoIterator.hasNext()) {
+                processItems.add(infoIterator.next().getProcessItem());
+            }
+
+            // We iterate over the job and its childs in order to re-archive them if needed.
+            for (ProcessItem pi : processItems) {
+                BDJobReArchieveCreator bdRecreator = new BDJobReArchieveCreator(pi, processItem);
+                bdRecreator.create(jobZipFile);
+            }
 
             File jobFileTarget = new File(destinationPath);
             if (jobFileTarget.isDirectory()) {
