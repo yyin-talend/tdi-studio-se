@@ -19,7 +19,6 @@ import java.util.Map;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PlatformUI;
 import org.talend.commons.runtime.xml.XmlUtil;
-import org.talend.core.GlobalServiceRegister;
 import org.talend.core.model.metadata.ColumnNameChanged;
 import org.talend.core.model.metadata.IMetadataColumn;
 import org.talend.core.model.metadata.IMetadataTable;
@@ -43,7 +42,6 @@ import org.talend.core.model.utils.ContextParameterUtils;
 import org.talend.core.model.utils.IDragAndDropServiceHandler;
 import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.core.repository.seeker.RepositorySeekerManager;
-import org.talend.core.runtime.services.IGenericWizardService;
 import org.talend.core.utils.TalendQuoteUtils;
 import org.talend.cwm.helper.SAPBWTableHelper;
 import org.talend.cwm.helper.TaggedValueHelper;
@@ -227,24 +225,6 @@ public class RepositoryChangeMetadataCommand extends ChangeMetadataCommand {
             }
             setTableRelevantParameterValues();
         }
-        if (!node.getMetadataList().isEmpty() && !node.getMetadataList().get(0).sameMetadataAs(newOutputMetadata)) {
-            IGenericWizardService wizardService = null;
-            if (GlobalServiceRegister.getDefault().isServiceRegistered(IGenericWizardService.class)) {
-                wizardService = (IGenericWizardService) GlobalServiceRegister.getDefault()
-                        .getService(IGenericWizardService.class);
-            }
-            Connection conn = connection;
-            if (conn == null) {
-                conn = getConnection();
-            }
-            if (wizardService != null && wizardService.isGenericConnection(conn)) {
-                IElementParameter schemaParam = node.getElementParameter(getSchemaElementParamName());
-                if (schemaParam != null) {
-                    wizardService.updateComponentSchema(node.getComponentProperties(), getSchemaElementParamName(),
-                            newOutputMetadata, schemaParam);
-                }
-            }
-        }
         super.setConnection(connection);
         super.execute();
         String propertyType = (String) node.getPropertyValue(EParameterName.PROPERTY_TYPE.getName());
@@ -304,10 +284,6 @@ public class RepositoryChangeMetadataCommand extends ChangeMetadataCommand {
             }
         }
         node.setPropertyValue(EParameterName.UPDATE_COMPONENTS.getName(), Boolean.TRUE);
-    }
-
-    private String getSchemaElementParamName() {
-        return propName == null ? "" : propName.substring(0, propName.indexOf(":")); //$NON-NLS-1$//$NON-NLS-2$
     }
 
     protected void setTableRelevantParameterValues() {
