@@ -22,6 +22,7 @@ import java.util.Properties;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.components.api.properties.ComponentProperties;
+import org.talend.components.api.properties.ComponentReferenceProperties;
 import org.talend.core.model.components.ComponentCategory;
 import org.talend.core.model.components.IComponent;
 import org.talend.core.model.components.ModifyComponentsAction;
@@ -82,20 +83,35 @@ public abstract class NewComponentFrameworkMigrationTask extends AbstractJobMigr
                                 + param.getName());
                         if (oldParamName != null) {
                             oldParamName = oldParamName.trim();
-                            ElementParameterType paramType = ParameterUtilTool.findParameterType(nodeType, oldParamName);
+                            ElementParameterType paramType = getParameterType(nodeType, oldParamName);
                             if (paramType != null) {
-                                ((Property) currNamedThing).setValue(ParameterUtilTool.convertParameterValue(paramType));
+                            	if(currNamedThing instanceof ComponentReferenceProperties){
+                            		ComponentReferenceProperties props = (ComponentReferenceProperties)currNamedThing;
+                            		props.referenceType.setValue(ComponentReferenceProperties.ReferenceType.COMPONENT_INSTANCE);
+                            		props.componentInstanceId.setValue(ParameterUtilTool.convertParameterValue(paramType));
+                            		props.componentInstanceId.setTaggedValue(IGenericConstants.ADD_QUOTES, true);
+                            	}else{
+                            		((Property) currNamedThing).setValue(ParameterUtilTool.convertParameterValue(paramType));
+                            	}
                                 ParameterUtilTool.removeParameterType(nodeType, paramType);
                                 modified = true;
+                            }else{
+                            	if(currNamedThing instanceof Property){
+                            		if(((Property) currNamedThing).isRequired() && Property.Type.STRING.equals(((Property) currNamedThing).getType())){
+                                		((Property) currNamedThing).setValue("\"\"");
+                                		modified = true;
+                                	}
+                            	}
+                            	
                             }
                             if (EParameterFieldType.SCHEMA_REFERENCE.equals(param.getFieldType())) {
                                 String schemaTypeName = ":" + EParameterName.SCHEMA_TYPE.getName();//$NON-NLS-1$
                                 String repSchemaTypeName = ":" + EParameterName.REPOSITORY_SCHEMA_TYPE.getName();//$NON-NLS-1$
-                                paramType = ParameterUtilTool.findParameterType(nodeType, oldParamName + schemaTypeName);
+                                paramType = getParameterType(nodeType, oldParamName + schemaTypeName);
                                 if (paramType != null) {
                                     paramType.setName(param.getName() + schemaTypeName);
                                 }
-                                paramType = ParameterUtilTool.findParameterType(nodeType, oldParamName + repSchemaTypeName);
+                                paramType = getParameterType(nodeType, oldParamName + repSchemaTypeName);
                                 if (paramType != null) {
                                     paramType.setName(param.getName() + repSchemaTypeName);
                                 }
@@ -143,6 +159,10 @@ public abstract class NewComponentFrameworkMigrationTask extends AbstractJobMigr
     protected Properties getPropertiesFromFile() {
         // with default implementation
         return new Properties();
+    }
+    
+    protected ElementParameterType getParameterType(NodeType node, String paramName) {
+        return ParameterUtilTool.findParameterType(node, paramName);
     }
 
     @Override
