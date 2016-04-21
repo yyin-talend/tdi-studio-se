@@ -54,12 +54,13 @@ public class BDJobReArchieveCreator {
 
     private static final String PLUGIN_ID = "org.talend.libraries.apache.storm"; //$NON-NLS-1$
 
-    private ProcessItem processItem;
+    private ProcessItem processItem, fatherProcessItem;
 
     private Boolean isMRWithHDInsight, isStormJob, isSparkWithHDInsight;
 
-    public BDJobReArchieveCreator(ProcessItem processItem) {
+    public BDJobReArchieveCreator(ProcessItem processItem, ProcessItem fatherProcessItem) {
         this.processItem = processItem;
+        this.fatherProcessItem = fatherProcessItem;
     }
 
     /**
@@ -131,7 +132,7 @@ public class BDJobReArchieveCreator {
     }
 
     public void create(File zipFile) {
-        if (zipFile == null || !zipFile.exists() || !zipFile.isFile()) {
+        if (zipFile == null || !zipFile.exists() || !zipFile.isFile() || fatherProcessItem == null) {
             return;
         }
 
@@ -140,7 +141,9 @@ public class BDJobReArchieveCreator {
             return;
         }
         Property property = processItem.getProperty();
+        Property fatherProperty = fatherProcessItem.getProperty();
         String label = property.getLabel();
+        String fatherLabel = fatherProperty.getLabel();
         String version = property.getVersion();
 
         JavaJobExportReArchieveCreator creator = new JavaJobExportReArchieveCreator(zipFile.getAbsolutePath(), label);
@@ -158,7 +161,7 @@ public class BDJobReArchieveCreator {
             String jobJarName = JavaResourcesHelper.getJobJarName(property.getLabel(), property.getVersion())
                     + FileExtensions.JAR_FILE_SUFFIX;
             // same the the job pom assembly for package.
-            File originalJarFile = new File(zipTmpFolder, label + '/' + jobJarName);
+            File originalJarFile = new File(zipTmpFolder, fatherLabel + '/' + jobJarName);
             if (!originalJarFile.exists()) { // can't find the job jar.
                 return;
             }
@@ -172,6 +175,7 @@ public class BDJobReArchieveCreator {
             jarbuilder.setExcludeDir(null);
             if (isMRWithHDInsight()) {
                 jarbuilder.setLibPath(getLibPath(zipTmpFolder, true));
+                // jarbuilder.setFatJar(true);
             } else if (isFatJar()) {
                 jarbuilder.setLibPath(getLibPath(zipTmpFolder, false));
                 jarbuilder.setFatJar(true);
