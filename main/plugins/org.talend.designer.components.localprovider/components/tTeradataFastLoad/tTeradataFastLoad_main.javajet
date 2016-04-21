@@ -32,8 +32,7 @@ skeleton="../templates/db_output_bulk.skeleton"
 		IConnection conn = conns.get(0);
 		incomingConnName = conn.getName();
 	}
-
-	List<IMetadataColumn> columnList = getColumnList(node);
+	
 	// Manager manager = null;
 	boolean isDynamic = false;
 	List<IMetadataTable> metadatas = node.getMetadataList();
@@ -59,12 +58,13 @@ skeleton="../templates/db_output_bulk.skeleton"
     List<? extends IConnection> outgoingConns = node.getOutgoingSortedConnections();
     boolean isLog4jEnabled = ("true").equals(ElementParameterParser.getValue(node.getProcess(), "__LOG4J_ACTIVATE__"));
 
-	List<IMetadataColumn> stmtStructure =  new LinkedList<IMetadataColumn>();
-	
-for(IMetadataColumn column:columnList){
-	if (!column.getTalendType().equals("id_Dynamic"))
-		stmtStructure.add(column);
-}
+	List<IMetadataColumn> columnList = getColumnList(node);
+	List<IMetadataColumn> columnsWithoutDynamic =  new LinkedList<IMetadataColumn>();
+	for(IMetadataColumn column:columnList){
+		if (!"id_Dynamic".equals(column.getTalendType())) {
+			columnsWithoutDynamic.add(column);
+		}
+	}
 
 class Operation{
 	public static final int NORMAL_TYPE = 0;
@@ -226,20 +226,11 @@ if(isObject){
 
 Operation operation = new Operation();
 if(incomingConnName != null && columnList != null){
-		int counter = 1;
-		if (!isDynamic) {
-			for(IMetadataColumn column:stmtStructure) {
-				String typeToGenerate = JavaTypesManager.getTypeToGenerate(column.getTalendType(), column.isNullable());
-				operation.generateSetStmt(typeToGenerate,column,counter,incomingConnName,cid,0);
-				counter++;
-			}
-		} else {
+		if(isDynamic) {
 			StringBuilder insertColName = new StringBuilder();
 			StringBuilder insertValueStmt = new StringBuilder();
-
-			for (IMetadataColumn column: stmtStructure) {
-				insertColName.append(column.getLabel());
-				insertColName.append(", ");
+			for (IMetadataColumn column : columnsWithoutDynamic) {
+				insertColName.append(column.getLabel()).append(", ");
 				insertValueStmt.append("?, ");
 			}
 			%>
@@ -248,16 +239,22 @@ if(incomingConnName != null && columnList != null){
 				pstmt_<%=cid %> = conn_<%=cid%>.prepareStatement(insert_<%=cid%>);
 			}
 			<%
-			for(IMetadataColumn column: stmtStructure) {
-				String typeToGenerate = JavaTypesManager.getTypeToGenerate(column.getTalendType(), column.isNullable());
-				operation.generateSetStmt(typeToGenerate,column,counter,incomingConnName,cid,0);
-				counter++;
-			}
-			%>
+		}
+		
+		int counter = 1;
+		for(IMetadataColumn column: columnsWithoutDynamic) {
+			String typeToGenerate = JavaTypesManager.getTypeToGenerate(column.getTalendType(), column.isNullable());
+			operation.generateSetStmt(typeToGenerate,column,counter,incomingConnName,cid,0);
+			counter++;
+		}
+		
+		if(isDynamic) {
+		%>
 			DynamicUtils.writeColumnsToDatabse(<%=incomingConnName%>.<%=getDynamicColumn()%>, pstmt_<%=cid%>, <%=counter-1%>, "teradata_id");
-			<%
+		<%
 		}
 		%>
+		
 		try{
 				pstmt_<%=cid %>.addBatch();
 		   }catch(java.lang.Exception e){
