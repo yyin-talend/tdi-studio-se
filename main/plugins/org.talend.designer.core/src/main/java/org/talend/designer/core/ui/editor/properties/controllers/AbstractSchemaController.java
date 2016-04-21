@@ -51,6 +51,7 @@ import org.talend.core.model.metadata.MetadataSchemaType;
 import org.talend.core.model.metadata.MetadataTable;
 import org.talend.core.model.metadata.MetadataToolHelper;
 import org.talend.core.model.metadata.builder.ConvertionHelper;
+import org.talend.core.model.metadata.builder.connection.SAPBWTable;
 import org.talend.core.model.metadata.builder.connection.SAPFunctionUnit;
 import org.talend.core.model.metadata.builder.database.ExtractMetaDataUtils;
 import org.talend.core.model.process.EConnectionType;
@@ -1028,9 +1029,13 @@ public abstract class AbstractSchemaController extends AbstractRepositoryControl
 
                 org.talend.core.model.metadata.builder.connection.Connection connection = null;
                 if (elem instanceof Node) {
-                    IMetadataTable repositoryMetadata = MetadataToolHelper.getMetadataFromRepository(value);
-                    connection = MetadataToolHelper.getConnectionFromRepository(value);
-
+                    IMetadataTable repositoryMetadata = null;
+                    if (table != null && table instanceof SAPBWTable) {
+                        repositoryMetadata = ConvertionHelper.convert(table);
+                    } else {
+                        repositoryMetadata = MetadataToolHelper.getMetadataFromRepository(value);
+                        connection = MetadataToolHelper.getConnectionFromRepository(value);
+                    }
                     // For SAP see bug 5423
                     String functionId = node.getParent().getId();
                     if (((Node) elem).getUniqueName().startsWith("tSAP") && !((Node) elem).getUniqueName().startsWith("tSAPHana")//$NON-NLS-1$//$NON-NLS-2$
