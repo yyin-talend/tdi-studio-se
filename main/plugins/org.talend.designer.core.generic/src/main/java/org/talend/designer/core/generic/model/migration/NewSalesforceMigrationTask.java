@@ -47,13 +47,21 @@ public class NewSalesforceMigrationTask extends NewComponentFrameworkMigrationTa
     		if("MODULENAME".equals(paramName) && "CustomModule".equals(value)){
         		paramName =  "CUSTOM_MODULE";
         		paramType = ParameterUtilTool.findParameterType(node, paramName);
-            }
-        	if("CONNECTION".equals(paramName) && value!=null && !"".equals(value)){
+            }else if("CONNECTION".equals(paramName) && value!=null && !"".equals(value)){
         		ElementParameterType useConnection = ParameterUtilTool.findParameterType(node, "USE_EXISTING_CONNECTION");
         		if(useConnection!=null && Boolean.valueOf(String.valueOf(ParameterUtilTool.convertParameterValue(useConnection)))){
         			return paramType;
+        		}else{
+        			return null;
         		}
-        	}
+        	}else if("API".equals(paramName)){
+        		Object parmValue = ParameterUtilTool.convertParameterValue(paramType);
+        		if("soap".equals(parmValue)){
+        			paramType.setValue("Query");
+        		}else{
+        			paramType.setValue("Bulk");
+        		}
+            }
     	}
     	return paramType;
     }

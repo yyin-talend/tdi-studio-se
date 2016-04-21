@@ -81,8 +81,7 @@ public abstract class NewComponentFrameworkMigrationTask extends AbstractJobMigr
                         // elementParameter.getName());
                         String oldParamName = props.getProperty(currComponentName + IGenericConstants.EXP_SEPARATOR
                                 + param.getName());
-                        if (oldParamName != null) {
-                            oldParamName = oldParamName.trim();
+                        if (oldParamName != null && !(oldParamName = oldParamName.trim()).isEmpty()) {
                             ElementParameterType paramType = getParameterType(nodeType, oldParamName);
                             if (paramType != null) {
                             	if(currNamedThing instanceof ComponentReferenceProperties){
@@ -95,14 +94,6 @@ public abstract class NewComponentFrameworkMigrationTask extends AbstractJobMigr
                             	}
                                 ParameterUtilTool.removeParameterType(nodeType, paramType);
                                 modified = true;
-                            }else{
-                            	if(currNamedThing instanceof Property){
-                            		if(((Property) currNamedThing).isRequired() && Property.Type.STRING.equals(((Property) currNamedThing).getType())){
-                                		((Property) currNamedThing).setValue("\"\"");
-                                		modified = true;
-                                	}
-                            	}
-                            	
                             }
                             if (EParameterFieldType.SCHEMA_REFERENCE.equals(param.getFieldType())) {
                                 String schemaTypeName = ":" + EParameterName.SCHEMA_TYPE.getName();//$NON-NLS-1$
@@ -116,6 +107,12 @@ public abstract class NewComponentFrameworkMigrationTask extends AbstractJobMigr
                                     paramType.setName(param.getName() + repSchemaTypeName);
                                 }
                             }
+                        }else{
+                        	if(currNamedThing instanceof Property){
+                        		if(((Property) currNamedThing).isRequired() && Property.Type.STRING.equals(((Property) currNamedThing).getType())){
+                            		((Property) currNamedThing).setValue("\"\"");
+                            	}
+                        	}
                         }
                     }
                 }
