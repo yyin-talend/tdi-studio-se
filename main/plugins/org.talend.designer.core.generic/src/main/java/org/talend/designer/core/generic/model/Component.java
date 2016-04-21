@@ -798,6 +798,7 @@ public class Component extends AbstractBasicComponent {
         if (typeNeeded) {
             NodeConnector nodeConnector = new NodeConnector(parentNode);
             nodeConnector.setName(type.getName());
+            nodeConnector.setBaseSchema(type.getName());
             nodeConnector.setDefaultConnectionType(type);
             nodeConnector.setLinkName(type.getDefaultLinkName());
             nodeConnector.setMenuName(type.getDefaultMenuName());
