@@ -58,6 +58,10 @@ public class BDJobReArchieveCreator {
 
     private Boolean isMRWithHDInsight, isStormJob, isSparkWithHDInsight;
 
+    public BDJobReArchieveCreator(ProcessItem processItem) {
+        this(processItem, processItem);
+    }
+
     public BDJobReArchieveCreator(ProcessItem processItem, ProcessItem fatherProcessItem) {
         this.processItem = processItem;
         this.fatherProcessItem = fatherProcessItem;
