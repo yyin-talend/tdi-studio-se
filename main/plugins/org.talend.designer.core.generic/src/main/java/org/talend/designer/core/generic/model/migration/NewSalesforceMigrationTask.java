@@ -55,12 +55,17 @@ public class NewSalesforceMigrationTask extends NewComponentFrameworkMigrationTa
         			return null;
         		}
         	}else if("API".equals(paramName)){
-        		Object parmValue = ParameterUtilTool.convertParameterValue(paramType);
-        		if("soap".equals(parmValue)){
+        		if("soap".equals(value)){
         			paramType.setValue("Query");
         		}else{
         			paramType.setValue("Bulk");
         		}
+            } else if ("LOGIN_TYPE".equals(paramName)) {
+            	if("BASIC".equals(value)) {
+            		paramType.setValue("Basic");
+            	} else if("OAUTH".equals(value)) {
+            		paramType.setValue("OAuth");
+            	}
             }
     	}
     	return paramType;

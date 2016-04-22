@@ -106,11 +106,11 @@ public final class ParameterUtilTool {
             		return paramValue;
             	}
             }
-            if ("LOGIN_TYPE".equalsIgnoreCase(paramName)) {//$NON-NLS-1$
-                return paramValue = paramValue.substring(0, 1).toUpperCase() + paramValue.substring(1).toLowerCase();
-            } else if ("ACTION".equalsIgnoreCase(paramName)) {//$NON-NLS-1$
+            
+        	if ("ACTION".equalsIgnoreCase(paramName)) {//$NON-NLS-1$
                 return paramValue.toUpperCase();
             }
+        	
             // Check param value
             if ("true".equalsIgnoreCase(paramValue)) {//$NON-NLS-1$
                 return true;
