@@ -14,10 +14,15 @@ package org.talend.designer.core.generic.model.migration;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 
 import org.talend.designer.core.generic.utils.ParameterUtilTool;
 import org.talend.designer.core.model.utils.emf.talendfile.ElementParameterType;
+import org.talend.designer.core.model.utils.emf.talendfile.ElementValueType;
 import org.talend.designer.core.model.utils.emf.talendfile.NodeType;
 
 /**
@@ -70,4 +75,38 @@ public class NewSalesforceMigrationTask extends NewComponentFrameworkMigrationTa
     	}
     	return paramType;
     }
+    
+	public Object getTableValue(ElementParameterType paramType) {
+
+		List<Map<String, Object>> tableValue = null;
+		if ("UPSERT_RELATION".equals(paramType.getName())) {
+			List<ElementValueType> columns = paramType.getElementValue();
+			if (columns != null && columns.size() > 0) {
+				Map<String, String> columnMapping = new HashMap<String, String>() {
+					{
+						put("COLUMN_NAME", "columnName");
+						put("LOOKUP_FIELD_NAME", "lookupFieldName");
+						put("FIELD_NAME", "fieldName");
+						put("LOOKUP_FIELD_MODULE_NAME", "lookupFieldModuleName");
+						put("POLYMORPHIC", "polymorphic");
+						put("LOOKUP_FIELD_EXTERNAL_ID_NAME",
+								"lookupFieldExternalIdName");
+					}
+				};
+				tableValue = new ArrayList<Map<String, Object>>();
+				Map<String, Object> line = null;
+				for (ElementValueType column : columns) {
+					if ("COLUMN_NAME".equals(column.getElementRef())) {
+						if (line != null) {
+							tableValue.add(line);
+						}
+						line = new HashMap<String, Object>();
+					}
+					line.put(columnMapping.get(column.getElementRef()), column.getValue());
+				}
+				tableValue.add(line);
+			}
+		}
+		return tableValue;
+	}
 }

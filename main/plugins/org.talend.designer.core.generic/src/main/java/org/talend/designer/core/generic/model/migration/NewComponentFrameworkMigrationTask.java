@@ -90,7 +90,11 @@ public abstract class NewComponentFrameworkMigrationTask extends AbstractJobMigr
                             		props.componentInstanceId.setValue(ParameterUtilTool.convertParameterValue(paramType));
                             		props.componentInstanceId.setTaggedValue(IGenericConstants.ADD_QUOTES, true);
                             	}else{
-                            		((Property) currNamedThing).setValue(ParameterUtilTool.convertParameterValue(paramType));
+                            		if(EParameterFieldType.TABLE.equals(param.getFieldType())){
+                            			((Property) currNamedThing).setValue(getTableValue(paramType));
+                            		}else{
+                            			((Property) currNamedThing).setValue(ParameterUtilTool.convertParameterValue(paramType));
+                            		}
                             	}
                                 ParameterUtilTool.removeParameterType(nodeType, paramType);
                                 modified = true;
@@ -160,6 +164,11 @@ public abstract class NewComponentFrameworkMigrationTask extends AbstractJobMigr
     
     protected ElementParameterType getParameterType(NodeType node, String paramName) {
         return ParameterUtilTool.findParameterType(node, paramName);
+    }
+    
+    public Object getTableValue(ElementParameterType paramType){
+    	// with default implementation
+    	return ParameterUtilTool.convertParameterValue(paramType);
     }
 
     @Override
