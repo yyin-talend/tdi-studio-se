@@ -77,7 +77,7 @@ public class NameAndLabelsReferenceController extends AbstractElementPropertySec
                     String result = TalendQuoteUtils.addQuotes(StringUtils.trimToEmpty(nameAndLabelsDialog.getResult()));
                     Text moduleText = (Text) hashCurControls.get(propertyName);
                     moduleText.setText(result);
-                    curParameter.setValue(result);
+                    gParam.setValue(result);
                 }
             }
         }
