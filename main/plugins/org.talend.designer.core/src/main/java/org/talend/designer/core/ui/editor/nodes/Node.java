@@ -483,17 +483,6 @@ public class Node extends Element implements IGraphicalNode {
         listConnector = this.component.createConnectors(this);
         metadataList = new ArrayList<IMetadataTable>();
 
-        boolean hasMetadata = false;
-
-        for (INodeConnector curConnector : getListConnector()) {
-            if (curConnector.getDefaultConnectionType().hasConnectionCategory(IConnectionCategory.DATA)) {
-                if (!curConnector.isMultiSchema()
-                        && (curConnector.getMaxLinkInput() != 0 || curConnector.getMaxLinkOutput() != 0)) {
-                    hasMetadata = true;
-                    break;
-                }
-            }
-        }
 
         String uniqueName2 = null;
         IElementParameter unparam = getElementParameter(EParameterName.UNIQUE_NAME.getName());
@@ -512,6 +501,17 @@ public class Node extends Element implements IGraphicalNode {
                 table.setAttachedConnector(param.getContext());
                 metadataList.add(table);
                 hasSchemaType = true;
+            }
+        }
+        boolean hasMetadata = false;
+
+        for (INodeConnector curConnector : getListConnector()) {
+            if (curConnector.getDefaultConnectionType().hasConnectionCategory(IConnectionCategory.DATA)) {
+                if (!curConnector.isMultiSchema()
+                        && (curConnector.getMaxLinkInput() != 0 || curConnector.getMaxLinkOutput() != 0)) {
+                    hasMetadata = true;
+                    break;
+                }
             }
         }
         if (hasMetadata && !hasSchemaType) {

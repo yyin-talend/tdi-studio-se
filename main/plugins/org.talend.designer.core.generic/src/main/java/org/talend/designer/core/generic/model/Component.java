@@ -28,6 +28,7 @@ import org.talend.commons.exception.BusinessException;
 import org.talend.components.api.component.ComponentDefinition;
 import org.talend.components.api.component.ComponentImageType;
 import org.talend.components.api.component.Connector;
+import org.talend.components.api.component.Connector.ConnectorType;
 import org.talend.components.api.component.Trigger;
 import org.talend.components.api.component.VirtualComponentDefinition;
 import org.talend.components.api.properties.ComponentProperties;
@@ -719,25 +720,21 @@ public class Component extends AbstractBasicComponent {
     }
 
     @Override
-    public List<NodeConnector> createConnectors(INode parentNode) {
-        List<NodeConnector> listConnector = new ArrayList<NodeConnector>();
+    public List<INodeConnector> createConnectors(INode parentNode) {
+        List<INodeConnector> listConnector = new ArrayList<>();
 
-        for (Connector connector : componentDefinition.getConnectors()) {
-            if (ComponentsUtils.isAValidConnector(connector, getName())) {
-                listConnector.add(ComponentsUtils.generateNodeConnectorFromConnector(connector, parentNode));
-            }
-        }
         for (Trigger trigger : componentDefinition.getTriggers()) {
             if (ComponentsUtils.isAValidTrigger(trigger, getName())) {
                 listConnector.add(ComponentsUtils.generateNodeConnectorFromTrigger(trigger, parentNode));
             }
         }
-
-        addTypeIfNeeded(listConnector, EConnectionType.RUN_IF, parentNode);
-        addTypeIfNeeded(listConnector, EConnectionType.ON_COMPONENT_OK, parentNode);
-        addTypeIfNeeded(listConnector, EConnectionType.ON_COMPONENT_ERROR, parentNode);
-        addTypeIfNeeded(listConnector, EConnectionType.ON_SUBJOB_OK, parentNode);
-        addTypeIfNeeded(listConnector, EConnectionType.ON_SUBJOB_ERROR, parentNode);
+        addGenericType(listConnector, EConnectionType.FLOW_MAIN, ConnectorType.MAIN, parentNode);
+        addGenericType(listConnector, EConnectionType.REJECT, ConnectorType.REJECT, parentNode);
+        addStandardType(listConnector, EConnectionType.RUN_IF, parentNode);
+        addStandardType(listConnector, EConnectionType.ON_COMPONENT_OK, parentNode);
+        addStandardType(listConnector, EConnectionType.ON_COMPONENT_ERROR, parentNode);
+        addStandardType(listConnector, EConnectionType.ON_SUBJOB_OK, parentNode);
+        addStandardType(listConnector, EConnectionType.ON_SUBJOB_ERROR, parentNode);
 
         for (int i = 0; i < EConnectionType.values().length; i++) {
             EConnectionType currentType = EConnectionType.values()[i];
@@ -787,9 +784,9 @@ public class Component extends AbstractBasicComponent {
      * @param parentNode
      * @return
      */
-    private boolean addTypeIfNeeded(List<NodeConnector> listConnector, EConnectionType type, INode parentNode) {
+    private boolean addStandardType(List<INodeConnector> listConnector, EConnectionType type, INode parentNode) {
         boolean typeNeeded = true;
-        for (NodeConnector connector : listConnector) {
+        for (INodeConnector connector : listConnector) {
             if (connector.getDefaultConnectionType().equals(type)) {
                 typeNeeded = false;
                 break;
@@ -798,6 +795,28 @@ public class Component extends AbstractBasicComponent {
         if (typeNeeded) {
             NodeConnector nodeConnector = new NodeConnector(parentNode);
             nodeConnector.setName(type.getName());
+            nodeConnector.setBaseSchema(type.getName());
+            nodeConnector.setDefaultConnectionType(type);
+            nodeConnector.setLinkName(type.getDefaultLinkName());
+            nodeConnector.setMenuName(type.getDefaultMenuName());
+            nodeConnector.addConnectionProperty(type, type.getRGB(), type.getDefaultLineStyle());
+            listConnector.add(nodeConnector);
+        }
+        return false;
+    }
+
+    private boolean addGenericType(List<INodeConnector> listConnector, EConnectionType type, ConnectorType genericConnectorType, INode parentNode) {
+        boolean typeNeeded = true;
+        for (INodeConnector connector : listConnector) {
+            if (connector.getDefaultConnectionType().equals(type)) {
+                typeNeeded = false;
+                break;
+            }
+        }
+        if (typeNeeded) {
+            GenericNodeConnector nodeConnector = new GenericNodeConnector(parentNode);
+            nodeConnector.setName(type.getName());
+            nodeConnector.setGenericConnectorType(genericConnectorType);
             nodeConnector.setBaseSchema(type.getName());
             nodeConnector.setDefaultConnectionType(type);
             nodeConnector.setLinkName(type.getDefaultLinkName());
@@ -925,27 +944,27 @@ public class Component extends AbstractBasicComponent {
 
     @Override
     public boolean useMerge() {
-        for (Connector connector : componentDefinition.getConnectors()) {
-            if (ComponentsUtils.isAValidConnector(connector, getName())) {
-                if (connector.getType().equals(EConnectionType.FLOW_MERGE.getName())) {
-                    return true;
-                }
-            }
-        }
+        // for (IConnector connector : componentDefinition.getConnectors()) {
+        // if (ComponentsUtils.isAValidConnector(connector, getName())) {
+        // if (connector.getType().equals(EConnectionType.FLOW_MERGE.getName())) {
+        // return true;
+        // }
+        // }
+        // }
         return false;
     }
 
     @Override
     public boolean useFlow() {
-        for (Connector connector : componentDefinition.getConnectors()) {
-            if (ComponentsUtils.isAValidConnector(connector, getName())) {
-                if (EConnectionType.FLOW_MAIN.getName().equals(connector.getType())
-                        && !(connector.getMaxInput() == 0 && connector.getMaxOutput() == 0)) {
-                    return true;
-                }
-            }
-        }
-        return false;
+        // for (Connector connector : componentDefinition.getConnectors()) {
+        // if (ComponentsUtils.isAValidConnector(connector, getName())) {
+        // if (EConnectionType.FLOW_MAIN.getName().equals(connector.getType())
+        // && !(connector.getMaxInput() == 0 && connector.getMaxOutput() == 0)) {
+        // return true;
+        // }
+        // }
+        // }
+        return true;
     }
 
     @Override
