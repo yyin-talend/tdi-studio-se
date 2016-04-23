@@ -28,7 +28,6 @@ import org.talend.commons.exception.BusinessException;
 import org.talend.components.api.component.ComponentDefinition;
 import org.talend.components.api.component.ComponentImageType;
 import org.talend.components.api.component.Connector;
-import org.talend.components.api.component.Connector.ConnectorType;
 import org.talend.components.api.component.Trigger;
 import org.talend.components.api.component.VirtualComponentDefinition;
 import org.talend.components.api.properties.ComponentProperties;
@@ -728,8 +727,9 @@ public class Component extends AbstractBasicComponent {
                 listConnector.add(ComponentsUtils.generateNodeConnectorFromTrigger(trigger, parentNode));
             }
         }
-        addGenericType(listConnector, EConnectionType.FLOW_MAIN, ConnectorType.MAIN, parentNode);
-        addGenericType(listConnector, EConnectionType.REJECT, ConnectorType.REJECT, parentNode);
+        
+        addGenericType(listConnector, EConnectionType.FLOW_MAIN, Connector.MAIN_NAME, parentNode);
+        addGenericType(listConnector, EConnectionType.REJECT, Connector.REJECT_NAME, parentNode);
         addStandardType(listConnector, EConnectionType.RUN_IF, parentNode);
         addStandardType(listConnector, EConnectionType.ON_COMPONENT_OK, parentNode);
         addStandardType(listConnector, EConnectionType.ON_COMPONENT_ERROR, parentNode);
@@ -805,7 +805,7 @@ public class Component extends AbstractBasicComponent {
         return false;
     }
 
-    private boolean addGenericType(List<INodeConnector> listConnector, EConnectionType type, ConnectorType genericConnectorType, INode parentNode) {
+    private boolean addGenericType(List<INodeConnector> listConnector, EConnectionType type, String genericConnectorType, INode parentNode) {
         boolean typeNeeded = true;
         for (INodeConnector connector : listConnector) {
             if (connector.getDefaultConnectionType().equals(type)) {

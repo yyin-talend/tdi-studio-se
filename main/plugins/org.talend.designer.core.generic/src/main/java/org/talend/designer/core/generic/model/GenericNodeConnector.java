@@ -12,12 +12,9 @@
 // ============================================================================
 package org.talend.designer.core.generic.model;
 
-import java.util.Collection;
-import java.util.Collections;
 import java.util.Set;
 
 import org.talend.components.api.component.Connector;
-import org.talend.components.api.component.Connector.ConnectorType;
 import org.talend.core.model.process.INode;
 import org.talend.core.model.process.INodeConnector;
 import org.talend.designer.core.model.components.NodeConnector;
@@ -30,7 +27,7 @@ import org.talend.designer.core.model.components.NodeConnector;
  */
 public class GenericNodeConnector extends NodeConnector implements INodeConnector {
 
-    private ConnectorType genericConnectorType;
+    private String genericConnectorType;
 
 
     /**
@@ -48,9 +45,9 @@ public class GenericNodeConnector extends NodeConnector implements INodeConnecto
     @Override
     public int getMaxLinkInput() {
         int nb = 0;
-        Set<Connector> connectors = getParentNode().getComponentProperties().getAvailableConnectors(null, false);
+        Set<? extends Connector> connectors = getParentNode().getComponentProperties().getAvailableConnectors(null, false);
         for (Connector connector : connectors) {
-            if (connector.getType() == genericConnectorType) {
+            if (connector.getName().equals(genericConnectorType)) {
                 nb++;
             }
         }
@@ -63,9 +60,9 @@ public class GenericNodeConnector extends NodeConnector implements INodeConnecto
     @Override
     public int getMaxLinkOutput() {
         int nb = 0;
-        Set<Connector> connectors = getParentNode().getComponentProperties().getAvailableConnectors(null, true);
+        Set<? extends Connector> connectors = getParentNode().getComponentProperties().getAvailableConnectors(null, true);
         for (Connector connector : connectors) {
-            if (connector.getType() == genericConnectorType) {
+            if (connector.getName().equals(genericConnectorType)) {
                 nb++;
             }
         }
@@ -93,7 +90,7 @@ public class GenericNodeConnector extends NodeConnector implements INodeConnecto
      * DOC nrousseau Comment method "setGenericConnectorType".
      * @param genericConnectorType
      */
-    public void setGenericConnectorType(ConnectorType genericConnectorType) {
+    public void setGenericConnectorType(String genericConnectorType) {
         this.genericConnectorType = genericConnectorType;
     }
 
