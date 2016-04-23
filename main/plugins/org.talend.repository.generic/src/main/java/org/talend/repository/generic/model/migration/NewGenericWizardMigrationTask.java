@@ -32,6 +32,7 @@ import org.talend.daikon.NamedThing;
 import org.talend.repository.generic.model.genericMetadata.GenericConnection;
 import org.talend.repository.generic.model.genericMetadata.GenericConnectionItem;
 import org.talend.repository.generic.model.genericMetadata.GenericMetadataFactory;
+import org.talend.utils.security.CryptoHelper;
 
 /**
  * created by hcyi on Apr 11, 2016 Detailled comment
@@ -77,6 +78,10 @@ public abstract class NewGenericWizardMigrationTask extends AbstractItemMigratio
                                         componentProperties.setValue(propsKey, obj);
                                         changed = true;
                                     }
+                                }
+                                if (property.isFlag(org.talend.daikon.properties.Property.Flags.ENCRYPT)) {
+                                	componentProperties.setValue(propsKey, CryptoHelper.getDefault().decrypt(String.valueOf(value)));
+                                    modified = true;
                                 }
                             }
                             if (!changed) {

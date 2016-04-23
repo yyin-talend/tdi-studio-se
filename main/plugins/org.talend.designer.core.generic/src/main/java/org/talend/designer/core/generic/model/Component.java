@@ -1043,7 +1043,11 @@ public class Component extends AbstractBasicComponent {
             return "\"" + value + "\"";//$NON-NLS-1$ //$NON-NLS-2$ 
         }
         if (property.getType() == Property.Type.ENUM) {
-            return "\"" + value + "\"";//$NON-NLS-1$ //$NON-NLS-2$
+        	if(value.indexOf("context.") > -1 || value.indexOf("globalMap.get") > -1){
+        		return value;//$NON-NLS-1$ //$NON-NLS-2$
+        	}else{
+        		return "\"" + value + "\"";//$NON-NLS-1$ //$NON-NLS-2$
+        	}
         }
         if (property.getType() == Property.Type.SCHEMA) {
             // Handles embedded escaped quotes which might occur
