@@ -40,6 +40,7 @@ import org.talend.designer.core.generic.model.GenericElementParameter;
 import org.talend.designer.core.generic.utils.ComponentsUtils;
 import org.talend.designer.core.generic.utils.SchemaUtils;
 import org.talend.designer.core.model.components.ElementParameter;
+import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.repository.generic.internal.IGenericWizardInternalService;
 import org.talend.repository.generic.internal.service.GenericWizardInternalService;
 import org.talend.repository.generic.model.genericMetadata.GenericConnection;
@@ -48,6 +49,7 @@ import org.talend.repository.generic.model.genericMetadata.SubContainer;
 import org.talend.repository.generic.ui.DynamicComposite;
 import org.talend.repository.model.IRepositoryNode.ENodeType;
 import org.talend.repository.model.RepositoryNode;
+
 import orgomg.cwm.objectmodel.core.TaggedValue;
 
 /**
@@ -178,9 +180,8 @@ public class GenericWizardService implements IGenericWizardService {
     }
 
     @Override
-    public void updateComponentSchema(ComponentProperties componentProperties, String schemaPropertyName,
-            IMetadataTable metadataTable, IElementParameter param) {
-        SchemaUtils.updateComponentSchema(componentProperties, schemaPropertyName, metadataTable, param);
+    public void updateComponentSchema(INode node, IMetadataTable metadataTable) {
+        SchemaUtils.updateComponentSchema(node, metadataTable);
     }
 
     @Override

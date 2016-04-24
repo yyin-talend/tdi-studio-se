@@ -23,6 +23,7 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.apache.avro.Schema;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
@@ -61,6 +62,7 @@ import org.talend.core.model.metadata.IEbcdicConstant;
 import org.talend.core.model.metadata.IMetadataColumn;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.metadata.MetadataTable;
+import org.talend.core.model.metadata.MetadataToolAvroHelper;
 import org.talend.core.model.metadata.MetadataToolHelper;
 import org.talend.core.model.metadata.types.JavaTypesManager;
 import org.talend.core.model.metadata.types.PerlTypesManager;
@@ -483,7 +485,6 @@ public class Node extends Element implements IGraphicalNode {
         listConnector = this.component.createConnectors(this);
         metadataList = new ArrayList<IMetadataTable>();
 
-
         String uniqueName2 = null;
         IElementParameter unparam = getElementParameter(EParameterName.UNIQUE_NAME.getName());
         if (unparam != null && !"".equals(unparam.getValue())) { //$NON-NLS-1$
@@ -582,23 +583,16 @@ public class Node extends Element implements IGraphicalNode {
                         IMetadataTable paramTable = (IMetadataTable) param.getValue();
                         table.getListColumns().addAll(paramTable.getListColumns());
                         table.setReadOnly(paramTable.isReadOnly());
+                    } else if (param.getValue() instanceof Schema) {
+                        Schema schema = (Schema) param.getValue();
+                        org.talend.core.model.metadata.builder.connection.MetadataTable defaultEmfTable = MetadataToolAvroHelper.convertFromAvro(schema);
+                        IMetadataTable defaultTable = MetadataToolHelper.convert(defaultEmfTable);                        
+                        IMetadataTable myTable = getMetadataFromConnector(param.getContext());
+                        myTable.getListColumns().addAll(defaultTable.getListColumns());
+                        myTable.setReadOnly(defaultTable.isReadOnly());
                     }
                 }
 
-            }
-        }
-
-        // TDI-30811:tSalesforcebulkexec/tSalesforceOutput link tLogRow with main line has compile error
-        if (this.component != null && this.component.isSchemaAutoPropagated() && !this.getProcess().isDuplicate()) {
-            // only apply this to init the component when create ,if it's a duplicate process, only used for code
-            // generation, no need to update any data.
-            IElementParameter schemaTypeParam = this.getElementParameterFromField(EParameterFieldType.SCHEMA_TYPE);
-            if (schemaTypeParam != null) {
-                IMetadataTable metadataTable = this.getMetadataFromConnector(schemaTypeParam.getContext());
-                if (metadataTable != null) {
-                    ChangeMetadataCommand cmd = new ChangeMetadataCommand(this, schemaTypeParam, metadataTable, metadataTable);
-                    cmd.execute(true);
-                }
             }
         }
 
@@ -1255,6 +1249,7 @@ public class Node extends Element implements IGraphicalNode {
                         break;
                     }
                 }
+                // initializeGenericSchemaFromInput(inputTable);
 
                 if (!generatedByJobscriptBool && component.isSchemaAutoPropagated() && !repositoryMode
                         && (inputTable != null && inputTable.getListColumns().size() != 0)) {
@@ -1420,7 +1415,7 @@ public class Node extends Element implements IGraphicalNode {
             calculateSubtreeStartAndEnd();
         }
     }
-
+    
     private boolean getTakeSchema() {
         return MessageDialog.openQuestion(new Shell(), "", Messages.getString("Node.getSchemaOrNot")); //$NON-NLS-1$ //$NON-NLS-2$
     }

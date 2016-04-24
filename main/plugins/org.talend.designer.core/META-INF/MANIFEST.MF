@@ -52,7 +52,8 @@ Require-Bundle: org.talend.model,
  org.eclipse.help.base,
  org.eclipse.e4.ui.css.swt.theme,
  org.talend.components.api,
- org.talend.hadoop.distribution
+ org.talend.hadoop.distribution,
+ org.apache.servicemix.bundles.avro
 Eclipse-LazyStart: true
 Plugin-Class: org.talend.designer.core.DesignerPlugin
 Export-Package: org.talend.designer.core;

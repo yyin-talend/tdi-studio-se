@@ -24,10 +24,12 @@ import org.apache.log4j.Logger;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.graphics.ImageData;
+import org.eclipse.swt.graphics.RGB;
 import org.talend.commons.exception.BusinessException;
 import org.talend.components.api.component.ComponentDefinition;
 import org.talend.components.api.component.ComponentImageType;
 import org.talend.components.api.component.Connector;
+import org.talend.components.api.component.OutputComponentDefinition;
 import org.talend.components.api.component.Trigger;
 import org.talend.components.api.component.VirtualComponentDefinition;
 import org.talend.components.api.properties.ComponentProperties;
@@ -724,12 +726,16 @@ public class Component extends AbstractBasicComponent {
 
         for (Trigger trigger : componentDefinition.getTriggers()) {
             if (ComponentsUtils.isAValidTrigger(trigger, getName())) {
-                listConnector.add(ComponentsUtils.generateNodeConnectorFromTrigger(trigger, parentNode));
+                INodeConnector connector = ComponentsUtils.generateNodeConnectorFromTrigger(trigger, parentNode);
+                if (connector != null) {
+                    listConnector.add(connector);
+                }
             }
         }
-        
-        addGenericType(listConnector, EConnectionType.FLOW_MAIN, Connector.MAIN_NAME, parentNode);
-        addGenericType(listConnector, EConnectionType.REJECT, Connector.REJECT_NAME, parentNode);
+
+        boolean isOutputComponent = componentDefinition instanceof OutputComponentDefinition;
+        addGenericType(listConnector, EConnectionType.FLOW_MAIN, Connector.MAIN_NAME, parentNode, isOutputComponent);
+        addGenericType(listConnector, EConnectionType.REJECT, Connector.REJECT_NAME, parentNode, isOutputComponent);
         addStandardType(listConnector, EConnectionType.RUN_IF, parentNode);
         addStandardType(listConnector, EConnectionType.ON_COMPONENT_OK, parentNode);
         addStandardType(listConnector, EConnectionType.ON_COMPONENT_ERROR, parentNode);
@@ -805,26 +811,24 @@ public class Component extends AbstractBasicComponent {
         return false;
     }
 
-    private boolean addGenericType(List<INodeConnector> listConnector, EConnectionType type, String genericConnectorType, INode parentNode) {
-        boolean typeNeeded = true;
-        for (INodeConnector connector : listConnector) {
-            if (connector.getDefaultConnectionType().equals(type)) {
-                typeNeeded = false;
-                break;
-            }
+    private void addGenericType(List<INodeConnector> listConnector, EConnectionType type, String genericConnectorType,
+            INode parentNode, boolean isOutputComponent) {
+        GenericNodeConnector nodeConnector = new GenericNodeConnector(parentNode);
+        if (EConnectionType.FLOW_MAIN.equals(type) && isOutputComponent) {
+            nodeConnector.setMaxLinkInput(1);
+        } else {
+            nodeConnector.setMaxLinkInput(0);
         }
-        if (typeNeeded) {
-            GenericNodeConnector nodeConnector = new GenericNodeConnector(parentNode);
-            nodeConnector.setName(type.getName());
-            nodeConnector.setGenericConnectorType(genericConnectorType);
-            nodeConnector.setBaseSchema(type.getName());
-            nodeConnector.setDefaultConnectionType(type);
-            nodeConnector.setLinkName(type.getDefaultLinkName());
-            nodeConnector.setMenuName(type.getDefaultMenuName());
+        nodeConnector.setDefaultConnectionType(EConnectionType.FLOW_MAIN);
+        nodeConnector.setGenericConnectorType(genericConnectorType);
+        nodeConnector.setLinkName(type.getDefaultLinkName());
+        if (type == EConnectionType.REJECT) {
+            nodeConnector.addConnectionProperty(EConnectionType.FLOW_MAIN, new RGB(255, 0, 0), 2);
+            nodeConnector.getConnectionProperty(EConnectionType.FLOW_MAIN).setRGB(new RGB(255, 0, 0));
+        } else {
             nodeConnector.addConnectionProperty(type, type.getRGB(), type.getDefaultLineStyle());
-            listConnector.add(nodeConnector);
         }
-        return false;
+        listConnector.add(nodeConnector);
     }
 
     @Override
@@ -1043,11 +1047,11 @@ public class Component extends AbstractBasicComponent {
             return "\"" + value + "\"";//$NON-NLS-1$ //$NON-NLS-2$ 
         }
         if (property.getType() == Property.Type.ENUM) {
-        	if(value.indexOf("context.") > -1 || value.indexOf("globalMap.get") > -1){
-        		return value;//$NON-NLS-1$ //$NON-NLS-2$
-        	}else{
-        		return "\"" + value + "\"";//$NON-NLS-1$ //$NON-NLS-2$
-        	}
+            if (value.indexOf("context.") > -1 || value.indexOf("globalMap.get") > -1) {
+                return value;//$NON-NLS-1$ //$NON-NLS-2$
+            } else {
+                return "\"" + value + "\"";//$NON-NLS-1$ //$NON-NLS-2$
+            }
         }
         if (property.getType() == Property.Type.SCHEMA) {
             // Handles embedded escaped quotes which might occur
