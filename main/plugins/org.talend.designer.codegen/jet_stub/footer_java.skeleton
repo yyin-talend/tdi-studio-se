@@ -47,7 +47,7 @@ public class CLASS
        //    }
        //}            
         if(isMultiThread){
-            toReturn += "\n}catch (Error e_" + rootNode.getUniqueName() + ") {\n";
+            toReturn += "\n}catch (java.lang.Error e_" + rootNode.getUniqueName() + ") {\n";
             toReturn += "globalMap.put(\""+rootNode.getUniqueName()+ "_SUBPROCESS_STATE\", -1);\n";
             toReturn += "\ne_" + rootNode.getUniqueName() + ".printStackTrace();\n";
         }
