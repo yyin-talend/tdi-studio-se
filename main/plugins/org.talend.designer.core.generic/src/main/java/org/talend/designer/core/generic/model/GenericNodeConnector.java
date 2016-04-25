@@ -85,10 +85,12 @@ public class GenericNodeConnector extends NodeConnector {
     private Connector getConnector() {
         if (myConnector == null) {
             Set<? extends Connector> connectors = getParentNode().getComponentProperties().getAvailableConnectors(null, true);
-            for (Connector connector : connectors) {
-                if (connector.getName().equals(genericConnectorType)) {
-                    myConnector = connector;
-                    break;
+            if (connectors != null) {
+                for (Connector connector : connectors) {
+                    if (connector.getName().equals(genericConnectorType)) {
+                        myConnector = connector;
+                        break;
+                    }
                 }
             }
         }
@@ -96,7 +98,9 @@ public class GenericNodeConnector extends NodeConnector {
 
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.talend.designer.core.model.components.NodeConnector#getMenuName()
      */
     @Override
@@ -107,7 +111,9 @@ public class GenericNodeConnector extends NodeConnector {
         return super.getMenuName();
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.talend.designer.core.model.components.NodeConnector#getName()
      */
     @Override
@@ -115,14 +121,16 @@ public class GenericNodeConnector extends NodeConnector {
         return genericConnectorType;
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.talend.designer.core.model.components.NodeConnector#getBaseSchema()
      */
     @Override
     public String getBaseSchema() {
         return EConnectionType.FLOW_MAIN.getName();
     }
-    
+
     public Connector getComponentConnector() {
         return getConnector();
     }
