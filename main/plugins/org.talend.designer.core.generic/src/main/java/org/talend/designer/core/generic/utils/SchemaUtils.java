@@ -58,6 +58,8 @@ public class SchemaUtils {
         if (schemaObj instanceof String) {
             Schema avroSchema = new Schema.Parser().parse((String) schemaObj);
             convertComponentSchemaIntoTalendSchema(avroSchema, metadataTable);
+        } else if (schemaObj instanceof Schema) {
+            convertComponentSchemaIntoTalendSchema((Schema) schemaObj, metadataTable);
         }
         IMetadataTable iMetadataTable = MetadataToolHelper.convert(metadataTable);
         updateComponentSchema(properties, schemaPropertyName, iMetadataTable);

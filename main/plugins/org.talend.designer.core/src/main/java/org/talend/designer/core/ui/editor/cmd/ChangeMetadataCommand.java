@@ -889,4 +889,13 @@ public class ChangeMetadataCommand extends Command {
         }
     }
 
+    
+    /**
+     * Sets the propagate.
+     * @param propagate the propagate to set
+     */
+    public void setPropagate(Boolean propagate) {
+        this.propagate = propagate;
+    }
+
 }

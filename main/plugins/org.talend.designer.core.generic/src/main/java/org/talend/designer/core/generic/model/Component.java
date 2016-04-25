@@ -734,8 +734,15 @@ public class Component extends AbstractBasicComponent {
         }
 
         boolean isOutputComponent = componentDefinition instanceof OutputComponentDefinition;
-        addGenericType(listConnector, EConnectionType.FLOW_MAIN, Connector.MAIN_NAME, parentNode, isOutputComponent);
-        addGenericType(listConnector, EConnectionType.REJECT, Connector.REJECT_NAME, parentNode, isOutputComponent);
+        INodeConnector connector = addStandardType(listConnector, EConnectionType.FLOW_MAIN, parentNode);
+        if (isOutputComponent) {
+            connector.setMaxLinkInput(1);
+        } else {
+            connector.setMaxLinkInput(0);
+        }
+        connector.setMaxLinkOutput(0);
+        addGenericType(listConnector, EConnectionType.FLOW_MAIN, Connector.MAIN_NAME, parentNode);
+        addGenericType(listConnector, EConnectionType.REJECT, Connector.REJECT_NAME, parentNode);
         addStandardType(listConnector, EConnectionType.RUN_IF, parentNode);
         addStandardType(listConnector, EConnectionType.ON_COMPONENT_OK, parentNode);
         addStandardType(listConnector, EConnectionType.ON_COMPONENT_ERROR, parentNode);
@@ -790,35 +797,22 @@ public class Component extends AbstractBasicComponent {
      * @param parentNode
      * @return
      */
-    private boolean addStandardType(List<INodeConnector> listConnector, EConnectionType type, INode parentNode) {
-        boolean typeNeeded = true;
-        for (INodeConnector connector : listConnector) {
-            if (connector.getDefaultConnectionType().equals(type)) {
-                typeNeeded = false;
-                break;
-            }
-        }
-        if (typeNeeded) {
-            NodeConnector nodeConnector = new NodeConnector(parentNode);
-            nodeConnector.setName(type.getName());
-            nodeConnector.setBaseSchema(type.getName());
-            nodeConnector.setDefaultConnectionType(type);
-            nodeConnector.setLinkName(type.getDefaultLinkName());
-            nodeConnector.setMenuName(type.getDefaultMenuName());
-            nodeConnector.addConnectionProperty(type, type.getRGB(), type.getDefaultLineStyle());
-            listConnector.add(nodeConnector);
-        }
-        return false;
+    private INodeConnector addStandardType(List<INodeConnector> listConnector, EConnectionType type, INode parentNode) {
+        NodeConnector nodeConnector = new NodeConnector(parentNode);
+        nodeConnector.setName(type.getName());
+        nodeConnector.setBaseSchema(type.getName());
+        nodeConnector.setDefaultConnectionType(type);
+        nodeConnector.setLinkName(type.getDefaultLinkName());
+        nodeConnector.setMenuName(type.getDefaultMenuName());
+        nodeConnector.addConnectionProperty(type, type.getRGB(), type.getDefaultLineStyle());
+        listConnector.add(nodeConnector);
+        return nodeConnector;
     }
 
     private void addGenericType(List<INodeConnector> listConnector, EConnectionType type, String genericConnectorType,
-            INode parentNode, boolean isOutputComponent) {
+            INode parentNode) {
         GenericNodeConnector nodeConnector = new GenericNodeConnector(parentNode);
-        if (EConnectionType.FLOW_MAIN.equals(type) && isOutputComponent) {
-            nodeConnector.setMaxLinkInput(1);
-        } else {
-            nodeConnector.setMaxLinkInput(0);
-        }
+        nodeConnector.setMaxLinkInput(0);
         nodeConnector.setDefaultConnectionType(EConnectionType.FLOW_MAIN);
         nodeConnector.setGenericConnectorType(genericConnectorType);
         nodeConnector.setLinkName(type.getDefaultLinkName());

@@ -22,6 +22,7 @@ import org.apache.commons.collections.keyvalue.MultiKey;
 import org.apache.commons.collections.map.HashedMap;
 import org.apache.commons.collections.map.MultiKeyMap;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.talend.commons.utils.time.TimeMeasure;
 
@@ -31,6 +32,7 @@ import org.talend.commons.utils.time.TimeMeasure;
  * $Id$
  * 
  */
+@Ignore
 public class PerformanceJavaTHash {
 
     private ArrayList<RowStruct> rowsLookup;

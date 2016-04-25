@@ -112,10 +112,7 @@ public class GenericNodeConnector extends NodeConnector {
      */
     @Override
     public String getName() {
-        if (getConnector() != null) {
-            return ComponentsUtils.getNameFromConnector(getConnector());
-        }
-        return super.getName();
+        return genericConnectorType;
     }
 
     /* (non-Javadoc)

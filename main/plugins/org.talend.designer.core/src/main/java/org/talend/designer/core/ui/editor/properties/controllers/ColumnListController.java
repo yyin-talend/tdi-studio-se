@@ -412,9 +412,6 @@ public class ColumnListController extends AbstractElementPropertySectionControll
         }
         for (int i = 0; i < element.getElementParameters().size(); i++) {
             IElementParameter param = element.getElementParameters().get(i);
-            if (param.getContext() == null) {
-                continue;
-            }
             columnList = getColumnList(element, param.getContext(), null);
             columnNameList = columnList.toArray(new String[0]);
             if (param.getFieldType() == EParameterFieldType.COLUMN_LIST && !isSCDComponent) {

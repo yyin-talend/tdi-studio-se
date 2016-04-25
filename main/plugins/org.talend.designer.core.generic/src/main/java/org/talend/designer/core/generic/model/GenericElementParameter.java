@@ -27,19 +27,23 @@ import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.ui.PlatformUI;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.runtime.model.components.IComponentConstants;
+import org.talend.components.api.component.Connector;
 import org.talend.components.api.properties.ComponentProperties;
 import org.talend.components.api.service.ComponentService;
 import org.talend.core.model.metadata.IMetadataTable;
+import org.talend.core.model.metadata.MetadataToolAvroHelper;
 import org.talend.core.model.metadata.MetadataToolHelper;
 import org.talend.core.model.metadata.builder.connection.MetadataTable;
 import org.talend.core.model.process.EParameterFieldType;
 import org.talend.core.model.process.ElementParameterParser;
 import org.talend.core.model.process.IElement;
 import org.talend.core.model.process.IElementParameter;
+import org.talend.core.model.process.INodeConnector;
 import org.talend.core.model.process.IProcess;
 import org.talend.daikon.NamedThing;
 import org.talend.daikon.properties.PresentationItem;
 import org.talend.daikon.properties.Property;
+import org.talend.daikon.properties.SchemaProperty;
 import org.talend.daikon.properties.presentation.Form;
 import org.talend.daikon.properties.presentation.Widget;
 import org.talend.daikon.properties.presentation.Widget.WidgetType;
@@ -120,7 +124,11 @@ public class GenericElementParameter extends ElementParameter {
         }
 
         NamedThing widgetProperty = widget.getContent();
-        if (widgetProperty instanceof Property) {
+        if (widgetProperty instanceof SchemaProperty) {
+            if (newValue instanceof String) {
+                ((SchemaProperty) widgetProperty).setValue(new Schema.Parser().parse((String)newValue));
+            }
+        } else if (widgetProperty instanceof Property) {
             Property se = (Property) widgetProperty;
             Object oldValue = se.getValue();
             if (newValue != null && !newValue.equals(oldValue)) {
@@ -156,8 +164,8 @@ public class GenericElementParameter extends ElementParameter {
 
     private void fireValidateStatusEvent() {
         if (hasPropertyChangeListener()) {
-            this.pcs.firePropertyChange(IElementParameterEventProperties.EVENT_VALIDATE_RESULT_UPDATE, null,
-                    getSubProperties().getValidationResult());
+            this.pcs.firePropertyChange(IElementParameterEventProperties.EVENT_VALIDATE_RESULT_UPDATE, null, getSubProperties()
+                    .getValidationResult());
         }
     }
 
@@ -253,27 +261,22 @@ public class GenericElementParameter extends ElementParameter {
         IElement element = this.getElement();
         if (element instanceof Node) {
             Node node = (Node) element;
-            List<IMetadataTable> metadataList = node.getMetadataList();
-            if (metadataList.size() > 0) {
-                IMetadataTable oldTable = metadataList.get(0);
-                String schemaPropertyName = oldTable.getAdditionalProperties().get(IComponentConstants.COMPONENT_SCHEMA_TAG);
-                Object schemaObj = null;
-                try {
-                    schemaObj = ComponentsUtils.getGenericPropertyValue(rootProperties, schemaPropertyName);
-                    if (schemaObj instanceof String) {
-                        schemaObj = new Schema.Parser().parse((String) schemaObj);
-                    }
-                } catch (Exception e) {
-                    // do nothing
+            IMetadataTable mainTable = node.getMetadataFromConnector(Connector.MAIN_NAME);
+            if (mainTable != null) {
+                INodeConnector connector = node.getConnectorFromName(Connector.MAIN_NAME);
+                Schema schema = null;
+                if (connector instanceof GenericNodeConnector) {
+                    Connector componentConnector = ((GenericNodeConnector) connector).getComponentConnector();
+                    schema = getRootProperties().getSchema(componentConnector, true);
                 }
-                if (schemaObj != null && schemaObj instanceof Schema) {
-                    MetadataTable metadataTable = SchemaUtils.createSchema(oldTable.getTableName(), rootProperties,
-                            schemaPropertyName);
+                if (schema != null) {
+                    MetadataTable metadataTable = MetadataToolAvroHelper.convertFromAvro(schema);
                     IMetadataTable newTable = MetadataToolHelper.convert(metadataTable);
-                    if (!newTable.sameMetadataAs(oldTable)) {
+                    if (!newTable.sameMetadataAs(mainTable)) {
                         IElementParameter schemaParameter = node
                                 .getElementParameterFromField(EParameterFieldType.SCHEMA_REFERENCE);
-                        ChangeMetadataCommand cmd = new ChangeMetadataCommand(node, schemaParameter, oldTable, newTable, null);
+                        ChangeMetadataCommand cmd = new ChangeMetadataCommand(node, schemaParameter, mainTable, newTable, null);
+                        cmd.setPropagate(Boolean.TRUE);
                         IProcess process = node.getProcess();
                         if (process instanceof org.talend.designer.core.ui.editor.process.Process) {
                             CommandStack commandStack = ((org.talend.designer.core.ui.editor.process.Process) process)
@@ -379,11 +382,11 @@ public class GenericElementParameter extends ElementParameter {
     public Widget getWidget() {
         return this.widget;
     }
-    
+
     private ComponentProperties getSubProperties() {
         return ComponentsUtils.getCurrentComponentProperties(rootProperties, getName());
     }
-    
+
     public ComponentProperties getRootProperties() {
         return this.rootProperties;
     }

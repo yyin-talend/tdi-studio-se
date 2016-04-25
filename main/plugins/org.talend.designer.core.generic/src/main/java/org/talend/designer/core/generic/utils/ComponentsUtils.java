@@ -44,6 +44,7 @@ import org.talend.core.model.process.EComponentCategory;
 import org.talend.core.model.process.EConnectionType;
 import org.talend.core.model.process.EParameterFieldType;
 import org.talend.core.model.process.IElement;
+import org.talend.core.model.process.IElementParameterDefaultValue;
 import org.talend.core.model.process.INode;
 import org.talend.core.model.process.INodeConnector;
 import org.talend.core.model.utils.ContextParameterUtils;
@@ -63,6 +64,7 @@ import org.talend.designer.core.generic.model.GenericElementParameter;
 import org.talend.designer.core.generic.model.mapping.WidgetFieldTypeMapper;
 import org.talend.designer.core.model.FakeElement;
 import org.talend.designer.core.model.components.ElementParameter;
+import org.talend.designer.core.model.components.ElementParameterDefaultValue;
 import org.talend.designer.core.model.components.NodeConnector;
 
 /**
@@ -226,7 +228,10 @@ public class ComponentsUtils {
                     }
                     Schema schema = (Schema) ((SchemaProperty) widgetProperty).getValue();
                     if (rootProperty.getSchema(connector, true).equals(schema)) {
-                        param.setContext(getNameFromConnector(connector));
+                        param.setContext(connector.getName());
+                        IElementParameterDefaultValue defaultValue = new ElementParameterDefaultValue();
+                        defaultValue.setDefaultValue(new Schema.Parser().parse(schema.toString()));
+                        param.getDefaultValues().add(defaultValue);
                     }
                 }
             }

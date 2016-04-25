@@ -585,8 +585,9 @@ public class Node extends Element implements IGraphicalNode {
                         table.setReadOnly(paramTable.isReadOnly());
                     } else if (param.getValue() instanceof Schema) {
                         Schema schema = (Schema) param.getValue();
-                        org.talend.core.model.metadata.builder.connection.MetadataTable defaultEmfTable = MetadataToolAvroHelper.convertFromAvro(schema);
-                        IMetadataTable defaultTable = MetadataToolHelper.convert(defaultEmfTable);                        
+                        org.talend.core.model.metadata.builder.connection.MetadataTable defaultEmfTable = MetadataToolAvroHelper
+                                .convertFromAvro(schema);
+                        IMetadataTable defaultTable = MetadataToolHelper.convert(defaultEmfTable);
                         IMetadataTable myTable = getMetadataFromConnector(param.getContext());
                         myTable.getListColumns().addAll(defaultTable.getListColumns());
                         myTable.setReadOnly(defaultTable.isReadOnly());
@@ -1273,8 +1274,17 @@ public class Node extends Element implements IGraphicalNode {
                              */
 
                             IMetadataTable targetTable = this.getMetadataFromConnector(connector.getName());
+                            boolean tmpTableCreated = false;
                             if (targetTable == null) {
-                                continue;
+                                if (connector.getMaxLinkInput() > 0) {
+                                    // create fake table only for the propagation
+                                    targetTable = new MetadataTable();
+                                    targetTable.setAttachedConnector("FLOW");
+                                    targetTable.setTableName(this.getUniqueName());
+                                    tmpTableCreated = true;
+                                } else {
+                                    continue;
+                                }
                             }
                             boolean customFound = false;
                             int customColNumber = 0;
@@ -1295,7 +1305,7 @@ public class Node extends Element implements IGraphicalNode {
                                 // add by wzhang for feature 7611.
                                 String dbmsId = targetTable.getDbms();
                                 MetadataToolHelper.copyTable(dbmsId, inputTable, targetTable);
-                                ChangeMetadataCommand cmc = new ChangeMetadataCommand(this, null, null, targetTable,
+                                ChangeMetadataCommand cmc = new ChangeMetadataCommand(this, null, tmpTableCreated ? targetTable : null, targetTable,
                                         inputSchemaParam);
                                 cmc.execute();
 
@@ -1415,7 +1425,7 @@ public class Node extends Element implements IGraphicalNode {
             calculateSubtreeStartAndEnd();
         }
     }
-    
+
     private boolean getTakeSchema() {
         return MessageDialog.openQuestion(new Shell(), "", Messages.getString("Node.getSchemaOrNot")); //$NON-NLS-1$ //$NON-NLS-2$
     }
