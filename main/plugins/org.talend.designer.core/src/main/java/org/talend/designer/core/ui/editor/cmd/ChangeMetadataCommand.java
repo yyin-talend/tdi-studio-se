@@ -619,25 +619,13 @@ public class ChangeMetadataCommand extends Command {
 
         for (INodeConnector connector : node.getListConnector()) {
             if ((!connector.getName().equals(currentConnector)) && connector.getBaseSchema().equals(currentConnector)) {
-                if (node.getComponent() != null && "tSalesforceOutput".equals(node.getComponent().getName())
-                        && "REJECT".equals(connector.getName())) {
-                    IMetadataTable clone = newOutputMetadata.clone(true);
-                    Iterator<IMetadataColumn> iterator = clone.getListColumns().iterator();
-                    while (iterator.hasNext()) {
-                        IMetadataColumn column = iterator.next();
-                        if (column.isCustom()) {
-                            iterator.remove();
-                        }
-                    }
-                    MetadataToolHelper.copyTable(clone, node.getMetadataFromConnector(connector.getName()));
-                } else {
-                    // if there is some other schema dependant of this one, modify them
-                    MetadataToolHelper.copyTable(newOutputMetadata, node.getMetadataFromConnector(connector.getName()));
-                }
+                // if there is some other schema dependant of this one, modify them
+                MetadataToolHelper.copyTable(newOutputMetadata, node.getMetadataFromConnector(connector.getName()));
+                updateComponentSchema(node.getMetadataFromConnector(connector.getName()));
             }
         }
 
-        updateComponentSchema();
+        updateComponentSchema(currentOutputMetadata);
 
         List<ColumnNameChanged> columnNameChanged = MetadataToolHelper.getColumnNameChanged(oldOutputMetadata, newOutputMetadata);
         ColumnListController.updateColumnList(node, columnNameChanged, true);
@@ -661,14 +649,13 @@ public class ChangeMetadataCommand extends Command {
         refreshMetadataChanged();
     }
 
-    private void updateComponentSchema() {
+    private void updateComponentSchema(IMetadataTable table) {
         IGenericWizardService wizardService = null;
         if (GlobalServiceRegister.getDefault().isServiceRegistered(IGenericWizardService.class)) {
             wizardService = (IGenericWizardService) GlobalServiceRegister.getDefault().getService(IGenericWizardService.class);
         }
-        if (wizardService != null && schemaParam != null) {
-            wizardService.updateComponentSchema(node.getComponentProperties(), schemaParam.getName(), currentOutputMetadata,
-                    schemaParam);
+        if (wizardService != null) {
+            wizardService.updateComponentSchema(node, table);
         }
     }
 
@@ -900,6 +887,15 @@ public class ChangeMetadataCommand extends Command {
         if (node != null && node.getExternalNode() != null) {
             node.getExternalNode().metadataOutputChanged(currentOutputMetadata);
         }
+    }
+
+    
+    /**
+     * Sets the propagate.
+     * @param propagate the propagate to set
+     */
+    public void setPropagate(Boolean propagate) {
+        this.propagate = propagate;
     }
 
 }

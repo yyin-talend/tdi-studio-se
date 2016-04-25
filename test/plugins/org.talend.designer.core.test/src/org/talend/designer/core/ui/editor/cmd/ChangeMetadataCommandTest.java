@@ -20,12 +20,22 @@ import java.util.List;
 import org.apache.avro.Schema;
 import org.junit.Before;
 import org.junit.Test;
+import org.talend.components.common.SchemaProperties;
+import org.talend.core.model.components.IComponent;
+import org.talend.core.model.metadata.IMetadataColumn;
 import org.talend.core.model.metadata.IMetadataTable;
+import org.talend.core.model.metadata.MetadataColumn;
+import org.talend.core.model.metadata.types.JavaTypesManager;
 import org.talend.core.model.process.EParameterFieldType;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.IProcess2;
+import org.talend.core.model.properties.impl.PropertyImpl;
+import org.talend.core.model.repository.FakePropertyImpl;
+import org.talend.core.ui.component.ComponentsFactoryProvider;
+import org.talend.daikon.properties.SchemaProperty;
 import org.talend.designer.core.test.util.NodeTestCreator;
 import org.talend.designer.core.ui.editor.nodes.Node;
+import org.talend.designer.core.ui.editor.process.Process;
 import org.talend.test.utils.testproperties.TestProperties;
 
 /**
@@ -43,32 +53,44 @@ public class ChangeMetadataCommandTest extends AbstractMetadataCommandTest {
 
     @Test
     public void testComponentSchemaUpdated() {
-        Node simpleInputNode = NodeTestCreator.createSimpleInputNode(process);
-        TestProperties props = (TestProperties) new TestProperties("test").init(); //$NON-NLS-1$
-        simpleInputNode.setComponentProperties(props);
-        simpleInputNode.getMetadataList().clear();
-
-        IMetadataTable table = createSimpleMetadata(props.schema);
-        table.setTableName(simpleInputNode.getUniqueName());
-        table.setLabel(simpleInputNode.getUniqueName());
-        table.setAttachedConnector("FLOW"); //$NON-NLS-1$
-        simpleInputNode.getMetadataList().add(table);
+        IComponent component = ComponentsFactoryProvider.getInstance().get("tSalesforceInput", "DI");
+        Node node = new Node(component, new Process(new FakePropertyImpl()));
+        IMetadataTable table = node.getMetadataList().get(0);
+        IMetadataColumn column = new MetadataColumn();
+        column.setLabel("C1");
+        column.setTalendType(JavaTypesManager.STRING.getId());
+        table.getListColumns().add(column);
+        column = new MetadataColumn();
+        column.setLabel("C2");
+        column.setTalendType(JavaTypesManager.STRING.getId());
+        table.getListColumns().add(column);
+        column = new MetadataColumn();
+        column.setLabel("C3");
+        column.setTalendType(JavaTypesManager.STRING.getId());
+        table.getListColumns().add(column);
 
         IMetadataTable newTable = table.clone(true);
         newTable.getListColumns().remove(0);
+        IElementParameter schemaParam = null;
+        for (IElementParameter param : node.getElementParameters()) {
+            if (EParameterFieldType.SCHEMA_REFERENCE.equals(param.getFieldType())) {
+                schemaParam = param;
+                break;
+            }
+        }
+        assertNotNull(schemaParam);
 
-        IElementParameter schemaParam = createSchemaParameter(simpleInputNode);
-
-        ChangeMetadataCommand changeMetadataCommand = new ChangeMetadataCommand(simpleInputNode, schemaParam, null, null, null,
-                table, newTable);
+        ChangeMetadataCommand changeMetadataCommand = new ChangeMetadataCommand(node, schemaParam, null, null, null, table,
+                newTable);
         changeMetadataCommand.execute();
 
-        String avroSchemaStr = getComponentSchemaFromTable(table);
+        String avroSchemaStr = ((SchemaProperties) node.getComponentProperties().getProperties("module.main")).schema
+                .getStringValue();
         assertNotNull(avroSchemaStr);
         Schema avroSchema = new Schema.Parser().parse(avroSchemaStr);
         assertEquals(2, avroSchema.getFields().size());
         assertNull(avroSchema.getField("C1")); //$NON-NLS-1$
-        assertEquals(avroSchemaStr, schemaParam.getValue());
+        assertEquals(avroSchemaStr, schemaParam.getValue().toString());
     }
 
     @Test
@@ -91,24 +113,31 @@ public class ChangeMetadataCommandTest extends AbstractMetadataCommandTest {
         ConnectionCreateCommand ccc = new ConnectionCreateCommand(simpleInputNode, "FLOW", args); //$NON-NLS-1$
         ConnectionCreateCommand.setCreatingConnection(true);
 
-        Node simpleOutputNode = NodeTestCreator.createSimpleOutputNode(process);
-        removeParameterByType(simpleOutputNode, EParameterFieldType.SCHEMA_TYPE.getName());
-        IElementParameter schemaParameter = createSchemaParameter(simpleOutputNode);
-        simpleOutputNode.addElementParameter(schemaParameter);
-        TestProperties outputProps = (TestProperties) new TestProperties("testOutput").init(); //$NON-NLS-1$
-        simpleOutputNode.setComponentProperties(outputProps);
-        ccc.setTarget(simpleOutputNode);
+        IComponent component = ComponentsFactoryProvider.getInstance().get("tSalesforceOutput", "DI");
+        Node node = new Node(component, new Process(new FakePropertyImpl()));
+        ccc.setTarget(node);
         ccc.execute();
+        
+        IElementParameter schemaParam = null;
+        for (IElementParameter param : node.getElementParameters()) {
+            if (EParameterFieldType.SCHEMA_REFERENCE.equals(param.getFieldType()) && param.getContext().equals("MAIN")) {
+                schemaParam = param;
+                break;
+            }
+        }
+        assertNotNull(schemaParam);
 
-        table = simpleOutputNode.getMetadataList().get(0);
-        String avroSchemaStr = getComponentSchemaFromTable(table);
+
+        table = node.getMetadataList().get(0);
+        String avroSchemaStr = inputProps.schema.schema.getStringValue();
         assertNotNull(avroSchemaStr);
         Schema avroSchema = new Schema.Parser().parse(avroSchemaStr);
+        
         assertEquals(3, avroSchema.getFields().size());
         assertNotNull(avroSchema.getField("C1")); //$NON-NLS-1$
         assertNotNull(avroSchema.getField("C2")); //$NON-NLS-1$
         assertNotNull(avroSchema.getField("C3")); //$NON-NLS-1$
-        assertEquals(avroSchemaStr, schemaParameter.getValue());
+        assertEquals(avroSchema.getFields().toString(), ((Schema)schemaParam.getValue()).getFields().toString());
     }
 
 }

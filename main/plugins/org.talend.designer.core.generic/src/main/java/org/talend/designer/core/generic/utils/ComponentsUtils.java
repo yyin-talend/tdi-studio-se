@@ -20,27 +20,33 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import org.apache.avro.Schema;
 import org.apache.commons.lang.StringUtils;
-import org.eclipse.swt.graphics.RGB;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.FrameworkUtil;
 import org.osgi.framework.ServiceReference;
 import org.talend.commons.exception.BusinessException;
 import org.talend.components.api.component.ComponentDefinition;
 import org.talend.components.api.component.Connector;
-import org.talend.components.api.component.StudioConstants;
 import org.talend.components.api.component.Trigger;
 import org.talend.components.api.properties.ComponentProperties;
 import org.talend.components.api.service.ComponentService;
 import org.talend.core.model.components.IComponent;
 import org.talend.core.model.components.IComponentsFactory;
+import org.talend.core.model.metadata.IMetadataColumn;
+import org.talend.core.model.metadata.IMetadataTable;
+import org.talend.core.model.metadata.MetadataToolAvroHelper;
+import org.talend.core.model.metadata.MetadataToolHelper;
+import org.talend.core.model.metadata.builder.connection.MetadataTable;
 import org.talend.core.model.metadata.types.JavaType;
 import org.talend.core.model.metadata.types.JavaTypesManager;
 import org.talend.core.model.process.EComponentCategory;
 import org.talend.core.model.process.EConnectionType;
 import org.talend.core.model.process.EParameterFieldType;
 import org.talend.core.model.process.IElement;
+import org.talend.core.model.process.IElementParameterDefaultValue;
 import org.talend.core.model.process.INode;
+import org.talend.core.model.process.INodeConnector;
 import org.talend.core.model.utils.ContextParameterUtils;
 import org.talend.core.ui.component.ComponentsFactoryProvider;
 import org.talend.core.utils.TalendQuoteUtils;
@@ -48,6 +54,7 @@ import org.talend.daikon.NamedThing;
 import org.talend.daikon.properties.PresentationItem;
 import org.talend.daikon.properties.Properties.Deserialized;
 import org.talend.daikon.properties.Property;
+import org.talend.daikon.properties.SchemaProperty;
 import org.talend.daikon.properties.presentation.Form;
 import org.talend.daikon.properties.presentation.Widget;
 import org.talend.designer.core.generic.constants.IGenericConstants;
@@ -57,6 +64,7 @@ import org.talend.designer.core.generic.model.GenericElementParameter;
 import org.talend.designer.core.generic.model.mapping.WidgetFieldTypeMapper;
 import org.talend.designer.core.model.FakeElement;
 import org.talend.designer.core.model.components.ElementParameter;
+import org.talend.designer.core.model.components.ElementParameterDefaultValue;
 import org.talend.designer.core.model.components.NodeConnector;
 
 /**
@@ -211,7 +219,22 @@ public class ComponentsUtils {
             // handle form...
 
             EParameterFieldType fieldType = getFieldType(widget, widgetProperty);
+            // rootProperty.getAvailableConnectors(null, true)
             param.setFieldType(fieldType != null ? fieldType : EParameterFieldType.TEXT);
+            if (widgetProperty instanceof SchemaProperty) {
+                for (Connector connector : rootProperty.getAvailableConnectors(null, true)) {
+                    if (!(((SchemaProperty) widgetProperty).getValue() instanceof Schema)) {
+                        continue;
+                    }
+                    Schema schema = (Schema) ((SchemaProperty) widgetProperty).getValue();
+                    if (rootProperty.getSchema(connector, true).equals(schema)) {
+                        param.setContext(connector.getName());
+                        IElementParameterDefaultValue defaultValue = new ElementParameterDefaultValue();
+                        defaultValue.setDefaultValue(new Schema.Parser().parse(schema.toString()));
+                        param.getDefaultValues().add(defaultValue);
+                    }
+                }
+            }
             if (widgetProperty instanceof PresentationItem) {
                 param.setValue(widgetProperty.getDisplayName());
             } else if (widgetProperty instanceof Property) {
@@ -229,8 +252,6 @@ public class ComponentsUtils {
                     param.setValue(getParameterValue(element, property));
                     param.setSupportContext(isSupportContext(property));
                 }
-                // TCOMP-96
-                param.setContext(getConnectionType(property));
                 List<?> values = property.getPossibleValues();
                 if (values != null) {
                     param.setPossibleValues(values);
@@ -314,6 +335,19 @@ public class ComponentsUtils {
     }
 
     /**
+     * DOC nrousseau Comment method "getNameFromConnector".
+     * @param connector
+     * @return
+     */
+    public static String getNameFromConnector(Connector connector) {
+        if (Connector.MAIN_NAME.equals(connector.getName())) {
+            return EConnectionType.FLOW_MAIN.getName();
+        } else {
+            return connector.getName();
+        }
+    }
+
+    /**
      * DOC nrousseau Comment method "isPrevColumnList".
      * 
      * @param childProp
@@ -371,17 +405,6 @@ public class ComponentsUtils {
             break;
         }
         return paramValue;
-    }
-
-    public static String getConnectionType(Property property) {
-        String connectionType = EConnectionType.FLOW_MAIN.getName();
-        if (property != null) {
-            Object connectionTypeObj = property.getTaggedValue(StudioConstants.CONNECTOR_TYPE_SCHEMA_KEY);
-            if (connectionTypeObj != null) {
-                connectionType = connectionTypeObj.toString();
-            }
-        }
-        return connectionType;
     }
 
     private static String getPropertiesPath(String parentPropertiesPath, String currentPropertiesName) {
@@ -581,67 +604,6 @@ public class ComponentsUtils {
     }
 
     /**
-     * Check if the current connector contains correct information to be translated to a NodeConnector. There is
-     * currently no case where a connector can be invalid.
-     *
-     * @param connector a Connector generated by the new component architecture
-     * @param componentName the name of the current component
-     * @return a boolean if the connector is valid
-     */
-    public static boolean isAValidConnector(Connector connector, String componentName) {
-        // Currently a connector can only be a FLOW, a MAIN or a REJECT. There is nothing to check for the moment.
-        return true;
-    }
-
-    /**
-     * Transform a Connector to a NodeConnector.
-     *
-     * @param connector a Connector generated by the new component architecture
-     * @param parentNode The parent node current connector
-     * @return a NodeConnector compatible with the Studio.
-     */
-    public static NodeConnector generateNodeConnectorFromConnector(Connector connector, INode parentNode) {
-        String originalConnectorName = connector.getType().name();
-        boolean isFlow_Sub_ConnectorName = IGenericConstants.MAIN_CONNECTOR_NAME.equals(originalConnectorName)
-                || IGenericConstants.REJECT_CONNECTOR_NAME.equals(originalConnectorName);
-        EConnectionType currentType = EConnectionType.FLOW_MAIN;
-
-        NodeConnector nodeConnector = new NodeConnector(parentNode);
-        nodeConnector.setDefaultConnectionType(currentType);
-        // set the default values
-        nodeConnector.setLinkName(currentType.getDefaultLinkName());
-        nodeConnector.setMenuName(currentType.getDefaultMenuName());
-
-        // set input
-        if (!isFlow_Sub_ConnectorName) {
-            nodeConnector.setMaxLinkInput(connector.getMaxInput());
-        }
-
-        // set output
-        nodeConnector.setMaxLinkOutput(connector.getMaxOutput());
-
-        if (nodeConnector.getName() == null) {
-            nodeConnector.setName(originalConnectorName);
-            nodeConnector.setBaseSchema(currentType.getName());
-        }
-        if (IGenericConstants.REJECT_CONNECTOR_NAME.equals(originalConnectorName)) {
-            // set default color / name setup for reject links
-            RGB rgb = new RGB(255, 0, 0);
-            nodeConnector.addConnectionProperty(currentType, rgb, 2);
-            nodeConnector.getConnectionProperty(currentType).setRGB(rgb);
-            nodeConnector.setMenuName("Reject"); //$NON-NLS-1$
-            nodeConnector.setLinkName("Reject"); //$NON-NLS-1$
-        } else {
-            setConnectionProperty(currentType, nodeConnector);
-        }
-
-        // if kind is "flow" (main type), then add the same for the lookup and merge.
-        setConnectionProperty(EConnectionType.FLOW_REF, nodeConnector);
-        setConnectionProperty(EConnectionType.FLOW_MERGE, nodeConnector);
-        return nodeConnector;
-    }
-
-    /**
      * Check if the current trigger contains correct information to be translated to a NodeConnector. For example, we
      * currently do not support LOOKUP or MERGE trigger.
      *
@@ -669,11 +631,17 @@ public class ComponentsUtils {
      * @param parentNode The parent node current trigger
      * @return a NodeConnector compatible with the Studio.
      */
-    public static NodeConnector generateNodeConnectorFromTrigger(Trigger trigger, INode parentNode) {
+    public static INodeConnector generateNodeConnectorFromTrigger(Trigger trigger, INode parentNode) {
         String triggerName = trigger.getType().name();
+        // set output
+        if (!"ITERATE".equals(triggerName)) {//$NON-NLS-1$
+            // only accept the definition of ITERATE for now.
+            return null;
+        }
+
         EConnectionType currentType = EConnectionType.getTypeFromName(triggerName);
 
-        NodeConnector nodeConnector = new NodeConnector(parentNode);
+        INodeConnector nodeConnector = new NodeConnector(parentNode);
 
         nodeConnector.setDefaultConnectionType(currentType);
         // set the default values
@@ -683,10 +651,7 @@ public class ComponentsUtils {
         // set input
         nodeConnector.setMaxLinkInput(trigger.getMaxInput());
 
-        // set output
-        if ("ITERATE".equals(triggerName)) {//$NON-NLS-1$
-            nodeConnector.setMaxLinkOutput(trigger.getMaxOutput());
-        }
+        nodeConnector.setMaxLinkOutput(trigger.getMaxOutput());
 
         if (nodeConnector.getName() == null) {
             nodeConnector.setName(triggerName);
@@ -703,7 +668,7 @@ public class ComponentsUtils {
      * @param currentType type of the connection
      * @param node currentNode
      */
-    private static void setConnectionProperty(EConnectionType currentType, NodeConnector node) {
+    private static void setConnectionProperty(EConnectionType currentType, INodeConnector node) {
         // One line method that factorize a lot of code.
         node.addConnectionProperty(currentType, currentType.getRGB(), currentType.getDefaultLineStyle());
     }

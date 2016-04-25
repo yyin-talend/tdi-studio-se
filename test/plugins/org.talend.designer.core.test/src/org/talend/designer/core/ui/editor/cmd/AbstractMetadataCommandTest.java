@@ -63,7 +63,10 @@ public class AbstractMetadataCommandTest {
         columnsMap.add(createSimpleColumn("C3", "id_Integer")); //$NON-NLS-1$ //$NON-NLS-2$
         org.talend.core.model.metadata.builder.connection.MetadataTable metadataTable = MetadataUtils.createTable(
                 "testTable", columnsMap, schemaProperties); //$NON-NLS-1$
-        return MetadataToolHelper.convert(metadataTable);
+        IMetadataTable table = MetadataToolHelper.convert(metadataTable);
+        table.getAdditionalProperties().remove(IComponentConstants.COMPONENT_PROPERTIES_TAG);
+        table.getAdditionalProperties().remove(IComponentConstants.COMPONENT_SCHEMA_TAG);
+        return table;
     }
 
     protected Map<String, Object> createSimpleColumn(String name, String type) {
@@ -71,18 +74,6 @@ public class AbstractMetadataCommandTest {
         columnMap.put(IMetadataTableConstants.COLUMN_NAME, name);
         columnMap.put(IMetadataTableConstants.COLUMN_TYPE, type);
         return columnMap;
-    }
-
-    protected String getComponentSchemaFromTable(IMetadataTable table) {
-        Map<String, String> additionalProperties = table.getAdditionalProperties();
-        String propertiesSerialized = additionalProperties.get(IComponentConstants.COMPONENT_PROPERTIES_TAG);
-        Deserialized<ComponentProperties> fromSerialized = ComponentProperties.fromSerialized(propertiesSerialized,
-                ComponentProperties.class);
-        ComponentProperties componentProperties = fromSerialized.properties;
-        org.talend.daikon.properties.Property property = componentProperties.getValuedProperty(additionalProperties
-                .get(IComponentConstants.COMPONENT_SCHEMA_TAG));
-        String avroSchemaStr = property.getStringValue();
-        return avroSchemaStr;
     }
 
     protected IElementParameter updateParameterNameByType(INode node, String paramType, String newName) {
