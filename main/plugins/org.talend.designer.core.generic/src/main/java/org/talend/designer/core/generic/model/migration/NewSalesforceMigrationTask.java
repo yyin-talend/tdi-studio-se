@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
+import org.apache.commons.lang.StringUtils;
 import org.talend.designer.core.generic.utils.ParameterUtilTool;
 import org.talend.designer.core.model.utils.emf.talendfile.ElementParameterType;
 import org.talend.designer.core.model.utils.emf.talendfile.ElementValueType;
@@ -50,8 +51,14 @@ public class NewSalesforceMigrationTask extends NewComponentFrameworkMigrationTa
     	if(node != null && paramType != null){
     		Object value = ParameterUtilTool.convertParameterValue(paramType);
     		if("MODULENAME".equals(paramName) && "CustomModule".equals(value)){
-        		paramName =  "CUSTOM_MODULE";
-        		paramType = ParameterUtilTool.findParameterType(node, paramName);
+    			paramName = "CUSTOM_MODULE_NAME";
+    			if("tSalesforceInput".equals(node.getComponentName())){
+    				paramName = "CUSTOM_MODULE";
+    			}
+        		ElementParameterType customModuleName = ParameterUtilTool.findParameterType(node, paramName);
+        		if(customModuleName != null){
+            		paramType.setValue(StringUtils.strip(String.valueOf(ParameterUtilTool.convertParameterValue(customModuleName)),"\""));
+        		}
             }else if("CONNECTION".equals(paramName) && value!=null && !"".equals(value)){
         		ElementParameterType useConnection = ParameterUtilTool.findParameterType(node, "USE_EXISTING_CONNECTION");
         		if(useConnection!=null && Boolean.valueOf(String.valueOf(ParameterUtilTool.convertParameterValue(useConnection)))){
