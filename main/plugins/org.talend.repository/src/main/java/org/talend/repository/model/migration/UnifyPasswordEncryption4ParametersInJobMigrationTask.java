@@ -108,7 +108,9 @@ public class UnifyPasswordEncryption4ParametersInJobMigrationTask extends UnifyP
                 if (paramTypes != null) {
                     for (ContextParameterType param : paramTypes) {
                         String value = param.getValue();
-                        if (value != null && PasswordEncryptUtil.isPasswordType(param.getType())) {
+                        if (value != null
+                                && (PasswordEncryptUtil.isPasswordType(param.getType()) || PasswordEncryptUtil
+                                        .isPasswordField(param.getName()))) {
                             try {
                                 String rawPassword = PasswordEncryptUtil.decryptPassword(value);
                                 param.setRawValue(rawPassword);
@@ -152,25 +154,48 @@ public class UnifyPasswordEncryption4ParametersInJobMigrationTask extends UnifyP
         return modified;
     }
 
+    protected boolean checkNodesFromEmf(Item item, ProcessType processType) throws Exception {
+        boolean modified = false;
+        for (Object nodeObject : processType.getNode()) {
+            NodeType nodeType = (NodeType)nodeObject;
+            for (Object paramObjectType : nodeType.getElementParameter()) {
+                ElementParameterType param = (ElementParameterType) paramObjectType;
+                if (param.getField() != null) {
+                    if (EParameterFieldType.PASSWORD.getName().equals(param.getField()) && param.getValue() != null) {
+                        if (reencryptValueIfNeeded(param)) {
+                            modified = true;
+                        }
+                    }
+                }
+            }
+        }
+        return modified;
+    }
+
     protected boolean checkNodes(Item item, ProcessType processType) throws Exception {
         boolean modified = false;
 
-        ComponentCategory category = ComponentCategory.getComponentCategoryFromItem(item);
-        for (Object nodeObjectType : processType.getNode()) {
-            NodeType nodeType = (NodeType) nodeObjectType;
-            IComponent component = ComponentsFactoryProvider.getInstance().get(nodeType.getComponentName(), category.getName());
-            if (component == null) {
-                continue;
-            }
-            FakeNode fNode = new FakeNode(component);
-            for (Object paramObjectType : nodeType.getElementParameter()) {
-                ElementParameterType param = (ElementParameterType) paramObjectType;
-                IElementParameter paramFromEmf = fNode.getElementParameter(param.getName());
-                if (paramFromEmf != null) {
-                    if (EParameterFieldType.PASSWORD.equals(paramFromEmf.getFieldType()) && param.getValue() != null) {
-                        param.setField(EParameterFieldType.PASSWORD.getName());
-                        if (reencryptValueIfNeeded(param)) {
-                            modified = true;
+        if (!checkNodesFromEmf(item, processType)) {
+            // some versions of the job doesn't have any field type saved in the job, so we will check from the existing
+            // component field type
+            ComponentCategory category = ComponentCategory.getComponentCategoryFromItem(item);
+            for (Object nodeObjectType : processType.getNode()) {
+                NodeType nodeType = (NodeType) nodeObjectType;
+                IComponent component = ComponentsFactoryProvider.getInstance().get(nodeType.getComponentName(),
+                        category.getName());
+                if (component == null) {
+                    continue;
+                }
+                FakeNode fNode = new FakeNode(component);
+                for (Object paramObjectType : nodeType.getElementParameter()) {
+                    ElementParameterType param = (ElementParameterType) paramObjectType;
+                    IElementParameter paramFromEmf = fNode.getElementParameter(param.getName());
+                    if (paramFromEmf != null) {
+                        if (EParameterFieldType.PASSWORD.equals(paramFromEmf.getFieldType()) && param.getValue() != null) {
+                            param.setField(EParameterFieldType.PASSWORD.getName());
+                            if (reencryptValueIfNeeded(param)) {
+                                modified = true;
+                            }
                         }
                     }
                 }
