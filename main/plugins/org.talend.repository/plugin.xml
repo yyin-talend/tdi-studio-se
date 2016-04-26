@@ -2699,6 +2699,15 @@
               name="ChangeLogLevel4tRedshiftInput"
               version="6.2.0">
         </projecttask>
+        <projecttask
+              beforeLogon="false"
+              breaks="6.2.0"
+              class="org.talend.repository.model.migration.UpdateUrlForRedShiftMigrationTask"
+              description="Update RedShift JDBC url"
+              id="org.talend.repository.model.migration.UpdateUrlForRedShiftMigrationTask"
+              name="UpdateUrlForRedShiftMigrationTask"
+              version="6.2.0">
+        </projecttask>
    </extension>
 
    <extension
