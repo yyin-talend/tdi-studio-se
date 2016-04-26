@@ -38,7 +38,6 @@ import org.talend.cwm.helper.PackageHelper;
 import org.talend.daikon.properties.Properties.Deserialized;
 import org.talend.designer.core.generic.model.GenericNodeConnector;
 import org.talend.repository.model.IProxyRepositoryFactory;
-
 import orgomg.cwm.objectmodel.core.CoreFactory;
 import orgomg.cwm.objectmodel.core.TaggedValue;
 
@@ -131,6 +130,18 @@ public class SchemaUtils {
         updateComponentSchema(componentProperties, schemaPropertyName, metadataTable, null);
     }
 
+    public static void updateComponentSchema(ComponentProperties componentProperties, String schemaPropertyName,
+            IMetadataTable metadataTable, IElementParameter param) {
+        if (componentProperties == null || schemaPropertyName == null || metadataTable == null) {
+            return;
+        }
+        Schema schema = convertTalendSchemaIntoComponentSchema(ConvertionHelper.convert(metadataTable));
+        componentProperties.setValue(schemaPropertyName, schema);
+        if (param != null) {
+            param.setValue(schema.toString());
+        }
+    }
+
     public static void updateComponentSchema(INode node, IMetadataTable metadataTable) {
         if (node == null || metadataTable == null || node.getComponentProperties() == null) {
             return;
@@ -146,21 +157,6 @@ public class SchemaUtils {
                     param.setValue(schema);
                 }
             }
-        }
-    }
-
-    public static void updateComponentSchema(ComponentProperties componentProperties, String schemaPropertyName,
-            IMetadataTable metadataTable, IElementParameter param) {
-        if (componentProperties == null || schemaPropertyName == null || metadataTable == null) {
-            return;
-        }
-        Schema schema = convertTalendSchemaIntoComponentSchema(ConvertionHelper.convert(metadataTable));
-        componentProperties.setValue(schemaPropertyName, schema);
-        Map<String, String> additionalProperties = metadataTable.getAdditionalProperties();
-        additionalProperties.put(IComponentConstants.COMPONENT_PROPERTIES_TAG, componentProperties.toSerialized());
-        additionalProperties.put(IComponentConstants.COMPONENT_SCHEMA_TAG, schemaPropertyName);
-        if (param != null) {
-            param.setValue(schema.toString());
         }
     }
 
