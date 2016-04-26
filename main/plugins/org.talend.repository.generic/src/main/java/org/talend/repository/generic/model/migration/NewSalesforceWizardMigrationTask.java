@@ -25,8 +25,8 @@ import java.util.Set;
 
 import org.apache.avro.Schema;
 import org.eclipse.core.runtime.Path;
+import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.runtime.model.components.IComponentConstants;
-import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.components.api.properties.ComponentProperties;
 import org.talend.components.api.service.ComponentService;
 import org.talend.core.model.metadata.builder.connection.Connection;
@@ -34,6 +34,7 @@ import org.talend.core.model.metadata.builder.connection.MetadataTable;
 import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.model.properties.Item;
 import org.talend.core.model.repository.ERepositoryObjectType;
+import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.repository.model.ProxyRepositoryFactory;
 import org.talend.core.utils.ReflectionUtils;
 import org.talend.cwm.helper.ConnectionHelper;
@@ -41,6 +42,7 @@ import org.talend.designer.core.generic.utils.ComponentsUtils;
 import org.talend.designer.core.generic.utils.SchemaUtils;
 import org.talend.repository.generic.model.genericMetadata.GenericConnection;
 import org.talend.repository.generic.model.genericMetadata.GenericConnectionItem;
+
 import orgomg.cwm.objectmodel.core.CoreFactory;
 import orgomg.cwm.objectmodel.core.TaggedValue;
 
@@ -50,7 +52,7 @@ import orgomg.cwm.objectmodel.core.TaggedValue;
  */
 public class NewSalesforceWizardMigrationTask extends NewGenericWizardMigrationTask {
 
-    public static final String SCHEMA_SCHEMA = "schema.schema"; //$NON-NLS-1$
+    public static final String SCHEMA_SCHEMA = "main.schema"; //$NON-NLS-1$
 
     public static final String REFLECTION_SALESFORCE_MODULE_PROPERTIES = "org.talend.components.salesforce.SalesforceModuleProperties"; //$NON-NLS-1$
 
@@ -89,6 +91,12 @@ public class NewSalesforceWizardMigrationTask extends NewGenericWizardMigrationT
             if (modify) {
                 try {
                     ProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
+                    IRepositoryViewObject object = factory.getLastVersion(item.getProperty().getId(),
+                            ERepositoryObjectType.METADATA_SALESFORCE_SCHEMA.getFolder(),
+                            ERepositoryObjectType.METADATA_SALESFORCE_SCHEMA);
+                    if (object != null) {
+                        factory.deleteObjectPhysical(object);
+                    }
                     if (genericConnectionItem != null && connectionItem != null) {
                         factory.create(genericConnectionItem, new Path(connectionItem.getState().getPath()), true);
                     }
@@ -144,20 +152,8 @@ public class NewSalesforceWizardMigrationTask extends NewGenericWizardMigrationT
                     ((orgomg.cwm.objectmodel.core.Package) genericConnection).getOwnedElement().add(metaTable);
                     modified = true;
                 }
-            } catch (ClassNotFoundException e) {
-                e.printStackTrace();
-            } catch (SecurityException e) {
-                e.printStackTrace();
-            } catch (NoSuchMethodException e) {
-                e.printStackTrace();
-            } catch (IllegalArgumentException e) {
-                e.printStackTrace();
-            } catch (InstantiationException e) {
-                e.printStackTrace();
-            } catch (IllegalAccessException e) {
-                e.printStackTrace();
-            } catch (InvocationTargetException e) {
-                e.printStackTrace();
+            } catch (Exception e) {
+                ExceptionHandler.process(e);
             }
         }
         return modified;

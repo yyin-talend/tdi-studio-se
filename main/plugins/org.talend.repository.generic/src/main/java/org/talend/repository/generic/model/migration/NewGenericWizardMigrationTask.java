@@ -133,7 +133,7 @@ public abstract class NewGenericWizardMigrationTask extends AbstractItemMigratio
         }
         Property oldProperty = oldConnectionItem.getProperty();
         Property newProperty = PropertiesFactory.eINSTANCE.createProperty();
-        newProperty.setId(ProxyRepositoryFactory.getInstance().getNextId());
+        newProperty.setId(oldProperty.getId());
         newProperty.setLabel(oldProperty.getLabel());
         newProperty.setDisplayName(oldProperty.getDisplayName());
         newProperty.setDescription(oldProperty.getDescription());

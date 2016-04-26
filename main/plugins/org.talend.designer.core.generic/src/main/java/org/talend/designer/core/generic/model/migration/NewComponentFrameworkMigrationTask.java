@@ -118,6 +118,7 @@ public abstract class NewComponentFrameworkMigrationTask extends AbstractJobMigr
                             if (EParameterFieldType.SCHEMA_REFERENCE.equals(param.getFieldType())) {
                                 String schemaTypeName = ":" + EParameterName.SCHEMA_TYPE.getName();//$NON-NLS-1$
                                 String repSchemaTypeName = ":" + EParameterName.REPOSITORY_SCHEMA_TYPE.getName();//$NON-NLS-1$
+                                oldParamName = oldParamName.split(":")[0]; //$NON-NLS-1$
                                 paramType = getParameterType(nodeType, oldParamName + schemaTypeName);
                                 if (paramType != null) {
                                     paramType.setName(param.getName() + schemaTypeName);
@@ -149,6 +150,7 @@ public abstract class NewComponentFrameworkMigrationTask extends AbstractJobMigr
                     Entry<String, String> schemaParamEntry = schemaParamIter.next();
                     String newParamName = schemaParamEntry.getKey();
                     String oldParamName = schemaParamEntry.getValue();
+                    oldParamName = oldParamName.split(":")[1]; //$NON-NLS-1$
                     MetadataType metadataType = metadatasMap.get(oldParamName);
                     if (metadataType != null) {
                         if (EConnectionType.FLOW_MAIN.getName().equals(metadataType.getConnector())) {
