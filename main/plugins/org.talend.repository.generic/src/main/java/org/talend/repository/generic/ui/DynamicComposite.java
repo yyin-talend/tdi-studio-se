@@ -28,6 +28,7 @@ import org.eclipse.swt.widgets.Display;
 import org.talend.components.api.properties.ComponentProperties;
 import org.talend.components.api.service.ComponentService;
 import org.talend.core.model.metadata.builder.connection.Connection;
+import org.talend.core.model.metadata.builder.connection.MetadataTable;
 import org.talend.core.model.process.EComponentCategory;
 import org.talend.core.model.process.EParameterFieldType;
 import org.talend.core.model.process.Element;
@@ -47,6 +48,7 @@ import org.talend.designer.core.generic.constants.IGenericConstants;
 import org.talend.designer.core.generic.context.ComponentContextPropertyValueEvaluator;
 import org.talend.designer.core.generic.model.GenericElementParameter;
 import org.talend.designer.core.generic.utils.ComponentsUtils;
+import org.talend.designer.core.generic.utils.SchemaUtils;
 import org.talend.designer.core.model.FakeElement;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.model.components.ElementParameter;
@@ -57,6 +59,7 @@ import org.talend.repository.generic.i18n.Messages;
 import org.talend.repository.generic.internal.IGenericWizardInternalService;
 import org.talend.repository.generic.internal.service.GenericWizardInternalService;
 import org.talend.repository.generic.model.genericMetadata.GenericConnection;
+import org.talend.repository.generic.model.genericMetadata.SubContainer;
 
 /**
  * 
@@ -112,11 +115,11 @@ public class DynamicComposite extends MultipleThreadDynamicComposite implements 
         List<ElementParameter> parameters = new ArrayList<>();
         ComponentService componentService = null;
         ComponentProperties componentProperties = null;
+        Connection theConnection = null;
+        if (connectionItem != null) {
+            theConnection = connectionItem.getConnection();
+        }
         if (element instanceof FakeElement) {
-            Connection theConnection = null;
-            if (connectionItem != null) {
-                theConnection = connectionItem.getConnection();
-            }
             componentService = new ComponentServiceWithValueEvaluator(internalService.getComponentService(),
                     new MetadataContextPropertyValueEvaluator(theConnection));
             parameters = ComponentsUtils.getParametersFromForm(element, form);
@@ -142,6 +145,13 @@ public class DynamicComposite extends MultipleThreadDynamicComposite implements 
                                 EParameterFieldType.SCHEMA_REFERENCE, section);
                         parameter.getChildParameters().putAll(schemaParameter.getChildParameters());
                     }
+                } else if (EParameterFieldType.NAME_SELECTION_AREA.equals(parameter.getFieldType()) && theConnection != null) {
+                    List<MetadataTable> metadataTables = SchemaUtils.getMetadataTables(theConnection, SubContainer.class);
+                    List<String> tableLabels = new ArrayList<>();
+                    for (MetadataTable metaTable : metadataTables) {
+                        tableLabels.add(metaTable.getLabel());
+                    }
+                    parameter.setValue(tableLabels);
                 }
                 if (componentProperties != null && isRepository(element)) {
                     String repositoryValue = parameter.getRepositoryValue();
@@ -154,7 +164,8 @@ public class DynamicComposite extends MultipleThreadDynamicComposite implements 
                     if (parameter.isShow(currentParameters) && (repositoryValue != null)
                             && (!parameter.getName().equals(EParameterName.PROPERTY_TYPE.getName()))
                             && parameter.getCategory() == section) {
-                        org.talend.daikon.properties.Property property = componentProperties.getValuedProperty(parameter.getName());
+                        org.talend.daikon.properties.Property property = componentProperties.getValuedProperty(parameter
+                                .getName());
                         if (property.getTaggedValue(IGenericConstants.REPOSITORY_VALUE) != null) {
                             parameter.setRepositoryValueUsed(true);
                             parameter.setReadOnly(true);
