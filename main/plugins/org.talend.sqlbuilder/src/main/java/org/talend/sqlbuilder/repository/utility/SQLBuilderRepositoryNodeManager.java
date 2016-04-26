@@ -81,7 +81,6 @@ import org.talend.sqlbuilder.editors.MultiPageSqlBuilderEditor;
 import org.talend.sqlbuilder.ui.AbstractSQLEditorComposite;
 import org.talend.sqlbuilder.ui.SQLBuilderDialog;
 import org.talend.utils.sql.ConnectionUtils;
-
 import orgomg.cwm.resource.relational.Catalog;
 import orgomg.cwm.resource.relational.Schema;
 
@@ -497,8 +496,8 @@ public class SQLBuilderRepositoryNodeManager {
         }
         if (tableFromDB != null) {
             List<MetadataColumn> columnsFromDB = new ArrayList<MetadataColumn>();
-            columnsFromDB.addAll(
-                    ExtractMetaDataFromDataBase.returnMetadataColumnsFormTable(iMetadataConnection, tableFromDB.getSourceName()));
+            columnsFromDB.addAll(ExtractMetaDataFromDataBase.returnMetadataColumnsFormTable(iMetadataConnection,
+                    tableFromDB.getSourceName()));
             modifyOldOneColumnFromDB(columnsFromDB, metadataColumn);
         }
     }
@@ -650,8 +649,8 @@ public class SQLBuilderRepositoryNodeManager {
         }
         DatabaseConnectionItem item = PropertiesFactory.eINSTANCE.createDatabaseConnectionItem();
         Property connectionProperty = PropertiesFactory.eINSTANCE.createProperty();
-        connectionProperty
-                .setAuthor(((RepositoryContext) CorePlugin.getContext().getProperty(Context.REPOSITORY_CONTEXT_KEY)).getUser());
+        connectionProperty.setAuthor(((RepositoryContext) CorePlugin.getContext().getProperty(Context.REPOSITORY_CONTEXT_KEY))
+                .getUser());
         connectionProperty.setVersion(VersionUtils.DEFAULT_VERSION);
         connectionProperty.setStatusCode(""); //$NON-NLS-1$
 
@@ -862,8 +861,8 @@ public class SQLBuilderRepositoryNodeManager {
      * @throws InstantiationException
      * @throws ClassNotFoundException
      */
-    public DatabaseMetaData getDatabaseMetaData(IMetadataConnection iMetadataConnection)
-            throws ClassNotFoundException, InstantiationException, IllegalAccessException, SQLException {
+    public DatabaseMetaData getDatabaseMetaData(IMetadataConnection iMetadataConnection) throws ClassNotFoundException,
+            InstantiationException, IllegalAccessException, SQLException {
         ExtractMetaDataUtils extractMeta = ExtractMetaDataUtils.getInstance();
         extractMeta.getConnection(iMetadataConnection.getDbType(), iMetadataConnection.getUrl(),
                 iMetadataConnection.getUsername(), iMetadataConnection.getPassword(), iMetadataConnection.getDatabase(),
@@ -908,41 +907,34 @@ public class SQLBuilderRepositoryNodeManager {
      * @param repositoryNode current RepositoryNode
      * @param query need to save Query
      */
-    @SuppressWarnings("unchecked")
     private void saveEMFQuery(String id, Query query, String oldQuery) {
         DatabaseConnectionItem item = getEMFItem(id);
         if (query != null) {
-            Query query3 = ConnectionFactory.eINSTANCE.createQuery();
-            query3.setComment(query.getComment());
-            query3.setLabel(query.getLabel());
-            query3.setValue(query.getValue());
-            query3.setContextMode(query.isContextMode()); // Add by hyWang
             Connection connection = item.getConnection();
             QueriesConnection queriesConnection = connection.getQueries();
             if (queriesConnection == null) {
-                QueriesConnection qc = ConnectionFactory.eINSTANCE.createQueriesConnection();
-                qc.setConnection(connection);
-                qc.getQuery().add(query3);
-                assignQueryId(query3, qc); // assign id to new query
-            } else {
-                List<Query> queries = queriesConnection.getQuery();
-                boolean isModify = false;
-                for (Query query2 : queries) {
-                    if (oldQuery != null && (query2.getLabel().equals(oldQuery)) || query2.getLabel().equals(query3.getLabel())) {
-                        query2.setComment(query3.getComment());
-                        query2.setId(query3.getId());
-                        query2.setValue(query3.getValue());
-                        query2.setLabel(query3.getLabel());
-                        // add by hywang
-                        query2.setContextMode(query3.isContextMode());
-                        isModify = true;
-                    }
+                queriesConnection = ConnectionFactory.eINSTANCE.createQueriesConnection();
+                queriesConnection.setConnection(connection);
+                connection.setQueries(queriesConnection);
+            }
+            boolean isModify = false;
+            List<Query> queries = queriesConnection.getQuery();
+            for (Query query2 : queries) {
+                if (oldQuery != null && (query2.getLabel().equals(oldQuery)) || query2.getLabel().equals(query.getLabel())) {
+                    query2.setLabel(query.getLabel()); // reset new label, if changed
+                    query2.setComment(query.getComment());
+                    query2.setValue(query.getValue());
+                    // add by hywang
+                    query2.setContextMode(query.isContextMode());
                     assignQueryId(query2, queriesConnection); // assign id to old query without id
+
+                    isModify = true;
                 }
-                if (!isModify) {
-                    queriesConnection.getQuery().add(query3);
-                    assignQueryId(query3, queriesConnection); // assign id to new query
-                }
+            }
+
+            if (!isModify) {
+                assignQueryId(query, queriesConnection); // assign id to new query
+                queriesConnection.getQuery().add(query);
             }
         }
         deleteNouseTables(item.getConnection());
@@ -974,38 +966,8 @@ public class SQLBuilderRepositoryNodeManager {
         tList = null;
     }
 
-    @SuppressWarnings("unchecked")
     public void saveQuery(RepositoryNode repositoryNode, Query query, String oldQuery) {
         saveEMFQuery(repositoryNode.getObject().getId(), query, oldQuery);
-        DatabaseConnectionItem item = getItem(repositoryNode);
-        if (query != null) {
-            Connection connection = item.getConnection();
-            QueriesConnection queriesConnection = connection.getQueries();
-            if (queriesConnection == null) {
-                QueriesConnection qc = ConnectionFactory.eINSTANCE.createQueriesConnection();
-                qc.setConnection(connection);
-                qc.getQuery().add(query);
-                assignQueryId(query, qc); // assign id to new query
-            } else {
-                List<Query> queries = queriesConnection.getQuery();
-                boolean isModify = false;
-                for (Query query2 : queries) {
-                    if (query2.getLabel().equals(query.getLabel())) {
-                        query2.setComment(query.getComment());
-                        query2.setId(query.getId());
-                        query2.setValue(query.getValue());
-                        query2.setContextMode(query.isContextMode()); // add by hywang
-                        isModify = true;
-                    }
-                    assignQueryId(query2, queriesConnection); // assign id to old query without id
-                }
-                if (!isModify) {
-                    queriesConnection.getQuery().add(query);
-                    assignQueryId(query, queriesConnection); // assign id to new query
-                }
-            }
-        }
-
     }
 
     private void assignQueryId(Query query, QueriesConnection connection) {
