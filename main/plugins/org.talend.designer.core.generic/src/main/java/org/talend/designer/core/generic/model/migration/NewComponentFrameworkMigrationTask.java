@@ -27,6 +27,7 @@ import org.apache.avro.Schema;
 import org.eclipse.emf.common.util.EList;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.exception.PersistenceException;
+import org.talend.components.api.component.Connector;
 import org.talend.components.api.properties.ComponentProperties;
 import org.talend.components.api.properties.ComponentReferenceProperties;
 import org.talend.core.model.components.ComponentCategory;
@@ -40,6 +41,7 @@ import org.talend.core.model.metadata.MetadataTable;
 import org.talend.core.model.metadata.builder.ConvertionHelper;
 import org.talend.core.model.migration.AbstractJobMigrationTask;
 import org.talend.core.model.process.AbstractNode;
+import org.talend.core.model.process.EConnectionType;
 import org.talend.core.model.process.EParameterFieldType;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.properties.Item;
@@ -54,6 +56,7 @@ import org.talend.designer.core.generic.utils.ParameterUtilTool;
 import org.talend.designer.core.generic.utils.SchemaUtils;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.model.metadata.MetadataEmfFactory;
+import org.talend.designer.core.model.utils.emf.talendfile.ConnectionType;
 import org.talend.designer.core.model.utils.emf.talendfile.ElementParameterType;
 import org.talend.designer.core.model.utils.emf.talendfile.MetadataType;
 import org.talend.designer.core.model.utils.emf.talendfile.NodeType;
@@ -141,18 +144,31 @@ public abstract class NewComponentFrameworkMigrationTask extends AbstractJobMigr
                     metadatasMap.put(metadataType.getConnector(), metadataType);
                 }
                 Iterator<Entry<String, String>> schemaParamIter = schemaParamMap.entrySet().iterator();
+
                 while (schemaParamIter.hasNext()) {
                     Entry<String, String> schemaParamEntry = schemaParamIter.next();
                     String newParamName = schemaParamEntry.getKey();
                     String oldParamName = schemaParamEntry.getValue();
                     MetadataType metadataType = metadatasMap.get(oldParamName);
                     if (metadataType != null) {
+                        if (EConnectionType.FLOW_MAIN.getName().equals(metadataType.getConnector())) {
+                            metadataType.setConnector(Connector.MAIN_NAME);
+                        }
                         MetadataEmfFactory factory = new MetadataEmfFactory();
                         factory.setMetadataType(metadataType);
                         IMetadataTable metadataTable = factory.getMetadataTable();
                         Schema schema = SchemaUtils.convertTalendSchemaIntoComponentSchema(ConvertionHelper
                                 .convert(metadataTable));
                         compProperties.setValue(newParamName, schema);
+                    }
+                }
+                String uniqueName = ParameterUtilTool.getParameterValue(nodeType, "UNIQUE_NAME"); //$NON-NLS-1$
+                for (Object connectionObj : processType.getConnection()) {
+                    ConnectionType connection = (ConnectionType)connectionObj;
+                    if (connection.getSource() != null && connection.getSource().equals(uniqueName)) {
+                        if (EConnectionType.FLOW_MAIN.getName().equals(connection.getConnectorName())) {
+                            connection.setConnectorName(Connector.MAIN_NAME);
+                        }
                     }
                 }
 
