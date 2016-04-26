@@ -14,7 +14,6 @@ package org.talend.repository.generic.model.migration;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.GregorianCalendar;
@@ -38,6 +37,8 @@ import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.repository.model.ProxyRepositoryFactory;
 import org.talend.core.utils.ReflectionUtils;
 import org.talend.cwm.helper.ConnectionHelper;
+import org.talend.daikon.NamedThing;
+import org.talend.daikon.properties.Property;
 import org.talend.designer.core.generic.utils.ComponentsUtils;
 import org.talend.designer.core.generic.utils.SchemaUtils;
 import org.talend.repository.generic.model.genericMetadata.GenericConnection;
@@ -85,6 +86,14 @@ public class NewSalesforceWizardMigrationTask extends NewGenericWizardMigrationT
             ComponentProperties componentProperties = service.getComponentProperties(CONNECTION_COMPONENT_NAME);
             // Update
             modify = updateComponentProperties(connection, componentProperties, props);
+            NamedThing nt = componentProperties.getProperty("loginType"); //$NON-NLS-1$
+            if (nt instanceof Property) {
+                Property property = (Property)nt;
+                if ("OAuth2".equals(property.getValue())) { //$NON-NLS-1$
+                    property.setValue("OAuth"); //$NON-NLS-1$
+                    componentProperties.setValue("endpoint", "https://login.salesforce.com/services/oauth2");  //$NON-NLS-1$//$NON-NLS-2$
+                }
+            }
             genericConnection.setCompProperties(componentProperties.toSerialized());
             genericConnectionItem.setConnection(genericConnection);
             updateMetadataTable(connection, genericConnection, componentProperties);

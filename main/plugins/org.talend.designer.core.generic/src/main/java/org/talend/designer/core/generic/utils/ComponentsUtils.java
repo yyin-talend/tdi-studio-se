@@ -307,7 +307,11 @@ public class ComponentsUtils {
                         }
                         if (curChildProp.getType().equals(Property.Type.BOOLEAN)) {
                             newParam.setFieldType(EParameterFieldType.CHECK);
-                            newParam.setValue(new Boolean(curChildProp.getValue().toString()));
+                            if (curChildProp.getValue() == null) {
+                                newParam.setValue(Boolean.FALSE);
+                            } else {
+                                newParam.setValue(new Boolean(curChildProp.getValue().toString()));
+                            }
                         }
                         codeNames.add(curChildProp.getName());
                         possValsDisplay.add(curChildProp.getDisplayName());
