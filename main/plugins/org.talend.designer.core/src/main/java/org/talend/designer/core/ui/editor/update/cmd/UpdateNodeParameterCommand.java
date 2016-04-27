@@ -82,9 +82,11 @@ import org.talend.designer.core.model.components.EmfComponent;
 import org.talend.designer.core.ui.editor.cmd.ChangeMetadataCommand;
 import org.talend.designer.core.ui.editor.cmd.PropertyChangeCommand;
 import org.talend.designer.core.ui.editor.nodes.Node;
+import org.talend.designer.core.ui.editor.process.Process;
 import org.talend.designer.core.ui.editor.update.UpdateManagerUtils;
 import org.talend.designer.core.utils.SAPParametersUtils;
 import org.talend.metadata.managment.ui.model.ProjectNodeHelper;
+import org.talend.metadata.managment.ui.utils.ConnectionContextHelper;
 import org.talend.repository.UpdateRepositoryUtils;
 
 /**
@@ -276,6 +278,9 @@ public class UpdateNodeParameterCommand extends Command {
                                     .equals(connectionItem.getProperty().getId())) {
                         curPropertyParam = param;
                         parentParamName = curPropertyParam.getName();
+                        if(connectionItem!=null){
+                            ConnectionContextHelper.addContextForNodeParameter(node, connectionItem, false);
+                        }
                         break;
                     }
                 }
