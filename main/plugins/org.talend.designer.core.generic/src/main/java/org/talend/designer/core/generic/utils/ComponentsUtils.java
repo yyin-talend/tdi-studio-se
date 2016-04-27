@@ -358,6 +358,9 @@ public class ComponentsUtils {
      * @return
      */
     public static boolean isPrevColumnList(Property childProp) {
+    	if(childProp == null) {
+    		return true;
+    	}
         return "columnName".equals(childProp.getName());
     }
 
