@@ -92,9 +92,12 @@ for (Component.CodegenPropInfo propInfo : propsToProcess) { // propInfo
                         line_<%=cid %><%=propInfo.fieldName%> = new java.util.HashMap<String, Object>();
                         <%
                         for (String key : line.keySet()) {
-                        %>
-                            line_<%=cid %><%=propInfo.fieldName%>.put("<%=key%>", <%=component.getTableValue(property,key,line.get(key))%>);
-                        <%
+                        	Object currentValue = component.getTableValue(property,key,line.get(key));
+                        	if(currentValue != null && (!(currentValue instanceof String) || !((String)currentValue).equals(""))) {
+                        	%>
+                            line_<%=cid %><%=propInfo.fieldName%>.put("<%=key%>", <%=currentValue%>);
+                        	<%
+                        	}
                         }
                         %>
                         table_<%=cid %><%=propInfo.fieldName%>.add(line_<%=cid %><%=propInfo.fieldName%>);
