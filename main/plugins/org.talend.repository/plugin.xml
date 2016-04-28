@@ -2579,6 +2579,15 @@
               name="ChangeBatchParameter4SomeDBComponents"
               version="6.0.1">
         </projecttask>
+        <projecttask
+              beforeLogon="false"
+              breaks="6.0.0"
+              class="org.talend.repository.model.migration.CheckUseHTTPChunkedTPS1373"
+              description="Change the UseHTTPChunked parameter default value of some tsalesforce components"
+              id="org.talend.repository.model.migration.CheckUseHTTPChunkedTPS1373"
+              name="CheckUseHTTPChunkedTPS1373"
+              version="6.0.1">
+        </projecttask>
    </extension>
 
    <extension
