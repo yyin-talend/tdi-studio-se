@@ -413,17 +413,17 @@ public class Process extends Element implements IProcess2, IGEFProcess, ILastVer
         param.setReadOnly(true);
         addElementParameter(param);
 
-        param = new ElementParameter(this);
-        param.setName(EParameterName.COMP_DEFAULT_PROJECT_DIR.getName());
-        param.setCategory(EComponentCategory.TECHNICAL);
-        param.setFieldType(EParameterFieldType.DIRECTORY);
-        param.setDisplayName(EParameterName.COMP_DEFAULT_PROJECT_DIR.getDisplayName());
-        param.setNumRow(99);
-        param.setShow(false);
-        param.setValue(DesignerPlugin.getDefault().getPreferenceStore()
-                .getString(TalendDesignerPrefConstants.COMP_DEFAULT_PROJECT_DIR));
-        param.setReadOnly(true);
-        addElementParameter(param);
+//        param = new ElementParameter(this);
+//        param.setName(EParameterName.COMP_DEFAULT_PROJECT_DIR.getName());
+//        param.setCategory(EComponentCategory.TECHNICAL);
+//        param.setFieldType(EParameterFieldType.DIRECTORY);
+//        param.setDisplayName(EParameterName.COMP_DEFAULT_PROJECT_DIR.getDisplayName());
+//        param.setNumRow(99);
+//        param.setShow(false);
+//        param.setValue(DesignerPlugin.getDefault().getPreferenceStore()
+//                .getString(TalendDesignerPrefConstants.COMP_DEFAULT_PROJECT_DIR));
+//        param.setReadOnly(true);
+//        addElementParameter(param);
 
         param = new ElementParameter(this);
         param.setName(EParameterName.DQ_REPORTING_BUNDLE_DIR.getName());
