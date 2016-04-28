@@ -48,7 +48,7 @@ if ((metadatas != null) && (metadatas.size() > 0)) { // metadata
 		int nbSchemaColumns = columnList.size();
 
 		hasDynamic = false;
-		
+
 		int pos = 0;
 		for (IMetadataColumn column : columnList) {
 			if (column.getTalendType().equals("id_Dynamic")) {
@@ -104,7 +104,7 @@ for (Component.CodegenPropInfo propInfo : propsToProcess) { // propInfo
                         <%
                     }
                     %>
-                    props_<%=cid %><%=propInfo.fieldName%>.setValue("<%=property.getName()%>",table_<%=cid %><%=propInfo.fieldName%>);                    
+                    props_<%=cid %><%=propInfo.fieldName%>.setValue("<%=property.getName()%>",table_<%=cid %><%=propInfo.fieldName%>);
                     <%
             }  else if (property.isFlag(Property.Flags.ENCRYPT) && ElementParameterParser.canEncryptValue(property.getStringValue())) {
                     %>
@@ -116,7 +116,7 @@ for (Component.CodegenPropInfo propInfo : propsToProcess) { // propInfo
     				props_<%=cid %><%=propInfo.fieldName%>.setValue("<%=property.getName()%>",
 	                	TalendDate.parseDate("yyyy-MM-dd HH:mm:ss",<%=component.getCodegenValue(property, property.getStringValue())%>));
     				<%
-            } else if (value != null && (!(value instanceof String) || !((String)value).equals(""))) { // if                    
+            } else if (value != null && (!(value instanceof String) || !((String)value).equals(""))) { // if
 					%>
                     props_<%=cid %><%=propInfo.fieldName%>.setValue("<%=property.getName()%>",
                     <%=component.getCodegenValue(property, property.getStringValue())%>);
@@ -126,7 +126,7 @@ for (Component.CodegenPropInfo propInfo : propsToProcess) { // propInfo
 	} // property
 } // propInfo
 %>
-org.talend.components.api.container.RuntimeContainer container_<%=cid%> = new org.talend.components.api.container.RuntimeContainer() { 
+org.talend.components.api.container.RuntimeContainer container_<%=cid%> = new org.talend.components.api.container.RuntimeContainer() {
     public Object getComponentData(String componentId, String key) {
         return globalMap.get(componentId + key);
     }
@@ -140,7 +140,7 @@ org.talend.components.api.container.RuntimeContainer container_<%=cid%> = new or
     }
 };
 
-<%	
+<%
 if (def instanceof EndpointComponentDefinition) {
 %>
 	org.talend.components.api.component.runtime.SourceOrSink sourceOrSink_<%=cid%> = ((org.talend.components.api.component.EndpointComponentDefinition)def_<%=cid%>).getRuntime();
@@ -157,7 +157,7 @@ if (metadata != null) {
 %>
 		org.talend.components.api.component.runtime.Source source_<%=cid%> = (org.talend.components.api.component.runtime.Source)sourceOrSink_<%=cid%>;
 		org.talend.components.api.component.runtime.Reader reader_<%=cid%> = source_<%=cid%>.createReader(container_<%=cid%>);
-		
+
 		<%
 		List<? extends IConnection> outgoingConns = node.getOutgoingSortedConnections();
 		if(outgoingConns.size() > 0){ // outgoing size
@@ -182,7 +182,7 @@ if (metadata != null) {
                     }
                 }
                 org.apache.avro.Schema schema_<%=cid%> = props_<%=cid %>.getSchema(c_<%=cid%>, true);
-                
+
                 org.talend.daikon.talend6.Talend6OutgoingSchemaEnforcer current_<%=cid%> = new org.talend.daikon.talend6.Talend6OutgoingSchemaEnforcer(schema_<%=cid%>, false);
                 // Create a reusable factory that converts the output of the reader to an IndexedRecord.
                 org.talend.daikon.avro.IndexedRecordAdapterFactory<Object, ? extends org.apache.avro.generic.IndexedRecord> factory_<%=cid%> = null;
@@ -203,7 +203,7 @@ if (metadata != null) {
 					%>
 						if(!initDyn_<%=cid%>){
 							org.apache.avro.Schema dynSchema_<%=cid%> = current_<%=cid%>.getOutgoingDynamicRuntimeSchema();
-							
+
 							for(org.apache.avro.Schema.Field childDynamic_<%=cid%> : dynSchema_<%=cid%>.getFields()){
 								routines.system.DynamicMetadata dynamicMetadata_<%=cid%> = new routines.system.DynamicMetadata();
 						    	dynamicMetadata_<%=cid%>.setName(childDynamic_<%=cid%>.name());
@@ -232,7 +232,7 @@ if (metadata != null) {
 						    	}
 						    	dynamicMetadata_<%=cid%>.setType(talendType_<%=cid%>);
 						    	dynamic_<%=cid%>.metadatas.add(dynamicMetadata_<%=cid%>);
-							} 
+							}
 							initDyn_<%=cid%> = true;
 						}
 						dynamic_<%=cid%>.clearColumnValues();
@@ -250,7 +250,7 @@ if (metadata != null) {
                         		dynamic_<%=cid%>.setColumnValue(dynamic_<%=cid%>.getIndex(dynamicValue_Key_<%=cid%>), dynamicValue_<%=cid%>.get(dynamicValue_Key_<%=cid%>));
                         	}
 							<%=outgoingConn.getName()%>.<%=dynamicColName%> = dynamic_<%=cid%>;
-                        <% 
+                        <%
                         }else{
                         %>
                         	if(current_<%=cid%>.get(<%=i%>) == null){
@@ -282,6 +282,8 @@ if (metadata != null) {
             }
         }
         org.apache.avro.Schema designSchema_<%=cid%> = props_<%=cid %>.getSchema(c_<%=cid%>, true);
+        org.talend.daikon.talend6.Talend6IncomingSchemaEnforcer current_<%=cid%>
+                = new org.talend.daikon.talend6.Talend6IncomingSchemaEnforcer(designSchema_<%=cid%>);
 	<%
 	}
 }
