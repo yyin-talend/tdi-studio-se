@@ -1417,8 +1417,8 @@ public class Process extends Element implements IProcess2, IGEFProcess, ILastVer
                 }
                 String tempValue = (String) param.getChildParameters().get(EParameterName.ENCODING_TYPE.getName()).getValue();
                 if (!tempValue.equals(EmfComponent.ENCODING_TYPE_CUSTOM)) {
-                    tempValue = tempValue.replaceAll("'", ""); //$NON-NLS-1$ //$NON-NLS-2$
-                    tempValue = tempValue.replaceAll("\"", ""); //$NON-NLS-1$ //$NON-NLS-2$
+                    tempValue = tempValue.replace("'", ""); //$NON-NLS-1$ //$NON-NLS-2$
+                    tempValue = tempValue.replace("\"", ""); //$NON-NLS-1$ //$NON-NLS-2$
                     tempValue = TalendTextUtils.addQuotes(tempValue);
                     if (!tempValue.equals(value)) {
                         setToCustom = true;
@@ -1497,10 +1497,10 @@ public class Process extends Element implements IProcess2, IGEFProcess, ILastVer
         String sourceJobType = ConvertJobsUtil.getJobTypeFromFramework(this.getProperty().getItem());
         String sourceJobFramework = (String) this.getProperty().getAdditionalProperties().get(ConvertJobsUtil.FRAMEWORK);
         if (sourceJobType != null) {
-            processType.setJobType(sourceJobType.replaceAll(" ", "_"));
+            processType.setJobType(sourceJobType.replace(' ', '_'));
         }
         if (sourceJobFramework != null) {
-            processType.setFramework(sourceJobFramework.replaceAll(" ", "_"));
+            processType.setFramework(sourceJobFramework.replace(' ', '_'));
         }
 
         EList nList = processType.getNode();
