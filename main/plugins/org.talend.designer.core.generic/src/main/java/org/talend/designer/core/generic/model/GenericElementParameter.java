@@ -112,9 +112,6 @@ public class GenericElementParameter extends ElementParameter {
      */
     @Override
     public Object getValue() {
-        if (WidgetType.TABLE.equals(widget.getWidgetType())) {
-            return GenericTableUtils.getTableValues((ComponentProperties) widget.getContent(), this);
-        }
         return super.getValue();
     }
 

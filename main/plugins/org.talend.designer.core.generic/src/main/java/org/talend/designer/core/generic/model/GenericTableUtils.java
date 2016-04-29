@@ -35,6 +35,14 @@ public class GenericTableUtils {
         for (Map<String, String> line : table) {
             for (String column : line.keySet()) {
                 Property property = tableProperties.getValuedProperty(column);
+                if (property.getValue() instanceof List) {
+                    ((List)property.getValue()).clear();
+                }
+            }
+        }
+        for (Map<String, String> line : table) {
+            for (String column : line.keySet()) {
+                Property property = tableProperties.getValuedProperty(column);
                 List<String> values = new ArrayList<>();
                 if (property.getValue() == null || (!(property.getValue() instanceof List))) {
                     property.setValue(values);

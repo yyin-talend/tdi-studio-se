@@ -62,6 +62,7 @@ import org.talend.designer.core.generic.constants.IGenericConstants;
 import org.talend.designer.core.generic.i18n.Messages;
 import org.talend.designer.core.generic.model.Component;
 import org.talend.designer.core.generic.model.GenericElementParameter;
+import org.talend.designer.core.generic.model.GenericTableUtils;
 import org.talend.designer.core.generic.model.mapping.WidgetFieldTypeMapper;
 import org.talend.designer.core.model.FakeElement;
 import org.talend.designer.core.model.components.ElementParameter;
@@ -269,10 +270,10 @@ public class ComponentsUtils {
                     && widgetProperty instanceof ComponentProperties) {
                 ComponentProperties table = (ComponentProperties) widgetProperty;
                 Form mainForm = table.getForm(Form.MAIN);
-                List<ElementParameter> parameters = getParametersFromForm(element, mainForm);
+                param.setDisplayName(mainForm.getTitle());
+                List<ElementParameter> parameters = getParametersFromForm(new FakeElement("table"), mainForm); //$NON-NLS-1$
 
                 // table is always empty by default
-                param.setValue(new ArrayList<Map<String, Object>>());
                 param.setSupportContext(false);
 
                 List<String> codeNames = new ArrayList<>();
@@ -297,6 +298,7 @@ public class ComponentsUtils {
                 String[] listItemsNotShowIf = new String[parameters.size()];
                 param.setListItemsShowIf(listItemsShowIf);
                 param.setListItemsNotShowIf(listItemsNotShowIf);
+                param.setValue(GenericTableUtils.getTableValues(table, param));
 
             }
             param.setReadOnly(false);
@@ -366,6 +368,9 @@ public class ComponentsUtils {
 
     public static Object getParameterValue(IElement element, Property property) {
         Object paramValue = property.getValue();
+        if (paramValue instanceof List) {
+            return null;
+        }
         Property.Type propertyType = property.getType();
         switch (propertyType) {
         case STRING:
