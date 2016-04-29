@@ -2681,6 +2681,15 @@
               name="AddContextCommentValueMigrationTask"
               version="6.1.2">
         </projecttask>
+        <projecttask
+              beforeLogon="false"
+              breaks="5.6.2"
+              class="org.talend.repository.model.migration.RenameDriverJarPathForDBConnectionMigrationTask"
+              description="Rename jar path in DB connection item"
+              id="org.talend.repository.model.migration.RenameDriverJarPathForDBConnectionMigrationTask"
+              name="RenameDriverJarPathForDBConnectionMigrationTask"
+              version="5.6.3">
+        </projecttask>
    </extension>
 
    <extension
