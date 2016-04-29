@@ -2726,6 +2726,14 @@
               name="SubstituteRemovedMDMOperatorMigrationTask"
               version="6.2.0">
 		</projecttask>
+        <projecttask
+              beforeLogon="false"
+              breaks="5.6.1"
+              class="org.talend.repository.model.migration.RenameDriverJarPathForDBConnectionMigrationTask"
+              id="org.talend.repository.model.migration.RenameDriverJarPathForDBConnectionMigrationTask"
+              name="RenameDriverJarPathForDBConnectionMigrationTask"
+              version="6.2.0">
+        </projecttask>
    </extension>
 
    <extension
