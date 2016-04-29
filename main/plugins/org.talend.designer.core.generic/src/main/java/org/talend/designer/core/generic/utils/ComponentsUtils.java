@@ -33,11 +33,6 @@ import org.talend.components.api.properties.ComponentProperties;
 import org.talend.components.api.service.ComponentService;
 import org.talend.core.model.components.IComponent;
 import org.talend.core.model.components.IComponentsFactory;
-import org.talend.core.model.metadata.IMetadataColumn;
-import org.talend.core.model.metadata.IMetadataTable;
-import org.talend.core.model.metadata.MetadataToolAvroHelper;
-import org.talend.core.model.metadata.MetadataToolHelper;
-import org.talend.core.model.metadata.builder.connection.MetadataTable;
 import org.talend.core.model.metadata.types.JavaType;
 import org.talend.core.model.metadata.types.JavaTypesManager;
 import org.talend.core.model.process.EComponentCategory;
@@ -52,6 +47,7 @@ import org.talend.core.ui.component.ComponentsFactoryProvider;
 import org.talend.core.utils.TalendQuoteUtils;
 import org.talend.daikon.NamedThing;
 import org.talend.daikon.properties.PresentationItem;
+import org.talend.daikon.properties.Properties;
 import org.talend.daikon.properties.Properties.Deserialized;
 import org.talend.daikon.properties.Property;
 import org.talend.daikon.properties.SchemaProperty;
@@ -340,6 +336,7 @@ public class ComponentsUtils {
 
     /**
      * DOC nrousseau Comment method "getNameFromConnector".
+     * 
      * @param connector
      * @return
      */
@@ -358,9 +355,9 @@ public class ComponentsUtils {
      * @return
      */
     public static boolean isPrevColumnList(Property childProp) {
-    	if(childProp == null) {
-    		return true;
-    	}
+        if (childProp == null) {
+            return true;
+        }
         return "columnName".equals(childProp.getName());
     }
 
@@ -678,5 +675,25 @@ public class ComponentsUtils {
     private static void setConnectionProperty(EConnectionType currentType, INodeConnector node) {
         // One line method that factorize a lot of code.
         node.addConnectionProperty(currentType, currentType.getRGB(), currentType.getDefaultLineStyle());
+    }
+
+    /**
+     * Refresh all the forms layout of the <code>properties</code>.
+     * 
+     * @param properties
+     */
+    public static void refreshFormsLayout(Properties properties) {
+        if (properties != null) {
+            List<Form> forms = properties.getForms();
+            for (Form form : forms) {
+                properties.refreshLayout(form);
+            }
+            List<NamedThing> props = properties.getProperties();
+            for (NamedThing prop : props) {
+                if (prop instanceof Properties) {
+                    refreshFormsLayout((Properties) prop);
+                }
+            }
+        }
     }
 }

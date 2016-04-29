@@ -119,6 +119,7 @@ public class DynamicComposite extends MultipleThreadDynamicComposite implements 
         if (connectionItem != null) {
             theConnection = connectionItem.getConnection();
         }
+        ComponentsUtils.refreshFormsLayout(form.getProperties());
         if (element instanceof FakeElement) {
             componentService = new ComponentServiceWithValueEvaluator(internalService.getComponentService(),
                     new MetadataContextPropertyValueEvaluator(theConnection));
