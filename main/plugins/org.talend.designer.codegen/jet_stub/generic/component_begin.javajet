@@ -94,9 +94,15 @@ for (Component.CodegenPropInfo propInfo : propsToProcess) { // propInfo
                         java.util.List<String> <%=tmpVarName %> = new java.util.ArrayList<String>();
                         <%
                         for (String subPropertyValue : (java.util.List<String>)property.getValue()) {
-                        %>
-                            <%=tmpVarName %>.add(<%=component.getCodegenValue(property,subPropertyValue) %>);
-                        <%
+                            if ((property.getType() == Property.Type.BOOLEAN) || (property.getType() == Property.Type.ENUM)) {
+                            %>
+                                <%=tmpVarName %>.add("<%=subPropertyValue %>");
+                            <%
+                            } else {
+                            %>
+                                <%=tmpVarName %>.add(<%=subPropertyValue %>);
+                            <%
+                            }
                         }
                         %>
                         ((org.talend.daikon.properties.Properties)props_<%=cid %><%=propInfo.fieldName%>).setValue("<%=property.getName()%>",<%=tmpVarName %>);
