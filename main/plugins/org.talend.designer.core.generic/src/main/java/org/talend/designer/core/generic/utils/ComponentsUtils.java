@@ -28,6 +28,7 @@ import org.osgi.framework.ServiceReference;
 import org.talend.commons.exception.BusinessException;
 import org.talend.components.api.component.ComponentDefinition;
 import org.talend.components.api.component.Connector;
+import org.talend.components.api.component.PropertyPathConnector;
 import org.talend.components.api.component.Trigger;
 import org.talend.components.api.properties.ComponentProperties;
 import org.talend.components.api.service.ComponentService;
@@ -224,13 +225,16 @@ public class ComponentsUtils {
                     if (!(((SchemaProperty) widgetProperty).getValue() instanceof Schema)) {
                         continue;
                     }
-                    Schema schema = (Schema) ((SchemaProperty) widgetProperty).getValue();
-                    if (rootProperty.getSchema(connector, true).equals(schema)) {
-                        found = true;
-                        param.setContext(connector.getName());
-                        IElementParameterDefaultValue defaultValue = new ElementParameterDefaultValue();
-                        defaultValue.setDefaultValue(new Schema.Parser().parse(schema.toString()));
-                        param.getDefaultValues().add(defaultValue);
+                    if (connector instanceof PropertyPathConnector) {
+                        String linkedSchema = ((PropertyPathConnector) connector).getPropertyPath() + ".schema"; //$NON-NLS-1$
+                        if (parameterName.equals(linkedSchema)) {
+                            found = true;
+                            param.setContext(connector.getName());
+                            IElementParameterDefaultValue defaultValue = new ElementParameterDefaultValue();
+                            Schema schema = (Schema) ((SchemaProperty) widgetProperty).getValue();
+                            defaultValue.setDefaultValue(new Schema.Parser().parse(schema.toString()));
+                            param.getDefaultValues().add(defaultValue);
+                        }
                     }
                 }
                 if (!found) {
@@ -241,17 +245,19 @@ public class ComponentsUtils {
                         if (!(((SchemaProperty) widgetProperty).getValue() instanceof Schema)) {
                             continue;
                         }
-                        Schema schema = (Schema) ((SchemaProperty) widgetProperty).getValue();
-                        if (rootProperty.getSchema(connector, true).equals(schema)) {
-                            found = true;
-                            if (GenericNodeConnector.INPUT_CONNECTOR.equals(connector.getName())) {
-                                param.setContext(EConnectionType.FLOW_MAIN.getName());
-                            } else {
-                                param.setContext(connector.getName());
+                        if (connector instanceof PropertyPathConnector) {
+                            String linkedSchema = ((PropertyPathConnector) connector).getPropertyPath() + ".schema"; //$NON-NLS-1$
+                            if (parameterName.equals(linkedSchema)) {
+                                if (GenericNodeConnector.INPUT_CONNECTOR.equals(connector.getName())) {
+                                    param.setContext(EConnectionType.FLOW_MAIN.getName());
+                                } else {
+                                    param.setContext(connector.getName());
+                                }
+                                IElementParameterDefaultValue defaultValue = new ElementParameterDefaultValue();
+                                Schema schema = (Schema) ((SchemaProperty) widgetProperty).getValue();
+                                defaultValue.setDefaultValue(new Schema.Parser().parse(schema.toString()));
+                                param.getDefaultValues().add(defaultValue);
                             }
-                            IElementParameterDefaultValue defaultValue = new ElementParameterDefaultValue();
-                            defaultValue.setDefaultValue(new Schema.Parser().parse(schema.toString()));
-                            param.getDefaultValues().add(defaultValue);
                         }
                     }
                 }

@@ -25,7 +25,7 @@ import org.talend.designer.core.model.components.NodeConnector;
  */
 public class GenericNodeConnector extends NodeConnector {
     
-    public static String INPUT_CONNECTOR = "INPUT"; //$NON-NLS-1$
+    public static String INPUT_CONNECTOR = Connector.MAIN_NAME;
 
     private String genericConnectorType;
 
