@@ -746,6 +746,7 @@ public class Component extends AbstractBasicComponent {
                     } else {
                         param.setContext(connector.getName());
                     }
+                    param.setCategory(EComponentCategory.TECHNICAL);
                     IElementParameterDefaultValue defaultValue = new ElementParameterDefaultValue();
                     defaultValue.setDefaultValue(new Schema.Parser().parse(schema.toString()));
                     param.getDefaultValues().add(defaultValue);

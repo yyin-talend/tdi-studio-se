@@ -152,4 +152,13 @@ public class GenericNodeConnector extends NodeConnector {
         return getConnector();
     }
 
+    
+    /**
+     * Getter for output.
+     * @return the output
+     */
+    protected boolean isOutput() {
+        return this.output;
+    }
+
 }

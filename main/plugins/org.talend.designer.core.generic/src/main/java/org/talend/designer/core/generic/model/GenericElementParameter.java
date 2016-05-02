@@ -34,6 +34,7 @@ import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.metadata.MetadataToolAvroHelper;
 import org.talend.core.model.metadata.MetadataToolHelper;
 import org.talend.core.model.metadata.builder.connection.MetadataTable;
+import org.talend.core.model.process.EConnectionType;
 import org.talend.core.model.process.EParameterFieldType;
 import org.talend.core.model.process.ElementParameterParser;
 import org.talend.core.model.process.IElement;
@@ -52,6 +53,7 @@ import org.talend.designer.core.generic.constants.IGenericConstants;
 import org.talend.designer.core.generic.utils.ComponentsUtils;
 import org.talend.designer.core.generic.utils.SchemaUtils;
 import org.talend.designer.core.model.components.ElementParameter;
+import org.talend.designer.core.model.components.NodeConnector;
 import org.talend.designer.core.ui.editor.cmd.ChangeMetadataCommand;
 import org.talend.designer.core.ui.editor.nodes.Node;
 
@@ -261,30 +263,30 @@ public class GenericElementParameter extends ElementParameter {
         IElement element = this.getElement();
         if (element instanceof Node) {
             Node node = (Node) element;
-            IMetadataTable mainTable = node.getMetadataFromConnector(Connector.MAIN_NAME);
-            if (mainTable != null) {
-                INodeConnector connector = node.getConnectorFromName(Connector.MAIN_NAME);
-                Schema schema = null;
+            List<INodeConnector> connectors = node.getConnectorsFromType(EConnectionType.FLOW_MAIN);
+            for (INodeConnector connector : connectors) {
                 if (connector instanceof GenericNodeConnector) {
                     Connector componentConnector = ((GenericNodeConnector) connector).getComponentConnector();
-                    schema = getRootProperties().getSchema(componentConnector, true);
-                }
-                if (schema != null) {
-                    MetadataTable metadataTable = MetadataToolAvroHelper.convertFromAvro(schema);
-                    IMetadataTable newTable = MetadataToolHelper.convert(metadataTable);
-                    if (!newTable.sameMetadataAs(mainTable)) {
-                        IElementParameter schemaParameter = node
-                                .getElementParameterFromField(EParameterFieldType.SCHEMA_REFERENCE);
-                        ChangeMetadataCommand cmd = new ChangeMetadataCommand(node, schemaParameter, mainTable, newTable, null);
-                        cmd.setPropagate(Boolean.TRUE);
-                        IProcess process = node.getProcess();
-                        if (process instanceof org.talend.designer.core.ui.editor.process.Process) {
-                            CommandStack commandStack = ((org.talend.designer.core.ui.editor.process.Process) process)
-                                    .getCommandStack();
-                            commandStack.execute(cmd);
+                    Schema schema = null;
+                    schema = getRootProperties().getSchema(componentConnector, ((GenericNodeConnector) connector).isOutput());
+                    IMetadataTable mainTable = node.getMetadataFromConnector(connector.getName());
+                    if (schema != null) {
+                        MetadataTable metadataTable = MetadataToolAvroHelper.convertFromAvro(schema);
+                        IMetadataTable newTable = MetadataToolHelper.convert(metadataTable);
+                        if (!newTable.sameMetadataAs(mainTable)) {
+                            IElementParameter schemaParameter = node
+                                    .getElementParameterFromField(EParameterFieldType.SCHEMA_REFERENCE);
+                            ChangeMetadataCommand cmd = new ChangeMetadataCommand(node, schemaParameter, mainTable, newTable, null);
+                            cmd.setPropagate(Boolean.TRUE);
+                            IProcess process = node.getProcess();
+                            if (process instanceof org.talend.designer.core.ui.editor.process.Process) {
+                                CommandStack commandStack = ((org.talend.designer.core.ui.editor.process.Process) process)
+                                        .getCommandStack();
+                                commandStack.execute(cmd);
+                            }
                         }
                     }
-                }
+                }                
             }
         }
     }
