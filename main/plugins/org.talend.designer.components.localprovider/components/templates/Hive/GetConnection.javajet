@@ -302,9 +302,12 @@ java.sql.Connection conn_<%=cid%> = null;
                             maprLogin_<%=cid%>.setCheckUGI(false);
                             <%
                         }
-                        %>
-                        <%@ include file="@{org.talend.designer.components.localprovider}/components/templates/password.javajet"%>
-                        maprLogin_<%=cid%>.getMapRCredentialsViaPassword(<%=mapRTicketCluster%>, <%=mapRTicketUsername%>, decryptedPassword_<%=cid%>, <%=mapRTicketDuration%>);
+                        if (ElementParameterParser.canEncrypt(node, passwordFieldName)) {%>
+                            String decryptedMaprPassword_<%=cid%> = routines.system.PasswordEncryptUtil.decryptPassword(<%=ElementParameterParser.getEncryptedValue(node, passwordFieldName)%>);
+                        <%} else {%>
+                            String decryptedMaprPassword_<%=cid%> = <%= ElementParameterParser.getValue(node, passwordFieldName)%>;
+                        <%}%>
+                        maprLogin_<%=cid%>.getMapRCredentialsViaPassword(<%=mapRTicketCluster%>, <%=mapRTicketUsername%>, decryptedMaprPassword_<%=cid%>, <%=mapRTicketDuration%>);
                         <%
                     }
 
