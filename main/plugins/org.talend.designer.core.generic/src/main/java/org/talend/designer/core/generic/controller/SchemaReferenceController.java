@@ -322,7 +322,7 @@ public class SchemaReferenceController extends AbstractSchemaController {
                                 org.talend.daikon.properties.Property schemaProperty = componentProperties
                                         .getValuedProperty(paramName);
                                 if (schemaProperty != null) {
-                                    SchemaUtils.updateComponentSchema(componentProperties, paramName, outputMetaCopy);
+                                    SchemaUtils.updateComponentSchema(node, outputMetaCopy);
                                 }
                             }
                         }

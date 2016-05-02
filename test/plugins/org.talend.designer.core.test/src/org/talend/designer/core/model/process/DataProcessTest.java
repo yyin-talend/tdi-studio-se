@@ -37,7 +37,7 @@ import org.talend.test.utils.testproperties.TestProperties;
  */
 public class DataProcessTest {
 
-    private static final String TEST_COMPONENT_NAME = "tSalesforceInputNew"; //$NON-NLS-1$
+    private static final String TEST_COMPONENT_NAME = "tSalesforceInput"; //$NON-NLS-1$
 
     private static IComponent testComponent;
 

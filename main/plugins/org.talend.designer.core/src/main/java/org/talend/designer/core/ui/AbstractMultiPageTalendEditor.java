@@ -823,6 +823,12 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart
                         }
                     }
                 }
+                if (((Node) node).getNodeContainer() instanceof JobletContainer) {
+                    JobletContainer jc = (JobletContainer) ((Node) node).getNodeContainer();
+                    if(node.isMapReduceStart()){
+                        jc.updateState( "UPDATE_STATUS", "",  jc.getPercentMap(),  jc.getPercentReduce()); //$NON-NLS-1$
+                    }
+                }
             }
         } catch (PersistenceException e) {
         }

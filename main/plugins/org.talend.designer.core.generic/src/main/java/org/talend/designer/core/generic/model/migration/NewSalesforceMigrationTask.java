@@ -14,7 +14,17 @@ package org.talend.designer.core.generic.model.migration;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Properties;
+
+import org.apache.commons.lang.StringUtils;
+import org.talend.designer.core.generic.utils.ParameterUtilTool;
+import org.talend.designer.core.model.utils.emf.talendfile.ElementParameterType;
+import org.talend.designer.core.model.utils.emf.talendfile.ElementValueType;
+import org.talend.designer.core.model.utils.emf.talendfile.NodeType;
 
 /**
  * created by hcyi on Apr 7, 2016 Detailled comment
@@ -34,4 +44,76 @@ public class NewSalesforceMigrationTask extends NewComponentFrameworkMigrationTa
         }
         return props;
     }
+    
+    @Override
+    protected ElementParameterType getParameterType(NodeType node, String paramName) {
+    	ElementParameterType paramType = ParameterUtilTool.findParameterType(node, paramName);
+    	if(node != null && paramType != null){
+    		Object value = ParameterUtilTool.convertParameterValue(paramType);
+    		if("MODULENAME".equals(paramName) && "CustomModule".equals(value)){
+    			paramName = "CUSTOM_MODULE_NAME";
+    			if("tSalesforceInput".equals(node.getComponentName())){
+    				paramName = "CUSTOM_MODULE";
+    			}
+        		ElementParameterType customModuleName = ParameterUtilTool.findParameterType(node, paramName);
+        		if(customModuleName != null){
+            		paramType.setValue(StringUtils.strip(String.valueOf(ParameterUtilTool.convertParameterValue(customModuleName)),"\""));
+        		}
+            }else if("CONNECTION".equals(paramName) && value!=null && !"".equals(value)){
+        		ElementParameterType useConnection = ParameterUtilTool.findParameterType(node, "USE_EXISTING_CONNECTION");
+        		if(useConnection!=null && Boolean.valueOf(String.valueOf(ParameterUtilTool.convertParameterValue(useConnection)))){
+        			return paramType;
+        		}else{
+        			return null;
+        		}
+        	}else if("API".equals(paramName)){
+        		if("soap".equals(value)){
+        			paramType.setValue("Query");
+        		}else{
+        			paramType.setValue("Bulk");
+        		}
+            } else if ("LOGIN_TYPE".equals(paramName)) {
+            	if("BASIC".equals(value)) {
+            		paramType.setValue("Basic");
+            	} else if("OAUTH".equals(value)) {
+            		paramType.setValue("OAuth");
+            	}
+            }
+    	}
+    	return paramType;
+    }
+    
+	public Object getTableValue(ElementParameterType paramType) {
+
+		List<Map<String, Object>> tableValue = null;
+		if ("UPSERT_RELATION".equals(paramType.getName())) {
+			List<ElementValueType> columns = paramType.getElementValue();
+			if (columns != null && columns.size() > 0) {
+				Map<String, String> columnMapping = new HashMap<String, String>() {
+					{
+						put("COLUMN_NAME", "columnName");
+						put("LOOKUP_FIELD_NAME", "lookupFieldName");
+						put("FIELD_NAME", "fieldName");
+						put("LOOKUP_FIELD_MODULE_NAME", "lookupFieldModuleName");
+						put("POLYMORPHIC", "polymorphic");
+						put("LOOKUP_FIELD_EXTERNAL_ID_NAME",
+								"lookupFieldExternalIdName");
+					}
+				};
+				tableValue = new ArrayList<Map<String, Object>>();
+				Map<String, Object> line = null;
+				for (ElementValueType column : columns) {
+					if ("COLUMN_NAME".equals(column.getElementRef())) {
+						if (line != null) {
+							tableValue.add(line);
+						}
+						line = new HashMap<String, Object>();
+					}
+					line.put(columnMapping.get(column.getElementRef()), column.getValue());
+				}
+				tableValue.add(line);
+			}
+		}
+		return tableValue;
+	}
 }

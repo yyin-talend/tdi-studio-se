@@ -143,6 +143,11 @@
              name="TABLE"
              widgetType="TABLE">
        </Mapping>
+       <Mapping
+             mapFieldType="FILE"
+             name="FILE"
+             widgetType="FILE">
+       </Mapping>
    </extension>
    <extension
          point="org.talend.designer.core.generators">

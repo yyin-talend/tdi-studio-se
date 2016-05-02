@@ -92,9 +92,9 @@ public class GenericDragAndDropHandler extends AbstractDragAndDropServiceHandler
                 }
                 Property property = compPro.getValuedProperty(value);
                 if (property != null) {
-                    Object paramValue = property.getValue() != null ? property.getValue() : property.getDefaultValue();
+                    Object paramValue = property.getValue();
                     if (Property.Type.STRING.equals(property.getType()) && paramValue != null) {
-                        return getRepositoryValueOfStringType(connection, StringUtils.trimToNull(paramValue.toString()));
+                        return getRepositoryValueOfStringType(connection, paramValue.toString());
                     }
                     return paramValue;
                 }
@@ -222,7 +222,7 @@ public class GenericDragAndDropHandler extends AbstractDragAndDropServiceHandler
         if (connection != null && param != null && param instanceof GenericElementParameter) {
             if (connection.getCompProperties() == null) {
                 GenericElementParameter genericParam = (GenericElementParameter) param;
-                connection.setCompProperties(genericParam.getComponentProperties().toSerialized());
+                connection.setCompProperties(genericParam.getRootProperties().toSerialized());
             }
         }
     }

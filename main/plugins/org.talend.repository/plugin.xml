@@ -2699,6 +2699,42 @@
               name="ChangeLogLevel4tRedshiftInput"
               version="6.2.0">
         </projecttask>
+        <projecttask
+              beforeLogon="false"
+              breaks="6.2.0"
+              class="org.talend.repository.model.migration.UpdateUrlForRedShiftMigrationTask"
+              description="Update RedShift JDBC url"
+              id="org.talend.repository.model.migration.UpdateUrlForRedShiftMigrationTask"
+              name="UpdateUrlForRedShiftMigrationTask"
+              version="6.2.0">
+        </projecttask>
+        <projecttask
+              beforeLogon="false"
+              breaks="6.2.0"
+              class="org.talend.repository.model.migration.ChangeDefaultValueForCassandra3Version"
+              description="use cassandra 1.1.2 as the version for the old one"
+              id="org.talend.repository.model.migration.ChangeDefaultValueForCassandra3Version"
+              name="ChangeDefaultValueForCassandra3Version"
+              version="6.2.0">
+        </projecttask>
+        <projecttask
+              beforeLogon="false"
+              breaks="6.1.0"
+              class="org.talend.repository.model.migration.SubstituteRemovedMDMOperatorMigrationTask"
+              description="Substitute removed operator in tMDM component"
+              id="org.talend.repository.model.migration.SubstituteRemovedMDMOperatorMigrationTask"
+              name="SubstituteRemovedMDMOperatorMigrationTask"
+              version="6.2.0">
+		</projecttask>
+        <projecttask
+              beforeLogon="false"
+              breaks="5.6.2"
+              class="org.talend.repository.model.migration.RenameDriverJarPathForDBConnectionMigrationTask"
+              description="Rename jar path in DB connection item"
+              id="org.talend.repository.model.migration.RenameDriverJarPathForDBConnectionMigrationTask"
+              name="RenameDriverJarPathForDBConnectionMigrationTask"
+              version="5.6.3">
+        </projecttask>
    </extension>
 
    <extension

@@ -258,8 +258,6 @@ public class Process extends Element implements IProcess2, IGEFProcess, ILastVer
 
     private boolean isNeedLoadmodules = true;
 
-    protected boolean generic = false;
-
     public Process(Property property) {
         this.property = property;
         screenshots = new HashMap<String, byte[]>();
@@ -415,17 +413,17 @@ public class Process extends Element implements IProcess2, IGEFProcess, ILastVer
         param.setReadOnly(true);
         addElementParameter(param);
 
-        param = new ElementParameter(this);
-        param.setName(EParameterName.COMP_DEFAULT_PROJECT_DIR.getName());
-        param.setCategory(EComponentCategory.TECHNICAL);
-        param.setFieldType(EParameterFieldType.DIRECTORY);
-        param.setDisplayName(EParameterName.COMP_DEFAULT_PROJECT_DIR.getDisplayName());
-        param.setNumRow(99);
-        param.setShow(false);
-        param.setValue(DesignerPlugin.getDefault().getPreferenceStore()
-                .getString(TalendDesignerPrefConstants.COMP_DEFAULT_PROJECT_DIR));
-        param.setReadOnly(true);
-        addElementParameter(param);
+//        param = new ElementParameter(this);
+//        param.setName(EParameterName.COMP_DEFAULT_PROJECT_DIR.getName());
+//        param.setCategory(EComponentCategory.TECHNICAL);
+//        param.setFieldType(EParameterFieldType.DIRECTORY);
+//        param.setDisplayName(EParameterName.COMP_DEFAULT_PROJECT_DIR.getDisplayName());
+//        param.setNumRow(99);
+//        param.setShow(false);
+//        param.setValue(DesignerPlugin.getDefault().getPreferenceStore()
+//                .getString(TalendDesignerPrefConstants.COMP_DEFAULT_PROJECT_DIR));
+//        param.setReadOnly(true);
+//        addElementParameter(param);
 
         param = new ElementParameter(this);
         param.setName(EParameterName.DQ_REPORTING_BUNDLE_DIR.getName());
@@ -1196,13 +1194,14 @@ public class Process extends Element implements IProcess2, IGEFProcess, ILastVer
     private void loadElementParameters(Element elemParam, EList listParamType) {
         loadElementParameters(elemParam, listParamType, false);
     }
-
+    
     protected void loadElementParameters(Element elemParam, EList listParamType, boolean isJunitLoad) {
         ElementParameterType pType;
         // if it's a generic component,try to serialize the component to json,then save all in a new ElementParameter,
         // that name: PROPERTIES".Then later when load the job, if the component loaded is a generic component... if
         // yes,then deserialize the json to get back the properties / set each element parameter.
         // Check if it's a generic component
+        boolean generic = false;
         IComponent component = null;
         if (elemParam instanceof Node) {
             component = ((INode) elemParam).getComponent();
@@ -1418,8 +1417,8 @@ public class Process extends Element implements IProcess2, IGEFProcess, ILastVer
                 }
                 String tempValue = (String) param.getChildParameters().get(EParameterName.ENCODING_TYPE.getName()).getValue();
                 if (!tempValue.equals(EmfComponent.ENCODING_TYPE_CUSTOM)) {
-                    tempValue = tempValue.replaceAll("'", ""); //$NON-NLS-1$ //$NON-NLS-2$
-                    tempValue = tempValue.replaceAll("\"", ""); //$NON-NLS-1$ //$NON-NLS-2$
+                    tempValue = tempValue.replace("'", ""); //$NON-NLS-1$ //$NON-NLS-2$
+                    tempValue = tempValue.replace("\"", ""); //$NON-NLS-1$ //$NON-NLS-2$
                     tempValue = TalendTextUtils.addQuotes(tempValue);
                     if (!tempValue.equals(value)) {
                         setToCustom = true;
@@ -1433,6 +1432,15 @@ public class Process extends Element implements IProcess2, IGEFProcess, ILastVer
                 elemParam.setPropertyValue(key, value);
                 // end of fix for bug 2193
             } else if (param.getFieldType().equals(EParameterFieldType.PASSWORD)) {
+                boolean generic = false;
+                IComponent component = null;
+                if (elemParam instanceof Node) {
+                    component = ((INode) elemParam).getComponent();
+                    if (EComponentType.GENERIC.equals(component.getComponentType())) {
+                        generic = true;
+                    }
+                }
+
                 if (generic) {
                     param.setValue(value);
                 } else {
@@ -1489,10 +1497,10 @@ public class Process extends Element implements IProcess2, IGEFProcess, ILastVer
         String sourceJobType = ConvertJobsUtil.getJobTypeFromFramework(this.getProperty().getItem());
         String sourceJobFramework = (String) this.getProperty().getAdditionalProperties().get(ConvertJobsUtil.FRAMEWORK);
         if (sourceJobType != null) {
-            processType.setJobType(sourceJobType.replaceAll(" ", "_"));
+            processType.setJobType(sourceJobType.replace(' ', '_'));
         }
         if (sourceJobFramework != null) {
-            processType.setFramework(sourceJobFramework.replaceAll(" ", "_"));
+            processType.setFramework(sourceJobFramework.replace(' ', '_'));
         }
 
         EList nList = processType.getNode();
@@ -1621,12 +1629,6 @@ public class Process extends Element implements IProcess2, IGEFProcess, ILastVer
         // }
         listParamType = nType.getElementParameter();
         paramList = node.getElementParameters();
-
-        // Check if it's a generic component
-        IComponent component = node.getComponent();
-        if (EComponentType.GENERIC.equals(component.getComponentType())) {
-            generic = true;
-        }
 
         saveElementParameters(fileFact, paramList, listParamType, process);
         listMetaType = nType.getMetadata();

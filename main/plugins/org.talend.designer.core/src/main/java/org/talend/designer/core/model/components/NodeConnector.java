@@ -456,4 +456,13 @@ public class NodeConnector implements INodeConnector {
     public void setShowIf(String showIf) {
         this.showIf = showIf;
     }
+
+    
+    /**
+     * Getter for parentNode.
+     * @return the parentNode
+     */
+    protected INode getParentNode() {
+        return this.parentNode;
+    }
 }

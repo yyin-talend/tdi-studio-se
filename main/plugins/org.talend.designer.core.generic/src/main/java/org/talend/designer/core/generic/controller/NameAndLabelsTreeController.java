@@ -13,9 +13,9 @@
 package org.talend.designer.core.generic.controller;
 
 import java.beans.PropertyChangeEvent;
+import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.gef.commands.Command;
 import org.eclipse.jface.viewers.IBaseLabelProvider;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.swt.SWT;
@@ -24,7 +24,6 @@ import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.talend.core.model.process.IElementParameter;
@@ -43,14 +42,6 @@ public class NameAndLabelsTreeController extends AbstractElementPropertySectionC
 
     public NameAndLabelsTreeController(IDynamicProperty dp) {
         super(dp);
-    }
-
-    public Command createCommand(Button button) {
-        IElementParameter parameter = (IElementParameter) button.getData();
-        if (parameter != null) {
-            parameter.setValue(null); // so as to invoke listeners to perform some actions.
-        }
-        return null;
     }
 
     @Override
@@ -88,12 +79,34 @@ public class NameAndLabelsTreeController extends AbstractElementPropertySectionC
                 param.setValue(getSelectedElements());
             }
 
+            @Override
+            protected List<String> getSelectedElementLabels() {
+                Object value = param.getValue();
+                if (value instanceof List) {
+                    return (List) value;
+                }
+                return null;
+            }
+
+            @Override
+            protected List<NamedThing> getInitSelectedElements(List<String> selectedElementLabels) {
+                List<NamedThing> selectedElements = new ArrayList<>();
+                List<NamedThing> viewerDatas = getViewerData();
+                for (NamedThing viewerData : viewerDatas) {
+                    if (selectedElementLabels.contains(viewerData.getName())) {
+                        selectedElements.add(viewerData);
+                    }
+                }
+                return selectedElements;
+            }
+
         };
         selectionComposite.setLayoutData(new GridData(GridData.FILL_BOTH));
         if (param instanceof GenericElementParameter) {
             List<NamedThing> possibleValues = (List<NamedThing>) ((GenericElementParameter) param).getPossibleValues();
             selectionComposite.setViewerData(possibleValues);
         }
+        selectionComposite.setCheckedState();
         return parentComp;
     }
 

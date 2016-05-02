@@ -14,9 +14,11 @@ package org.talend.designer.core.generic.utils;
 
 import java.util.List;
 
+import org.talend.core.model.process.EParameterFieldType;
 import org.talend.designer.core.model.utils.emf.talendfile.ElementParameterType;
 import org.talend.designer.core.model.utils.emf.talendfile.NodeType;
 import org.talend.designer.core.model.utils.emf.talendfile.TalendFileFactory;
+import org.talend.utils.security.CryptoHelper;
 
 /**
  * UtilTool to handle NodeType.
@@ -97,11 +99,18 @@ public final class ParameterUtilTool {
         String paramValue = paramType.getValue();
         if (paramName != null && paramValue != null) {
             // Check param name
-            if ("LOGIN_TYPE".equalsIgnoreCase(paramName)) {//$NON-NLS-1$
-                return paramValue = paramValue.substring(0, 1).toUpperCase() + paramValue.substring(1).toLowerCase();
-            } else if ("ACTION".equalsIgnoreCase(paramName)) {//$NON-NLS-1$
+        	if (EParameterFieldType.PASSWORD.getName().equals(paramType.getField())) {
+            	try{
+            		return CryptoHelper.getDefault().decrypt(paramValue);
+            	}catch(Exception e){
+            		return paramValue;
+            	}
+            }
+            
+        	if ("ACTION".equalsIgnoreCase(paramName)) {//$NON-NLS-1$
                 return paramValue.toUpperCase();
             }
+        	
             // Check param value
             if ("true".equalsIgnoreCase(paramValue)) {//$NON-NLS-1$
                 return true;

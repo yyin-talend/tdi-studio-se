@@ -501,6 +501,10 @@ public abstract class AbstractRepositoryController extends AbstractElementProper
         // to load informations from repository only if needed.
 
         int index = param.getIndexOfItemFromList(value);
+        IElementParameter infoObjectParam = param.getElement().getElementParameter("INFO_OBJECT_TYPE"); //$NON-NLS-1$
+        if (infoObjectParam != null && infoObjectParam.getValue() != null) {
+            index = -1;
+        }
         if (index == -1) {
 
             fastInitializeRepositoryNames(param);

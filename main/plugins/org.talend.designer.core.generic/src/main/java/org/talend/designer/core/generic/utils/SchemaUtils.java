@@ -28,10 +28,15 @@ import org.talend.core.model.metadata.builder.connection.Connection;
 import org.talend.core.model.metadata.builder.connection.ConnectionFactory;
 import org.talend.core.model.metadata.builder.connection.MetadataColumn;
 import org.talend.core.model.metadata.builder.connection.MetadataTable;
+import org.talend.core.model.process.EParameterFieldType;
+import org.talend.core.model.process.IElementParameter;
+import org.talend.core.model.process.INode;
+import org.talend.core.model.process.INodeConnector;
 import org.talend.core.repository.model.ProxyRepositoryFactory;
 import org.talend.core.repository.model.repositoryObject.MetadataTableRepositoryObject;
 import org.talend.cwm.helper.PackageHelper;
 import org.talend.daikon.properties.Properties.Deserialized;
+import org.talend.designer.core.generic.model.GenericNodeConnector;
 import org.talend.repository.model.IProxyRepositoryFactory;
 import orgomg.cwm.objectmodel.core.CoreFactory;
 import orgomg.cwm.objectmodel.core.TaggedValue;
@@ -52,6 +57,8 @@ public class SchemaUtils {
         if (schemaObj instanceof String) {
             Schema avroSchema = new Schema.Parser().parse((String) schemaObj);
             convertComponentSchemaIntoTalendSchema(avroSchema, metadataTable);
+        } else if (schemaObj instanceof Schema) {
+            convertComponentSchemaIntoTalendSchema((Schema) schemaObj, metadataTable);
         }
         IMetadataTable iMetadataTable = MetadataToolHelper.convert(metadataTable);
         updateComponentSchema(properties, schemaPropertyName, iMetadataTable);
@@ -120,14 +127,37 @@ public class SchemaUtils {
 
     public static void updateComponentSchema(ComponentProperties componentProperties, String schemaPropertyName,
             IMetadataTable metadataTable) {
+        updateComponentSchema(componentProperties, schemaPropertyName, metadataTable, null);
+    }
+
+    public static void updateComponentSchema(ComponentProperties componentProperties, String schemaPropertyName,
+            IMetadataTable metadataTable, IElementParameter param) {
         if (componentProperties == null || schemaPropertyName == null || metadataTable == null) {
             return;
         }
         Schema schema = convertTalendSchemaIntoComponentSchema(ConvertionHelper.convert(metadataTable));
         componentProperties.setValue(schemaPropertyName, schema);
-        Map<String, String> additionalProperties = metadataTable.getAdditionalProperties();
-        additionalProperties.put(IComponentConstants.COMPONENT_PROPERTIES_TAG, componentProperties.toSerialized());
-        additionalProperties.put(IComponentConstants.COMPONENT_SCHEMA_TAG, schemaPropertyName);
+        if (param != null) {
+            param.setValue(schema.toString());
+        }
+    }
+
+    public static void updateComponentSchema(INode node, IMetadataTable metadataTable) {
+        if (node == null || metadataTable == null || node.getComponentProperties() == null) {
+            return;
+        }
+        Schema schema = convertTalendSchemaIntoComponentSchema(ConvertionHelper.convert(metadataTable));
+        INodeConnector connector = node.getConnectorFromName(metadataTable.getAttachedConnector());
+        if (connector != null && connector instanceof GenericNodeConnector) {
+            node.getComponentProperties().setConnectedSchema(((GenericNodeConnector) connector).getComponentConnector(), schema,
+                    true);
+            for (IElementParameter param : node.getElementParameters()) {
+                if (EParameterFieldType.SCHEMA_REFERENCE.equals(param.getFieldType())
+                        && connector.getName().equals(param.getContext())) {
+                    param.setValue(schema);
+                }
+            }
+        }
     }
 
     public static ComponentProperties getCurrentComponentProperties(IMetadataTable table) {

@@ -105,11 +105,24 @@ skeleton="../templates/db_output_bulk.skeleton"
 	boolean	log4jEnabled = ("true").equals(ElementParameterParser.getValue(node.getProcess(), "__LOG4J_ACTIVATE__"));
 	String fieldSeparator = ElementParameterParser.getValue(node,"__FIELDSEPARATOR__");
 	String textEnclosure = ElementParameterParser.getValue(node, "__TEXT_ENCLOSURE__");
+	
+	String data_source_type = ElementParameterParser.getValue(node,"__DATA_SOURCE_TYPE__");
+	
 	String importType = ElementParameterParser.getValue(node, "__IMPORT_TYPE__");
+	
+	boolean s3Mode = "S3".equals(data_source_type);
+	boolean emrMode = "EMR".equals(data_source_type);
+	boolean dynamoDBMode = "DYNAMODB".equals(data_source_type);
+	boolean sshMode = "SSH".equals(data_source_type);
+	
+	boolean delimitedOrCsvMode = !dynamoDBMode && "DELIMITED_OR_CSV".equals(importType);
+	boolean jsonMode = !dynamoDBMode && "JSON".equals(importType);
+	boolean avroMode = !dynamoDBMode && "AVRO".equals(importType);
+	boolean fixedwidthMode = !dynamoDBMode && "FIXEDWIDTH".equals(importType);
 %>
 	StringBuilder command_<%=cid%> = new StringBuilder();
 <%
-	if("DELIMITED_OR_CSV".equals(importType)) {
+	if(delimitedOrCsvMode) {
 %>
 		char fieldSeparator_<%=cid %> = 
 <%
@@ -167,21 +180,62 @@ skeleton="../templates/db_output_bulk.skeleton"
 %>
 	.append(" FROM '");
 <%
-	String bucket = ElementParameterParser.getValue(node,"__BUCKET__");
-    String key = ElementParameterParser.getValue(node,"__KEY__");
-    String access_key = ElementParameterParser.getValue(node, "__ACCESS_KEY__");
+	String access_key = ElementParameterParser.getValue(node, "__ACCESS_KEY__");
     String passwordFieldKey = "__SECRET_KEY__";
+    if(emrMode) {
+    	access_key = ElementParameterParser.getValue(node, "__ACCESS_KEY_EMR__");
+    	passwordFieldKey = "__SECRET_KEY_EMR__";
+    } else if(dynamoDBMode) {
+    	access_key = ElementParameterParser.getValue(node, "__ACCESS_KEY_DYNAMODB__");
+    	passwordFieldKey = "__SECRET_KEY_DYNAMODB__";
+    } else if(sshMode) {
+    	access_key = ElementParameterParser.getValue(node, "__ACCESS_KEY_SSH__");
+    	passwordFieldKey = "__SECRET_KEY_SSH__";
+    }
 %>
 	<%if (ElementParameterParser.canEncrypt(node, passwordFieldKey)) {%> 
 	final String decryptedPwd_<%=cid%> = routines.system.PasswordEncryptUtil.decryptPassword(<%=ElementParameterParser.getEncryptedValue(node, passwordFieldKey)%>);
 	<%} else {%>
 	final String decryptedPwd_<%=cid%> = <%= ElementParameterParser.getValue(node, passwordFieldKey)%>; 
 	<%}%>
-	command_<%=cid%>.append("s3://").append(<%=bucket%>).append("/").append(<%=key%>)
+	
+<%
+	if(s3Mode) {
+		String bucket = ElementParameterParser.getValue(node,"__BUCKET__");
+    	String key = ElementParameterParser.getValue(node,"__KEY__");
+%>
+		command_<%=cid%>.append("s3://").append(<%=bucket%>).append("/").append(<%=key%>)
+<%
+    } else if(emrMode) {
+    	String emr_cluster_id = ElementParameterParser.getValue(node,"__EMR_CLUSTER_ID__");
+    	String hdfs_filepath = ElementParameterParser.getValue(node,"__HDFS_FILEPATH__");
+%>
+		String hdfspath_<%=cid%> = <%=hdfs_filepath%>;
+		if(hdfspath_<%=cid%>!=null && hdfspath_<%=cid%>.startsWith("/")) {
+			hdfspath_<%=cid%> = hdfspath_<%=cid%>.substring(1);
+		}
+		command_<%=cid%>.append("emr://").append(<%=emr_cluster_id%>).append("/").append(hdfspath_<%=cid%>)
+<%
+    } else if(dynamoDBMode) {
+    	String tablename = ElementParameterParser.getValue(node,"__TABLENAME__");
+%>
+		command_<%=cid%>.append("dynamodb://").append(<%=tablename%>)
+<%
+    } else if(sshMode) {
+    	String bucket = ElementParameterParser.getValue(node,"__BUCKET_SSH__");
+    	String key = ElementParameterParser.getValue(node,"__KEY_SSH__");
+%>
+		command_<%=cid%>.append("s3://").append(<%=bucket%>).append("/").append(<%=key%>)
+<%
+    }
+%>
 	.append("' ")
+	
 	.append("credentials 'aws_access_key_id=").append(<%=access_key%>).append(";aws_secret_access_key=").append(decryptedPwd_<%=cid%>)
 <%
 	boolean encrypt = "true".equals(ElementParameterParser.getValue(node, "__ENCRYPT__"));
+	encrypt = encrypt && s3Mode;
+	
 	if(encrypt) {
 		String encryptedKey = ElementParameterParser.getValue(node,"__ENCRYPTED_KEY__");
 %>
@@ -191,16 +245,34 @@ skeleton="../templates/db_output_bulk.skeleton"
 %>
 	.append("' ")
 <%
-	if("DELIMITED_OR_CSV".equals(importType)) {
+	if(dynamoDBMode) {
+		String readratio = ElementParameterParser.getValue(node,"__READRATIO__");
+%>
+	.append("READRATIO ").append(<%=readratio%>).append(" ");
+<%
+	}
+	
+	if(sshMode) {
+%>
+	.append("SSH ")
+<%
+	}
+	
+	if(delimitedOrCsvMode) {
 %>
 	.append("DELIMITER '").append(fieldSeparator_<%=cid%>).append("' ")
 <%
-	} else if("JSON".equals(importType)) {
+	} else if(jsonMode) {
 		String mapping = ElementParameterParser.getValue(node, "__JSON_MAPPING__");
 %>
 	.append("JSON '").append(<%=mapping%>).append("' ")
 <%
-	} else if("FIXEDWIDTH".equals(importType)) {
+	} else if(avroMode) {
+		String mapping = ElementParameterParser.getValue(node, "__JSON_MAPPING__");
+%>
+	.append("AVRO '").append(<%=mapping%>).append("' ")
+<%
+	} else if(fixedwidthMode) {
 		String mapping = ElementParameterParser.getValue(node, "__FIXEDWIDTH_MAPPING__");
 %>
 	.append("FIXEDWIDTH '").append(<%=mapping%>).append("' ")
@@ -209,7 +281,7 @@ skeleton="../templates/db_output_bulk.skeleton"
 %>
 	;
 <%
-	if("DELIMITED_OR_CSV".equals(importType)) {
+	if(delimitedOrCsvMode) {
 %>
 	if(textEnclosure_<%=cid %>!='\0') {
 		command_<%=cid%>.append("CSV QUOTE '").append(textEnclosure_<%=cid %>).append("' ");
@@ -217,10 +289,13 @@ skeleton="../templates/db_output_bulk.skeleton"
 <%
 	}
 	
-	String encoding = ElementParameterParser.getValue(node, "__ENCODING__");
+	if(!dynamoDBMode) {
+		String encoding = ElementParameterParser.getValue(node, "__ENCODING__");
 %>
-	command_<%=cid%>.append("ENCODING ").append(<%=encoding%>).append(" ")
+		command_<%=cid%>.append("ENCODING ").append(<%=encoding%>).append(" ");
 <%
+	}
+	
 	boolean isSetMaxError = false;
 	final List<Map<String, String>> settings = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__OTHER_CONFIGURATION__");
 	if(settings!=null && !settings.isEmpty()) {
@@ -229,39 +304,39 @@ skeleton="../templates/db_output_bulk.skeleton"
 			String value = parameter.get("DATA_VALUE");
 			if("REGION,NULL".contains(parameterKey)) {
 %>
-			.append("<%=parameterKey%> '").append(<%=value%>).append("' ")
+			command_<%=cid%>.append("<%=parameterKey%> '").append(<%=value%>).append("' ");
 <%
 			} else if("ESCAPE,EXPLICIT_IDS,IGNOREBLANKLINES,TRIMBLANKS,EMPTYASNULL,BLANKSASNULL,SSH,REMOVEQUOTES,ACCEPTANYDATE,TRUNCATECOLUMNS,FILLRECORD,NOLOAD,ROUNDEC".contains(parameterKey)) {
 %>
-			.append("<%=parameterKey%> ")
+			command_<%=cid%>.append("<%=parameterKey%> ");
 <%
 			} else if("IGNOREHEADER,COMPROWS".contains(parameterKey)) {
 %>
-			.append("<%=parameterKey%> ").append(<%=value%>).append(" ")
+			command_<%=cid%>.append("<%=parameterKey%> ").append(<%=value%>).append(" ");
 <%
 			} else if("MAXERROR".equals(parameterKey)) {
 				isSetMaxError = true;
 %>
-			.append("MAXERROR ").append(<%=value%>).append(" ")
+			command_<%=cid%>.append("MAXERROR ").append(<%=value%>).append(" ");
 <%
 			} else if("ACCEPTINVCHARS".equals(parameterKey)) {
 				if(value == null || "".equals(value.trim()) || "\"\"".equals(value.trim())) {
 %>
-				.append("ACCEPTINVCHARS ")
+				command_<%=cid%>.append("ACCEPTINVCHARS ");
 <%
 				} else {
 %>
-				.append("ACCEPTINVCHARS '").append(<%=value%>).append("' ")
+				command_<%=cid%>.append("ACCEPTINVCHARS '").append(<%=value%>).append("' ");
 <%
 				}
 			} else if("COMPUPDATE,STATUPDATE".contains(parameterKey)) {
 				if("true,TRUE,\"TRUE\",\"ON\"".contains(value)) {
 %>
-				.append("<%=parameterKey%> ON")
+				command_<%=cid%>.append("<%=parameterKey%> ON ");
 <%
 				} else if("false,FALSE,\"FALSE\",\"OFF\"".contains(value)) {
 %>
-				.append("<%=parameterKey%> OFF")
+				command_<%=cid%>.append("<%=parameterKey%> OFF ");
 <%
 				}
 			}
@@ -270,15 +345,15 @@ skeleton="../templates/db_output_bulk.skeleton"
 	
 	if(encrypt) {
 %>
-		.append("ENCRYPTED ")
+		command_<%=cid%>.append("ENCRYPTED ");
 <%
 	}
 	
 	boolean compressed = "true".equals(ElementParameterParser.getValue(node, "__COMPRESS__"));
-	if(compressed) {
+	if(compressed && !dynamoDBMode) {
 		String compression = ElementParameterParser.getValue(node, "__COMPRESSION__");
 %>
-		.append("<%=compression%> ")
+		command_<%=cid%>.append("<%=compression%> ");
 <%
 	}
 	
@@ -288,11 +363,11 @@ skeleton="../templates/db_output_bulk.skeleton"
 	} else if("PATTERN".equals(dateFormat)) {
 		String pattern = ElementParameterParser.getValue(node, "__DATE_PATTERN__");
 %>
-		.append("DATEFORMAT '").append(<%=pattern%>).append("' ")
+		command_<%=cid%>.append("DATEFORMAT '").append(<%=pattern%>).append("' ");
 <%
 	} else if("AUTO".equals(dateFormat)) {
 %>
-		.append("DATEFORMAT 'auto' ")
+		command_<%=cid%>.append("DATEFORMAT 'auto' ");
 <%
 	}
 	
@@ -302,23 +377,22 @@ skeleton="../templates/db_output_bulk.skeleton"
 	} else if("PATTERN".equals(timeFormat)) {
 		String pattern = ElementParameterParser.getValue(node, "__TIME_PATTERN__");
 %>
-		.append("TIMEFORMAT '").append(<%=pattern%>).append("' ")
+		command_<%=cid%>.append("TIMEFORMAT '").append(<%=pattern%>).append("' ");
 <%
 	} else if("AUTO".equals(timeFormat)) {
 %>
-		.append("TIMEFORMAT 'auto' ")
+		command_<%=cid%>.append("TIMEFORMAT 'auto' ");
 <%
 	} else if("EPOCHSECS".equals(timeFormat)) {
 %>
-		.append("TIMEFORMAT 'epochsecs' ")
+		command_<%=cid%>.append("TIMEFORMAT 'epochsecs' ");
 <%
 	} else if("EPOCHMILLISECS".equals(timeFormat)) {
 %>
-		.append("TIMEFORMAT 'epochmillisecs' ")
+		command_<%=cid%>.append("TIMEFORMAT 'epochmillisecs' ");
 <%
 	}
 %>
-	;
 	
 	java.sql.Statement stmt_<%=cid %>=conn_<%=cid %>.createStatement();
 	stmt_<%=cid %>.execute(command_<%=cid%>.toString());

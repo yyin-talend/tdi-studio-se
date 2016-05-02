@@ -15,7 +15,6 @@ package org.talend.designer.core.generic.utils;
 import static org.junit.Assert.*;
 
 import java.util.List;
-import java.util.Map;
 
 import org.apache.avro.Schema;
 import org.apache.avro.SchemaBuilder;
@@ -29,8 +28,6 @@ import org.talend.core.model.metadata.builder.connection.ConnectionFactory;
 import org.talend.core.model.metadata.builder.connection.MetadataColumn;
 import org.talend.core.model.metadata.builder.connection.MetadataTable;
 import org.talend.core.model.metadata.types.JavaTypesManager;
-import org.talend.daikon.properties.Properties;
-import org.talend.daikon.properties.Properties.Deserialized;
 import org.talend.test.utils.testproperties.TestProperties;
 import orgomg.cwm.objectmodel.core.CoreFactory;
 import orgomg.cwm.objectmodel.core.Package;
@@ -163,38 +160,46 @@ public class SchemaUtilsTest {
                 schemaPropertyName = tagValue;
             }
         }
-        Deserialized<ComponentProperties> fromSerialized = Properties.fromSerialized(componentPropertiesStr,
-                ComponentProperties.class);
-        ComponentProperties componentProperties = fromSerialized.properties;
-        Object schemaValueStr = componentProperties.getValuedProperty(schemaPropertyName).getValue();
-        Schema avroSchema = new Schema.Parser().parse((String) schemaValueStr);
+
+        ComponentProperties componentProperties = ComponentsUtils.getComponentPropertiesFromSerialized(componentPropertiesStr);
+        Object schemaValue = componentProperties.getValuedProperty(schemaPropertyName).getValue();
+        Schema avroSchema = getAvroSchema(schemaValue);
+        props.schema.schema.setValue(avroSchema);
+        assertNotNull(avroSchema.getField(TEST_COL_NAME));
         assertNotNull(avroSchema.getField(ADDED_COL_NAME));
+        assertEquals(2, avroSchema.getFields().size());
 
         // Test method updateComponentSchema(ComponentProperties componentProperties, String schemaPropertyName,
         // IMetadataTable metadataTable)
         IMetadataTable iMetadataTable = MetadataToolHelper.convert(table);
+        iMetadataTable.getListColumns().remove(1);
         SchemaUtils.updateComponentSchema(props, SCHEMA_PROP_NAME, iMetadataTable);
-        Map<String, String> additionalProperties = iMetadataTable.getAdditionalProperties();
-        componentPropertiesStr = additionalProperties.get(IComponentConstants.COMPONENT_PROPERTIES_TAG);
-        fromSerialized = Properties.fromSerialized(componentPropertiesStr, ComponentProperties.class);
-        componentProperties = fromSerialized.properties;
-        schemaPropertyName = additionalProperties.get(IComponentConstants.COMPONENT_SCHEMA_TAG);
-        schemaValueStr = componentProperties.getValuedProperty(schemaPropertyName).getValue();
-        avroSchema = new Schema.Parser().parse((String) schemaValueStr);
+        schemaValue = props.getValuedProperty(schemaPropertyName).getValue();
+        avroSchema = getAvroSchema(schemaValue);
         assertNotNull(avroSchema.getField(TEST_COL_NAME));
-        assertNotNull(avroSchema.getField(ADDED_COL_NAME));
-        assertEquals(2, avroSchema.getFields().size());
+        assertNull(avroSchema.getField(ADDED_COL_NAME));
+        assertEquals(1, avroSchema.getFields().size());
+    }
+
+    private Schema getAvroSchema(Object schemaValue) {
+        Schema avroSchema = null;
+        if (schemaValue instanceof Schema) {
+            avroSchema = (Schema) schemaValue;
+        } else if (schemaValue instanceof String) {
+            avroSchema = new Schema.Parser().parse((String) schemaValue);
+        }
+        return avroSchema;
     }
 
     /**
-     * A container interface only for test.
+     * A container class only for test.
      */
     class TestContainer extends PackageImpl {
         // only for test.
     }
 
     /**
-     * A container interface only for test.
+     * A container class only for test.
      */
     class OtherTestContainer extends PackageImpl {
         // only for test.

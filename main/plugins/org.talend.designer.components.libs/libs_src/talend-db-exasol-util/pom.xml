@@ -7,14 +7,30 @@
 
 	<groupId>org.talend.libraries</groupId>
 	<artifactId>talend-db-exasol</artifactId>
-	<version>1.0.0</version>
+	<version>2.0.0</version>
 	<packaging>jar</packaging>
 
 	<name>talend-db-exasol</name>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<talend.nexus.url>http://newbuild.talend.com:8081</talend.nexus.url>
 	</properties>
+	
+	<distributionManagement>
+		<snapshotRepository>
+			<id>talend_nexus_deployment</id>
+			<url>${talend.nexus.url}/nexus/content/repositories/TalendOpenSourceSnapshot/</url>
+			<snapshots><enabled>true</enabled></snapshots>
+			<releases><enabled>false</enabled></releases>
+		</snapshotRepository>
+		<repository>
+			<id>talend_nexus_deployment</id>
+			<url>${talend.nexus.url}/nexus/content/repositories/TalendOpenSourceRelease/</url>
+			<snapshots><enabled>false</enabled></snapshots>
+			<releases><enabled>true</enabled></releases>
+		</repository>
+	</distributionManagement>
 
 	<dependencies>
 		<dependency>
@@ -31,10 +47,7 @@
 		<dependency>
 			<groupId>exajdbc</groupId>
 			<artifactId>exajdbc</artifactId>
-			<version>5.0.12</version>
-			<scope>system</scope>
-			<!-- change to your own jdbc path -->
-			<systemPath>C:/Users/Talend/Desktop/jar-nexus/exajdbc-5.0.12.jar</systemPath>
+			<version>5.0.13</version>
 		</dependency>
 	</dependencies>
 	<build>

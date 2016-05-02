@@ -49,7 +49,8 @@ public class SearchComponentAction extends SelectionAction {
         if (parts.size() != 1) {
             return false;
         }
-        if (PluginUtil.isMediation()) {
+        // TESB-17218: Hide for route test case editor
+        if (PluginUtil.isMediation() || PluginUtil.isRouteTestEditor()) {
             return false;
         }
         Object o = parts.get(0);

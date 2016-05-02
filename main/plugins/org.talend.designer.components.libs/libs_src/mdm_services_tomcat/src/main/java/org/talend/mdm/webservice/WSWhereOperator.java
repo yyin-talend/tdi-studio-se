@@ -14,10 +14,9 @@ import javax.xml.bind.annotation.XmlType;
  * &lt;simpleType name="WSWhereOperator"&gt;
  *   &lt;restriction base="{http://www.w3.org/2001/XMLSchema}string"&gt;
  *     &lt;enumeration value="JOIN"/&gt;
- *     &lt;enumeration value="CONTAINS_TEXT_OF"/&gt;
  *     &lt;enumeration value="CONTAINS"/&gt;
+ *     &lt;enumeration value="CONTAINS_SENTENCE"/&gt;
  *     &lt;enumeration value="STARTSWITH"/&gt;
- *     &lt;enumeration value="STRICTCONTAINS"/&gt;
  *     &lt;enumeration value="EQUALS"/&gt;
  *     &lt;enumeration value="NOT_EQUALS"/&gt;
  *     &lt;enumeration value="GREATER_THAN"/&gt;
@@ -37,10 +36,9 @@ import javax.xml.bind.annotation.XmlType;
 public enum WSWhereOperator {
 
     JOIN,
-    CONTAINS_TEXT_OF,
     CONTAINS,
+    CONTAINS_SENTENCE,
     STARTSWITH,
-    STRICTCONTAINS,
     EQUALS,
     NOT_EQUALS,
     GREATER_THAN,

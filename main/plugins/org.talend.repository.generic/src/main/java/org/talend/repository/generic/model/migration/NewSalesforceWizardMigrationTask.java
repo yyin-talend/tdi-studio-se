@@ -14,7 +14,8 @@ package org.talend.repository.generic.model.migration;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.GregorianCalendar;
@@ -25,22 +26,32 @@ import java.util.Set;
 
 import org.apache.avro.Schema;
 import org.eclipse.core.runtime.Path;
+import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.runtime.model.components.IComponentConstants;
-import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.components.api.properties.ComponentProperties;
 import org.talend.components.api.service.ComponentService;
+import org.talend.components.api.wizard.ComponentWizard;
 import org.talend.core.model.metadata.builder.connection.Connection;
 import org.talend.core.model.metadata.builder.connection.MetadataTable;
 import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.model.properties.Item;
 import org.talend.core.model.repository.ERepositoryObjectType;
+import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.repository.model.ProxyRepositoryFactory;
 import org.talend.core.utils.ReflectionUtils;
 import org.talend.cwm.helper.ConnectionHelper;
+import org.talend.daikon.NamedThing;
+import org.talend.daikon.exception.TalendRuntimeException;
+import org.talend.daikon.properties.PropertiesDynamicMethodHelper;
+import org.talend.daikon.properties.Property;
+import org.talend.designer.core.generic.constants.IGenericConstants;
 import org.talend.designer.core.generic.utils.ComponentsUtils;
 import org.talend.designer.core.generic.utils.SchemaUtils;
+import org.talend.repository.generic.internal.IGenericWizardInternalService;
+import org.talend.repository.generic.internal.service.GenericWizardInternalService;
 import org.talend.repository.generic.model.genericMetadata.GenericConnection;
 import org.talend.repository.generic.model.genericMetadata.GenericConnectionItem;
+
 import orgomg.cwm.objectmodel.core.CoreFactory;
 import orgomg.cwm.objectmodel.core.TaggedValue;
 
@@ -50,7 +61,7 @@ import orgomg.cwm.objectmodel.core.TaggedValue;
  */
 public class NewSalesforceWizardMigrationTask extends NewGenericWizardMigrationTask {
 
-    public static final String SCHEMA_SCHEMA = "schema.schema"; //$NON-NLS-1$
+    public static final String SCHEMA_SCHEMA = "main.schema"; //$NON-NLS-1$
 
     public static final String REFLECTION_SALESFORCE_MODULE_PROPERTIES = "org.talend.components.salesforce.SalesforceModuleProperties"; //$NON-NLS-1$
 
@@ -80,15 +91,36 @@ public class NewSalesforceWizardMigrationTask extends NewGenericWizardMigrationT
             GenericConnection genericConnection = initGenericConnection(connection);
             initProperty(connectionItem, genericConnectionItem);
 
-            ComponentProperties componentProperties = service.getComponentProperties(CONNECTION_COMPONENT_NAME);
+            ComponentWizard componentWizard = service.getComponentWizard(TYPE_NAME, genericConnectionItem.getProperty().getId());            
+            ComponentProperties componentProperties = (ComponentProperties) componentWizard.getForms().get(0).getProperties();
+            componentProperties.init();
+
             // Update
             modify = updateComponentProperties(connection, componentProperties, props);
+            NamedThing nt = componentProperties.getProperty("loginType"); //$NON-NLS-1$
+            if (nt instanceof Property) {
+                Property property = (Property) nt;
+                if ("OAuth2".equals(property.getValue())) { //$NON-NLS-1$
+                    property.setValue("OAuth"); //$NON-NLS-1$
+                    componentProperties.setValue("endpoint", "https://login.salesforce.com/services/oauth2"); //$NON-NLS-1$//$NON-NLS-2$
+                }
+            }
+            // set empty value instead of default null value, this will add automatically the double quotes in the job when drag&drop metadata
+            componentProperties.setValue("userPassword.securityKey", ""); //$NON-NLS-1$ //$NON-NLS-2$
+            Property property = componentProperties.getValuedProperty("userPassword.securityKey"); //$NON-NLS-1$
+            property.setTaggedValue(IGenericConstants.REPOSITORY_VALUE, "securityKey"); //$NON-NLS-1$
             genericConnection.setCompProperties(componentProperties.toSerialized());
             genericConnectionItem.setConnection(genericConnection);
             updateMetadataTable(connection, genericConnection, componentProperties);
             if (modify) {
                 try {
                     ProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
+                    IRepositoryViewObject object = factory.getLastVersion(item.getProperty().getId(),
+                            ERepositoryObjectType.METADATA_SALESFORCE_SCHEMA.getFolder(),
+                            ERepositoryObjectType.METADATA_SALESFORCE_SCHEMA);
+                    if (object != null) {
+                        factory.deleteObjectPhysical(object);
+                    }
                     if (genericConnectionItem != null && connectionItem != null) {
                         factory.create(genericConnectionItem, new Path(connectionItem.getState().getPath()), true);
                     }
@@ -131,6 +163,12 @@ public class NewSalesforceWizardMigrationTask extends NewGenericWizardMigrationT
                         .getClass().getClassLoader(), new Object[] { metaTable.getName() });
                 if (object != null && object instanceof ComponentProperties) {
                     ComponentProperties salesforceModuleProperties = (ComponentProperties) object;
+                    salesforceModuleProperties.getProperties("connection").copyValuesFrom(componentProperties); //$NON-NLS-1$
+                    copyTaggedValues(componentProperties, salesforceModuleProperties.getProperties("connection")); //$NON-NLS-1$
+                    NamedThing tmp = salesforceModuleProperties.getProperty("moduleName"); //$NON-NLS-1$
+                    ((Property) tmp).setTaggedValue(IGenericConstants.REPOSITORY_VALUE, "moduleName"); //$NON-NLS-1$
+                    ((Property) tmp).setValue(metaTable.getLabel());
+                    
                     TaggedValue serializedPropsTV = CoreFactory.eINSTANCE.createTaggedValue();
                     serializedPropsTV.setTag(IComponentConstants.COMPONENT_PROPERTIES_TAG);
                     serializedPropsTV.setValue(salesforceModuleProperties.toSerialized());
@@ -144,23 +182,72 @@ public class NewSalesforceWizardMigrationTask extends NewGenericWizardMigrationT
                     ((orgomg.cwm.objectmodel.core.Package) genericConnection).getOwnedElement().add(metaTable);
                     modified = true;
                 }
-            } catch (ClassNotFoundException e) {
-                e.printStackTrace();
-            } catch (SecurityException e) {
-                e.printStackTrace();
-            } catch (NoSuchMethodException e) {
-                e.printStackTrace();
-            } catch (IllegalArgumentException e) {
-                e.printStackTrace();
-            } catch (InstantiationException e) {
-                e.printStackTrace();
-            } catch (IllegalAccessException e) {
-                e.printStackTrace();
-            } catch (InvocationTargetException e) {
-                e.printStackTrace();
+            } catch (Exception e) {
+                ExceptionHandler.process(e);
             }
         }
         return modified;
+    }
+
+    /**
+     * Copy all of the values from the specified {@link Properties} object. This includes the values from any nested
+     * objects. This can be used even if the {@code Properties} objects are not the same class. Fields that are not
+     * present in the this {@code Properties} object are ignored.
+     * 
+     * @param props
+     */
+    public void copyTaggedValues(org.talend.daikon.properties.Properties source, org.talend.daikon.properties.Properties target) {
+        for (NamedThing otherProp : source.getProperties()) {
+            NamedThing thisProp = target.getProperty(otherProp.getName());
+            if (thisProp == null) {
+                try {
+                    Class otherClass = otherProp.getClass();
+
+                    if (Property.class.isAssignableFrom(otherClass)) {
+                        Constructor c = otherClass.getConstructor(String.class);
+                        thisProp = (NamedThing) c.newInstance(otherProp.getName());
+                    } else if (org.talend.daikon.properties.Properties.class.isAssignableFrom(otherClass)) {
+                        // Look for single arg String, but an inner class will have a Properties as first arg
+                        Constructor constructors[] = otherClass.getConstructors();
+                        for (Constructor c : constructors) {
+                            Class pts[] = c.getParameterTypes();
+                            if (pts.length == 1 && String.class.isAssignableFrom(pts[0])) {
+                                thisProp = (NamedThing) c.newInstance(otherProp.getName());
+                                break;
+                            }
+                            if (pts.length == 2 && org.talend.daikon.properties.Properties.class.isAssignableFrom(pts[0])
+                                    && String.class.isAssignableFrom(pts[1])) {
+                                thisProp = (NamedThing) c.newInstance(this, otherProp.getName());
+                                break;
+                            }
+                        }
+                    } else {
+                        TalendRuntimeException.unexpectedException("Unexpected property class: " + otherProp.getClass()
+                                + " prop: " + otherProp);
+                    }
+
+                    try {
+                        Field f = getClass().getField(otherProp.getName());
+                        f.set(this, thisProp);
+                    } catch (NoSuchFieldException e) {
+                        // A field exists in the other that's not in ours, just ignore it
+                        continue;
+                    }
+                } catch (Exception e) {
+                    TalendRuntimeException.unexpectedException(e);
+                }
+            }
+            if (otherProp instanceof org.talend.daikon.properties.Properties) {
+                copyTaggedValues((org.talend.daikon.properties.Properties) otherProp,
+                        ((org.talend.daikon.properties.Properties) thisProp));
+            } else {
+                Object value = ((Property) otherProp).getTaggedValue(IGenericConstants.REPOSITORY_VALUE);
+                if (value != null) {
+                    ((Property) thisProp).setTaggedValue(IGenericConstants.REPOSITORY_VALUE, value);
+                }
+            }
+        }
+
     }
 
     @Override
