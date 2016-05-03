@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.avro.Schema;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.eclipse.jface.preference.IPreferenceStore;
@@ -30,6 +31,7 @@ import org.talend.components.api.component.ComponentDefinition;
 import org.talend.components.api.component.ComponentImageType;
 import org.talend.components.api.component.Connector;
 import org.talend.components.api.component.OutputComponentDefinition;
+import org.talend.components.api.component.PropertyPathConnector;
 import org.talend.components.api.component.Trigger;
 import org.talend.components.api.component.VirtualComponentDefinition;
 import org.talend.components.api.properties.ComponentProperties;
@@ -49,6 +51,7 @@ import org.talend.core.model.process.EConnectionType;
 import org.talend.core.model.process.EParameterFieldType;
 import org.talend.core.model.process.ElementParameterParser;
 import org.talend.core.model.process.IElementParameter;
+import org.talend.core.model.process.IElementParameterDefaultValue;
 import org.talend.core.model.process.INode;
 import org.talend.core.model.process.INodeConnector;
 import org.talend.core.model.temp.ECodePart;
@@ -57,7 +60,9 @@ import org.talend.core.runtime.services.ComponentServiceWithValueEvaluator;
 import org.talend.core.ui.services.IComponentsLocalProviderService;
 import org.talend.core.utils.TalendQuoteUtils;
 import org.talend.daikon.NamedThing;
+import org.talend.daikon.properties.Properties;
 import org.talend.daikon.properties.Property;
+import org.talend.daikon.properties.SchemaProperty;
 import org.talend.daikon.properties.presentation.Form;
 import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.generic.constants.IGenericConstants;
@@ -67,6 +72,7 @@ import org.talend.designer.core.model.components.AbstractBasicComponent;
 import org.talend.designer.core.model.components.DummyComponent;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.model.components.ElementParameter;
+import org.talend.designer.core.model.components.ElementParameterDefaultValue;
 import org.talend.designer.core.model.components.MultipleComponentConnection;
 import org.talend.designer.core.model.components.MultipleComponentManager;
 import org.talend.designer.core.model.components.NodeConnector;
@@ -655,6 +661,19 @@ public class Component extends AbstractBasicComponent {
      *
      */
     private void initializeParametersForSchema(List<ElementParameter> listParam, final INode node) {
+        ComponentProperties rootProperty = node.getComponentProperties();
+        Map<String, SchemaProperty> listSchemaProperties = new HashMap<>();
+        findSchemaProperties(rootProperty, listParam, listSchemaProperties, null);
+        for (String paramName : listSchemaProperties.keySet()) {
+            boolean found = setupConnector(node, listParam, paramName, listSchemaProperties.get(paramName), true);
+            if (!found) {
+                // check in the input schema
+                // for now we only handle input schema named MAIN. But we will name them "FLOW" to keep
+                // compatibility.
+                setupConnector(node, listParam, paramName, listSchemaProperties.get(paramName), false);
+            }
+        }
+
         for (ElementParameter param : listParam) { // TUP-4161
             if (EParameterFieldType.SCHEMA_REFERENCE.equals(param.getFieldType())) {
                 ElementParameter newParam = new ElementParameter(node);
@@ -696,6 +715,81 @@ public class Component extends AbstractBasicComponent {
         }
     }
 
+    /**
+     * DOC nrousseau Comment method "setupConnector".
+     * 
+     * @param node
+     * @param rootProperty
+     * @param paramName 
+     * @param schemaProperty
+     * @param found
+     * @return
+     */
+    private boolean setupConnector(final INode node, List<ElementParameter> listParam, String paramName, SchemaProperty schemaProperty,
+            boolean isOutput) {
+        ComponentProperties rootProperty = node.getComponentProperties();
+        boolean found = false;
+        for (Connector connector : rootProperty.getAvailableConnectors(null, isOutput)) {
+            if (!(schemaProperty.getValue() instanceof Schema)) {
+                continue;
+            }
+            Schema schema = (Schema) schemaProperty.getValue();
+            if (connector instanceof PropertyPathConnector) {
+                String linkedSchema = ((PropertyPathConnector) connector).getPropertyPath() + ".schema"; //$NON-NLS-1$
+                if (paramName.equals(linkedSchema)) {
+                    found = true;
+                    ElementParameter  param = new ElementParameter(node);
+                    param.setName(paramName);
+                    param.setFieldType(EParameterFieldType.SCHEMA_REFERENCE);
+                    if (!isOutput) {
+                        param.setContext(EConnectionType.FLOW_MAIN.getName());
+                    } else {
+                        param.setContext(connector.getName());
+                    }
+                    param.setCategory(EComponentCategory.TECHNICAL);
+                    IElementParameterDefaultValue defaultValue = new ElementParameterDefaultValue();
+                    defaultValue.setDefaultValue(new Schema.Parser().parse(schema.toString()));
+                    param.getDefaultValues().add(defaultValue);
+                    listParam.add(param);
+                }
+            }
+        }
+        return found;
+    }
+
+    /**
+     * DOC nrousseau Comment method "findSchemaProperties".
+     * 
+     * @param rootProperty
+     * @param listParam
+     * @return
+     */
+    private void findSchemaProperties(Properties rootProperty, List<ElementParameter> listParam, Map<String, SchemaProperty> schemaProperties, String parentPropertiesPath) {
+        
+        for (NamedThing nt : rootProperty.getProperties()) {
+            String path = parentPropertiesPath;
+            if (path == null) {
+                path = nt.getName();
+            } else {
+                path = parentPropertiesPath + "." + nt.getName(); //$NON-NLS-1$
+            }
+            if (nt instanceof SchemaProperty) {
+                boolean found = false;
+                for (IElementParameter param : listParam) {
+                    if (path.equals(param.getName())) {
+                        found = true;
+                        break;
+                    }
+                }
+                if (!found) {
+                    schemaProperties.put(path, (SchemaProperty) nt);
+                }
+            } else if (nt instanceof Properties) {
+                findSchemaProperties((Properties)nt, listParam, schemaProperties, path);
+            }
+        }
+    }
+
     @Override
     public String getShortName() {
         String originalComponentName = getName();
@@ -733,16 +827,19 @@ public class Component extends AbstractBasicComponent {
             }
         }
 
-        boolean isOutputComponent = componentDefinition instanceof OutputComponentDefinition || componentDefinition instanceof VirtualComponentDefinition;
-        INodeConnector connector = addStandardType(listConnector, EConnectionType.FLOW_MAIN, parentNode);
+        boolean isOutputComponent = componentDefinition instanceof OutputComponentDefinition
+                || componentDefinition instanceof VirtualComponentDefinition;
         if (isOutputComponent) {
-            connector.setMaxLinkInput(1);
+            addGenericType(listConnector, EConnectionType.FLOW_MAIN, GenericNodeConnector.INPUT_CONNECTOR, parentNode, false);
         } else {
+            INodeConnector connector = null;
+            connector = addStandardType(listConnector, EConnectionType.FLOW_MAIN, parentNode);
             connector.setMaxLinkInput(0);
+            connector.setMaxLinkOutput(0);
         }
-        connector.setMaxLinkOutput(0);
-        addGenericType(listConnector, EConnectionType.FLOW_MAIN, Connector.MAIN_NAME, parentNode);
-        addGenericType(listConnector, EConnectionType.REJECT, Connector.REJECT_NAME, parentNode);
+
+        addGenericType(listConnector, EConnectionType.FLOW_MAIN, Connector.MAIN_NAME, parentNode, true);
+        addGenericType(listConnector, EConnectionType.REJECT, Connector.REJECT_NAME, parentNode, true);
         addStandardType(listConnector, EConnectionType.RUN_IF, parentNode);
         addStandardType(listConnector, EConnectionType.ON_COMPONENT_OK, parentNode);
         addStandardType(listConnector, EConnectionType.ON_COMPONENT_ERROR, parentNode);
@@ -810,9 +907,8 @@ public class Component extends AbstractBasicComponent {
     }
 
     private void addGenericType(List<INodeConnector> listConnector, EConnectionType type, String genericConnectorType,
-            INode parentNode) {
-        GenericNodeConnector nodeConnector = new GenericNodeConnector(parentNode);
-        nodeConnector.setMaxLinkInput(0);
+            INode parentNode, boolean isOutput) {
+        GenericNodeConnector nodeConnector = new GenericNodeConnector(parentNode, isOutput);
         nodeConnector.setDefaultConnectionType(EConnectionType.FLOW_MAIN);
         nodeConnector.setGenericConnectorType(genericConnectorType);
         nodeConnector.setLinkName(type.getDefaultLinkName());

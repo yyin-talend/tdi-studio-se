@@ -583,8 +583,8 @@ public class Node extends Element implements IGraphicalNode {
                         IMetadataTable paramTable = (IMetadataTable) param.getValue();
                         table.getListColumns().addAll(paramTable.getListColumns());
                         table.setReadOnly(paramTable.isReadOnly());
-                    } else if (param.getValue() instanceof Schema) {
-                        Schema schema = (Schema) param.getValue();
+                    } else if (param.getFieldType().equals(EParameterFieldType.SCHEMA_REFERENCE)) {
+                        Schema schema = (Schema) componentProperties.getValuedProperty(param.getName()).getValue();
                         org.talend.core.model.metadata.builder.connection.MetadataTable defaultEmfTable = MetadataToolAvroHelper
                                 .convertFromAvro(schema);
                         IMetadataTable defaultTable = MetadataToolHelper.convert(defaultEmfTable);
