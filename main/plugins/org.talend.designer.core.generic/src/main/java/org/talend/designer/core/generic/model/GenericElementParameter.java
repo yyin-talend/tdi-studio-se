@@ -27,7 +27,9 @@ import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.ui.PlatformUI;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.runtime.model.components.IComponentConstants;
+import org.talend.components.api.component.ComponentDefinition;
 import org.talend.components.api.component.Connector;
+import org.talend.components.api.component.InputComponentDefinition;
 import org.talend.components.api.properties.ComponentProperties;
 import org.talend.components.api.service.ComponentService;
 import org.talend.core.model.metadata.IMetadataTable;
@@ -37,6 +39,7 @@ import org.talend.core.model.metadata.builder.connection.MetadataTable;
 import org.talend.core.model.process.EConnectionType;
 import org.talend.core.model.process.EParameterFieldType;
 import org.talend.core.model.process.ElementParameterParser;
+import org.talend.core.model.process.IConnection;
 import org.talend.core.model.process.IElement;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.INodeConnector;
@@ -128,7 +131,7 @@ public class GenericElementParameter extends ElementParameter {
         NamedThing widgetProperty = widget.getContent();
         if (widgetProperty instanceof SchemaProperty) {
             if (newValue instanceof String) {
-                ((SchemaProperty) widgetProperty).setValue(new Schema.Parser().parse((String)newValue));
+                ((SchemaProperty) widgetProperty).setValue(new Schema.Parser().parse((String) newValue));
             }
         } else if (widgetProperty instanceof Property) {
             Property se = (Property) widgetProperty;
@@ -263,8 +266,13 @@ public class GenericElementParameter extends ElementParameter {
         IElement element = this.getElement();
         if (element instanceof Node) {
             Node node = (Node) element;
-            List<INodeConnector> connectors = node.getConnectorsFromType(EConnectionType.FLOW_MAIN);
-            for (INodeConnector connector : connectors) {
+            ComponentDefinition definition = ((Component) node.getComponent()).getComponentDefinition();
+            boolean isInput = false;
+            if (definition instanceof InputComponentDefinition) {
+                isInput = true;
+            }
+            if (isInput || node.getComponent().isSchemaAutoPropagated()) {
+                INodeConnector connector = node.getConnectorFromName(Connector.MAIN_NAME);
                 if (connector instanceof GenericNodeConnector) {
                     Connector componentConnector = ((GenericNodeConnector) connector).getComponentConnector();
                     Schema schema = null;
@@ -273,20 +281,57 @@ public class GenericElementParameter extends ElementParameter {
                     if (schema != null) {
                         MetadataTable metadataTable = MetadataToolAvroHelper.convertFromAvro(schema);
                         IMetadataTable newTable = MetadataToolHelper.convert(metadataTable);
-                        if (!newTable.sameMetadataAs(mainTable)) {
+                        if ((!mainTable.sameMetadataAs(newTable) || !newTable.sameMetadataAs(mainTable))) {
                             IElementParameter schemaParameter = node
                                     .getElementParameterFromField(EParameterFieldType.SCHEMA_REFERENCE);
-                            ChangeMetadataCommand cmd = new ChangeMetadataCommand(node, schemaParameter, mainTable, newTable, null);
-                            cmd.setPropagate(Boolean.TRUE);
+                            ChangeMetadataCommand cmd = new ChangeMetadataCommand(node, schemaParameter,
+                                    mainTable, newTable, null);
                             IProcess process = node.getProcess();
                             if (process instanceof org.talend.designer.core.ui.editor.process.Process) {
                                 CommandStack commandStack = ((org.talend.designer.core.ui.editor.process.Process) process)
                                         .getCommandStack();
                                 commandStack.execute(cmd);
                             }
+
                         }
                     }
-                }                
+                }
+            } else {
+                Boolean propagate = null;
+                List<INodeConnector> connectors = node.getConnectorsFromType(EConnectionType.FLOW_MAIN);
+                for (INodeConnector connector : connectors) {
+                    if (connector instanceof GenericNodeConnector) {
+                        Connector componentConnector = ((GenericNodeConnector) connector).getComponentConnector();
+                        Schema schema = null;
+                        schema = getRootProperties().getSchema(componentConnector, ((GenericNodeConnector) connector).isOutput());
+                        IMetadataTable mainTable = node.getMetadataFromConnector(connector.getName());
+                        if (schema != null) {
+                            MetadataTable metadataTable = MetadataToolAvroHelper.convertFromAvro(schema);
+                            IMetadataTable newTable = MetadataToolHelper.convert(metadataTable);
+                            if ((!mainTable.sameMetadataAs(newTable) || !newTable.sameMetadataAs(mainTable))) {
+                                mainTable.setListColumns(newTable.getListColumns());
+                                if (propagate == null) {
+                                    propagate = ChangeMetadataCommand.askPropagate();
+                                }
+                                if (propagate != null && propagate) {
+                                    for (IConnection connection : node.getOutgoingConnections()) {
+                                        if (connector.getName().equals(connection.getConnectorName())) {
+                                            ChangeMetadataCommand cmd = new ChangeMetadataCommand(connection.getTarget(), null,
+                                                    null, newTable, null);
+                                            cmd.setPropagate(true);
+                                            IProcess process = node.getProcess();
+                                            if (process instanceof org.talend.designer.core.ui.editor.process.Process) {
+                                                CommandStack commandStack = ((org.talend.designer.core.ui.editor.process.Process) process)
+                                                        .getCommandStack();
+                                                commandStack.execute(cmd);
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
             }
         }
     }
