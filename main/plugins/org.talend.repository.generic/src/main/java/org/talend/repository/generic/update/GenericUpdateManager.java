@@ -121,6 +121,7 @@ public class GenericUpdateManager extends RepositoryUpdateManager {
     public Set<EUpdateItemType> getTypes() {
         Set<EUpdateItemType> types = new HashSet<>();
         types.add(EUpdateItemType.NODE_PROPERTY);
+        types.add(EUpdateItemType.NODE_SCHEMA);
         return types;
     }
 
