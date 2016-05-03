@@ -83,6 +83,7 @@ java.sql.Connection conn_<%=cid%> = null;
 		String hivePrincipal = ElementParameterParser.getValue(node, "__HIVE_PRINCIPAL__");
 		boolean useSsl = "true".equals(ElementParameterParser.getValue(node, "__USE_SSL__"));
 		String sslTrustStore = ElementParameterParser.getValue(node, "__SSL_TRUST_STORE__");
+		String sslStorepasswordFieldName = "__SSL_TRUST_STORE_PASSWORD__";
 
         boolean useMapRTicket = ElementParameterParser.getBooleanValue(node, "__USE_MAPRTICKET__");
         String mapRTicketUsername = ElementParameterParser.getValue(node, "__MAPRTICKET_USERNAME__");
@@ -268,9 +269,27 @@ java.sql.Connection conn_<%=cid%> = null;
 					}
 					// Using SSL in Secure Mode
 					if(useSsl && hiveDistrib.doSupportSSL()){
+						// Does the distrib support SSL + KERBEROS
+						if(hiveDistrib.doSupportSSLwithKerberos()){
+							if (ElementParameterParser.canEncrypt(node, sslStorepasswordFieldName)) {
 %>
-						String url_<%=cid%> = "jdbc:<%=hiveServer%>://" + <%=dbhost%> + ":" + <%=dbport%> + "/" + <%=dbname%> + ";principal=" + <%=hivePrincipal%>+";sasl.qop=auth-conf";
+								String decryptedSslStorePassword_<%=cid%> = routines.system.PasswordEncryptUtil.decryptPassword(<%=ElementParameterParser.getEncryptedValue(node, sslStorepasswordFieldName)%>);
 <%
+							}else{
+%>
+								String decryptedSslStorePassword_<%=cid%> = <%= ElementParameterParser.getValue(node, sslStorepasswordFieldName)%>;
+<%
+							}
+%>
+							String url_<%=cid%> = "jdbc:<%=hiveServer%>://" + <%=dbhost%> + ":" + <%=dbport%> + "/" + <%=dbname%> + ";principal=" + <%=hivePrincipal%>+";ssl=true" +";sslTrustStore=" + <%=sslTrustStore%> + ";trustStorePassword=" + decryptedSslStorePassword_<%=cid%>;
+<%
+						// Does the distrib support only SASL-QOP + KERBEROS
+						} else {
+						
+%>
+							String url_<%=cid%> = "jdbc:<%=hiveServer%>://" + <%=dbhost%> + ":" + <%=dbport%> + "/" + <%=dbname%> + ";principal=" + <%=hivePrincipal%>+";sasl.qop=auth-conf";
+<%
+						}
 					}else{
 %>
 						String url_<%=cid%> = "jdbc:<%=hiveServer%>://" + <%=dbhost%> + ":" + <%=dbport%> + "/" + <%=dbname%> + ";principal=" + <%=hivePrincipal%>;
@@ -313,7 +332,6 @@ java.sql.Connection conn_<%=cid%> = null;
 
                     // Using SSL in non Secure Mode
 					if(useSsl && hiveDistrib.doSupportSSL()){
-						String sslStorepasswordFieldName = "__SSL_TRUST_STORE_PASSWORD__";
 						if (ElementParameterParser.canEncrypt(node, sslStorepasswordFieldName)) {
 %>
 							String decryptedSslStorePassword_<%=cid%> = routines.system.PasswordEncryptUtil.decryptPassword(<%=ElementParameterParser.getEncryptedValue(node, sslStorepasswordFieldName)%>);
