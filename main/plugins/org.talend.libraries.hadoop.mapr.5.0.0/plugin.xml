@@ -333,6 +333,9 @@
            <library
                  id="commons-codec-1.5.jar">
            </library>
+           <library
+                 id="netty-3.6.2.Final.jar">
+           </library>
         </libraryNeededGroup>        
         <libraryNeededGroup
               description="The lastest Sqoop libraries of MAPR50X"
