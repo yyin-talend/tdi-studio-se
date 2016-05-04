@@ -15,7 +15,7 @@
             appearsBefore="org.talend.repository.viewer.metadata.genericSchemas"
             contentProvider="org.talend.repository.generic.view.content.MetadataGenericContentProvider"
             id="org.talend.repository.viewer.metadata.genericConnection"
-            labelProvider="org.talend.repository.generic.view.content.MetadataGenericLabelProvider"
+            labelProvider="org.talend.repository.viewer.label.RepositoryViewLabelProvider"
             name="Generic Connection"
             priority="higher">
          <triggerPoints>
