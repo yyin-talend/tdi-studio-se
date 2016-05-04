@@ -1,6 +1,8 @@
 <%@ jet
 imports="
         java.util.List
+        java.util.Set
+        java.util.HashSet
         org.talend.components.api.component.ComponentDefinition
         org.talend.designer.core.generic.model.Component
         org.talend.core.model.metadata.IMetadataColumn
@@ -11,6 +13,7 @@ imports="
         org.talend.core.model.process.IConnection
         org.talend.core.model.process.IConnectionCategory
         org.talend.core.model.process.INode
+        org.talend.core.model.process.EConnectionType
         org.talend.designer.codegen.config.CodeGeneratorArgument
         org.talend.core.model.utils.TalendTextUtils
         "
@@ -98,7 +101,63 @@ if(def instanceof org.talend.components.api.component.OutputComponentDefinition)
                     }
                 } // column
                 %>
-                writer_<%=cid%>.write(current_<%=cid%>.createIndexedRecord());
+                
+                Object data_<%=cid%> = current_<%=cid%>.createIndexedRecord();
+                
+                try {
+                	writer_<%=cid%>.write(data_<%=cid%>);
+                	<%
+                	//pass the main flow
+                	List<? extends IConnection> mains = node.getOutgoingConnections(EConnectionType.FLOW_MAIN);
+                	if(mains!=null && !mains.isEmpty()) {
+                		IConnection main = mains.get(0);
+                		%>
+                		<%=main.getName()%> = new <%=main.getName() %>Struct();
+                		<%
+                		for (IMetadataColumn column : columnList) {
+	                		%>
+	                		<%=main.getName()%>.<%=column.getLabel()%> = <%=conn.getName()%>.<%=column.getLabel()%>;
+	                		<%
+                		}
+                		
+                		//TODO how to pass the additional columns in output connection? like salesforce_id
+                	}
+                	%>
+                } catch (org.talend.components.api.exception.DataRejectException e_<%=cid%>) {
+                	<%
+                	//pass the reject flow
+                	List<? extends IConnection> rejects = node.getOutgoingConnections(EConnectionType.REJECT);
+                	if(rejects!=null && !rejects.isEmpty()) {
+                		Set<String> commonColumns = new HashSet<String>();
+                		IConnection reject = rejects.get(0);
+                		%>
+                		<%=reject.getName()%> = new <%=reject.getName() %>Struct();
+                		<%
+                		for (IMetadataColumn column : columnList) {
+                			commonColumns.add(column.getLabel());
+	                		%>
+	                		<%=reject.getName()%>.<%=column.getLabel()%> = <%=conn.getName()%>.<%=column.getLabel()%>;
+	                		<%
+                		}
+                		%>
+                		
+                		java.util.Map<String,String> info_<%=cid%> = e_<%=cid%>.getRejectInfo();
+                		
+                		<%
+                		//pass error columns
+                		List<IMetadataColumn> rejectColumns = reject.getMetadataTable().getListColumns();
+                		for(IMetadataColumn column : rejectColumns) {
+                			String columnName = column.getLabel();
+                			//error columns
+                			if(!commonColumns.contains(columnName)) {
+                			%>
+                			<%=reject.getName()%>.<%=columnName%> = info_<%=cid%>.get("<%=columnName%>");
+                			<%
+                			}
+                		}
+                	}
+                	%>
+                }
             <%
             } // conn line style
         } // conn
