@@ -29,6 +29,7 @@ import org.osgi.framework.ServiceReference;
 import org.talend.commons.exception.BusinessException;
 import org.talend.components.api.component.ComponentDefinition;
 import org.talend.components.api.component.Connector;
+import org.talend.components.api.component.PropertyPathConnector;
 import org.talend.components.api.component.Trigger;
 import org.talend.components.api.properties.ComponentProperties;
 import org.talend.components.api.service.ComponentService;
@@ -58,6 +59,7 @@ import org.talend.designer.core.generic.constants.IGenericConstants;
 import org.talend.designer.core.generic.i18n.Messages;
 import org.talend.designer.core.generic.model.Component;
 import org.talend.designer.core.generic.model.GenericElementParameter;
+import org.talend.designer.core.generic.model.GenericNodeConnector;
 import org.talend.designer.core.generic.model.GenericTableUtils;
 import org.talend.designer.core.generic.model.mapping.WidgetFieldTypeMapper;
 import org.talend.designer.core.model.FakeElement;
@@ -201,7 +203,7 @@ public class ComponentsUtils {
             String parameterName = propertiesPath.concat(param.getName());
             param.setName(parameterName);
             param.setCategory(compCategory);
-            param.setShow(parentWidget == null ? widget.isVisible() : parentWidget.isVisible() && widget.isVisible());
+            param.setShow(parentWidget == null ? !widget.isHidden() : !parentWidget.isHidden() && !widget.isHidden());
             int rowNum = 0;
             if (widget.getOrder() != 1) {
                 rowNum = lastRN.get();
@@ -220,16 +222,45 @@ public class ComponentsUtils {
             // rootProperty.getAvailableConnectors(null, true)
             param.setFieldType(fieldType != null ? fieldType : EParameterFieldType.TEXT);
             if (widgetProperty instanceof SchemaProperty) {
+                boolean found = false;
                 for (Connector connector : rootProperty.getAvailableConnectors(null, true)) {
                     if (!(((SchemaProperty) widgetProperty).getValue() instanceof Schema)) {
                         continue;
                     }
-                    Schema schema = (Schema) ((SchemaProperty) widgetProperty).getValue();
-                    if (rootProperty.getSchema(connector, true).equals(schema)) {
-                        param.setContext(connector.getName());
-                        IElementParameterDefaultValue defaultValue = new ElementParameterDefaultValue();
-                        defaultValue.setDefaultValue(new Schema.Parser().parse(schema.toString()));
-                        param.getDefaultValues().add(defaultValue);
+                    if (connector instanceof PropertyPathConnector) {
+                        String linkedSchema = ((PropertyPathConnector) connector).getPropertyPath() + ".schema"; //$NON-NLS-1$
+                        if (parameterName.equals(linkedSchema)) {
+                            found = true;
+                            param.setContext(connector.getName());
+                            IElementParameterDefaultValue defaultValue = new ElementParameterDefaultValue();
+                            Schema schema = (Schema) ((SchemaProperty) widgetProperty).getValue();
+                            defaultValue.setDefaultValue(new Schema.Parser().parse(schema.toString()));
+                            param.getDefaultValues().add(defaultValue);
+                        }
+                    }
+                }
+                if (!found) {
+                    // check in the input schema
+                    // for now we only handle input schema named MAIN. But we will name them "FLOW" to keep
+                    // compatibility.
+                    for (Connector connector : rootProperty.getAvailableConnectors(null, false)) {
+                        if (!(((SchemaProperty) widgetProperty).getValue() instanceof Schema)) {
+                            continue;
+                        }
+                        if (connector instanceof PropertyPathConnector) {
+                            String linkedSchema = ((PropertyPathConnector) connector).getPropertyPath() + ".schema"; //$NON-NLS-1$
+                            if (parameterName.equals(linkedSchema)) {
+                                if (GenericNodeConnector.INPUT_CONNECTOR.equals(connector.getName())) {
+                                    param.setContext(EConnectionType.FLOW_MAIN.getName());
+                                } else {
+                                    param.setContext(connector.getName());
+                                }
+                                IElementParameterDefaultValue defaultValue = new ElementParameterDefaultValue();
+                                Schema schema = (Schema) ((SchemaProperty) widgetProperty).getValue();
+                                defaultValue.setDefaultValue(new Schema.Parser().parse(schema.toString()));
+                                param.getDefaultValues().add(defaultValue);
+                            }
+                        }
                     }
                 }
             }

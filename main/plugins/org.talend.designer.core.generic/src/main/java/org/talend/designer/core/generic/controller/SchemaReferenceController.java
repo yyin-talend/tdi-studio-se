@@ -326,9 +326,13 @@ public class SchemaReferenceController extends AbstractSchemaController {
                                 }
                             }
                         }
-                        ChangeMetadataCommand changeMetadataCommand = new ChangeMetadataCommand(node, param, inputNode,
-                                inputMetadata, inputMetaCopy, originaleOutputTable, outputMetaCopy);
-                        return changeMetadataCommand;
+                        if (node.getComponent().isSchemaAutoPropagated()) {
+                            ChangeMetadataCommand changeMetadataCommand = new ChangeMetadataCommand(node, param, inputNode,
+                                    inputMetadata, inputMetaCopy, originaleOutputTable, outputMetaCopy);
+                            return changeMetadataCommand;
+                        } else {
+                            return null;
+                        }
                     }
                 }
             }

@@ -151,7 +151,7 @@ public class SchemaUtils {
         if (connector != null && connector instanceof GenericNodeConnector) {
             node.getComponentProperties().setConnectedSchema(((GenericNodeConnector) connector).getComponentConnector(), schema,
                     true);
-            for (IElementParameter param : node.getElementParameters()) {
+            for (IElementParameter param : new ArrayList<IElementParameter>(node.getElementParameters())) {
                 if (EParameterFieldType.SCHEMA_REFERENCE.equals(param.getFieldType())
                         && connector.getName().equals(param.getContext())) {
                     param.setValue(schema);

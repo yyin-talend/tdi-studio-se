@@ -31,15 +31,19 @@ import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.ui.PlatformUI;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.runtime.model.components.IComponentConstants;
+import org.talend.components.api.component.ComponentDefinition;
 import org.talend.components.api.component.Connector;
+import org.talend.components.api.component.InputComponentDefinition;
 import org.talend.components.api.properties.ComponentProperties;
 import org.talend.components.api.service.ComponentService;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.metadata.MetadataToolAvroHelper;
 import org.talend.core.model.metadata.MetadataToolHelper;
 import org.talend.core.model.metadata.builder.connection.MetadataTable;
+import org.talend.core.model.process.EConnectionType;
 import org.talend.core.model.process.EParameterFieldType;
 import org.talend.core.model.process.ElementParameterParser;
+import org.talend.core.model.process.IConnection;
 import org.talend.core.model.process.IElement;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.INodeConnector;
@@ -56,6 +60,7 @@ import org.talend.designer.core.generic.constants.IGenericConstants;
 import org.talend.designer.core.generic.utils.ComponentsUtils;
 import org.talend.designer.core.generic.utils.SchemaUtils;
 import org.talend.designer.core.model.components.ElementParameter;
+import org.talend.designer.core.model.components.NodeConnector;
 import org.talend.designer.core.ui.editor.cmd.ChangeMetadataCommand;
 import org.talend.designer.core.ui.editor.nodes.Node;
 
@@ -268,27 +273,69 @@ public class GenericElementParameter extends ElementParameter {
         IElement element = this.getElement();
         if (element instanceof Node) {
             Node node = (Node) element;
-            IMetadataTable mainTable = node.getMetadataFromConnector(Connector.MAIN_NAME);
-            if (mainTable != null) {
+            ComponentDefinition definition = ((Component) node.getComponent()).getComponentDefinition();
+            boolean isInput = false;
+            if (definition instanceof InputComponentDefinition) {
+                isInput = true;
+            }
+            if (isInput || node.getComponent().isSchemaAutoPropagated()) {
                 INodeConnector connector = node.getConnectorFromName(Connector.MAIN_NAME);
-                Schema schema = null;
                 if (connector instanceof GenericNodeConnector) {
                     Connector componentConnector = ((GenericNodeConnector) connector).getComponentConnector();
-                    schema = getRootProperties().getSchema(componentConnector, true);
+                    Schema schema = null;
+                    schema = getRootProperties().getSchema(componentConnector, ((GenericNodeConnector) connector).isOutput());
+                    IMetadataTable mainTable = node.getMetadataFromConnector(connector.getName());
+                    if (schema != null) {
+                        MetadataTable metadataTable = MetadataToolAvroHelper.convertFromAvro(schema);
+                        IMetadataTable newTable = MetadataToolHelper.convert(metadataTable);
+                        if ((!mainTable.sameMetadataAs(newTable) || !newTable.sameMetadataAs(mainTable))) {
+                            IElementParameter schemaParameter = node
+                                    .getElementParameterFromField(EParameterFieldType.SCHEMA_REFERENCE);
+                            ChangeMetadataCommand cmd = new ChangeMetadataCommand(node, schemaParameter,
+                                    mainTable, newTable, null);
+                            IProcess process = node.getProcess();
+                            if (process instanceof org.talend.designer.core.ui.editor.process.Process) {
+                                CommandStack commandStack = ((org.talend.designer.core.ui.editor.process.Process) process)
+                                        .getCommandStack();
+                                commandStack.execute(cmd);
+                            }
+
+                        }
+                    }
                 }
-                if (schema != null) {
-                    MetadataTable metadataTable = MetadataToolAvroHelper.convertFromAvro(schema);
-                    IMetadataTable newTable = MetadataToolHelper.convert(metadataTable);
-                    if (!newTable.sameMetadataAs(mainTable)) {
-                        IElementParameter schemaParameter = node
-                                .getElementParameterFromField(EParameterFieldType.SCHEMA_REFERENCE);
-                        ChangeMetadataCommand cmd = new ChangeMetadataCommand(node, schemaParameter, mainTable, newTable, null);
-                        cmd.setPropagate(Boolean.TRUE);
-                        IProcess process = node.getProcess();
-                        if (process instanceof org.talend.designer.core.ui.editor.process.Process) {
-                            CommandStack commandStack = ((org.talend.designer.core.ui.editor.process.Process) process)
-                                    .getCommandStack();
-                            commandStack.execute(cmd);
+            } else {
+                Boolean propagate = null;
+                List<INodeConnector> connectors = node.getConnectorsFromType(EConnectionType.FLOW_MAIN);
+                for (INodeConnector connector : connectors) {
+                    if (connector instanceof GenericNodeConnector) {
+                        Connector componentConnector = ((GenericNodeConnector) connector).getComponentConnector();
+                        Schema schema = null;
+                        schema = getRootProperties().getSchema(componentConnector, ((GenericNodeConnector) connector).isOutput());
+                        IMetadataTable mainTable = node.getMetadataFromConnector(connector.getName());
+                        if (schema != null) {
+                            MetadataTable metadataTable = MetadataToolAvroHelper.convertFromAvro(schema);
+                            IMetadataTable newTable = MetadataToolHelper.convert(metadataTable);
+                            if ((!mainTable.sameMetadataAs(newTable) || !newTable.sameMetadataAs(mainTable))) {
+                                mainTable.setListColumns(newTable.getListColumns());
+                                if (propagate == null) {
+                                    propagate = ChangeMetadataCommand.askPropagate();
+                                }
+                                if (propagate != null && propagate) {
+                                    for (IConnection connection : node.getOutgoingConnections()) {
+                                        if (connector.getName().equals(connection.getConnectorName())) {
+                                            ChangeMetadataCommand cmd = new ChangeMetadataCommand(connection.getTarget(), null,
+                                                    null, newTable, null);
+                                            cmd.setPropagate(true);
+                                            IProcess process = node.getProcess();
+                                            if (process instanceof org.talend.designer.core.ui.editor.process.Process) {
+                                                CommandStack commandStack = ((org.talend.designer.core.ui.editor.process.Process) process)
+                                                        .getCommandStack();
+                                                commandStack.execute(cmd);
+                                            }
+                                        }
+                                    }
+                                }
+                            }
                         }
                     }
                 }
