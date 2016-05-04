@@ -110,7 +110,8 @@ public abstract class NewComponentFrameworkMigrationTask extends AbstractJobMigr
                                     refProps.componentInstanceId.setTaggedValue(IGenericConstants.ADD_QUOTES, true);
                                 } else {
                                     if (EParameterFieldType.TABLE.equals(param.getFieldType())) {
-                                        GenericTableUtils.setTableValues(((ComponentProperties) currNamedThing), getTableValues(paramType), param);
+                                        String tableMapping = props.getProperty(currComponentName + IGenericConstants.EXP_SEPARATOR + paramName + IGenericConstants.EXP_SEPARATOR + "mapping");
+                                        GenericTableUtils.setTableValues(((ComponentProperties) currNamedThing), getTableValues(paramType, tableMapping), param);
                                     } else {
                                         ((Property) currNamedThing).setValue(ParameterUtilTool.convertParameterValue(paramType));
                                     }
@@ -223,21 +224,25 @@ public abstract class NewComponentFrameworkMigrationTask extends AbstractJobMigr
         return ParameterUtilTool.findParameterType(node, paramName);
     }
 
-    public static List<Map<String, Object>> getTableValues(ElementParameterType pType) {
+    public static List<Map<String, Object>> getTableValues(ElementParameterType pType, String tableMapping) {
+        Map<String,String> columnsMapping = new HashMap<String, String>();
+        String[] mappings = tableMapping.split(";");
+        for (String curMapping : mappings) {
+            String[] columnInfo = curMapping.split("=");
+            columnsMapping.put(columnInfo[0], columnInfo[1]);
+        }
         List<Map<String, Object>> tableValues = new ArrayList<Map<String, Object>>();
         Map<String, Object> lineValues = null;
         for (ElementValueType elementValue : (List<ElementValueType>) pType.getElementValue()) {
-            if ((lineValues == null) || (lineValues.get(elementValue.getElementRef()) != null)) {
+            String columnName = columnsMapping.get(elementValue.getElementRef());
+            if ((lineValues == null) || (lineValues.get(columnName) != null)) {
                 lineValues = new HashMap<String, Object>();
                 tableValues.add(lineValues);
             }
 
-            lineValues.put(elementValue.getElementRef(), elementValue.getValue());
-            if (elementValue.getType() != null) {
-                lineValues.put(elementValue.getElementRef() + IEbcdicConstant.REF_TYPE, elementValue.getType());
-            }
+            lineValues.put(columnName, elementValue.getValue());
         }
-        return null;
+        return tableValues;
     }
     @Override
     public Date getOrder() {

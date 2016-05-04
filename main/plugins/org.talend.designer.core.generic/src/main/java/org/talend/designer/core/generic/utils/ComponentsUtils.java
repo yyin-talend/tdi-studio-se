@@ -27,6 +27,7 @@ import org.osgi.framework.BundleContext;
 import org.osgi.framework.FrameworkUtil;
 import org.osgi.framework.ServiceReference;
 import org.talend.commons.exception.BusinessException;
+import org.talend.commons.exception.ExceptionHandler;
 import org.talend.components.api.component.ComponentDefinition;
 import org.talend.components.api.component.Connector;
 import org.talend.components.api.component.PropertyPathConnector;
@@ -123,7 +124,7 @@ public class ComponentsUtils {
                 Component currentComponent = new Component(componentDefinition);
                 componentsList.add(currentComponent);
             } catch (BusinessException e) {
-                e.printStackTrace();
+                ExceptionHandler.process(e);
             }
         }
     }
@@ -352,19 +353,6 @@ public class ComponentsUtils {
         } else {
             return connector.getName();
         }
-    }
-
-    /**
-     * DOC nrousseau Comment method "isPrevColumnList".
-     * 
-     * @param childProp
-     * @return
-     */
-    public static boolean isPrevColumnList(Property childProp) {
-        if (childProp == null) {
-            return true;
-        }
-        return "columnName".equals(childProp.getName());
     }
 
     /**

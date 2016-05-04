@@ -123,7 +123,7 @@ public class GenericElementParameter extends ElementParameter {
     @Override
     public void setValue(Object o) {
         super.setValue(o);
-        if (!isFirstCall || widget.getContent() instanceof ComponentProperties) {
+        if (!isFirstCall || (widget.getContent() instanceof ComponentProperties && !WidgetType.TABLE.equals(widget.getWidgetType()))) {
             updateProperty(o);
             boolean calledValidate = callValidate();
             if (calledValidate) {
