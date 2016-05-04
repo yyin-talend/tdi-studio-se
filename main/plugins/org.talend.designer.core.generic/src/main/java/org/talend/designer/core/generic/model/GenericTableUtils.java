@@ -17,10 +17,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.talend.components.api.properties.ComponentProperties;
 import org.talend.core.model.process.EParameterFieldType;
 import org.talend.core.model.process.ElementParameterParser;
 import org.talend.core.model.process.IElementParameter;
+import org.talend.daikon.properties.Properties;
 import org.talend.daikon.properties.Property;
 
 /**
@@ -29,7 +29,7 @@ import org.talend.daikon.properties.Property;
  */
 public class GenericTableUtils {
 
-    public static void setTableValues(ComponentProperties tableProperties, List<Map<String, Object>> value,
+    public static void setTableValues(Properties tableProperties, List<Map<String, Object>> value,
             IElementParameter param) {
         List<Map<String, String>> table = ElementParameterParser.createTableValues(value, param);
         for (String column : param.getListItemsDisplayCodeName()) {
@@ -52,7 +52,7 @@ public class GenericTableUtils {
         }
     }
 
-    public static List<Map<String, Object>> getTableValues(ComponentProperties tableProperties, IElementParameter param) {
+    public static List<Map<String, Object>> getTableValues(Properties tableProperties, IElementParameter param) {
         List<Map<String, Object>> table = new ArrayList<Map<String, Object>>();
         if (param.getListItemsDisplayCodeName().length == 0) {
             return table;

@@ -294,8 +294,8 @@ public class ComponentsUtils {
                     param.setListItemsValue(possVals.toArray(new String[0]));
                 }
             } else if (fieldType != null && fieldType.equals(EParameterFieldType.TABLE)
-                    && widgetProperty instanceof ComponentProperties) {
-                ComponentProperties table = (ComponentProperties) widgetProperty;
+                    && widgetProperty instanceof Properties) {
+                Properties table = (Properties) widgetProperty;
                 Form mainForm = table.getForm(Form.MAIN);
                 param.setDisplayName(mainForm.getTitle());
                 List<ElementParameter> parameters = getParametersFromForm(new FakeElement("table"), mainForm); //$NON-NLS-1$
