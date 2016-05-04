@@ -77,7 +77,7 @@ for (Component.CodegenPropInfo propInfo : propsToProcess) { // propInfo
 	for (NamedThing prop : properties) { // property
         if (prop instanceof Property) { // if, only deal with valued Properties
             Property property = (Property)prop;
-            if (property.getFlags() != null && property.getFlags().contains(Property.Flags.DESIGN_TIME_ONLY))
+            if (property.getFlags() != null && (property.getFlags().contains(Property.Flags.DESIGN_TIME_ONLY) || property.getFlags().contains(Property.Flags.HIDDEN)))
             	continue;
 		    Object value = property.getValue();
             if (value != null && (value instanceof List)) { // if
