@@ -19,11 +19,13 @@ imports="
         org.talend.core.model.metadata.types.JavaType
         org.talend.core.model.metadata.types.JavaTypesManager
         org.talend.core.model.process.ElementParameterParser
+        org.talend.core.model.process.IElementParameter
         org.talend.core.model.process.IConnection
         org.talend.core.model.process.IConnectionCategory
         org.talend.core.model.process.INode
         org.talend.core.model.utils.TalendTextUtils
         org.talend.designer.codegen.config.CodeGeneratorArgument
+        org.talend.core.model.process.EParameterFieldType
         "
 %>
 <%
@@ -82,36 +84,30 @@ for (Component.CodegenPropInfo propInfo : propsToProcess) { // propInfo
 		    Object value = property.getValue();
             if (value != null && (value instanceof List)) { // if
                     // added for the support of tables
-                    %>
-                    java.util.List<java.util.Map<String, Object>> table_<%=cid %><%=propInfo.fieldName%> = new java.util.ArrayList<java.util.Map<String, Object>>();
-                    java.util.Map<String, Object> line_<%=cid %><%=propInfo.fieldName%>;
-                    <%
-                    List<Map<String, Object>> tableContent = (List<Map<String, Object>>) value;
-                    for (Map<String, Object> line : tableContent) {
+                        String tmpVarName = cid+propInfo.fieldName.replace('.','_')+"_"+property.getName();
                         %>
-                        line_<%=cid %><%=propInfo.fieldName%> = new java.util.HashMap<String, Object>();
+                        java.util.List<String> <%=tmpVarName %> = new java.util.ArrayList<String>();
                         <%
-                        for (String key : line.keySet()) {
-                        	Object currentValue = component.getTableValue(property,key,line.get(key));
-                        	if(currentValue != null && (!(currentValue instanceof String) || !((String)currentValue).equals(""))) {
-                        	%>
-                            line_<%=cid %><%=propInfo.fieldName%>.put("<%=key%>", <%=currentValue%>);
-                        	<%
-                        	}
+                        for (String subPropertyValue : (java.util.List<String>)property.getValue()) {
+                            if ((property.getType() == Property.Type.BOOLEAN) || (property.getType() == Property.Type.ENUM)) {
+                            %>
+                                <%=tmpVarName %>.add("<%=subPropertyValue %>");
+                            <%
+                            } else {
+                            %>
+                                <%=tmpVarName %>.add(<%=subPropertyValue %>);
+                            <%
+                            }
                         }
                         %>
-                        table_<%=cid %><%=propInfo.fieldName%>.add(line_<%=cid %><%=propInfo.fieldName%>);
-                        <%
-                    }
-                    %>
-                    props_<%=cid %><%=propInfo.fieldName%>.setValue("<%=property.getName()%>",table_<%=cid %><%=propInfo.fieldName%>);
+                        ((org.talend.daikon.properties.Properties)props_<%=cid %><%=propInfo.fieldName%>).setValue("<%=property.getName()%>",<%=tmpVarName %>);
                     <%
             }  else if (property.isFlag(Property.Flags.ENCRYPT) && ElementParameterParser.canEncryptValue(property.getStringValue())) {
                     %>
                     props_<%=cid %><%=propInfo.fieldName%>.setValue("<%=property.getName()%>",
                     routines.system.PasswordEncryptUtil.decryptPassword(<%=component.getCodegenValue(property, property.getStringValue())%>));
                     <%
-            }else if (value != null && Property.Type.DATE.equals(property.getType())){
+            } else if (value != null && Property.Type.DATE.equals(property.getType())){
             		%>
     				props_<%=cid %><%=propInfo.fieldName%>.setValue("<%=property.getName()%>",
 	                	TalendDate.parseDate("yyyy-MM-dd HH:mm:ss",<%=component.getCodegenValue(property, property.getStringValue())%>));

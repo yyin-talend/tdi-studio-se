@@ -1121,14 +1121,6 @@ public class Component extends AbstractBasicComponent {
         return propsList;
     }
 
-    public Object getTableValue(Property property, String key, Object value) {
-        if (ComponentsUtils.isPrevColumnList(property.getChildMap().get(key))) {
-            return TalendQuoteUtils.addQuotes(value.toString());
-        } else {
-            return value;
-        }
-    }
-
     public String getCodegenValue(Property property, String value) {
         if (property.isFlag(Property.Flags.ENCRYPT)) {
             return ElementParameterParser.getEncryptedValue(value);
@@ -1226,7 +1218,11 @@ public class Component extends AbstractBasicComponent {
                             param.setRepositoryValueUsed(true);
                         }
                     }
-                    return ComponentsUtils.getGenericPropertyValue(iNodeComponentProperties, param.getName());
+                    Object value = ComponentsUtils.getGenericPropertyValue(iNodeComponentProperties, param.getName());
+                    if (value == null && EParameterFieldType.TABLE.equals(param.getFieldType())) {
+                        value = GenericTableUtils.getTableValues(iNodeComponentProperties.getProperties(param.getName()), param);
+                    }
+                    return value;
                 }
             }
         }

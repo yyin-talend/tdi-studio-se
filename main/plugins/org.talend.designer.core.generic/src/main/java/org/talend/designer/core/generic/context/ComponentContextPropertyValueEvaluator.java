@@ -12,6 +12,8 @@
 // ============================================================================
 package org.talend.designer.core.generic.context;
 
+import java.util.List;
+
 import org.apache.avro.Schema;
 import org.talend.core.model.process.IContext;
 import org.talend.core.model.process.IContextManager;
@@ -38,7 +40,7 @@ public class ComponentContextPropertyValueEvaluator implements PropertyValueEval
         if (storedValue == null) {
             return storedValue;
         }
-        if (storedValue instanceof Schema) {
+        if (storedValue instanceof Schema || storedValue instanceof List) {
             return storedValue;
         }
         IContext context = null;

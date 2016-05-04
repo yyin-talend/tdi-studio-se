@@ -15,11 +15,15 @@ package org.talend.designer.core.generic.model;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.apache.avro.Schema;
+import org.apache.commons.codec.language.bm.NameType;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.gef.commands.CommandStack;
 import org.eclipse.jface.dialogs.ProgressMonitorDialog;
@@ -106,10 +110,20 @@ public class GenericElementParameter extends ElementParameter {
         this.pcs.removePropertyChangeListener(listener);
     }
 
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.designer.core.model.components.ElementParameter#getValue()
+     */
+    @Override
+    public Object getValue() {
+        return super.getValue();
+    }
+
     @Override
     public void setValue(Object o) {
         super.setValue(o);
-        if (!isFirstCall || widget.getContent() instanceof ComponentProperties) {
+        if (!isFirstCall || (widget.getContent() instanceof ComponentProperties && !WidgetType.TABLE.equals(widget.getWidgetType()))) {
             updateProperty(o);
             boolean calledValidate = callValidate();
             if (calledValidate) {
@@ -141,11 +155,7 @@ public class GenericElementParameter extends ElementParameter {
                 if (isDrivedByForm()) {
                     form.setValue(se.getName(), newValue);
                 } else {
-                    if (newValue instanceof List && WidgetType.TABLE.equals(widget.getWidgetType())) {
-                        setTableValues(se, (List<Map<String, Object>>) newValue);
-                    } else {
-                        se.setValue(newValue);
-                    }
+                    se.setValue(newValue);
                 }
                 fireConnectionPropertyChangedEvent(newValue);
             }
@@ -155,12 +165,9 @@ public class GenericElementParameter extends ElementParameter {
             if (formtoShow != null) {
                 fireShowDialogEvent(getSubProperties().getForm(formtoShow.getName()));
             }
+        } else if (widgetProperty instanceof ComponentProperties && WidgetType.TABLE.equals(widget.getWidgetType())) {
+            GenericTableUtils.setTableValues((ComponentProperties) widgetProperty, (List<Map<String, Object>>) newValue, this);
         }
-    }
-
-    private void setTableValues(Property prop, List<Map<String, Object>> value) {
-        List<Map<String, String>> newMap = ElementParameterParser.createTableValues(value, this);
-        prop.setValue(newMap);
     }
 
     private boolean hasPropertyChangeListener() {

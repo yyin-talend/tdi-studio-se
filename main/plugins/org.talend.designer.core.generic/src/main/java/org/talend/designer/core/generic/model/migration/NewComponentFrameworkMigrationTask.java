@@ -36,6 +36,7 @@ import org.talend.core.model.components.ModifyComponentsAction;
 import org.talend.core.model.components.conversions.IComponentConversion;
 import org.talend.core.model.components.filters.IComponentFilter;
 import org.talend.core.model.components.filters.NameComponentFilter;
+import org.talend.core.model.metadata.IEbcdicConstant;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.metadata.MetadataTable;
 import org.talend.core.model.metadata.builder.ConvertionHelper;
@@ -51,6 +52,7 @@ import org.talend.daikon.properties.Property;
 import org.talend.daikon.properties.Property.Type;
 import org.talend.designer.core.generic.constants.IGenericConstants;
 import org.talend.designer.core.generic.model.GenericElementParameter;
+import org.talend.designer.core.generic.model.GenericTableUtils;
 import org.talend.designer.core.generic.utils.ComponentsUtils;
 import org.talend.designer.core.generic.utils.ParameterUtilTool;
 import org.talend.designer.core.generic.utils.SchemaUtils;
@@ -58,6 +60,7 @@ import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.model.metadata.MetadataEmfFactory;
 import org.talend.designer.core.model.utils.emf.talendfile.ConnectionType;
 import org.talend.designer.core.model.utils.emf.talendfile.ElementParameterType;
+import org.talend.designer.core.model.utils.emf.talendfile.ElementValueType;
 import org.talend.designer.core.model.utils.emf.talendfile.MetadataType;
 import org.talend.designer.core.model.utils.emf.talendfile.NodeType;
 import org.talend.designer.core.model.utils.emf.talendfile.ProcessType;
@@ -107,7 +110,8 @@ public abstract class NewComponentFrameworkMigrationTask extends AbstractJobMigr
                                     refProps.componentInstanceId.setTaggedValue(IGenericConstants.ADD_QUOTES, true);
                                 } else {
                                     if (EParameterFieldType.TABLE.equals(param.getFieldType())) {
-                                        ((Property) currNamedThing).setValue(getTableValue(paramType));
+                                        String tableMapping = props.getProperty(currComponentName + IGenericConstants.EXP_SEPARATOR + paramName + IGenericConstants.EXP_SEPARATOR + "mapping");
+                                        GenericTableUtils.setTableValues(((ComponentProperties) currNamedThing), getTableValues(paramType, tableMapping), param);
                                     } else {
                                         ((Property) currNamedThing).setValue(ParameterUtilTool.convertParameterValue(paramType));
                                     }
@@ -220,11 +224,26 @@ public abstract class NewComponentFrameworkMigrationTask extends AbstractJobMigr
         return ParameterUtilTool.findParameterType(node, paramName);
     }
 
-    public Object getTableValue(ElementParameterType paramType) {
-        // with default implementation
-        return ParameterUtilTool.convertParameterValue(paramType);
-    }
+    public static List<Map<String, Object>> getTableValues(ElementParameterType pType, String tableMapping) {
+        Map<String,String> columnsMapping = new HashMap<String, String>();
+        String[] mappings = tableMapping.split(";");
+        for (String curMapping : mappings) {
+            String[] columnInfo = curMapping.split("=");
+            columnsMapping.put(columnInfo[0], columnInfo[1]);
+        }
+        List<Map<String, Object>> tableValues = new ArrayList<Map<String, Object>>();
+        Map<String, Object> lineValues = null;
+        for (ElementValueType elementValue : (List<ElementValueType>) pType.getElementValue()) {
+            String columnName = columnsMapping.get(elementValue.getElementRef());
+            if ((lineValues == null) || (lineValues.get(columnName) != null)) {
+                lineValues = new HashMap<String, Object>();
+                tableValues.add(lineValues);
+            }
 
+            lineValues.put(columnName, elementValue.getValue());
+        }
+        return tableValues;
+    }
     @Override
     public Date getOrder() {
         GregorianCalendar gc = new GregorianCalendar(2015, 11, 18, 12, 0, 0);
