@@ -108,9 +108,10 @@ if(def instanceof org.talend.components.api.component.OutputComponentDefinition)
                 	writer_<%=cid%>.write(data_<%=cid%>);
                 	<%
                 	//pass the main flow
+                	IConnection main = null;
                 	List<? extends IConnection> mains = node.getOutgoingConnections(EConnectionType.FLOW_MAIN);
                 	if(mains!=null && !mains.isEmpty()) {
-                		IConnection main = mains.get(0);
+                		main = mains.get(0);
                 		%>
                 		<%=main.getName()%> = new <%=main.getName() %>Struct();
                 		<%
@@ -126,10 +127,26 @@ if(def instanceof org.talend.components.api.component.OutputComponentDefinition)
                 } catch (org.talend.components.api.exception.DataRejectException e_<%=cid%>) {
                 	<%
                 	//pass the reject flow
-                	List<? extends IConnection> rejects = node.getOutgoingConnections(EConnectionType.REJECT);
-                	if(rejects!=null && !rejects.isEmpty()) {
+                	//the method below can't wrok now, TODO fix it
+                	//List<? extends IConnection> rejects = node.getOutgoingConnections(EConnectionType.REJECT);
+                	
+                	IConnection reject = null;
+                	for(IConnection outConn : node.getOutgoingConnections()) {
+                		if(!outConn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {
+                			continue;
+                		}
+                		
+                		if(main!=null && main.getName().equals(outConn.getName())) {
+                			continue;
+                		}
+                		
+                		reject = outConn;
+                		
+                		break;
+                	}
+                	
+                	if(reject!=null) {
                 		Set<String> commonColumns = new HashSet<String>();
-                		IConnection reject = rejects.get(0);
                 		%>
                 		<%=reject.getName()%> = new <%=reject.getName() %>Struct();
                 		<%
