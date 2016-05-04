@@ -1263,4 +1263,9 @@ public class Component extends AbstractBasicComponent {
     public static Logger getLog() {
         return log;
     }
+
+	@Override
+	public boolean hasConditionalOutputs() {
+		return componentDefinition.isConditionalInputs();
+	}
 }
