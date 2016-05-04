@@ -32,12 +32,10 @@ public class GenericTableUtils {
     public static void setTableValues(ComponentProperties tableProperties, List<Map<String, Object>> value,
             IElementParameter param) {
         List<Map<String, String>> table = ElementParameterParser.createTableValues(value, param);
-        for (Map<String, String> line : table) {
-            for (String column : line.keySet()) {
-                Property property = tableProperties.getValuedProperty(column);
-                if (property.getValue() instanceof List) {
-                    ((List)property.getValue()).clear();
-                }
+        for (String column : param.getListItemsDisplayCodeName()) {
+            Property property = tableProperties.getValuedProperty(column);
+            if (property.getValue() instanceof List) {
+                ((List) property.getValue()).clear();
             }
         }
         for (Map<String, String> line : table) {
@@ -82,7 +80,7 @@ public class GenericTableUtils {
                             line.put(columnName, values.get(i));
                         }
                     }
-                    
+
                 }
                 table.add(line);
             }
@@ -93,6 +91,7 @@ public class GenericTableUtils {
 
     /**
      * DOC nrousseau Comment method "getTypeFromColumnName".
+     * 
      * @param param
      * @param columnName
      * @return
@@ -100,7 +99,7 @@ public class GenericTableUtils {
     private static EParameterFieldType getTypeFromColumnName(IElementParameter param, String columnName) {
         for (Object o : param.getListItemsValue()) {
             if (o instanceof IElementParameter) {
-                IElementParameter elemParam = (IElementParameter)o;
+                IElementParameter elemParam = (IElementParameter) o;
                 if (columnName.equals(elemParam.getName())) {
                     return elemParam.getFieldType();
                 }
