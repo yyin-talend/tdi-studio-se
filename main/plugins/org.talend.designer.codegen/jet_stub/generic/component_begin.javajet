@@ -128,11 +128,11 @@ for (Component.CodegenPropInfo propInfo : propsToProcess) { // propInfo
 %>
 org.talend.components.api.container.RuntimeContainer container_<%=cid%> = new org.talend.components.api.container.RuntimeContainer() {
     public Object getComponentData(String componentId, String key) {
-        return globalMap.get(componentId + key);
+        return globalMap.get(componentId + "_" + key);
     }
 
     public void setComponentData(String componentId, String key, Object data) {
-        globalMap.put(componentId + key, data);
+        globalMap.put(componentId + "_" + key, data);
     }
 
     public String getCurrentComponentId() {
