@@ -123,7 +123,8 @@ public class GenericElementParameter extends ElementParameter {
     @Override
     public void setValue(Object o) {
         super.setValue(o);
-        if (!isFirstCall || (widget.getContent() instanceof ComponentProperties && !WidgetType.TABLE.equals(widget.getWidgetType()))) {
+        if (!isFirstCall
+                || (widget.getContent() instanceof ComponentProperties && !WidgetType.TABLE.equals(widget.getWidgetType()))) {
             updateProperty(o);
             boolean calledValidate = callValidate();
             if (calledValidate) {
@@ -291,8 +292,8 @@ public class GenericElementParameter extends ElementParameter {
                         if ((!mainTable.sameMetadataAs(newTable) || !newTable.sameMetadataAs(mainTable))) {
                             IElementParameter schemaParameter = node
                                     .getElementParameterFromField(EParameterFieldType.SCHEMA_REFERENCE);
-                            ChangeMetadataCommand cmd = new ChangeMetadataCommand(node, schemaParameter,
-                                    mainTable, newTable, null);
+                            ChangeMetadataCommand cmd = new ChangeMetadataCommand(node, schemaParameter, mainTable, newTable,
+                                    null);
                             IProcess process = node.getProcess();
                             if (process instanceof org.talend.designer.core.ui.editor.process.Process) {
                                 CommandStack commandStack = ((org.talend.designer.core.ui.editor.process.Process) process)
@@ -471,5 +472,42 @@ public class GenericElementParameter extends ElementParameter {
 
     public void setDrivedByForm(boolean drivedByForm) {
         this.drivedByForm = drivedByForm;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.designer.core.model.components.ElementParameter#isRepositoryValueUsed()
+     */
+    @Override
+    public boolean isRepositoryValueUsed() {
+        NamedThing widgetProperty = widget.getContent();
+        if (widgetProperty instanceof Property) {
+            Property property = ((Property) widgetProperty);
+            if (property.getTaggedValue(IGenericConstants.REPOSITORY_VALUE) != null) {
+                return true;
+            } else {
+                return false;
+            }
+        }
+        return false;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.designer.core.model.components.ElementParameter#setRepositoryValueUsed(boolean)
+     */
+    @Override
+    public void setRepositoryValueUsed(boolean repositoryUsed) {
+        NamedThing widgetProperty = widget.getContent();
+        if (widgetProperty instanceof Property) {
+            Property property = ((Property) widgetProperty);
+            if (repositoryUsed) {
+                property.setTaggedValue(IGenericConstants.REPOSITORY_VALUE, property.getName());
+            } else {
+                property.setTaggedValue(IGenericConstants.REPOSITORY_VALUE, null);
+            }
+        }
     }
 }
