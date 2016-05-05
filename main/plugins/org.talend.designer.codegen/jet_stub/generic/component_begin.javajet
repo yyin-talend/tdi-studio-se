@@ -156,10 +156,14 @@ if (metadata != null) {
 
 		<%
 		List<? extends IConnection> outgoingConns = node.getOutgoingSortedConnections();
+		IConnection outgoingConn = null;
+		boolean hasDataOutput = false;
 		if(outgoingConns.size() > 0){ // outgoing size
 			// FIXME - multiple outgoing connections?
-			IConnection outgoingConn = outgoingConns.get(0);
+			outgoingConn = outgoingConns.get(0);
             if(outgoingConn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) { // outgoingConn
+            	hasDataOutput = true;
+            	
             	if(hasDynamic){
             	%>
             		boolean initDyn_<%=cid%> = false;
@@ -183,9 +187,16 @@ if (metadata != null) {
                 // Create a reusable factory that converts the output of the reader to an IndexedRecord.
                 org.talend.daikon.avro.IndexedRecordAdapterFactory<Object, ? extends org.apache.avro.generic.IndexedRecord> factory_<%=cid%> = null;
 
+		<%
+			}
+		}
+		%>
                 // Iterate through the incoming data.
-                for(boolean available = reader_<%=cid%>.start(); available; available = reader_<%=cid%>.advance()) {
+                for(boolean available = reader_<%=cid%>.start(); available; available = reader_<%=cid%>.advance()) {//}
 
+		<%
+		if(hasDataOutput) {
+		%>
                     // Construct the factory once when the first data arrives.
                     if (factory_<%=cid%> == null)
                         factory_<%=cid%> = (org.talend.daikon.avro.IndexedRecordAdapterFactory<Object, ? extends org.apache.avro.generic.IndexedRecord>) new org.talend.daikon.avro.AvroRegistry()
@@ -261,7 +272,6 @@ if (metadata != null) {
                     	<%
                     	}
                     }
-			}
 		}
 	} else if (def instanceof OutputComponentDefinition) {
 	%>
