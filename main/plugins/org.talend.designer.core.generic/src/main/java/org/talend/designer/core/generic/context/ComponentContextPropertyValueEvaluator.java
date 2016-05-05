@@ -40,7 +40,7 @@ public class ComponentContextPropertyValueEvaluator implements PropertyValueEval
         if (storedValue == null) {
             return storedValue;
         }
-        if (storedValue instanceof Schema || storedValue instanceof List) {
+        if (storedValue instanceof Schema || storedValue instanceof List || storedValue instanceof Enum) {
             return storedValue;
         }
         IContext context = null;
