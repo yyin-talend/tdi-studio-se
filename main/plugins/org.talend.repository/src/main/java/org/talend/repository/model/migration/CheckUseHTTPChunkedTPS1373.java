@@ -41,8 +41,12 @@ public class CheckUseHTTPChunkedTPS1373 extends AbstractJobMigrationTask {
         IComponentConversion correctBatchModeForDBComponents = new IComponentConversion() {
 			public void transform(NodeType node) {
 				ElementParameterType isUseHttpChunked = ComponentUtilities.getNodeProperty(node, "USE_HTTP_CHUNKED");
-				if(isUseHttpChunked != null){
-					isUseHttpChunked.setValue("true");
+				if(isUseHttpChunked == null){
+					ComponentUtilities.addNodeProperty(node, "USE_HTTP_CHUNKED", "CHECK");
+	                ComponentUtilities.getNodeProperty(node, "USE_HTTP_CHUNKED").setValue("true");
+				}else{
+					 
+	                 isUseHttpChunked.setValue("true");
 				}
 			}
 		};
