@@ -679,24 +679,4 @@ public class ComponentsUtils {
         // One line method that factorize a lot of code.
         node.addConnectionProperty(currentType, currentType.getRGB(), currentType.getDefaultLineStyle());
     }
-
-    /**
-     * Refresh all the forms layout of the <code>properties</code>.
-     * 
-     * @param properties
-     */
-    public static void refreshFormsLayout(Properties properties) {
-        if (properties != null) {
-            List<Form> forms = properties.getForms();
-            for (Form form : forms) {
-                properties.refreshLayout(form);
-            }
-            List<NamedThing> props = properties.getProperties();
-            for (NamedThing prop : props) {
-                if (prop instanceof Properties) {
-                    refreshFormsLayout((Properties) prop);
-                }
-            }
-        }
-    }
 }
