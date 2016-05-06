@@ -168,7 +168,7 @@ public class DynamicComposite extends MultipleThreadDynamicComposite implements 
                             && parameter.getCategory() == section) {
                         org.talend.daikon.properties.Property property = componentProperties.getValuedProperty(parameter
                                 .getName());
-                        if (property.getTaggedValue(IGenericConstants.REPOSITORY_VALUE) != null) {
+                        if (property != null && property.getTaggedValue(IGenericConstants.REPOSITORY_VALUE) != null) {
                             parameter.setRepositoryValueUsed(true);
                             parameter.setReadOnly(true);
                         }
