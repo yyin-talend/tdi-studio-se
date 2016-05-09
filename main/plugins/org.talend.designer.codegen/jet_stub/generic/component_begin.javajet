@@ -98,6 +98,10 @@ for (Component.CodegenPropInfo propInfo : propsToProcess) { // propInfo
                             %>
                                 <%=tmpVarName %>.add(<%=subPropertyValue %>);
                             <%
+                            	} else {
+                            %>
+                                <%=tmpVarName %>.add("");
+                            <%
                             	}
                             }
                         }
