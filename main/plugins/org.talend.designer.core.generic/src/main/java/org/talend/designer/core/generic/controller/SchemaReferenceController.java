@@ -331,6 +331,7 @@ public class SchemaReferenceController extends AbstractSchemaController {
                                     inputMetadata, inputMetaCopy, originaleOutputTable, outputMetaCopy);
                             return changeMetadataCommand;
                         } else {
+                            originaleOutputTable.setListColumns(outputMetaCopy.getListColumns());
                             return null;
                         }
                     }

@@ -148,9 +148,11 @@ public class SchemaUtils {
         }
         Schema schema = convertTalendSchemaIntoComponentSchema(ConvertionHelper.convert(metadataTable));
         INodeConnector connector = node.getConnectorFromName(metadataTable.getAttachedConnector());
-        if (connector != null && connector instanceof GenericNodeConnector) {
+        if (connector != null) {
+            if (connector instanceof GenericNodeConnector) {
             node.getComponentProperties().setConnectedSchema(((GenericNodeConnector) connector).getComponentConnector(), schema,
                     true);
+            }
             for (IElementParameter param : new ArrayList<IElementParameter>(node.getElementParameters())) {
                 if (EParameterFieldType.SCHEMA_REFERENCE.equals(param.getFieldType())
                         && connector.getName().equals(param.getContext())) {
