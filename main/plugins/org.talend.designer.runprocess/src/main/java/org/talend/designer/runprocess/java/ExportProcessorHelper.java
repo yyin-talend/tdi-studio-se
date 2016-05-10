@@ -196,8 +196,8 @@ public class ExportProcessorHelper {
                 prop.put(key, value);
             }
         }
-        prop.put(TalendProcessArgumentConstant.ARG_PORT_STATS, statisticsPort);
-        prop.put(TalendProcessArgumentConstant.ARG_PORT_TRACS, tracePort);
+        // prop.put(TalendProcessArgumentConstant.ARG_PORT_STATS, statisticsPort);
+        // prop.put(TalendProcessArgumentConstant.ARG_PORT_TRACS, tracePort);
         exportChoiceMap.put(ExportChoice.properties, prop);
 
         if (monitor.isCanceled()) {
