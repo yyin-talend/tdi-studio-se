@@ -287,13 +287,16 @@ if (metadata != null) {
 		org.talend.components.api.component.runtime.Writer writer_<%=cid%> = writeOperation_<%=cid%>.createWriter(container_<%=cid%>);
 		writer_<%=cid%>.open("<%=cid%>");
         org.talend.components.api.component.Connector c_<%=cid%> = null;
-        for (org.talend.components.api.component.Connector currentConnector : props_<%=cid %>.getAvailableConnectors(null, true)) {
+	<%//Why didn't we use false here? This is an Output component, so we need input connectors, don't we?%>
+        for (org.talend.components.api.component.Connector currentConnector : props_<%=cid %>.getAvailableConnectors(null, false)) {
             if (currentConnector.getName().equals("MAIN")) {
                 c_<%=cid%> = currentConnector;
                 break;
             }
         }
-        org.apache.avro.Schema designSchema_<%=cid%> = props_<%=cid %>.getSchema(c_<%=cid%>, true);
+	<%//Why didn't we use false here? This is an Output component, so we need input connectors, don't we? However, the boolean argument isn't used in the code.
+	//Maybe we need to remove it from the method signature at all? It could be used in other places, so I won't touch it for now.%>
+        org.apache.avro.Schema designSchema_<%=cid%> = props_<%=cid %>.getSchema(c_<%=cid%>, false);
         org.talend.daikon.talend6.Talend6IncomingSchemaEnforcer current_<%=cid%>
                 = new org.talend.daikon.talend6.Talend6IncomingSchemaEnforcer(designSchema_<%=cid%>);
 	<%
