@@ -224,6 +224,8 @@ public class ComponentsUtils {
             param.setFieldType(fieldType != null ? fieldType : EParameterFieldType.TEXT);
             if (widgetProperty instanceof SchemaProperty) {
                 boolean found = false;
+                // set a default connector
+                param.setContext(EConnectionType.FLOW_MAIN.getName());
                 for (Connector connector : rootProperty.getAvailableConnectors(null, true)) {
                     if (!(((SchemaProperty) widgetProperty).getValue() instanceof Schema)) {
                         continue;
