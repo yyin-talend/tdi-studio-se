@@ -3,6 +3,8 @@ imports="
         java.util.List
         java.util.ArrayList
         java.util.Map
+        java.util.Set
+        java.util.HashSet
         java.util.HashMap
         java.util.Stack
         org.talend.components.api.component.ComponentDefinition
@@ -22,6 +24,7 @@ imports="
         org.talend.core.model.process.IElementParameter
         org.talend.core.model.process.IConnection
         org.talend.core.model.process.IConnectionCategory
+        org.talend.core.model.process.EConnectionType
         org.talend.core.model.process.INode
         org.talend.core.model.utils.TalendTextUtils
         org.talend.designer.codegen.config.CodeGeneratorArgument
@@ -161,56 +164,188 @@ if (metadata != null) {
 		org.talend.components.api.component.runtime.Reader reader_<%=cid%> = source_<%=cid%>.createReader(container_<%=cid%>);
 
 		<%
-		List<? extends IConnection> outgoingConns = node.getOutgoingSortedConnections();
-		IConnection outgoingConn = null;
-		boolean hasDataOutput = false;
-		if(outgoingConns.size() > 0){ // outgoing size
-			// FIXME - multiple outgoing connections?
-			outgoingConn = outgoingConns.get(0);
-            if(outgoingConn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) { // outgoingConn
-            	hasDataOutput = true;
-            	
-            	if(hasDynamic){
-            	%>
-            		boolean initDyn_<%=cid%> = false;
-            		routines.system.Dynamic dynamic_<%=cid%> = new routines.system.Dynamic();
-            	<%
-            	}
-                String connectorName = outgoingConn.getMetadataTable().getAttachedConnector();
-                columnList = outgoingConn.getMetadataTable().getListColumns();
-            	%>
-                <% //take care SourceOrSink.validate will change the schema if it contains include-all-fields, so need to get design Avro schema before validate %>
+		IConnection main = null;
+		List<? extends IConnection> mains = node.getOutgoingConnections(EConnectionType.FLOW_MAIN);
+		if(mains!=null && !mains.isEmpty()) {
+			main = mains.get(0);
+		}
+		
+		IConnection reject = null;
+    	for(IConnection outConn : node.getOutgoingConnections()) {
+    		if(!outConn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {
+    			continue;
+    		}
+    		
+    		if(main!=null && main.getName().equals(outConn.getName())) {
+    			continue;
+    		}
+    		
+    		reject = outConn;
+    		
+    		break;
+    	}
+		
+		boolean hasDataOutput = main!=null || reject!=null;
+		
+		// FIXME - multiple outgoing connections?
+		
+        if(hasDataOutput) {
+        	if(hasDynamic){
+        	%>
+        		boolean initDyn_<%=cid%> = false;
+        		routines.system.Dynamic dynamic_<%=cid%> = new routines.system.Dynamic();
+        	<%
+        	}
+        	
+        	IConnection schemaSourceConnector = (main!=null ? main : reject);
+			String schemaSourceConnectorName = schemaSourceConnector.getMetadataTable().getAttachedConnector();
+        	%>
+        		boolean multi_output_is_allowed_<%=cid%> = false;
+            	<% //take care SourceOrSink.validate will change the schema if it contains include-all-fields, so need to get design Avro schema before validate %>
                 org.talend.components.api.component.Connector c_<%=cid%> = null;
                 for (org.talend.components.api.component.Connector currentConnector : props_<%=cid %>.getAvailableConnectors(null, true)) {
-                    if (currentConnector.getName().equals("<%=connectorName%>")) {
+                    if (currentConnector.getName().equals("<%=schemaSourceConnectorName%>")) {
                         c_<%=cid%> = currentConnector;
-                        break;
+                    }
+                    
+                    if (currentConnector.getName().equals("REJECT")) {//it's better to move the code to javajet
+                        multi_output_is_allowed_<%=cid%> = true;
                     }
                 }
                 org.apache.avro.Schema schema_<%=cid%> = props_<%=cid %>.getSchema(c_<%=cid%>, true);
 
                 org.talend.daikon.talend6.Talend6OutgoingSchemaEnforcer current_<%=cid%> = new org.talend.daikon.talend6.Talend6OutgoingSchemaEnforcer(schema_<%=cid%>, false);
+                
                 // Create a reusable factory that converts the output of the reader to an IndexedRecord.
                 org.talend.daikon.avro.IndexedRecordAdapterFactory<Object, ? extends org.apache.avro.generic.IndexedRecord> factory_<%=cid%> = null;
 
 		<%
-			}
 		}
 		%>
                 // Iterate through the incoming data.
                 for(boolean available = reader_<%=cid%>.start(); available; available = reader_<%=cid%>.advance()) {//}
-
 		<%
 		if(hasDataOutput) {
 		%>
+					if(multi_output_is_allowed_<%=cid%>) {
+						<%if(main!=null){%>
+						<%=main.getName()%> = null;
+						<%}%>
+						
+						<%if(reject!=null){%>
+						<%=reject.getName()%> = null;
+						<%}%>
+					}
+					
+					try {
+						Object data_<%=cid%> = reader_<%=cid%>.getCurrent();
+						
+						<%if(main!=null){%>
+						
+						if(multi_output_is_allowed_<%=cid%>) {
+							<%=main.getName()%> = new <%=main.getName() %>Struct();
+						}
+					
+	                    // Construct the factory once when the first data arrives.
+	                    if (factory_<%=cid%> == null)
+	                        factory_<%=cid%> = (org.talend.daikon.avro.IndexedRecordAdapterFactory<Object, ? extends org.apache.avro.generic.IndexedRecord>) new org.talend.daikon.avro.AvroRegistry()
+	                                .createAdapterFactory(data_<%=cid%>.getClass());
+	
+	                    // Enforce the outgoing schema on the input.
+	                    org.apache.avro.generic.IndexedRecord unenforced_<%=cid%> = factory_<%=cid%>.convertToAvro(data_<%=cid%>);
+	                    current_<%=cid%>.setWrapped(unenforced_<%=cid%>);
+	                    
+	                    <%
+						if(hasDynamic){
+						%>
+							if(!initDyn_<%=cid%>){
+								org.apache.avro.Schema dynSchema_<%=cid%> = current_<%=cid%>.getOutgoingDynamicRuntimeSchema();
+	
+								for(org.apache.avro.Schema.Field childDynamic_<%=cid%> : dynSchema_<%=cid%>.getFields()){
+									routines.system.DynamicMetadata dynamicMetadata_<%=cid%> = new routines.system.DynamicMetadata();
+							    	dynamicMetadata_<%=cid%>.setName(childDynamic_<%=cid%>.name());
+							    	dynamicMetadata_<%=cid%>.setDbName(childDynamic_<%=cid%>.name());
+							    	String talendType_<%=cid%> = null;
+							    	if(childDynamic_<%=cid%>.schema().getType() == org.apache.avro.Schema.Type.ARRAY){
+							    		talendType_<%=cid%> = "<%=JavaTypesManager.LIST.getId()%>";
+							    	}else if(childDynamic_<%=cid%>.schema().getType() == org.apache.avro.Schema.Type.BOOLEAN){
+							    		talendType_<%=cid%> = "<%=JavaTypesManager.BOOLEAN.getId()%>";
+							    	}else if(childDynamic_<%=cid%>.schema().getType() == org.apache.avro.Schema.Type.BYTES){
+							    		talendType_<%=cid%> = "<%=JavaTypesManager.BYTE_ARRAY.getId()%>";
+							    	}else if(childDynamic_<%=cid%>.schema().getType() == org.apache.avro.Schema.Type.FIXED){
+							    		talendType_<%=cid%> = "<%=JavaTypesManager.BYTE_ARRAY.getId()%>";
+							    	}else if(childDynamic_<%=cid%>.schema().getType() == org.apache.avro.Schema.Type.DOUBLE){
+							    		talendType_<%=cid%> = "<%=JavaTypesManager.DOUBLE.getId()%>";
+							    	}else if(childDynamic_<%=cid%>.schema().getType() == org.apache.avro.Schema.Type.FLOAT){
+							    		talendType_<%=cid%> = "<%=JavaTypesManager.FLOAT.getId()%>";
+							    	}else if(childDynamic_<%=cid%>.schema().getType() == org.apache.avro.Schema.Type.INT){
+							    		talendType_<%=cid%> = "<%=JavaTypesManager.INTEGER.getId()%>";
+							    	}else if(childDynamic_<%=cid%>.schema().getType() == org.apache.avro.Schema.Type.LONG){
+							    		talendType_<%=cid%> = "<%=JavaTypesManager.LONG.getId()%>";
+							    	}else if(childDynamic_<%=cid%>.schema().getType() == org.apache.avro.Schema.Type.ENUM){
+							    		talendType_<%=cid%> = "<%=JavaTypesManager.STRING.getId()%>";
+							    	}else if(childDynamic_<%=cid%>.schema().getType() == org.apache.avro.Schema.Type.STRING){
+							    		talendType_<%=cid%> = "<%=JavaTypesManager.STRING.getId()%>";
+							    	}
+							    	dynamicMetadata_<%=cid%>.setType(talendType_<%=cid%>);
+							    	dynamic_<%=cid%>.metadatas.add(dynamicMetadata_<%=cid%>);
+								}
+								initDyn_<%=cid%> = true;
+							}
+							dynamic_<%=cid%>.clearColumnValues();
+	                    <%
+	                    }
+	                    
+	                    List<IMetadataColumn> main_output_columnList = main.getMetadataTable().getListColumns();
+	                    
+	                    for (int i = 0; i < main_output_columnList.size(); i++) {
+	                        IMetadataColumn column = main_output_columnList.get(i);
+	                        String columnName = column.getLabel();
+	                        JavaType javaType = JavaTypesManager.getJavaTypeFromId(column.getTalendType());
+	                        String typeToGenerate = JavaTypesManager.getTypeToGenerate(column.getTalendType(), column.isNullable());
+	                        if(columnName.equals(dynamicColName)){
+	                        %>
+	                        	java.util.Map<String, Object> dynamicValue_<%=cid%> = (java.util.Map<String, Object>)current_<%=cid%>.get(<%=i%>);
+	                        	for(String dynamicValue_Key_<%=cid%> : dynamicValue_<%=cid%>.keySet()){
+	                        		dynamic_<%=cid%>.setColumnValue(dynamic_<%=cid%>.getIndex(dynamicValue_Key_<%=cid%>), dynamicValue_<%=cid%>.get(dynamicValue_Key_<%=cid%>));
+	                        	}
+								<%=main.getName()%>.<%=dynamicColName%> = dynamic_<%=cid%>;
+	                        <%
+	                        }else{
+	                        %>
+	                        	if(current_<%=cid%>.get(<%=i%>) == null){
+	                        		<%=main.getName()%>.<%=columnName%> = <%=JavaTypesManager.getDefaultValueFromJavaType(typeToGenerate)%>;
+	                        	}else{
+	                        		<%if(javaType == JavaTypesManager.STRING){%>
+	                        			<%=main.getName()%>.<%=columnName%> = String.valueOf(current_<%=cid%>.get(<%=i%>));
+	                        		<%}else{%>
+		                        		<%=main.getName()%>.<%=columnName%> = (<%=typeToGenerate%>)(current_<%=cid%>.get(<%=i%>));
+		                        	<%}%>
+	                        	}
+	                    	<%
+	                    	}
+	                    }
+	                    %>
+	                    
+                	<%}%>
+        		} catch (org.talend.components.api.exception.DataRejectException e_<%=cid%>) {
+					<%if(reject!=null){%>
+					java.util.Map<String,Object> info_<%=cid%> = e_<%=cid%>.getRejectInfo();
+					Object data_<%=cid%> = info_<%=cid%>.get("talend_record");
+					
+					if(multi_output_is_allowed_<%=cid%>) {
+						<%=reject.getName()%> = new <%=reject.getName() %>Struct();
+					}
+				
                     // Construct the factory once when the first data arrives.
                     if (factory_<%=cid%> == null)
                         factory_<%=cid%> = (org.talend.daikon.avro.IndexedRecordAdapterFactory<Object, ? extends org.apache.avro.generic.IndexedRecord>) new org.talend.daikon.avro.AvroRegistry()
-                                .createAdapterFactory(reader_<%=cid%>.getCurrent().getClass());
+                                .createAdapterFactory(data_<%=cid%>.getClass());
 
                     // Enforce the outgoing schema on the input.
-                    org.apache.avro.generic.IndexedRecord unenforced_<%=cid%> = factory_<%=cid%>.convertToAvro(reader_<%=cid%>.getCurrent());
+                    org.apache.avro.generic.IndexedRecord unenforced_<%=cid%> = factory_<%=cid%>.convertToAvro(data_<%=cid%>);
                     current_<%=cid%>.setWrapped(unenforced_<%=cid%>);
+                    
                     <%
 					if(hasDynamic){
 					%>
@@ -251,9 +386,15 @@ if (metadata != null) {
 						dynamic_<%=cid%>.clearColumnValues();
                     <%
                     }
+                    
+                    Set<String> commonColumns = new HashSet<String>();
+                    
                     for (int i = 0; i < columnList.size(); i++) {
                         IMetadataColumn column = columnList.get(i);
                         String columnName = column.getLabel();
+                        
+                        commonColumns.add(columnName);
+                        
                         JavaType javaType = JavaTypesManager.getJavaTypeFromId(column.getTalendType());
                         String typeToGenerate = JavaTypesManager.getTypeToGenerate(column.getTalendType(), column.isNullable());
                         if(columnName.equals(dynamicColName)){
@@ -262,22 +403,43 @@ if (metadata != null) {
                         	for(String dynamicValue_Key_<%=cid%> : dynamicValue_<%=cid%>.keySet()){
                         		dynamic_<%=cid%>.setColumnValue(dynamic_<%=cid%>.getIndex(dynamicValue_Key_<%=cid%>), dynamicValue_<%=cid%>.get(dynamicValue_Key_<%=cid%>));
                         	}
-							<%=outgoingConn.getName()%>.<%=dynamicColName%> = dynamic_<%=cid%>;
+							<%=main.getName()%>.<%=dynamicColName%> = dynamic_<%=cid%>;
                         <%
                         }else{
                         %>
                         	if(current_<%=cid%>.get(<%=i%>) == null){
-                        		<%=outgoingConn.getName()%>.<%=columnName%> = <%=JavaTypesManager.getDefaultValueFromJavaType(typeToGenerate)%>;
+                        		<%=main.getName()%>.<%=columnName%> = <%=JavaTypesManager.getDefaultValueFromJavaType(typeToGenerate)%>;
                         	}else{
                         		<%if(javaType == JavaTypesManager.STRING){%>
-                        			<%=outgoingConn.getName()%>.<%=columnName%> = String.valueOf(current_<%=cid%>.get(<%=i%>));
+                        			<%=main.getName()%>.<%=columnName%> = String.valueOf(current_<%=cid%>.get(<%=i%>));
                         		<%}else{%>
-	                        		<%=outgoingConn.getName()%>.<%=columnName%> = (<%=typeToGenerate%>)(current_<%=cid%>.get(<%=i%>));
+	                        		<%=main.getName()%>.<%=columnName%> = (<%=typeToGenerate%>)(current_<%=cid%>.get(<%=i%>));
 	                        	<%}%>
                         	}
                     	<%
                     	}
                     }
+                    
+                    //pass error columns
+            		List<IMetadataColumn> rejectColumns = reject.getMetadataTable().getListColumns();
+            		for(IMetadataColumn column : rejectColumns) {
+            			String columnName = column.getLabel();
+            			
+            			JavaType javaType = JavaTypesManager.getJavaTypeFromId(column.getTalendType());
+                        String typeToGenerate = JavaTypesManager.getTypeToGenerate(column.getTalendType(), column.isNullable());
+                        
+            			//error columns
+            			if(!commonColumns.contains(columnName)) {
+            			%>
+            			<%=reject.getName()%>.<%=columnName%> = (<%=typeToGenerate%>)info_<%=cid%>.get("<%=columnName%>");
+            			<%
+            			}
+            		}
+                    %>
+	                    
+					<%}%>
+				}
+        <%
 		}
 	} else if (def instanceof OutputComponentDefinition) {
 	%>

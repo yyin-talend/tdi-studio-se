@@ -158,17 +158,21 @@ if(def instanceof org.talend.components.api.component.OutputComponentDefinition)
                 		}
                 		%>
                 		
-                		java.util.Map<String,String> info_<%=cid%> = e_<%=cid%>.getRejectInfo();
+                		java.util.Map<String,Object> info_<%=cid%> = e_<%=cid%>.getRejectInfo();
                 		
                 		<%
                 		//pass error columns
                 		List<IMetadataColumn> rejectColumns = reject.getMetadataTable().getListColumns();
                 		for(IMetadataColumn column : rejectColumns) {
                 			String columnName = column.getLabel();
+                			
+                			JavaType javaType = JavaTypesManager.getJavaTypeFromId(column.getTalendType());
+	                        String typeToGenerate = JavaTypesManager.getTypeToGenerate(column.getTalendType(), column.isNullable());
+	                        
                 			//error columns
                 			if(!commonColumns.contains(columnName)) {
                 			%>
-                			<%=reject.getName()%>.<%=columnName%> = info_<%=cid%>.get("<%=columnName%>");
+                			<%=reject.getName()%>.<%=columnName%> = (<%=typeToGenerate%>)info_<%=cid%>.get("<%=columnName%>");
                 			<%
                 			}
                 		}
