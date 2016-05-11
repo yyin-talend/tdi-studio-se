@@ -165,26 +165,17 @@ if (metadata != null) {
 
 		<%
 		IConnection main = null;
-		List<? extends IConnection> mains = node.getOutgoingConnections(EConnectionType.FLOW_MAIN);
+		List<? extends IConnection> mains = node.getOutgoingConnections("MAIN");
 		if(mains!=null && !mains.isEmpty()) {
 			main = mains.get(0);
 		}
 		
 		IConnection reject = null;
-    	for(IConnection outConn : node.getOutgoingConnections()) {
-    		if(!outConn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {
-    			continue;
-    		}
-    		
-    		if(main!=null && main.getName().equals(outConn.getName())) {
-    			continue;
-    		}
-    		
-    		reject = outConn;
-    		
-    		break;
-    	}
-		
+    	List<? extends IConnection> rejects = node.getOutgoingConnections("REJECT");
+	    if(rejects != null && !rejects.isEmpty()) {
+	        reject = rejects.get(0);
+	    }
+	    
 		boolean hasDataOutput = main!=null || reject!=null;
 		
 		// FIXME - multiple outgoing connections?
@@ -403,17 +394,17 @@ if (metadata != null) {
                         	for(String dynamicValue_Key_<%=cid%> : dynamicValue_<%=cid%>.keySet()){
                         		dynamic_<%=cid%>.setColumnValue(dynamic_<%=cid%>.getIndex(dynamicValue_Key_<%=cid%>), dynamicValue_<%=cid%>.get(dynamicValue_Key_<%=cid%>));
                         	}
-							<%=main.getName()%>.<%=dynamicColName%> = dynamic_<%=cid%>;
+							<%=reject.getName()%>.<%=dynamicColName%> = dynamic_<%=cid%>;
                         <%
                         }else{
                         %>
                         	if(current_<%=cid%>.get(<%=i%>) == null){
-                        		<%=main.getName()%>.<%=columnName%> = <%=JavaTypesManager.getDefaultValueFromJavaType(typeToGenerate)%>;
+                        		<%=reject.getName()%>.<%=columnName%> = <%=JavaTypesManager.getDefaultValueFromJavaType(typeToGenerate)%>;
                         	}else{
                         		<%if(javaType == JavaTypesManager.STRING){%>
-                        			<%=main.getName()%>.<%=columnName%> = String.valueOf(current_<%=cid%>.get(<%=i%>));
+                        			<%=reject.getName()%>.<%=columnName%> = String.valueOf(current_<%=cid%>.get(<%=i%>));
                         		<%}else{%>
-	                        		<%=main.getName()%>.<%=columnName%> = (<%=typeToGenerate%>)(current_<%=cid%>.get(<%=i%>));
+	                        		<%=reject.getName()%>.<%=columnName%> = (<%=typeToGenerate%>)(current_<%=cid%>.get(<%=i%>));
 	                        	<%}%>
                         	}
                     	<%
