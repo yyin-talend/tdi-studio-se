@@ -32,8 +32,14 @@ import org.talend.designer.core.model.utils.emf.talendfile.ProcessType;
  */
 public class MapperSchemaTypeItemRelationshipHandler extends AbstractJobItemRelationshipHandler {
 
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * org.talend.core.model.relationship.AbstractItemRelationshipHandler#collect(org.talend.core.model.properties.Item)
+     */
     @Override
-    protected Set<Relation> collect(RelationshipItemBuilder relationshipItemBuilder, Item baseItem) {
+    protected Set<Relation> collect(Item baseItem) {
         ProcessType processType = getProcessType(baseItem);
         if (processType == null) {
             return Collections.emptySet();
