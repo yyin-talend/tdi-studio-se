@@ -792,7 +792,10 @@ public class Process extends Element implements IProcess2, IGEFProcess, ILastVer
                 }
                 generatingProcess.buildFromGraphicalProcess(sortedFlow);
                 generatedNodeList = generatingProcess.getNodeList();
-                processModified = false;
+                if (isActivate()) {
+                    // if not activated, like during the loading of job, we will still rebuild the list of generated nodes
+                    processModified = false;
+                }
                 setBuilding(false);
             }
         }
