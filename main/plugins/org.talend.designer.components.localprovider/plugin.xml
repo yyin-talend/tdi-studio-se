@@ -5638,6 +5638,12 @@
              <library
                  id="log4j-1.2.17.jar">
              </library>
+             <library
+                 id="hive-metastore-mapr-4.1.X-lastest">
+             </library>
+             <library
+                 id="hive-exec-mapr-4.1.X-lastest">
+             </library>
         </libraryNeededGroup>
 
 	    <!-- group of pig hcat storage libraries -->
