@@ -49,6 +49,7 @@ import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.RepositoryObject;
 import org.talend.core.repository.model.ProxyRepositoryFactory;
 import org.talend.core.runtime.CoreRuntimePlugin;
+import org.talend.core.runtime.services.ComponentServiceWithValueEvaluator;
 import org.talend.core.runtime.services.IGenericWizardService;
 import org.talend.daikon.properties.Properties.Deserialized;
 import org.talend.daikon.properties.presentation.Form;
@@ -56,6 +57,7 @@ import org.talend.designer.core.generic.constants.IGenericConstants;
 import org.talend.designer.core.model.components.ElementParameter;
 import org.talend.metadata.managment.ui.utils.ConnectionContextHelper;
 import org.talend.metadata.managment.ui.wizard.CheckLastVersionRepositoryWizard;
+import org.talend.metadata.managment.ui.wizard.context.MetadataContextPropertyValueEvaluator;
 import org.talend.repository.generic.i18n.Messages;
 import org.talend.repository.generic.internal.IGenericWizardInternalService;
 import org.talend.repository.generic.internal.service.GenericWizardInternalService;
@@ -90,7 +92,7 @@ public class GenericConnWizard extends CheckLastVersionRepositoryWizard {
 
     private String originalVersion;
 
-    private String originalPurpose; 
+    private String originalPurpose;
 
     private String originalDescription;
 
@@ -154,7 +156,8 @@ public class GenericConnWizard extends CheckLastVersionRepositoryWizard {
             this.originalPurpose = this.connectionItem.getProperty().getPurpose();
             this.originalStatus = this.connectionItem.getProperty().getStatusCode();
         }
-        compService = new GenericWizardInternalService().getComponentService();
+        compService = new ComponentServiceWithValueEvaluator(new GenericWizardInternalService().getComponentService(),
+                new MetadataContextPropertyValueEvaluator(connection));
         compService.setRepository(new GenericRepository());
         IWizardContainer container = this.getContainer();
         if (container instanceof GenericWizardDialog) {
