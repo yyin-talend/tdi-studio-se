@@ -439,13 +439,11 @@ public class ConnectionFigure extends PolylineConnectionEx implements IMapMode {
             }
         }
         return bounds;
-//        return super.getBounds();
     }
 
     @Override
     public boolean containsPoint(int x, int y) {
         return this.getBounds().contains(x,y);
-//        return super.containsPoint(x, y);
     }
 
 }
