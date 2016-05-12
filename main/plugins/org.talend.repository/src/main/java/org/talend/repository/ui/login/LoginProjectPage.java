@@ -1022,7 +1022,7 @@ public class LoginProjectPage extends AbstractLoginActionPage {
         RepositoryContext repositoryContext = (RepositoryContext) ctx.getProperty(Context.REPOSITORY_CONTEXT_KEY);
         PreferenceManipulator prefManipulator = new PreferenceManipulator();
         String url = project.getEmfProject().getUrl();
-        if (!"git".equals(getStorage(url)))
+        if (url == null || !"git".equals(getStorage(url)))
             return;
         String location = getLocation(url);
         String projectName = project.getTechnicalLabel();
