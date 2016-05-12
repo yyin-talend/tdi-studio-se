@@ -18,7 +18,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.talend.commons.runtime.model.components.IComponentConstants;
-import org.talend.components.api.properties.ComponentProperties;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.metadata.MetadataToolHelper;
 import org.talend.core.model.process.EComponentCategory;
@@ -29,7 +28,6 @@ import org.talend.core.model.process.INode;
 import org.talend.core.model.process.IProcess2;
 import org.talend.core.model.properties.PropertiesFactory;
 import org.talend.core.model.properties.Property;
-import org.talend.daikon.properties.Properties.Deserialized;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.model.components.ElementParameter;
 import org.talend.designer.core.model.components.EmfComponent;
