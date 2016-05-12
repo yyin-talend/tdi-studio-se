@@ -28,6 +28,7 @@ import org.osgi.framework.FrameworkUtil;
 import org.osgi.framework.ServiceReference;
 import org.talend.commons.exception.BusinessException;
 import org.talend.commons.exception.ExceptionHandler;
+import org.talend.commons.runtime.model.components.IComponentConstants;
 import org.talend.components.api.component.ComponentDefinition;
 import org.talend.components.api.component.Connector;
 import org.talend.components.api.component.PropertyPathConnector;
@@ -273,9 +274,15 @@ public class ComponentsUtils {
                 Property property = (Property) widgetProperty;
                 param.setRequired(property.isRequired());
                 param.setValue(getParameterValue(element, property));
-                param.setSupportContext(isSupportContext(property));
+                if (EParameterFieldType.NAME_SELECTION_AREA.equals(fieldType)) {
+                    // Disable context support for this filed type.
+                    param.setSupportContext(false);
+                } else {
+                    param.setSupportContext(isSupportContext(property));
+                }
+                property.setTaggedValue(IComponentConstants.SUPPORT_CONTEXT, param.isSupportContext());
                 List<?> values = property.getPossibleValues();
-                if (values != null || (fieldType != null && fieldType.equals(EParameterFieldType.CLOSED_LIST))) {
+                if (values != null || EParameterFieldType.CLOSED_LIST.equals(fieldType)) {
                     if (values == null) {
                         values = Collections.emptyList();
                     }
@@ -296,8 +303,7 @@ public class ComponentsUtils {
                     param.setListItemsDisplayCodeName(possValsDisplay.toArray(new String[0]));
                     param.setListItemsValue(possVals.toArray(new String[0]));
                 }
-            } else if (fieldType != null && fieldType.equals(EParameterFieldType.TABLE)
-                    && widgetProperty instanceof Properties) {
+            } else if (fieldType != null && fieldType.equals(EParameterFieldType.TABLE) && widgetProperty instanceof Properties) {
                 Properties table = (Properties) widgetProperty;
                 Form mainForm = table.getForm(Form.MAIN);
                 param.setDisplayName(mainForm.getTitle());
