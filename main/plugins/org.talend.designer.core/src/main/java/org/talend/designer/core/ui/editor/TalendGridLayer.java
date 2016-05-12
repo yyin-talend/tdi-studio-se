@@ -19,6 +19,7 @@ import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.gef.editparts.GridLayer;
 import org.eclipse.swt.graphics.Color;
+import org.talend.commons.ui.gmf.draw2d.AnimatableZoomManager;
 import org.talend.commons.ui.runtime.image.EImage;
 import org.talend.commons.ui.runtime.image.ImageProvider;
 
@@ -43,11 +44,12 @@ public class TalendGridLayer extends GridLayer {
     }
 
     protected void paintGrid(Graphics g, IFigure f, org.eclipse.draw2d.geometry.Point origin, int distanceX, int distanceY) {
-        FreeformFigure ff = (FreeformFigure) this.getParent();
-        Rectangle clientArea = getClientArea();
-        Rectangle bounds = ff.getFreeformExtent().getCopy();
-        bounds.union(clientArea.x, clientArea.y, clientArea.width, clientArea.height);
-        ff.setFreeformBounds(bounds);
+    	 FreeformFigure ff = (FreeformFigure) this.getParent();
+    	 Rectangle clientArea = getClientArea();
+    	 Rectangle bounds = ff.getFreeformExtent().getCopy();
+    	 bounds.union(clientArea.x, clientArea.y, clientArea.width * AnimatableZoomManager.currentZoom, clientArea.height
+    	                 * AnimatableZoomManager.currentZoom);
+    	 ff.setFreeformBounds(bounds);
 
         Rectangle original = g.getClip(Rectangle.SINGLETON);
 
