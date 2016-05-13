@@ -137,18 +137,18 @@ Object[] resultMessageObj_<%=cid%> = null;
 								String moduleNameOfLookupField = row.get("LOOKUP_FIELD_MODULE_NAME");
 								generateFinished = true;
 %>
-								String fieldValue_<%=cid%> = null;
+								String fieldValue_<%=cid%>_<%=i%>_<%=j%> = null;
 <%
 								if (javaType == JavaTypesManager.DATE && pattern != null && pattern.trim().length() != 0) {
 %>
 									if(<%=conn.getName() %>.<%=column.getLabel() %> != null){
-										fieldValue_<%=cid%> = FormatterUtils.format_Date(<%=conn.getName() %>.<%=column.getLabel() %>, <%= pattern %>);
+										fieldValue_<%=cid%>_<%=i%>_<%=j%> = FormatterUtils.format_Date(<%=conn.getName() %>.<%=column.getLabel() %>, <%= pattern %>);
 									}
 <%
 								} else if (javaType == JavaTypesManager.BYTE_ARRAY) {
 %>
 									if(<%=conn.getName() %>.<%=column.getLabel() %> != null){
-										fieldValue_<%=cid%> = java.nio.charset.Charset.defaultCharset().decode(java.nio.ByteBuffer.wrap(<%=conn.getName() %>.<%=column.getLabel() %>)).toString();
+										fieldValue_<%=cid%>_<%=i%>_<%=j%> = java.nio.charset.Charset.defaultCharset().decode(java.nio.ByteBuffer.wrap(<%=conn.getName() %>.<%=column.getLabel() %>)).toString();
 									}
 <%
 								} else {//TD1024
@@ -158,15 +158,15 @@ Object[] resultMessageObj_<%=cid%> = null;
 					    			<%}else{%>
 					    			if(!"".equals(String.valueOf(<%=conn.getName() %>.<%=column.getLabel() %>))) { 
 					    			<%}%>
-					    				fieldValue_<%=cid%> = String.valueOf(<%=conn.getName() %>.<%=column.getLabel() %>);
+					    				fieldValue_<%=cid%>_<%=i%>_<%=j%> = String.valueOf(<%=conn.getName() %>.<%=column.getLabel() %>);
 									}
 <%
 								}////TD1024
 								%>
-								if(fieldValue_<%=cid%> != null){
+								if(fieldValue_<%=cid%>_<%=i%>_<%=j%> != null){
 									org.apache.axiom.om.OMElement reference_<%=cid%>_<%=i%>_<%=j%> = fac_<%=cid%>.createOMElement(<%=loookupFieldName%>, null);
 									reference_<%=cid%>_<%=i%>_<%=j%>.addChild(org.talend.salesforce.SforceManagementUtil.newOMElement("type",<%=moduleNameOfLookupField%>));
-									reference_<%=cid%>_<%=i%>_<%=j%>.addChild(org.talend.salesforce.SforceManagementUtil.newOMElement(<%=externalIdFromLookupField %>, fieldValue_<%=cid%>));
+									reference_<%=cid%>_<%=i%>_<%=j%>.addChild(org.talend.salesforce.SforceManagementUtil.newOMElement(<%=externalIdFromLookupField %>, fieldValue_<%=cid%>_<%=i%>_<%=j%>));
     								list_<%=cid %>.add(reference_<%=cid%>_<%=i%>_<%=j%>);
 								}
 								<%
