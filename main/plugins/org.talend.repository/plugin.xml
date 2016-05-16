@@ -2699,6 +2699,14 @@
               name="RemoveDuplicatedContextGroupMigrationTask"
               version="6.1.2">
         </projecttask>
+        <projecttask
+              beforeLogon="false"
+              breaks="6.1.2"
+              class="org.talend.repository.model.migration.ChangeDefaultValueForCassandraOutputBatch"
+              id="org.talend.repository.model.migration.ChangeDefaultValueForCassandraOutputBatch"
+              name="ChangeDefaultValueForCassandraOutputBatch"
+              version="6.1.2">
+        </projecttask>
    </extension>
 
    <extension
