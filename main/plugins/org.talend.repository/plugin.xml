@@ -2707,6 +2707,15 @@
               name="ChangeDefaultValueForCassandraOutputBatch"
               version="6.1.2">
         </projecttask>
+        <projecttask
+              beforeLogon="false"
+              breaks="6.1.1"
+              class="org.talend.repository.model.migration.UpdateJobletContextInJobMigrationTask"
+              description="Update Joblet context in jobs"
+              id="org.talend.repository.model.migration.UpdateJobletContextInJobMigrationTask"
+              name="UpdateJobletContextInJobMigrationTask"
+              version="6.1.2">
+        </projecttask>
    </extension>
 
    <extension
