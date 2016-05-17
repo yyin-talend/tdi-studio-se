@@ -2312,6 +2312,15 @@
               description="The tPigStoreResult is now linked to a tPigLoad, we need to set the option for old jobs"
               version="5.6.1">
         </projecttask>
+		<projecttask
+              beforeLogon="false"
+              breaks="5.6.1"
+              class="org.talend.repository.model.migration.UpdateJobletContextInJobMigrationTask"
+              description="Update Joblet context in jobs"
+              id="org.talend.repository.model.migration.UpdateJobletContextInJobMigrationTask"
+              name="UpdateJobletContextInJobMigrationTask"
+              version="5.6.3">
+        </projecttask>
    </extension>
 
    <extension
