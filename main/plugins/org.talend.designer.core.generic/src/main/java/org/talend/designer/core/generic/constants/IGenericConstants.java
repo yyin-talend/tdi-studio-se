@@ -53,4 +53,9 @@ public interface IGenericConstants {
      */
     public static final String ADD_QUOTES = "ADD_QUOTES"; //$NON-NLS-1$
 
+    /**
+     * Tag key which records the context mode status of one property.
+     */
+    public static final String IS_CONTEXT_MODE = "IS_CONTEXT_MODE"; //$NON-NLS-1$
+
 }
