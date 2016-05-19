@@ -58,4 +58,6 @@ public interface IGenericConstants {
      */
     public static final String IS_CONTEXT_MODE = "IS_CONTEXT_MODE"; //$NON-NLS-1$
 
+    public static final String IS_DYNAMIC = "IS_DYNAMIC"; //$NON-NLS-1$
+
 }
