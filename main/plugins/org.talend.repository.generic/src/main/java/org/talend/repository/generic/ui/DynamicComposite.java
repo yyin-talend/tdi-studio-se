@@ -141,36 +141,37 @@ public class DynamicComposite extends MultipleThreadDynamicComposite implements 
                 genericElementParameter.setDrivedByForm(drivedByForm);
                 genericElementParameter.callBeforePresent();
                 genericElementParameter.addPropertyChangeListener(this);
-                if (EParameterFieldType.SCHEMA_REFERENCE.equals(parameter.getFieldType())) {
-                    if (parameter.getChildParameters().size() == 0) {
+                if (EParameterFieldType.SCHEMA_REFERENCE.equals(genericElementParameter.getFieldType())) {
+                    if (genericElementParameter.getChildParameters().size() == 0) {
                         IElementParameter schemaParameter = element.getElementParameterFromField(
                                 EParameterFieldType.SCHEMA_REFERENCE, section);
-                        parameter.getChildParameters().putAll(schemaParameter.getChildParameters());
+                        genericElementParameter.getChildParameters().putAll(schemaParameter.getChildParameters());
                     }
-                } else if (EParameterFieldType.NAME_SELECTION_AREA.equals(parameter.getFieldType()) && theConnection != null) {
+                } else if (EParameterFieldType.NAME_SELECTION_AREA.equals(genericElementParameter.getFieldType())
+                        && theConnection != null) {
                     List<MetadataTable> metadataTables = SchemaUtils.getMetadataTables(theConnection, SubContainer.class);
                     List<String> tableLabels = new ArrayList<>();
                     for (MetadataTable metaTable : metadataTables) {
                         tableLabels.add(metaTable.getLabel());
                     }
-                    parameter.setValue(tableLabels);
+                    genericElementParameter.setValue(tableLabels);
                 }
                 if (componentProperties != null && isRepository(element)) {
-                    String repositoryValue = parameter.getRepositoryValue();
+                    String repositoryValue = genericElementParameter.getRepositoryValue();
                     if (repositoryValue == null) {
-                        if (parameter.getValue() != null) {
-                            parameter.setRepositoryValue(parameter.getName());
-                            repositoryValue = parameter.getRepositoryValue();
+                        if (genericElementParameter.getValue() != null) {
+                            genericElementParameter.setRepositoryValue(genericElementParameter.getName());
+                            repositoryValue = genericElementParameter.getRepositoryValue();
                         }
                     }
-                    if (parameter.isShow(currentParameters) && (repositoryValue != null)
-                            && (!parameter.getName().equals(EParameterName.PROPERTY_TYPE.getName()))
-                            && parameter.getCategory() == section) {
-                        org.talend.daikon.properties.Property property = componentProperties.getValuedProperty(parameter
-                                .getName());
+                    if (genericElementParameter.isShow(currentParameters) && (repositoryValue != null)
+                            && (!genericElementParameter.getName().equals(EParameterName.PROPERTY_TYPE.getName()))
+                            && genericElementParameter.getCategory() == section) {
+                        org.talend.daikon.properties.Property property = componentProperties
+                                .getValuedProperty(genericElementParameter.getName());
                         if (property != null && property.getTaggedValue(IGenericConstants.REPOSITORY_VALUE) != null) {
-                            parameter.setRepositoryValueUsed(true);
-                            parameter.setReadOnly(true);
+                            genericElementParameter.setRepositoryValueUsed(true);
+                            genericElementParameter.setReadOnly(true);
                         }
                     }
                 }

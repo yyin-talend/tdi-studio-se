@@ -281,6 +281,8 @@ public class ComponentsUtils {
                     param.setSupportContext(isSupportContext(property));
                 }
                 property.setTaggedValue(IComponentConstants.SUPPORT_CONTEXT, param.isSupportContext());
+                Object cmTV = property.getTaggedValue(IGenericConstants.IS_CONTEXT_MODE);
+                param.setReadOnly(Boolean.valueOf(String.valueOf(cmTV)));
                 List<?> values = property.getPossibleValues();
                 if (values != null || EParameterFieldType.CLOSED_LIST.equals(fieldType)) {
                     if (values == null) {
@@ -337,7 +339,7 @@ public class ComponentsUtils {
                 param.setValue(GenericTableUtils.getTableValues(table, param));
 
             }
-            param.setReadOnly(false);
+            // param.setReadOnly(false);
             param.setSerialized(true);
             param.setDynamicSettings(true);
             // Avoid adding duplicate prameter.

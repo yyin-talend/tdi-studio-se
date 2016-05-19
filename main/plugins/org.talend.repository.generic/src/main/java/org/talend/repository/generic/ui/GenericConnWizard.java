@@ -227,17 +227,7 @@ public class GenericConnWizard extends CheckLastVersionRepositoryWizard {
                 }
             }
             try {
-                Form form = wizPage.getForm();
-                if (form.isCallAfterFormFinish()) {
-                    if (creation) {
-                        createConnectionItem();
-                    }
-                    compService.afterFormFinish(form.getName(), (ComponentProperties) form.getProperties());
-                }
-                if (!creation) {
-                    GenericUpdateManager.updateGenericConnection(connectionItem);
-                }
-                updateConnectionItem();
+                createOrUpdateConnectionItem();
             } catch (Throwable e) {
                 new ErrorDialogWidthDetailArea(getShell(), IGenericConstants.REPOSITORY_PLUGIN_ID,
                         Messages.getString("GenericConnWizard.persistenceException"), //$NON-NLS-1$
@@ -251,7 +241,12 @@ public class GenericConnWizard extends CheckLastVersionRepositoryWizard {
         }
     }
 
-    private void createConnectionItem() throws CoreException {
+    private void updateConnectionItem(IProxyRepositoryFactory repFactory) throws CoreException, PersistenceException {
+        repFactory.save(connectionItem);
+        closeLockStrategy();
+    }
+
+    private void createOrUpdateConnectionItem() throws CoreException {
         IWorkspace workspace = ResourcesPlugin.getWorkspace();
         final IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
         IWorkspaceRunnable operation = new IWorkspaceRunnable() {
@@ -259,10 +254,20 @@ public class GenericConnWizard extends CheckLastVersionRepositoryWizard {
             @Override
             public void run(IProgressMonitor monitor) throws CoreException {
                 try {
-                    factory.create(connectionItem, new Path("")); //$NON-NLS-1$ ;
-                } catch (PersistenceException e) {
-                    throw new CoreException(new Status(IStatus.ERROR, "org.talend.metadata.management.ui",
-                            "Error when create the connection", e));
+                    Form form = wizPage.getForm();
+                    if (form.isCallAfterFormFinish()) {
+                        if (creation) {
+                            factory.create(connectionItem, new Path("")); //$NON-NLS-1$ ;
+                        }
+                        compService.afterFormFinish(form.getName(), (ComponentProperties) form.getProperties());
+                    }
+                    if (!creation) {
+                        GenericUpdateManager.updateGenericConnection(connectionItem);
+                    }
+                    updateConnectionItem(factory);
+                } catch (Throwable e) {
+                    throw new CoreException(new Status(IStatus.ERROR, IGenericConstants.REPOSITORY_PLUGIN_ID,
+                            "Error when saving the connection", e));
                 }
             }
         };
