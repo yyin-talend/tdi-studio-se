@@ -2770,6 +2770,14 @@
               name="SetDefaultValueForNewerEmailFirstOfTDI35976"
               version="6.2.1">
         </projecttask>
+        <projecttask
+        	  beforeLogon="false"
+              breaks="6.2.0"
+              class="org.talend.repository.model.migration.ReplaceVarcharArrayWithVarcharIssueTDI35719"
+              id="org.talend.repository.model.migration.ReplaceVarcharArrayWithVarcharIssueTDI35719"
+              name="ReplaceVarcharArrayWithVarcharIssueTDI35719"
+              version="6.2.1">
+        </projecttask>
    </extension>
 
    <extension
