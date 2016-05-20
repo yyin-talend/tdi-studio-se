@@ -18,6 +18,9 @@
 CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 INode node = (INode)codeGenArgument.getArgument();
 String cid = node.getUniqueName();
+if(cid.matches("^.*?tOracleOutputBulkExec_\\d+_tOBE$")){
+         cid = cid.substring(0,cid.length()-5);// 5 ==> "_tOBE".length();
+    }
 String dataAction = ElementParameterParser.getValue(node,"__DATA_ACTION__");
 String dbmsId = ElementParameterParser.getValue(node,"__MAPPING__");
 boolean useExistingConn = ("true").equals(ElementParameterParser.getValue(node,"__USE_EXISTING_CONNECTION__"));

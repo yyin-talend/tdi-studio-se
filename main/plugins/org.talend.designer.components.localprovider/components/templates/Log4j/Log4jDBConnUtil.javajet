@@ -36,6 +36,9 @@ imports="
 				return;
 			}
  			this.cid = node.getUniqueName();
+ 			if(cid.matches("^.*?tOracleOutputBulkExec_\\d+_tOBE$")){
+         		cid = cid.substring(0,cid.length()-5);// 5 ==> "_tOBE".length();
+			}
 			this.isLog4jEnabled = ("true").equals(ElementParameterParser.getValue(node.getProcess(), "__LOG4J_ACTIVATE__"));
 			String useConn = ElementParameterParser.getValue(node,"__USE_EXISTING_CONNECTION__");
 			if(useConn == null || "".equals(useConn) || "true".equals(useConn)){
