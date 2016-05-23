@@ -50,12 +50,14 @@ import org.talend.core.model.repository.RepositoryObject;
 import org.talend.core.repository.model.ProxyRepositoryFactory;
 import org.talend.core.runtime.CoreRuntimePlugin;
 import org.talend.core.runtime.services.IGenericWizardService;
+import org.talend.daikon.properties.Properties;
 import org.talend.daikon.properties.Properties.Deserialized;
 import org.talend.daikon.properties.presentation.Form;
 import org.talend.designer.core.generic.constants.IGenericConstants;
 import org.talend.designer.core.model.components.ElementParameter;
 import org.talend.metadata.managment.ui.utils.ConnectionContextHelper;
 import org.talend.metadata.managment.ui.wizard.CheckLastVersionRepositoryWizard;
+import org.talend.metadata.managment.ui.wizard.context.MetadataContextPropertyValueEvaluator;
 import org.talend.repository.generic.i18n.Messages;
 import org.talend.repository.generic.internal.IGenericWizardInternalService;
 import org.talend.repository.generic.internal.service.GenericWizardInternalService;
@@ -183,7 +185,13 @@ public class GenericConnWizard extends CheckLastVersionRepositoryWizard {
             String compPropertiesStr = connection.getCompProperties();
             if (compPropertiesStr != null) {
                 Deserialized<ComponentProperties> fromSerialized = ComponentProperties.fromSerialized(compPropertiesStr,
-                        ComponentProperties.class);
+                        ComponentProperties.class, new Properties.PostSerializationSetup<ComponentProperties>() {
+
+                            @Override
+                            public void setup(ComponentProperties properties) {
+                                properties.setValueEvaluator(new MetadataContextPropertyValueEvaluator(connection));
+                            }
+                        });
                 if (fromSerialized != null) {
                     componentWizard = internalService.getTopLevelComponentWizard(fromSerialized.properties, repNode.getId());
                 }
