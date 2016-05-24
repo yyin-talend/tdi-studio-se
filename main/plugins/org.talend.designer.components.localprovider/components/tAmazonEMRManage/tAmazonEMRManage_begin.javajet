@@ -21,6 +21,33 @@
 	
 	ParameterUtil parameterUtil = new ParameterUtil();
 	
+	List<Map<String, String>> bootstrap_actions = (List<Map<String, String>>)ElementParameterParser.getObjectValue(node, "__BOOTSTRAP_ACTIONS__");
+	if(!bootstrap_actions.isEmpty()) {
+%>
+	java.util.List<com.amazonaws.services.elasticmapreduce.model.BootstrapActionConfig> actions_<%=cid %> = new java.util.ArrayList<com.amazonaws.services.elasticmapreduce.model.BootstrapActionConfig>();
+	
+	com.amazonaws.services.elasticmapreduce.model.BootstrapActionConfig action_<%=cid%> = null;
+	<%
+	}
+	
+	for (int i=0; i<bootstrap_actions.size(); i++) {
+	Map<String, String> bootstrap_action = bootstrap_actions.get(i);
+%>
+	action_<%=cid%> = new com.amazonaws.services.elasticmapreduce.model.BootstrapActionConfig(
+		<%=bootstrap_action.get("NAME") %>,
+		
+		new com.amazonaws.services.elasticmapreduce.model.ScriptBootstrapActionConfig()
+    		.withPath(<%=bootstrap_action.get("SCRIPT_PATH") %>)
+    		
+    		<%if(parameterUtil.isValid(bootstrap_action.get("ARGS"))){%>
+    		.withArgs(<%=bootstrap_action.get("ARGS") %>)
+    		<%}%>
+	);
+	
+	actions_<%=cid %>.add(action_<%=cid%>);
+<%
+	}
+	
 	List<Map<String, String>> lines = (List<Map<String, String>>)ElementParameterParser.getObjectValue(node, "__STEP_TABLE__");
 %>
 	int count_<%=cid%> = 0;
@@ -93,6 +120,8 @@
 	String accesskey = ElementParameterParser.getValue(node, "__ACCESS_KEY__");
 	
 	String availability_zone = ElementParameterParser.getValue(node, "__AVAILABILITY_ZONE__");
+	
+	String subnet_id = ElementParameterParser.getValue(node, "__SUBNET_ID__");
 	
 	boolean isLog4jEnabled = "true".equals(ElementParameterParser.getValue(node.getProcess(), "__LOG4J_ACTIVATE__"));
 
@@ -242,6 +271,10 @@
     	.withVisibleToAllUsers(true)
     	<%}%>
     	
+    	<%if(!bootstrap_actions.isEmpty()){%>
+    	.withBootstrapActions(actions_<%=cid %>)
+    	<%}%>
+    	
     	.withInstances(
     		new com.amazonaws.services.elasticmapreduce.model.JobFlowInstancesConfig()
     			.withInstanceCount(<%=instance_count%>)
@@ -250,6 +283,10 @@
     			<%}%>
     			.withMasterInstanceType(<%=master_instance_type%>)
     			.withSlaveInstanceType(<%=slave_instance_type%>)
+    			
+    			<%if(parameterUtil.isValid(subnet_id)){%>
+    			.withEc2SubnetId(<%=subnet_id%>)
+    			<%}%>
     			
     			<%if(parameterUtil.isValid(availability_zone)){%>
     			.withPlacement(new com.amazonaws.services.elasticmapreduce.model.PlacementType().withAvailabilityZone(<%=availability_zone%>))
