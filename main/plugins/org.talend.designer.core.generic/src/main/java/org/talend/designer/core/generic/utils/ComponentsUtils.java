@@ -409,9 +409,12 @@ public class ComponentsUtils {
                 }
             }
         } else if (GenericTypeUtils.isStringType(property)) {
-            if (isInitializing
-                    && !(element instanceof FakeElement || ContextParameterUtils.isContainContextParam((String) paramValue))) {
-                paramValue = TalendQuoteUtils.addPairQuotesIfNotExist((String) paramValue);
+            // If value is empty (from default value or input) AND input field of type is String AND is not context mode
+            // and is not in wizard, add double quotes.
+            String value = (String) paramValue;
+            if ((isInitializing || StringUtils.isEmpty(value))
+                    && !(element instanceof FakeElement || ContextParameterUtils.isContainContextParam(value))) {
+                paramValue = TalendQuoteUtils.addPairQuotesIfNotExist(StringUtils.trimToEmpty(value));
             }
         } else if (GenericTypeUtils.isBooleanType(property)) {
             if (paramValue == null) {
