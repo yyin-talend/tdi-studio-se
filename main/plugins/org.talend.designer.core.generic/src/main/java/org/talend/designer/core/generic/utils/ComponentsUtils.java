@@ -59,9 +59,7 @@ import org.talend.daikon.properties.Property;
 import org.talend.daikon.properties.SchemaProperty;
 import org.talend.daikon.properties.presentation.Form;
 import org.talend.daikon.properties.presentation.Widget;
-import org.talend.daikon.properties.presentation.Widget.WidgetType;
 import org.talend.designer.core.generic.constants.IGenericConstants;
-import org.talend.designer.core.generic.context.ComponentContextPropertyValueEvaluator;
 import org.talend.designer.core.generic.i18n.Messages;
 import org.talend.designer.core.generic.model.Component;
 import org.talend.designer.core.generic.model.GenericElementParameter;
@@ -136,12 +134,12 @@ public class ComponentsUtils {
     }
 
     public static List<ElementParameter> getParametersFromForm(IElement element, Form form) {
-        return getParametersFromForm(element, null, (ComponentProperties) form.getProperties(), form);
+        return getParametersFromForm(element, false, null, (ComponentProperties) form.getProperties(), form);
     }
 
-    public static List<ElementParameter> getParametersFromForm(IElement element, EComponentCategory category,
-            ComponentProperties compProperties, Form form) {
-        return getParametersFromForm(element, category, compProperties, compProperties, null, form, null, null);
+    public static List<ElementParameter> getParametersFromForm(IElement element, boolean isInitializing,
+            EComponentCategory category, ComponentProperties compProperties, Form form) {
+        return getParametersFromForm(element, isInitializing, category, compProperties, compProperties, null, form, null, null);
     }
 
     /**
@@ -155,9 +153,9 @@ public class ComponentsUtils {
      * @param form
      * @return parameters list
      */
-    private static List<ElementParameter> getParametersFromForm(IElement element, EComponentCategory category,
-            ComponentProperties rootProperty, ComponentProperties compProperties, String parentPropertiesPath, Form form,
-            Widget parentWidget, AtomicInteger lastRowNum) {
+    private static List<ElementParameter> getParametersFromForm(IElement element, boolean isInitializing,
+            EComponentCategory category, ComponentProperties rootProperty, ComponentProperties compProperties,
+            String parentPropertiesPath, Form form, Widget parentWidget, AtomicInteger lastRowNum) {
         List<ElementParameter> elementParameters = new ArrayList<>();
         List<String> parameterNames = new ArrayList<>();
         EComponentCategory compCategory = category;
@@ -197,8 +195,8 @@ public class ComponentsUtils {
                 if (!isSameComponentProperties(componentProperties, widgetProperty)) {
                     propertiesPath = getPropertiesPath(parentPropertiesPath, subProperties.getName());
                 }
-                elementParameters.addAll(getParametersFromForm(element, compCategory, rootProperty, subProperties,
-                        propertiesPath, subForm, widget, lastRN));
+                elementParameters.addAll(getParametersFromForm(element, isInitializing, compCategory, rootProperty,
+                        subProperties, propertiesPath, subForm, widget, lastRN));
                 continue;
             }
 
@@ -239,7 +237,7 @@ public class ComponentsUtils {
                             found = true;
                             param.setContext(connector.getName());
                             IElementParameterDefaultValue defaultValue = new ElementParameterDefaultValue();
-                            Schema schema = (Schema) ((SchemaProperty) widgetProperty).getValue();
+                            Schema schema = ((SchemaProperty) widgetProperty).getValue();
                             defaultValue.setDefaultValue(new Schema.Parser().parse(schema.toString()));
                             param.getDefaultValues().add(defaultValue);
                         }
@@ -262,7 +260,7 @@ public class ComponentsUtils {
                                     param.setContext(connector.getName());
                                 }
                                 IElementParameterDefaultValue defaultValue = new ElementParameterDefaultValue();
-                                Schema schema = (Schema) ((SchemaProperty) widgetProperty).getValue();
+                                Schema schema = ((SchemaProperty) widgetProperty).getValue();
                                 defaultValue.setDefaultValue(new Schema.Parser().parse(schema.toString()));
                                 param.getDefaultValues().add(defaultValue);
                             }
@@ -275,7 +273,7 @@ public class ComponentsUtils {
             } else if (widgetProperty instanceof Property) {
                 Property property = (Property) widgetProperty;
                 param.setRequired(property.isRequired());
-                param.setValue(getParameterValue(element, property, fieldType));
+                param.setValue(getParameterValue(element, property, fieldType, isInitializing));
                 if (EParameterFieldType.NAME_SELECTION_AREA.equals(fieldType)) {
                     // Disable context support for this filed type.
                     param.setSupportContext(false);
@@ -389,14 +387,15 @@ public class ComponentsUtils {
         if (content instanceof PresentationItem) {
             PresentationItem pi = (PresentationItem) content;
             Form formtoShow = pi.getFormtoShow();
-            List<ElementParameter> parametersFromForm = getParametersFromForm(parameter.getElement(), parameter.getCategory(),
-                    parameter.getRootProperties(), formtoShow);
+            List<ElementParameter> parametersFromForm = getParametersFromForm(parameter.getElement(), false,
+                    parameter.getCategory(), parameter.getRootProperties(), formtoShow);
             params.addAll(parametersFromForm);
         }
         return params;
     }
 
-    public static Object getParameterValue(IElement element, Property property, EParameterFieldType fieldType) {
+    public static Object getParameterValue(IElement element, Property property, EParameterFieldType fieldType,
+            boolean isInitializing) {
         Object paramValue = property.getStoredValue();
         if (paramValue instanceof List) {
             return null;
@@ -410,8 +409,9 @@ public class ComponentsUtils {
                 }
             }
         } else if (GenericTypeUtils.isStringType(property)) {
-            if (!(element instanceof FakeElement || ContextParameterUtils.isContainContextParam((String) paramValue))) {
-                paramValue = TalendQuoteUtils.addQuotesIfNotExist((String) paramValue);
+            if (isInitializing
+                    && !(element instanceof FakeElement || ContextParameterUtils.isContainContextParam((String) paramValue))) {
+                paramValue = TalendQuoteUtils.addPairQuotesIfNotExist((String) paramValue);
             }
         } else if (GenericTypeUtils.isBooleanType(property)) {
             if (paramValue == null) {
@@ -602,7 +602,7 @@ public class ComponentsUtils {
         }
         return null;
     }
-    
+
     /**
      * Check if the current trigger contains correct information to be translated to a NodeConnector. For example, we
      * currently do not support LOOKUP or MERGE trigger.

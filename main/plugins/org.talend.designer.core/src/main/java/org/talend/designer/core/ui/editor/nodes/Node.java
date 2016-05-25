@@ -109,6 +109,7 @@ import org.talend.designer.core.CheckNodeManager;
 import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.ICheckNodesService;
 import org.talend.designer.core.i18n.Messages;
+import org.talend.designer.core.model.components.AbstractBasicComponent;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.model.components.EmfComponent;
 import org.talend.designer.core.model.components.NodeReturn;
@@ -464,6 +465,7 @@ public class Node extends Element implements IGraphicalNode {
     private void init(IComponent newComponent) {
         this.component = newComponent;
         this.label = component.getName();
+        updateComponentStatusIfNeeded(true);
         IPreferenceStore store = DesignerPlugin.getDefault().getPreferenceStore();
 
         labelToParse = store.getString(TalendDesignerPrefConstants.DEFAULT_LABEL);
@@ -661,11 +663,18 @@ public class Node extends Element implements IGraphicalNode {
             // so it's no use when load without editor
             calculateSubtreeStartAndEnd();
         }
+        updateComponentStatusIfNeeded(false);
     }
 
     @Override
     public IProcess getProcess() {
         return process;
+    }
+
+    private void updateComponentStatusIfNeeded(boolean isInitializing) {
+        if (component instanceof AbstractBasicComponent) {
+            ((AbstractBasicComponent) component).setInitializing(isInitializing);
+        }
     }
 
     /**
@@ -1305,8 +1314,8 @@ public class Node extends Element implements IGraphicalNode {
                                 // add by wzhang for feature 7611.
                                 String dbmsId = targetTable.getDbms();
                                 MetadataToolHelper.copyTable(dbmsId, inputTable, targetTable);
-                                ChangeMetadataCommand cmc = new ChangeMetadataCommand(this, null, tmpTableCreated ? targetTable : null, targetTable,
-                                        inputSchemaParam);
+                                ChangeMetadataCommand cmc = new ChangeMetadataCommand(this, null, tmpTableCreated ? targetTable
+                                        : null, targetTable, inputSchemaParam);
                                 cmc.execute();
 
                                 ColumnListController.updateColumnList(this, null, true);
