@@ -12,7 +12,9 @@
 // ============================================================================
 package org.talend.designer.core.generic.model.migration;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
@@ -133,6 +135,20 @@ public class Salesforce620Migration extends AbstractJobMigrationTask {
                     String key = (String) moduleNameProperty.getValue();
                     key = TalendQuoteUtils.removeQuotes(key);
                     moduleNameProperty.setStoredValue(key);
+                }
+                nt = newProperties.getProperty("upsertRelationTable.columnName");
+                if (nt != null && nt instanceof Property) {
+                    Property moduleNameProperty = (Property) nt;
+                    if (moduleNameProperty.getPossibleValues() == null || moduleNameProperty.getPossibleValues().isEmpty()) {
+                        List<String> columns = new ArrayList<String>();
+                        if (moduleNameProperty.getValue() instanceof String) {
+                            String column = (String) moduleNameProperty.getValue();
+                            columns.add(column);
+                        } else if (moduleNameProperty.getValue() instanceof List){
+                            columns.addAll((Collection<? extends String>) moduleNameProperty.getValue());
+                        }
+                        moduleNameProperty.setPossibleValues(columns);
+                    }
                 }
                 elemParamType.setValue(newProperties.toSerialized());
             }
