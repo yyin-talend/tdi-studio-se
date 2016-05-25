@@ -41,13 +41,13 @@ public class ComponentsUtilsTest {
         Element element = new FakeElement(form.getName());
 
         // Test readonly case
-        List<ElementParameter> parameters = ComponentsUtils.getParametersFromForm(element, null, props, form);
+        List<ElementParameter> parameters = ComponentsUtils.getParametersFromForm(element, false, null, props, form);
         for (ElementParameter parameter : parameters) {
             assertFalse(parameter.isReadOnly());
         }
 
         element.setReadOnly(true);
-        parameters = ComponentsUtils.getParametersFromForm(element, null, props, form);
+        parameters = ComponentsUtils.getParametersFromForm(element, false, null, props, form);
         for (ElementParameter parameter : parameters) {
             assertTrue(parameter.isReadOnly());
         }
