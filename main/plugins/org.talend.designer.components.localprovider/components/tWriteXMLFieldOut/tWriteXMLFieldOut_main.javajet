@@ -106,15 +106,9 @@ class XMLTool{
             String.valueOf(<%=valueToUse%>)
 <%
         }else if(javaType == JavaTypesManager.DATE){
-            if( column.getPattern() != null && column.getPattern().trim().length() != 0 ){
 %>
-            FormatterUtils.format_Date(<%=valueToUse%>,<%=column.getPattern()%>)
+            FormatterUtils.format_Date(<%=valueToUse%>,<%=pattern%>)
 <%
-            }else{
-%>
-			<%=valueToUse%>
-<%
-           }
         }else if (javaType == JavaTypesManager.BIGDECIMAL) {
 %>
 			<%=valueToUse%>.toPlainString()
