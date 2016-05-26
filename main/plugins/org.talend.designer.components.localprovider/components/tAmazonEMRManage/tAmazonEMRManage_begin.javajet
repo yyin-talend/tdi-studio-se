@@ -229,7 +229,7 @@
 	steps_<%=cid %>.add(0, enabledebugging_<%=cid%>);
 
 	<%
-	final boolean newApi = cluster_version!=null && "\"emr-4.2.0\",\"emr-4.1.0\",\"emr-4.0.0\",\"emr-4.5.0\"".contains(cluster_version);
+	final boolean newApi = cluster_version!=null && "\"emr-4.2.0\",\"emr-4.1.0\",\"emr-4.0.0\",\"emr-4.5.0\",\"emr-4.6.0\"".contains(cluster_version);
 	
 	boolean setApps = newApi;
 	if(setApps) {
