@@ -126,6 +126,8 @@
 	boolean isLog4jEnabled = "true".equals(ElementParameterParser.getValue(node.getProcess(), "__LOG4J_ACTIVATE__"));
 
 	boolean keep_alive = "true".equals(ElementParameterParser.getValue(node, "__KEEP_ALIVE__"));
+	
+	boolean enable_server_side_encryption = "true".equals(ElementParameterParser.getValue(node, "__ENABLE_SERVER_SIDE_ENCRYPTION__"));
 %>
 	        
 	<%
@@ -227,10 +229,23 @@
 	steps_<%=cid %>.add(0, enabledebugging_<%=cid%>);
 
 	<%
-	boolean setApps = cluster_version!=null && "\"emr-4.2.0\",\"emr-4.1.0\",\"emr-4.0.0\",\"emr-4.5.0\"".contains(cluster_version);
+	final boolean newApi = cluster_version!=null && "\"emr-4.2.0\",\"emr-4.1.0\",\"emr-4.0.0\",\"emr-4.5.0\"".contains(cluster_version);
+	
+	boolean setApps = newApi;
 	if(setApps) {
 	%>
 	<%@ include file="./app_mapping.javajet"%>
+	<%
+	}
+	
+	if(enable_server_side_encryption && newApi) {
+	%>
+	java.util.Map<String,String> emrFSProperties_<%=cid%> = new java.util.HashMap<String,String>();
+	emrFSProperties_<%=cid%>.put("fs.s3.enableServerSideEncryption","true");
+	
+	com.amazonaws.services.elasticmapreduce.model.Configuration emrFSConfig_<%=cid%> = new com.amazonaws.services.elasticmapreduce.model.Configuration()
+        .withClassification("emrfs-site")
+        .withProperties(emrFSProperties_<%=cid%>);
 	<%
 	}
 	%>
@@ -273,6 +288,10 @@
     	
     	<%if(!bootstrap_actions.isEmpty()){%>
     	.withBootstrapActions(actions_<%=cid %>)
+    	<%}%>
+    	
+    	<%if(enable_server_side_encryption && newApi){%>
+    	.withConfigurations(emrFSConfig_<%=cid%>)
     	<%}%>
     	
     	.withInstances(
