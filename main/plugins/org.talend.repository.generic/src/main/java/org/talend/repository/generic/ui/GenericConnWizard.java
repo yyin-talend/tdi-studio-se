@@ -42,6 +42,7 @@ import org.talend.components.api.service.ComponentService;
 import org.talend.components.api.wizard.ComponentWizard;
 import org.talend.core.context.Context;
 import org.talend.core.context.RepositoryContext;
+import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.model.properties.PropertiesFactory;
 import org.talend.core.model.properties.Property;
@@ -100,6 +101,8 @@ public class GenericConnWizard extends CheckLastVersionRepositoryWizard {
 
     private RepositoryNode repNode;
 
+    private List<IMetadataTable> oldMetadataTable;
+
     private IGenericWizardService wizardService;
 
     private ComponentService compService;
@@ -156,6 +159,7 @@ public class GenericConnWizard extends CheckLastVersionRepositoryWizard {
             this.originalPurpose = this.connectionItem.getProperty().getPurpose();
             this.originalStatus = this.connectionItem.getProperty().getStatusCode();
         }
+        oldMetadataTable = GenericUpdateManager.getConversionMetadataTables(connectionItem.getConnection());
         compService = new GenericWizardInternalService().getComponentService();
         compService.setRepository(new GenericRepository());
         IWizardContainer container = this.getContainer();
@@ -268,7 +272,7 @@ public class GenericConnWizard extends CheckLastVersionRepositoryWizard {
                         compService.afterFormFinish(form.getName(), (ComponentProperties) form.getProperties());
                     }
                     if (!creation) {
-                        GenericUpdateManager.updateGenericConnection(connectionItem);
+                        GenericUpdateManager.updateGenericConnection(connectionItem, oldMetadataTable);
                     }
                     updateConnectionItem(factory);
                 } catch (Throwable e) {
