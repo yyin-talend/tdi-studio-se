@@ -31,6 +31,7 @@ import org.talend.core.ui.composite.ElementsSelectionComposite;
 import org.talend.core.ui.properties.tab.IDynamicProperty;
 import org.talend.daikon.NamedThing;
 import org.talend.designer.core.generic.model.GenericElementParameter;
+import org.talend.designer.core.generic.utils.ComponentsUtils;
 import org.talend.designer.core.ui.editor.properties.controllers.AbstractElementPropertySectionController;
 
 /**
@@ -110,8 +111,7 @@ public class NameAndLabelsTreeController extends AbstractElementPropertySectionC
         };
         selectionComposite.setLayoutData(new GridData(GridData.FILL_BOTH));
         if (param instanceof GenericElementParameter) {
-            List<NamedThing> possibleValues = (List<NamedThing>) ((GenericElementParameter) param).getPossibleValues();
-            selectionComposite.setViewerData(possibleValues);
+            selectionComposite.setViewerData(ComponentsUtils.getFormalPossibleValues((GenericElementParameter) param));
         }
         selectionComposite.setCheckedState();
         return parentComp;

@@ -52,6 +52,7 @@ import org.talend.core.runtime.util.GenericTypeUtils;
 import org.talend.core.ui.component.ComponentsFactoryProvider;
 import org.talend.core.utils.TalendQuoteUtils;
 import org.talend.daikon.NamedThing;
+import org.talend.daikon.SimpleNamedThing;
 import org.talend.daikon.properties.PresentationItem;
 import org.talend.daikon.properties.Properties;
 import org.talend.daikon.properties.Properties.Deserialized;
@@ -59,9 +60,7 @@ import org.talend.daikon.properties.Property;
 import org.talend.daikon.properties.SchemaProperty;
 import org.talend.daikon.properties.presentation.Form;
 import org.talend.daikon.properties.presentation.Widget;
-import org.talend.daikon.properties.presentation.Widget.WidgetType;
 import org.talend.designer.core.generic.constants.IGenericConstants;
-import org.talend.designer.core.generic.context.ComponentContextPropertyValueEvaluator;
 import org.talend.designer.core.generic.i18n.Messages;
 import org.talend.designer.core.generic.model.Component;
 import org.talend.designer.core.generic.model.GenericElementParameter;
@@ -239,7 +238,7 @@ public class ComponentsUtils {
                             found = true;
                             param.setContext(connector.getName());
                             IElementParameterDefaultValue defaultValue = new ElementParameterDefaultValue();
-                            Schema schema = (Schema) ((SchemaProperty) widgetProperty).getValue();
+                            Schema schema = ((SchemaProperty) widgetProperty).getValue();
                             defaultValue.setDefaultValue(new Schema.Parser().parse(schema.toString()));
                             param.getDefaultValues().add(defaultValue);
                         }
@@ -262,7 +261,7 @@ public class ComponentsUtils {
                                     param.setContext(connector.getName());
                                 }
                                 IElementParameterDefaultValue defaultValue = new ElementParameterDefaultValue();
-                                Schema schema = (Schema) ((SchemaProperty) widgetProperty).getValue();
+                                Schema schema = ((SchemaProperty) widgetProperty).getValue();
                                 defaultValue.setDefaultValue(new Schema.Parser().parse(schema.toString()));
                                 param.getDefaultValues().add(defaultValue);
                             }
@@ -602,7 +601,7 @@ public class ComponentsUtils {
         }
         return null;
     }
-    
+
     /**
      * Check if the current trigger contains correct information to be translated to a NodeConnector. For example, we
      * currently do not support LOOKUP or MERGE trigger.
@@ -671,5 +670,34 @@ public class ComponentsUtils {
     private static void setConnectionProperty(EConnectionType currentType, INodeConnector node) {
         // One line method that factorize a lot of code.
         node.addConnectionProperty(currentType, currentType.getRGB(), currentType.getDefaultLineStyle());
+    }
+
+    /**
+     * Get formal possible values of the <code>param</code>. Every possible value will be {@link NamedThing} type.
+     * 
+     * @param param
+     * @return
+     */
+    public static List<NamedThing> getFormalPossibleValues(GenericElementParameter param) {
+        List<NamedThing> nals = new ArrayList<>();
+        if (param == null) {
+            return nals;
+        }
+        List<?> possibleValues = param.getPossibleValues();
+        if (possibleValues != null) {
+            for (Object object : possibleValues) {
+                if (object instanceof NamedThing) {
+                    nals.add((NamedThing) object);
+                } else if (object instanceof String) {
+                    String name = (String) object;
+                    Property property = param.getProperty();
+                    if (property != null) {
+                        NamedThing nl = new SimpleNamedThing(name, property.getPossibleValuesDisplayName(name));
+                        nals.add(nl);
+                    }
+                }
+            }
+        }
+        return nals;
     }
 }
