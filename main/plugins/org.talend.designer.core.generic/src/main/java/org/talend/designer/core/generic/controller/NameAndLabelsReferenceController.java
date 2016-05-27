@@ -13,8 +13,6 @@
 package org.talend.designer.core.generic.controller;
 
 import java.beans.PropertyChangeEvent;
-import java.util.ArrayList;
-import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.gef.commands.Command;
@@ -39,8 +37,8 @@ import org.talend.commons.ui.runtime.image.ImageProvider;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.ui.CoreUIPlugin;
 import org.talend.core.ui.properties.tab.IDynamicProperty;
-import org.talend.daikon.NamedThing;
 import org.talend.designer.core.generic.model.GenericElementParameter;
+import org.talend.designer.core.generic.utils.ComponentsUtils;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.properties.controllers.AbstractElementPropertySectionController;
@@ -64,20 +62,12 @@ public class NameAndLabelsReferenceController extends AbstractElementPropertySec
     }
 
     public Command createCommand(Button button) {
-        List<NamedThing> nals = new ArrayList<>();
         if (curParameter instanceof GenericElementParameter) {
             GenericElementParameter gParam = (GenericElementParameter) curParameter;
             if (gParam != null) {
                 callBeforeActive(gParam);
-                List<?> possibleValues = gParam.getPossibleValues();
-                if (possibleValues != null) {
-                    for (Object object : possibleValues) {
-                        if (object instanceof NamedThing) {
-                            nals.add((NamedThing) object);
-                        }
-                    }
-                }
-                NameAndLabelsDialog nameAndLabelsDialog = new NameAndLabelsDialog(composite.getShell(), nals);
+                NameAndLabelsDialog nameAndLabelsDialog = new NameAndLabelsDialog(composite.getShell(),
+                        ComponentsUtils.getFormalPossibleValues(gParam));
                 if (nameAndLabelsDialog.open() == IDialogConstants.OK_ID) {
                     String propertyName = (String) button.getData(PARAMETER_NAME);
                     String result = StringUtils.trimToEmpty(nameAndLabelsDialog.getResult());

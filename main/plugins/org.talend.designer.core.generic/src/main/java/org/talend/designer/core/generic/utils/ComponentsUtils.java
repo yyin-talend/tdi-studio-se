@@ -52,6 +52,7 @@ import org.talend.core.runtime.util.GenericTypeUtils;
 import org.talend.core.ui.component.ComponentsFactoryProvider;
 import org.talend.core.utils.TalendQuoteUtils;
 import org.talend.daikon.NamedThing;
+import org.talend.daikon.SimpleNamedThing;
 import org.talend.daikon.properties.PresentationItem;
 import org.talend.daikon.properties.Properties;
 import org.talend.daikon.properties.Properties.Deserialized;
@@ -674,5 +675,34 @@ public class ComponentsUtils {
     private static void setConnectionProperty(EConnectionType currentType, INodeConnector node) {
         // One line method that factorize a lot of code.
         node.addConnectionProperty(currentType, currentType.getRGB(), currentType.getDefaultLineStyle());
+    }
+
+    /**
+     * Get formal possible values of the <code>param</code>. Every possible value will be {@link NamedThing} type.
+     * 
+     * @param param
+     * @return
+     */
+    public static List<NamedThing> getFormalPossibleValues(GenericElementParameter param) {
+        List<NamedThing> nals = new ArrayList<>();
+        if (param == null) {
+            return nals;
+        }
+        List<?> possibleValues = param.getPossibleValues();
+        if (possibleValues != null) {
+            for (Object object : possibleValues) {
+                if (object instanceof NamedThing) {
+                    nals.add((NamedThing) object);
+                } else if (object instanceof String) {
+                    String name = (String) object;
+                    Property property = param.getProperty();
+                    if (property != null) {
+                        NamedThing nl = new SimpleNamedThing(name, property.getPossibleValuesDisplayName(name));
+                        nals.add(nl);
+                    }
+                }
+            }
+        }
+        return nals;
     }
 }
