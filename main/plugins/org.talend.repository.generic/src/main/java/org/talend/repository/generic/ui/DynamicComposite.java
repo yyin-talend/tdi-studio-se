@@ -135,7 +135,7 @@ public class DynamicComposite extends MultipleThreadDynamicComposite implements 
             properties.setValueEvaluator(evaluator);
             properties.refreshLayout(form);
             properties.setValueEvaluator(null); // For context display.
-            parameters = ComponentsUtils.getParametersFromForm(element, section, (ComponentProperties) properties, form);
+            parameters = ComponentsUtils.getParametersFromForm(element, false, section, (ComponentProperties) properties, form);
             addUpdateParameterIfNotExist(parameters);
             properties.setValueEvaluator(evaluator);
         }

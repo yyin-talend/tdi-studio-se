@@ -135,12 +135,12 @@ public class ComponentsUtils {
     }
 
     public static List<ElementParameter> getParametersFromForm(IElement element, Form form) {
-        return getParametersFromForm(element, null, (ComponentProperties) form.getProperties(), form);
+        return getParametersFromForm(element, false, null, (ComponentProperties) form.getProperties(), form);
     }
 
-    public static List<ElementParameter> getParametersFromForm(IElement element, EComponentCategory category,
-            ComponentProperties compProperties, Form form) {
-        return getParametersFromForm(element, category, compProperties, compProperties, null, form, null, null);
+    public static List<ElementParameter> getParametersFromForm(IElement element, boolean isInitializing,
+            EComponentCategory category, ComponentProperties compProperties, Form form) {
+        return getParametersFromForm(element, isInitializing, category, compProperties, compProperties, null, form, null, null);
     }
 
     /**
@@ -154,9 +154,9 @@ public class ComponentsUtils {
      * @param form
      * @return parameters list
      */
-    private static List<ElementParameter> getParametersFromForm(IElement element, EComponentCategory category,
-            ComponentProperties rootProperty, ComponentProperties compProperties, String parentPropertiesPath, Form form,
-            Widget parentWidget, AtomicInteger lastRowNum) {
+    private static List<ElementParameter> getParametersFromForm(IElement element, boolean isInitializing,
+            EComponentCategory category, ComponentProperties rootProperty, ComponentProperties compProperties,
+            String parentPropertiesPath, Form form, Widget parentWidget, AtomicInteger lastRowNum) {
         List<ElementParameter> elementParameters = new ArrayList<>();
         List<String> parameterNames = new ArrayList<>();
         EComponentCategory compCategory = category;
@@ -196,8 +196,8 @@ public class ComponentsUtils {
                 if (!isSameComponentProperties(componentProperties, widgetProperty)) {
                     propertiesPath = getPropertiesPath(parentPropertiesPath, subProperties.getName());
                 }
-                elementParameters.addAll(getParametersFromForm(element, compCategory, rootProperty, subProperties,
-                        propertiesPath, subForm, widget, lastRN));
+                elementParameters.addAll(getParametersFromForm(element, isInitializing, compCategory, rootProperty,
+                        subProperties, propertiesPath, subForm, widget, lastRN));
                 continue;
             }
 
@@ -274,7 +274,7 @@ public class ComponentsUtils {
             } else if (widgetProperty instanceof Property) {
                 Property property = (Property) widgetProperty;
                 param.setRequired(property.isRequired());
-                param.setValue(getParameterValue(element, property, fieldType));
+                param.setValue(getParameterValue(element, property, fieldType, isInitializing));
                 if (EParameterFieldType.NAME_SELECTION_AREA.equals(fieldType)) {
                     // Disable context support for this filed type.
                     param.setSupportContext(false);
@@ -388,14 +388,15 @@ public class ComponentsUtils {
         if (content instanceof PresentationItem) {
             PresentationItem pi = (PresentationItem) content;
             Form formtoShow = pi.getFormtoShow();
-            List<ElementParameter> parametersFromForm = getParametersFromForm(parameter.getElement(), parameter.getCategory(),
-                    parameter.getRootProperties(), formtoShow);
+            List<ElementParameter> parametersFromForm = getParametersFromForm(parameter.getElement(), false,
+                    parameter.getCategory(), parameter.getRootProperties(), formtoShow);
             params.addAll(parametersFromForm);
         }
         return params;
     }
 
-    public static Object getParameterValue(IElement element, Property property, EParameterFieldType fieldType) {
+    public static Object getParameterValue(IElement element, Property property, EParameterFieldType fieldType,
+            boolean isInitializing) {
         Object paramValue = property.getStoredValue();
         if (paramValue instanceof List) {
             return null;
@@ -409,8 +410,12 @@ public class ComponentsUtils {
                 }
             }
         } else if (GenericTypeUtils.isStringType(property)) {
-            if (!(element instanceof FakeElement || ContextParameterUtils.isContainContextParam((String) paramValue))) {
-                paramValue = TalendQuoteUtils.addQuotesIfNotExist((String) paramValue);
+            // If value is empty (from default value or input) AND input field of type is String AND is not context mode
+            // and is not in wizard, add double quotes.
+            String value = (String) paramValue;
+            if ((isInitializing || StringUtils.isEmpty(value))
+                    && !(element instanceof FakeElement || ContextParameterUtils.isContainContextParam(value))) {
+                paramValue = TalendQuoteUtils.addPairQuotesIfNotExist(StringUtils.trimToEmpty(value));
             }
         } else if (GenericTypeUtils.isBooleanType(property)) {
             if (paramValue == null) {

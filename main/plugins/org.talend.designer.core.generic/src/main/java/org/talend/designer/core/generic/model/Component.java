@@ -642,7 +642,8 @@ public class Component extends AbstractBasicComponent {
             EComponentCategory category) {
         ComponentProperties props = node.getComponentProperties();
         Form form = props.getForm(formName);
-        List<ElementParameter> parameters = ComponentsUtils.getParametersFromForm(node, category, props, form);
+        List<ElementParameter> parameters = ComponentsUtils.getParametersFromForm(node, this.isInitializing(), category, props,
+                form);
         props.setValueEvaluator(new ComponentContextPropertyValueEvaluator(node));
         ComponentService componentService = ComponentsUtils.getComponentService();
         for (ElementParameter parameter : parameters) {
