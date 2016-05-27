@@ -32,7 +32,6 @@ import org.talend.designer.core.model.FakeElement;
 import org.talend.designer.core.model.components.ElementParameter;
 import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.process.Process;
-import org.talend.test.utils.testproperties.TestProperties;
 
 /**
  * created by hcyi on Feb 16, 2016 Detailled comment
