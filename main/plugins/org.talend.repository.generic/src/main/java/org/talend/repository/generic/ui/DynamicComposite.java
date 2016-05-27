@@ -155,24 +155,19 @@ public class DynamicComposite extends MultipleThreadDynamicComposite implements 
                     }
                 } else if (EParameterFieldType.NAME_SELECTION_AREA.equals(genericElementParameter.getFieldType())
                         && theConnection != null) {
-                    List<?> possibleValues = genericElementParameter.getPossibleValues();
-                    if (possibleValues != null && possibleValues.size() > 0) {
-                        List<NamedThing> values = new ArrayList<>();
-                        List<MetadataTable> metadataTables = SchemaUtils.getMetadataTables(theConnection, SubContainer.class);
-                        List<String> tableLabels = new ArrayList<>();
-                        for (MetadataTable metaTable : metadataTables) {
-                            tableLabels.add(metaTable.getLabel());
-                        }
-                        for (Object valObj : possibleValues) {
-                            if (valObj instanceof NamedThing) {
-                                NamedThing value = (NamedThing) valObj;
-                                if (tableLabels.contains(value.getName())) {
-                                    values.add(value);
-                                }
-                            }
-                        }
-                        genericElementParameter.setValue(values);
+                    List<NamedThing> values = new ArrayList<>();
+                    List<MetadataTable> metadataTables = SchemaUtils.getMetadataTables(theConnection, SubContainer.class);
+                    List<String> tableLabels = new ArrayList<>();
+                    for (MetadataTable metaTable : metadataTables) {
+                        tableLabels.add(metaTable.getLabel());
                     }
+                    List<NamedThing> possibleValues = ComponentsUtils.getFormalPossibleValues(genericElementParameter);
+                    for (NamedThing possibleValue : possibleValues) {
+                        if (tableLabels.contains(possibleValue.getName())) {
+                            values.add(possibleValue);
+                        }
+                    }
+                    genericElementParameter.setValue(values);
                 }
                 if (properties != null && isRepository(element)) {
                     String repositoryValue = genericElementParameter.getRepositoryValue();
