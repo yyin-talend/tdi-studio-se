@@ -2650,7 +2650,7 @@ public class Process extends Element implements IProcess2, IGEFProcess, ILastVer
                 for (int i = 0; i < connecList.size(); i++) {
                     cType = (ConnectionType) connecList.get(i);
                     if (cType.getTarget().equals(node.getUniqueName())) {
-                        if (cType.isSetMergeOrder()) {
+                        if (cType.isSetMergeOrder()&&connectionsHashtable.get(cType)!=null) {
                             Connection connection = connectionsHashtable.get(cType);
                             connection.setInputId(cType.getMergeOrder());
                             connection.updateName();
