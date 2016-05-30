@@ -72,7 +72,7 @@ java.sql.Connection conn_<%=cid%> = null;
 	 <%
 		log4jCodeGenerateUtil.useExistConnection(node);
 	 }else{
-		if("VERTICA_7_0_X".equals(db_version) || "VERTICA_6_1_X".equals(db_version) || "VERTICA_6_0".equals(db_version) || "VERTICA_5_1".equals(db_version)){
+		if("VERTICA_7_1_X".equals(db_version) || "VERTICA_7_0_X".equals(db_version) || "VERTICA_6_1_X".equals(db_version) || "VERTICA_6_0".equals(db_version) || "VERTICA_5_1".equals(db_version)){
 		%>
 	 		String driverClass_<%=cid%> = "com.vertica.jdbc.Driver";
 		<%
@@ -198,7 +198,7 @@ if(("INSERT").equals(dataAction) || columnList != null && columnList.size() > 0)
         <%}%>
     	fis_<%=cid %> = new java.io.FileInputStream(new java.io.File(<%=file%>));
 <%
-	if("VERTICA_7_0_X".equals(db_version) || "VERTICA_6_1_X".equals(db_version) || "VERTICA_6_0".equals(db_version) || "VERTICA_5_1".equals(db_version)){
+	if("VERTICA_7_1_X".equals(db_version) || "VERTICA_7_0_X".equals(db_version) || "VERTICA_6_1_X".equals(db_version) || "VERTICA_6_0".equals(db_version) || "VERTICA_5_1".equals(db_version)){
 %>
 		com.vertica.jdbc.VerticaCopyStream vcs_<%=cid%> = new com.vertica.jdbc.VerticaCopyStream((com.vertica.jdbc.VerticaConnection)conn_<%=cid%>,sql_<%=cid %>);
 		vcs_<%=cid%>.start();
