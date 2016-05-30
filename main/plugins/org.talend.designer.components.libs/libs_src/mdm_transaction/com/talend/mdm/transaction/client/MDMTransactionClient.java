@@ -4,6 +4,7 @@ import java.io.IOException;
 
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpException;
+import org.apache.commons.httpclient.HttpMethod;
 import org.apache.commons.httpclient.UsernamePasswordCredentials;
 import org.apache.commons.httpclient.auth.AuthScope;
 import org.apache.commons.httpclient.methods.GetMethod;
@@ -22,7 +23,7 @@ public class MDMTransactionClient {
         try {
             client.executeMethod(put);
             tid = put.getResponseBodyAsString();
-            sessionID = parseSessionID(put.getResponseHeader("Set-Cookie").getValue()); //$NON-NLS-1$
+            sessionID = parseSessionID(put);
         } catch (HttpException e) {
             throw e;
         } catch (IOException e) {
@@ -49,7 +50,7 @@ public class MDMTransactionClient {
         String sessionID = "";
         try {
             client.executeMethod(get);
-            sessionID = parseSessionID(get.getResponseHeader("Set-Cookie").getValue()); //$NON-NLS-1$
+            sessionID = parseSessionID(get);
         } catch (HttpException e) {
             throw e;
         } catch (IOException e) {
@@ -60,7 +61,8 @@ public class MDMTransactionClient {
         return sessionID;
     }
 
-    public static String parseSessionID(String setCookie) {
+    public static String parseSessionID(HttpMethod method) {
+        String setCookie = method.getResponseHeader("Set-Cookie").getValue(); //$NON-NLS-1$
         int beginIndex = setCookie.indexOf("JSESSIONID=") + 11; //$NON-NLS-1$
         int endIndex = setCookie.indexOf(";", beginIndex); //$NON-NLS-1$
         return setCookie.substring(beginIndex, endIndex);
