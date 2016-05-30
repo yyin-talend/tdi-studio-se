@@ -33,10 +33,12 @@ import org.talend.components.api.service.ComponentService;
 import org.talend.components.api.wizard.ComponentWizard;
 import org.talend.core.model.metadata.builder.connection.Connection;
 import org.talend.core.model.metadata.builder.connection.MetadataTable;
+import org.talend.core.model.metadata.builder.connection.SalesforceSchemaConnection;
 import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.model.properties.Item;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryViewObject;
+import org.talend.core.model.utils.ContextParameterUtils;
 import org.talend.core.repository.model.ProxyRepositoryFactory;
 import org.talend.core.utils.ReflectionUtils;
 import org.talend.cwm.helper.ConnectionHelper;
@@ -116,9 +118,9 @@ public class NewSalesforceWizardMigrationTask extends NewGenericWizardMigrationT
                         newValue = propertyPossibleValues.get(0);
                     }
                     property.setValue(newValue);
-                    if (!connection.isContextMode()) {
-                        componentProperties.setValue("endpoint", "https://login.salesforce.com/services/oauth2"); //$NON-NLS-1$//$NON-NLS-2$
-                    }
+                    Property<?> endpoint = componentProperties.getValuedProperty("endpoint");
+                    SalesforceSchemaConnection sfConnection = (SalesforceSchemaConnection) connection;
+                    componentProperties.setValue("endpoint", sfConnection.getWebServiceUrlTextForOAuth()); //$NON-NLS-1$//$NON-NLS-2$
                 }
             }
             // set empty value instead of default null value, this will add automatically the double quotes in the job
