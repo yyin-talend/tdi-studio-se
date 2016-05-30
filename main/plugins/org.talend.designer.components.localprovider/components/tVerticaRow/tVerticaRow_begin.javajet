@@ -29,7 +29,7 @@ imports="
 		
 		public String getDirverClassName(INode node){
 			String db_version = ElementParameterParser.getValue(node, "__DB_VERSION__");
-			if("VERTICA_7_0_X".equals(db_version) || "VERTICA_6_1_X".equals(db_version) || "VERTICA_6_0".equals(db_version) || "VERTICA_5_1".equals(db_version)){
+			if("VERTICA_7_1_X".equals(db_version) || "VERTICA_7_0_X".equals(db_version) || "VERTICA_6_1_X".equals(db_version) || "VERTICA_6_0".equals(db_version) || "VERTICA_5_1".equals(db_version)){
 				return "com.vertica.jdbc.Driver";
 			}else{
 				return "com.vertica.Driver";
