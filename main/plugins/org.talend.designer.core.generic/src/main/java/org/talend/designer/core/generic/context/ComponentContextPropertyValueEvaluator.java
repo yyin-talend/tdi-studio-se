@@ -15,15 +15,13 @@ package org.talend.designer.core.generic.context;
 import java.util.List;
 
 import org.apache.avro.Schema;
-import org.apache.commons.lang3.ClassUtils;
 import org.talend.core.model.process.IContext;
 import org.talend.core.model.process.IContextManager;
 import org.talend.core.model.process.INode;
 import org.talend.core.model.process.IProcess;
 import org.talend.core.model.utils.ContextParameterUtils;
 import org.talend.core.runtime.util.GenericTypeUtils;
-import org.talend.daikon.exception.TalendRuntimeException;
-import org.talend.daikon.properties.EnumProperty;
+import org.talend.core.utils.TalendQuoteUtils;
 import org.talend.daikon.properties.Property;
 import org.talend.daikon.properties.PropertyValueEvaluator;
 
@@ -44,7 +42,7 @@ public class ComponentContextPropertyValueEvaluator implements PropertyValueEval
         if (storedValue == null) {
             return storedValue;
         }
-        List<?> possibleValues = ((Property) property).getPossibleValues();
+        List<?> possibleValues = property.getPossibleValues();
         if (possibleValues != null) {
             if (storedValue instanceof String && !ContextParameterUtils.isContainContextParam((String) storedValue)) {
                 for (Object possibleValue : possibleValues) {
@@ -91,6 +89,9 @@ public class ComponentContextPropertyValueEvaluator implements PropertyValueEval
                         }
                     }
                 }
+            }
+            if (GenericTypeUtils.isStringType(property)) {
+                return TalendQuoteUtils.removeQuotes(String.valueOf(storedValue));
             }
             if (valueFromContext != null) {
                 return valueFromContext;
