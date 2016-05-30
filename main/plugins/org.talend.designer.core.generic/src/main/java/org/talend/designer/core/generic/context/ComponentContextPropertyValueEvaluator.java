@@ -66,8 +66,9 @@ public class ComponentContextPropertyValueEvaluator implements PropertyValueEval
                 }
             }
         }
-        if (context != null) {
-            String valueFromContext = ContextParameterUtils.parseScriptContextCode(String.valueOf(storedValue), context);
+        String stringStoredValue = String.valueOf(storedValue);
+        if (context != null && ContextParameterUtils.isContainContextParam(stringStoredValue)) {
+            String valueFromContext = ContextParameterUtils.parseScriptContextCode(stringStoredValue, context);
             if (GenericTypeUtils.isBooleanType(property)) {
                 return new Boolean(valueFromContext);
             }
