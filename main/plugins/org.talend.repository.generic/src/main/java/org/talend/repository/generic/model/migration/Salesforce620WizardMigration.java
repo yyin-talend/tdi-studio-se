@@ -126,12 +126,17 @@ public class Salesforce620WizardMigration extends AbstractItemMigrationTask {
 
                             @Override
                             public Object evaluate(Property property, Object storedValue) {
+                                Property newProperty = (Property) newProperties.getProperty(property.getName());
+                                if (newProperty == null) {
+                                    if ("useProxy".equals(property.getName())) {
+                                        newProperty = (Property) newProperties.getValuedProperty("proxy.useProxy");
+                                    } else {
+                                        return null;
+                                    }
+                                }
                                 if (storedValue instanceof String) {
-                                    if (GenericTypeUtils.isEnumType(property)) {
-                                        Property newProperty = (Property) newProperties.getProperty(property.getName());
-                                        if (newProperty == null) {
-                                            newProperty = (Property) newProperties.getProperty("connection.loginType");
-                                        }
+
+                                    if (GenericTypeUtils.isEnumType(newProperty)) {
                                         if (newProperty != null) {
                                             List<?> propertyPossibleValues = ((Property<?>) newProperty).getPossibleValues();
                                             if (propertyPossibleValues != null) {
@@ -144,6 +149,9 @@ public class Salesforce620WizardMigration extends AbstractItemMigrationTask {
                                             }
                                         }
                                     }
+                                }
+                                if (GenericTypeUtils.isBooleanType(newProperty)) {
+                                    return false;
                                 }
                                 return storedValue;
                             }
@@ -194,6 +202,12 @@ public class Salesforce620WizardMigration extends AbstractItemMigrationTask {
                             }
                         }
 
+                    }
+                } else {
+                    Property newProperty = (Property) newProperties.getProperty(property.getName());
+                    if (GenericTypeUtils.isBooleanType(newProperty)) {
+                        // value can only be null (so false)
+                        property.setValue(Boolean.FALSE);
                     }
                 }
             } else if (nt instanceof ComponentProperties) {
