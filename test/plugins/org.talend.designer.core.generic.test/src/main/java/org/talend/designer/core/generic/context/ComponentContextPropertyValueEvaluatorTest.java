@@ -59,7 +59,7 @@ public class ComponentContextPropertyValueEvaluatorTest {
         }
         props.setValue(propName, testValue);
         props.setValueEvaluator(evaluator);
-        assertEquals("testValue", props.getValuedProperty(PROP_USER_ID).getValue()); //$NON-NLS-1$
+        assertEquals("testValue", props.getValuedProperty(propName).getValue()); //$NON-NLS-1$
     }
 
 }
