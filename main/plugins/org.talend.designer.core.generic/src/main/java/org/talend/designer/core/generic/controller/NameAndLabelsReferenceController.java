@@ -37,6 +37,7 @@ import org.talend.commons.ui.runtime.image.ImageProvider;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.ui.CoreUIPlugin;
 import org.talend.core.ui.properties.tab.IDynamicProperty;
+import org.talend.core.utils.TalendQuoteUtils;
 import org.talend.designer.core.generic.model.GenericElementParameter;
 import org.talend.designer.core.generic.utils.ComponentsUtils;
 import org.talend.designer.core.i18n.Messages;
@@ -70,7 +71,7 @@ public class NameAndLabelsReferenceController extends AbstractElementPropertySec
                         ComponentsUtils.getFormalPossibleValues(gParam));
                 if (nameAndLabelsDialog.open() == IDialogConstants.OK_ID) {
                     String propertyName = (String) button.getData(PARAMETER_NAME);
-                    String result = StringUtils.trimToEmpty(nameAndLabelsDialog.getResult());
+                    String result = TalendQuoteUtils.addQuotes(StringUtils.trimToEmpty(nameAndLabelsDialog.getResult()));
                     Text moduleText = (Text) hashCurControls.get(propertyName);
                     moduleText.setText(result);
                     curParameter.setValue(result);

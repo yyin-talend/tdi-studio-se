@@ -508,7 +508,7 @@ public class ComponentsUtils {
         }
         Property property = componentProperties.getValuedProperty(paramName);
         if (property != null) {
-            return property.getValue();
+            return property.getStoredValue();
         }
         return null;
     }

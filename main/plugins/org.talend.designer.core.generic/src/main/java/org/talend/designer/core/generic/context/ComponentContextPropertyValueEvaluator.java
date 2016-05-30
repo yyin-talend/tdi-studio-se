@@ -90,12 +90,12 @@ public class ComponentContextPropertyValueEvaluator implements PropertyValueEval
                     }
                 }
             }
-            if (GenericTypeUtils.isStringType(property)) {
-                return TalendQuoteUtils.removeQuotes(String.valueOf(storedValue));
-            }
             if (valueFromContext != null) {
                 return valueFromContext;
             }
+        }
+        if (GenericTypeUtils.isStringType(property)) {
+            return TalendQuoteUtils.removeQuotes(String.valueOf(storedValue));
         }
         return storedValue;
     }

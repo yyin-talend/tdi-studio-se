@@ -91,7 +91,7 @@ public class NewSalesforceWizardMigrationTask extends NewGenericWizardMigrationT
             GenericConnection genericConnection = initGenericConnection(connection);
             initProperty(connectionItem, genericConnectionItem);
 
-            ComponentWizard componentWizard = service.getComponentWizard(TYPE_NAME, genericConnectionItem.getProperty().getId());            
+            ComponentWizard componentWizard = service.getComponentWizard(TYPE_NAME, genericConnectionItem.getProperty().getId());
             ComponentProperties componentProperties = (ComponentProperties) componentWizard.getForms().get(0).getProperties();
             componentProperties.init();
 
@@ -100,12 +100,29 @@ public class NewSalesforceWizardMigrationTask extends NewGenericWizardMigrationT
             NamedThing nt = componentProperties.getProperty("loginType"); //$NON-NLS-1$
             if (nt instanceof Property) {
                 Property property = (Property) nt;
-                if ("OAuth2".equals(property.getValue())) { //$NON-NLS-1$
-                    property.setValue("OAuth"); //$NON-NLS-1$
-                    componentProperties.setValue("endpoint", "https://login.salesforce.com/services/oauth2"); //$NON-NLS-1$//$NON-NLS-2$
+                if ("OAuth2".equals(property.getStoredValue())) { //$NON-NLS-1$
+                    List<?> propertyPossibleValues = property.getPossibleValues();
+                    Object newValue = null;
+                    if (propertyPossibleValues != null) {
+                        for (Object possibleValue : propertyPossibleValues) {
+                            if (possibleValue.toString().equals("OAuth")) {//$NON-NLS-1$
+                                newValue = possibleValue;
+                                break;
+                            }
+                        }
+                    }
+                    if (newValue == null) {
+                        // set default value
+                        newValue = propertyPossibleValues.get(0);
+                    }
+                    property.setValue(newValue);
+                    if (!connection.isContextMode()) {
+                        componentProperties.setValue("endpoint", "https://login.salesforce.com/services/oauth2"); //$NON-NLS-1$//$NON-NLS-2$
+                    }
                 }
             }
-            // set empty value instead of default null value, this will add automatically the double quotes in the job when drag&drop metadata
+            // set empty value instead of default null value, this will add automatically the double quotes in the job
+            // when drag&drop metadata
             componentProperties.setValue("userPassword.securityKey", ""); //$NON-NLS-1$ //$NON-NLS-2$
             Property property = componentProperties.getValuedProperty("userPassword.securityKey"); //$NON-NLS-1$
             property.setTaggedValue(IGenericConstants.REPOSITORY_VALUE, "securityKey"); //$NON-NLS-1$
@@ -168,7 +185,7 @@ public class NewSalesforceWizardMigrationTask extends NewGenericWizardMigrationT
                     NamedThing tmp = salesforceModuleProperties.getProperty("moduleName"); //$NON-NLS-1$
                     ((Property) tmp).setTaggedValue(IGenericConstants.REPOSITORY_VALUE, "moduleName"); //$NON-NLS-1$
                     ((Property) tmp).setValue(metaTable.getLabel());
-                    
+
                     TaggedValue serializedPropsTV = CoreFactory.eINSTANCE.createTaggedValue();
                     serializedPropsTV.setTag(IComponentConstants.COMPONENT_PROPERTIES_TAG);
                     serializedPropsTV.setValue(salesforceModuleProperties.toSerialized());

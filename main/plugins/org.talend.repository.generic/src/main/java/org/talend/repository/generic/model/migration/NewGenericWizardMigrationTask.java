@@ -76,24 +76,54 @@ public abstract class NewGenericWizardMigrationTask extends AbstractItemMigratio
                                 if (GenericTypeUtils.isEnumType(property)) {
                                     Object obj = props.get(propsKey + "." + value);//$NON-NLS-1$
                                     if (obj != null) {
-                                        componentProperties.setValue(propsKey, obj);
+                                        List<?> propertyPossibleValues = property.getPossibleValues();
+                                        Object newValue = null;
+                                        if (propertyPossibleValues != null) {
+                                            for (Object possibleValue : propertyPossibleValues) {
+                                                if (possibleValue.toString().equals(obj)) {
+                                                    newValue = possibleValue;
+                                                    break;
+                                                }
+                                            }
+                                        }
+                                        if (newValue == null) {
+                                            // set default value
+                                            newValue = propertyPossibleValues.get(0);
+                                        }
+                                        componentProperties.setValue(propsKey, newValue);
                                         changed = true;
                                     }
                                 }
-                                if (property.isFlag(org.talend.daikon.properties.Property.Flags.ENCRYPT) && !oldConnection.isContextMode()) {
-                                	componentProperties.setValue(propsKey, CryptoHelper.getDefault().decrypt(String.valueOf(value)));
+                                if (GenericTypeUtils.isBooleanType(property)) {
+                                    if (value != null && value instanceof String) {
+                                        try {
+                                            value = new Boolean((String) value);
+                                        } catch (Exception e) {
+                                            value = Boolean.FALSE;
+                                        }
+                                    }
+                                }
+                                if (GenericTypeUtils.isIntegerType(property) && !oldConnection.isContextMode()) {
+                                    if (value != null && value instanceof String) {
+                                        try {
+                                            value = new Integer((String) value);
+                                        } catch (Exception e) {
+                                            value = 0;
+                                        }
+                                    }
+                                }
+                                if (property.isFlag(org.talend.daikon.properties.Property.Flags.ENCRYPT)
+                                        && !oldConnection.isContextMode()) {
+                                    componentProperties.setValue(propsKey,
+                                            CryptoHelper.getDefault().decrypt(String.valueOf(value)));
                                     modified = true;
                                     changed = true;
                                 }
-                            }
-                            if (!changed) {
-                                componentProperties.setValue(propsKey, value);
-                                modified = true;
-                            }
-                            NamedThing tmp = componentProperties.getProperty(propsKey);
-                            if (tmp instanceof org.talend.daikon.properties.Property) {
-                                org.talend.daikon.properties.Property property = (org.talend.daikon.properties.Property)tmp;
-                                property.setTaggedValue(IGenericConstants.REPOSITORY_VALUE, property.getName());
+                                if (!changed) {
+                                    property.setStoredValue(value);
+                                    property.setTaggedValue(IGenericConstants.REPOSITORY_VALUE, property.getName());
+                                    modified = true;
+                                }
                             }
                         }
                     } catch (Exception e) {

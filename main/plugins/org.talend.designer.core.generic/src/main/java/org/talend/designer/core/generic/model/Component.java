@@ -55,9 +55,11 @@ import org.talend.core.model.process.IElementParameterDefaultValue;
 import org.talend.core.model.process.INode;
 import org.talend.core.model.process.INodeConnector;
 import org.talend.core.model.temp.ECodePart;
+import org.talend.core.model.utils.ContextParameterUtils;
 import org.talend.core.prefs.ITalendCorePrefConstants;
 import org.talend.core.runtime.util.GenericTypeUtils;
 import org.talend.core.ui.services.IComponentsLocalProviderService;
+import org.talend.core.utils.TalendQuoteUtils;
 import org.talend.daikon.NamedThing;
 import org.talend.daikon.properties.Properties;
 import org.talend.daikon.properties.Property;
@@ -1130,15 +1132,18 @@ public class Component extends AbstractBasicComponent {
             return "\"" + value + "\"";//$NON-NLS-1$ //$NON-NLS-2$ 
         }
         if (GenericTypeUtils.isEnumType(property)) {
-            if (value.indexOf("context.") > -1 || value.indexOf("globalMap.get") > -1) {
+            if (ContextParameterUtils.isContainContextParam(value) || value.indexOf("globalMap.get") > -1) {
                 return value;
             } else {
-                return "\"" + value + "\"";//$NON-NLS-1$ //$NON-NLS-2$
+                return TalendQuoteUtils.addQuotesIfNotExist(value);
             }
         }
         if (GenericTypeUtils.isSchemaType(property)) {
             // Handles embedded escaped quotes which might occur
             return "\"" + value.replace("\\\"", "\\\\\"").replace("\"", "\\\"") + "\"";//$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$
+        }
+        if (GenericTypeUtils.isIntegerType(property) && ContextParameterUtils.isContainContextParam(value)) {
+            value = "Integer.valueOf("+value+")";
         }
         return value;
     }
@@ -1203,7 +1208,9 @@ public class Component extends AbstractBasicComponent {
     @Override
     public String genericToSerialized(IElementParameter param) {
         if (param instanceof GenericElementParameter) {
-            return ((Node) ((GenericElementParameter) param).getElement()).getComponentProperties().toSerialized();
+            Node node = (Node) ((GenericElementParameter) param).getElement();
+            ComponentProperties properties = node.getComponentProperties();
+            return properties.toSerialized();
         } else {
             ComponentProperties componentProperties = ComponentsUtils.getComponentProperties(getName());
             return componentProperties.toSerialized();
