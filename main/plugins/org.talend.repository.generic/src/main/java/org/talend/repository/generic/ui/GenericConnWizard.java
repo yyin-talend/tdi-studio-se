@@ -267,7 +267,7 @@ public class GenericConnWizard extends CheckLastVersionRepositoryWizard {
                     Form form = wizPage.getForm();
                     if (form.isCallAfterFormFinish()) {
                         if (creation) {
-                            factory.create(connectionItem, new Path("")); //$NON-NLS-1$ ;
+                            factory.create(connectionItem, pathToSave);
                         }
                         compService.afterFormFinish(form.getName(), (ComponentProperties) form.getProperties());
                     }
