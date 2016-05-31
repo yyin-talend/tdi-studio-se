@@ -2681,6 +2681,14 @@
               name="AddContextCommentValueMigrationTask"
               version="6.1.2">
         </projecttask>
+        <projecttask
+              beforeLogon="false"
+              breaks="6.0.1"
+              class="org.talend.repository.model.migration.ChangeDefaultValue4tRedShiftOutput"
+              id="org.talend.repository.model.migration.ChangeDefaultValue4tRedShiftOutput"
+              name="ChangeDefaultValue4tRedShiftOutput"
+              version="6.1.2">
+        </projecttask>
         <workspacetask
               breaks="6.1.0"
               class="org.talend.repository.model.migration.ClearLibCacheTask"
