@@ -148,7 +148,7 @@ public class GenericConnWizard extends CheckLastVersionRepositoryWizard {
             connectionProperty = object.getProperty();
             connectionItem = (ConnectionItem) object.getProperty().getItem();
             // set the repositoryObject, lock and set isRepositoryObjectEditable
-            isRepositoryObjectEditable();
+            setRepositoryObject(node.getObject());
             initLockStrategy();
             break;
         }
