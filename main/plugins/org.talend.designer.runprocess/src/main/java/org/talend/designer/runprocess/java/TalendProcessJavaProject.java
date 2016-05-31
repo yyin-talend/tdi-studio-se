@@ -280,8 +280,6 @@ public class TalendProcessJavaProject implements ITalendProcessJavaProject {
 
     private void mavenBuildCodeProjectPom(String goals, String module, Map<String, Object> argumentsMap, IProgressMonitor monitor)
             throws Exception {
-        // cleanBeforeBuilds(module);
-
         IFile childModulePomFile;
         if (TalendMavenConstants.CURRENT_PATH.equals(module)) {
             childModulePomFile = this.getProject().getFile(TalendMavenConstants.POM_FILE_NAME);
@@ -298,6 +296,7 @@ public class TalendProcessJavaProject implements ITalendProcessJavaProject {
                 mavenLauncher.setArgumentsMap(argumentsMap);
                 mavenLauncher.execute(monitor);
             } else {
+                cleanBeforeBuilds(module);
                 mavenLauncher = new MavenPomCommandLauncher(childModulePomFile, goals);
                 mavenLauncher.setArgumentsMap(argumentsMap);
                 mavenLauncher.execute(monitor);
