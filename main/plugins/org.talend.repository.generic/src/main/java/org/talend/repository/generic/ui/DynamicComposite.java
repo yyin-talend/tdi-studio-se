@@ -270,19 +270,22 @@ public class DynamicComposite extends MultipleThreadDynamicComposite implements 
 
     private void updateValidationStatus(ValidationResult validationResult) {
         String validationMessage = validationResult.getMessage();
+        if (validationMessage == null) {
+            validationMessage = Messages.getString("DynamicComposite.defaultErrorMessage"); //$NON-NLS-1$
+        }
         Result validationStatus = validationResult.getStatus();
         switch (validationStatus) {
         case WARNING:
             checker.updateStatus(IStatus.WARNING, null);
-            MessageDialog.openWarning(getShell(), Messages.getString("DynamicComposite.connectionTest.title"), validationMessage); //$NON-NLS-1$
+            MessageDialog.openWarning(getShell(), this.elem.getElementName(), validationMessage);
             break;
         case ERROR:
             checker.updateStatus(IStatus.ERROR, null);
-            MessageDialog.openError(getShell(), Messages.getString("DynamicComposite.connectionTest.title"), validationMessage); //$NON-NLS-1$
+            MessageDialog.openError(getShell(), this.elem.getElementName(), validationMessage);
             break;
         default:
             checker.updateStatus(IStatus.OK, null);
-            MessageDialog.openInformation(getShell(), Messages.getString("DynamicComposite.connectionTest.title"), //$NON-NLS-1$
+            MessageDialog.openInformation(getShell(), this.elem.getElementName(),
                     Messages.getString("DynamicComposite.connectionTest.msg.success")); //$NON-NLS-1$
             break;
         }
