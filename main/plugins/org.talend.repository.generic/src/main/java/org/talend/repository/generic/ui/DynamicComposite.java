@@ -270,10 +270,15 @@ public class DynamicComposite extends MultipleThreadDynamicComposite implements 
 
     private void updateValidationStatus(ValidationResult validationResult) {
         String validationMessage = validationResult.getMessage();
-        if (validationMessage == null) {
-            validationMessage = Messages.getString("DynamicComposite.defaultErrorMessage"); //$NON-NLS-1$
-        }
         Result validationStatus = validationResult.getStatus();
+        if (validationMessage == null) {
+            if (validationStatus == Result.ERROR) {
+                validationMessage = Messages.getString("DynamicComposite.defaultErrorMessage"); //$NON-NLS-1$
+            } else {
+                // skip every empty messages
+                return;
+            }
+        }
         switch (validationStatus) {
         case WARNING:
             checker.updateStatus(IStatus.WARNING, null);
@@ -285,8 +290,7 @@ public class DynamicComposite extends MultipleThreadDynamicComposite implements 
             break;
         default:
             checker.updateStatus(IStatus.OK, null);
-            MessageDialog.openInformation(getShell(), this.elem.getElementName(),
-                    Messages.getString("DynamicComposite.connectionTest.msg.success")); //$NON-NLS-1$
+            MessageDialog.openInformation(getShell(), this.elem.getElementName(), validationMessage);
             break;
         }
     }
