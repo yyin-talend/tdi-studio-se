@@ -304,7 +304,7 @@ public class MavenJavaProcessor extends JavaProcessor {
 
         final Map<String, Object> argumentsMap = new HashMap<>();
         argumentsMap.put(TalendProcessArgumentConstant.ARG_GOAL, getGoals());
-        argumentsMap.put(TalendProcessArgumentConstant.ARG_PROGRAM_ARGUMENTS, "-P !"
+        argumentsMap.put(TalendProcessArgumentConstant.ARG_PROGRAM_ARGUMENTS, "-Dmaven.main.skip=true -P !" //$NON-NLS-1$
                 + TalendMavenConstants.PROFILE_PACKAGING_AND_ASSEMBLY);
         talendJavaProject.buildModules(monitor, null, argumentsMap);
     }
