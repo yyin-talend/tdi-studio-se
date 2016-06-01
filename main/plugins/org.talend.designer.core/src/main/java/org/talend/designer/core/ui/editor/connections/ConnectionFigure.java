@@ -14,6 +14,7 @@ package org.talend.designer.core.ui.editor.connections;
 
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
@@ -408,7 +409,27 @@ public class ConnectionFigure extends PolylineConnectionEx implements IMapMode {
 
     @Override
     public boolean containsPoint(int x, int y) {
-        return this.getBounds().contains(x,y);
+        Rectangle tempBounds = new Rectangle();
+        int tolerance = (int) Math.max(getLineWidthFloat() / 2.0f,
+                3 + getLineWidth() / 2);
+        tempBounds.setBounds(getBounds());
+        tempBounds.expand(tolerance, tolerance);
+        if (!tempBounds.contains(x, y))
+            return false;
+        return shapeContainsPoint(x, y) || childrenContainsPoint(x, y);
     }
+
+    @Override
+    protected boolean childrenContainsPoint(int x, int y) {
+        for (Iterator it = getChildren().iterator(); it.hasNext();) {
+            IFigure nextChild = (IFigure) it.next();
+            if (nextChild.isVisible()&&nextChild.containsPoint(x, y)) {
+                return true;
+            }
+        }
+        return false;
+    }
+    
+    
 
 }
