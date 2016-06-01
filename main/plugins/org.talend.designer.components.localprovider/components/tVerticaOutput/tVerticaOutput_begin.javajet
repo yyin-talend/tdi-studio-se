@@ -161,13 +161,13 @@ if(("UPDATE").equals(dataAction) || ("INSERT_OR_UPDATE").equals(dataAction) || (
 		   %>
 		   		 dbschema_<%=cid%> = <%=dbschema%>;
 			<%
-				if("VERTICA_7_1_X".equals(db_version) || "VERTICA_7_0_X".equals(db_version) || "VERTICA_6_1_X".equals(db_version) || "VERTICA_6_0".equals(db_version) || "VERTICA_5_1".equals(db_version)){
+				if("vertica_3.0_jdk_5.jar".equals(db_version) || "vertica_3.5_jdk_5.jar".equals(db_version) || "vertica_4.0_jdk_5.jar".equals(db_version) || "vertica_4.1.7_jdk_5.jar".equals(db_version) || "vertica_4.1.14_jdk_5.jar".equals(db_version)){
 			%>
-	 				String driverClass_<%=cid%> = "com.vertica.jdbc.Driver";
+	 				String driverClass_<%=cid%> = "com.vertica.Driver";
 			<%
 				}else{
 			%>
-					String driverClass_<%=cid%> = "com.vertica.Driver";
+					String driverClass_<%=cid%> = "com.vertica.jdbc.Driver";
 			<%
 				}
 			%>
