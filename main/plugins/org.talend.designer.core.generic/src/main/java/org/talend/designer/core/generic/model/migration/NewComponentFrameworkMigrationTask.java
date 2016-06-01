@@ -45,6 +45,7 @@ import org.talend.core.model.process.EConnectionType;
 import org.talend.core.model.process.EParameterFieldType;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.properties.Item;
+import org.talend.core.repository.model.ProxyRepositoryFactory;
 import org.talend.core.runtime.util.GenericTypeUtils;
 import org.talend.core.ui.component.ComponentsFactoryProvider;
 import org.talend.daikon.NamedThing;
@@ -63,6 +64,8 @@ import org.talend.designer.core.model.utils.emf.talendfile.ElementValueType;
 import org.talend.designer.core.model.utils.emf.talendfile.MetadataType;
 import org.talend.designer.core.model.utils.emf.talendfile.NodeType;
 import org.talend.designer.core.model.utils.emf.talendfile.ProcessType;
+
+import com.sun.xml.internal.ws.api.model.ExceptionType;
 
 /**
  * created by hcyi on Nov 18, 2015 Detailled comment
@@ -174,6 +177,7 @@ public abstract class NewComponentFrameworkMigrationTask extends AbstractJobMigr
                     metadatasMap.put(metadataType.getConnector(), metadataType);
                 }
                 Iterator<Entry<String, String>> schemaParamIter = schemaParamMap.entrySet().iterator();
+                String uniqueName = ParameterUtilTool.getParameterValue(nodeType, "UNIQUE_NAME"); //$NON-NLS-1$
 
                 while (schemaParamIter.hasNext()) {
                     Entry<String, String> schemaParamEntry = schemaParamIter.next();
@@ -191,8 +195,18 @@ public abstract class NewComponentFrameworkMigrationTask extends AbstractJobMigr
                                 .convert(metadataTable));
                         compProperties.setValue(newParamName, schema);
                     }
+                    if (!oldConnector.equals(newConnector)) {
+                        // if connector was changed, we should update the connections
+                        for (Object connectionObj : processType.getConnection()) {
+                            if (connectionObj instanceof ConnectionType) {
+                                ConnectionType connectionType = (ConnectionType) connectionObj;
+                                if (connectionType.getSource().equals(uniqueName) && connectionType.getConnectorName().equals(oldConnector)) {
+                                    connectionType.setConnectorName(newConnector);
+                                }
+                            }
+                        }
+                    }
                 }
-                String uniqueName = ParameterUtilTool.getParameterValue(nodeType, "UNIQUE_NAME"); //$NON-NLS-1$
                 for (Object connectionObj : processType.getConnection()) {
                     ConnectionType connection = (ConnectionType) connectionObj;
                     if (connection.getSource() != null && connection.getSource().equals(uniqueName)) {
@@ -214,6 +228,7 @@ public abstract class NewComponentFrameworkMigrationTask extends AbstractJobMigr
         };
 
         if (processType != null) {
+            boolean modified = false;
             for (Object obj : processType.getNode()) {
                 if (obj != null && obj instanceof NodeType) {
                     String componentName = ((NodeType) obj).getComponentName();
@@ -222,17 +237,21 @@ public abstract class NewComponentFrameworkMigrationTask extends AbstractJobMigr
                         continue;
                     }
                     IComponentFilter filter = new NameComponentFilter(componentName);
-                    try {
-                        ModifyComponentsAction.searchAndModify(item, processType, filter,
-                                Arrays.<IComponentConversion> asList(conversion));
-                    } catch (PersistenceException e) {
-                        ExceptionHandler.process(e);
-                        return ExecutionResult.FAILURE;
-                    }
+                    modified = ModifyComponentsAction.searchAndModify((NodeType) obj, filter,
+                                Arrays.<IComponentConversion> asList(conversion)) || modified;
+                }
+            }
+            if (modified) {
+                try {
+                    ProxyRepositoryFactory.getInstance().save(item, true);
+                    return ExecutionResult.SUCCESS_NO_ALERT;
+                } catch (PersistenceException e) {
+                    ExceptionHandler.process(e);
+                    return ExecutionResult.FAILURE;
                 }
             }
         }
-        return ExecutionResult.SUCCESS_NO_ALERT;
+        return ExecutionResult.NOTHING_TO_DO;
     }
 
     protected void migrateComponent(String componentName) {

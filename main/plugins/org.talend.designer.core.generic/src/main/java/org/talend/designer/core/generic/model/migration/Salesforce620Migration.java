@@ -19,7 +19,9 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
 
+import org.apache.commons.lang.ArrayUtils;
 import org.talend.commons.exception.ExceptionHandler;
+import org.talend.commons.exception.PersistenceException;
 import org.talend.components.api.properties.ComponentProperties;
 import org.talend.core.language.ECodeLanguage;
 import org.talend.core.model.components.ComponentUtilities;
@@ -30,6 +32,7 @@ import org.talend.core.model.components.filters.NameComponentFilter;
 import org.talend.core.model.migration.AbstractJobMigrationTask;
 import org.talend.core.model.properties.Item;
 import org.talend.core.model.utils.ContextParameterUtils;
+import org.talend.core.repository.model.ProxyRepositoryFactory;
 import org.talend.core.runtime.util.GenericTypeUtils;
 import org.talend.core.utils.TalendQuoteUtils;
 import org.talend.daikon.NamedThing;
@@ -42,6 +45,7 @@ import org.talend.designer.core.generic.utils.ComponentsUtils;
 import org.talend.designer.core.model.utils.emf.talendfile.ElementParameterType;
 import org.talend.designer.core.model.utils.emf.talendfile.NodeType;
 import org.talend.designer.core.model.utils.emf.talendfile.ProcessType;
+import org.talend.migration.IMigrationTask.ExecutionResult;
 
 /**
  * created by nrousseau on May 25, 2016 Detailled comment
@@ -144,7 +148,7 @@ public class Salesforce620Migration extends AbstractJobMigrationTask {
                         if (moduleNameProperty.getValue() instanceof String) {
                             String column = (String) moduleNameProperty.getValue();
                             columns.add(column);
-                        } else if (moduleNameProperty.getValue() instanceof List){
+                        } else if (moduleNameProperty.getValue() instanceof List) {
                             columns.addAll((Collection<? extends String>) moduleNameProperty.getValue());
                         }
                         moduleNameProperty.setPossibleValues(columns);
@@ -154,18 +158,27 @@ public class Salesforce620Migration extends AbstractJobMigrationTask {
             }
         };
 
-        for (String name : componentsName) {
-            IComponentFilter filter = new NameComponentFilter(name);
-
+        boolean modified = false;
+        for (Object obj : processType.getNode()) {
+            if (obj != null && obj instanceof NodeType) {
+                String componentName = ((NodeType) obj).getComponentName();
+                if (ArrayUtils.contains(componentsName, componentName)) {
+                    IComponentFilter filter = new NameComponentFilter(componentName);
+                    modified = ModifyComponentsAction.searchAndModify((NodeType) obj, filter,
+                            Arrays.<IComponentConversion> asList(changeJDBCDriverJarType))
+                            || modified;
+                }
+            }
+        }
+        if (modified) {
             try {
-                ModifyComponentsAction.searchAndModify(item, processType, filter,
-                        Arrays.<IComponentConversion> asList(changeJDBCDriverJarType));
-            } catch (Exception e) {
+                ProxyRepositoryFactory.getInstance().save(item, true);
+                return ExecutionResult.SUCCESS_NO_ALERT;
+            } catch (PersistenceException e) {
                 ExceptionHandler.process(e);
                 return ExecutionResult.FAILURE;
             }
         }
-
         return ExecutionResult.SUCCESS_WITH_ALERT;
 
     }
@@ -199,7 +212,7 @@ public class Salesforce620Migration extends AbstractJobMigrationTask {
                             }
                         } else if (GenericTypeUtils.isEnumType(newProperty) && (!(newProperty instanceof EnumProperty))) {
                             property.setStoredValue(TalendQuoteUtils.removeQuotes(stringValue));
-                        } else if (GenericTypeUtils.isEnumType(property)) {
+                        } else if (GenericTypeUtils.isEnumType(newProperty)) {
                             List<?> propertyPossibleValues = ((Property<?>) newProperty).getPossibleValues();
                             if (propertyPossibleValues != null) {
                                 for (Object possibleValue : propertyPossibleValues) {

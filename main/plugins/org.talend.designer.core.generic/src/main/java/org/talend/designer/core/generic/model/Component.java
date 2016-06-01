@@ -925,6 +925,13 @@ public class Component extends AbstractBasicComponent {
             for (INodeConnector curNodeConn : listConnector) {
                 if (curNodeConn.getDefaultConnectionType().equals(currentType)) {
                     exists = true;
+                    if (currentType == EConnectionType.FLOW_MAIN) {
+                        curNodeConn.addConnectionProperty(EConnectionType.FLOW_REF, EConnectionType.FLOW_REF.getRGB(),
+                                EConnectionType.FLOW_REF.getDefaultLineStyle());
+                        curNodeConn.addConnectionProperty(EConnectionType.FLOW_MERGE, EConnectionType.FLOW_MERGE.getRGB(),
+                                EConnectionType.FLOW_MERGE.getDefaultLineStyle());
+                    }
+
                 }
             }
             if (!exists) { // will add by default all connectors not defined in
@@ -943,12 +950,6 @@ public class Component extends AbstractBasicComponent {
                 nodeConnector.setMaxLinkOutput(0);
                 nodeConnector.setMinLinkInput(0);
                 nodeConnector.setMinLinkOutput(0);
-                if (currentType == EConnectionType.FLOW_MAIN) {
-                    nodeConnector.addConnectionProperty(EConnectionType.FLOW_REF, EConnectionType.FLOW_REF.getRGB(),
-                            EConnectionType.FLOW_REF.getDefaultLineStyle());
-                    nodeConnector.addConnectionProperty(EConnectionType.FLOW_MERGE, EConnectionType.FLOW_MERGE.getRGB(),
-                            EConnectionType.FLOW_MERGE.getDefaultLineStyle());
-                }
                 listConnector.add(nodeConnector);
             }
         }
