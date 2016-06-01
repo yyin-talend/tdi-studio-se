@@ -43,8 +43,7 @@ public class ReplaceVarcharArrayWithVarcharIssueTDI35719 extends AbstractJobMigr
         ProcessType processType = getProcessType(item);
 
         final List<String> componentNames = Arrays.asList("tTeradataTPTUtility", "tTeradataTPTExec");
-        final List<String> tablesToCheck = Arrays.asList("TPT_CONSUMER_OPERATOR_OPTIONAL_ATTRIBUTES", "TPT_COOA_FOR_INSERTER",
-                "TPT_COOA_FOR_UPDATE", "TPT_COOA_FOR_STREAM");
+        final String tableToCheck = "TPT_COOA_FOR_UPDATE";
         final List<String> fieldNames = Arrays.asList("ERRORTABLE1", "ERRORTABLE2", "WORKTABLE");
 
         IComponentFilter filter = new IComponentFilter() {
@@ -70,7 +69,7 @@ public class ReplaceVarcharArrayWithVarcharIssueTDI35719 extends AbstractJobMigr
                                 NodeType nt = (NodeType) o;
                                 for (Object o1 : nt.getElementParameter()) {
                                     ElementParameterType t = (ElementParameterType) o1;
-                                    if ("TABLE".equals(t.getField()) && tablesToCheck.contains(t.getName())) {
+                                    if ("TABLE".equals(t.getField()) && tableToCheck.equals(t.getName())) {
                                         List<ElementValueType> elementValues = (List<ElementValueType>) t.getElementValue();
                                         for (int i = 0; i < elementValues.size() - 1; i++) {
                                             ElementValueType nameCol = elementValues.get(i);
