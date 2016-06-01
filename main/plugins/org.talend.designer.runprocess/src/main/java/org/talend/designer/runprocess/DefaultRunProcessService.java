@@ -342,6 +342,16 @@ public class DefaultRunProcessService implements IRunProcessService {
     /*
      * (non-Javadoc)
      * 
+     * @see org.talend.designer.runprocess.IRunProcessService#checkLastGenerationHasCompilationError(boolean)
+     */
+    @Override
+    public void checkLastGenerationHasCompilationError(boolean updateProblemsView) throws ProcessorException {
+        JobErrorsChecker.checkLastGenerationHasCompilationError(updateProblemsView);
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.talend.designer.runprocess.IRunProcessService#getResourceFile(java.lang.String)
      */
     @Override
