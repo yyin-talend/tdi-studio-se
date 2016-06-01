@@ -464,16 +464,11 @@ try{
                 fw_<%=cid %>.write("            UserPassword = '" + decryptedPassword_<%=cid%> + "',<%=lineSeparator%>");
                 fw_<%=cid %>.write("            TdpId = '" + <%=tdpid%> + "'<%=lineSeparator%>");                
 
-                <% if("Load".equals(operatorType)){%>
+                <% if("Load".equals(operatorType) || "Update".equals(operatorType)){%>
                 	    fw_<%=cid %>.write("            ,TargetTable = '" + tableFullName_<%=cid%> + "'<%=lineSeparator%>");
                 	<% if(specifyLogTable){ %>                	    
                 	    fw_<%=cid %>.write("            ,LogTable = '" + logTable_<%= cid %> + "'<%=lineSeparator%>");
                 	<% } %>
-                <%} if("Update".equals(operatorType)){%>
-                	<% if(specifyLogTable){ %>                	    
-                	    fw_<%=cid %>.write("            ,LogTable = '" + logTable_<%= cid %> + "'<%=lineSeparator%>");
-                	<% } %>
-                		fw_<%=cid %>.write("            ,TargetTable = '" + tableFullName_<%=cid%> + "'<%=lineSeparator%>");
                 <%} if("Stream".equals(operatorType)){%>
                 	<% if(specifyLogTable){ %>
                 	    fw_<%=cid %>.write("            ,LogTable = '" + logTable_<%= cid %> + "'<%=lineSeparator%>");
@@ -493,8 +488,7 @@ try{
 							}else{
 								isArrType = arrayAttrisList.contains(key);
 								if(!isArrType){//Varchar or table name
-									boolean isTableType = tableNameAttrisList.contains(key);
-									if(isTableType || "ERRORTABLE".equalsIgnoreCase(key)){
+									if("ERRORTABLE".equalsIgnoreCase(key)){
 									%>
 									   fw_<%=cid %>.write("            ,<%= key %> = '"+<%= dbname %>+"."+<%= value %>+"'<%=lineSeparator%>");
 									<%
