@@ -41,6 +41,8 @@ import org.talend.components.api.wizard.ComponentWizard;
 import org.talend.components.api.wizard.ComponentWizardDefinition;
 import org.talend.core.CorePlugin;
 import org.talend.core.GlobalServiceRegister;
+import org.talend.core.PluginChecker;
+import org.talend.core.model.components.ComponentCategory;
 import org.talend.core.model.components.EComponentType;
 import org.talend.core.model.components.IMultipleComponentItem;
 import org.talend.core.model.components.IMultipleComponentManager;
@@ -58,6 +60,7 @@ import org.talend.core.model.temp.ECodePart;
 import org.talend.core.model.utils.ContextParameterUtils;
 import org.talend.core.prefs.ITalendCorePrefConstants;
 import org.talend.core.runtime.util.GenericTypeUtils;
+import org.talend.core.ui.component.ComponentsFactoryProvider;
 import org.talend.core.ui.services.IComponentsLocalProviderService;
 import org.talend.core.utils.TalendQuoteUtils;
 import org.talend.daikon.NamedThing;
@@ -74,6 +77,7 @@ import org.talend.designer.core.model.components.DummyComponent;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.model.components.ElementParameter;
 import org.talend.designer.core.model.components.ElementParameterDefaultValue;
+import org.talend.designer.core.model.components.EmfComponent;
 import org.talend.designer.core.model.components.MultipleComponentConnection;
 import org.talend.designer.core.model.components.MultipleComponentManager;
 import org.talend.designer.core.model.components.NodeConnector;
@@ -612,6 +616,68 @@ public class Component extends AbstractBasicComponent {
         newParam.setSerialized(true);
         newParam.setParentParameter(param);
         listParam.add(param);
+
+        if (ComponentCategory.CATEGORY_4_DI.getName().equals(this.getPaletteType())) {
+            boolean isStatCatcherComponent = false;
+            /* for bug 0021961,should not show parameter TSTATCATCHER_STATS in UI on component tStatCatcher */
+            if (!isStatCatcherComponent) {
+                boolean tStatCatcherAvailable = ComponentsFactoryProvider.getInstance().get(EmfComponent.TSTATCATCHER_NAME,
+                        ComponentCategory.CATEGORY_4_DI.getName()) != null;
+                param = new ElementParameter(node);
+                param.setName(EParameterName.TSTATCATCHER_STATS.getName());
+                param.setValue(Boolean.FALSE);
+                param.setDisplayName(EParameterName.TSTATCATCHER_STATS.getDisplayName());
+                param.setFieldType(EParameterFieldType.CHECK);
+                param.setCategory(EComponentCategory.ADVANCED);
+                param.setNumRow(199);
+                param.setReadOnly(false);
+                param.setRequired(false);
+                param.setDefaultValue(param.getValue());
+                param.setShow(tStatCatcherAvailable);
+                listParam.add(param);
+            }
+        }
+        
+        // These parameters is only work when TIS is loaded
+        // GLiu Added for Task http://jira.talendforge.org/browse/TESB-4279
+        if (PluginChecker.isTeamEdition() && !ComponentCategory.CATEGORY_4_CAMEL.getName().equals(getPaletteType())) {
+            boolean defaultParalelize = Boolean.FALSE;
+            param = new ElementParameter(node);
+            param.setReadOnly(!defaultParalelize);
+            param.setName(EParameterName.PARALLELIZE.getName());
+            param.setValue(Boolean.FALSE);
+            param.setDisplayName(EParameterName.PARALLELIZE.getDisplayName());
+            param.setFieldType(EParameterFieldType.CHECK);
+            param.setCategory(EComponentCategory.ADVANCED);
+            param.setNumRow(200);
+            param.setShow(true);
+            param.setDefaultValue(param.getValue());
+            listParam.add(param);
+
+            param = new ElementParameter(node);
+            param.setReadOnly(!defaultParalelize);
+            param.setName(EParameterName.PARALLELIZE_NUMBER.getName());
+            param.setValue(2);
+            param.setDisplayName(EParameterName.PARALLELIZE_NUMBER.getDisplayName());
+            param.setFieldType(EParameterFieldType.TEXT);
+            param.setCategory(EComponentCategory.ADVANCED);
+            param.setNumRow(200);
+            param.setShowIf(EParameterName.PARALLELIZE.getName() + " == 'true'"); //$NON-NLS-1$
+            param.setDefaultValue(param.getValue());
+            listParam.add(param);
+
+            param = new ElementParameter(node);
+            param.setReadOnly(!defaultParalelize);
+            param.setName(EParameterName.PARALLELIZE_KEEP_EMPTY.getName());
+            param.setValue(Boolean.FALSE);
+            param.setDisplayName(EParameterName.PARALLELIZE_KEEP_EMPTY.getDisplayName());
+            param.setFieldType(EParameterFieldType.CHECK);
+            param.setCategory(EComponentCategory.ADVANCED);
+            param.setNumRow(200);
+            param.setShow(false);
+            param.setDefaultValue(param.getValue());
+            listParam.add(param);
+        }
     }
 
     private ComponentWizardDefinition getWizardDefinition(ComponentProperties componentProperties) {
@@ -1143,7 +1209,7 @@ public class Component extends AbstractBasicComponent {
             return "\"" + value.replace("\\\"", "\\\\\"").replace("\"", "\\\"") + "\"";//$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$
         }
         if (GenericTypeUtils.isIntegerType(property) && ContextParameterUtils.isContainContextParam(value)) {
-            value = "Integer.valueOf("+value+")";
+            value = "Integer.valueOf(" + value + ")";
         }
         return value;
     }
