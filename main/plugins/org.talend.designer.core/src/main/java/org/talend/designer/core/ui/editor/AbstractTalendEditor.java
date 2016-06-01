@@ -1124,6 +1124,7 @@ public abstract class AbstractTalendEditor extends GraphicalEditorWithFlyoutPale
         IFigure contentLayer = layerManager.getLayer(LayerConstants.PRINTABLE_LAYERS);
         // create image from root figure
         FreeformViewport viewport = (FreeformViewport) ((TalendScalableFreeformRootEditPart) layerManager).getFigure();
+        viewport.getUpdateManager().performUpdate();
         int width = contentLayer.getBounds().width;
         int height = contentLayer.getBounds().height;
         Image img = new Image(null, width, height);
