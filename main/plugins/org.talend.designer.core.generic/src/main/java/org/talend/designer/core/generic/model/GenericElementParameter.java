@@ -146,7 +146,7 @@ public class GenericElementParameter extends ElementParameter {
             if (newValue instanceof String) {
                 ((SchemaProperty) widgetProperty).setValue(new Schema.Parser().parse((String) newValue));
             } else if (newValue instanceof Schema) {
-                ((SchemaProperty) widgetProperty).setStoredValue(((Schema) newValue).toString());
+                ((SchemaProperty) widgetProperty).setValue(((Schema) newValue));
             }
         } else if (widgetProperty instanceof Property) {
             Property se = (Property<?>) widgetProperty;
@@ -268,7 +268,8 @@ public class GenericElementParameter extends ElementParameter {
     }
 
     private boolean callAfter() {
-        if (widget.isCallAfter() && hasPropertyChangeListener()) {
+        if (widget.isCallAfter() && (hasPropertyChangeListener() || widget.getWidgetType() == WidgetType.SCHEMA_REFERENCE)) {
+            // schema update must also
             return new ComponentServiceCaller(widget.getContent().getDisplayName(), widget.isLongRunning()) {
 
                 @Override
@@ -299,7 +300,7 @@ public class GenericElementParameter extends ElementParameter {
                         IMetadataTable newTable = MetadataToolHelper.convert(metadataTable);
                         if ((!mainTable.sameMetadataAs(newTable) || !newTable.sameMetadataAs(mainTable))) {
                             mainTable.setListColumns(newTable.getListColumns());
-                            if (propagate == null) {
+                            if (propagate == null && node.getOutgoingConnections().size() != 0) {
                                 propagate = ChangeMetadataCommand.askPropagate();
                             }
                             if (propagate != null && propagate) {
