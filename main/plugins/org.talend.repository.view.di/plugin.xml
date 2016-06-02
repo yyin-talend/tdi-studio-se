@@ -521,7 +521,7 @@
       <importItemsProvider
             id="org.talend.repository.view.di.importProvider.context"
             name="Context importer"
-            priority="NORMAL">
+            priority="HIGH">
          <importItemsHandler
                class="org.talend.repository.view.di.viewer.handlers.ContextImportHandler">
             <parameter
