@@ -91,7 +91,7 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
                 final BufferedReader reader = new BufferedReader(new InputStreamReader(is));
                 String moduleName;
                 while ((moduleName = reader.readLine()) != null) {
-                    int comment = moduleName.indexOf(';');
+                    int comment = moduleName.indexOf('#');
                     if (-1 != comment) {
                         moduleName = moduleName.substring(0, comment);
                     }
