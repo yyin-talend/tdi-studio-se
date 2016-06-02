@@ -77,7 +77,7 @@ if ((metadatas != null) && (metadatas.size() > 0)) {
 			if( JavaTypesManager.isNumberType(javaType, rightColumn.isNullable())) {
 				String typeToGenerate = JavaTypesManager.getTypeToGenerate(rightColumn.getTalendType(), rightColumn.isNullable());
           %>
-            ope_<%=cid%>.matches((<%="$source == null? false : $source.compareTo($target) $operator 0".replace("$source", connName + "." + keyColumn.get("INPUT_COLUMN")).replace("$target", "ParserUtils.parseTo_"+typeToGenerate+"("+keyColumn.get("RVALUE")+"+\"\")").replace("$operator", keyColumn.get("OPERATOR"))%>)
+            ope_<%=cid%>.matches((<%="$source == null? false : $source.compareTo($target) $operator 0".replace("$source", connName + "." + keyColumn.get("INPUT_COLUMN")).replace("$target", "ParserUtils.parseTo_"+typeToGenerate+"(String.valueOf("+keyColumn.get("RVALUE")+"))").replace("$operator", keyColumn.get("OPERATOR"))%>)
                            , "<%="$source.compareTo($target) $operator 0".replace("$source", keyColumn.get("INPUT_COLUMN")).replace("$target", keyColumn.get("RVALUE").replace("\\", "\\\\").replace("\"", "\\\"")).replace("$operator", keyColumn.get("OPERATOR"))%> failed");
 		 	<%
 			}else{
