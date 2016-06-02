@@ -91,6 +91,7 @@ public abstract class NewGenericWizardMigrationTask extends AbstractItemMigratio
                                             newValue = propertyPossibleValues.get(0);
                                         }
                                         componentProperties.setValue(propsKey, newValue);
+                                        property.setTaggedValue(IGenericConstants.REPOSITORY_VALUE, property.getName());
                                         changed = true;
                                     }
                                 }
@@ -116,6 +117,7 @@ public abstract class NewGenericWizardMigrationTask extends AbstractItemMigratio
                                         && !oldConnection.isContextMode()) {
                                     componentProperties.setValue(propsKey,
                                             CryptoHelper.getDefault().decrypt(String.valueOf(value)));
+                                    property.setTaggedValue(IGenericConstants.REPOSITORY_VALUE, property.getName());
                                     modified = true;
                                     changed = true;
                                 }

@@ -182,8 +182,7 @@ public class NewSalesforceWizardMigrationTask extends NewGenericWizardMigrationT
                         .getClass().getClassLoader(), new Object[] { metaTable.getName() });
                 if (object != null && object instanceof ComponentProperties) {
                     ComponentProperties salesforceModuleProperties = (ComponentProperties) object;
-                    salesforceModuleProperties.getProperties("connection").copyValuesFrom(componentProperties); //$NON-NLS-1$
-                    copyTaggedValues(componentProperties, salesforceModuleProperties.getProperties("connection")); //$NON-NLS-1$
+                    salesforceModuleProperties.getProperties("connection").copyValuesFrom(componentProperties, true, false); //$NON-NLS-1$
                     NamedThing tmp = salesforceModuleProperties.getProperty("moduleName"); //$NON-NLS-1$
                     ((Property) tmp).setTaggedValue(IGenericConstants.REPOSITORY_VALUE, "moduleName"); //$NON-NLS-1$
                     ((Property) tmp).setValue(metaTable.getLabel());
@@ -206,67 +205,6 @@ public class NewSalesforceWizardMigrationTask extends NewGenericWizardMigrationT
             }
         }
         return modified;
-    }
-
-    /**
-     * Copy all of the values from the specified {@link Properties} object. This includes the values from any nested
-     * objects. This can be used even if the {@code Properties} objects are not the same class. Fields that are not
-     * present in the this {@code Properties} object are ignored.
-     * 
-     * @param props
-     */
-    public void copyTaggedValues(org.talend.daikon.properties.Properties source, org.talend.daikon.properties.Properties target) {
-        for (NamedThing otherProp : source.getProperties()) {
-            NamedThing thisProp = target.getProperty(otherProp.getName());
-            if (thisProp == null) {
-                try {
-                    Class otherClass = otherProp.getClass();
-
-                    if (Property.class.isAssignableFrom(otherClass)) {
-                        Constructor c = otherClass.getConstructor(String.class);
-                        thisProp = (NamedThing) c.newInstance(otherProp.getName());
-                    } else if (org.talend.daikon.properties.Properties.class.isAssignableFrom(otherClass)) {
-                        // Look for single arg String, but an inner class will have a Properties as first arg
-                        Constructor constructors[] = otherClass.getConstructors();
-                        for (Constructor c : constructors) {
-                            Class pts[] = c.getParameterTypes();
-                            if (pts.length == 1 && String.class.isAssignableFrom(pts[0])) {
-                                thisProp = (NamedThing) c.newInstance(otherProp.getName());
-                                break;
-                            }
-                            if (pts.length == 2 && org.talend.daikon.properties.Properties.class.isAssignableFrom(pts[0])
-                                    && String.class.isAssignableFrom(pts[1])) {
-                                thisProp = (NamedThing) c.newInstance(this, otherProp.getName());
-                                break;
-                            }
-                        }
-                    } else {
-                        TalendRuntimeException.unexpectedException("Unexpected property class: " + otherProp.getClass()
-                                + " prop: " + otherProp);
-                    }
-
-                    try {
-                        Field f = getClass().getField(otherProp.getName());
-                        f.set(this, thisProp);
-                    } catch (NoSuchFieldException e) {
-                        // A field exists in the other that's not in ours, just ignore it
-                        continue;
-                    }
-                } catch (Exception e) {
-                    TalendRuntimeException.unexpectedException(e);
-                }
-            }
-            if (otherProp instanceof org.talend.daikon.properties.Properties) {
-                copyTaggedValues((org.talend.daikon.properties.Properties) otherProp,
-                        ((org.talend.daikon.properties.Properties) thisProp));
-            } else {
-                Object value = ((Property) otherProp).getTaggedValue(IGenericConstants.REPOSITORY_VALUE);
-                if (value != null) {
-                    ((Property) thisProp).setTaggedValue(IGenericConstants.REPOSITORY_VALUE, value);
-                }
-            }
-        }
-
     }
 
     @Override
