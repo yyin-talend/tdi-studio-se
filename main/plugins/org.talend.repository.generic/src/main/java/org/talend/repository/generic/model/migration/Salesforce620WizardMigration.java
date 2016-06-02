@@ -14,6 +14,7 @@ package org.talend.repository.generic.model.migration;
 
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -31,7 +32,7 @@ import org.talend.core.repository.model.ProxyRepositoryFactory;
 import org.talend.core.runtime.util.GenericTypeUtils;
 import org.talend.core.utils.ReflectionUtils;
 import org.talend.core.utils.TalendQuoteUtils;
-import org.talend.cwm.helper.ConnectionHelper;
+import org.talend.cwm.helper.PackageHelper;
 import org.talend.daikon.NamedThing;
 import org.talend.daikon.properties.EnumProperty;
 import org.talend.daikon.properties.Properties;
@@ -79,8 +80,10 @@ public class Salesforce620WizardMigration extends AbstractItemMigrationTask {
                 newProperties.init();
                 ComponentProperties properties = loadProperties(serialized, newProperties);
                 updateSubProperties(properties, newProperties);
-                connection.setCompProperties(properties.toSerialized());
-                Set<MetadataTable> tables = ConnectionHelper.getTables(connection);
+                newProperties.copyValuesFrom(properties, true, false);
+                connection.setCompProperties(newProperties.toSerialized());
+                Set<MetadataTable> tables = new HashSet<MetadataTable>();
+                PackageHelper.getAllTables(connection, tables);
                 for (MetadataTable table : tables) {
                     EList<TaggedValue> values = table.getTaggedValue();
                     for (TaggedValue value : values) {
@@ -90,9 +93,11 @@ public class Salesforce620WizardMigration extends AbstractItemMigrationTask {
                                             .getClass().getClassLoader(), new Object[] { table.getName() });
                             if (object != null && object instanceof ComponentProperties) {
                                 ComponentProperties newSalesforceModuleProperties = (ComponentProperties) object;
-                                ComponentProperties moduleProperties = loadProperties(serialized, newSalesforceModuleProperties);
+                                ComponentProperties moduleProperties = loadProperties(value.getValue(),
+                                        newSalesforceModuleProperties);
                                 updateSubProperties(moduleProperties, newSalesforceModuleProperties);
-                                connection.setCompProperties(moduleProperties.toSerialized());
+                                newSalesforceModuleProperties.copyValuesFrom(moduleProperties, true, false);
+                                value.setValue(newSalesforceModuleProperties.toSerialized());
                             }
 
                         }
@@ -128,9 +133,11 @@ public class Salesforce620WizardMigration extends AbstractItemMigrationTask {
                             public Object evaluate(Property property, Object storedValue) {
                                 Property newProperty = (Property) newProperties.getProperty(property.getName());
                                 if (newProperty == null) {
-                                    if ("useProxy".equals(property.getName())) {
-                                        newProperty = (Property) newProperties.getValuedProperty("proxy.useProxy");
-                                    } else {
+                                    newProperty = newProperties.getValuedProperty("connection."+property.getName()); //$NON-NLS-1$
+                                    if (newProperty == null) {
+                                        if ("useProxy".equals(property.getName())) { //$NON-NLS-1$
+                                            return false;
+                                        }
                                         return null;
                                     }
                                 }
@@ -190,7 +197,7 @@ public class Salesforce620WizardMigration extends AbstractItemMigrationTask {
                             }
                         } else if (GenericTypeUtils.isEnumType(newProperty) && (!(newProperty instanceof EnumProperty))) {
                             property.setStoredValue(TalendQuoteUtils.removeQuotes(stringValue));
-                        } else if (GenericTypeUtils.isEnumType(property)) {
+                        } else if (GenericTypeUtils.isEnumType(newProperty)) {
                             List<?> propertyPossibleValues = ((Property<?>) newProperty).getPossibleValues();
                             if (propertyPossibleValues != null) {
                                 for (Object possibleValue : propertyPossibleValues) {
