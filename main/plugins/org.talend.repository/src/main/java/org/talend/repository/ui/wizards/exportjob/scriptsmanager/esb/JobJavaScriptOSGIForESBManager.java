@@ -12,22 +12,22 @@
 // ============================================================================
 package org.talend.repository.ui.wizards.exportjob.scriptsmanager.esb;
 
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 import java.util.Set;
 import java.util.jar.Manifest;
 
@@ -88,17 +88,10 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
         {
             try (InputStream is = RepositoryPlugin.getDefault().getBundle().getEntry("/resources/osgi-exclude.txt") //$NON-NLS-1$;
                     .openStream()) {
-                final BufferedReader reader = new BufferedReader(new InputStreamReader(is));
-                String moduleName;
-                while ((moduleName = reader.readLine()) != null) {
-                    int comment = moduleName.indexOf('#');
-                    if (-1 != comment) {
-                        moduleName = moduleName.substring(0, comment);
-                    }
-                    moduleName = moduleName.trim();
-                    if (!moduleName.isEmpty()) {
-                        add(moduleName.trim());
-                    }
+                final Properties p = new Properties();
+                p.load(is);
+                for (Enumeration<?> e = p.propertyNames(); e.hasMoreElements();) {
+                  add((String) e.nextElement());
                 }
             } catch (IOException e) {
                 RepositoryPlugin.getDefault().getLog()
