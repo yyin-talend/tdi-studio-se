@@ -86,12 +86,12 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
     @SuppressWarnings("serial")
     private static final Collection<String> EXCLUDED_MODULES = new ArrayList<String>() {
         {
-            try (InputStream is = RepositoryPlugin.getDefault().getBundle().getEntry("/resources/osgi-exclude.txt") //$NON-NLS-1$;
-                    .openStream()) {
+            try (InputStream is = RepositoryPlugin.getDefault().getBundle()
+                    .getEntry("/resources/osgi-exclude.properties").openStream()) { //$NON-NLS-1$
                 final Properties p = new Properties();
                 p.load(is);
                 for (Enumeration<?> e = p.propertyNames(); e.hasMoreElements();) {
-                  add((String) e.nextElement());
+                    add((String) e.nextElement());
                 }
             } catch (IOException e) {
                 RepositoryPlugin.getDefault().getLog()
