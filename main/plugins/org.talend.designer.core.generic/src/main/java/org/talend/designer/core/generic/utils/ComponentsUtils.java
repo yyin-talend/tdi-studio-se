@@ -222,13 +222,12 @@ public class ComponentsUtils {
             // handle form...
 
             EParameterFieldType fieldType = getFieldType(widget, widgetProperty);
-            // rootProperty.getAvailableConnectors(null, true)
             param.setFieldType(fieldType != null ? fieldType : EParameterFieldType.TEXT);
             if (widgetProperty instanceof SchemaProperty) {
                 boolean found = false;
                 // set a default connector
                 param.setContext(EConnectionType.FLOW_MAIN.getName());
-                for (Connector connector : rootProperty.getAvailableConnectors(null, true)) {
+                for (Connector connector : rootProperty.getPossibleConnectors(true)) {
                     if (!(((SchemaProperty) widgetProperty).getValue() instanceof Schema)) {
                         continue;
                     }
@@ -248,7 +247,7 @@ public class ComponentsUtils {
                     // check in the input schema
                     // for now we only handle input schema named MAIN. But we will name them "FLOW" to keep
                     // compatibility.
-                    for (Connector connector : rootProperty.getAvailableConnectors(null, false)) {
+                    for (Connector connector : rootProperty.getPossibleConnectors(false)) {
                         if (!(((SchemaProperty) widgetProperty).getValue() instanceof Schema)) {
                             continue;
                         }

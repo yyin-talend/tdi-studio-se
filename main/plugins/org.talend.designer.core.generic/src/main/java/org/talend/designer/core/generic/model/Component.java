@@ -797,7 +797,7 @@ public class Component extends AbstractBasicComponent {
             SchemaProperty schemaProperty, boolean isOutput) {
         ComponentProperties rootProperty = node.getComponentProperties();
         boolean found = false;
-        for (Connector connector : rootProperty.getAvailableConnectors(null, isOutput)) {
+        for (Connector connector : rootProperty.getPossibleConnectors(isOutput)) {
             if (!(schemaProperty.getValue() instanceof Schema)) {
                 continue;
             }
