@@ -1,1 +1,4 @@
-camel-core-2.16.3.jar
+; defines a list of modules which should be excluded during build as OSGi bundle
+; format: [module_name_start_with] ; [comment]
+
+camel-core- ; org.talend.camel.testcontainer

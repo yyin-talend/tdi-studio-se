@@ -84,14 +84,21 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
     protected static final char MANIFEST_ITEM_SEPARATOR = ',';
 
     @SuppressWarnings("serial")
-    private static final Collection<String> EXCLUDED_MODULES = new HashSet<String>() {
+    private static final Collection<String> EXCLUDED_MODULES = new ArrayList<String>() {
         {
-            try (InputStream is = RepositoryPlugin.getDefault().getBundle().getEntry("/resources/osgi-exclude.txt")
+            try (InputStream is = RepositoryPlugin.getDefault().getBundle().getEntry("/resources/osgi-exclude.txt") //$NON-NLS-1$;
                     .openStream()) {
                 final BufferedReader reader = new BufferedReader(new InputStreamReader(is));
                 String moduleName;
                 while ((moduleName = reader.readLine()) != null) {
-                    add(moduleName);
+                    int comment = moduleName.indexOf(';');
+                    if (-1 != comment) {
+                        moduleName = moduleName.substring(0, comment);
+                    }
+                    moduleName = moduleName.trim();
+                    if (!moduleName.isEmpty()) {
+                        add(moduleName.trim());
+                    }
                 }
             } catch (IOException e) {
                 RepositoryPlugin.getDefault().getLog()
@@ -289,7 +296,16 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
      * Else, add the bundle id in "Require-Bundle", but don't add the lib. @see isIncludedInRequireBundle
      */
     protected boolean isIncludedLib(ModuleNeeded module) {
-        return module != null && module.getBundleName() == null && !EXCLUDED_MODULES.contains(module.getModuleName());
+        return module != null && module.getBundleName() == null && !isExcluded(module.getModuleName());
+    }
+
+    private static boolean isExcluded(String moduleName) {
+        for (String exclude : EXCLUDED_MODULES) {
+            if (moduleName.startsWith(exclude)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     protected boolean isProvidedLib(ModuleNeeded module) {
