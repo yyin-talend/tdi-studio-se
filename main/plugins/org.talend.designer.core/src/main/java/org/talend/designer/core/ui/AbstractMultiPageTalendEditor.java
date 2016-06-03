@@ -190,8 +190,8 @@ import org.talend.themes.core.elements.utils.TalendThemeUtils;
 /**
  * DOC qzhang class global comment. Detailled comment
  */
-public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart
-        implements IResourceChangeListener, ISelectionListener, IUIRefresher, IMultiPageTalendEditor, ITalendThemeChangeListener {
+public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart implements IResourceChangeListener,
+        ISelectionListener, IUIRefresher, IMultiPageTalendEditor, ITalendThemeChangeListener {
 
     public static final String DISPLAY_CODE_VIEW = "DISPLAY_CODE_VIEW"; //$NON-NLS-1$
 
@@ -317,8 +317,8 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart
                             }
                         }
                     }
-                    IFile file = currentProject.getFolder("temp")
-                            .getFile(getEditorInput().getName() + jobScriptVersion + "_job" + ".jobscript");
+                    IFile file = currentProject.getFolder("temp").getFile(
+                            getEditorInput().getName() + jobScriptVersion + "_job" + ".jobscript");
                     if (file.exists()) {
                         file.delete(true, null);
                     }
@@ -376,8 +376,8 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart
         ActiveProcessTracker.initialize();
 
         ResourcesPlugin.getWorkspace().addResourceChangeListener(this);
-        IBrandingService brandingService = (IBrandingService) GlobalServiceRegister.getDefault()
-                .getService(IBrandingService.class);
+        IBrandingService brandingService = (IBrandingService) GlobalServiceRegister.getDefault().getService(
+                IBrandingService.class);
         Map<String, Object> settings = brandingService.getBrandingConfiguration().getJobEditorSettings();
         if (settings.containsKey(DISPLAY_CODE_VIEW)) {
             useCodeView = (Boolean) settings.get(DISPLAY_CODE_VIEW);
@@ -435,47 +435,51 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart
             setReadOnly(true);
             Bundle bundle = FrameworkUtil.getBundle(AbstractMultiPageTalendEditor.class);
             final Display display = getSite().getShell().getDisplay();
-            this.lockService = bundle.getBundleContext().registerService(EventHandler.class.getName(), new EventHandler() {
+            this.lockService = bundle.getBundleContext().registerService(
+                    EventHandler.class.getName(),
+                    new EventHandler() {
 
-                @Override
-                public void handleEvent(Event event) {
-                    String lockTopic = Constant.REPOSITORY_ITEM_EVENT_PREFIX + Constant.ITEM_LOCK_EVENT_SUFFIX;
-                    if (lockTopic.equals(event.getTopic())) {
-                        Object o = event.getProperty(Constant.ITEM_EVENT_PROPERTY_KEY);
-                        if (o != null && o instanceof Item) {
-                            Item item = (Item) o;
-                            String itemId = item.getProperty().getId();
-                            if (itemId.equals(currentProcess.getId())) {
-                                if (currentProcess.isReadOnly()) {
-                                    boolean readOnly = currentProcess.checkReadOnly();
-                                    boolean orginalReadOnlyStatus = designerEditor.isReadOnly();
-                                    setReadOnly(readOnly);
-                                    if (!readOnly) {
-                                        display.asyncExec(new Runnable() {
+                        @Override
+                        public void handleEvent(Event event) {
+                            String lockTopic = Constant.REPOSITORY_ITEM_EVENT_PREFIX + Constant.ITEM_LOCK_EVENT_SUFFIX;
+                            if (lockTopic.equals(event.getTopic())) {
+                                Object o = event.getProperty(Constant.ITEM_EVENT_PROPERTY_KEY);
+                                if (o != null && o instanceof Item) {
+                                    Item item = (Item) o;
+                                    String itemId = item.getProperty().getId();
+                                    if (itemId.equals(currentProcess.getId())) {
+                                        if (currentProcess.isReadOnly()) {
+                                            boolean readOnly = currentProcess.checkReadOnly();
+                                            boolean orginalReadOnlyStatus = designerEditor.isReadOnly();
+                                            setReadOnly(readOnly);
+                                            if (!readOnly) {
+                                                display.asyncExec(new Runnable() {
 
-                                            @Override
-                                            public void run() {
-                                                setFocus();
+                                                    @Override
+                                                    public void run() {
+                                                        setFocus();
+                                                    }
+                                                });
+
+                                                if (orginalReadOnlyStatus == true) {
+                                                    // refresh to the given item version, nomally it is the latest
+                                                    // version,
+                                                    // means the editor/process will be refreshed to the latest version
+                                                    refreshProcess(item, false);
+                                                }
+
+                                                Property property = processEditorInput.getItem().getProperty();
+                                                propertyInformation = new ArrayList(property.getInformations());
+                                                property.eAdapters().add(dirtyListener);
                                             }
-                                        });
-
-                                        if (orginalReadOnlyStatus == true) {
-                                            // refresh to the given item version, nomally it is the latest version,
-                                            // means the editor/process will be refreshed to the latest version
-                                            refreshProcess(item, false);
                                         }
-
-                                        Property property = processEditorInput.getItem().getProperty();
-                                        propertyInformation = new ArrayList(property.getInformations());
-                                        property.eAdapters().add(dirtyListener);
                                     }
                                 }
                             }
                         }
-                    }
-                }
-            }, new Hashtable<String, String>(
-                    Collections.singletonMap(EventConstants.EVENT_TOPIC, Constant.REPOSITORY_ITEM_EVENT_PREFIX + "*"))); //$NON-NLS-1$
+                    },
+                    new Hashtable<String, String>(Collections.singletonMap(EventConstants.EVENT_TOPIC,
+                            Constant.REPOSITORY_ITEM_EVENT_PREFIX + "*"))); //$NON-NLS-1$
             revisionChanged = true;
         }
         // setTitleImage(ImageProvider.getImage(getEditorTitleImage()));
@@ -780,9 +784,8 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart
             Item item = oldProcess.getProperty().getItem();
             ProcessType processType = null;
             if (item instanceof ProcessItem) {
-                processType = n.convertDesignerEditorInput(
-                        ((IFile) jobletEditor.getEditorInput().getAdapter(IResource.class)).getLocation().toOSString(),
-                        oldProcess.getProperty());
+                processType = n.convertDesignerEditorInput(((IFile) jobletEditor.getEditorInput().getAdapter(IResource.class))
+                        .getLocation().toOSString(), oldProcess.getProperty());
             } else if (item instanceof JobletProcessItem) {
                 processType = n.convertJobletDesignerEditorInput(
                         ((IFile) jobletEditor.getEditorInput().getAdapter(IResource.class)).getLocation().toOSString(),
@@ -918,8 +921,8 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart
     protected void createPage1() {
         IProcess2 process = getProcess();
         codeEditor = CodeEditorFactory.getInstance().getCodeEditor(getCurrentLang(), process);
-        processor = ProcessorUtilities.getProcessor(process, process.getProperty(),
-                process.getContextManager().getDefaultContext());
+        processor = ProcessorUtilities.getProcessor(process, process.getProperty(), process.getContextManager()
+                .getDefaultContext());
         if (processor instanceof IJavaBreakpointListener) {
             JDIDebugModel.addJavaBreakpointListener((IJavaBreakpointListener) processor);
         }
@@ -946,8 +949,7 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart
             }
         }
 
-        if (DesignerPlugin.getDefault().getPreferenceStore()
-                .getBoolean(TalendDesignerPrefConstants.GENERATE_CODE_WHEN_OPEN_JOB)) {
+        if (DesignerPlugin.getDefault().getPreferenceStore().getBoolean(TalendDesignerPrefConstants.GENERATE_CODE_WHEN_OPEN_JOB)) {
             generateCode();
         }
     }
@@ -970,8 +972,8 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart
                     }
                 }
             }
-            IFile file = currentProject.getFolder("temp")
-                    .getFile(getEditorInput().getName() + jobScriptVersion + "_job" + ".jobscript");
+            IFile file = currentProject.getFolder("temp").getFile(
+                    getEditorInput().getName() + jobScriptVersion + "_job" + ".jobscript");
 
             ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(scriptValue.getBytes());
             if (file.exists()) {
@@ -1079,7 +1081,10 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart
         } catch (Exception e) {
             ExceptionHandler.process(e);
         }
-        if (getProcess().isReadOnly()) {
+        if (getProcess().isReadOnly() || repFactory.isUserReadOnlyOnCurrentProject()) {
+            MessageDialog.openWarning(getEditor(0).getEditorSite().getShell(),
+                    Messages.getString("AbstractMultiPageTalendEditor.readonly"),
+                    Messages.getString("AbstractMultiPageTalendEditor.readonlyMessage"));
             return;
         }
         ERepositoryStatus status = repFactory.getStatus(curItem);
@@ -1178,8 +1183,8 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart
 
     public boolean haveDirtyJoblet() {
         if (GlobalServiceRegister.getDefault().isServiceRegistered(IJobletProviderService.class)) {
-            IJobletProviderService service = (IJobletProviderService) GlobalServiceRegister.getDefault()
-                    .getService(IJobletProviderService.class);
+            IJobletProviderService service = (IJobletProviderService) GlobalServiceRegister.getDefault().getService(
+                    IJobletProviderService.class);
             for (INode node : getProcess().getGraphicalNodes()) {
                 if ((node instanceof Node) && ((Node) node).isJoblet()) {
                     if (service != null) {
@@ -1314,8 +1319,8 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart
                                                 allProcess.add(processItem);
                                             }
                                         }
-                                        UpdateRunJobComponentContextHelper.updateRefJobRunJobComponentContext(factory, allProcess,
-                                                process2);
+                                        UpdateRunJobComponentContextHelper.updateRefJobRunJobComponentContext(factory,
+                                                allProcess, process2);
 
                                     } catch (PersistenceException e) {
                                         // e.printStackTrace();
@@ -1369,8 +1374,7 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart
             ProcessItem processItem = (ProcessItem) process.getProperty().getItem();
             covertJobscriptOnPageChange();
             ParametersType parameters = processItem.getProcess().getParameters();
-            if (parameters != null && parameters.getRoutinesParameter() != null
-                    && parameters.getRoutinesParameter().size() == 0) {
+            if (parameters != null && parameters.getRoutinesParameter() != null && parameters.getRoutinesParameter().size() == 0) {
                 try {
                     List<RoutinesParameterType> dependenciesInPreference = RoutinesUtil.createDependenciesInPreference();
                     parameters.getRoutinesParameter().addAll(dependenciesInPreference);
