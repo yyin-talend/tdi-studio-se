@@ -75,13 +75,13 @@ if(inputSchema != null && inputSchema.size() > 0 && outputSchema != null && outp
         <%        
     } else {
     	String db_version = ElementParameterParser.getValue(node, "__DB_VERSION__");
-		if("VERTICA_7_0_X".equals(db_version) || "VERTICA_6_1_X".equals(db_version) || "VERTICA_6_0".equals(db_version) || "VERTICA_5_1".equals(db_version)){
+		if("vertica_3.0_jdk_5.jar".equals(db_version) || "vertica_3.5_jdk_5.jar".equals(db_version) || "vertica_4.0_jdk_5.jar".equals(db_version) || "vertica_4.1.7_jdk_5.jar".equals(db_version) || "vertica_4.1.14_jdk_5.jar".equals(db_version)){
 		%>
-			java.lang.Class.forName("com.vertica.jdbc.Driver");
+			java.lang.Class.forName("com.vertica.Driver");
 		<%
 		}else{
 		%>
-        	java.lang.Class.forName("com.vertica.Driver");
+        	java.lang.Class.forName("com.vertica.jdbc.Driver");
 		<%
 		}
 		%>

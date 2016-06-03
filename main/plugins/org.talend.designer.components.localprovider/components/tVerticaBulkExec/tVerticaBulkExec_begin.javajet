@@ -72,13 +72,13 @@ java.sql.Connection conn_<%=cid%> = null;
 	 <%
 		log4jCodeGenerateUtil.useExistConnection(node);
 	 }else{
-		if("VERTICA_7_0_X".equals(db_version) || "VERTICA_6_1_X".equals(db_version) || "VERTICA_6_0".equals(db_version) || "VERTICA_5_1".equals(db_version)){
+		if("vertica_3.0_jdk_5.jar".equals(db_version) || "vertica_3.5_jdk_5.jar".equals(db_version) || "vertica_4.0_jdk_5.jar".equals(db_version) || "vertica_4.1.7_jdk_5.jar".equals(db_version) || "vertica_4.1.14_jdk_5.jar".equals(db_version)){
 		%>
-	 		String driverClass_<%=cid%> = "com.vertica.jdbc.Driver";
+	 		String driverClass_<%=cid%> = "com.vertica.Driver";
 		<%
 		}else{
 		%>
-	 		String driverClass_<%=cid%> = "com.vertica.Driver";
+	 		String driverClass_<%=cid%> = "com.vertica.jdbc.Driver";
 		<%
 		}
 		%>
@@ -198,9 +198,41 @@ if(("INSERT").equals(dataAction) || columnList != null && columnList.size() > 0)
         <%}%>
     	fis_<%=cid %> = new java.io.FileInputStream(new java.io.File(<%=file%>));
 <%
-	if("VERTICA_7_0_X".equals(db_version) || "VERTICA_6_1_X".equals(db_version) || "VERTICA_6_0".equals(db_version) || "VERTICA_5_1".equals(db_version)){
+	if("vertica_3.0_jdk_5.jar".equals(db_version) || "vertica_3.5_jdk_5.jar".equals(db_version) || "vertica_4.0_jdk_5.jar".equals(db_version) || "vertica_4.1.7_jdk_5.jar".equals(db_version) || "vertica_4.1.14_jdk_5.jar".equals(db_version)){
 %>
-		com.vertica.jdbc.VerticaCopyStream vcs_<%=cid%> = new com.vertica.jdbc.VerticaCopyStream((com.vertica.jdbc.VerticaConnection)conn_<%=cid%>,sql_<%=cid %>);
+			 java.sql.Statement stmt_<%=cid %> = conn_<%=cid %>.createStatement();
+	    java.sql.ResultSet rs_<%=cid %> = stmt_<%=cid %>.executeQuery("select count(*) from " + tableName_<%=cid%>);
+	    int nbLineBeforeLoad_<%=cid %> = 0;
+	    while (rs_<%=cid %>.next()) {
+	    	nbLineBeforeLoad_<%=cid %> = rs_<%=cid %>.getInt(1);
+		}
+	    ((com.vertica.PGStatement) stmt_<%=cid %>).startCopyIn(sql_<%=cid %>, fis_<%=cid %>);
+	    ((com.vertica.PGStatement) stmt_<%=cid %>).addStreamToCopyIn(fis_<%=cid %>);
+	    ((com.vertica.PGStatement) stmt_<%=cid %>).finishCopyIn();
+	    <%if(isLog4jEnabled){%>
+            log.info("<%=cid%> - Bulk insert data into <%=manager.getLProtectedChar()%>" + tableName_<%=cid%> + "<%=manager.getRProtectedChar()%> has finished.");
+        <%}%>
+		rs_<%=cid %> = stmt_<%=cid %>.executeQuery("select count(*) from " + tableName_<%=cid%>);
+	    int nbLineAfterLoad_<%=cid %> = 0;
+	    while (rs_<%=cid %>.next()) {
+	    	nbLineAfterLoad_<%=cid %> = rs_<%=cid %>.getInt(1);
+		}
+		stmt_<%=cid %>.close();
+		if(<%=exitOnNoRows%> && nbLineBeforeLoad_<%=cid %> >= nbLineAfterLoad_<%=cid %>){
+			throw new RuntimeException("No record was inserted in component <%=cid %>");
+		}else{
+			<%if(isLog4jEnabled){%>
+				log.info("<%=cid%> - Number of records inserted to table <%=manager.getLProtectedChar()%>" + tableName_<%=cid %> + "<%=manager.getRProtectedChar()%> by <%=cid %>: " + (nbLineAfterLoad_<%=cid %> - nbLineBeforeLoad_<%=cid %>)+".");
+			<%}%>
+			System.out.println("Number of records inserted to table <%=manager.getLProtectedChar()%>" + tableName_<%=cid %> + "<%=manager.getRProtectedChar()%> by <%=cid %>: " + (nbLineAfterLoad_<%=cid %> - nbLineBeforeLoad_<%=cid %>));
+		}
+		
+		globalMap.put("<%=globalCid %>_ACCEPTED_ROW_NUMBER",nbLineAfterLoad_<%=cid %> - nbLineBeforeLoad_<%=cid %>);	
+		
+<%
+	}else{
+%>
+		 com.vertica.jdbc.VerticaCopyStream vcs_<%=cid%> = new com.vertica.jdbc.VerticaCopyStream((com.vertica.jdbc.VerticaConnection)conn_<%=cid%>,sql_<%=cid %>);
 		vcs_<%=cid%>.start();
 		vcs_<%=cid%>.addStream(fis_<%=cid %>);
 		vcs_<%=cid%>.execute();
@@ -238,37 +270,7 @@ if(("INSERT").equals(dataAction) || columnList != null && columnList.size() > 0)
 		
 		globalMap.put("<%=globalCid %>_ACCEPTED_ROW_NUMBER",accetpedRowNumber_<%=cid %>);
 		globalMap.put("<%=globalCid %>_REJECTED_ROW_NUMBER",rejectedRowNumber_<%=cid%>);
-<%
-	}else{
-%>
-	    java.sql.Statement stmt_<%=cid %> = conn_<%=cid %>.createStatement();
-	    java.sql.ResultSet rs_<%=cid %> = stmt_<%=cid %>.executeQuery("select count(*) from " + tableName_<%=cid%>);
-	    int nbLineBeforeLoad_<%=cid %> = 0;
-	    while (rs_<%=cid %>.next()) {
-	    	nbLineBeforeLoad_<%=cid %> = rs_<%=cid %>.getInt(1);
-		}
-	    ((com.vertica.PGStatement) stmt_<%=cid %>).startCopyIn(sql_<%=cid %>, fis_<%=cid %>);
-	    ((com.vertica.PGStatement) stmt_<%=cid %>).addStreamToCopyIn(fis_<%=cid %>);
-	    ((com.vertica.PGStatement) stmt_<%=cid %>).finishCopyIn();
-	    <%if(isLog4jEnabled){%>
-            log.info("<%=cid%> - Bulk insert data into <%=manager.getLProtectedChar()%>" + tableName_<%=cid%> + "<%=manager.getRProtectedChar()%> has finished.");
-        <%}%>
-		rs_<%=cid %> = stmt_<%=cid %>.executeQuery("select count(*) from " + tableName_<%=cid%>);
-	    int nbLineAfterLoad_<%=cid %> = 0;
-	    while (rs_<%=cid %>.next()) {
-	    	nbLineAfterLoad_<%=cid %> = rs_<%=cid %>.getInt(1);
-		}
-		stmt_<%=cid %>.close();
-		if(<%=exitOnNoRows%> && nbLineBeforeLoad_<%=cid %> >= nbLineAfterLoad_<%=cid %>){
-			throw new RuntimeException("No record was inserted in component <%=cid %>");
-		}else{
-			<%if(isLog4jEnabled){%>
-				log.info("<%=cid%> - Number of records inserted to table <%=manager.getLProtectedChar()%>" + tableName_<%=cid %> + "<%=manager.getRProtectedChar()%> by <%=cid %>: " + (nbLineAfterLoad_<%=cid %> - nbLineBeforeLoad_<%=cid %>)+".");
-			<%}%>
-			System.out.println("Number of records inserted to table <%=manager.getLProtectedChar()%>" + tableName_<%=cid %> + "<%=manager.getRProtectedChar()%> by <%=cid %>: " + (nbLineAfterLoad_<%=cid %> - nbLineBeforeLoad_<%=cid %>));
-		}
-		
-		globalMap.put("<%=globalCid %>_ACCEPTED_ROW_NUMBER",nbLineAfterLoad_<%=cid %> - nbLineBeforeLoad_<%=cid %>);
+	   
 <%
     }
 }
