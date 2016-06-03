@@ -280,9 +280,11 @@ public class ChangeValuesFromRepository extends ChangeMetadataCommand {
                             }
                         }
                     }
-                    param.setReadOnly(false);
-                    // for job settings extra.(feature 2710)
-                    param.setRepositoryValueUsed(false);
+                    if (param.getRepositoryValue() != null) {
+                        param.setReadOnly(false);
+                        // for job settings extra.(feature 2710)
+                        param.setRepositoryValueUsed(false);
+                    }
                 }
 
             }
