@@ -151,8 +151,7 @@ public class DefaultRunProcessService implements IRunProcessService {
      * boolean)
      */
     @Override
-    public IProcessor createCodeProcessor(IProcess process, Property property, ECodeLanguage language,
-            boolean filenameFromLabel) {
+    public IProcessor createCodeProcessor(IProcess process, Property property, ECodeLanguage language, boolean filenameFromLabel) {
         switch (language) {
         case JAVA:
             return createJavaProcessor(process, property, filenameFromLabel);
@@ -353,6 +352,16 @@ public class DefaultRunProcessService implements IRunProcessService {
     @Override
     public boolean checkExportProcess(IStructuredSelection selection, boolean isJob) {
         return JobErrorsChecker.checkExportErrors(selection, isJob);
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.designer.runprocess.IRunProcessService#checkLastGenerationHasCompilationError(boolean)
+     */
+    @Override
+    public void checkLastGenerationHasCompilationError(boolean updateProblemsView) throws ProcessorException {
+        JobErrorsChecker.checkLastGenerationHasCompilationError(updateProblemsView);
     }
 
     /*
