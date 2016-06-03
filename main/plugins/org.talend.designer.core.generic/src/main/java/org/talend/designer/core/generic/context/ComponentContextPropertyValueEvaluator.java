@@ -68,37 +68,38 @@ public class ComponentContextPropertyValueEvaluator implements PropertyValueEval
         }
         String stringStoredValue = String.valueOf(storedValue);
         if (context != null && ContextParameterUtils.isContainContextParam(stringStoredValue)) {
-            String valueFromContext = ContextParameterUtils.parseScriptContextCode(stringStoredValue, context);
-            if (GenericTypeUtils.isBooleanType(property)) {
-                return new Boolean(valueFromContext);
+            stringStoredValue = ContextParameterUtils.parseScriptContextCode(stringStoredValue, context);
+        }
+        return getTypedValue(property, stringStoredValue);
+    }
+
+    private Object getTypedValue(Property property, String rawValue) {
+        if (GenericTypeUtils.isBooleanType(property)) {
+            return new Boolean(rawValue);
+        }
+        if (GenericTypeUtils.isIntegerType(property) && !rawValue.isEmpty()) {
+            try {
+                return Integer.valueOf(rawValue);
+            } catch (Exception e) {
+                // value not existing anymore
+                // return any value to let the component work without exception
+                return 0;
             }
-            if (GenericTypeUtils.isIntegerType(property) && !valueFromContext.isEmpty()) {
-                try {
-                    return Integer.valueOf(valueFromContext);
-                } catch (Exception e) {
-                    // context value not existing anymore
-                    // return any value to let the component work without exception
-                    return 0;
-                }
-            }
-            if (GenericTypeUtils.isEnumType(property)) {
-                List<?> propertyPossibleValues = ((Property<?>) property).getPossibleValues();
-                if (propertyPossibleValues != null) {
-                    for (Object possibleValue : propertyPossibleValues) {
-                        if (possibleValue.toString().equals(valueFromContext)) {
-                            return possibleValue;
-                        }
+        }
+        if (GenericTypeUtils.isEnumType(property)) {
+            List<?> propertyPossibleValues = ((Property<?>) property).getPossibleValues();
+            if (propertyPossibleValues != null) {
+                for (Object possibleValue : propertyPossibleValues) {
+                    if (possibleValue.toString().equals(rawValue)) {
+                        return possibleValue;
                     }
                 }
             }
-            if (valueFromContext != null) {
-                return valueFromContext;
-            }
         }
         if (GenericTypeUtils.isStringType(property)) {
-            return TalendQuoteUtils.removeQuotes(String.valueOf(storedValue));
+            return TalendQuoteUtils.removeQuotes(String.valueOf(rawValue));
         }
-        return storedValue;
+        return rawValue;
     }
 
 }
