@@ -967,8 +967,11 @@ public abstract class DbGenerationManager {
                     List<IMetadataColumn> lColumn = metadataTable.getListColumns();
                     for (IMetadataColumn colu : lColumn) {
                         if (colu.getLabel().equals(entryName)) {
-                            entryName = colu.getOriginalDbColumnName();
-                            return entryName;
+                            String tempName = colu.getOriginalDbColumnName();
+                            if(tempName!=null&&tempName.length()>0){
+                                entryName = tempName;
+                                return entryName;
+                            }
                         }
                     }
                 }
