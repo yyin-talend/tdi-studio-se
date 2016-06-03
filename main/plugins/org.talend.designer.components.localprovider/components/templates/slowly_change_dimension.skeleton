@@ -642,7 +642,7 @@ public class CLASS {
         for(Column sourceKey : sourceKeys) {
             if(sourceKey.getJavaType().equals("java.util.Date") || sourceKey.getJavaType().equals("String") 
             		|| sourceKey.getJavaType().equals("Object") || sourceKey.getJavaType().equals("BigDecimal") 
-            		||sourceKey.isNullable()) {
+            		|| sourceKey.isNullable() || sourceKey.getJavaType().equals("byte[]")) {
                 sourceKeyClass.append("hashCode = prime * hashCode + (" + sourceKey.getColumnName() + " == null ? 0 : " + sourceKey.getColumnName() + ".hashCode());\r\n");
             } else {
                 if(sourceKey.getJavaType().equals("long")) {
