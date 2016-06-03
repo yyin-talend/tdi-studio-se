@@ -41,11 +41,11 @@ import org.talend.core.model.process.INodeConnector;
 import org.talend.core.model.process.IProcess;
 import org.talend.daikon.NamedThing;
 import org.talend.daikon.properties.PresentationItem;
-import org.talend.daikon.properties.Property;
-import org.talend.daikon.properties.SchemaProperty;
+import org.talend.daikon.properties.Properties;
 import org.talend.daikon.properties.presentation.Form;
 import org.talend.daikon.properties.presentation.Widget;
-import org.talend.daikon.properties.presentation.Widget.WidgetType;
+import org.talend.daikon.properties.property.Property;
+import org.talend.daikon.properties.property.SchemaProperty;
 import org.talend.designer.core.generic.constants.IElementParameterEventProperties;
 import org.talend.designer.core.generic.constants.IGenericConstants;
 import org.talend.designer.core.generic.utils.ComponentsUtils;
@@ -118,7 +118,8 @@ public class GenericElementParameter extends ElementParameter {
     public void setValue(Object o) {
         super.setValue(o);
         if (!isFirstCall
-                || (widget.getContent() instanceof ComponentProperties && !WidgetType.TABLE.equals(widget.getWidgetType()))) {
+                || (widget.getContent() instanceof ComponentProperties && !Widget.TABLE_WIDGET_TYPE
+                        .equals(widget.getWidgetType()))) {
             updateProperty(o);
             boolean calledValidate = callValidate();
             if (calledValidate) {
@@ -172,7 +173,7 @@ public class GenericElementParameter extends ElementParameter {
             if (formtoShow != null) {
                 fireShowDialogEvent(getSubProperties().getForm(formtoShow.getName()));
             }
-        } else if (widgetProperty instanceof ComponentProperties && WidgetType.TABLE.equals(widget.getWidgetType())) {
+        } else if (widgetProperty instanceof ComponentProperties && Widget.TABLE_WIDGET_TYPE.equals(widget.getWidgetType())) {
             GenericTableUtils.setTableValues((ComponentProperties) widgetProperty, (List<Map<String, Object>>) newValue, this);
         }
     }
@@ -264,7 +265,8 @@ public class GenericElementParameter extends ElementParameter {
     }
 
     private boolean callAfter() {
-        if (widget.isCallAfter() && (hasPropertyChangeListener() || widget.getWidgetType() == WidgetType.SCHEMA_REFERENCE)) {
+        if (widget.isCallAfter()
+                && (hasPropertyChangeListener() || Widget.SCHEMA_REFERENCE_WIDGET_TYPE.equals(widget.getWidgetType()))) {
             // schema update must also
             return new ComponentServiceCaller(widget.getContent().getDisplayName(), widget.isLongRunning()) {
 
@@ -415,8 +417,8 @@ public class GenericElementParameter extends ElementParameter {
         return this.widget;
     }
 
-    private ComponentProperties getSubProperties() {
-        return ComponentsUtils.getCurrentComponentProperties(rootProperties, getName());
+    private Properties getSubProperties() {
+        return ComponentsUtils.getCurrentProperties(rootProperties, getName());
     }
 
     public ComponentProperties getRootProperties() {

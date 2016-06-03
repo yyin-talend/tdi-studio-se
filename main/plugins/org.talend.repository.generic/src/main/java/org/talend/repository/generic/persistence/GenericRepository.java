@@ -46,8 +46,8 @@ public class GenericRepository implements Repository<ComponentProperties> {
         }
 
         // Add repository value if it is from repository
-        List<org.talend.daikon.properties.Property> propertyValues = ComponentsUtils.getAllValuedProperties(properties);
-        for (org.talend.daikon.properties.Property property : propertyValues) {
+        List<org.talend.daikon.properties.property.Property> propertyValues = ComponentsUtils.getAllValuedProperties(properties);
+        for (org.talend.daikon.properties.property.Property property : propertyValues) {
             property.setTaggedValue(IGenericConstants.REPOSITORY_VALUE, property.getName());
         }
 

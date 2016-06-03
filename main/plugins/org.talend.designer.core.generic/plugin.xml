@@ -34,63 +34,63 @@
          point="org.talend.designer.core.generic.fieldType_mapping">
       <Mapping
             mapFieldType="CHECK"
-            name="DEFAULT+java.lang.Boolean"
+            name="widget.type.default+java.lang.Boolean"
             schemaType="java.lang.Boolean"
-            widgetType="DEFAULT">
+            widgetType="widget.type.default">
       </Mapping>
       <Mapping
             mapFieldType="CHECK"
-            name="DEFAULT+java.util.List&lt;java.lang.Boolean&gt;"
+            name="widget.type.default+java.util.List&lt;java.lang.Boolean&gt;"
             schemaType="List&lt;java.lang.Boolean&gt;"
             widgetType="CHECK">
       </Mapping>
       <Mapping
             mapFieldType="DATE"
-            name="DEFAULT+java.util.Date"
+            name="widget.type.default+java.util.Date"
             schemaType="java.util.Date"
-            widgetType="DEFAULT">
+            widgetType="widget.type.default">
       </Mapping>
       <Mapping
             mapFieldType="CLOSED_LIST"
-            name="ENUMERATION"
-            widgetType="ENUMERATION">
+            name="widget.type.enumeration"
+            widgetType="widget.type.enumeration">
       </Mapping>
       <Mapping
             mapFieldType="SCHEMA_TYPE"
-            name="DEFAULT+SCHEMA"
+            name="widget.type.default+SCHEMA"
             schemaType="SCHEMA"
-            widgetType="DEFAULT">
+            widgetType="widget.type.default">
       </Mapping>
       
        <Mapping
             mapFieldType="BUTTON"
-            name="BUTTON"
-            widgetType="BUTTON">
+            name="widget.type.button"
+            widgetType="widget.type.button">
       </Mapping>
        <Mapping
             mapFieldType="COMPONENT_REFERENCE"
-            name="COMPONENT_REFERENCE"
-            widgetType="COMPONENT_REFERENCE">
+            name="widget.type.component.reference"
+            widgetType="widget.type.component.reference">
       </Mapping>
        <Mapping
             mapFieldType="NAME_SELECTION_AREA"
-            name="NAME_SELECTION_AREA"
-            widgetType="NAME_SELECTION_AREA">
+            name="widget.type.name.selection.area"
+            widgetType="widget.type.name.selection.area">
       </Mapping>
        <Mapping
             mapFieldType="NAME_SELECTION_REFERENCE"
-            name="NAME_SELECTION_REFERENCE"
-            widgetType="NAME_SELECTION_REFERENCE">
+            name="widget.type.name.selection.widget"
+            widgetType="widget.type.name.selection.widget">
       </Mapping>
       <Mapping
              mapFieldType="SCHEMA_EDITOR"
-             name="SCHEMA_EDITOR"
-             widgetType="SCHEMA_EDITOR">
+             name="widget.type.schema.editor"
+             widgetType="widget.type.schema.editor">
        </Mapping>
        <Mapping
             mapFieldType="SCHEMA_REFERENCE"
-            name="SCHEMA_REFERENCE"
-            widgetType="SCHEMA_REFERENCE">
+            name="widget.type.schema.reference"
+            widgetType="widget.type.schema.reference">
       </Mapping>
       <!--Need implement table type on task TUP-4162 ,then disable first.
       <Mapping
@@ -101,18 +101,18 @@
       -->
        <Mapping
             mapFieldType="HIDDEN_TEXT"
-            name="HIDDEN_TEXT"
-            widgetType="HIDDEN_TEXT">
+            name="widget.type.hidden.text"
+            widgetType="widget.type.hidden.text">
       </Mapping>
        <Mapping
              mapFieldType="TABLE"
-             name="TABLE"
-             widgetType="TABLE">
+             name="widget.type.table"
+             widgetType="widget.type.table">
        </Mapping>
        <Mapping
              mapFieldType="FILE"
-             name="FILE"
-             widgetType="FILE">
+             name="widget.type.file"
+             widgetType="widget.type.file">
        </Mapping>
    </extension>
    <extension

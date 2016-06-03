@@ -25,10 +25,9 @@ import org.talend.commons.ui.swt.formtools.LabelledText;
 import org.talend.core.runtime.util.GenericTypeUtils;
 import org.talend.daikon.NamedThing;
 import org.talend.daikon.properties.PresentationItem;
-import org.talend.daikon.properties.Property;
 import org.talend.daikon.properties.presentation.Form;
 import org.talend.daikon.properties.presentation.Widget;
-import org.talend.daikon.properties.presentation.Widget.WidgetType;
+import org.talend.daikon.properties.property.Property;
 
 /**
  * created by ycbai on 2015年9月18日 Detailled comment
@@ -66,7 +65,7 @@ public class GenericUIBuilder {
     }
 
     private void createWidgetUI(Composite parent, Widget widget) {
-        if (!WidgetType.DEFAULT.equals(widget.getWidgetType())) {
+        if (!Widget.DEFAULT_WIDGET_TYPE.equals(widget.getWidgetType())) {
             createWidgetUIByWidgetType(parent, widget);
         } else {
             createWidgetUIByPropertyType(parent, widget);
@@ -79,17 +78,13 @@ public class GenericUIBuilder {
             return;
         }
         String displayName = property.getDisplayName();
-        WidgetType widgetType = widget.getWidgetType();
+        String widgetType = widget.getWidgetType();
         if (widgetType == null) {
             return;
         }
-        switch (widgetType) {
-        case BUTTON:
+        if (Widget.BUTTON_WIDGET_TYPE.equals(widgetType)) {
             Button btn = new Button(parent, SWT.PUSH);
             btn.setText(displayName);
-            break;
-        default:
-            break;
         }
     }
 

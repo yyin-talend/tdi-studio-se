@@ -21,8 +21,8 @@ import org.eclipse.core.runtime.SafeRunner;
 import org.talend.core.model.process.EParameterFieldType;
 import org.talend.core.utils.RegistryReader;
 import org.talend.daikon.NamedThing;
-import org.talend.daikon.properties.Property;
 import org.talend.daikon.properties.presentation.Widget;
+import org.talend.daikon.properties.property.Property;
 import org.talend.designer.core.generic.constants.IGenericConstants;
 
 /**
@@ -83,7 +83,7 @@ class WidgetFieldTypeMappingReader extends RegistryReader {
     public String getFieldType(String widgetType, NamedThing widgetProperty, String schemaType) {
         init();
         String fieldType = null;
-        if (Widget.WidgetType.DEFAULT.name().equals(widgetType)) {
+        if (Widget.DEFAULT_WIDGET_TYPE.equals(widgetType)) {
             if (schemaType == null) {
                 return EParameterFieldType.LABEL.getName();
             }

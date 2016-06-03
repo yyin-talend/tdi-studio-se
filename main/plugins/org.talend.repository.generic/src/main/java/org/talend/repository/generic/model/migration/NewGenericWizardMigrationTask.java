@@ -71,8 +71,8 @@ public abstract class NewGenericWizardMigrationTask extends AbstractItemMigratio
                         Object value = ReflectionUtils.invokeMethod(oldConnection, "get" + methodName, new Object[0]); //$NON-NLS-1$
                         if (value != null) {
                             NamedThing namedThing = componentProperties.getProperty(propsKey);
-                            if (namedThing != null && namedThing instanceof org.talend.daikon.properties.Property) {
-                                org.talend.daikon.properties.Property<?> property = (org.talend.daikon.properties.Property<?>) namedThing;
+                            if (namedThing != null && namedThing instanceof org.talend.daikon.properties.property.Property) {
+                                org.talend.daikon.properties.property.Property<?> property = (org.talend.daikon.properties.property.Property<?>) namedThing;
                                 if (GenericTypeUtils.isEnumType(property)) {
                                     Object obj = props.get(propsKey + "." + value);//$NON-NLS-1$
                                     if (obj != null) {
@@ -113,7 +113,7 @@ public abstract class NewGenericWizardMigrationTask extends AbstractItemMigratio
                                         }
                                     }
                                 }
-                                if (property.isFlag(org.talend.daikon.properties.Property.Flags.ENCRYPT)
+                                if (property.isFlag(org.talend.daikon.properties.property.Property.Flags.ENCRYPT)
                                         && !oldConnection.isContextMode()) {
                                     componentProperties.setValue(propsKey,
                                             CryptoHelper.getDefault().decrypt(String.valueOf(value)));

@@ -34,10 +34,11 @@ import org.talend.core.utils.ReflectionUtils;
 import org.talend.core.utils.TalendQuoteUtils;
 import org.talend.cwm.helper.PackageHelper;
 import org.talend.daikon.NamedThing;
-import org.talend.daikon.properties.EnumProperty;
 import org.talend.daikon.properties.Properties;
-import org.talend.daikon.properties.Property;
-import org.talend.daikon.properties.PropertyValueEvaluator;
+import org.talend.daikon.properties.PropertiesImpl;
+import org.talend.daikon.properties.property.EnumProperty;
+import org.talend.daikon.properties.property.Property;
+import org.talend.daikon.properties.property.PropertyValueEvaluator;
 import org.talend.designer.core.generic.utils.ComponentsUtils;
 import org.talend.repository.generic.model.genericMetadata.GenericConnection;
 import org.talend.repository.generic.model.genericMetadata.GenericConnectionItem;
@@ -122,7 +123,7 @@ public class Salesforce620WizardMigration extends AbstractItemMigrationTask {
      * @return
      */
     private ComponentProperties loadProperties(String serialized, ComponentProperties newProperties) {
-        return ComponentProperties.fromSerialized(serialized, ComponentProperties.class,
+        return PropertiesImpl.fromSerialized(serialized, ComponentProperties.class,
                 new Properties.PostSerializationSetup<ComponentProperties>() {
 
                     @Override

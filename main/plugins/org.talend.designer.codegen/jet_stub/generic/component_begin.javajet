@@ -13,7 +13,7 @@ imports="
         org.talend.components.api.component.OutputComponentDefinition
         org.talend.components.api.properties.ComponentProperties
         org.talend.components.api.container.RuntimeContainer
-        org.talend.daikon.properties.Property
+        org.talend.daikon.properties.property.Property
         org.talend.daikon.NamedThing
 		org.talend.designer.core.generic.model.Component
         org.talend.core.model.metadata.IMetadataColumn
@@ -110,7 +110,7 @@ for (Component.CodegenPropInfo propInfo : propsToProcess) { // propInfo
                                 }
                             }
                             %>
-                            ((org.talend.daikon.properties.Properties)props_<%=cid %><%=propInfo.fieldName%>).setValue("<%=property.getName()%>",<%=tmpVarName %>);
+                            ((org.talend.daikon.properties.property.Properties)props_<%=cid %><%=propInfo.fieldName%>).setValue("<%=property.getName()%>",<%=tmpVarName %>);
                         <%
                 }  else if (value instanceof String && property.isFlag(Property.Flags.ENCRYPT) && ElementParameterParser.canEncryptValue((String) value)) {
                         if (!"".equals(property.getStringValue())) {
@@ -124,12 +124,12 @@ for (Component.CodegenPropInfo propInfo : propsToProcess) { // propInfo
         				props_<%=cid %><%=propInfo.fieldName%>.setValue("<%=property.getName()%>",
     	                	TalendDate.parseDate("yyyy-MM-dd HH:mm:ss",<%=component.getCodegenValue(property, property.getStringValue())%>));
         				<%
-                } else if (property instanceof org.talend.daikon.properties.EnumProperty) {
+                } else if (property instanceof org.talend.daikon.properties.property.EnumProperty) {
                         %>
                         props_<%=cid %><%=propInfo.fieldName%>.setValue("<%=property.getName()%>",
                             <%=property.getType()%>.<%=property.getValue()%>);
                         <%
-                } else if (property instanceof org.talend.daikon.properties.SchemaProperty) {
+                } else if (property instanceof org.talend.daikon.properties.property.SchemaProperty) {
                         %>
                         props_<%=cid %><%=propInfo.fieldName%>.setValue("<%=property.getName()%>",
                             new org.apache.avro.Schema.Parser().parse(<%=component.getCodegenValue(property, property.getStringValue())%>));

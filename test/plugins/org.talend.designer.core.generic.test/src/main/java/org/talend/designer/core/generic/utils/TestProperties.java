@@ -12,7 +12,7 @@
 // ============================================================================
 package org.talend.designer.core.generic.utils;
 
-import static org.talend.daikon.properties.PropertyFactory.*;
+import static org.talend.daikon.properties.property.PropertyFactory.*;
 
 import java.util.Collections;
 import java.util.Set;
@@ -20,8 +20,9 @@ import java.util.Set;
 import org.talend.components.api.component.Connector;
 import org.talend.components.api.component.PropertyPathConnector;
 import org.talend.components.common.FixedConnectorsComponentProperties;
-import org.talend.daikon.properties.Property;
 import org.talend.daikon.properties.presentation.Form;
+import org.talend.daikon.properties.property.Property;
+
 
 /**
  * 
@@ -30,7 +31,7 @@ import org.talend.daikon.properties.presentation.Form;
  */
 public class TestProperties extends FixedConnectorsComponentProperties {
 
-    public Property userId = newProperty("userId").setRequired(true); //$NON-NLS-1$
+    public Property userId = newString("userId").setRequired(true); //$NON-NLS-1$
 
     public SchemaProperties schema = new SchemaProperties("schema"); //$NON-NLS-1$
 

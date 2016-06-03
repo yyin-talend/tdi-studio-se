@@ -32,7 +32,8 @@ import org.talend.core.ui.context.model.table.ConectionAdaptContextVariableModel
 import org.talend.core.utils.TalendQuoteUtils;
 import org.talend.daikon.NamedThing;
 import org.talend.daikon.properties.Properties.Deserialized;
-import org.talend.daikon.properties.Property;
+import org.talend.daikon.properties.PropertiesImpl;
+import org.talend.daikon.properties.property.Property;
 import org.talend.designer.core.generic.constants.IGenericConstants;
 import org.talend.designer.core.generic.utils.ComponentsUtils;
 import org.talend.designer.core.model.utils.emf.talendfile.ContextType;
@@ -83,8 +84,8 @@ public class GenericContextUtil {
     private static ComponentProperties getComponentProperties(GenericConnection connection) {
         String compPropertiesStr = connection.getCompProperties();
         if (compPropertiesStr != null) {
-            Deserialized<ComponentProperties> fromSerialized = ComponentProperties.fromSerialized(compPropertiesStr,
-                    ComponentProperties.class);
+            Deserialized<ComponentProperties> fromSerialized = PropertiesImpl.fromSerialized(compPropertiesStr,
+                    ComponentProperties.class, null);
             if (fromSerialized != null) {
                 return fromSerialized.properties;
             }

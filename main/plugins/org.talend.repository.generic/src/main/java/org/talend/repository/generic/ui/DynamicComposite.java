@@ -40,10 +40,10 @@ import org.talend.core.ui.check.Checker;
 import org.talend.core.ui.check.IChecker;
 import org.talend.daikon.NamedThing;
 import org.talend.daikon.properties.Properties;
-import org.talend.daikon.properties.PropertyValueEvaluator;
 import org.talend.daikon.properties.ValidationResult;
 import org.talend.daikon.properties.ValidationResult.Result;
 import org.talend.daikon.properties.presentation.Form;
+import org.talend.daikon.properties.property.PropertyValueEvaluator;
 import org.talend.designer.core.generic.constants.IContextEventProperties;
 import org.talend.designer.core.generic.constants.IElementParameterEventProperties;
 import org.talend.designer.core.generic.constants.IGenericConstants;
@@ -182,7 +182,7 @@ public class DynamicComposite extends MultipleThreadDynamicComposite implements 
                     if (genericElementParameter.isShow(currentParameters) && (repositoryValue != null)
                             && (!genericElementParameter.getName().equals(EParameterName.PROPERTY_TYPE.getName()))
                             && genericElementParameter.getCategory() == section) {
-                        org.talend.daikon.properties.Property property = properties.getValuedProperty(genericElementParameter
+                        org.talend.daikon.properties.property.Property property = properties.getValuedProperty(genericElementParameter
                                 .getName());
                         if (property != null && property.getTaggedValue(IGenericConstants.REPOSITORY_VALUE) != null) {
                             genericElementParameter.setRepositoryValueUsed(true);

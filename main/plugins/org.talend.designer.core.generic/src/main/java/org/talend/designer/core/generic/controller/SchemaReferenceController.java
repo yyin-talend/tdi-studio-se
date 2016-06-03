@@ -23,7 +23,6 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
-import org.eclipse.swt.widgets.Text;
 import org.talend.components.api.properties.ComponentProperties;
 import org.talend.core.model.metadata.IMetadataColumn;
 import org.talend.core.model.metadata.IMetadataTable;
@@ -319,7 +318,7 @@ public class SchemaReferenceController extends AbstractSchemaController {
                             String paramName = genericElementParameter.getName();
                             ComponentProperties componentProperties = node.getComponentProperties();
                             if (componentProperties != null) {
-                                org.talend.daikon.properties.Property schemaProperty = componentProperties
+                                org.talend.daikon.properties.property.Property schemaProperty = componentProperties
                                         .getValuedProperty(paramName);
                                 if (schemaProperty != null) {
                                     SchemaUtils.updateComponentSchema(node, outputMetaCopy);

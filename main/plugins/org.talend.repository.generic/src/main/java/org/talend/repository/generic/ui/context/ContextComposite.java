@@ -29,6 +29,7 @@ import org.talend.components.api.properties.ComponentProperties;
 import org.talend.core.model.properties.ConnectionItem;
 import org.talend.daikon.properties.Properties;
 import org.talend.daikon.properties.Properties.Deserialized;
+import org.talend.daikon.properties.PropertiesImpl;
 import org.talend.designer.core.generic.constants.IContextEventProperties;
 import org.talend.metadata.managment.ui.wizard.context.MetadataContextPropertyValueEvaluator;
 import org.talend.repository.generic.handler.IContextHandler;
@@ -155,7 +156,7 @@ public class ContextComposite extends Composite {
             GenericConnection connection = (GenericConnection) connectionItem.getConnection();
             String compPropertiesStr = connection.getCompProperties();
             if (compPropertiesStr != null) {
-                Deserialized<ComponentProperties> fromSerialized = ComponentProperties.fromSerialized(compPropertiesStr,
+                Deserialized<ComponentProperties> fromSerialized = PropertiesImpl.fromSerialized(compPropertiesStr,
                         ComponentProperties.class, new Properties.PostSerializationSetup<ComponentProperties>() {
 
                             @Override

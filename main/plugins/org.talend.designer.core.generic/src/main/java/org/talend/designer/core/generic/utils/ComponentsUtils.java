@@ -56,10 +56,11 @@ import org.talend.daikon.SimpleNamedThing;
 import org.talend.daikon.properties.PresentationItem;
 import org.talend.daikon.properties.Properties;
 import org.talend.daikon.properties.Properties.Deserialized;
-import org.talend.daikon.properties.Property;
-import org.talend.daikon.properties.SchemaProperty;
+import org.talend.daikon.properties.PropertiesImpl;
 import org.talend.daikon.properties.presentation.Form;
 import org.talend.daikon.properties.presentation.Widget;
+import org.talend.daikon.properties.property.Property;
+import org.talend.daikon.properties.property.SchemaProperty;
 import org.talend.designer.core.generic.constants.IGenericConstants;
 import org.talend.designer.core.generic.i18n.Messages;
 import org.talend.designer.core.generic.model.Component;
@@ -155,7 +156,7 @@ public class ComponentsUtils {
      * @return parameters list
      */
     private static List<ElementParameter> getParametersFromForm(IElement element, boolean isInitializing,
-            EComponentCategory category, ComponentProperties rootProperty, ComponentProperties compProperties,
+            EComponentCategory category, ComponentProperties rootProperty, Properties compProperties,
             String parentPropertiesPath, Form form, Widget parentWidget, AtomicInteger lastRowNum) {
         List<ElementParameter> elementParameters = new ArrayList<>();
         List<String> parameterNames = new ArrayList<>();
@@ -170,16 +171,16 @@ public class ComponentsUtils {
         if (form == null) {
             return elementParameters;
         }
-        ComponentProperties componentProperties = compProperties;
+        Properties componentProperties = compProperties;
         if (componentProperties == null) {
-            componentProperties = (ComponentProperties) form.getProperties();
+            componentProperties = form.getProperties();
         }
         if (element instanceof INode) {
             INode node = (INode) element;
             // FIXME - this should be able to be removed TUP-4053
             // Set the properties only one time to get the top-level properties object
             if (node.getComponentProperties() == null) {
-                node.setComponentProperties(componentProperties);
+                node.setComponentProperties(rootProperty);
             }
         }
 
@@ -191,7 +192,7 @@ public class ComponentsUtils {
             String propertiesPath = getPropertiesPath(parentPropertiesPath, null);
             if (widgetProperty instanceof Form) {
                 Form subForm = (Form) widgetProperty;
-                ComponentProperties subProperties = (ComponentProperties) subForm.getProperties();
+                Properties subProperties = subForm.getProperties();
                 // Reset properties path
                 if (!isSameComponentProperties(componentProperties, widgetProperty)) {
                     propertiesPath = getPropertiesPath(parentPropertiesPath, subProperties.getName());
@@ -449,7 +450,7 @@ public class ComponentsUtils {
         return WidgetFieldTypeMapper.getFieldType(widget, widgetProperty);
     }
 
-    public static ComponentProperties getCurrentComponentProperties(ComponentProperties componentProperties, String paramName) {
+    public static Properties getCurrentProperties(Properties componentProperties, String paramName) {
         if (componentProperties == null || paramName == null) {
             return null;
         }
@@ -459,17 +460,17 @@ public class ComponentsUtils {
         }
         NamedThing property = componentProperties.getProperty(compPropertiesPath);
         if (property == null) {
-            return getCurrentComponentPropertiesSpecial(componentProperties, paramName);
+            return getCurrentPropertiesSpecial(componentProperties, paramName);
         }
-        if (property instanceof ComponentProperties) {
-            return (ComponentProperties) property;
+        if (property instanceof Properties) {
+            return (Properties) property;
         }
         return null;
     }
 
-    private static ComponentProperties getCurrentComponentPropertiesSpecial(ComponentProperties componentProperties,
+    private static Properties getCurrentPropertiesSpecial(Properties componentProperties,
             String paramName) {
-        ComponentProperties currentComponentProperties = null;
+        Properties currentComponentProperties = null;
         if (componentProperties == null || paramName == null) {
             return null;
         }
@@ -479,9 +480,9 @@ public class ComponentsUtils {
                 currentComponentProperties = componentProperties;
                 break;
             }
-            if (namedThing instanceof ComponentProperties) {
-                ComponentProperties childComponentProperties = (ComponentProperties) namedThing;
-                currentComponentProperties = getCurrentComponentProperties(childComponentProperties, paramName);
+            if (namedThing instanceof Properties) {
+                Properties childComponentProperties = (Properties) namedThing;
+                currentComponentProperties = getCurrentProperties(childComponentProperties, paramName);
             }
             if (currentComponentProperties != null) {
                 break;
@@ -501,8 +502,8 @@ public class ComponentsUtils {
         if (componentProperties == null || paramName == null) {
             return null;
         }
-        ComponentProperties currentComponentProperties = getCurrentComponentProperties(componentProperties, paramName);
-        if (currentComponentProperties == null) {
+        Properties currentProperties = getCurrentProperties(componentProperties, paramName);
+        if (currentProperties == null) {
             return null;
         }
         Property property = componentProperties.getValuedProperty(paramName);
@@ -516,11 +517,11 @@ public class ComponentsUtils {
         if (componentProperties == null || paramName == null) {
             return;
         }
-        ComponentProperties currentComponentProperties = getCurrentComponentProperties(componentProperties, paramName);
-        if (currentComponentProperties == null) {
+        Properties currentProperties = getCurrentProperties(componentProperties, paramName);
+        if (currentProperties == null) {
             return;
         }
-        currentComponentProperties.setValue(getPropertyName(paramName), value);
+        currentProperties.setValue(getPropertyName(paramName), value);
     }
 
     /**
@@ -579,7 +580,7 @@ public class ComponentsUtils {
         }
     }
 
-    public static boolean isSameComponentProperties(ComponentProperties componentProperties, NamedThing widgetProperty) {
+    public static boolean isSameComponentProperties(Properties componentProperties, NamedThing widgetProperty) {
         if (componentProperties != null && widgetProperty instanceof Form) {
             Form subForm = (Form) widgetProperty;
             if (subForm != null) {
@@ -591,7 +592,7 @@ public class ComponentsUtils {
 
     public static ComponentProperties getComponentPropertiesFromSerialized(String serialized, Connection connection) {
         if (serialized != null) {
-            Deserialized<ComponentProperties> fromSerialized = ComponentProperties.fromSerialized(serialized,
+            Deserialized<ComponentProperties> fromSerialized = PropertiesImpl.fromSerialized(serialized,
                     ComponentProperties.class, new Properties.PostSerializationSetup<ComponentProperties>() {
 
                         @Override

@@ -195,6 +195,7 @@ public class GenericWizardService implements IGenericWizardService {
                     if (IComponentConstants.COMPONENT_PROPERTIES_TAG.equals(taggedValue.getTag())) {
                         ComponentProperties compPros = ComponentsUtils.getComponentPropertiesFromSerialized(taggedValue
                                 .getValue(), connection);
+                        compPros.updateNestedProperties(cp);
                         if (compPros != null && !componentProperties.contains(compPros)) {
                             componentProperties.add(compPros);
                         }

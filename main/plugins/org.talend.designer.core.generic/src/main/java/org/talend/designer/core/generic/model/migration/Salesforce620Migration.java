@@ -36,16 +36,16 @@ import org.talend.core.repository.model.ProxyRepositoryFactory;
 import org.talend.core.runtime.util.GenericTypeUtils;
 import org.talend.core.utils.TalendQuoteUtils;
 import org.talend.daikon.NamedThing;
-import org.talend.daikon.properties.EnumProperty;
 import org.talend.daikon.properties.Properties;
 import org.talend.daikon.properties.Properties.Deserialized;
-import org.talend.daikon.properties.Property;
-import org.talend.daikon.properties.PropertyValueEvaluator;
+import org.talend.daikon.properties.PropertiesImpl;
+import org.talend.daikon.properties.property.EnumProperty;
+import org.talend.daikon.properties.property.Property;
+import org.talend.daikon.properties.property.PropertyValueEvaluator;
 import org.talend.designer.core.generic.utils.ComponentsUtils;
 import org.talend.designer.core.model.utils.emf.talendfile.ElementParameterType;
 import org.talend.designer.core.model.utils.emf.talendfile.NodeType;
 import org.talend.designer.core.model.utils.emf.talendfile.ProcessType;
-import org.talend.migration.IMigrationTask.ExecutionResult;
 
 /**
  * created by nrousseau on May 25, 2016 Detailled comment
@@ -84,7 +84,7 @@ public class Salesforce620Migration extends AbstractJobMigrationTask {
             public void transform(NodeType node) {
                 ElementParameterType elemParamType = ComponentUtilities.getNodeProperty(node, "PROPERTIES");
                 String propertiesString = elemParamType.getValue();
-                Deserialized<ComponentProperties> fromSerialized = ComponentProperties.fromSerialized(propertiesString,
+                Deserialized<ComponentProperties> fromSerialized = PropertiesImpl.fromSerialized(propertiesString,
                         ComponentProperties.class, new Properties.PostSerializationSetup<ComponentProperties>() {
 
                             @Override

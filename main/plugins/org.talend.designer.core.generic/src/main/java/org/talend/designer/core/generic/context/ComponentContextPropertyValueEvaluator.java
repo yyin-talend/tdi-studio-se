@@ -22,8 +22,8 @@ import org.talend.core.model.process.IProcess;
 import org.talend.core.model.utils.ContextParameterUtils;
 import org.talend.core.runtime.util.GenericTypeUtils;
 import org.talend.core.utils.TalendQuoteUtils;
-import org.talend.daikon.properties.Property;
-import org.talend.daikon.properties.PropertyValueEvaluator;
+import org.talend.daikon.properties.property.Property;
+import org.talend.daikon.properties.property.PropertyValueEvaluator;
 
 /**
  * created by ycbai on 2016年2月6日 Detailled comment

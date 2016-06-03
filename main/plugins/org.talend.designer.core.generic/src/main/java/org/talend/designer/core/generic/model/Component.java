@@ -35,6 +35,7 @@ import org.talend.components.api.component.PropertyPathConnector;
 import org.talend.components.api.component.Trigger;
 import org.talend.components.api.component.VirtualComponentDefinition;
 import org.talend.components.api.properties.ComponentProperties;
+import org.talend.components.api.properties.ComponentPropertiesImpl;
 import org.talend.components.api.properties.ComponentReferenceProperties;
 import org.talend.components.api.service.ComponentService;
 import org.talend.components.api.wizard.ComponentWizard;
@@ -65,9 +66,10 @@ import org.talend.core.ui.services.IComponentsLocalProviderService;
 import org.talend.core.utils.TalendQuoteUtils;
 import org.talend.daikon.NamedThing;
 import org.talend.daikon.properties.Properties;
-import org.talend.daikon.properties.Property;
-import org.talend.daikon.properties.SchemaProperty;
+import org.talend.daikon.properties.PropertiesImpl;
 import org.talend.daikon.properties.presentation.Form;
+import org.talend.daikon.properties.property.Property;
+import org.talend.daikon.properties.property.SchemaProperty;
 import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.generic.constants.IGenericConstants;
 import org.talend.designer.core.generic.context.ComponentContextPropertyValueEvaluator;
@@ -169,7 +171,11 @@ public class Component extends AbstractBasicComponent {
     @Override
     public List<NodeReturn> createReturns() {
         List<NodeReturn> listReturn = new ArrayList<>();
-        ComponentProperties props = ComponentsUtils.getComponentProperties(getName());
+        ComponentProperties componentProperties = ComponentsUtils.getComponentProperties(getName());
+        if (!(componentProperties instanceof ComponentPropertiesImpl)) {
+            return listReturn;
+        }
+        ComponentPropertiesImpl props = (ComponentPropertiesImpl) componentProperties;
         Property returns = props.returns;
         if (returns != null) {
             NodeReturn nodeRet = null;
@@ -1159,12 +1165,12 @@ public class Component extends AbstractBasicComponent {
 
         public String className;
 
-        public ComponentProperties props;
+        public Properties props;
     }
 
-    protected void processCodegenPropInfos(List<CodegenPropInfo> propList, ComponentProperties props, String fieldString) {
+    protected void processCodegenPropInfos(List<CodegenPropInfo> propList, Properties props, String fieldString) {
         for (NamedThing prop : props.getProperties()) {
-            if (prop instanceof ComponentProperties) {
+            if (prop instanceof Properties) {
                 if (prop instanceof ComponentReferenceProperties) {
                     ((ComponentReferenceProperties) prop).componentProperties = null;
                 }
@@ -1175,7 +1181,7 @@ public class Component extends AbstractBasicComponent {
                     childPropInfo.fieldName = fieldString + "." + prop.getName();//$NON-NLS-1$
                 }
                 childPropInfo.className = prop.getClass().getName();
-                childPropInfo.props = (ComponentProperties) prop;
+                childPropInfo.props = (Properties) prop;
                 propList.add(childPropInfo);
                 processCodegenPropInfos(propList, childPropInfo.props, childPropInfo.fieldName);
             }
@@ -1263,7 +1269,7 @@ public class Component extends AbstractBasicComponent {
     @Override
     public void initNodePropertiesFromSerialized(INode node, String serialized) {
         if (node != null) {
-            node.setComponentProperties(ComponentProperties.fromSerialized(serialized, ComponentProperties.class,
+            node.setComponentProperties(PropertiesImpl.fromSerialized(serialized, ComponentProperties.class,
                     new Properties.PostSerializationSetup<ComponentProperties>() {
 
                         @Override
@@ -1291,9 +1297,9 @@ public class Component extends AbstractBasicComponent {
         if (iNode != null) {
             ComponentProperties iNodeComponentProperties = iNode.getComponentProperties();
             if (iNodeComponentProperties != null && param instanceof GenericElementParameter) {
-                ComponentProperties paramComponentProperties = ComponentsUtils.getCurrentComponentProperties(
+                Properties paramProperties = ComponentsUtils.getCurrentProperties(
                         iNodeComponentProperties, param.getName());
-                if (paramComponentProperties != null) {
+                if (paramProperties != null) {
                     // update repository value
                     Property property = iNodeComponentProperties.getValuedProperty(param.getName());
                     if (property != null) {
@@ -1321,12 +1327,12 @@ public class Component extends AbstractBasicComponent {
         if (param instanceof GenericElementParameter) {
             ComponentProperties componentProperties = ((Node) ((GenericElementParameter) param).getElement())
                     .getComponentProperties();
-            ComponentProperties currentComponentProperties = ComponentsUtils.getCurrentComponentProperties(componentProperties,
+            Properties currentProperties = ComponentsUtils.getCurrentProperties(componentProperties,
                     param.getName());
-            if (currentComponentProperties == null) {
+            if (currentProperties == null) {
                 return false;
             }
-            Property property = componentProperties.getValuedProperty(param.getName());
+            Property<?> property = componentProperties.getValuedProperty(param.getName());
             if (property != null) {
                 property.setTaggedValue(IGenericConstants.REPOSITORY_VALUE, param.getName());
                 return true;
