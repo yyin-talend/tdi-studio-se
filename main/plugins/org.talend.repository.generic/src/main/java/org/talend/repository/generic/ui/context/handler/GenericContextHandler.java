@@ -18,7 +18,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.commons.lang.StringUtils;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.ui.PlatformUI;
+import org.talend.commons.ui.gmf.util.DisplayUtils;
 import org.talend.core.model.context.JobContextManager;
 import org.talend.core.model.process.EParameterFieldType;
 import org.talend.core.model.process.IElementParameter;
@@ -33,6 +36,7 @@ import org.talend.metadata.managment.ui.model.IConnParamName;
 import org.talend.metadata.managment.ui.utils.ConnectionContextHelper;
 import org.talend.metadata.managment.ui.utils.GenericConnParamName;
 import org.talend.repository.generic.handler.IContextHandler;
+import org.talend.repository.generic.i18n.Messages;
 
 /**
  * created by ycbai on 2015年11月20日 Detailled comment
@@ -49,6 +53,9 @@ public class GenericContextHandler implements IContextHandler {
             ConnectionContextHelper.openInConetxtModeDialog();
         } else {
             String defaultContextName = ConnectionContextHelper.convertContextLabel(connectionItem.getProperty().getLabel());
+            if (StringUtils.isEmpty(defaultContextName)) {
+                MessageDialog.openError(DisplayUtils.getDefaultShell(), Messages.getString("GenericContextHandler.wizardTitle"), Messages.getString("GenericContextHandler.defineConnectionName")); //$NON-NLS-1$ //$NON-NLS-2$
+            }
             Set<IConnParamName> contextParams = getContextParams();
             Map<ContextItem, List<ConectionAdaptContextVariableModel>> variableModels = ConnectionContextHelper.exportAsContext(
                     defaultContextName, connectionItem, contextParams);
