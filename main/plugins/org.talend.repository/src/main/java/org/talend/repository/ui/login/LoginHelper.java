@@ -489,7 +489,7 @@ public class LoginHelper {
             if (user2 != null && !"".equals(user2) && repositoryId2 != null && !"".equals(repositoryId2) && workSpace != null //$NON-NLS-1$ //$NON-NLS-2$
                     && !"".equals(workSpace) && name != null && !"".equals(name)) { //$NON-NLS-1$ //$NON-NLS-2$
                 boolean valid = Pattern.matches(RepositoryConstants.MAIL_PATTERN, user2);
-                if (valid && RepositoryConstants.REPOSITORY_REMOTE_ID.equals(repositoryId2)) {
+                if (valid || RepositoryConstants.REPOSITORY_REMOTE_ID.equals(repositoryId2)) {
                     String url = connBean.getDynamicFields().get(RepositoryConstants.REPOSITORY_URL);
                     valid = url != null || !"".equals(url); //$NON-NLS-1$
                 }
