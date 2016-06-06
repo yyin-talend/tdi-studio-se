@@ -1,6 +1,6 @@
 // ============================================================================
 //
-// Copyright (C) 2006-2016 Talend Inc. - www.talend.com
+// Copyright (C) 2006-2015 Talend Inc. - www.talend.com
 //
 // This source code is available under agreement available at
 // %InstallDIR%\features\org.talend.rcp.branding.%PRODUCTNAME%\%PRODUCTNAME%license.txt
@@ -12,26 +12,23 @@
 // ============================================================================
 package org.talend.designer.core.generic.utils;
 
-import static org.talend.daikon.properties.presentation.Widget.*;
 import static org.talend.daikon.properties.property.PropertyFactory.*;
 
-import org.talend.components.api.properties.ComponentPropertiesImpl;
+import org.talend.daikon.properties.PropertiesImpl;
 import org.talend.daikon.properties.presentation.Form;
-import org.talend.daikon.properties.presentation.Widget;
 import org.talend.daikon.properties.property.Property;
 
 /**
- * 
- * created by ycbai on 2016年3月15日 Detailled comment
+ * created by ycbai on 2016年6月6日 Detailled comment
  *
  */
-public class TestNestedProperties extends ComponentPropertiesImpl {
+public class TestContactProperties extends PropertiesImpl {
 
-    public Property<String> userName = newProperty("userName").setRequired(true); //$NON-NLS-1$
+    public Property<String> mobile = newProperty("mobile").setRequired(true); //$NON-NLS-1$
 
-    public Property<String> userPassword = newProperty("userPassword").setRequired(true); //$NON-NLS-1$
+    public Property<String> email = newProperty("email"); //$NON-NLS-1$
 
-    public TestNestedProperties(String name) {
+    public TestContactProperties(String name) {
         super(name);
     }
 
@@ -39,8 +36,8 @@ public class TestNestedProperties extends ComponentPropertiesImpl {
     public void setupLayout() {
         super.setupLayout();
         Form form = Form.create(this, Form.MAIN);
-        form.addRow(userName);
-        form.addRow(widget(userPassword).setWidgetType(Widget.HIDDEN_TEXT_WIDGET_TYPE));
+        form.addRow(mobile);
+        form.addRow(email);
     }
 
 }
