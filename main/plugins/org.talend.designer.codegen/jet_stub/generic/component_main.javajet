@@ -18,8 +18,7 @@ imports="
         org.talend.core.model.utils.TalendTextUtils
         "
 %>
-// main of generic (used only for output components)
-
+<%@include file="@{org.talend.designer.codegen}/jet_stub/generic/component_util_indexedrecord_to_rowstruct.javajet"%>
 <%
 CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 INode node = (INode)codeGenArgument.getArgument();
@@ -28,23 +27,30 @@ Component component = (Component)node.getComponent();
 ComponentDefinition def = component.getComponentDefinition();
 
 if(def instanceof org.talend.components.api.component.OutputComponentDefinition){
-    %>
+    // These will be initialized if there are outgoing connections.
+    IndexedRecordToRowStructGenerator mainIrToRow = null;
+    IndexedRecordToRowStructGenerator rejectIrToRow = null;
 
-    // OUTPUT
-
-    <%
     List<? extends IConnection> outgoingConns = node.getOutgoingSortedConnections();
     if (outgoingConns!=null){
         for (int i = 0; i < outgoingConns.size(); i++) {
             IConnection outgoingConn = outgoingConns.get(i);
             if (outgoingConn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {
-            %>
+                %>
                 <%=outgoingConn.getName()%> = null;
-            <%
+                <%
+            }
+            if ("MAIN".equals(outgoingConn.getConnectorName())) {
+                mainIrToRow = new IndexedRecordToRowStructGenerator(cid + "OutMain",
+                        outgoingConn, outgoingConn.getMetadataTable().getListColumns());
+            }
+            if ("REJECT".equals(outgoingConn.getConnectorName())) {
+                rejectIrToRow = new IndexedRecordToRowStructGenerator(cid + "OutReject",
+                        outgoingConn, outgoingConn.getMetadataTable().getListColumns());
             }
         }
     }
-    
+
     IConnection inputConn = null;
     List< ? extends IConnection> inputConns = node.getIncomingConnections();
     if(inputConns!=null) {
@@ -54,21 +60,21 @@ if(def instanceof org.talend.components.api.component.OutputComponentDefinition)
 	    	}
 	   	}
    	}
-   	
+
    	boolean hasValidInput = inputConn!=null;
-   	
+
    	IMetadataTable metadata;
     List<IMetadataTable> metadatas = node.getMetadataList();
     boolean haveValidNodeMetadata = ((metadatas != null) && (metadatas.size() > 0) && (metadata = metadatas.get(0)) != null);
-    
+
     if (hasValidInput && haveValidNodeMetadata) {
         List<IMetadataColumn> input_columnList = inputConn.getMetadataTable().getListColumns();
-        
+
         if (input_columnList!=null && !input_columnList.isEmpty()) {
             // If there are dynamic columns in the schema, they need to be
             // initialized into the runtime schema of the actual IndexedRecord
             // provided to the component.
-            
+
             int dynamicPos = -1;
 	        for (int i = 0; i < input_columnList.size(); i++) {
 	            if (input_columnList.get(i).getTalendType().equals("id_Dynamic")) {
@@ -76,7 +82,7 @@ if(def instanceof org.talend.components.api.component.OutputComponentDefinition)
 	                break;
 	            }
 	        }
-	        
+
             if (dynamicPos != -1)  {
                 %>
                 if (current_<%=cid%>.needsInitDynamicColumns()) {
@@ -112,74 +118,23 @@ if(def instanceof org.talend.components.api.component.OutputComponentDefinition)
                 }
             } // column
             %>
-            
+
             Object data_<%=cid%> = current_<%=cid%>.createIndexedRecord();
-            
-            try {
-            	writer_<%=cid%>.write(data_<%=cid%>);
-            	<%
-            	//pass the main flow
-            	IConnection main = null;
-            	List<? extends IConnection> mains = node.getOutgoingConnections("MAIN");
-            	if(mains!=null && !mains.isEmpty()) {
-            		main = mains.get(0);
-            		%>
-            		<%=main.getName()%> = new <%=main.getName() %>Struct();
-            		<%
-            		for (IMetadataColumn column : input_columnList) {//only propagate the data from input to output
-                		%>
-                		<%=main.getName()%>.<%=column.getLabel()%> = <%=inputConn.getName()%>.<%=column.getLabel()%>;
-                		<%
-            		}
-            		
-            		//TODO how to pass the additional columns in output connection? like salesforce_id
-            	}
-            	%>
-            } catch (org.talend.components.api.exception.DataRejectException e_<%=cid%>) {
-            	<%
-            	//pass the reject flow
-            	
-            	IConnection reject = null;
-            	List<? extends IConnection> rejects = node.getOutgoingConnections("REJECT");
-            	if(rejects!=null && !rejects.isEmpty()) {
-            		reject = rejects.get(0);
-        		}
-            	
-            	if(reject!=null) {
-            		Set<String> commonColumns = new HashSet<String>();
-            		%>
-            		<%=reject.getName()%> = new <%=reject.getName() %>Struct();
-            		<%
-            		for (IMetadataColumn column : input_columnList) {//only propagate the data from input to output
-            			commonColumns.add(column.getLabel());
-                		%>
-                		<%=reject.getName()%>.<%=column.getLabel()%> = <%=inputConn.getName()%>.<%=column.getLabel()%>;
-                		<%
-            		}
-            		%>
-            		
-            		java.util.Map<String,Object> info_<%=cid%> = e_<%=cid%>.getRejectInfo();
-            		
-            		<%
-            		//pass error columns
-            		List<IMetadataColumn> rejectColumns = reject.getMetadataTable().getListColumns();
-            		for(IMetadataColumn column : rejectColumns) {
-            			String columnName = column.getLabel();
-            			
-            			JavaType javaType = JavaTypesManager.getJavaTypeFromId(column.getTalendType());
-                        String typeToGenerate = JavaTypesManager.getTypeToGenerate(column.getTalendType(), column.isNullable());
-                        
-            			//error columns
-            			if(!commonColumns.contains(columnName)) {
-            			%>
-            			<%=reject.getName()%>.<%=columnName%> = (<%=typeToGenerate%>)info_<%=cid%>.get("<%=columnName%>");
-            			<%
-            			}
-            		}
-            	}
-            	%>
+
+        	writer_<%=cid%>.write(data_<%=cid%>);
+        	<%
+            if (mainIrToRow != null) {
+                %>
+                <%=mainIrToRow.getConnection().getName()%> = new <%=mainIrToRow.getConnection().getName() %>Struct();
+                <%
+                mainIrToRow.generateConvertRecord("cheese", mainIrToRow.getConnection().getName());
             }
-        <%
+            if (rejectIrToRow != null) {
+                %>
+                <%=rejectIrToRow.getConnection().getName()%> = new <%=rejectIrToRow.getConnection().getName() %>Struct();
+                <%
+                rejectIrToRow.generateConvertRecord("cheeseReject", rejectIrToRow.getConnection().getName());
+            }
         }
     }
 } // canStart

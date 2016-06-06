@@ -1,16 +1,16 @@
-<%@ jet 
+<%@ jet
 imports="
-		org.talend.components.api.component.ComponentDefinition
-		org.talend.designer.core.generic.model.Component
-    	org.talend.core.model.process.INode 
-    	org.talend.core.model.process.ElementParameterParser 
-		org.talend.core.model.metadata.IMetadataTable 
-		org.talend.core.model.metadata.IMetadataColumn		
-		org.talend.designer.codegen.config.CodeGeneratorArgument
-		org.talend.core.model.process.IConnection
-		org.talend.core.model.process.IConnectionCategory
-		java.util.List
-		"
+        java.util.List
+        org.talend.components.api.component.ComponentDefinition
+        org.talend.core.model.metadata.IMetadataColumn
+        org.talend.core.model.metadata.IMetadataTable
+        org.talend.core.model.process.ElementParameterParser
+        org.talend.core.model.process.IConnection
+        org.talend.core.model.process.IConnectionCategory
+        org.talend.core.model.process.INode
+        org.talend.designer.codegen.config.CodeGeneratorArgument
+        org.talend.designer.core.generic.model.Component
+        "
 %>
 // end of generic
 
@@ -24,25 +24,22 @@ ComponentDefinition def = component.getComponentDefinition();
 IMetadataTable metadata = null;
 List<IMetadataTable> metadatas = node.getMetadataList();
 if ((metadatas != null) && (metadatas.size() > 0)) {
-	metadata = metadatas.get(0);
+    metadata = metadatas.get(0);
 }
 
+// Return at this point if there is no metadata.
 if (metadata == null) {
-	return stringBuffer.toString();
+    return stringBuffer.toString();
 }
 
 if(def instanceof org.talend.components.api.component.InputComponentDefinition){
-%>
-	} // while
-<%
-%>
-
-	reader_<%=cid%>.close();
-<%
+    %>
+    } // while
+    reader_<%=cid%>.close();
+    <%
 }else if(def instanceof org.talend.components.api.component.OutputComponentDefinition){
-// Output
-%>
-	writer_<%=cid%>.close();
-<%
+    %>
+    writer_<%=cid%>.close();
+    <%
 }
 %>
