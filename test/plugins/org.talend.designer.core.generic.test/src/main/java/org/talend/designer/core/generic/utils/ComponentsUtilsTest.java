@@ -192,4 +192,16 @@ public class ComponentsUtilsTest {
         }
     }
 
+    @Test
+    public void testGetAllValuedProperties() {
+        TestProperties props = (TestProperties) new TestProperties("test").init(); //$NON-NLS-1$
+        List<Property> properties = ComponentsUtils.getAllValuedProperties(props);
+        assertTrue(properties.contains(props.userId));
+        assertTrue(properties.contains(props.schema.schema));
+        assertTrue(properties.contains(props.nestedProps.userName));
+        assertTrue(properties.contains(props.nestedProps.userPassword));
+        assertTrue(properties.contains(props.contactProps.mobile));
+        assertTrue(properties.contains(props.contactProps.email));
+    }
+
 }

@@ -468,8 +468,7 @@ public class ComponentsUtils {
         return null;
     }
 
-    private static Properties getCurrentPropertiesSpecial(Properties componentProperties,
-            String paramName) {
+    private static Properties getCurrentPropertiesSpecial(Properties componentProperties, String paramName) {
         Properties currentComponentProperties = null;
         if (componentProperties == null || paramName == null) {
             return null;
@@ -525,17 +524,17 @@ public class ComponentsUtils {
     }
 
     /**
-     * looks for all Property type properties of the given componenetProperties and all is nested CompoenetProperties.
+     * looks for all Property type properties of the given properties and all is nested Properties.
      */
-    public static List<Property> getAllValuedProperties(ComponentProperties componentProperties) {
+    public static List<Property> getAllValuedProperties(Properties properties) {
         List<Property> allValuedProperties = new ArrayList<>();
-        if (componentProperties == null) {
-            return null;
+        if (properties == null) {
+            return Collections.EMPTY_LIST;
         }
-        List<NamedThing> namedThings = componentProperties.getProperties();
+        List<NamedThing> namedThings = properties.getProperties();
         for (NamedThing namedThing : namedThings) {
-            if (namedThing instanceof ComponentProperties) {
-                ComponentProperties childComponentProperties = (ComponentProperties) namedThing;
+            if (namedThing instanceof Properties) {
+                Properties childComponentProperties = (Properties) namedThing;
                 allValuedProperties.addAll(getAllValuedProperties(childComponentProperties));
             } else if (namedThing instanceof Property) {
                 allValuedProperties.add((Property) namedThing);
