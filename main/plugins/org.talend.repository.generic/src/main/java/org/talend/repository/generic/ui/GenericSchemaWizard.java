@@ -60,7 +60,6 @@ public class GenericSchemaWizard extends CheckLastVersionRepositoryWizard implem
         }
         setNeedsProgressMonitor(true);
         setRepositoryObject(object);
-        isRepositoryObjectEditable();
         initLockStrategy();
     }
 
