@@ -305,16 +305,32 @@ if (def instanceof InputComponentDefinition) {
     if (outgoingConns!=null){
         for (IConnection outgoingConn : outgoingConns) {
             if ("MAIN".equals(outgoingConn.getConnectorName())) {
+                %>
+                c_<%=cid%> = null;
+                for (org.talend.components.api.component.Connector currentConnector : props_<%=cid %>.getAvailableConnectors(null, true)) {
+                    if (currentConnector.getName().equals("MAIN")) {
+                        c_<%=cid%> = currentConnector;
+                    }
+                }
+                org.apache.avro.Schema mainSchema_<%=cid%> = props_<%=cid %>.getSchema(c_<%=cid%>, true);
+                <%
                 IndexedRecordToRowStructGenerator mainIrToRow = new IndexedRecordToRowStructGenerator(
-                        cid + "OutMain", outgoingConn,
-                        outgoingConn.getMetadataTable().getListColumns());
-                mainIrToRow.generateInitialVariables("mainSchema", false);
+                        cid + "OutMain", outgoingConn);
+                mainIrToRow.generateInitialVariables("mainSchema_" + cid, false);
             }
             if ("REJECT".equals(outgoingConn.getConnectorName())) {
+                %>
+                c_<%=cid%> = null;
+                for (org.talend.components.api.component.Connector currentConnector : props_<%=cid %>.getAvailableConnectors(null, true)) {
+                    if (currentConnector.getName().equals("REJECT")) {
+                        c_<%=cid%> = currentConnector;
+                    }
+                }
+                org.apache.avro.Schema rejectSchema_<%=cid%> = props_<%=cid %>.getSchema(c_<%=cid%>, true);
+                <%
                 IndexedRecordToRowStructGenerator rejectIrToRow = new IndexedRecordToRowStructGenerator(
-                        cid + "OutReject", outgoingConn,
-                        outgoingConn.getMetadataTable().getListColumns());
-                rejectIrToRow.generateInitialVariables("rejectSchema", false);
+                        cid + "OutReject", outgoingConn);
+                rejectIrToRow.generateInitialVariables("rejectSchema_" + cid, false);
             }
         }
     }

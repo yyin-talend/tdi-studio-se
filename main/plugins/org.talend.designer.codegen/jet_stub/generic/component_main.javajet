@@ -27,7 +27,8 @@ Component component = (Component)node.getComponent();
 ComponentDefinition def = component.getComponentDefinition();
 
 if(def instanceof org.talend.components.api.component.OutputComponentDefinition){
-    // These will be initialized if there are outgoing connections.
+    // These will be initialized if there are outgoing connections and will be
+    // null if there isn't a corresponding outgoing connection.
     IndexedRecordToRowStructGenerator mainIrToRow = null;
     IndexedRecordToRowStructGenerator rejectIrToRow = null;
 
@@ -42,15 +43,16 @@ if(def instanceof org.talend.components.api.component.OutputComponentDefinition)
             }
             if ("MAIN".equals(outgoingConn.getConnectorName())) {
                 mainIrToRow = new IndexedRecordToRowStructGenerator(cid + "OutMain",
-                        outgoingConn, outgoingConn.getMetadataTable().getListColumns());
+                        outgoingConn);
             }
             if ("REJECT".equals(outgoingConn.getConnectorName())) {
                 rejectIrToRow = new IndexedRecordToRowStructGenerator(cid + "OutReject",
-                        outgoingConn, outgoingConn.getMetadataTable().getListColumns());
+                        outgoingConn);
             }
         }
     }
 
+    // Generate the code to handle the incoming records.
     IConnection inputConn = null;
     List< ? extends IConnection> inputConns = node.getIncomingConnections();
     if(inputConns!=null) {
@@ -117,23 +119,45 @@ if(def instanceof org.talend.components.api.component.OutputComponentDefinition)
                     <%
                 }
             } // column
-            %>
 
+            // If necesary, generate the code to handle outgoing connections.
+            // TODO: For noew, this can only handle one outgoing record for
+            // each incoming record.  To handle multiple outgoing records, code
+            // generation needs to occur in component_begin in order to open
+            // a for() loop.
+
+            %>
             Object data_<%=cid%> = current_<%=cid%>.createIndexedRecord();
 
-        	writer_<%=cid%>.write(data_<%=cid%>);
-        	<%
+            writer_<%=cid%>.write(data_<%=cid%>);
+            <%
             if (mainIrToRow != null) {
                 %>
-                <%=mainIrToRow.getConnection().getName()%> = new <%=mainIrToRow.getConnection().getName() %>Struct();
+                java.util.Iterator<?> outgoingMainRecords_<%=cid%> = ((org.talend.components.api.component.runtime.WriterWithFeedback<?, ?, ?>)writer_<%=cid%>).getSuccessfulWrites().iterator();
+                if (outgoingMainRecords_<%=cid%>.hasNext()) {
+                    <%=mainIrToRow.getConnection().getName()%> = new <%=mainIrToRow.getConnection().getName() %>Struct();
+                    Object outgoingMain_<%=cid%> = outgoingMainRecords_<%=cid%>.next();
+                    <%
+                    mainIrToRow.generateConvertRecord("outgoingMain_" + cid, mainIrToRow.getConnection().getName());
+                    %>
+                } else {
+                    ;
+                }
                 <%
-                mainIrToRow.generateConvertRecord("cheese", mainIrToRow.getConnection().getName());
             }
             if (rejectIrToRow != null) {
                 %>
-                <%=rejectIrToRow.getConnection().getName()%> = new <%=rejectIrToRow.getConnection().getName() %>Struct();
+                java.util.Iterator<?> outgoingRejectRecords_<%=cid%> = ((org.talend.components.api.component.runtime.WriterWithFeedback<?, ?, ?>)writer_<%=cid%>).getRejectedWrites().iterator();
+                if (outgoingRejectRecords_<%=cid%>.hasNext()) {
+                    <%=rejectIrToRow.getConnection().getName()%> = new <%=rejectIrToRow.getConnection().getName() %>Struct();
+                    Object outgoingReject_<%=cid%> = outgoingRejectRecords_<%=cid%>.next();
+                    <%
+                    rejectIrToRow.generateConvertRecord("outgoingReject_" + cid, rejectIrToRow.getConnection().getName());
+                    %>
+                } else {
+                    ;
+                }
                 <%
-                rejectIrToRow.generateConvertRecord("cheeseReject", rejectIrToRow.getConnection().getName());
             }
         }
     }
