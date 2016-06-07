@@ -63,29 +63,6 @@
                </and>
             </enablement>
          </actionProvider>
-         <actionProvider
-               class="org.talend.repository.view.di.viewer.action.JobRepositoryNodeActionProvider"
-               id="org.talend.repository.view.di.viewer.action.JobRepositoryNodeActionProvider"
-               overrides="org.talend.repository.viewer.root.jobDesigns.ActionProvider"
-               priority="high">
-            <enablement>
-               <and>
-                  <instanceof
-                        value="org.talend.repository.model.RepositoryNode">
-                  </instanceof>
-                  <test
-                        forcePluginActivation="true"
-                        property="org.talend.repository.node.isJobTempBranch">
-                  </test>
-                  <not>
-                     <test
-                           forcePluginActivation="true"
-                           property="org.talend.repository.node.isDeleted">
-                     </test>
-                  </not>
-               </and>
-            </enablement>
-         </actionProvider>
       </navigatorContent>
       <navigatorContent
             activeByDefault="true"
