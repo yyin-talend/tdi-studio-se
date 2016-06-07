@@ -488,12 +488,13 @@ public class LoginHelper {
             String name = connBean.getName();
             if (user2 != null && !"".equals(user2) && repositoryId2 != null && !"".equals(repositoryId2) && workSpace != null //$NON-NLS-1$ //$NON-NLS-2$
                     && !"".equals(workSpace) && name != null && !"".equals(name)) { //$NON-NLS-1$ //$NON-NLS-2$
-                boolean valid = Pattern.matches(RepositoryConstants.MAIL_PATTERN, user2);
-                if (valid || RepositoryConstants.REPOSITORY_REMOTE_ID.equals(repositoryId2)) {
+                boolean valid = false;
+                if (isRemoteConnection(connBean)) {
                     String url = connBean.getDynamicFields().get(RepositoryConstants.REPOSITORY_URL);
-                    valid = url != null || !"".equals(url); //$NON-NLS-1$
+                    valid = url != null && !"".equals(url); //$NON-NLS-1$
+                } else {
+                    valid = Pattern.matches(RepositoryConstants.MAIL_PATTERN, user2);
                 }
-
                 connBean.setComplete(valid);
             }
         }
