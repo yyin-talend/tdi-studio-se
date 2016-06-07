@@ -96,7 +96,7 @@ for (Component.CodegenPropInfo propInfo : propsToProcess) { // propInfo
                         }
                     }
                     %>
-                    ((org.talend.daikon.properties.property.Properties)props_<%=cid %><%=propInfo.fieldName%>).setValue("<%=property.getName()%>",<%=tmpVarName %>);
+                    ((org.talend.daikon.properties.Properties)props_<%=cid %><%=propInfo.fieldName%>).setValue("<%=property.getName()%>",<%=tmpVarName %>);
                     <%
                 }  else if (value instanceof String && property.isFlag(Property.Flags.ENCRYPT) && ElementParameterParser.canEncryptValue((String) value)) {
                     if (!"".equals(property.getStringValue())) {

@@ -121,10 +121,14 @@ if(def instanceof org.talend.components.api.component.OutputComponentDefinition)
             } // column
 
             // If necesary, generate the code to handle outgoing connections.
-            // TODO: For noew, this can only handle one outgoing record for
+            // TODO: For now, this can only handle one outgoing record for
             // each incoming record.  To handle multiple outgoing records, code
             // generation needs to occur in component_begin in order to open
             // a for() loop.
+
+            // There will be a ClassCastException if the output component does
+            // not implement WriterWithFeedback, but permits outgoing
+            // connections.
 
             %>
             Object data_<%=cid%> = current_<%=cid%>.createIndexedRecord();
@@ -140,8 +144,6 @@ if(def instanceof org.talend.components.api.component.OutputComponentDefinition)
                     <%
                     mainIrToRow.generateConvertRecord("outgoingMain_" + cid, mainIrToRow.getConnection().getName());
                     %>
-                } else {
-                    ;
                 }
                 <%
             }
@@ -154,8 +156,6 @@ if(def instanceof org.talend.components.api.component.OutputComponentDefinition)
                     <%
                     rejectIrToRow.generateConvertRecord("outgoingReject_" + cid, rejectIrToRow.getConnection().getName());
                     %>
-                } else {
-                    ;
                 }
                 <%
             }
