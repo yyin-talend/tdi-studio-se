@@ -297,7 +297,7 @@ public class ChangeValuesFromRepository extends ChangeMetadataCommand {
                         .getService(IGenericWizardService.class);
             }
             if (wizardService != null && wizardService.isGenericConnection(connection)) {
-                componentProperties = wizardService.getAllComponentProperties(connection);
+                componentProperties = wizardService.getAllComponentProperties(connection, null);
             }
             IElementParameter propertyParam = elem.getElementParameter(propertyName);
             List<IElementParameter> elementParameters = new ArrayList<>(elem.getElementParameters());
