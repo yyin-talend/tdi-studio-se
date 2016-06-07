@@ -544,10 +544,12 @@ public class LoginProjectPage extends AbstractLoginActionPage {
             String name = connectionBean.getName();
             if (user2 != null && !"".equals(user2) && repositoryId2 != null && !"".equals(repositoryId2) && workSpace != null //$NON-NLS-1$ //$NON-NLS-2$
                     && !"".equals(workSpace) && name != null && !"".equals(name)) { //$NON-NLS-1$ //$NON-NLS-2$
-                boolean valid = Pattern.matches(RepositoryConstants.MAIL_PATTERN, user2);
-                if (valid && RepositoryConstants.REPOSITORY_REMOTE_ID.equals(repositoryId2)) {
+                boolean valid = false;
+                if (LoginHelper.isRemoteConnection(connectionBean)) {
                     String url = connectionBean.getDynamicFields().get(RepositoryConstants.REPOSITORY_URL);
-                    valid = url != null || !"".equals(url); //$NON-NLS-1$
+                    valid = url != null && !"".equals(url); //$NON-NLS-1$
+                } else {
+                    valid = Pattern.matches(RepositoryConstants.MAIL_PATTERN, user2);
                 }
                 connectionBean.setComplete(valid);
             }
@@ -1537,7 +1539,7 @@ public class LoginProjectPage extends AbstractLoginActionPage {
         boolean valid = true;
 
         ConnectionBean connection = getConnection();
-        boolean usesMailCheck = brandingService.getBrandingConfiguration().isUseMailLoginCheck();
+        boolean isRemote = LoginHelper.isRemoteConnection(connection);
         boolean serverIsLocal = !isAuthenticationNeeded();
         if (valid && getConnection() == null) {
             valid = false;
@@ -1545,7 +1547,7 @@ public class LoginProjectPage extends AbstractLoginActionPage {
             valid = false;
         } else if (valid && !serverIsLocal && connection.getUser().length() == 0) {
             valid = false;
-        } else if (valid && usesMailCheck && !Pattern.matches(RepositoryConstants.MAIL_PATTERN, getUser().getLogin())) {
+        } else if (valid && !isRemote && !Pattern.matches(RepositoryConstants.MAIL_PATTERN, getUser().getLogin())) {
             valid = false;
         }
         if (valid && !serverIsLocal && connection.getPassword().length() == 0) {
