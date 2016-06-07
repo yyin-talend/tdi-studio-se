@@ -14,6 +14,7 @@ package org.talend.designer.core.generic.model;
 
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -901,20 +902,41 @@ public class Component extends AbstractBasicComponent {
                 }
             }
         }
-
-        boolean isOutputComponent = componentDefinition instanceof OutputComponentDefinition
-                || componentDefinition instanceof VirtualComponentDefinition;
-        if (isOutputComponent) {
-            addGenericType(listConnector, EConnectionType.FLOW_MAIN, GenericNodeConnector.INPUT_CONNECTOR, parentNode, false);
-        } else {
+        ComponentProperties componentProperties = ComponentsUtils.getComponentProperties(getName());
+        Set<? extends Connector> inputConnectors = componentProperties.getPossibleConnectors(false);
+        if (inputConnectors.isEmpty()) {
             INodeConnector connector = null;
             connector = addStandardType(listConnector, EConnectionType.FLOW_MAIN, parentNode);
             connector.setMaxLinkInput(0);
             connector.setMaxLinkOutput(0);
+        } else {
+            for (Connector connector : inputConnectors) {
+                addGenericType(listConnector, EConnectionType.FLOW_MAIN, connector.getName(), parentNode, false);
+            }
         }
 
-        addGenericType(listConnector, EConnectionType.FLOW_MAIN, Connector.MAIN_NAME, parentNode, true);
-        addGenericType(listConnector, EConnectionType.REJECT, Connector.REJECT_NAME, parentNode, true);
+        Set<? extends Connector> outputConnectors = componentProperties.getPossibleConnectors(true);
+        List<? extends Connector> sortedOutputConnectors = new ArrayList<>(outputConnectors);
+        sortedOutputConnectors.sort(new Comparator<Connector>() {
+
+            @Override
+            public int compare(Connector o1, Connector o2) {
+                if (Connector.MAIN_NAME.equals(o1.getName())) {
+                    return -1;
+                }
+                if (Connector.MAIN_NAME.equals(o2.getName())) {
+                    return 1;
+                }
+                return 0;
+            }
+        });
+        for (Connector connector : sortedOutputConnectors) {
+            EConnectionType type = EConnectionType.FLOW_MAIN;
+            if (Connector.REJECT_NAME.equals(connector.getName())) {
+                type = EConnectionType.REJECT;
+            }
+            addGenericType(listConnector, type, connector.getName(), parentNode, true);
+        }
         addStandardType(listConnector, EConnectionType.RUN_IF, parentNode);
         addStandardType(listConnector, EConnectionType.ON_COMPONENT_OK, parentNode);
         addStandardType(listConnector, EConnectionType.ON_COMPONENT_ERROR, parentNode);
