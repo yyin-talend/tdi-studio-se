@@ -487,7 +487,7 @@ public class JavaProcessUtil {
                         }
                     }
                 }
-                if (text != null) {
+                if (text != null && text.contains(".")) { //$NON-NLS-1$
                     boolean isContextMode = ContextParameterUtils.containContextVariables(text);
                     if (isContextMode) {
                         List<IContext> listContext = process.getContextManager().getListContext();
