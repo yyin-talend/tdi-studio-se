@@ -73,7 +73,8 @@ public class GenericDragAndDropHandler extends AbstractDragAndDropServiceHandler
                         IGenericWizardService.class);
                 if (wizardService != null && wizardService.isGenericConnection(connection)) {
                     return getGenericRepositoryValue((GenericConnection) connection,
-                            wizardService.getAllComponentProperties(connection), value, table);
+                            wizardService.getAllComponentProperties(connection, getSeletetedMetadataTableName(table)), value,
+                            table);
                 }
             }
         }
@@ -83,25 +84,15 @@ public class GenericDragAndDropHandler extends AbstractDragAndDropServiceHandler
     private Object getGenericRepositoryValue(GenericConnection connection, List<ComponentProperties> componentProperties,
             String value, IMetadataTable table) {
         if (componentProperties != null && value != null) {
-            String seletetedMetadataTableName = getSeletetedMetadataTableName(table);
             for (ComponentProperties compPro : componentProperties) {
-                if (seletetedMetadataTableName != null) {
-                    if (!compPro.getName().equals(seletetedMetadataTableName)) {
-                        continue;
-                    }
-                }
                 Property property = compPro.getValuedProperty(value);
                 if (property != null) {
                     Object paramValue = property.getStoredValue();
                     if (GenericTypeUtils.isStringType(property) && paramValue != null) {
                         return getRepositoryValueOfStringType(connection, paramValue.toString());
-                    }
-                    if (GenericTypeUtils.isEnumType(property) && paramValue != null) {
+                    } else if (GenericTypeUtils.isEnumType(property) && paramValue != null) {
                         return paramValue.toString();
                     }
-//                    if (GenericTypeUtils.isBooleanType(property) && paramValue != null) {
-//                        return paramValue.toString();
-//                    }
                     return paramValue;
                 }
             }
@@ -175,8 +166,8 @@ public class GenericDragAndDropHandler extends AbstractDragAndDropServiceHandler
             Connection connection = ((ConnectionItem) repositoryViewObj.getProperty().getItem()).getConnection();
             if (canHandle(connection)) {
                 GenericConnection genericConnection = (GenericConnection) connection;
-                currentComponentProperties = ComponentsUtils.getComponentPropertiesFromSerialized(genericConnection
-                        .getCompProperties(), connection);
+                currentComponentProperties = ComponentsUtils.getComponentPropertiesFromSerialized(
+                        genericConnection.getCompProperties(), connection);
             }
         } else if (object instanceof MetadataTableRepositoryObject) {
             MetadataTableRepositoryObject metaTableRepObj = (MetadataTableRepositoryObject) object;
@@ -247,6 +238,5 @@ public class GenericDragAndDropHandler extends AbstractDragAndDropServiceHandler
 
     @Override
     public void handleTableRelevantParameters(Connection connection, IElement ele, IMetadataTable metadataTable) {
-
     }
 }
