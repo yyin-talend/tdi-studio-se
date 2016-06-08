@@ -30,5 +30,5 @@ Export-Package: org.talend.designer.core.generic.constants,
 Import-Package: org.talend.components.api.component,
  org.talend.components.api.properties,
  org.talend.components.api.service,
- org.talend.components.api.wizard;version="0.12.0",
+ org.talend.components.api.wizard,
  org.talend.daikon.properties.property
