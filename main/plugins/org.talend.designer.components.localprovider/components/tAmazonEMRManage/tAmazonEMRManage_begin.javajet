@@ -55,9 +55,16 @@
 	int count_<%=cid%> = 0;
 	com.amazonaws.services.elasticmapreduce.model.HadoopJarStepConfig hadoopConfig1_<%=cid%> = null;
 	com.amazonaws.services.elasticmapreduce.model.StepConfig customStep_<%=cid%> = null;
-
+<%
+	boolean enable_debug = "true".equals(ElementParameterParser.getValue(node, "__ENABLE_DEBUG__"));
+	boolean haveSteps = enable_debug || !lines.isEmpty();
+	
+	if(haveSteps) {
+%>
 	java.util.List<com.amazonaws.services.elasticmapreduce.model.StepConfig> steps_<%=cid %> = new java.util.ArrayList<com.amazonaws.services.elasticmapreduce.model.StepConfig>();
 <%
+	}
+	
 	for (int i=0; i<lines.size(); i++) {
 	Map<String, String> line = lines.get(i);
 %>
@@ -216,7 +223,9 @@
 	<%
 		return stringBuffer.toString();
 	}
-	%>
+	
+	if(enable_debug) {
+%>
 	com.amazonaws.services.elasticmapreduce.util.StepFactory stepFactory_<%=cid%> = new com.amazonaws.services.elasticmapreduce.util.StepFactory();
 
 	com.amazonaws.services.elasticmapreduce.model.StepConfig enabledebugging_<%=cid%> = new com.amazonaws.services.elasticmapreduce.model.StepConfig()
@@ -229,6 +238,8 @@
 	steps_<%=cid %>.add(0, enabledebugging_<%=cid%>);
 
 	<%
+	}
+	
 	final boolean newApi = cluster_version!=null && "\"emr-4.2.0\",\"emr-4.1.0\",\"emr-4.0.0\",\"emr-4.5.0\",\"emr-4.6.0\"".contains(cluster_version);
 	
 	boolean setApps = newApi;
@@ -316,7 +327,9 @@
     	}
     	%>
     	
+    	<%if(haveSteps){%>
     	.withSteps(steps_<%=cid%>)
+    	<%}%>
     	
     	.withServiceRole(<%=service_role%>)
     	.withJobFlowRole(<%=jobflow_role%>)
@@ -411,7 +424,7 @@
 	%>
 
 	<%
-	if(wait_for_steps_complete && wait_for_cluster_ready) {
+	if(haveSteps && wait_for_steps_complete && wait_for_cluster_ready) {
 	%>
 		boolean waitForStep_<%=cid%> = clusterIsAlive_<%=cid%> && (steps_<%=cid %>.size() > 1);
 		
