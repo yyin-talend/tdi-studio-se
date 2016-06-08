@@ -894,14 +894,6 @@ public class Component extends AbstractBasicComponent {
     public List<INodeConnector> createConnectors(INode parentNode) {
         List<INodeConnector> listConnector = new ArrayList<>();
 
-        for (Trigger trigger : componentDefinition.getTriggers()) {
-            if (ComponentsUtils.isAValidTrigger(trigger, getName())) {
-                INodeConnector connector = ComponentsUtils.generateNodeConnectorFromTrigger(trigger, parentNode);
-                if (connector != null) {
-                    listConnector.add(connector);
-                }
-            }
-        }
         ComponentProperties componentProperties = ComponentsUtils.getComponentProperties(getName());
         Set<? extends Connector> inputConnectors = componentProperties.getPossibleConnectors(false);
         if (inputConnectors.isEmpty()) {
