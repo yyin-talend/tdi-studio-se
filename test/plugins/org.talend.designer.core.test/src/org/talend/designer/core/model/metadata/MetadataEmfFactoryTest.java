@@ -46,7 +46,7 @@ public class MetadataEmfFactoryTest {
         ColumnType col1 = (ColumnType) metadataType.getColumn().get(0);
         assertEquals(-1, col1.getOriginalLength());
 
-        // OriginalLength of column is null.
+        // OriginalLength of column is not null.
         table = createTestTable();
         table.getListColumns().get(0).setOriginalLength(10);
         factory.setMetadataTable(table);
