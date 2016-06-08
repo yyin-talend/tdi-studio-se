@@ -147,7 +147,6 @@ public class JobletContainerFigure extends Figure {
 
         updateData();
         initializejobletContainer(jobletContainer.getJobletContainerRectangle());
-        rectFig.setVisible(false);
         markFigure.setVisible(false);
         if (jobletContainer.getNode().isMapReduceStart()) {
             refreshNodes(false);
@@ -205,9 +204,6 @@ public class JobletContainerFigure extends Figure {
         }
         if (infoFigure.isVisible()) {
             infoFigure.setLocation(jobletContainer.getInfoLocation());
-        }
-        if (rectFig.isVisible()) {
-            rectFig.setLocation(jobletContainer.getMarkLocation());
         }
         if (markFigure.isVisible()) {
             markFigure.setLocation(jobletContainer.getErrorMarkLocation());
