@@ -79,11 +79,6 @@ public class TalendPaletteViewer extends PaletteViewer {
 
     private static String currentFilterText;
 
-    protected static ThreadPoolExecutor executor;
-    static {
-        executor = new ThreadPoolExecutor(1, 2, 0, TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>());
-    }
-
     protected TalendDrawerEditPart favoritesEditPart;
 
     protected TalendDrawerEditPart recentlyUsedEditPart;
@@ -94,14 +89,11 @@ public class TalendPaletteViewer extends PaletteViewer {
 
     private final ExecutionLimiterImproved expandLimiter = new ExecutionLimiterImproved(500, false) {
 
+        ExpandPaletteRunnable runnable = null;
+
         @Override
         public void execute(final boolean isFinalExecution, Object data) {
             final Text text = (Text) data;
-            // text.getDisplay().asyncExec(new Runnable() {
-            //
-            // @Override
-            // public void run() {
-            ExpandPaletteRunnable runnable = (ExpandPaletteRunnable) executor.getQueue().poll();
             if (runnable != null) {
                 runnable.stopExpand();
             }
@@ -115,10 +107,9 @@ public class TalendPaletteViewer extends PaletteViewer {
                 }
             });
             if (!strBuffer.toString().equals("")) { //$NON-NLS-1$
-                executor.execute(new ExpandPaletteRunnable());
+                runnable = new ExpandPaletteRunnable();
+                runnable.run();
             }
-            // }
-            // });
         }
     };
 
