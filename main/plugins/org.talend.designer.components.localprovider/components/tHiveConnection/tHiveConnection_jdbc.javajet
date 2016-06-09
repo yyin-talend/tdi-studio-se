@@ -1,24 +1,24 @@
-<%@ jet 
+<%@ jet
 imports="
-    org.talend.core.model.process.INode 
-    org.talend.core.model.process.ElementParameterParser 
+    org.talend.core.model.process.INode
+    org.talend.core.model.process.ElementParameterParser
     org.talend.designer.codegen.config.CodeGeneratorArgument
     java.util.List
     java.util.Map
-" 
+"
 %>
 	<%@ include file="../templates/DB/HelpClass/HelpClass.javajet"%>
 <%
 
 	class ConnectionUtil extends DefaultConnectionUtil{
 		private String javaDbDriver = "org.apache.hadoop.hive.jdbc.HiveDriver";
-		
+
 		public void createConnection(INode node) {
 			String connectionMode = ElementParameterParser.getValue(node, "__CONNECTION_MODE__");
 			String hiveVersion = ElementParameterParser.getValue(node, "__HIVE_VERSION__");
 			String hiveServer = ElementParameterParser.getValue(node, "__HIVE_SERVER__");
 			boolean isCustom = "CUSTOM".equals(ElementParameterParser.getValue(node, "__DISTRIBUTION__"));
-			
+
 			boolean useKrb = "true".equals(ElementParameterParser.getValue(node, "__USE_KRB__"));
 			boolean cdhCanBeSecured = ("Cloudera_CDH4".equals(hiveVersion) || "Cloudera_CDH4_YARN".equals(hiveVersion) || "Cloudera_CDH5".equals(hiveVersion) || "Cloudera_CDH5_1".equals(hiveVersion) || "Cloudera_CDH5_4".equals(hiveVersion) || "Cloudera_CDH5_1_MR1".equals(hiveVersion)) && (("HIVE".equalsIgnoreCase(hiveServer) && "EMBEDDED".equalsIgnoreCase(connectionMode)) || "HIVE2".equalsIgnoreCase(hiveServer));
 			boolean pivotalCanBeSecured = ("PIVOTAL_HD_2_0".equals(hiveVersion)) && (("HIVE".equalsIgnoreCase(hiveServer) && "EMBEDDED".equalsIgnoreCase(connectionMode)) || "HIVE2".equalsIgnoreCase(hiveServer));
@@ -32,25 +32,25 @@ imports="
 				super.createConnection(node);
 			}
 		}
-	
+
 		public void createURL(INode node) {
 			super.createURL(node);
 			String connectionMode = ElementParameterParser.getValue(node, "__CONNECTION_MODE__");
 			String hiveVersion = ElementParameterParser.getValue(node, "__HIVE_VERSION__");
 			String fsDefalutName = "fs.default.name";
 			String hiveServer = ElementParameterParser.getValue(node, "__HIVE_SERVER__");
-			
+
 			boolean setMapredJT = "true".equals(ElementParameterParser.getValue(node, "__SET_MAPRED_JT__"));
 			boolean setNamenode = "true".equals(ElementParameterParser.getValue(node, "__SET_FS_DEFAULT_NAME__"));
 			List<Map<String, String>> hadoopProps = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__HADOOP_ADVANCED_PROPERTIES__");
-			
+
 			boolean isCustom = "CUSTOM".equals(ElementParameterParser.getValue(node, "__DISTRIBUTION__"));
 			boolean useYarn = "true".equals(ElementParameterParser.getValue(node, "__USE_YARN__"));
-			
+
 			boolean useKrb = "true".equals(ElementParameterParser.getValue(node, "__USE_KRB__"));
 			boolean cdhCanBeSecured = ("Cloudera_CDH4".equals(hiveVersion) || "Cloudera_CDH4_YARN".equals(hiveVersion) || "Cloudera_CDH5".equals(hiveVersion) || "Cloudera_CDH5_1".equals(hiveVersion) || "Cloudera_CDH5_4".equals(hiveVersion) || "Cloudera_CDH5_1_MR1".equals(hiveVersion)) && (("HIVE".equalsIgnoreCase(hiveServer) && "EMBEDDED".equalsIgnoreCase(connectionMode)) || "HIVE2".equalsIgnoreCase(hiveServer));
 			boolean pivotalCanBeSecured = ("PIVOTAL_HD_2_0".equals(hiveVersion)) && (("HIVE".equalsIgnoreCase(hiveServer) && "EMBEDDED".equalsIgnoreCase(connectionMode)) || "HIVE2".equalsIgnoreCase(hiveServer));
-			
+
 			boolean securityIsEnabled = useKrb && (isCustom || ("HDP_1_2".equals(hiveVersion) || "HDP_1_3".equals(hiveVersion) || "HDP_2_0".equals(hiveVersion) || "HDP_2_1".equals(hiveVersion) || "HDP_2_2".equals(hiveVersion) || cdhCanBeSecured ||pivotalCanBeSecured));
 			boolean securedStandaloneHive2 = securityIsEnabled && "HIVE2".equalsIgnoreCase(hiveServer) && "STANDALONE".equalsIgnoreCase(connectionMode);
 			boolean securedEmbedded = securityIsEnabled && "EMBEDDED".equalsIgnoreCase(connectionMode);
@@ -62,21 +62,21 @@ imports="
 			if(hiveServer!=null && !"".equals(hiveServer.trim())
 			    && (isCustom
 			            || ("HDP_1_2".equals(hiveVersion)
-			                    || "HDP_1_3".equals(hiveVersion) 
-			                    || "Cloudera_CDH4".equals(hiveVersion) 
-			                    || "Cloudera_CDH4_YARN".equals(hiveVersion) 
-			                    || "Cloudera_CDH5".equals(hiveVersion) 
-			                    || "Cloudera_CDH5_1".equals(hiveVersion) 
-			                    || "Cloudera_CDH5_4".equals(hiveVersion) 
-			                    || "Cloudera_CDH5_1_MR1".equals(hiveVersion) 
-			                    || "MAPR213".equals(hiveVersion) 
-			                    || "MAPR301".equals(hiveVersion) 
-			                    || "MAPR310".equals(hiveVersion) 
-			                    || "MAPR401".equals(hiveVersion) 
-			                    || "MAPR410".equals(hiveVersion) 
-			                    || "HDP_2_0".equals(hiveVersion) 
-			                    || "HDP_2_1".equals(hiveVersion) 
-			                    || "HDP_2_2".equals(hiveVersion) 
+			                    || "HDP_1_3".equals(hiveVersion)
+			                    || "Cloudera_CDH4".equals(hiveVersion)
+			                    || "Cloudera_CDH4_YARN".equals(hiveVersion)
+			                    || "Cloudera_CDH5".equals(hiveVersion)
+			                    || "Cloudera_CDH5_1".equals(hiveVersion)
+			                    || "Cloudera_CDH5_4".equals(hiveVersion)
+			                    || "Cloudera_CDH5_1_MR1".equals(hiveVersion)
+			                    || "MAPR213".equals(hiveVersion)
+			                    || "MAPR301".equals(hiveVersion)
+			                    || "MAPR310".equals(hiveVersion)
+			                    || "MAPR401".equals(hiveVersion)
+			                    || "MAPR410".equals(hiveVersion)
+			                    || "HDP_2_0".equals(hiveVersion)
+			                    || "HDP_2_1".equals(hiveVersion)
+			                    || "HDP_2_2".equals(hiveVersion)
                                 || "PIVOTAL_HD_2_0".equals(hiveVersion)
                                 || "EMR_4_0_0".equals(hiveVersion)
                                 || "APACHE_2_4_0_EMR_0_13_1".equals(hiveVersion)))) {
@@ -100,15 +100,31 @@ imports="
 				}
 <%
 			}
-			
+
 			if(hadoopProps.size() > 0){
+        if(securityIsEnabled) {
+%>
+          org.apache.hadoop.conf.Configuration conf_<%=cid%> = new org.apache.hadoop.conf.Configuration();
+<%
+        }
 				for(Map<String, String> item : hadoopProps){
 %>
 					System.setProperty(<%=item.get("PROPERTY") %> ,<%=item.get("VALUE") %>);
 <%
-				} 
+          if(securityIsEnabled) {
+%>
+            conf_<%=cid%>.set(<%=item.get("PROPERTY") %> ,<%=item.get("VALUE") %>);
+<%
+          }
+				}
+        if(securityIsEnabled) {
+%>
+          org.apache.hadoop.security.UserGroupInformation.setConfiguration(conf_<%=cid%>);
+          org.apache.hadoop.security.UserGroupInformation.getLoginUser();
+<%
+        }
 			}
-			
+
 			if(securedEmbedded) {
 				String metastoreUrl = ElementParameterParser.getValue(node, "__METASTORE_JDBC_URL__");
 				String driverClass = ElementParameterParser.getValue(node, "__METASTORE_CLASSNAME__");
@@ -132,17 +148,17 @@ imports="
 			%>
 				System.setProperty("javax.jdo.option.ConnectionURL", <%=metastoreUrl%>);
 				System.setProperty("javax.jdo.option.ConnectionUserName", <%=metastoreUsername%>);
-	        
+
         		<%
         		String passwordFieldName = "__METASTORE_PASSWORD__";
         		%>
-        		
-        		<%if (ElementParameterParser.canEncrypt(node, passwordFieldName)) {%> 
+
+        		<%if (ElementParameterParser.canEncrypt(node, passwordFieldName)) {%>
             	String decryptedMetastorePassword_<%=cid%> = routines.system.PasswordEncryptUtil.decryptPassword(<%=ElementParameterParser.getEncryptedValue(node, passwordFieldName)%>);
        		 	<%} else {%>
-            	String decryptedMetastorePassword_<%=cid%> = <%= ElementParameterParser.getValue(node, passwordFieldName)%>; 
+            	String decryptedMetastorePassword_<%=cid%> = <%= ElementParameterParser.getValue(node, passwordFieldName)%>;
     			<%}%>
-        	   	
+
 				System.setProperty("javax.jdo.option.ConnectionPassword", decryptedMetastorePassword_<%=cid%>);
 				System.setProperty("hive.metastore.kerberos.principal", <%=hivePrincipal%>);
 				<%
@@ -160,7 +176,7 @@ imports="
 <%
 				}
 			}
-			
+
 			if(((isCustom && !useYarn)
 			        || (!isCustom
 			                && !"PIVOTAL_HD_1_0_1".equals(hiveVersion)
@@ -182,7 +198,7 @@ imports="
 				System.setProperty("mapred.job.tracker", <%=mapredJT%>);
 <%
 			}
-			
+
 			if(setNamenode) {
 				String namenode = ElementParameterParser.getValue(node, "__FS_DEFAULT_NAME__");
 %>
@@ -256,7 +272,7 @@ imports="
 <%
 						}else{
 %>
-							String decryptedSslStorePassword_<%=cid%> = <%= ElementParameterParser.getValue(node, sslStorepasswordFieldName)%>; 
+							String decryptedSslStorePassword_<%=cid%> = <%= ElementParameterParser.getValue(node, sslStorepasswordFieldName)%>;
 <%
 						}
 %>
@@ -281,7 +297,7 @@ imports="
 <%
 			}
 		}
-		
+
 		public void setAutoCommit(INode node) {
 			boolean useTransaction = false;//("true").equals(ElementParameterParser.getValue(node,"__IS_USE_AUTO_COMMIT__"));
 			boolean setAutoCommit = "true".equals(ElementParameterParser.getValue(node, "__AUTO_COMMIT__"));
@@ -291,12 +307,12 @@ imports="
 <%
 			}
 		}
-		
+
 		public String getDirverClassName(INode node){
 			return javaDbDriver;
 		}
 	}//end class
-	
+
 	connUtil = new ConnectionUtil();
 %>
 <%//----------------------------component codes-----------------------------------------%>
@@ -310,37 +326,37 @@ imports="
 	String zookeeperQuorumForHBase = ElementParameterParser.getValue(node, "__ZOOKEEPER_QUORUM__");
 	String zookeeperClientPortForHBase = ElementParameterParser.getValue(node, "__ZOOKEEPER_CLIENT_PORT__");
 	boolean setZNodeParent = "true".equals(ElementParameterParser.getValue(node, "__SET_ZNODE_PARENT__"));
-	String zNodeParent = ElementParameterParser.getValue(node, "__ZNODE_PARENT__");	
+	String zNodeParent = ElementParameterParser.getValue(node, "__ZNODE_PARENT__");
 	String hbaseMasterPrincipal = ElementParameterParser.getValue(node, "__HBASE_MASTER_PRINCIPAL__");
 	String hbaseRegionServerPrincipal = ElementParameterParser.getValue(node, "__HBASE_REGIONSERVER_PRINCIPAL__");
-	
+
 	String defineRegisterJar = ElementParameterParser.getValue(node, "__DEFINE_REGISTER_JAR__");
 	List<Map<String, String>> registerJarForHBase = (List<Map<String, String>>)ElementParameterParser.getObjectValue(node, "__REGISTER_JAR__");
 	String hiveServer = ElementParameterParser.getValue(node, "__HIVE_SERVER__");
-	
+
 	boolean isCustom = "CUSTOM".equals(ElementParameterParser.getValue(node, "__DISTRIBUTION__"));
 	boolean useYarn = "true".equals(ElementParameterParser.getValue(node, "__USE_YARN__"));
 	boolean setResourceManager = "true".equals(ElementParameterParser.getValue(node, "__SET_RESOURCE_MANAGER__"));
-	
+
 	String yarnClasspathSeparator = ElementParameterParser.getValue(node, "__CLASSPATH_SEPARATOR__");
-	
+
 	boolean useKrb = "true".equals(ElementParameterParser.getValue(node, "__USE_KRB__"));
 	boolean cdhCanBeSecured = ("Cloudera_CDH4".equals(hiveVersion) || "Cloudera_CDH4_YARN".equals(hiveVersion) || "Cloudera_CDH5".equals(hiveVersion) || "Cloudera_CDH5_1".equals(hiveVersion) || "Cloudera_CDH5_4".equals(hiveVersion) || "Cloudera_CDH5_1_MR1".equals(hiveVersion)) && (("HIVE".equalsIgnoreCase(hiveServer) && "EMBEDDED".equalsIgnoreCase(connectionMode)) || "HIVE2".equalsIgnoreCase(hiveServer));
-	boolean pivotalCanBeSecured = ("PIVOTAL_HD_2_0".equals(hiveVersion)) && (("HIVE".equalsIgnoreCase(hiveServer) && "EMBEDDED".equalsIgnoreCase(connectionMode)) || "HIVE2".equalsIgnoreCase(hiveServer));	
-			
+	boolean pivotalCanBeSecured = ("PIVOTAL_HD_2_0".equals(hiveVersion)) && (("HIVE".equalsIgnoreCase(hiveServer) && "EMBEDDED".equalsIgnoreCase(connectionMode)) || "HIVE2".equalsIgnoreCase(hiveServer));
+
 	boolean securityIsEnabled = useKrb && (isCustom || ("HDP_1_2".equals(hiveVersion) || "HDP_1_3".equals(hiveVersion) || "HDP_2_0".equals(hiveVersion) || "HDP_2_1".equals(hiveVersion) || "HDP_2_2".equals(hiveVersion) || cdhCanBeSecured || pivotalCanBeSecured));
 	boolean securedStandaloneHive2 = securityIsEnabled && "HIVE2".equalsIgnoreCase(hiveServer) && "STANDALONE".equalsIgnoreCase(connectionMode);
 	boolean securedEmbedded = securityIsEnabled && "EMBEDDED".equalsIgnoreCase(connectionMode);
-	
+
 	boolean isKerberosAvailableHadoop2 = !isCustom && ("HDP_2_0".equals(hiveVersion) || "HDP_2_1".equals(hiveVersion) || "HDP_2_2".equals(hiveVersion) || "Cloudera_CDH4_YARN".equals(hiveVersion) || "Cloudera_CDH5".equals(hiveVersion) || "Cloudera_CDH5_1".equals(hiveVersion) || "Cloudera_CDH5_4".equals(hiveVersion) || "PIVOTAL_HD_2_0".equals(hiveVersion));
 	boolean isHadoop2 = "PIVOTAL_HD_1_0_1".equals(hiveVersion) || "APACHE_2_4_0_EMR".equals(hiveVersion) || "APACHE_2_4_0_EMR_0_13_1".equals(hiveVersion) || "EMR_4_0_0".equals(hiveVersion) || "MAPR401".equals(hiveVersion) || "MAPR410".equals(hiveVersion) || isKerberosAvailableHadoop2;
-	
+
 	boolean isKerberosAvailableHadoop1 = !isCustom && ("HDP_1_2".equals(hiveVersion) || "HDP_1_3".equals(hiveVersion) || "Cloudera_CDH4".equals(hiveVersion) || "Cloudera_CDH5_1_MR1".equals(hiveVersion));
-	
+
 %>
 	globalMap.put("current_client_path_separator", System.getProperty("path.separator"));
 	System.setProperty("path.separator", <%=yarnClasspathSeparator%>);
-	
+
 	java.sql.Statement init_<%=cid%> = conn_<%=cid%>.createStatement();
 <%
     if(!isCustom && ("HDP_1_2".equals(hiveVersion) || "HDP_1_3".equals(hiveVersion))) {
@@ -351,7 +367,7 @@ imports="
 	    init_<%=cid%>.execute("SET mapred.job.reduce.memory.mb=" + <%=reduceMemory%>);
 <%
 	}
-	
+
 	if(securedEmbedded) {
 		String namenodePrincipal = ElementParameterParser.getValue(node, "__NAMENODE_PRINCIPAL__");
 %>
@@ -371,7 +387,7 @@ imports="
 		}
 
 	}
-	
+
 	if((isCustom && useYarn) || (!isCustom && isHadoop2)) {
 		if(setResourceManager) {
 			String resourceManager = ElementParameterParser.getValue(node, "__RESOURCE_MANAGER__");
@@ -380,7 +396,7 @@ imports="
     		init_<%=cid%>.execute("SET yarn.resourcemanager.address=" + <%=resourceManager%>);
 <%
 		}
-		
+
 		boolean setJobHistoryAddress = "true".equals(ElementParameterParser.getValue(node, "__SET_JOBHISTORY_ADDRESS__"));
 		if(setJobHistoryAddress) {
 			String jobHistoryAddress = ElementParameterParser.getValue(node,"__JOBHISTORY_ADDRESS__");
@@ -388,13 +404,13 @@ imports="
 			init_<%=cid%>.execute("SET mapreduce.jobhistory.address=" + <%=jobHistoryAddress%>);
 			<%
 		}
-		
+
 		if ("true".equals(ElementParameterParser.getValue(node, "__USE_DATANODE_HOSTNAME__"))) {
 %>
 			init_<%=cid%>.execute("SET dfs.client.use.datanode.hostname=true");
 <%
 		}
-		
+
 		boolean setSchedulerAddress = "true".equals(ElementParameterParser.getValue(node, "__SET_SCHEDULER_ADDRESS__"));
 		if(setSchedulerAddress) {
 			String schedulerAddress = ElementParameterParser.getValue(node,"__RESOURCEMANAGER_SCHEDULER_ADDRESS__");
@@ -402,14 +418,14 @@ imports="
 			init_<%=cid%>.execute("SET yarn.resourcemanager.scheduler.address=" + <%=schedulerAddress%>);
 <%
 		}
-		
+
 		if("true".equals(ElementParameterParser.getValue(node, "__SET_FS_DEFAULT_NAME__"))) {
 			String namenode = ElementParameterParser.getValue(node, "__FS_DEFAULT_NAME__");
 %>
 			init_<%=cid%>.execute("SET fs.default.name=" + <%=namenode%>);
 <%
 		}
-		
+
 		if("EMBEDDED".equals(connectionMode)) {
 			if(!isCustom && ("HDP_2_1".equals(hiveVersion) || "HDP_2_2".equals(hiveVersion) || "Cloudera_CDH5".equals(hiveVersion) || "Cloudera_CDH5_1".equals(hiveVersion) || "Cloudera_CDH5_4".equals(hiveVersion) || "MAPR401".equals(hiveVersion) || "MAPR410".equals(hiveVersion) || "APACHE_2_4_0_EMR".equals(hiveVersion) || "APACHE_2_4_0_EMR_0_13_1".equals(hiveVersion))) {
 %>
@@ -440,7 +456,7 @@ imports="
     			init_<%=cid%>.execute("SET yarn.application.classpath=$HADOOP_CONF_DIR,$HADOOP_COMMON_HOME/*,$HADOOP_COMMON_HOME/lib/*,$HADOOP_HDFS_HOME/*,$HADOOP_HDFS_HOME/lib/*,$HADOOP_MAPRED_HOME/*,$HADOOP_MAPRED_HOME/lib/*,$YARN_HOME/*,$YARN_HOME/lib/*,$HADOOP_YARN_HOME/*,$HADOOP_YARN_HOME/lib/*,$HADOOP_COMMON_HOME/share/hadoop/common/*,$HADOOP_COMMON_HOME/share/hadoop/common/lib/*,$HADOOP_HDFS_HOME/share/hadoop/hdfs/*,$HADOOP_HDFS_HOME/share/hadoop/hdfs/lib/*,$HADOOP_YARN_HOME/share/hadoop/yarn/*,$HADOOP_YARN_HOME/share/hadoop/yarn/lib/*");
 <%
 			}
-			
+
 			boolean crossPlatformSubmission = "true".equals(ElementParameterParser.getValue(node, "__CROSS_PLATFORM_SUBMISSION__"));
 			if(isCustom && useYarn && crossPlatformSubmission) {
 %>
@@ -448,7 +464,7 @@ imports="
 <%
 			}
 		}
-		
+
 		boolean setMemory = "true".equals(ElementParameterParser.getValue(node, "__SET_MEMORY__"));
 		if(setMemory) {
 			String mapMemory = ElementParameterParser.getValue(node,"__MAPREDUCE_MAP_MEMORY_MB__");
@@ -461,7 +477,7 @@ imports="
 <%
 		}
 	}
-	
+
 	List<Map<String, String>> advProps = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__ADVANCED_PROPERTIES__");
 	if(advProps!=null) {
 		for(Map<String, String> item : advProps){
@@ -476,23 +492,23 @@ imports="
 	<%
 	(new PrepareTez()).invoke(node, cid);
 	%>
-	
+
 	init_<%=cid%>.close();
-	
+
 	<%if("true".equalsIgnoreCase(storeByHBase) && !("EMBEDDED".equals(connectionMode) && "MAPR2".equals(hiveVersion))) {%>
 		java.sql.Statement statement_<%=cid%> = conn_<%=cid%>.createStatement();
 		<%if(zookeeperQuorumForHBase!=null && !"".equals(zookeeperQuorumForHBase) && !"\"\"".equals(zookeeperQuorumForHBase)) {%>
 			statement_<%=cid%>.execute("SET hbase.zookeeper.quorum="+<%=zookeeperQuorumForHBase%>);
 		<%}%>
-		
+
 		<%if(zookeeperClientPortForHBase!=null && !"".equals(zookeeperClientPortForHBase) && !"\"\"".equals(zookeeperClientPortForHBase)) {%>
 			statement_<%=cid%>.execute("SET hbase.zookeeper.property.clientPort="+<%=zookeeperClientPortForHBase%>);
 		<%}%>
-		
+
 		<%if(setZNodeParent && zNodeParent!=null && !"".equals(zNodeParent) && !"\"\"".equals(zNodeParent)) {%>
 			statement_<%=cid%>.execute("SET zookeeper.znode.parent="+<%=zNodeParent%>);
 		<%}%>
-		
+
 		<%if(useKrb){%>
 			statement_<%=cid%>.execute("SET hbase.security.authentication=kerberos");
 			statement_<%=cid%>.execute("SET hbase.rpc.engine=org.apache.hadoop.hbase.ipc.SecureRpcEngine");
@@ -521,19 +537,19 @@ imports="
 	globalMap.put("conn_<%=cid%>",conn_<%=cid%>);
 
 	globalMap.put("db_<%=cid%>",<%=dbname%>);
-	
+
 	String currentClientPathSeparator_<%=cid%> = (String)globalMap.get("current_client_path_separator");
 	if(currentClientPathSeparator_<%=cid%>!=null) {
 		System.setProperty("path.separator", currentClientPathSeparator_<%=cid%>);
 		globalMap.put("current_client_path_separator", null);
 	}
-	
+
 	String currentClientUsername_<%=cid%> = (String)globalMap.get("current_client_user_name");
 	if(currentClientUsername_<%=cid%>!=null) {
 		System.setProperty("user.name", currentClientUsername_<%=cid%>);
 		globalMap.put("current_client_user_name", null);
 	}
-	
+
 	String originalHadoopUsername_<%=cid%> = (String)globalMap.get("HADOOP_USER_NAME_<%=cid%>");
 	if(originalHadoopUsername_<%=cid%>!=null) {
 		System.setProperty("HADOOP_USER_NAME", originalHadoopUsername_<%=cid%>);
