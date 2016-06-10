@@ -203,7 +203,7 @@ public class RowGeneratorUI {
     private void createSchemaComposite() {
         outputMetaTable = externalNode.getMetadataList().get(0);
         uiManager.convert(externalNode, outputMetaTable, functionManager);
-        metadataTableEditor = new MetadataTableEditorExt(outputMetaTable, ""); //$NON-NLS-1$
+        metadataTableEditor = new MetadataTableEditorExt(outputMetaTable, "", this.functionManager); //$NON-NLS-1$
         metadataTableEditor.setRowGenUI(this);
 
         inputReadOnly = this.externalNode.getProcess().isReadOnly();
@@ -379,6 +379,15 @@ public class RowGeneratorUI {
 
     public SashForm getMainSashForm() {
         return this.mainSashForm;
+    }
+
+    
+    /**
+     * Getter for functionManager.
+     * @return the functionManager
+     */
+    public FunctionManagerExt getFunctionManager() {
+        return this.functionManager;
     }
 
 }

@@ -29,17 +29,20 @@ import org.talend.designer.rowgenerator.data.FunctionManagerExt;
  */
 public class MetadataExtPasteCommand extends MetadataPasteCommand {
 
+    private FunctionManagerExt functionManagerExt;
     /**
      * chuang MetadataExtPasteCommand constructor comment.
      * 
      * @param extendedTable
      */
-    public MetadataExtPasteCommand(ExtendedTableModel extendedTable) {
+    public MetadataExtPasteCommand(ExtendedTableModel extendedTable, FunctionManagerExt functionManagerExt) {
         super(extendedTable);
+        this.functionManagerExt = functionManagerExt;
     }
 
-    MetadataExtPasteCommand(ExtendedTableModel extendedTable, Integer indexStartAdd) {
+    MetadataExtPasteCommand(ExtendedTableModel extendedTable, Integer indexStartAdd, FunctionManagerExt functionManagerExt) {
         super(extendedTable, indexStartAdd);
+        this.functionManagerExt = functionManagerExt;
     }
 
     @Override
@@ -61,7 +64,7 @@ public class MetadataExtPasteCommand extends MetadataPasteCommand {
                     list.add(copy);
                 } else {
                     MetadataColumnExt metadataColumnExt = new MetadataColumnExt((MetadataColumn) copy);
-                    metadataColumnExt.setFunction((new FunctionManagerExt()).getDefaultFunction(metadataColumnExt,
+                    metadataColumnExt.setFunction(functionManagerExt.getDefaultFunction(metadataColumnExt,
                             metadataColumnExt.getTalendType()));
                     list.add(metadataColumnExt);
                 }
@@ -93,7 +96,7 @@ public class MetadataExtPasteCommand extends MetadataPasteCommand {
                 IMetadataColumn copy = (ConvertionHelper.convertToIMetaDataColumn(newColumnCopy)).clone();
                 copy.setLabel(nextGeneratedColumnName);
                 MetadataColumnExt metadataColumnExt = new MetadataColumnExt((MetadataColumn) copy);
-                metadataColumnExt.setFunction((new FunctionManagerExt()).getDefaultFunction(metadataColumnExt,
+                metadataColumnExt.setFunction(functionManagerExt.getDefaultFunction(metadataColumnExt,
                         metadataColumnExt.getTalendType()));
                 list.add(metadataColumnExt);
                 countList.add(nextGeneratedColumnName);

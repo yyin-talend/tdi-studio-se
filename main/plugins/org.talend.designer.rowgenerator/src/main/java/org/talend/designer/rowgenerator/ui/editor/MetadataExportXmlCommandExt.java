@@ -32,7 +32,7 @@ public class MetadataExportXmlCommandExt extends Command {
 
     private File file;
 
-    private MetadataTableEditor extendedTableModel;
+    private MetadataTableEditorExt extendedTableModel;
 
     /**
      * amaumont MetadataPasteCommand constructor comment.
@@ -42,7 +42,7 @@ public class MetadataExportXmlCommandExt extends Command {
      * @param validAssignableType
      * @param indexStartAdd
      */
-    public MetadataExportXmlCommandExt(MetadataTableEditor extendedTableModel, File file) {
+    public MetadataExportXmlCommandExt(MetadataTableEditorExt extendedTableModel, File file) {
         super();
         this.file = file;
         this.extendedTableModel = extendedTableModel;
@@ -62,7 +62,7 @@ public class MetadataExportXmlCommandExt extends Command {
                     IMetadataTable currentTable = extendedTableModel.getMetadataTable();
                     // get all the columns from the table
                     if (currentTable != null) {
-                        MetadataSchemaExt ext = new MetadataSchemaExt();
+                        MetadataSchemaExt ext = new MetadataSchemaExt(extendedTableModel.getRowGenUI().getFunctionManager());
                         ext.saveColumnsToFile(file, currentTable);
                     }
                 }

@@ -254,7 +254,7 @@ public class MetadataToolbarEditorViewExt extends MetadataToolbarEditorView {
 
             @Override
             protected Command getCommandToExecute(ExtendedTableModel extendedTableModel, Integer indexWhereInsert) {
-                return new MetadataExtPasteCommand(extendedTableModel, indexWhereInsert);
+                return new MetadataExtPasteCommand(extendedTableModel, indexWhereInsert, genTableEditor2.getFunctionManager());
             }
 
         };

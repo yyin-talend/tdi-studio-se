@@ -761,4 +761,13 @@ public class MetadataTableEditorViewExt extends MetadataTableEditorView {
         preview2(tabFolderEditors);
     }
 
+    
+    /**
+     * Getter for functionManager.
+     * @return the functionManager
+     */
+    protected FunctionManagerExt getFunctionManager() {
+        return this.functionManager;
+    }
+
 }

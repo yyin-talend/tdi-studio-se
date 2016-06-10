@@ -157,7 +157,7 @@ public class UIManager {
     private List<Map<String, Object>> getCurrentColumnData() {
         List<Map<String, Object>> map = new ArrayList<Map<String, Object>>();
         MetadataTable table = (MetadataTable) rgManager.getRowGeneratorComponent().getMetadataList().get(0);
-        convert(rgManager.getRowGeneratorComponent(), table, new FunctionManagerExt());
+        convert(rgManager.getRowGeneratorComponent(), table, generatorUI.getFunctionManager());
         for (IMetadataColumn col : table.getListColumns()) {
             MetadataColumnExt ext = (MetadataColumnExt) col;
             Map<String, Object> value = new HashMap<String, Object>();

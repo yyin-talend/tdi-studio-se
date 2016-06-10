@@ -35,7 +35,7 @@ public class MetadataImportXmlCommandExt extends Command {
 
     private File file;
 
-    private ExtendedTableModel extendedTableModel;
+    private MetadataTableEditorExt extendedTableModel;
 
     private List<IMetadataColumn> removed;
 
@@ -47,7 +47,7 @@ public class MetadataImportXmlCommandExt extends Command {
      * @param validAssignableType
      * @param indexStartAdd
      */
-    public MetadataImportXmlCommandExt(ExtendedTableModel extendedTableModel, File file) {
+    public MetadataImportXmlCommandExt(MetadataTableEditorExt extendedTableModel, File file) {
         super();
         this.file = file;
         this.extendedTableModel = extendedTableModel;
@@ -66,7 +66,7 @@ public class MetadataImportXmlCommandExt extends Command {
             removed = new ArrayList<IMetadataColumn>(extendedTableModel.getBeansList());
             extendedTableModel.removeAll(removed);
 
-            MetadataSchemaExt ext = new MetadataSchemaExt();
+            MetadataSchemaExt ext = new MetadataSchemaExt(extendedTableModel.getRowGenUI().getFunctionManager());
             List<IMetadataColumn> metadataColumns = ext.initializeAllColumns(file);
             extendedTableModel.addAll(metadataColumns);
 
