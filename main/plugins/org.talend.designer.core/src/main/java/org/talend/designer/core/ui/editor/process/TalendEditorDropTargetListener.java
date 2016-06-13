@@ -1686,7 +1686,14 @@ public class TalendEditorDropTargetListener extends TemplateTransferDropTargetLi
             MetadataTable table, Node node) {
         SAPFunctionUnit functionUnit = null;
         if (object instanceof MetadataTableRepositoryObject) {
-            IElementParameter schemaParam = node.getElementParameterFromField(EParameterFieldType.SCHEMA_TYPE);
+            IElementParameter schemaParam = null;
+            List<IElementParameter> schemaTypeList = node.getElementParametersFromField(EParameterFieldType.SCHEMA_TYPE);
+            for (IElementParameter param : schemaTypeList) {
+                if (param.getName().equals("SCHEMA")) { //$NON-NLS-1$
+                    schemaParam = param;
+                    break;
+                }
+            }
             if (table.eContainer() instanceof SAPFunctionUnit) {
                 // function parameter table
                 functionUnit = (SAPFunctionUnit) table.eContainer();
