@@ -767,18 +767,18 @@ public final class Expression {
         INode node = retrieveNodeElementFromParameter(currentParam, listParam);
         ESparkVersion version = SparkVersionUtil.getSparkVersion(node);
 
-        Pattern p = java.util.regex.Pattern.compile("(lt|lte|gt|gte|eq|ne)\\s*'(SPARK_.*)'"); //$NON-NLS-1$
+        Pattern p = java.util.regex.Pattern.compile("(lt|le|gt|ge|eq|ne)\\s*'(SPARK_.*)'"); //$NON-NLS-1$
         Matcher m = p.matcher(simpleExpression);
         if (m.find()) {
             ESparkVersion versionToTest = ESparkVersion.valueOf(m.group(2));
             switch (m.group(1)) {
             case "lt": //$NON-NLS-1$
                 return version.compareTo(versionToTest) < 0;
-            case "lte": //$NON-NLS-1$
+            case "le": //$NON-NLS-1$
                 return version.compareTo(versionToTest) <= 0;
             case "gt": //$NON-NLS-1$
                 return version.compareTo(versionToTest) > 0;
-            case "gte": //$NON-NLS-1$
+            case "ge": //$NON-NLS-1$
                 return version.compareTo(versionToTest) >= 0;
             case "eq": //$NON-NLS-1$
                 return version.compareTo(versionToTest) == 0;
