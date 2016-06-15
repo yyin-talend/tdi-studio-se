@@ -90,7 +90,7 @@ public class Salesforce620Migration extends AbstractJobMigrationTask {
 
                             @Override
                             public void setup(Object properties) {
-                                ((ComponentProperties)properties).setValueEvaluator(new PropertyValueEvaluator() {
+                                ((Properties)properties).setValueEvaluator(new PropertyValueEvaluator() {
 
                                     @Override
                                     public Object evaluate(Property property, Object storedValue) {

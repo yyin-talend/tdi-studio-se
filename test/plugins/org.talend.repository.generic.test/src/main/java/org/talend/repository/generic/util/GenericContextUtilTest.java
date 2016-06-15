@@ -23,8 +23,8 @@ import org.eclipse.emf.common.util.EList;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.powermock.modules.junit4.PowerMockRunner;
-import org.talend.daikon.properties.Properties.Deserialized;
-import org.talend.daikon.properties.PropertiesImpl;
+import org.talend.daikon.properties.Properties;
+import org.talend.daikon.serialize.SerializerDeserializer;
 import org.talend.designer.core.generic.constants.IGenericConstants;
 import org.talend.designer.core.model.utils.emf.talendfile.ContextParameterType;
 import org.talend.designer.core.model.utils.emf.talendfile.ContextType;
@@ -88,8 +88,8 @@ public class GenericContextUtilTest {
     }
 
     private TestProperties getPropertiesFromConnection(GenericConnection connection) {
-        Deserialized<TestProperties> d = PropertiesImpl.fromSerialized(connection.getCompProperties(), TestProperties.class, null);
-        TestProperties deserProps = d.properties;
+        SerializerDeserializer.Deserialized<TestProperties> d = Properties.Helper.fromSerializedPersistent(connection.getCompProperties(), TestProperties.class);
+        TestProperties deserProps = d.object;
         return deserProps;
     }
 

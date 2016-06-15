@@ -593,7 +593,7 @@ public class ComponentsUtils {
 
                         @Override
                         public void setup(Object properties) {
-                            ((ComponentProperties)properties).setValueEvaluator(new MetadataContextPropertyValueEvaluator(connection));
+                            ((Properties)properties).setValueEvaluator(new MetadataContextPropertyValueEvaluator(connection));
                         }
                     });
             if (fromSerialized != null) {

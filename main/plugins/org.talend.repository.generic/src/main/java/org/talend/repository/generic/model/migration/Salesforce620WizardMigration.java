@@ -128,7 +128,7 @@ public class Salesforce620WizardMigration extends AbstractItemMigrationTask {
 
                     @Override
                     public void setup(Object properties) {
-                        ((ComponentProperties)properties).setValueEvaluator(new PropertyValueEvaluator() {
+                        ((Properties)properties).setValueEvaluator(new PropertyValueEvaluator() {
 
                             @Override
                             public Object evaluate(Property property, Object storedValue) {
