@@ -2679,7 +2679,7 @@
               description="Copy context comment value to other groups"
               id="org.talend.repository.model.migration.AddContextCommentValueMigrationTask"
               name="AddContextCommentValueMigrationTask"
-              version="6.1.2">
+              version="6.1.1">
         </projecttask>
         <workspacetask
               breaks="6.1.0"
