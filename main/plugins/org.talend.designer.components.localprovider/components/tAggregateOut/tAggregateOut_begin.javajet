@@ -737,7 +737,7 @@ if(warnings.size() > 0) {
 	%>
 	AggOperationStruct_<%=cid %> operation_result_<%=cid %> = null;
 	AggOperationStruct_<%=cid %> operation_finder_<%=cid %> = new AggOperationStruct_<%=cid %>();
-	java.util.Map<AggOperationStruct_<%=cid %>,AggOperationStruct_<%=cid %>> hash_<%=cid %> = new java.util.LinkedHashMap<AggOperationStruct_<%=cid %>,AggOperationStruct_<%=cid %>>();
+	java.util.Map<AggOperationStruct_<%=cid %>,AggOperationStruct_<%=cid %>> hash_<%=cid %> = new java.util.HashMap<AggOperationStruct_<%=cid %>,AggOperationStruct_<%=cid %>>();
 	<%
 
 if(listFlag){ // G_OutBegin_AggR_192
