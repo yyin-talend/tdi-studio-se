@@ -286,6 +286,21 @@ String inputConnName = null;
 	for (IConnection iterateConn : iterateConnSet) {
 		parallelIterate = "true".equals(ElementParameterParser.getValue(iterateConn, "__ENABLE_PARALLEL__"));
 	}
+	if(printParameter) {
+	%> 
+	java.util.List<String> paraListForLog_<%=cid %> = new java.util.ArrayList<String>();
+	paraListForLog_<%=cid %>.addAll(paraList_<%=cid %>);
+	List<String> parametersToEncrypt = new java.util.ArrayList<String>();
+	<%
+		List<IContextParameter> params = currentProcess.getContextManager().getDefaultContext().getContextParameterList();
+		for (IContextParameter ctxParam :params){
+			if("id_Password".equals(ctxParam.getType())) {
+			%>
+			parametersToEncrypt.add("<%=ctxParam.getName() %>");
+			<%
+			}
+		}
+	}
 	if(transmitWholeContext){//111111
 	%>
 		<% 
@@ -294,22 +309,35 @@ String inputConnName = null;
 		if(parallelIterate) {
 			localContext = "localContext";
 		}
-		%> 
+		%>
 		<%=localContext%>.synchronizeContext();
+		<%
+		List<IContextParameter> params = currentProcess.getContextManager().getDefaultContext().getContextParameterList();
+		for (IContextParameter ctxParam :params){
+			String ctxParamName = ctxParam.getName();
+ 			%>
+			parentContextMap_<%=cid %>.put("<%=ctxParamName %>", <%=localContext%>.<%=ctxParamName %>);
+		<%
+		}
+		%> 
 		java.util.Enumeration<?> propertyNames_<%=cid %> = <%=localContext%>.propertyNames();
 		while (propertyNames_<%=cid %>.hasMoreElements()) {
 			String key_<%=cid %> = (String) propertyNames_<%=cid %>.nextElement();
 			Object value_<%=cid %> = (Object) <%=localContext%>.get(key_<%=cid %>);       
 			paraList_<%=cid %>.add("--context_param " + key_<%=cid %> + "=" + value_<%=cid %>);
+			<%
+			if(printParameter) {
+			%>
+			if(parametersToEncrypt.contains(key_<%=cid %>) && value_<%=cid %> != null) {
+				paraListForLog_<%=cid %>.add("--context_param " + key_<%=cid %> + "=" + routines.system.PasswordEncryptUtil.encryptPassword(String.valueOf(value_<%=cid %>)));
+			} else {
+				paraListForLog_<%=cid %>.add("--context_param " + key_<%=cid %> + "=" + value_<%=cid %>);
+			}
+			<%
+			}
+			%>
 		}
 		<%
-		List<IContextParameter> params = currentProcess.getContextManager().getDefaultContext().getContextParameterList();
-		for (IContextParameter ctxParam :params){
-			String ctxParamName = ctxParam.getName();
- 			%>  
-			parentContextMap_<%=cid %>.put("<%=ctxParamName %>", <%=localContext%>.<%=ctxParamName %>);
-		<%
-		}
 	}//111111
 	%>
 
@@ -327,12 +355,19 @@ String inputConnName = null;
 		%>
 		obj_<%=cid%> = <%=value %>;
 		paraList_<%=cid %>.add("--context_param <%=name %>=" + RuntimeUtils.tRunJobConvertContext(obj_<%=cid%>));
+		<% if(printParameter){ %>
+		if(parametersToEncrypt.contains("<%=name %>") && obj_<%=cid%> != null) {
+			paraListForLog_<%=cid %>.add("--context_param <%=name %>=" + routines.system.PasswordEncryptUtil.encryptPassword(String.valueOf(RuntimeUtils.tRunJobConvertContext(obj_<%=cid%>))));
+		} else {
+			paraListForLog_<%=cid %>.add("--context_param <%=name %>=" + RuntimeUtils.tRunJobConvertContext(obj_<%=cid%>));
+		}
+		<% } %>
 		parentContextMap_<%=cid %>.put("<%=name %>", obj_<%=cid%>);
 	<%
 	}
 	%>
 	<%if(printParameter){%>
-		System.out.println("<%=cid %> in <%=currentProcess.getName() %> call <%if(!useDynamicJob){%><%=childJob %><%}else{%>"+<%=dynamicJobName%>+"<%}%> with:\n\n" + paraList_<%=cid %> + "\n");
+		System.out.println("<%=cid %> in <%=currentProcess.getName() %> call <%if(!useDynamicJob){%><%=childJob %><%}else{%>"+<%=dynamicJobName%>+"<%}%> with:\n\n" + paraListForLog_<%=cid %> + "\n");
 	<%
 	}
 

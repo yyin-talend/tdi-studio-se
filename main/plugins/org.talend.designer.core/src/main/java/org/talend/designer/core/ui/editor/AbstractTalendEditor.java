@@ -32,6 +32,7 @@ import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.SubProgressMonitor;
 import org.eclipse.draw2d.Cursors;
 import org.eclipse.draw2d.FigureCanvas;
@@ -1139,9 +1140,8 @@ public abstract class AbstractTalendEditor extends GraphicalEditorWithFlyoutPale
         Image img = new Image(null, width, height);
         GC gc = new GC(img);
         Graphics graphics = new SWTGraphics(gc);
-        graphics.translate(-1 * contentLayer.getBounds().x + viewport.getViewLocation().x, -1 * contentLayer.getBounds().y
-                + viewport.getViewLocation().y);
         Point point = contentLayer.getBounds().getTopLeft();
+        graphics.translate(-point.x, -point.y);
         IProcess2 process = getProcess();
         process.setPropertyValue(IProcess.SCREEN_OFFSET_X, String.valueOf(-point.x));
         process.setPropertyValue(IProcess.SCREEN_OFFSET_Y, String.valueOf(-point.y));

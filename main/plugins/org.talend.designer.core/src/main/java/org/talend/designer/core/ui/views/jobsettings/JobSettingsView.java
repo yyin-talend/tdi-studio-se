@@ -485,7 +485,7 @@ public class JobSettingsView extends ViewPart implements IJobSettingsView, ISele
         }
         tabFactory.setTitle(title, icon);
         super.setTitleImage(icon);
-        if (gitService.isProjectInGitMode())
+        if (gitService!=null && gitService.isProjectInGitMode())
                 return;
 
         // This invocation below will bring in refresh issue for git.
