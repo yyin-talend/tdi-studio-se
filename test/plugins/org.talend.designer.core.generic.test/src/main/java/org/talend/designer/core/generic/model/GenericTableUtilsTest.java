@@ -13,7 +13,7 @@
 package org.talend.designer.core.generic.model;
 
 import static org.junit.Assert.*;
-import static org.talend.daikon.properties.PropertyFactory.*;
+import static org.talend.daikon.properties.property.PropertyFactory.*;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -21,11 +21,11 @@ import java.util.List;
 import java.util.Map;
 
 import org.junit.Test;
-import org.talend.components.api.properties.ComponentProperties;
+import org.talend.components.api.properties.ComponentPropertiesImpl;
 import org.talend.core.model.process.EParameterFieldType;
 import org.talend.core.model.process.IElement;
 import org.talend.core.model.process.IElementParameter;
-import org.talend.daikon.properties.Property;
+import org.talend.daikon.properties.property.Property;
 import org.talend.designer.core.model.FakeElement;
 import org.talend.designer.core.model.components.ElementParameter;
 
@@ -159,7 +159,7 @@ public class GenericTableUtilsTest {
         assertEquals("Value3", line2.get("column3"));
     }
 
-    class MyTestTable extends ComponentProperties {
+    class MyTestTable extends ComponentPropertiesImpl {
 
         public Property column1 = newString("column1");
 

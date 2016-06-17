@@ -28,17 +28,20 @@ import org.talend.designer.rowgenerator.ui.RowGeneratorUI;
 public class MetadataTableEditorExt extends MetadataTableEditor {
 
     private RowGeneratorUI ui;
+    
+    private FunctionManagerExt functionManagerExt;
 
     /**
      * qzhang MetadataTableEditorExt constructor comment.
      */
-    public MetadataTableEditorExt(IMetadataTable metadataTable, String titleName) {
+    public MetadataTableEditorExt(IMetadataTable metadataTable, String titleName, FunctionManagerExt functionManagerExt) {
         super(metadataTable, titleName);
+        this.functionManagerExt = functionManagerExt;
     }
 
     public IMetadataColumn createNewMetadataColumn() {
         final MetadataColumnExt metadataColumnExt = new MetadataColumnExt((MetadataColumn) super.createNewMetadataColumn());
-        metadataColumnExt.setFunction((new FunctionManagerExt()).getDefaultFunction(metadataColumnExt, metadataColumnExt
+        metadataColumnExt.setFunction(functionManagerExt.getDefaultFunction(metadataColumnExt, metadataColumnExt
                 .getTalendType()));
         return metadataColumnExt;
     }

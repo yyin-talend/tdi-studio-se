@@ -20,6 +20,7 @@ import org.talend.core.model.properties.Property;
 import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.repository.model.ProxyRepositoryFactory;
 import org.talend.daikon.properties.Properties.Deserialized;
+import org.talend.daikon.properties.PropertiesImpl;
 import org.talend.designer.core.generic.constants.IGenericConstants;
 import org.talend.metadata.managment.ui.wizard.PropertiesWizard;
 import org.talend.repository.generic.model.genericMetadata.GenericConnection;
@@ -44,11 +45,11 @@ public class GenericConnPropertiesWizard extends PropertiesWizard {
             GenericConnection connection = (GenericConnection) gcItem.getConnection();
             String compPropertiesStr = connection.getCompProperties();
             if (compPropertiesStr != null) {
-                Deserialized<ComponentProperties> fromSerialized = ComponentProperties.fromSerialized(compPropertiesStr,
-                        ComponentProperties.class);
+                Deserialized<ComponentProperties> fromSerialized = PropertiesImpl.fromSerialized(compPropertiesStr,
+                        ComponentProperties.class, null);
                 if (fromSerialized != null) {
                     ComponentProperties componentProperties = fromSerialized.properties;
-                    org.talend.daikon.properties.Property nameProperty = (org.talend.daikon.properties.Property) componentProperties
+                    org.talend.daikon.properties.property.Property nameProperty = (org.talend.daikon.properties.property.Property) componentProperties
                             .getProperty(IGenericConstants.NAME_PROPERTY);
                     Object namePropertyVal = nameProperty.getValue();
                     String newName = property.getLabel();

@@ -34,12 +34,12 @@ import org.w3c.dom.Node;
  */
 public class MetadataSchemaExt extends MetadataSchema {
 
-    private FunctionManagerExt funManager = new FunctionManagerExt();
+    private FunctionManagerExt funManager;
 
     /**
      * qzhang MetadataSchemaExt constructor comment.
      */
-    protected MetadataSchemaExt() {
+    protected MetadataSchemaExt(FunctionManagerExt funManager) {
         super();
     }
 
@@ -52,7 +52,7 @@ public class MetadataSchemaExt extends MetadataSchema {
         if (function != null) {
             Node parameter = nodeMap.getNamedItem("parameter"); //$NON-NLS-1$
             Node preview = nodeMap.getNamedItem("preview"); //$NON-NLS-1$
-            Function function2 = new FunctionManagerExt().getCurrentFunction(function.getNodeValue(), columnExt);
+            Function function2 = funManager.getCurrentFunction(function.getNodeValue(), columnExt);
             List<Parameter> parms = function2.getParameters();
             String[] paraStr = parameter.getNodeValue().split(";"); //$NON-NLS-1$
             for (String string : paraStr) {
@@ -67,7 +67,7 @@ public class MetadataSchemaExt extends MetadataSchema {
             columnExt.setFunction(function2);
             columnExt.setPreview(preview.getNodeValue());
         } else {
-            Function function2 = new FunctionManagerExt().getDefaultFunction(columnExt, columnExt.getTalendType());
+            Function function2 = funManager.getDefaultFunction(columnExt, columnExt.getTalendType());
             columnExt.setFunction(function2);
             columnExt.setPreview(""); //$NON-NLS-1$
         }
@@ -80,7 +80,7 @@ public class MetadataSchemaExt extends MetadataSchema {
         if (metadataColumn instanceof MetadataColumnExt) {
             MetadataColumnExt columnExt = (MetadataColumnExt) metadataColumn;
             Attr function = document.createAttribute("function"); //$NON-NLS-1$
-            function.setNodeValue(funManager.getFunctionLable(columnExt.getFunction()));
+            function.setNodeValue(FunctionManagerExt.getFunctionLable(columnExt.getFunction()));
             column.setAttributeNode(function);
 
             Attr parameter = document.createAttribute("parameter"); //$NON-NLS-1$

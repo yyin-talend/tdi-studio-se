@@ -255,7 +255,23 @@
          unpack="false"/>
 
    <plugin
+         id="biz.aQute.bnd.annotation"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         fragment="true"
+         unpack="false"/>
+
+   <plugin
          id="org.talend.components.api"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         fragment="true"
+         unpack="false"/>
+
+   <plugin
+         id="org.talend.components.api.service"
          download-size="0"
          install-size="0"
          version="0.0.0"
@@ -298,12 +314,6 @@
          install-size="0"
          version="0.0.0"
          unpack="false"/>
-   <plugin
-         id="org.talend.components.salesforce"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
          
    <plugin
          id="org.talend.components.splunk"
@@ -318,5 +328,5 @@
          install-size="0"
          version="0.0.0"
          unpack="false"/>
-
+         
 </feature>

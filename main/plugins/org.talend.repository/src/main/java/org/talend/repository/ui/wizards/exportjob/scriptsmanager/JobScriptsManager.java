@@ -53,10 +53,10 @@ import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.FakePropertyImpl;
 import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.model.repository.ResourceModelUtils;
-import org.talend.core.model.runprocess.LastGenerationInfo;
 import org.talend.core.model.utils.PerlResourcesHelper;
 import org.talend.core.repository.constants.FileConstants;
 import org.talend.core.runtime.process.ITalendProcessJavaProject;
+import org.talend.core.runtime.process.LastGenerationInfo;
 import org.talend.core.runtime.process.TalendProcessArgumentConstant;
 import org.talend.core.runtime.repository.build.BuildExportManager;
 import org.talend.core.service.ITransformService;
@@ -218,7 +218,8 @@ public abstract class JobScriptsManager {
         esbServiceName,
         esbCategory,
         esbExportType,
-        properties
+        properties,
+        needAssembly
     }
 
     /**
@@ -596,8 +597,8 @@ public abstract class JobScriptsManager {
     protected IProcess generateJobFiles(ProcessItem process, String contextName, String version, boolean statistics,
             boolean trace, boolean applyContextToChildren, IProgressMonitor monitor) throws ProcessorException {
         LastGenerationInfo.getInstance().getUseDynamicMap().clear();
-        IProcessor processor = ProcessorUtilities.generateCode(process, contextName, version, statistics, trace, applyContextToChildren,
-                    isOptionChoosed(ExportChoice.needContext), monitor);
+        IProcessor processor = ProcessorUtilities.generateCode(process, contextName, version, statistics, trace,
+                applyContextToChildren, isOptionChoosed(ExportChoice.needContext), monitor);
         return processor.getProcess();
     }
 

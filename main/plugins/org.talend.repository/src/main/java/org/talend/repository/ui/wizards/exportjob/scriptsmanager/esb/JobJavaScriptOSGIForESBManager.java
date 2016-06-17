@@ -15,21 +15,25 @@ package org.talend.repository.ui.wizards.exportjob.scriptsmanager.esb;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 import java.util.Set;
 import java.util.jar.Manifest;
 
 import org.apache.commons.collections.map.MultiKeyMap;
 import org.eclipse.core.resources.IFolder;
+import org.eclipse.core.runtime.Status;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.utils.generation.JavaUtils;
@@ -45,11 +49,11 @@ import org.talend.core.model.properties.Property;
 import org.talend.core.model.properties.RoutineItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryViewObject;
-import org.talend.core.model.runprocess.LastGenerationInfo;
 import org.talend.core.model.utils.JavaResourcesHelper;
 import org.talend.core.repository.constants.FileConstants;
 import org.talend.core.repository.model.ProxyRepositoryFactory;
 import org.talend.core.runtime.process.ITalendProcessJavaProject;
+import org.talend.core.runtime.process.LastGenerationInfo;
 import org.talend.core.runtime.repository.build.BuildExportManager;
 import org.talend.core.ui.branding.IBrandingService;
 import org.talend.designer.core.model.utils.emf.component.IMPORTType;
@@ -78,6 +82,23 @@ import aQute.bnd.osgi.Jar;
 public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
 
     protected static final char MANIFEST_ITEM_SEPARATOR = ',';
+
+    @SuppressWarnings("serial")
+    private static final Collection<String> EXCLUDED_MODULES = new ArrayList<String>() {
+        {
+            try (InputStream is = RepositoryPlugin.getDefault().getBundle()
+                    .getEntry("/resources/osgi-exclude.properties").openStream()) { //$NON-NLS-1$
+                final Properties p = new Properties();
+                p.load(is);
+                for (Enumeration<?> e = p.propertyNames(); e.hasMoreElements();) {
+                    add((String) e.nextElement());
+                }
+            } catch (IOException e) {
+                RepositoryPlugin.getDefault().getLog()
+                        .log(new Status(Status.ERROR, RepositoryPlugin.PLUGIN_ID, "Unable to load OSGi excludes", e));
+            }
+        }
+    };
 
     public JobJavaScriptOSGIForESBManager(Map<ExportChoice, Object> exportChoiceMap, String contextName, String launcher,
             int statisticPort, int tracePort) {
@@ -254,31 +275,26 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
      */
     @Override
     protected boolean isCompiledLib(ModuleNeeded module) {
-        if (module != null) {
-            /*
-             * If null, will add the lib always.
-             * 
-             * If empty, nothing will be added.
-             * 
-             * Else, add the bundle id in "Require-Bundle", but don't add the lib.
-             */
-            if (isIncludedLib(module)) {
-                return true;
-            }
-        }
-        return false;
+        /*
+         * If null, will add the lib always.
+         * If empty, nothing will be added.
+         * Else, add the bundle id in "Require-Bundle", but don't add the lib.
+         */
+        return module != null && isIncludedLib(module);
     }
 
     /**
      * If null, will add the lib always. @see isIncludedLib
-     *
      * If empty, nothing will be added. @see isExcludedLib
-     *
      * Else, add the bundle id in "Require-Bundle", but don't add the lib. @see isIncludedInRequireBundle
      */
     protected boolean isIncludedLib(ModuleNeeded module) {
-        if (module != null) {
-            if (module.getBundleName() == null) {
+        return module != null && module.getBundleName() == null && !isExcluded(module.getModuleName());
+    }
+
+    private static boolean isExcluded(String moduleName) {
+        for (String exclude : EXCLUDED_MODULES) {
+            if (moduleName.startsWith(exclude)) {
                 return true;
             }
         }

@@ -38,11 +38,12 @@ import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.model.properties.Property;
 import org.talend.core.ui.check.Checker;
 import org.talend.core.ui.check.IChecker;
+import org.talend.daikon.NamedThing;
 import org.talend.daikon.properties.Properties;
-import org.talend.daikon.properties.PropertyValueEvaluator;
 import org.talend.daikon.properties.ValidationResult;
 import org.talend.daikon.properties.ValidationResult.Result;
 import org.talend.daikon.properties.presentation.Form;
+import org.talend.daikon.properties.property.PropertyValueEvaluator;
 import org.talend.designer.core.generic.constants.IContextEventProperties;
 import org.talend.designer.core.generic.constants.IElementParameterEventProperties;
 import org.talend.designer.core.generic.constants.IGenericConstants;
@@ -131,10 +132,12 @@ public class DynamicComposite extends MultipleThreadDynamicComposite implements 
             evaluator = new ComponentContextPropertyValueEvaluator((INode) element);
         }
         if (properties instanceof ComponentProperties) {
-            properties.setValueEvaluator(evaluator);
-            properties.refreshLayout(form);
+            if (form != null) {
+                properties.setValueEvaluator(evaluator);
+                properties.refreshLayout(form);
+            }
             properties.setValueEvaluator(null); // For context display.
-            parameters = ComponentsUtils.getParametersFromForm(element, section, (ComponentProperties) properties, form);
+            parameters = ComponentsUtils.getParametersFromForm(element, false, section, (ComponentProperties) properties, form);
             addUpdateParameterIfNotExist(parameters);
             properties.setValueEvaluator(evaluator);
         }
@@ -154,25 +157,33 @@ public class DynamicComposite extends MultipleThreadDynamicComposite implements 
                     }
                 } else if (EParameterFieldType.NAME_SELECTION_AREA.equals(genericElementParameter.getFieldType())
                         && theConnection != null) {
+                    List<NamedThing> values = new ArrayList<>();
                     List<MetadataTable> metadataTables = SchemaUtils.getMetadataTables(theConnection, SubContainer.class);
                     List<String> tableLabels = new ArrayList<>();
                     for (MetadataTable metaTable : metadataTables) {
                         tableLabels.add(metaTable.getLabel());
                     }
-                    genericElementParameter.setValue(tableLabels);
+                    List<NamedThing> possibleValues = ComponentsUtils.getFormalPossibleValues(genericElementParameter);
+                    for (NamedThing possibleValue : possibleValues) {
+                        if (tableLabels.contains(possibleValue.getName())) {
+                            values.add(possibleValue);
+                        }
+                    }
+                    genericElementParameter.setValue(values);
                 }
                 if (properties != null && isRepository(element)) {
-                    String repositoryValue = parameter.getRepositoryValue();
+                    String repositoryValue = genericElementParameter.getRepositoryValue();
                     if (repositoryValue == null) {
                         if (genericElementParameter.getValue() != null) {
                             genericElementParameter.setRepositoryValue(genericElementParameter.getName());
                             repositoryValue = genericElementParameter.getRepositoryValue();
                         }
                     }
-                    if (parameter.isShow(currentParameters) && (repositoryValue != null)
-                            && (!parameter.getName().equals(EParameterName.PROPERTY_TYPE.getName()))
-                            && parameter.getCategory() == section) {
-                        org.talend.daikon.properties.Property property = properties.getValuedProperty(parameter.getName());
+                    if (genericElementParameter.isShow(currentParameters) && (repositoryValue != null)
+                            && (!genericElementParameter.getName().equals(EParameterName.PROPERTY_TYPE.getName()))
+                            && genericElementParameter.getCategory() == section) {
+                        org.talend.daikon.properties.property.Property property = properties.getValuedProperty(genericElementParameter
+                                .getName());
                         if (property != null && property.getTaggedValue(IGenericConstants.REPOSITORY_VALUE) != null) {
                             genericElementParameter.setRepositoryValueUsed(true);
                             genericElementParameter.setReadOnly(true);
@@ -260,19 +271,26 @@ public class DynamicComposite extends MultipleThreadDynamicComposite implements 
     private void updateValidationStatus(ValidationResult validationResult) {
         String validationMessage = validationResult.getMessage();
         Result validationStatus = validationResult.getStatus();
+        if (validationMessage == null) {
+            if (validationStatus == Result.ERROR) {
+                validationMessage = Messages.getString("DynamicComposite.defaultErrorMessage"); //$NON-NLS-1$
+            } else {
+                // skip every empty messages
+                return;
+            }
+        }
         switch (validationStatus) {
         case WARNING:
             checker.updateStatus(IStatus.WARNING, null);
-            MessageDialog.openWarning(getShell(), Messages.getString("DynamicComposite.connectionTest.title"), validationMessage); //$NON-NLS-1$
+            MessageDialog.openWarning(getShell(), this.elem.getElementName(), validationMessage);
             break;
         case ERROR:
             checker.updateStatus(IStatus.ERROR, null);
-            MessageDialog.openError(getShell(), Messages.getString("DynamicComposite.connectionTest.title"), validationMessage); //$NON-NLS-1$
+            MessageDialog.openError(getShell(), this.elem.getElementName(), validationMessage);
             break;
         default:
             checker.updateStatus(IStatus.OK, null);
-            MessageDialog.openInformation(getShell(), Messages.getString("DynamicComposite.connectionTest.title"), //$NON-NLS-1$
-                    Messages.getString("DynamicComposite.connectionTest.msg.success")); //$NON-NLS-1$
+            MessageDialog.openInformation(getShell(), this.elem.getElementName(), validationMessage);
             break;
         }
     }

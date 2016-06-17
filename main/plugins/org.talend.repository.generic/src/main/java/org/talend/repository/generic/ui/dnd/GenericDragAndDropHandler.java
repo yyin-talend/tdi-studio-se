@@ -16,7 +16,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.commons.lang.StringUtils;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.components.api.component.ComponentDefinition;
 import org.talend.components.api.properties.ComponentProperties;
@@ -42,7 +41,8 @@ import org.talend.core.repository.RepositoryComponentSetting;
 import org.talend.core.repository.model.repositoryObject.MetadataColumnRepositoryObject;
 import org.talend.core.repository.model.repositoryObject.MetadataTableRepositoryObject;
 import org.talend.core.runtime.services.IGenericWizardService;
-import org.talend.daikon.properties.Property;
+import org.talend.core.runtime.util.GenericTypeUtils;
+import org.talend.daikon.properties.property.Property;
 import org.talend.designer.core.generic.constants.IGenericConstants;
 import org.talend.designer.core.generic.model.Component;
 import org.talend.designer.core.generic.model.GenericElementParameter;
@@ -73,7 +73,8 @@ public class GenericDragAndDropHandler extends AbstractDragAndDropServiceHandler
                         IGenericWizardService.class);
                 if (wizardService != null && wizardService.isGenericConnection(connection)) {
                     return getGenericRepositoryValue((GenericConnection) connection,
-                            wizardService.getAllComponentProperties(connection), value, table);
+                            wizardService.getAllComponentProperties(connection, getSeletetedMetadataTableName(table)), value,
+                            table);
                 }
             }
         }
@@ -83,18 +84,14 @@ public class GenericDragAndDropHandler extends AbstractDragAndDropServiceHandler
     private Object getGenericRepositoryValue(GenericConnection connection, List<ComponentProperties> componentProperties,
             String value, IMetadataTable table) {
         if (componentProperties != null && value != null) {
-            String seletetedMetadataTableName = getSeletetedMetadataTableName(table);
             for (ComponentProperties compPro : componentProperties) {
-                if (seletetedMetadataTableName != null) {
-                    if (!compPro.getName().equals(seletetedMetadataTableName)) {
-                        continue;
-                    }
-                }
                 Property property = compPro.getValuedProperty(value);
                 if (property != null) {
-                    Object paramValue = property.getValue();
-                    if (Property.Type.STRING.equals(property.getType()) && paramValue != null) {
+                    Object paramValue = property.getStoredValue();
+                    if (GenericTypeUtils.isStringType(property) && paramValue != null) {
                         return getRepositoryValueOfStringType(connection, paramValue.toString());
+                    } else if (GenericTypeUtils.isEnumType(property) && paramValue != null) {
+                        return paramValue.toString();
                     }
                     return paramValue;
                 }
@@ -169,8 +166,8 @@ public class GenericDragAndDropHandler extends AbstractDragAndDropServiceHandler
             Connection connection = ((ConnectionItem) repositoryViewObj.getProperty().getItem()).getConnection();
             if (canHandle(connection)) {
                 GenericConnection genericConnection = (GenericConnection) connection;
-                currentComponentProperties = ComponentsUtils.getComponentPropertiesFromSerialized(genericConnection
-                        .getCompProperties());
+                currentComponentProperties = ComponentsUtils.getComponentPropertiesFromSerialized(
+                        genericConnection.getCompProperties(), connection);
             }
         } else if (object instanceof MetadataTableRepositoryObject) {
             MetadataTableRepositoryObject metaTableRepObj = (MetadataTableRepositoryObject) object;
@@ -241,6 +238,5 @@ public class GenericDragAndDropHandler extends AbstractDragAndDropServiceHandler
 
     @Override
     public void handleTableRelevantParameters(Connection connection, IElement ele, IMetadataTable metadataTable) {
-
     }
 }

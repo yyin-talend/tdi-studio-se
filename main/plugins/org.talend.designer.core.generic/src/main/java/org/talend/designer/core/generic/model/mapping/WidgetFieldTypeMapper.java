@@ -14,8 +14,9 @@ package org.talend.designer.core.generic.model.mapping;
 
 import org.talend.core.model.process.EParameterFieldType;
 import org.talend.daikon.NamedThing;
-import org.talend.daikon.properties.Property;
 import org.talend.daikon.properties.presentation.Widget;
+import org.talend.daikon.properties.property.EnumProperty;
+import org.talend.daikon.properties.property.Property;
 
 /**
  * created by hcyi on Jan 21, 2016 Detailled comment
@@ -32,8 +33,10 @@ public class WidgetFieldTypeMapper {
         if (widgetProperty instanceof Property) {
             property = (Property) widgetProperty;
         }
-        String fieldType = mappingReader.getFieldType(widget.getWidgetType().name(), widgetProperty, property != null ? property.getType()
-                .name() : null);
+        String fieldType = mappingReader.getFieldType(widget.getWidgetType(), widgetProperty, property != null ? property.getType() : null);
+        if (widgetProperty instanceof EnumProperty) {
+            return EParameterFieldType.CLOSED_LIST;
+        }
         return fieldType != null ? EParameterFieldType.valueOf(fieldType.toUpperCase()) : null;
     }
 }

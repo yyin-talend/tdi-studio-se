@@ -280,9 +280,11 @@ public class ChangeValuesFromRepository extends ChangeMetadataCommand {
                             }
                         }
                     }
-                    param.setReadOnly(false);
-                    // for job settings extra.(feature 2710)
-                    param.setRepositoryValueUsed(false);
+                    if (param.getRepositoryValue() != null) {
+                        param.setReadOnly(false);
+                        // for job settings extra.(feature 2710)
+                        param.setRepositoryValueUsed(false);
+                    }
                 }
 
             }
@@ -295,7 +297,7 @@ public class ChangeValuesFromRepository extends ChangeMetadataCommand {
                         .getService(IGenericWizardService.class);
             }
             if (wizardService != null && wizardService.isGenericConnection(connection)) {
-                componentProperties = wizardService.getAllComponentProperties(connection);
+                componentProperties = wizardService.getAllComponentProperties(connection, null);
             }
             IElementParameter propertyParam = elem.getElementParameter(propertyName);
             List<IElementParameter> elementParameters = new ArrayList<>(elem.getElementParameters());

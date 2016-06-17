@@ -49,9 +49,9 @@ import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.model.properties.Project;
 import org.talend.core.model.repository.IRepositoryViewObject;
-import org.talend.core.model.runprocess.LastGenerationInfo;
 import org.talend.core.model.utils.JavaResourcesHelper;
 import org.talend.core.repository.constants.FileConstants;
+import org.talend.core.runtime.process.LastGenerationInfo;
 import org.talend.core.runtime.process.TalendProcessArgumentConstant;
 import org.talend.core.runtime.repository.build.BuildExportManager;
 import org.talend.core.service.ITransformService;
@@ -359,8 +359,6 @@ public class BuildJobHandler extends AbstractBuildJobHandler {
         final Map<String, Object> argumentsMap = new HashMap<String, Object>();
         argumentsMap.put(TalendProcessArgumentConstant.ARG_GOAL, TalendMavenConstants.GOAL_PACKAGE);
         argumentsMap.put(TalendProcessArgumentConstant.ARG_PROGRAM_ARGUMENTS, getProgramArgs());
-        // argumentsMap.put(TalendProcessArgumentConstant.ARG_ENABLE_STATISTICS,
-        // isOptionChoosed(ExportChoice.addStatistics));
 
         talendProcessJavaProject.buildModules(monitor, null, argumentsMap);
     }

@@ -85,7 +85,10 @@ public class MetadataEmfFactory {
 
                 if (metaCol.getOriginalLength() != null) {
                     colType.setOriginalLength(metaCol.getOriginalLength());
+                } else {
+                    colType.setOriginalLength(-1);
                 }
+
                 if (metaCol.getAdditionalField().size() > 0) {
                     for (String key : metaCol.getAdditionalField().keySet()) {
                         colType.getAdditionalField().put(key, metaCol.getAdditionalField().get(key));

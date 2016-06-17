@@ -12,7 +12,6 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.gmf.runtime.notation;visibility:=reexport,
  org.eclipse.ui.navigator,
  org.eclipse.core.expressions,
- org.talend.components.api,
  org.talend.core.runtime,
  org.talend.core,
  org.talend.core.ui,
@@ -37,3 +36,7 @@ Export-Package: org.talend.repository.generic.model.genericMetadata,
 Bundle-ActivationPolicy: lazy
 Bundle-Vendor: %providerName
 Bundle-Localization: plugin
+Import-Package: org.talend.components.api.component,
+ org.talend.components.api.properties,
+ org.talend.components.api.service,
+ org.talend.components.api.wizard

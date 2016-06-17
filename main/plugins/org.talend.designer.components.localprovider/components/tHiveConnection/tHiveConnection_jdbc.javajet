@@ -112,11 +112,27 @@ imports="
           	// When configuraing from the classpath we do not set the variables using System.setProperty
           	// We set them directly on the Hadoop Configuration object
 			if((hadoopProps.size() > 0) && (!configureFromClassPath)) {
-				for(Map<String, String> item : hadoopProps){
+        if(securityIsEnabled) {
 %>
-					System.setProperty(<%=item.get("PROPERTY") %> ,<%=item.get("VALUE") %>);
+          org.apache.hadoop.conf.Configuration conf_<%=cid%> = new org.apache.hadoop.conf.Configuration();
 <%
-				}
+        }
+        for(Map<String, String> item : hadoopProps){
+%>
+          System.setProperty(<%=item.get("PROPERTY") %> ,<%=item.get("VALUE") %>);
+<%
+          if(securityIsEnabled) {
+%>
+            conf_<%=cid%>.set(<%=item.get("PROPERTY") %> ,<%=item.get("VALUE") %>);
+<%
+          }
+        }
+        if(securityIsEnabled) {
+%>
+          org.apache.hadoop.security.UserGroupInformation.setConfiguration(conf_<%=cid%>);
+          org.apache.hadoop.security.UserGroupInformation.getLoginUser();
+<%
+        }
 			}
 
 			if(securedEmbedded) {
@@ -296,7 +312,7 @@ imports="
 %>
 					if(org.apache.hadoop.security.UserGroupInformation.isSecurityEnabled()){
 
-						
+
 						String hiveServer2KerberosPrincipal = conf_<%=cid%>.get("hive.server2.authentication.kerberos.principal", "");
 						String urlKerberosParameter = "principal=" + hiveServer2KerberosPrincipal;
 

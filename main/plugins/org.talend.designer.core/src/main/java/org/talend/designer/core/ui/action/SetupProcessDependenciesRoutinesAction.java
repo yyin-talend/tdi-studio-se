@@ -72,7 +72,9 @@ public class SetupProcessDependenciesRoutinesAction extends AContextualAction {
             RepositoryNode node = (RepositoryNode) o;
             switch (node.getType()) {
             case REPOSITORY_ELEMENT:
-                if (ERepositoryObjectType.PROCESS_MR != null && node.getObjectType().equals(ERepositoryObjectType.PROCESS_MR)) {
+                if (ERepositoryObjectType.PROCESS_STORM != null && node.getObjectType().equals(ERepositoryObjectType.PROCESS_STORM)) {
+                    canWork = true;
+                } else if (ERepositoryObjectType.PROCESS_MR != null && node.getObjectType().equals(ERepositoryObjectType.PROCESS_MR)) {
                     canWork = true;
                 } else if (node.getObjectType() != ERepositoryObjectType.PROCESS
                         && node.getObjectType() != ERepositoryObjectType.JOBLET) {

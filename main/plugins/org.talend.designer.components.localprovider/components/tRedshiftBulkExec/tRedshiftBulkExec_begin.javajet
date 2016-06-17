@@ -200,6 +200,18 @@ skeleton="../templates/db_output_bulk.skeleton"
 	<%}%>
 	
 <%
+	if(avroMode) {
+		String avro_mapping = ElementParameterParser.getValue(node, "__JSON_MAPPING__");
+%>
+		StringBuilder avro_builder_<%=cid%> = new StringBuilder();
+		if("auto".equals(<%=avro_mapping%>)) {
+			avro_builder_<%=cid%>.append("FORMAT AS AVRO '").append("auto").append("' ");
+		} else {
+			avro_builder_<%=cid%>.append("FORMAT AVRO '").append(<%=avro_mapping%>).append("' ");
+		}
+<%
+	}
+	
 	if(s3Mode) {
 		String bucket = ElementParameterParser.getValue(node,"__BUCKET__");
     	String key = ElementParameterParser.getValue(node,"__KEY__");
@@ -268,9 +280,8 @@ skeleton="../templates/db_output_bulk.skeleton"
 	.append("JSON '").append(<%=mapping%>).append("' ")
 <%
 	} else if(avroMode) {
-		String mapping = ElementParameterParser.getValue(node, "__JSON_MAPPING__");
 %>
-	.append("AVRO '").append(<%=mapping%>).append("' ")
+	.append(avro_builder_<%=cid%>)
 <%
 	} else if(fixedwidthMode) {
 		String mapping = ElementParameterParser.getValue(node, "__FIXEDWIDTH_MAPPING__");

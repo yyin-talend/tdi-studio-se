@@ -298,13 +298,15 @@ public class JavaProcessUtil {
         }
         List<ModuleNeeded> moduleList = node.getModulesNeeded();
         for (ModuleNeeded needed : moduleList) {
-            if (needed.isRequired(node.getElementParameters())) {
-                // for MapReduce job, if the jar on Xml don't set MRREQUIRED="true", shouldn't add it to
-                // DistributedCache
-                if (onlyMR && !needed.isMrRequired()) {
-                    continue;
+            if (needed != null) {
+                if (needed.isRequired(node.getElementParameters())) {
+                    // for MapReduce job, if the jar on Xml don't set MRREQUIRED="true", shouldn't add it to
+                    // DistributedCache
+                    if (onlyMR && !needed.isMrRequired()) {
+                        continue;
+                    }
+                    modulesNeeded.add(needed);
                 }
-                modulesNeeded.add(needed);
             }
         }
         for (IElementParameter curParam : node.getElementParameters()) {
@@ -485,7 +487,7 @@ public class JavaProcessUtil {
                         }
                     }
                 }
-                if (text != null) {
+                if (text != null && text.contains(".")) { //$NON-NLS-1$
                     boolean isContextMode = ContextParameterUtils.containContextVariables(text);
                     if (isContextMode) {
                         List<IContext> listContext = process.getContextManager().getListContext();

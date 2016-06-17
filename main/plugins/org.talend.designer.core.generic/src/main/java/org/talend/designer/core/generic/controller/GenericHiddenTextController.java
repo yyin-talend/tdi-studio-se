@@ -60,12 +60,6 @@ public class GenericHiddenTextController extends TextController {
     @Override
     public Control createControl(Composite subComposite, IElementParameter param, int numInRow, int nbInRow, int top,
             Control lastControl) {
-    	if(param.isRepositoryValueUsed() || isInWizard()){
-    		String pwd = CryptoHelper.getDefault().decrypt(String.valueOf(param.getValue()));
-    		if(pwd != null){
-    			param.setValue(pwd);
-    		}
-    	}
         Control lastControlUsed = super.createControl(subComposite, param, numInRow, nbInRow, top, lastControl);
         if (labelText != null) {
             labelText.setEchoChar('*');

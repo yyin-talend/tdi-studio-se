@@ -34,17 +34,18 @@ import org.talend.core.model.metadata.MetadataToolAvroHelper;
 import org.talend.core.model.metadata.MetadataToolHelper;
 import org.talend.core.model.metadata.builder.connection.MetadataTable;
 import org.talend.core.model.process.EConnectionType;
+import org.talend.core.model.process.EParameterFieldType;
 import org.talend.core.model.process.IConnection;
 import org.talend.core.model.process.IElement;
 import org.talend.core.model.process.INodeConnector;
 import org.talend.core.model.process.IProcess;
 import org.talend.daikon.NamedThing;
 import org.talend.daikon.properties.PresentationItem;
-import org.talend.daikon.properties.Property;
-import org.talend.daikon.properties.SchemaProperty;
+import org.talend.daikon.properties.Properties;
 import org.talend.daikon.properties.presentation.Form;
 import org.talend.daikon.properties.presentation.Widget;
-import org.talend.daikon.properties.presentation.Widget.WidgetType;
+import org.talend.daikon.properties.property.Property;
+import org.talend.daikon.properties.property.SchemaProperty;
 import org.talend.designer.core.generic.constants.IElementParameterEventProperties;
 import org.talend.designer.core.generic.constants.IGenericConstants;
 import org.talend.designer.core.generic.utils.ComponentsUtils;
@@ -105,6 +106,11 @@ public class GenericElementParameter extends ElementParameter {
      */
     @Override
     public Object getValue() {
+        if (getFieldType() == EParameterFieldType.CLOSED_LIST) {
+            if (super.getValue() != null) {
+                return super.getValue().toString();
+            }
+        }
         return super.getValue();
     }
 
@@ -112,7 +118,8 @@ public class GenericElementParameter extends ElementParameter {
     public void setValue(Object o) {
         super.setValue(o);
         if (!isFirstCall
-                || (widget.getContent() instanceof ComponentProperties && !WidgetType.TABLE.equals(widget.getWidgetType()))) {
+                || (widget.getContent() instanceof ComponentProperties && !Widget.TABLE_WIDGET_TYPE
+                        .equals(widget.getWidgetType()))) {
             updateProperty(o);
             boolean calledValidate = callValidate();
             if (calledValidate) {
@@ -136,17 +143,27 @@ public class GenericElementParameter extends ElementParameter {
             if (newValue instanceof String) {
                 ((SchemaProperty) widgetProperty).setValue(new Schema.Parser().parse((String) newValue));
             } else if (newValue instanceof Schema) {
-                ((SchemaProperty) widgetProperty).setValue(newValue);
+                ((SchemaProperty) widgetProperty).setValue(((Schema) newValue));
             }
         } else if (widgetProperty instanceof Property) {
-            Property se = (Property) widgetProperty;
+            Property se = (Property<?>) widgetProperty;
             Object oldValue = se.getValue();
-            if (newValue != null && !newValue.equals(oldValue)) {
-                se = (Property) getSubProperties().getProperty(se.getName());
+            Object value = newValue;
+            List<?> propertyPossibleValues = ((Property<?>) widgetProperty).getPossibleValues();
+            if (propertyPossibleValues != null) {
+                for (Object possibleValue : propertyPossibleValues) {
+                    if (possibleValue.toString().equals(newValue)) {
+                        value = possibleValue;
+                        break;
+                    }
+                }
+            }
+            if (value != null && !value.equals(oldValue)) {
+                se = (Property<?>) getSubProperties().getProperty(se.getName());
                 if (isDrivedByForm()) {
-                    form.setValue(se.getName(), newValue);
+                    form.setValue(se.getName(), value);
                 } else {
-                    se.setValue(newValue);
+                    se.setStoredValue(value);
                 }
                 fireConnectionPropertyChangedEvent(newValue);
             }
@@ -156,7 +173,7 @@ public class GenericElementParameter extends ElementParameter {
             if (formtoShow != null) {
                 fireShowDialogEvent(getSubProperties().getForm(formtoShow.getName()));
             }
-        } else if (widgetProperty instanceof ComponentProperties && WidgetType.TABLE.equals(widget.getWidgetType())) {
+        } else if (widgetProperty instanceof ComponentProperties && Widget.TABLE_WIDGET_TYPE.equals(widget.getWidgetType())) {
             GenericTableUtils.setTableValues((ComponentProperties) widgetProperty, (List<Map<String, Object>>) newValue, this);
         }
     }
@@ -216,6 +233,7 @@ public class GenericElementParameter extends ElementParameter {
                 @Override
                 protected void doWork() throws Throwable {
                     componentService.beforePropertyActivate(getParameterName(), getSubProperties());
+                    fireValidateStatusEvent();
                     update();
                 }
             }.call();
@@ -247,12 +265,15 @@ public class GenericElementParameter extends ElementParameter {
     }
 
     private boolean callAfter() {
-        if (widget.isCallAfter() && hasPropertyChangeListener()) {
+        if (widget.isCallAfter()
+                && (hasPropertyChangeListener() || Widget.SCHEMA_REFERENCE_WIDGET_TYPE.equals(widget.getWidgetType()))) {
+            // schema update must also
             return new ComponentServiceCaller(widget.getContent().getDisplayName(), widget.isLongRunning()) {
 
                 @Override
                 protected void doWork() throws Throwable {
                     componentService.afterProperty(getParameterName(), getSubProperties());
+                    fireValidateStatusEvent();
                     updateSchema();
                 }
             }.call();
@@ -277,7 +298,7 @@ public class GenericElementParameter extends ElementParameter {
                         IMetadataTable newTable = MetadataToolHelper.convert(metadataTable);
                         if ((!mainTable.sameMetadataAs(newTable) || !newTable.sameMetadataAs(mainTable))) {
                             mainTable.setListColumns(newTable.getListColumns());
-                            if (propagate == null) {
+                            if (propagate == null && node.getOutgoingConnections().size() != 0) {
                                 propagate = ChangeMetadataCommand.askPropagate();
                             }
                             if (propagate != null && propagate) {
@@ -396,8 +417,8 @@ public class GenericElementParameter extends ElementParameter {
         return this.widget;
     }
 
-    private ComponentProperties getSubProperties() {
-        return ComponentsUtils.getCurrentComponentProperties(rootProperties, getName());
+    private Properties getSubProperties() {
+        return ComponentsUtils.getCurrentProperties(rootProperties, getName());
     }
 
     public ComponentProperties getRootProperties() {

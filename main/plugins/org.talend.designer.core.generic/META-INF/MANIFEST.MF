@@ -17,13 +17,18 @@ Require-Bundle: org.eclipse.ui,
  org.talend.librariesmanager,
  org.talend.model,
  org.talend.commons.ui,
- org.talend.components.api,
  org.talend.repository,
  jackson-core-asl,
- org.apache.servicemix.bundles.avro
+ org.apache.servicemix.bundles.avro,
+ org.talend.metadata.managment.ui
 Bundle-ActivationPolicy: lazy
 Bundle-Vendor: .Talend SA.
 Export-Package: org.talend.designer.core.generic.constants,
  org.talend.designer.core.generic.context,
  org.talend.designer.core.generic.model,
  org.talend.designer.core.generic.utils
+Import-Package: org.talend.components.api.component,
+ org.talend.components.api.properties,
+ org.talend.components.api.service,
+ org.talend.components.api.wizard,
+ org.talend.daikon.properties.property

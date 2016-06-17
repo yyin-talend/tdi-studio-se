@@ -37,6 +37,7 @@ import org.talend.components.api.properties.ComponentProperties;
 import org.talend.components.api.service.ComponentService;
 import org.talend.core.model.components.IComponent;
 import org.talend.core.model.components.IComponentsFactory;
+import org.talend.core.model.metadata.builder.connection.Connection;
 import org.talend.core.model.metadata.types.JavaType;
 import org.talend.core.model.metadata.types.JavaTypesManager;
 import org.talend.core.model.process.EComponentCategory;
@@ -47,16 +48,19 @@ import org.talend.core.model.process.IElementParameterDefaultValue;
 import org.talend.core.model.process.INode;
 import org.talend.core.model.process.INodeConnector;
 import org.talend.core.model.utils.ContextParameterUtils;
+import org.talend.core.runtime.util.GenericTypeUtils;
 import org.talend.core.ui.component.ComponentsFactoryProvider;
 import org.talend.core.utils.TalendQuoteUtils;
 import org.talend.daikon.NamedThing;
+import org.talend.daikon.SimpleNamedThing;
 import org.talend.daikon.properties.PresentationItem;
 import org.talend.daikon.properties.Properties;
 import org.talend.daikon.properties.Properties.Deserialized;
-import org.talend.daikon.properties.Property;
-import org.talend.daikon.properties.SchemaProperty;
+import org.talend.daikon.properties.PropertiesImpl;
 import org.talend.daikon.properties.presentation.Form;
 import org.talend.daikon.properties.presentation.Widget;
+import org.talend.daikon.properties.property.Property;
+import org.talend.daikon.properties.property.SchemaProperty;
 import org.talend.designer.core.generic.constants.IGenericConstants;
 import org.talend.designer.core.generic.i18n.Messages;
 import org.talend.designer.core.generic.model.Component;
@@ -68,6 +72,7 @@ import org.talend.designer.core.model.FakeElement;
 import org.talend.designer.core.model.components.ElementParameter;
 import org.talend.designer.core.model.components.ElementParameterDefaultValue;
 import org.talend.designer.core.model.components.NodeConnector;
+import org.talend.metadata.managment.ui.wizard.context.MetadataContextPropertyValueEvaluator;
 
 /**
  * created by hcyi on Sep 11, 2015 Detailled comment
@@ -131,12 +136,12 @@ public class ComponentsUtils {
     }
 
     public static List<ElementParameter> getParametersFromForm(IElement element, Form form) {
-        return getParametersFromForm(element, null, (ComponentProperties) form.getProperties(), form);
+        return getParametersFromForm(element, false, null, (ComponentProperties) form.getProperties(), form);
     }
 
-    public static List<ElementParameter> getParametersFromForm(IElement element, EComponentCategory category,
-            ComponentProperties compProperties, Form form) {
-        return getParametersFromForm(element, category, compProperties, compProperties, null, form, null, null);
+    public static List<ElementParameter> getParametersFromForm(IElement element, boolean isInitializing,
+            EComponentCategory category, ComponentProperties compProperties, Form form) {
+        return getParametersFromForm(element, isInitializing, category, compProperties, compProperties, null, form, null, null);
     }
 
     /**
@@ -150,9 +155,9 @@ public class ComponentsUtils {
      * @param form
      * @return parameters list
      */
-    private static List<ElementParameter> getParametersFromForm(IElement element, EComponentCategory category,
-            ComponentProperties rootProperty, ComponentProperties compProperties, String parentPropertiesPath, Form form,
-            Widget parentWidget, AtomicInteger lastRowNum) {
+    private static List<ElementParameter> getParametersFromForm(IElement element, boolean isInitializing,
+            EComponentCategory category, ComponentProperties rootProperty, Properties compProperties,
+            String parentPropertiesPath, Form form, Widget parentWidget, AtomicInteger lastRowNum) {
         List<ElementParameter> elementParameters = new ArrayList<>();
         List<String> parameterNames = new ArrayList<>();
         EComponentCategory compCategory = category;
@@ -166,16 +171,16 @@ public class ComponentsUtils {
         if (form == null) {
             return elementParameters;
         }
-        ComponentProperties componentProperties = compProperties;
+        Properties componentProperties = compProperties;
         if (componentProperties == null) {
-            componentProperties = (ComponentProperties) form.getProperties();
+            componentProperties = form.getProperties();
         }
         if (element instanceof INode) {
             INode node = (INode) element;
             // FIXME - this should be able to be removed TUP-4053
             // Set the properties only one time to get the top-level properties object
             if (node.getComponentProperties() == null) {
-                node.setComponentProperties(componentProperties);
+                node.setComponentProperties(rootProperty);
             }
         }
 
@@ -187,13 +192,13 @@ public class ComponentsUtils {
             String propertiesPath = getPropertiesPath(parentPropertiesPath, null);
             if (widgetProperty instanceof Form) {
                 Form subForm = (Form) widgetProperty;
-                ComponentProperties subProperties = (ComponentProperties) subForm.getProperties();
+                Properties subProperties = subForm.getProperties();
                 // Reset properties path
                 if (!isSameComponentProperties(componentProperties, widgetProperty)) {
                     propertiesPath = getPropertiesPath(parentPropertiesPath, subProperties.getName());
                 }
-                elementParameters.addAll(getParametersFromForm(element, compCategory, rootProperty, subProperties,
-                        propertiesPath, subForm, widget, lastRN));
+                elementParameters.addAll(getParametersFromForm(element, isInitializing, compCategory, rootProperty,
+                        subProperties, propertiesPath, subForm, widget, lastRN));
                 continue;
             }
 
@@ -218,13 +223,12 @@ public class ComponentsUtils {
             // handle form...
 
             EParameterFieldType fieldType = getFieldType(widget, widgetProperty);
-            // rootProperty.getAvailableConnectors(null, true)
             param.setFieldType(fieldType != null ? fieldType : EParameterFieldType.TEXT);
             if (widgetProperty instanceof SchemaProperty) {
                 boolean found = false;
                 // set a default connector
                 param.setContext(EConnectionType.FLOW_MAIN.getName());
-                for (Connector connector : rootProperty.getAvailableConnectors(null, true)) {
+                for (Connector connector : rootProperty.getPossibleConnectors(true)) {
                     if (!(((SchemaProperty) widgetProperty).getValue() instanceof Schema)) {
                         continue;
                     }
@@ -234,7 +238,7 @@ public class ComponentsUtils {
                             found = true;
                             param.setContext(connector.getName());
                             IElementParameterDefaultValue defaultValue = new ElementParameterDefaultValue();
-                            Schema schema = (Schema) ((SchemaProperty) widgetProperty).getValue();
+                            Schema schema = ((SchemaProperty) widgetProperty).getValue();
                             defaultValue.setDefaultValue(new Schema.Parser().parse(schema.toString()));
                             param.getDefaultValues().add(defaultValue);
                         }
@@ -244,7 +248,7 @@ public class ComponentsUtils {
                     // check in the input schema
                     // for now we only handle input schema named MAIN. But we will name them "FLOW" to keep
                     // compatibility.
-                    for (Connector connector : rootProperty.getAvailableConnectors(null, false)) {
+                    for (Connector connector : rootProperty.getPossibleConnectors(false)) {
                         if (!(((SchemaProperty) widgetProperty).getValue() instanceof Schema)) {
                             continue;
                         }
@@ -257,7 +261,7 @@ public class ComponentsUtils {
                                     param.setContext(connector.getName());
                                 }
                                 IElementParameterDefaultValue defaultValue = new ElementParameterDefaultValue();
-                                Schema schema = (Schema) ((SchemaProperty) widgetProperty).getValue();
+                                Schema schema = ((SchemaProperty) widgetProperty).getValue();
                                 defaultValue.setDefaultValue(new Schema.Parser().parse(schema.toString()));
                                 param.getDefaultValues().add(defaultValue);
                             }
@@ -270,7 +274,7 @@ public class ComponentsUtils {
             } else if (widgetProperty instanceof Property) {
                 Property property = (Property) widgetProperty;
                 param.setRequired(property.isRequired());
-                param.setValue(getParameterValue(element, property));
+                param.setValue(getParameterValue(element, property, fieldType, isInitializing));
                 if (EParameterFieldType.NAME_SELECTION_AREA.equals(fieldType)) {
                     // Disable context support for this filed type.
                     param.setSupportContext(false);
@@ -384,26 +388,20 @@ public class ComponentsUtils {
         if (content instanceof PresentationItem) {
             PresentationItem pi = (PresentationItem) content;
             Form formtoShow = pi.getFormtoShow();
-            List<ElementParameter> parametersFromForm = getParametersFromForm(parameter.getElement(), parameter.getCategory(),
-                    parameter.getRootProperties(), formtoShow);
+            List<ElementParameter> parametersFromForm = getParametersFromForm(parameter.getElement(), false,
+                    parameter.getCategory(), parameter.getRootProperties(), formtoShow);
             params.addAll(parametersFromForm);
         }
         return params;
     }
 
-    public static Object getParameterValue(IElement element, Property property) {
-        Object paramValue = property.getValue();
+    public static Object getParameterValue(IElement element, Property property, EParameterFieldType fieldType,
+            boolean isInitializing) {
+        Object paramValue = property.getStoredValue();
         if (paramValue instanceof List) {
             return null;
         }
-        Property.Type propertyType = property.getType();
-        switch (propertyType) {
-        case STRING:
-            if (!(element instanceof FakeElement || ContextParameterUtils.isContainContextParam((String) paramValue))) {
-                paramValue = TalendQuoteUtils.addQuotesIfNotExist((String) paramValue);
-            }
-            break;
-        case ENUM:
+        if (fieldType == EParameterFieldType.CLOSED_LIST) {
             if (paramValue == null) {// TUP-4145
                 List<?> possibleValues = property.getPossibleValues();
                 if (possibleValues != null && possibleValues.size() > 0) {
@@ -411,15 +409,19 @@ public class ComponentsUtils {
                     property.setValue(paramValue);
                 }
             }
-            break;
-        case BOOLEAN:
+        } else if (GenericTypeUtils.isStringType(property)) {
+            // If value is empty (from default value or input) AND input field of type is String AND is not context mode
+            // and is not in wizard, add double quotes.
+            String value = (String) paramValue;
+            if ((isInitializing || StringUtils.isEmpty(value))
+                    && !(element instanceof FakeElement || ContextParameterUtils.isContainContextParam(value))) {
+                paramValue = TalendQuoteUtils.addPairQuotesIfNotExist(StringUtils.trimToEmpty(value));
+            }
+        } else if (GenericTypeUtils.isBooleanType(property)) {
             if (paramValue == null) {
                 paramValue = Boolean.FALSE;
                 property.setValue(paramValue);
             }
-            break;
-        default:
-            break;
         }
         return paramValue;
     }
@@ -448,7 +450,7 @@ public class ComponentsUtils {
         return WidgetFieldTypeMapper.getFieldType(widget, widgetProperty);
     }
 
-    public static ComponentProperties getCurrentComponentProperties(ComponentProperties componentProperties, String paramName) {
+    public static Properties getCurrentProperties(Properties componentProperties, String paramName) {
         if (componentProperties == null || paramName == null) {
             return null;
         }
@@ -458,17 +460,16 @@ public class ComponentsUtils {
         }
         NamedThing property = componentProperties.getProperty(compPropertiesPath);
         if (property == null) {
-            return getCurrentComponentPropertiesSpecial(componentProperties, paramName);
+            return getCurrentPropertiesSpecial(componentProperties, paramName);
         }
-        if (property instanceof ComponentProperties) {
-            return (ComponentProperties) property;
+        if (property instanceof Properties) {
+            return (Properties) property;
         }
         return null;
     }
 
-    private static ComponentProperties getCurrentComponentPropertiesSpecial(ComponentProperties componentProperties,
-            String paramName) {
-        ComponentProperties currentComponentProperties = null;
+    private static Properties getCurrentPropertiesSpecial(Properties componentProperties, String paramName) {
+        Properties currentComponentProperties = null;
         if (componentProperties == null || paramName == null) {
             return null;
         }
@@ -478,9 +479,9 @@ public class ComponentsUtils {
                 currentComponentProperties = componentProperties;
                 break;
             }
-            if (namedThing instanceof ComponentProperties) {
-                ComponentProperties childComponentProperties = (ComponentProperties) namedThing;
-                currentComponentProperties = getCurrentComponentProperties(childComponentProperties, paramName);
+            if (namedThing instanceof Properties) {
+                Properties childComponentProperties = (Properties) namedThing;
+                currentComponentProperties = getCurrentProperties(childComponentProperties, paramName);
             }
             if (currentComponentProperties != null) {
                 break;
@@ -500,13 +501,13 @@ public class ComponentsUtils {
         if (componentProperties == null || paramName == null) {
             return null;
         }
-        ComponentProperties currentComponentProperties = getCurrentComponentProperties(componentProperties, paramName);
-        if (currentComponentProperties == null) {
+        Properties currentProperties = getCurrentProperties(componentProperties, paramName);
+        if (currentProperties == null) {
             return null;
         }
         Property property = componentProperties.getValuedProperty(paramName);
         if (property != null) {
-            return property.getValue();
+            return property.getStoredValue();
         }
         return null;
     }
@@ -515,25 +516,25 @@ public class ComponentsUtils {
         if (componentProperties == null || paramName == null) {
             return;
         }
-        ComponentProperties currentComponentProperties = getCurrentComponentProperties(componentProperties, paramName);
-        if (currentComponentProperties == null) {
+        Properties currentProperties = getCurrentProperties(componentProperties, paramName);
+        if (currentProperties == null) {
             return;
         }
-        currentComponentProperties.setValue(getPropertyName(paramName), value);
+        currentProperties.setValue(getPropertyName(paramName), value);
     }
 
     /**
-     * looks for all Property type properties of the given componenetProperties and all is nested CompoenetProperties.
+     * looks for all Property type properties of the given properties and all is nested Properties.
      */
-    public static List<Property> getAllValuedProperties(ComponentProperties componentProperties) {
+    public static List<Property> getAllValuedProperties(Properties properties) {
         List<Property> allValuedProperties = new ArrayList<>();
-        if (componentProperties == null) {
-            return null;
+        if (properties == null) {
+            return Collections.EMPTY_LIST;
         }
-        List<NamedThing> namedThings = componentProperties.getProperties();
+        List<NamedThing> namedThings = properties.getProperties();
         for (NamedThing namedThing : namedThings) {
-            if (namedThing instanceof ComponentProperties) {
-                ComponentProperties childComponentProperties = (ComponentProperties) namedThing;
+            if (namedThing instanceof Properties) {
+                Properties childComponentProperties = (Properties) namedThing;
                 allValuedProperties.addAll(getAllValuedProperties(childComponentProperties));
             } else if (namedThing instanceof Property) {
                 allValuedProperties.add((Property) namedThing);
@@ -558,48 +559,27 @@ public class ComponentsUtils {
         return propertyName;
     }
 
-    public static JavaType getTalendTypeFromPropertyType(Property.Type type) {
-        switch (type) {
-        case BOOLEAN:
-            return JavaTypesManager.BOOLEAN;
-        case BYTE_ARRAY:
-            return JavaTypesManager.BYTE_ARRAY;
-        case DATE:
-        case DATETIME:
-            return JavaTypesManager.DATE;
-        case DECIMAL:
-            return JavaTypesManager.BIGDECIMAL;
-        case DOUBLE:
-            return JavaTypesManager.DOUBLE;
-        case DYNAMIC:
-            return JavaTypesManager.DYNAMIC;
-        case FLOAT:
-            return JavaTypesManager.FLOAT;
-        case INT:
+    public static JavaType getTalendTypeFromProperty(Property<?> property) {
+        if (GenericTypeUtils.isStringType(property)) {
+            return JavaTypesManager.STRING;
+        } else if (GenericTypeUtils.isIntegerType(property)) {
             return JavaTypesManager.INTEGER;
-        default:
+        } else if (GenericTypeUtils.isBooleanType(property)) {
+            return JavaTypesManager.BOOLEAN;
+        } else {
             return JavaTypesManager.STRING;
         }
     }
 
-    public static boolean isSupportContext(Property schemaElement) {
-        Property.Type type = schemaElement.getType();
-        switch (type) {
-        case STRING:
-        case INT:
-        case DATE:
-        case DATETIME:
-        case DECIMAL:
-        case FLOAT:
-        case DOUBLE:
+    public static boolean isSupportContext(Property<?> property) {
+        if (GenericTypeUtils.isSchemaType(property)) {
+            return false;
+        } else {
             return true;
-        default:
-            break;
         }
-        return false;
     }
 
-    public static boolean isSameComponentProperties(ComponentProperties componentProperties, NamedThing widgetProperty) {
+    public static boolean isSameComponentProperties(Properties componentProperties, NamedThing widgetProperty) {
         if (componentProperties != null && widgetProperty instanceof Form) {
             Form subForm = (Form) widgetProperty;
             if (subForm != null) {
@@ -609,10 +589,16 @@ public class ComponentsUtils {
         return false;
     }
 
-    public static ComponentProperties getComponentPropertiesFromSerialized(String serialized) {
+    public static ComponentProperties getComponentPropertiesFromSerialized(String serialized, Connection connection) {
         if (serialized != null) {
-            Deserialized<ComponentProperties> fromSerialized = ComponentProperties.fromSerialized(serialized,
-                    ComponentProperties.class);
+            Deserialized<ComponentProperties> fromSerialized = PropertiesImpl.fromSerialized(serialized,
+                    ComponentProperties.class, new Properties.PostSerializationSetup<ComponentProperties>() {
+
+                        @Override
+                        public void setup(ComponentProperties properties) {
+                            properties.setValueEvaluator(new MetadataContextPropertyValueEvaluator(connection));
+                        }
+                    });
             if (fromSerialized != null) {
                 return fromSerialized.properties;
             }
@@ -688,5 +674,34 @@ public class ComponentsUtils {
     private static void setConnectionProperty(EConnectionType currentType, INodeConnector node) {
         // One line method that factorize a lot of code.
         node.addConnectionProperty(currentType, currentType.getRGB(), currentType.getDefaultLineStyle());
+    }
+
+    /**
+     * Get formal possible values of the <code>param</code>. Every possible value will be {@link NamedThing} type.
+     * 
+     * @param param
+     * @return
+     */
+    public static List<NamedThing> getFormalPossibleValues(GenericElementParameter param) {
+        List<NamedThing> nals = new ArrayList<>();
+        if (param == null) {
+            return nals;
+        }
+        List<?> possibleValues = param.getPossibleValues();
+        if (possibleValues != null) {
+            for (Object object : possibleValues) {
+                if (object instanceof NamedThing) {
+                    nals.add((NamedThing) object);
+                } else if (object instanceof String) {
+                    String name = (String) object;
+                    Property property = param.getProperty();
+                    if (property != null) {
+                        NamedThing nl = new SimpleNamedThing(name, property.getPossibleValuesDisplayName(name));
+                        nals.add(nl);
+                    }
+                }
+            }
+        }
+        return nals;
     }
 }

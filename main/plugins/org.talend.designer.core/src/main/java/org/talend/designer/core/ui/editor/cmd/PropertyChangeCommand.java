@@ -224,8 +224,8 @@ public class PropertyChangeCommand extends Command {
                 currentParam.setRepositoryValueUsed(false);
             } else {
                 toUpdate = true;
-                String oldValueString = elem.getPropertyValue(propName).toString();
-                if (!oldValueString.endsWith("xsd") && !oldValueString.endsWith("xsd\"")) {
+                Object value = elem.getPropertyValue(propName);
+                if (value == null || (!value.toString().endsWith("xsd") && !value.toString().endsWith("xsd\""))) {
                     elem.setPropertyValue(propertyTypeName, EmfComponent.BUILTIN);
                 }
                 for (IElementParameter param : elem.getElementParameters()) {

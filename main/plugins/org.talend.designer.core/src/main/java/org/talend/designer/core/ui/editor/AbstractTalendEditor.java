@@ -36,6 +36,7 @@ import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.SubProgressMonitor;
 import org.eclipse.draw2d.Cursors;
 import org.eclipse.draw2d.FigureCanvas;
+import org.eclipse.draw2d.FreeformViewport;
 import org.eclipse.draw2d.Graphics;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.LightweightSystem;
@@ -47,6 +48,11 @@ import org.eclipse.draw2d.geometry.Dimension;
 import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.draw2d.parts.ScrollableThumbnail;
 import org.eclipse.draw2d.parts.Thumbnail;
+import org.eclipse.e4.ui.internal.workbench.OpaqueElementUtil;
+import org.eclipse.e4.ui.model.application.ui.basic.MPart;
+import org.eclipse.e4.ui.model.application.ui.menu.MToolBar;
+import org.eclipse.e4.ui.model.application.ui.menu.MToolBarElement;
+import org.eclipse.e4.ui.workbench.renderers.swt.ToolBarManagerRenderer;
 import org.eclipse.gef.ContextMenuProvider;
 import org.eclipse.gef.DefaultEditDomain;
 import org.eclipse.gef.Disposable;
@@ -119,16 +125,19 @@ import org.eclipse.ui.IFileEditorInput;
 import org.eclipse.ui.IKeyBindingService;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.SubActionBars;
 import org.eclipse.ui.actions.ActionFactory;
 import org.eclipse.ui.actions.WorkspaceModifyOperation;
 import org.eclipse.ui.dialogs.SaveAsDialog;
 import org.eclipse.ui.handlers.IHandlerService;
+import org.eclipse.ui.internal.e4.compatibility.ActionBars;
 import org.eclipse.ui.part.IPageSite;
 import org.eclipse.ui.part.PageBook;
 import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
 import org.eclipse.ui.views.properties.IPropertySheetPage;
 import org.eclipse.ui.views.properties.tabbed.ITabbedPropertySheetPageContributor;
 import org.talend.commons.exception.PersistenceException;
+import org.talend.commons.ui.gmf.draw2d.AnimatableZoomManager;
 import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.commons.ui.runtime.exception.MessageBoxExceptionHandler;
 import org.talend.commons.ui.runtime.image.ImageUtils;
@@ -165,6 +174,7 @@ import org.talend.core.ui.ITestContainerProviderService;
 import org.talend.core.ui.component.ComponentPaletteUtilities;
 import org.talend.core.ui.component.ComponentsFactoryProvider;
 import org.talend.core.ui.editor.JobEditorInput;
+import org.talend.core.utils.ReflectionUtils;
 import org.talend.core.views.IComponentSettingsView;
 import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.ICamelDesignerCoreService;
@@ -1123,34 +1133,12 @@ public abstract class AbstractTalendEditor extends GraphicalEditorWithFlyoutPale
         IFigure backgroundLayer = layerManager.getLayer(LayerConstants.GRID_LAYER);
         IFigure contentLayer = layerManager.getLayer(LayerConstants.PRINTABLE_LAYERS);
         // create image from root figure
-        int width = contentLayer.getSize().width;
-        int height = contentLayer.getSize().height;
-
-        // Added by Marvin Wang on Dec. 18, 2012 for bug TDI-24038, due to large image caused out of memory, we have to
-        // limit the size of the image. For x86-based architecture, the momory is very easy to fill up, a suggested
-        // value 3000X3000 is a temporary solution.
-        if (Platform.ARCH_X86.equals(Platform.getOSArch())) {
-            if (width * height > 3000 * 3000) {
-                if (width > 3000) {
-                    width = 3000;
-                }
-
-                if (height > 3000) {
-                    height = 3000;
-                }
-            }
-        }
-
-        if (width == 0) {
-            width = 1400;
-        }
-        if (height == 0) {
-            height = 700;
-        }
-
+        FreeformViewport viewport = (FreeformViewport) ((TalendScalableFreeformRootEditPart) layerManager).getFigure();
+        viewport.getUpdateManager().performUpdate();
+        int width = contentLayer.getBounds().width;
+        int height = contentLayer.getBounds().height;
         Image img = new Image(null, width, height);
         GC gc = new GC(img);
-        getEditor().getLightweightSystem().paint(gc);
         Graphics graphics = new SWTGraphics(gc);
         Point point = contentLayer.getBounds().getTopLeft();
         graphics.translate(-point.x, -point.y);
@@ -1659,7 +1647,8 @@ public abstract class AbstractTalendEditor extends GraphicalEditorWithFlyoutPale
                         }
                         Point point = new Point(originalPoint.x + viewOriginalPosition.x, originalPoint.y
                                 + viewOriginalPosition.y);
-
+                        point.x = (int) (point.x/AnimatableZoomManager.currentZoom);
+                        point.y = (int) (point.y/AnimatableZoomManager.currentZoom);
                         // Connection targetConnection = CreateComponentOnLinkHelper.getSelectedConnection();
                         // for (Object child : getProcessPart().getChildren()) {
                         // if (child instanceof SubjobContainerPart) {
@@ -1790,7 +1779,8 @@ public abstract class AbstractTalendEditor extends GraphicalEditorWithFlyoutPale
                         }
                         Point point = new Point(originalPoint.x + viewOriginalPosition.x, originalPoint.y
                                 + viewOriginalPosition.y);
-
+                        point.x = (int) (point.x/AnimatableZoomManager.currentZoom);
+                        point.y = (int) (point.y/AnimatableZoomManager.currentZoom);
                         // step 2: create node/note
                         CreateCommand createCmd = null;
                         if (isNodeInstance) {
@@ -2412,15 +2402,51 @@ public abstract class AbstractTalendEditor extends GraphicalEditorWithFlyoutPale
 
         protected void unhookOutlineViewer() {
             IToolBarManager tbm = getSite().getActionBars().getToolBarManager();
-            IContributionItem item = tbm.remove(showOutlineAction.getId());
-            if (item != null) {
-                item.dispose();
+            IContributionItem outlineItem = tbm.remove(showOutlineAction.getId());
+            IContributionItem overviewItem = tbm.remove(showOverviewAction.getId());
+            MToolBarElement outlineElement = null;
+            MToolBarElement overviewElement = null;
+            try {
+                // cf TDI-34745
+                // try to release items that are not released from the e4 model
+                ActionBars actionBars = null;
+                if (getSite().getActionBars() instanceof SubActionBars) {
+                    actionBars = (ActionBars) ReflectionUtils.getPrivateField(getSite().getActionBars(), "parent"); //$NON-NLS-1$
+                }
+                if (actionBars != null && outlineItem != null && overviewItem != null) {
+                    Object object = ReflectionUtils.getPrivateField(actionBars, "part"); //$NON-NLS-1$
+                    if (object != null) {
+                        MPart part = (MPart) object;
+                        MToolBar toolbar = part.getToolbar();
+                        if (toolbar != null) {
+                            Object renderer = toolbar.getRenderer();
+                            if (renderer instanceof ToolBarManagerRenderer) {
+                                // update the mapping of opaque items
+                                ToolBarManagerRenderer tbRenderer = ((ToolBarManagerRenderer) renderer);
+                                outlineElement = tbRenderer.getToolElement(outlineItem);
+                                overviewElement = tbRenderer.getToolElement(overviewItem);
+                            }
+                        }
+                    }
+                }
+            } catch (Exception e) {
+                // do nothing, since this part is only to tryto help to release memory (because opaqueelement are never
+                // released)
             }
-            item = tbm.remove(showOverviewAction.getId());
-            if (item != null) {
-                item.dispose();
+            if (outlineItem != null) {
+                outlineItem.dispose();
+            }
+            if (overviewItem != null) {
+                overviewItem.dispose();
             }
             getSite().getActionBars().updateActionBars();
+            
+            if (outlineElement != null && OpaqueElementUtil.isOpaqueToolItem(outlineElement)) {
+                OpaqueElementUtil.clearOpaqueItem(outlineElement);
+            }
+            if (overviewElement != null && OpaqueElementUtil.isOpaqueToolItem(overviewElement)) {
+                OpaqueElementUtil.clearOpaqueItem(overviewElement);
+            }
             showOutlineAction = null;
             showOverviewAction = null;
             // getSelectionSynchronizer().removeViewer(getViewer());
@@ -2428,6 +2454,7 @@ public abstract class AbstractTalendEditor extends GraphicalEditorWithFlyoutPale
                 getEditor().removeDisposeListener(disposeListener);
             }
         }
+
     }
 
     /**

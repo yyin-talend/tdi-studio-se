@@ -19,7 +19,8 @@
   </HEADER>
 
   <FAMILIES>
-    <FAMILY>Databases/Redshift</FAMILY>
+		<FAMILY>Databases/Amazon/Redshift</FAMILY>
+    <FAMILY>Cloud/Amazon/Redshift</FAMILY>
   </FAMILIES>
 
   <DOCUMENTATION>
@@ -342,6 +343,14 @@
       SHOW_IF="(USE_BATCH == 'true') AND (isShow[USE_BATCH])"
       >
       <DEFAULT>10000</DEFAULT>
+    </PARAMETER>
+    
+    <PARAMETER
+    	NAME="TABLE_WITH_SCHEMA"
+    	FIELD="CHECK"
+    	NUM_ROW="40"
+    >
+    	<DEFAULT>false</DEFAULT>
     </PARAMETER>
 
   </ADVANCED_PARAMETERS>

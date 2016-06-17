@@ -149,7 +149,15 @@ public class GenericNodeConnector extends NodeConnector {
     }
 
     public Connector getComponentConnector() {
-        return getConnector();
+        Set<? extends Connector> connectors = getParentNode().getComponentProperties().getPossibleConnectors(output);
+        if (connectors != null) {
+            for (Connector connector : connectors) {
+                if (connector.getName().equals(genericConnectorType)) {
+                    return connector;
+                }
+            }
+        }
+        return null;
     }
 
     

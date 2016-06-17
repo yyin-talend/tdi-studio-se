@@ -14,8 +14,6 @@ package org.talend.designer.core.generic.model.migration;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Date;
-import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -36,7 +34,6 @@ import org.talend.core.model.components.ModifyComponentsAction;
 import org.talend.core.model.components.conversions.IComponentConversion;
 import org.talend.core.model.components.filters.IComponentFilter;
 import org.talend.core.model.components.filters.NameComponentFilter;
-import org.talend.core.model.metadata.IEbcdicConstant;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.metadata.MetadataTable;
 import org.talend.core.model.metadata.builder.ConvertionHelper;
@@ -46,10 +43,11 @@ import org.talend.core.model.process.EConnectionType;
 import org.talend.core.model.process.EParameterFieldType;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.properties.Item;
+import org.talend.core.repository.model.ProxyRepositoryFactory;
+import org.talend.core.runtime.util.GenericTypeUtils;
 import org.talend.core.ui.component.ComponentsFactoryProvider;
 import org.talend.daikon.NamedThing;
-import org.talend.daikon.properties.Property;
-import org.talend.daikon.properties.Property.Type;
+import org.talend.daikon.properties.property.Property;
 import org.talend.designer.core.generic.constants.IGenericConstants;
 import org.talend.designer.core.generic.model.GenericElementParameter;
 import org.talend.designer.core.generic.model.GenericTableUtils;
@@ -97,7 +95,7 @@ public abstract class NewComponentFrameworkMigrationTask extends AbstractJobMigr
                         NamedThing currNamedThing = ComponentsUtils.getGenericSchemaElement(compProperties, paramName);
                         String oldParamName = props.getProperty(currComponentName + IGenericConstants.EXP_SEPARATOR + paramName);
                         if (oldParamName != null && !(oldParamName = oldParamName.trim()).isEmpty()) {
-                            if (currNamedThing instanceof Property && ((Property) currNamedThing).getType() == Type.SCHEMA) {
+                            if (currNamedThing instanceof Property && (GenericTypeUtils.isSchemaType((Property<?>) currNamedThing))) {
                                 schemaParamMap.put(
                                         paramName,
                                         props.getProperty(currComponentName + IGenericConstants.EXP_SEPARATOR + paramName
@@ -109,7 +107,7 @@ public abstract class NewComponentFrameworkMigrationTask extends AbstractJobMigr
                                     ComponentReferenceProperties refProps = (ComponentReferenceProperties) currNamedThing;
                                     refProps.referenceType
                                             .setValue(ComponentReferenceProperties.ReferenceType.COMPONENT_INSTANCE);
-                                    refProps.componentInstanceId.setValue(ParameterUtilTool.convertParameterValue(paramType));
+                                    refProps.componentInstanceId.setStoredValue(ParameterUtilTool.convertParameterValue(paramType));
                                     refProps.componentInstanceId.setTaggedValue(IGenericConstants.ADD_QUOTES, true);
                                 } else {
                                     if (EParameterFieldType.TABLE.equals(param.getFieldType())) {
@@ -139,9 +137,9 @@ public abstract class NewComponentFrameworkMigrationTask extends AbstractJobMigr
                             }
                         } else {
                             if (currNamedThing instanceof Property) {
-                                if (((Property) currNamedThing).isRequired()
-                                        && Property.Type.STRING.equals(((Property) currNamedThing).getType())) {
-                                    ((Property) currNamedThing).setValue("\"\""); //$NON-NLS-1$
+                                if (((Property<?>) currNamedThing).isRequired()
+                                        && GenericTypeUtils.isStringType(((Property<?>) currNamedThing).getType())) {
+                                    ((Property<?>) currNamedThing).setStoredValue("\"\""); //$NON-NLS-1$
                                 }
                             }
                         }
@@ -175,6 +173,7 @@ public abstract class NewComponentFrameworkMigrationTask extends AbstractJobMigr
                     metadatasMap.put(metadataType.getConnector(), metadataType);
                 }
                 Iterator<Entry<String, String>> schemaParamIter = schemaParamMap.entrySet().iterator();
+                String uniqueName = ParameterUtilTool.getParameterValue(nodeType, "UNIQUE_NAME"); //$NON-NLS-1$
 
                 while (schemaParamIter.hasNext()) {
                     Entry<String, String> schemaParamEntry = schemaParamIter.next();
@@ -192,8 +191,18 @@ public abstract class NewComponentFrameworkMigrationTask extends AbstractJobMigr
                                 .convert(metadataTable));
                         compProperties.setValue(newParamName, schema);
                     }
+                    if (!oldConnector.equals(newConnector)) {
+                        // if connector was changed, we should update the connections
+                        for (Object connectionObj : processType.getConnection()) {
+                            if (connectionObj instanceof ConnectionType) {
+                                ConnectionType connectionType = (ConnectionType) connectionObj;
+                                if (connectionType.getSource().equals(uniqueName) && connectionType.getConnectorName().equals(oldConnector)) {
+                                    connectionType.setConnectorName(newConnector);
+                                }
+                            }
+                        }
+                    }
                 }
-                String uniqueName = ParameterUtilTool.getParameterValue(nodeType, "UNIQUE_NAME"); //$NON-NLS-1$
                 for (Object connectionObj : processType.getConnection()) {
                     ConnectionType connection = (ConnectionType) connectionObj;
                     if (connection.getSource() != null && connection.getSource().equals(uniqueName)) {
@@ -215,6 +224,7 @@ public abstract class NewComponentFrameworkMigrationTask extends AbstractJobMigr
         };
 
         if (processType != null) {
+            boolean modified = false;
             for (Object obj : processType.getNode()) {
                 if (obj != null && obj instanceof NodeType) {
                     String componentName = ((NodeType) obj).getComponentName();
@@ -223,17 +233,21 @@ public abstract class NewComponentFrameworkMigrationTask extends AbstractJobMigr
                         continue;
                     }
                     IComponentFilter filter = new NameComponentFilter(componentName);
-                    try {
-                        ModifyComponentsAction.searchAndModify(item, processType, filter,
-                                Arrays.<IComponentConversion> asList(conversion));
-                    } catch (PersistenceException e) {
-                        ExceptionHandler.process(e);
-                        return ExecutionResult.FAILURE;
-                    }
+                    modified = ModifyComponentsAction.searchAndModify((NodeType) obj, filter,
+                                Arrays.<IComponentConversion> asList(conversion)) || modified;
+                }
+            }
+            if (modified) {
+                try {
+                    ProxyRepositoryFactory.getInstance().save(item, true);
+                    return ExecutionResult.SUCCESS_NO_ALERT;
+                } catch (PersistenceException e) {
+                    ExceptionHandler.process(e);
+                    return ExecutionResult.FAILURE;
                 }
             }
         }
-        return ExecutionResult.SUCCESS_NO_ALERT;
+        return ExecutionResult.NOTHING_TO_DO;
     }
 
     protected void migrateComponent(String componentName) {
@@ -268,12 +282,6 @@ public abstract class NewComponentFrameworkMigrationTask extends AbstractJobMigr
             lineValues.put(columnName, elementValue.getValue());
         }
         return tableValues;
-    }
-
-    @Override
-    public Date getOrder() {
-        GregorianCalendar gc = new GregorianCalendar(2015, 11, 18, 12, 0, 0);
-        return gc.getTime();
     }
 
     public static class FakeNode extends AbstractNode {

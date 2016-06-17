@@ -14,6 +14,7 @@ package org.talend.repository.generic.service;
 
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 
@@ -30,7 +31,6 @@ import org.talend.core.model.metadata.builder.connection.Connection;
 import org.talend.core.model.metadata.builder.connection.MetadataTable;
 import org.talend.core.model.process.EComponentCategory;
 import org.talend.core.model.process.Element;
-import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.INode;
 import org.talend.core.model.properties.Item;
 import org.talend.core.model.repository.ERepositoryObjectType;
@@ -40,7 +40,6 @@ import org.talend.designer.core.generic.model.GenericElementParameter;
 import org.talend.designer.core.generic.utils.ComponentsUtils;
 import org.talend.designer.core.generic.utils.SchemaUtils;
 import org.talend.designer.core.model.components.ElementParameter;
-import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.repository.generic.internal.IGenericWizardInternalService;
 import org.talend.repository.generic.internal.service.GenericWizardInternalService;
 import org.talend.repository.generic.model.genericMetadata.GenericConnection;
@@ -49,7 +48,6 @@ import org.talend.repository.generic.model.genericMetadata.SubContainer;
 import org.talend.repository.generic.ui.DynamicComposite;
 import org.talend.repository.model.IRepositoryNode.ENodeType;
 import org.talend.repository.model.RepositoryNode;
-
 import orgomg.cwm.objectmodel.core.TaggedValue;
 
 /**
@@ -175,32 +173,33 @@ public class GenericWizardService implements IGenericWizardService {
     }
 
     @Override
-    public void updateComponentSchema(MetadataTable metadataTable) {
-        SchemaUtils.updateComponentSchema(metadataTable);
-    }
-
-    @Override
     public void updateComponentSchema(INode node, IMetadataTable metadataTable) {
         SchemaUtils.updateComponentSchema(node, metadataTable);
     }
 
     @Override
-    public List<ComponentProperties> getAllComponentProperties(Connection connection) {
+    public List<ComponentProperties> getAllComponentProperties(Connection connection, String tableLabel) {
         List<ComponentProperties> componentProperties = new ArrayList<>();
         if (isGenericConnection(connection)) {
             GenericConnection genericConnection = (GenericConnection) connection;
             String compProperties = genericConnection.getCompProperties();
-            ComponentProperties cp = ComponentsUtils.getComponentPropertiesFromSerialized(compProperties);
+            ComponentProperties cp = ComponentsUtils.getComponentPropertiesFromSerialized(compProperties, connection);
             if (cp != null) {
                 componentProperties.add(cp);
             }
-            List<MetadataTable> metadataTables = SchemaUtils.getMetadataTables(genericConnection, SubContainer.class);
+            List<MetadataTable> metadataTables;
+            if (tableLabel == null) {
+                metadataTables = SchemaUtils.getMetadataTables(genericConnection, SubContainer.class);
+            } else {
+                metadataTables = Arrays.asList(SchemaUtils.getMetadataTable(genericConnection, tableLabel, SubContainer.class));
+            }
             for (MetadataTable metadataTable : metadataTables) {
                 for (TaggedValue taggedValue : metadataTable.getTaggedValue()) {
                     if (IComponentConstants.COMPONENT_PROPERTIES_TAG.equals(taggedValue.getTag())) {
-                        ComponentProperties compPros = ComponentsUtils.getComponentPropertiesFromSerialized(taggedValue
-                                .getValue());
+                        ComponentProperties compPros = ComponentsUtils.getComponentPropertiesFromSerialized(
+                                taggedValue.getValue(), connection);
                         if (compPros != null && !componentProperties.contains(compPros)) {
+                            compPros.updateNestedProperties(cp);
                             componentProperties.add(compPros);
                         }
                     }

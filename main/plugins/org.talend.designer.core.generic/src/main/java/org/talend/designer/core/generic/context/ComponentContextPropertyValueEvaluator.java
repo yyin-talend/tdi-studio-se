@@ -20,8 +20,10 @@ import org.talend.core.model.process.IContextManager;
 import org.talend.core.model.process.INode;
 import org.talend.core.model.process.IProcess;
 import org.talend.core.model.utils.ContextParameterUtils;
-import org.talend.daikon.properties.Property;
-import org.talend.daikon.properties.PropertyValueEvaluator;
+import org.talend.core.runtime.util.GenericTypeUtils;
+import org.talend.core.utils.TalendQuoteUtils;
+import org.talend.daikon.properties.property.Property;
+import org.talend.daikon.properties.property.PropertyValueEvaluator;
 
 /**
  * created by ycbai on 2016年2月6日 Detailled comment
@@ -40,7 +42,18 @@ public class ComponentContextPropertyValueEvaluator implements PropertyValueEval
         if (storedValue == null) {
             return storedValue;
         }
-        if (storedValue instanceof Schema || storedValue instanceof List || storedValue instanceof Enum) {
+        List<?> possibleValues = property.getPossibleValues();
+        if (possibleValues != null) {
+            if (storedValue instanceof String && !ContextParameterUtils.isContainContextParam((String) storedValue)) {
+                for (Object possibleValue : possibleValues) {
+                    if (possibleValue.toString().equals(storedValue)) {
+                        return possibleValue;
+                    }
+                }
+            }
+        }
+        if (storedValue instanceof Schema || storedValue instanceof List || storedValue instanceof Enum
+                || storedValue instanceof Boolean) {
             return storedValue;
         }
         IContext context = null;
@@ -53,10 +66,40 @@ public class ComponentContextPropertyValueEvaluator implements PropertyValueEval
                 }
             }
         }
-        if (context != null) {
-            return ContextParameterUtils.parseScriptContextCode(String.valueOf(storedValue), context);
+        String stringStoredValue = String.valueOf(storedValue);
+        if (context != null && ContextParameterUtils.isContainContextParam(stringStoredValue)) {
+            stringStoredValue = ContextParameterUtils.parseScriptContextCode(stringStoredValue, context);
         }
-        return storedValue;
+        return getTypedValue(property, stringStoredValue);
+    }
+
+    private Object getTypedValue(Property property, String rawValue) {
+        if (GenericTypeUtils.isBooleanType(property)) {
+            return new Boolean(rawValue);
+        }
+        if (GenericTypeUtils.isIntegerType(property) && !rawValue.isEmpty()) {
+            try {
+                return Integer.valueOf(rawValue);
+            } catch (Exception e) {
+                // value not existing anymore
+                // return any value to let the component work without exception
+                return 0;
+            }
+        }
+        if (GenericTypeUtils.isEnumType(property)) {
+            List<?> propertyPossibleValues = ((Property<?>) property).getPossibleValues();
+            if (propertyPossibleValues != null) {
+                for (Object possibleValue : propertyPossibleValues) {
+                    if (possibleValue.toString().equals(rawValue)) {
+                        return possibleValue;
+                    }
+                }
+            }
+        }
+        if (GenericTypeUtils.isStringType(property)) {
+            return TalendQuoteUtils.removeQuotes(String.valueOf(rawValue));
+        }
+        return rawValue;
     }
 
 }

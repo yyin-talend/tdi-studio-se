@@ -25,6 +25,8 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import jdk.internal.org.objectweb.asm.TypeReference;
+
 import org.apache.axis.components.net.TransportClientProperties;
 import org.apache.axis.components.net.TransportClientPropertiesFactory;
 import org.apache.commons.beanutils.BeanUtils;
@@ -37,6 +39,7 @@ import org.apache.commons.httpclient.auth.AuthScope;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.httpclient.methods.PostMethod;
 import org.codehaus.jackson.JsonFactory;
+import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.Path;
@@ -135,10 +138,10 @@ public class ExchangeUtils {
             return objList;
         }
         JsonFactory jf = new JsonFactory();
-        List result = (List) new ObjectMapper().reader().readTree(jf.createJsonParser(new StringReader(jsonContent)));
-        for (int i = 0; i < result.size(); i++) {
+        JsonNode node = new ObjectMapper().reader().readTree(jf.createJsonParser(new StringReader(jsonContent)));
+        List<Object> list = new ObjectMapper().readValue(node.traverse(), List.class);
+        for (Object source : list) {
             Object obj = clazz.newInstance();
-            Object source = result.get(i);
             BeanUtils.copyProperties(obj, source);
             objList.add(obj);
         }

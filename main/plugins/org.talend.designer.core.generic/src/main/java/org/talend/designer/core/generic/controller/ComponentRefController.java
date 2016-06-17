@@ -204,39 +204,11 @@ public class ComponentRefController extends AbstractElementPropertySectionContro
             combo.setToolTipText(VARIABLE_TOOLTIP + param.getVariableName());
         }
 
-        CLabel labelLabel = getWidgetFactory().createCLabel(subComposite, param.getDisplayName());
         data = new FormData();
         if (lastControl != null) {
             data.left = new FormAttachment(lastControl, 0);
         } else {
             data.left = new FormAttachment((((numInRow - 1) * MAX_PERCENT) / nbInRow), 0);
-        }
-
-        data.top = new FormAttachment(0, top);
-        labelLabel.setLayoutData(data);
-        if (numInRow != 1) {
-            labelLabel.setAlignment(SWT.RIGHT);
-        }
-        // *********************
-        data = new FormData();
-        int currentLabelWidth = STANDARD_LABEL_WIDTH;
-        GC gc = new GC(labelLabel);
-        Point labelSize = gc.stringExtent(param.getDisplayName());
-        gc.dispose();
-
-        if ((labelSize.x + ITabbedPropertyConstants.HSPACE) > currentLabelWidth) {
-            currentLabelWidth = labelSize.x + ITabbedPropertyConstants.HSPACE;
-        }
-
-        if (numInRow == 1) {
-            if (lastControl != null) {
-                data.left = new FormAttachment(lastControl, currentLabelWidth);
-            } else {
-                data.left = new FormAttachment(0, currentLabelWidth);
-            }
-
-        } else {
-            data.left = new FormAttachment(labelLabel, 0, SWT.RIGHT);
         }
         data.top = new FormAttachment(0, top);
         cLayout.setLayoutData(data);

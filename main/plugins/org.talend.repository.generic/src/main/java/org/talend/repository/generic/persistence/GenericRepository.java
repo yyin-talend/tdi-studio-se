@@ -46,8 +46,8 @@ public class GenericRepository implements Repository<ComponentProperties> {
         }
 
         // Add repository value if it is from repository
-        List<org.talend.daikon.properties.Property> propertyValues = ComponentsUtils.getAllValuedProperties(properties);
-        for (org.talend.daikon.properties.Property property : propertyValues) {
+        List<org.talend.daikon.properties.property.Property> propertyValues = ComponentsUtils.getAllValuedProperties(properties);
+        for (org.talend.daikon.properties.property.Property property : propertyValues) {
             property.setTaggedValue(IGenericConstants.REPOSITORY_VALUE, property.getName());
         }
 
@@ -69,6 +69,12 @@ public class GenericRepository implements Repository<ComponentProperties> {
             if (schemaPropertyName == null) {// If schema property name is not provided, then create the subcontainer.
                 childElement = createContainer(name, serializedProperties);
             } else {
+                // Remove Repository Value tag value for schema property.
+                org.talend.daikon.properties.property.Property<?> schemaProperty = properties
+                        .getValuedProperty(schemaPropertyName);
+                if (schemaProperty != null) {
+                    schemaProperty.setTaggedValue(IGenericConstants.REPOSITORY_VALUE, null);
+                }
                 childElement = SchemaUtils.createSchema(name, properties, schemaPropertyName);
             }
             parentContainer.getOwnedElement().add(childElement);

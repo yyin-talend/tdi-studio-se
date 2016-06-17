@@ -21,7 +21,7 @@ import org.talend.core.model.process.EParameterFieldType;
 import org.talend.core.model.process.ElementParameterParser;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.daikon.properties.Properties;
-import org.talend.daikon.properties.Property;
+import org.talend.daikon.properties.property.Property;
 
 /**
  * created by nrousseau on Apr 28, 2016 Detailled comment
