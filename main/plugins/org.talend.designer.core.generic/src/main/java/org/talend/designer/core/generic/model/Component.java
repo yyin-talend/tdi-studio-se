@@ -1296,9 +1296,6 @@ public class Component extends AbstractBasicComponent {
         if (param instanceof GenericElementParameter) {
             Node node = (Node) ((GenericElementParameter) param).getElement();
             ComponentProperties properties = node.getComponentProperties();
-            String serialized = properties.toSerialized();
-            ComponentProperties newProperties = Properties.Helper.fromSerializedPersistent(serialized, ComponentProperties.class).object;
-            
             return properties.toSerialized();
         } else {
             ComponentProperties componentProperties = ComponentsUtils.getComponentProperties(getName());
