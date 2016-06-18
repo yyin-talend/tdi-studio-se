@@ -185,11 +185,11 @@ public class GenericContextUtil {
         }
     }
 
-    public static void revertPropertiesValues(ComponentProperties componentProperties, ContextType contextType) {
+    public static void revertPropertiesValues(Properties componentProperties, ContextType contextType) {
         List<NamedThing> props = componentProperties.getProperties();
         for (NamedThing namedThing : props) {
-            if (namedThing instanceof ComponentProperties) {
-                revertPropertiesValues((ComponentProperties) namedThing, contextType);
+            if (namedThing instanceof Properties) {
+                revertPropertiesValues((Properties) namedThing, contextType);
             } else if (namedThing instanceof Property) {
                 Property property = (Property) namedThing;
                 if (ComponentsUtils.isSupportContext(property)) {
