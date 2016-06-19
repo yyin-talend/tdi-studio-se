@@ -185,14 +185,7 @@ public class SchemaUtils {
                 }
                 if (serializedProperties != null) {
                     Connection connection = ((ConnectionItem)metaTableRepObj.getViewObject().getProperty().getItem()).getConnection();
-                    fromSerializedProperties = Properties.Helper.fromSerializedPersistent(serializedProperties,
-                            ComponentProperties.class, new PostDeserializeSetup() {
-
-                                @Override
-                                public void setup(Object properties) {
-                                    ((Properties)properties).setValueEvaluator(new MetadataContextPropertyValueEvaluator(connection));
-                                }
-                            });
+                    return ComponentsUtils.getComponentPropertiesFromSerialized(serializedProperties, connection);
                 }
             } else if (table instanceof org.talend.core.model.metadata.MetadataTable) {
                 org.talend.core.model.metadata.MetadataTable metaTable = (org.talend.core.model.metadata.MetadataTable) table;

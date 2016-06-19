@@ -56,6 +56,7 @@ import org.talend.daikon.properties.presentation.Form;
 import org.talend.daikon.serialize.PostDeserializeSetup;
 import org.talend.daikon.serialize.SerializerDeserializer;
 import org.talend.designer.core.generic.constants.IGenericConstants;
+import org.talend.designer.core.generic.utils.ComponentsUtils;
 import org.talend.designer.core.model.components.ElementParameter;
 import org.talend.metadata.managment.ui.utils.ConnectionContextHelper;
 import org.talend.metadata.managment.ui.wizard.CheckLastVersionRepositoryWizard;
@@ -189,16 +190,9 @@ public class GenericConnWizard extends CheckLastVersionRepositoryWizard {
         } else {
             String compPropertiesStr = connection.getCompProperties();
             if (compPropertiesStr != null) {
-                SerializerDeserializer.Deserialized<ComponentProperties> fromSerialized = Properties.Helper.fromSerializedPersistent(compPropertiesStr,
-                        ComponentProperties.class, new PostDeserializeSetup() {
-
-                            @Override
-                            public void setup(Object properties) {
-                                ((Properties)properties).setValueEvaluator(new MetadataContextPropertyValueEvaluator(connection));
-                            }
-                        });
-                if (fromSerialized != null) {
-                    componentWizard = internalService.getTopLevelComponentWizard(fromSerialized.object, repNode.getId());
+                ComponentProperties properties = ComponentsUtils.getComponentPropertiesFromSerialized(compPropertiesStr, connection);
+                if (properties != null) {
+                    componentWizard = internalService.getTopLevelComponentWizard(properties, repNode.getId());
                 }
             }
         }

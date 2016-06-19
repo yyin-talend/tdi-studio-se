@@ -22,6 +22,7 @@ import org.talend.core.repository.model.ProxyRepositoryFactory;
 import org.talend.daikon.properties.Properties;
 import org.talend.daikon.serialize.SerializerDeserializer;
 import org.talend.designer.core.generic.constants.IGenericConstants;
+import org.talend.designer.core.generic.utils.ComponentsUtils;
 import org.talend.metadata.managment.ui.wizard.PropertiesWizard;
 import org.talend.repository.generic.model.genericMetadata.GenericConnection;
 import org.talend.repository.generic.model.genericMetadata.GenericConnectionItem;
@@ -45,10 +46,8 @@ public class GenericConnPropertiesWizard extends PropertiesWizard {
             GenericConnection connection = (GenericConnection) gcItem.getConnection();
             String compPropertiesStr = connection.getCompProperties();
             if (compPropertiesStr != null) {
-                SerializerDeserializer.Deserialized<ComponentProperties> fromSerialized = Properties.Helper.fromSerializedPersistent(compPropertiesStr,
-                        ComponentProperties.class, null);
-                if (fromSerialized != null) {
-                    ComponentProperties componentProperties = fromSerialized.object;
+                ComponentProperties componentProperties =ComponentsUtils.getComponentPropertiesFromSerialized(compPropertiesStr, connection);
+                if (componentProperties != null) {
                     org.talend.daikon.properties.property.Property nameProperty = (org.talend.daikon.properties.property.Property) componentProperties
                             .getProperty(IGenericConstants.NAME_PROPERTY);
                     Object namePropertyVal = nameProperty.getValue();

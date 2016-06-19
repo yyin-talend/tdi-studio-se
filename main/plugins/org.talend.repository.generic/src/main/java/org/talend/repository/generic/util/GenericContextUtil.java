@@ -84,11 +84,7 @@ public class GenericContextUtil {
     private static ComponentProperties getComponentProperties(GenericConnection connection) {
         String compPropertiesStr = connection.getCompProperties();
         if (compPropertiesStr != null) {
-            SerializerDeserializer.Deserialized<ComponentProperties> fromSerialized = Properties.Helper.fromSerializedPersistent(compPropertiesStr,
-                    ComponentProperties.class, null);
-            if (fromSerialized != null) {
-                return fromSerialized.object;
-            }
+            return ComponentsUtils.getComponentPropertiesFromSerialized(compPropertiesStr, connection);
         }
         return null;
     }
@@ -193,7 +189,7 @@ public class GenericContextUtil {
             } else if (namedThing instanceof Property) {
                 Property property = (Property) namedThing;
                 if (ComponentsUtils.isSupportContext(property)) {
-                    String value = property.getStringValue();
+                    String value = String.valueOf(property.getStoredValue());
                     if (value != null && ContextParameterUtils.isContainContextParam(value)) {
                         String valueFromContext = ContextParameterUtils.getOriginalValue(contextType, value);
                         property.setTaggedValue(IGenericConstants.IS_CONTEXT_MODE, false);
