@@ -3609,7 +3609,7 @@ public class Node extends Element implements IGraphicalNode {
                             Problems.add(ProblemStatus.ERROR, this, errorMessage);
                         }
                         if (nbDynamic > 0 && service != null) {
-                            if (!service.isSupportDynamicType(this.getComponent().getName())) {
+                            if (!service.isSupportDynamicType(this)) {
                                 String errorMessage = Messages.getString("Node.componentDoesntSupportDynamic"); //$NON-NLS-1$
                                 Problems.add(ProblemStatus.ERROR, this, errorMessage);
                             }
