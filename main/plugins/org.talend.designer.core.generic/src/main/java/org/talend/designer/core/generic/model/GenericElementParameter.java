@@ -76,6 +76,8 @@ public class GenericElementParameter extends ElementParameter {
     private boolean isFirstCall;
 
     private boolean drivedByForm;
+    
+    private Boolean askPropagate;
 
     public GenericElementParameter(IElement element, ComponentProperties rootProperties, Form form, Widget widget,
             ComponentService componentService) {
@@ -285,7 +287,7 @@ public class GenericElementParameter extends ElementParameter {
         IElement element = this.getElement();
         if (element instanceof Node) {
             Node node = (Node) element;
-            Boolean propagate = null;
+            Boolean propagate = this.askPropagate;
             List<INodeConnector> connectors = node.getConnectorsFromType(EConnectionType.FLOW_MAIN);
             for (INodeConnector connector : connectors) {
                 if (connector instanceof GenericNodeConnector) {
@@ -320,6 +322,7 @@ public class GenericElementParameter extends ElementParameter {
                     }
                 }
             }
+            this.askPropagate = null;
         }
     }
 
@@ -485,6 +488,10 @@ public class GenericElementParameter extends ElementParameter {
         if (property != null) {
             property.setTaggedValue(IGenericConstants.IS_DYNAMIC, mode);
         }
+    }
+    
+    public void setAskPropagate(Boolean askPropagate) {
+        this.askPropagate = askPropagate;
     }
 
 }

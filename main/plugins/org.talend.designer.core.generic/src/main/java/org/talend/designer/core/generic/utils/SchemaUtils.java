@@ -40,9 +40,11 @@ import org.talend.daikon.properties.Properties;
 import org.talend.daikon.properties.PropertiesImpl;
 import org.talend.daikon.serialize.PostDeserializeSetup;
 import org.talend.daikon.serialize.SerializerDeserializer;
+import org.talend.designer.core.generic.model.GenericElementParameter;
 import org.talend.designer.core.generic.model.GenericNodeConnector;
 import org.talend.metadata.managment.ui.wizard.context.MetadataContextPropertyValueEvaluator;
 import org.talend.repository.model.IProxyRepositoryFactory;
+
 import orgomg.cwm.objectmodel.core.CoreFactory;
 import orgomg.cwm.objectmodel.core.TaggedValue;
 
@@ -148,7 +150,7 @@ public class SchemaUtils {
         }
     }
 
-    public static void updateComponentSchema(INode node, IMetadataTable metadataTable) {
+    public static void updateComponentSchema(INode node, IMetadataTable metadataTable, Boolean askPropagate) {
         if (node == null || metadataTable == null || node.getComponentProperties() == null) {
             return;
         }
@@ -162,6 +164,9 @@ public class SchemaUtils {
             for (IElementParameter param : new ArrayList<IElementParameter>(node.getElementParameters())) {
                 if (EParameterFieldType.SCHEMA_REFERENCE.equals(param.getFieldType())
                         && connector.getName().equals(param.getContext())) {
+                    if (param instanceof GenericElementParameter) {
+                        ((GenericElementParameter)param).setAskPropagate(askPropagate);
+                    }
                     param.setValue(schema);
                 }
             }
