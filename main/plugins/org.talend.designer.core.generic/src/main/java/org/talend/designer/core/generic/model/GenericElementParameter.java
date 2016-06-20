@@ -24,6 +24,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.gef.commands.CommandStack;
 import org.eclipse.jface.dialogs.ProgressMonitorDialog;
 import org.eclipse.jface.operation.IRunnableWithProgress;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.PlatformUI;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.components.api.component.Connector;
@@ -287,7 +288,6 @@ public class GenericElementParameter extends ElementParameter {
         IElement element = this.getElement();
         if (element instanceof Node) {
             Node node = (Node) element;
-            Boolean propagate = this.askPropagate;
             List<INodeConnector> connectors = node.getConnectorsFromType(EConnectionType.FLOW_MAIN);
             for (INodeConnector connector : connectors) {
                 if (connector instanceof GenericNodeConnector) {
@@ -300,10 +300,16 @@ public class GenericElementParameter extends ElementParameter {
                         IMetadataTable newTable = MetadataToolHelper.convert(metadataTable);
                         if ((!mainTable.sameMetadataAs(newTable) || !newTable.sameMetadataAs(mainTable))) {
                             mainTable.setListColumns(newTable.getListColumns());
-                            if (propagate == null && node.getOutgoingConnections().size() != 0) {
-                                propagate = ChangeMetadataCommand.askPropagate();
+                            if (this.askPropagate == null && node.getOutgoingConnections().size() != 0) {
+                                Display.getDefault().syncExec(new Runnable() {
+                                    
+                                    @Override
+                                    public void run() {
+                                        askPropagate = ChangeMetadataCommand.askPropagate();
+                                    }
+                                });
                             }
-                            if (propagate != null && propagate) {
+                            if (this.askPropagate != null && this.askPropagate) {
                                 for (IConnection connection : node.getOutgoingConnections()) {
                                     if (connector.getName().equals(connection.getConnectorName())) {
                                         ChangeMetadataCommand cmd = new ChangeMetadataCommand(connection.getTarget(), null, null,
