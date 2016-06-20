@@ -1758,6 +1758,9 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
                             if (param.getFieldType() == EParameterFieldType.PROPERTY_TYPE) {
                                 continue;
                             }
+                            if (param.getFieldType() == EParameterFieldType.SCHEMA_REFERENCE) {
+                                continue;
+                            }
                             String repositoryValue = param.getRepositoryValue();
                             String relatedComponent = node.getComponent().getName();
                             if ((repositoryValue != null)
