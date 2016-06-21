@@ -119,7 +119,6 @@ import org.talend.designer.core.ui.ActiveProcessTracker;
 import org.talend.designer.core.ui.editor.AbstractTalendEditor;
 import org.talend.designer.core.ui.editor.cmd.ChangeMetadataCommand;
 import org.talend.designer.core.ui.editor.cmd.ConnectionCreateCommand;
-import org.talend.designer.core.ui.editor.cmd.PropertyChangeCommand;
 import org.talend.designer.core.ui.editor.connections.Connection;
 import org.talend.designer.core.ui.editor.jobletcontainer.JobletContainer;
 import org.talend.designer.core.ui.editor.nodecontainer.NodeContainer;
@@ -2859,11 +2858,13 @@ public class Node extends Element implements IGraphicalNode {
                                 errorMessage = Messages.getString("Node.parameterWrong", param.getDisplayName()); //$NON-NLS-1$
                                 if (!foundValue) {
                                     Problems.add(ProblemStatus.ERROR, this, errorMessage);
-                                    PropertyChangeCommand changeCommand = new PropertyChangeCommand(this, param.getName(),
-                                            nodeList.get(0).getUniqueName());
-                                    if (this.getCommandStack() != null) {
-                                        this.getCommandStack().execute(changeCommand);
-                                    }
+                                    // TDI-35251 comment for TDI-33285
+                                    // PropertyChangeCommand changeCommand = new PropertyChangeCommand(this,
+                                    // param.getName(),
+                                    // nodeList.get(0).getUniqueName());
+                                    // if (this.getCommandStack() != null) {
+                                    // this.getCommandStack().execute(changeCommand);
+                                    // }
                                 }
                             }
                         }
