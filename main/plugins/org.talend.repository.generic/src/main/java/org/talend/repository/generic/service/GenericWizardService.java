@@ -174,7 +174,7 @@ public class GenericWizardService implements IGenericWizardService {
 
     @Override
     public void updateComponentSchema(INode node, IMetadataTable metadataTable) {
-        SchemaUtils.updateComponentSchema(node, metadataTable);
+        SchemaUtils.updateComponentSchema(node, metadataTable, Boolean.FALSE);
     }
 
     @Override

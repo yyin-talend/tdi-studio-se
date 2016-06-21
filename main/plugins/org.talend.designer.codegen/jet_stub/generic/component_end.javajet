@@ -33,13 +33,36 @@ if (metadata == null) {
 }
 
 if(def instanceof org.talend.components.api.component.InputComponentDefinition){
-    %>
+%>
     } // while
     reader_<%=cid%>.close();
-    <%
+    final java.util.Map<String, Object> resultMap_<%=cid%> = reader_<%=cid%>.getReturnValues();
+<%
 }else if(def instanceof org.talend.components.api.component.OutputComponentDefinition){
-    %>
-    writer_<%=cid%>.close();
-    <%
+%>
+    org.talend.components.api.component.runtime.Result resultObject_<%=cid%> = (org.talend.components.api.component.runtime.Result)writer_<%=cid%>.close();
+    final java.util.Map<String, Object> resultMap_<%=cid%> = writer_<%=cid%>.getWriteOperation().finalize(java.util.Arrays.<org.talend.components.api.component.runtime.Result>asList(resultObject_<%=cid%>), container_<%=cid%>);
+<%
 }
 %>
+if(resultMap_<%=cid%>!=null) {
+	for(java.util.Map.Entry<String,Object> entry_<%=cid%> : resultMap_<%=cid%>.entrySet()) {
+		switch(entry_<%=cid%>.getKey()) {//for the old key
+		case org.talend.components.api.component.ComponentDefinition.RETURN_ERROR_MESSAGE :
+			container_<%=cid%>.setComponentData("<%=cid%>", "ERROR_MESSAGE", entry_<%=cid%>.getValue());
+			break;
+		case org.talend.components.api.component.ComponentDefinition.RETURN_TOTAL_RECORD_COUNT :
+			container_<%=cid%>.setComponentData("<%=cid%>", "NB_LINE", entry_<%=cid%>.getValue());
+			break;
+		case org.talend.components.api.component.ComponentDefinition.RETURN_SUCCESS_RECORD_COUNT :
+			container_<%=cid%>.setComponentData("<%=cid%>", "NB_SUCCESS", entry_<%=cid%>.getValue());
+			break;
+		case org.talend.components.api.component.ComponentDefinition.RETURN_REJECT_RECORD_COUNT :
+			container_<%=cid%>.setComponentData("<%=cid%>", "NB_REJECT", entry_<%=cid%>.getValue());
+			break;
+		}
+		
+		//for the new key
+		container_<%=cid%>.setComponentData("<%=cid%>", entry_<%=cid%>.getKey(), entry_<%=cid%>.getValue());
+	}
+}

@@ -134,6 +134,8 @@ if(def instanceof org.talend.components.api.component.OutputComponentDefinition)
             Object data_<%=cid%> = current_<%=cid%>.createIndexedRecord();
 
             writer_<%=cid%>.write(data_<%=cid%>);
+            
+            nb_line_<%=cid %>++;
             <%
             if (mainIrToRow != null) {
                 %>
