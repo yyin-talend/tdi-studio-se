@@ -47,6 +47,7 @@ import org.talend.core.model.components.EComponentType;
 import org.talend.core.model.components.IMultipleComponentItem;
 import org.talend.core.model.components.IMultipleComponentManager;
 import org.talend.core.model.general.ModuleNeeded;
+import org.talend.core.model.metadata.types.JavaTypesManager;
 import org.talend.core.model.param.ERepositoryCategoryType;
 import org.talend.core.model.process.EComponentCategory;
 import org.talend.core.model.process.EConnectionType;
@@ -59,13 +60,13 @@ import org.talend.core.model.process.INodeConnector;
 import org.talend.core.model.temp.ECodePart;
 import org.talend.core.model.utils.ContextParameterUtils;
 import org.talend.core.prefs.ITalendCorePrefConstants;
+import org.talend.core.runtime.util.ComponentReturnVariableUtils;
 import org.talend.core.runtime.util.GenericTypeUtils;
 import org.talend.core.ui.component.ComponentsFactoryProvider;
 import org.talend.core.ui.services.IComponentsLocalProviderService;
 import org.talend.core.utils.TalendQuoteUtils;
 import org.talend.daikon.NamedThing;
 import org.talend.daikon.properties.Properties;
-import org.talend.daikon.properties.PropertiesImpl;
 import org.talend.daikon.properties.presentation.Form;
 import org.talend.daikon.properties.property.Property;
 import org.talend.daikon.properties.property.SchemaProperty;
@@ -102,6 +103,8 @@ public class Component extends AbstractBasicComponent {
     private ComponentsProvider provider;
 
     private Map<String, String> translatedMap = new HashMap<>();
+
+    private static String ERROR_MESSAGE = "ERROR_MESSAGE";
 
     public Component(ComponentDefinition componentDefinition) throws BusinessException {
         this.componentDefinition = componentDefinition;
@@ -175,13 +178,22 @@ public class Component extends AbstractBasicComponent {
         if (!(componentProperties instanceof ComponentPropertiesImpl)) {
             return listReturn;
         }
+        NodeReturn nodeRet = new NodeReturn();
+        nodeRet.setType(JavaTypesManager.STRING.getLabel());
+        nodeRet.setDisplayName(ComponentReturnVariableUtils.getTranslationForVariable(ERROR_MESSAGE,
+                ComponentDefinition.RETURN_ERROR_MESSAGE));
+        nodeRet.setName(ComponentReturnVariableUtils.getStudioNameFromVariable(ComponentDefinition.RETURN_ERROR_MESSAGE));
+        nodeRet.setAvailability("AFTER"); //$NON-NLS-1$
+        listReturn.add(nodeRet);
 
-        NodeReturn nodeRet = null;
-        for (Property child : componentDefinition.getReturnProperties()) {
+        for (Property<?> child : componentDefinition.getReturnProperties()) {
             nodeRet = new NodeReturn();
             nodeRet.setType(ComponentsUtils.getTalendTypeFromProperty(child).getId());
-            nodeRet.setDisplayName(child.getDisplayName());
-            nodeRet.setName(child.getName());
+            nodeRet.setDisplayName(ComponentReturnVariableUtils.getTranslationForVariable(child.getName(), child.getDisplayName()));
+            nodeRet.setName(ComponentReturnVariableUtils.getStudioNameFromVariable(child.getName()));
+            if (nodeRet.getName().equals(ERROR_MESSAGE)) {
+                continue;
+            }
             Object object = child.getTaggedValue(IGenericConstants.AVAILABILITY);
             if (object != null) {
                 nodeRet.setAvailability(object.toString());
@@ -1284,7 +1296,7 @@ public class Component extends AbstractBasicComponent {
 
                         @Override
                         public void setup(Object properties) {
-                            ((Properties)properties).setValueEvaluator(new ComponentContextPropertyValueEvaluator(node));
+                            ((Properties) properties).setValueEvaluator(new ComponentContextPropertyValueEvaluator(node));
                         }
 
                     }).object);
