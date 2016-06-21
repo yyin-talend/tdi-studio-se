@@ -65,7 +65,6 @@ import org.talend.core.ui.services.IComponentsLocalProviderService;
 import org.talend.core.utils.TalendQuoteUtils;
 import org.talend.daikon.NamedThing;
 import org.talend.daikon.properties.Properties;
-import org.talend.daikon.properties.PropertiesImpl;
 import org.talend.daikon.properties.presentation.Form;
 import org.talend.daikon.properties.property.Property;
 import org.talend.daikon.properties.property.SchemaProperty;
@@ -1073,6 +1072,7 @@ public class Component extends AbstractBasicComponent {
         theCodePartList.add(ECodePart.BEGIN);
         theCodePartList.add(ECodePart.MAIN);
         theCodePartList.add(ECodePart.END);
+        theCodePartList.add(ECodePart.FINALLY);
         return theCodePartList;
     }
 
@@ -1214,7 +1214,7 @@ public class Component extends AbstractBasicComponent {
             return ElementParameterParser.getEncryptedValue(value);
         }
         if (Boolean.valueOf(String.valueOf(property.getTaggedValue(IGenericConstants.ADD_QUOTES)))) {
-            return "\"" + value + "\"";//$NON-NLS-1$ //$NON-NLS-2$ 
+            return "\"" + value + "\"";//$NON-NLS-1$ //$NON-NLS-2$
         }
         if (GenericTypeUtils.isEnumType(property)) {
             if (ContextParameterUtils.isContainContextParam(value) || value.indexOf("globalMap.get") > -1) {
@@ -1279,12 +1279,12 @@ public class Component extends AbstractBasicComponent {
     @Override
     public void initNodePropertiesFromSerialized(INode node, String serialized) {
         if (node != null) {
-            node.setComponentProperties(Properties.Helper.fromSerializedPersistent(serialized, ComponentProperties.class,
-                    new PostDeserializeSetup() {
+            node.setComponentProperties(
+                    Properties.Helper.fromSerializedPersistent(serialized, ComponentProperties.class, new PostDeserializeSetup() {
 
                         @Override
                         public void setup(Object properties) {
-                            ((Properties)properties).setValueEvaluator(new ComponentContextPropertyValueEvaluator(node));
+                            ((Properties) properties).setValueEvaluator(new ComponentContextPropertyValueEvaluator(node));
                         }
 
                     }).object);

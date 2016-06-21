@@ -1,0 +1,34 @@
+<%@ jet
+imports="
+        org.talend.designer.core.generic.model.Component
+        java.util.ArrayList
+        java.util.HashMap
+        java.util.HashSet
+        java.util.List
+        java.util.Map
+        java.util.Set
+        java.util.Stack
+        org.talend.components.api.component.ComponentDefinition
+        org.talend.components.api.component.EndpointComponentDefinition
+        org.talend.components.api.component.InputComponentDefinition
+        org.talend.components.api.component.OutputComponentDefinition
+        org.talend.components.api.container.RuntimeContainer
+        org.talend.components.api.properties.ComponentProperties
+        org.talend.core.model.metadata.IMetadataColumn
+        org.talend.core.model.metadata.IMetadataTable
+        org.talend.core.model.metadata.types.JavaType
+        org.talend.core.model.metadata.types.JavaTypesManager
+        org.talend.core.model.process.EConnectionType
+        org.talend.core.model.process.ElementParameterParser
+        org.talend.core.model.process.EParameterFieldType
+        org.talend.core.model.process.IConnection
+        org.talend.core.model.process.IConnectionCategory
+        org.talend.core.model.process.IElementParameter
+        org.talend.core.model.process.INode
+        org.talend.core.model.utils.TalendTextUtils
+        org.talend.daikon.NamedThing
+        org.talend.daikon.properties.property.Property
+        org.talend.designer.codegen.config.CodeGeneratorArgument
+        "
+%>
+//release the resource
