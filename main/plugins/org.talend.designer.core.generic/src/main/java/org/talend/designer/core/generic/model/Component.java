@@ -1085,6 +1085,7 @@ public class Component extends AbstractBasicComponent {
         theCodePartList.add(ECodePart.BEGIN);
         theCodePartList.add(ECodePart.MAIN);
         theCodePartList.add(ECodePart.END);
+        theCodePartList.add(ECodePart.FINALLY);
         return theCodePartList;
     }
 
@@ -1226,7 +1227,7 @@ public class Component extends AbstractBasicComponent {
             return ElementParameterParser.getEncryptedValue(value);
         }
         if (Boolean.valueOf(String.valueOf(property.getTaggedValue(IGenericConstants.ADD_QUOTES)))) {
-            return "\"" + value + "\"";//$NON-NLS-1$ //$NON-NLS-2$ 
+            return "\"" + value + "\"";//$NON-NLS-1$ //$NON-NLS-2$
         }
         if (GenericTypeUtils.isEnumType(property)) {
             if (ContextParameterUtils.isContainContextParam(value) || value.indexOf("globalMap.get") > -1) {
@@ -1291,8 +1292,8 @@ public class Component extends AbstractBasicComponent {
     @Override
     public void initNodePropertiesFromSerialized(INode node, String serialized) {
         if (node != null) {
-            node.setComponentProperties(Properties.Helper.fromSerializedPersistent(serialized, ComponentProperties.class,
-                    new PostDeserializeSetup() {
+            node.setComponentProperties(
+                    Properties.Helper.fromSerializedPersistent(serialized, ComponentProperties.class, new PostDeserializeSetup() {
 
                         @Override
                         public void setup(Object properties) {
