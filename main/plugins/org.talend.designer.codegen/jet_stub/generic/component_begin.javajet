@@ -209,9 +209,13 @@ if (def instanceof InputComponentDefinition) {
     	irToRow.generateInitialVariables("schema_" + cid, false);
     }
     %>
-
+	
     // Iterate through the incoming data.
-    for (boolean available = reader_<%=cid%>.start(); available; available = reader_<%=cid%>.advance()) {
+    boolean available_<%=cid%> = reader_<%=cid%>.start();
+    
+    resourceMap.put("reader_<%=cid%>", reader_<%=cid%>);
+    
+    for (; available_<%=cid%>; available_<%=cid%> = reader_<%=cid%>.advance()) {
     	nb_line_<%=cid %>++;
     	
     	<%if(hasDataOutput) {%>
@@ -295,6 +299,9 @@ if (def instanceof InputComponentDefinition) {
     writeOperation_<%=cid%>.initialize(container_<%=cid%>);
     org.talend.components.api.component.runtime.Writer writer_<%=cid%> = writeOperation_<%=cid%>.createWriter(container_<%=cid%>);
     writer_<%=cid%>.open("<%=cid%>");
+    
+    resourceMap.put("writer_<%=cid%>", writer_<%=cid%>);
+    
     org.talend.components.api.component.Connector c_<%=cid%> = null;
     for (org.talend.components.api.component.Connector currentConnector : props_<%=cid %>.getAvailableConnectors(null, false)) {
         if (currentConnector.getName().equals("MAIN")) {

@@ -31,7 +31,11 @@ if ((metadatas != null) && (metadatas.size() > 0)) {
 if (metadata == null) {
     return stringBuffer.toString();
 }
+%>
 
+resourceMap.put("finish_<%=cid%>", Boolean.TRUE);
+
+<%
 if(def instanceof org.talend.components.api.component.InputComponentDefinition){
 %>
     } // while
