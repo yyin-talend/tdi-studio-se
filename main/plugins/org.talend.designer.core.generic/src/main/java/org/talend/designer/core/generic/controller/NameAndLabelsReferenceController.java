@@ -114,6 +114,7 @@ public class NameAndLabelsReferenceController extends AbstractElementPropertySec
         btnEdit.setData(NAME, MODULE);
         btnEdit.setData(PARAM_OBJ, param);
         btnEdit.setData(PARAMETER_NAME, param.getName());
+        btnEdit.setEnabled(!param.isRepositoryValueUsed());
         // btnEdit.setEnabled(!param.isReadOnly());
         btnEdit.addSelectionListener(new SelectionAdapter() {
 
