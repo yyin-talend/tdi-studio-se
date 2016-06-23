@@ -180,7 +180,7 @@ public class Component extends AbstractBasicComponent {
         }
         NodeReturn nodeRet = new NodeReturn();
         nodeRet.setType(JavaTypesManager.STRING.getLabel());
-        nodeRet.setDisplayName(ComponentReturnVariableUtils.getTranslationForVariable(ERROR_MESSAGE,
+        nodeRet.setDisplayName(ComponentReturnVariableUtils.getTranslationForVariable(ComponentDefinition.RETURN_ERROR_MESSAGE,
                 ComponentDefinition.RETURN_ERROR_MESSAGE));
         nodeRet.setName(ComponentReturnVariableUtils.getStudioNameFromVariable(ComponentDefinition.RETURN_ERROR_MESSAGE));
         nodeRet.setAvailability("AFTER"); //$NON-NLS-1$
@@ -189,7 +189,8 @@ public class Component extends AbstractBasicComponent {
         for (Property<?> child : componentDefinition.getReturnProperties()) {
             nodeRet = new NodeReturn();
             nodeRet.setType(ComponentsUtils.getTalendTypeFromProperty(child).getId());
-            nodeRet.setDisplayName(ComponentReturnVariableUtils.getTranslationForVariable(child.getName(), child.getDisplayName()));
+            nodeRet.setDisplayName(
+                    ComponentReturnVariableUtils.getTranslationForVariable(child.getName(), child.getDisplayName()));
             nodeRet.setName(ComponentReturnVariableUtils.getStudioNameFromVariable(child.getName()));
             if (nodeRet.getName().equals(ERROR_MESSAGE)) {
                 continue;
