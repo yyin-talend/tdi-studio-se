@@ -38,6 +38,7 @@ import org.talend.core.model.process.EConnectionType;
 import org.talend.core.model.process.EParameterFieldType;
 import org.talend.core.model.process.IConnection;
 import org.talend.core.model.process.IElement;
+import org.talend.core.model.process.INode;
 import org.talend.core.model.process.INodeConnector;
 import org.talend.core.model.process.IProcess;
 import org.talend.daikon.NamedThing;
@@ -427,15 +428,14 @@ public class GenericElementParameter extends ElementParameter {
     }
 
     private Properties getSubProperties() {
-        return ComponentsUtils.getCurrentProperties(rootProperties, getName());
+        return ComponentsUtils.getCurrentProperties(getRootProperties(), getName());
     }
 
     public ComponentProperties getRootProperties() {
+        if (this.getElement() instanceof INode) {
+            return ((INode)this.getElement()).getComponentProperties();
+        }
         return this.rootProperties;
-    }
-
-    public void setRootProperties(ComponentProperties rootProperties) {
-        this.rootProperties = rootProperties;
     }
 
     public boolean isSupportContext() {

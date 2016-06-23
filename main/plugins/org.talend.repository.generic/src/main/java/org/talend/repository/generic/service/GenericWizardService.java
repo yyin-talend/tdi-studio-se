@@ -164,6 +164,7 @@ public class GenericWizardService implements IGenericWizardService {
                     if (parameter instanceof GenericElementParameter) {
                         GenericElementParameter genericElementParameter = (GenericElementParameter) parameter;
                         genericElementParameter.callBeforePresent();
+                        genericElementParameter.removePropertyChangeListener(dynamicComposite);
                         genericElementParameter.addPropertyChangeListener(dynamicComposite);
                     }
                 }
