@@ -242,22 +242,32 @@ public class JavaProcessUtil {
         }
         List<ModuleNeeded> modulesNeeded = new ArrayList<ModuleNeeded>();
         addNodeRelatedModules(node.getProcess(), modulesNeeded, node, forMR);
+        // for children job
+        modulesNeeded.addAll(getChildrenModules(node, searchItems, withChildrens, forMR));
 
-        if (withChildrens) {
-            if (node.getComponent().getName().equals("tRunJob")) { //$NON-NLS-1$
-                IElementParameter processIdparam = node.getElementParameter("PROCESS_TYPE_PROCESS"); //$NON-NLS-1$
-                IElementParameter processVersionParam = node.getElementParameter(EParameterName.PROCESS_TYPE_VERSION.getName());
+        return new HashSet<ModuleNeeded>(modulesNeeded);
+    }
 
-                ProcessItem processItem = null;
-                if (processVersionParam != null) {
-                    processItem = ItemCacheManager.getProcessItem((String) processIdparam.getValue(),
-                            (String) processVersionParam.getValue());
-                } else {
-                    processItem = ItemCacheManager.getProcessItem((String) processIdparam.getValue());
-                }
+    static List<ModuleNeeded> getChildrenModules(final INode node, Set<ProcessItem> searchItems, boolean withChildrens,
+            boolean forMR) {
+        List<ModuleNeeded> modulesNeeded = new ArrayList<ModuleNeeded>();
+        if (node.getComponent().getName().equals("tRunJob")) { //$NON-NLS-1$
+            IElementParameter processIdparam = node.getElementParameter("PROCESS_TYPE_PROCESS"); //$NON-NLS-1$
+            IElementParameter processVersionParam = node.getElementParameter(EParameterName.PROCESS_TYPE_VERSION.getName());
 
-                String context = (String) node.getElementParameter("PROCESS_TYPE_CONTEXT").getValue(); //$NON-NLS-1$
-                if (processItem != null && !searchItems.contains(processItem)) {
+            ProcessItem processItem = null;
+            if (processVersionParam != null) {
+                processItem = ItemCacheManager.getProcessItem((String) processIdparam.getValue(),
+                        (String) processVersionParam.getValue());
+            } else {
+                processItem = ItemCacheManager.getProcessItem((String) processIdparam.getValue());
+            }
+
+            String context = (String) node.getElementParameter("PROCESS_TYPE_CONTEXT").getValue(); //$NON-NLS-1$
+            if (processItem != null && !searchItems.contains(processItem)) {
+                boolean independent = getBooleanParamValue(node, "USE_INDEPENDENT_PROCESS")
+                        || getBooleanParamValue(node, "USE_DYNAMIC_JOB");
+                if (withChildrens || !independent) {
                     // avoid dead loop of method call
                     searchItems.add(processItem);
                     JobInfo subJobInfo = new JobInfo(processItem, context);
@@ -270,7 +280,15 @@ public class JavaProcessUtil {
                 }
             }
         }
-        return new HashSet<ModuleNeeded>(modulesNeeded);
+        return modulesNeeded;
+    }
+
+    private static boolean getBooleanParamValue(final INode node, String paramName) {
+        IElementParameter parameter = node.getElementParameter("USE_INDEPENDENT_PROCESS");
+        if (parameter != null && parameter.getValue() != null) {
+            return Boolean.parseBoolean(parameter.getValue().toString());
+        }
+        return false;
     }
 
     private static void addJunitNeededModules(List<ModuleNeeded> modulesNeeded) {
