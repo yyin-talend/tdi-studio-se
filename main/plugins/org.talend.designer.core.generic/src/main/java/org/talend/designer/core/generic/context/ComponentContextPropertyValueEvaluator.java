@@ -42,16 +42,6 @@ public class ComponentContextPropertyValueEvaluator implements PropertyValueEval
         if (storedValue == null) {
             return storedValue;
         }
-        List<?> possibleValues = property.getPossibleValues();
-        if (possibleValues != null) {
-            if (storedValue instanceof String && !ContextParameterUtils.isContainContextParam((String) storedValue)) {
-                for (Object possibleValue : possibleValues) {
-                    if (possibleValue.toString().equals(storedValue)) {
-                        return possibleValue;
-                    }
-                }
-            }
-        }
         if (storedValue instanceof Schema || storedValue instanceof List || storedValue instanceof Enum
                 || storedValue instanceof Boolean) {
             return storedValue;
@@ -70,6 +60,22 @@ public class ComponentContextPropertyValueEvaluator implements PropertyValueEval
         if (context != null && ContextParameterUtils.isContainContextParam(stringStoredValue)) {
             stringStoredValue = ContextParameterUtils.parseScriptContextCode(stringStoredValue, context);
         }
+        List<?> possibleValues = property.getPossibleValues();
+        if (possibleValues != null) {
+            Object firstValue = null;
+            if (!possibleValues.isEmpty()) {
+                firstValue = possibleValues.get(0);
+            }
+            for (Object possibleValue : possibleValues) {
+                if (possibleValue.toString().equals(stringStoredValue)) {
+                    return possibleValue;
+                }
+            }
+            if (firstValue != null) {
+                return firstValue;
+            }
+        }
+
         return getTypedValue(property, stringStoredValue);
     }
 
