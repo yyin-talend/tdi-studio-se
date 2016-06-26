@@ -243,7 +243,9 @@ public class JavaProcessUtil {
         List<ModuleNeeded> modulesNeeded = new ArrayList<ModuleNeeded>();
         addNodeRelatedModules(node.getProcess(), modulesNeeded, node, forMR);
         // for children job
-        modulesNeeded.addAll(getChildrenModules(node, searchItems, withChildrens, forMR));
+        if (withChildrens) {
+            modulesNeeded.addAll(getChildrenModules(node, searchItems, withChildrens, forMR));
+        }
 
         return new HashSet<ModuleNeeded>(modulesNeeded);
     }
