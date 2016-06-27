@@ -60,22 +60,6 @@ public class ComponentContextPropertyValueEvaluator implements PropertyValueEval
         if (context != null && ContextParameterUtils.isContainContextParam(stringStoredValue)) {
             stringStoredValue = ContextParameterUtils.parseScriptContextCode(stringStoredValue, context);
         }
-        List<?> possibleValues = property.getPossibleValues();
-        if (possibleValues != null) {
-            Object firstValue = null;
-            if (!possibleValues.isEmpty()) {
-                firstValue = possibleValues.get(0);
-            }
-            for (Object possibleValue : possibleValues) {
-                if (possibleValue.toString().equals(stringStoredValue)) {
-                    return possibleValue;
-                }
-            }
-            if (firstValue != null) {
-                return firstValue;
-            }
-        }
-
         return getTypedValue(property, stringStoredValue);
     }
 
@@ -93,12 +77,20 @@ public class ComponentContextPropertyValueEvaluator implements PropertyValueEval
             }
         }
         if (GenericTypeUtils.isEnumType(property)) {
-            List<?> propertyPossibleValues = ((Property<?>) property).getPossibleValues();
-            if (propertyPossibleValues != null) {
-                for (Object possibleValue : propertyPossibleValues) {
-                    if (possibleValue.toString().equals(rawValue)) {
+            List<?> possibleValues = property.getPossibleValues();
+            if (possibleValues != null) {
+                Object firstValue = null;
+                if (!possibleValues.isEmpty()) {
+                    firstValue = possibleValues.get(0);
+                }
+                String stringStoredValue = TalendQuoteUtils.removeQuotes(String.valueOf(rawValue));
+                for (Object possibleValue : possibleValues) {
+                    if (possibleValue.toString().equals(stringStoredValue)) {
                         return possibleValue;
                     }
+                }
+                if (firstValue != null) {
+                    return firstValue;
                 }
             }
         }

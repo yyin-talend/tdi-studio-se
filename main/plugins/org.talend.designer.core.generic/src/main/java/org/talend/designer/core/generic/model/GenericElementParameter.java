@@ -151,7 +151,7 @@ public class GenericElementParameter extends ElementParameter {
             }
         } else if (widgetProperty instanceof Property) {
             Property se = (Property<?>) widgetProperty;
-            Object oldValue = se.getValue();
+            Object oldValue = se.getStoredValue();
             Object value = newValue;
             List<?> propertyPossibleValues = ((Property<?>) widgetProperty).getPossibleValues();
             if (propertyPossibleValues != null) {
