@@ -280,10 +280,17 @@ if(columnList != null && columnList.size() > 0) {
                    flagHasLob=true;
                    columns += " CHAR(" + length + ")  ENCLOSED BY '<startlob>' AND '<endlob>' ";
             } else if(advancedSeparator && JavaTypesManager.isNumberType(javaType)) {//add for issue
-                if(noThousandsSeparator){
+                if(noThousandsSeparator || column.getPrecision()==null){
                     columns += (" \\\"TO_NUMBER(ltrim(rtrim(:" + column.getOriginalDbColumnName() + ")), '999999999999D999999999999', 'NLS_NUMERIC_CHARACTERS=''" + decimalSeparator + thousandsSeparator + "''')\\\"");
                 }else{
-                    columns += (" \\\"TO_NUMBER(ltrim(rtrim(:" + column.getOriginalDbColumnName() + ")), '999G999G999G999D999999999999', 'NLS_NUMERIC_CHARACTERS=''" + decimalSeparator + thousandsSeparator + "''')\\\"");
+                	String format = "999G999G999G999D";
+					
+					for(int i=0;i<column.getPrecision();i++){
+					
+					 format = format+"9";
+					 
+					}
+                    columns += (" \\\"TO_NUMBER(ltrim(rtrim(:" + column.getOriginalDbColumnName() + ")), "+format+", 'NLS_NUMERIC_CHARACTERS=''" + decimalSeparator + thousandsSeparator + "''')\\\"");
                 }
             }
         }
