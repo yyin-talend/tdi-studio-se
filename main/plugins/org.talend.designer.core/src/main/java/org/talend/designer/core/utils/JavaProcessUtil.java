@@ -265,18 +265,16 @@ public class JavaProcessUtil {
 
             String context = (String) node.getElementParameter("PROCESS_TYPE_CONTEXT").getValue(); //$NON-NLS-1$
             if (processItem != null && !searchItems.contains(processItem)) {
-                boolean independent = getBooleanParamValue(node, "USE_INDEPENDENT_PROCESS")
-                        || getBooleanParamValue(node, "USE_DYNAMIC_JOB");
+                boolean independent = getBooleanParamValue(node, "USE_INDEPENDENT_PROCESS") //$NON-NLS-1$
+                        || getBooleanParamValue(node, "USE_DYNAMIC_JOB"); //$NON-NLS-1$
                 if (withChildrens || !independent) {
                     // avoid dead loop of method call
                     searchItems.add(processItem);
                     JobInfo subJobInfo = new JobInfo(processItem, context);
-                    // achen modify to fix 0006107
                     IDesignerCoreService service = CorePlugin.getDefault().getDesignerCoreService();
                     IProcess child = service.getProcessFromItem(subJobInfo.getProcessItem());
-                    // Process child = new Process(subJobInfo.getProcessItem().getProperty());
-                    // child.loadXmlFile();
-                    JavaProcessUtil.getNeededModules(child, true, searchItems, modulesNeeded, forMR);
+
+                    getNeededModules(child, withChildrens, searchItems, modulesNeeded, forMR);
                 }
             }
         }
@@ -284,7 +282,7 @@ public class JavaProcessUtil {
     }
 
     private static boolean getBooleanParamValue(final INode node, String paramName) {
-        IElementParameter parameter = node.getElementParameter("USE_INDEPENDENT_PROCESS");
+        IElementParameter parameter = node.getElementParameter(paramName);
         if (parameter != null && parameter.getValue() != null) {
             return Boolean.parseBoolean(parameter.getValue().toString());
         }
