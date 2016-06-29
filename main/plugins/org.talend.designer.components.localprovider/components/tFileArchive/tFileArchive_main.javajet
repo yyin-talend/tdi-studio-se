@@ -120,9 +120,10 @@
    %>
   
   
-   zip_<%=cid%>.doZip();
-   	  
    globalMap.put("<%=cid %>_ARCHIVE_FILEPATH",zipFile_<%=cid %>);
-   globalMap.put("<%=cid %>_ARCHIVE_FILENAME",(<%=zipFile %>).contains("\\")?
-    (<%=zipFile %>).substring(((<%=zipFile %>).lastIndexOf("\\")+2)): (<%=zipFile %>).substring(((<%=zipFile %>).lastIndexOf("/"))+1));
+   
+   globalMap.put("<%=cid %>_ARCHIVE_FILENAME", zipFile_<%=cid%>.contains("\\") ?
+    zipFile_<%=cid%>.substring((zipFile_<%=cid%>.lastIndexOf("\\")+2)) : zipFile_<%=cid%>.substring((zipFile_<%=cid%>.lastIndexOf("/"))+1));
+
+   zip_<%=cid%>.doZip();
 
