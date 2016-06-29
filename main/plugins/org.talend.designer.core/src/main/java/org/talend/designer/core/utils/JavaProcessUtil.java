@@ -244,14 +244,13 @@ public class JavaProcessUtil {
         addNodeRelatedModules(node.getProcess(), modulesNeeded, node, forMR);
         // for children job
         if (withChildrens) {
-            modulesNeeded.addAll(getChildrenModules(node, searchItems, withChildrens, forMR));
+            modulesNeeded.addAll(getChildrenModules(node, searchItems, forMR));
         }
 
         return new HashSet<ModuleNeeded>(modulesNeeded);
     }
 
-    static List<ModuleNeeded> getChildrenModules(final INode node, Set<ProcessItem> searchItems, boolean withChildrens,
-            boolean forMR) {
+    static List<ModuleNeeded> getChildrenModules(final INode node, Set<ProcessItem> searchItems, boolean forMR) {
         List<ModuleNeeded> modulesNeeded = new ArrayList<ModuleNeeded>();
         if (node.getComponent().getName().equals("tRunJob")) { //$NON-NLS-1$
             IElementParameter processIdparam = node.getElementParameter("PROCESS_TYPE_PROCESS"); //$NON-NLS-1$
@@ -267,16 +266,16 @@ public class JavaProcessUtil {
 
             String context = (String) node.getElementParameter("PROCESS_TYPE_CONTEXT").getValue(); //$NON-NLS-1$
             if (processItem != null && !searchItems.contains(processItem)) {
-                boolean independent = getBooleanParamValue(node, "USE_INDEPENDENT_PROCESS") //$NON-NLS-1$
+                boolean seperated = getBooleanParamValue(node, "USE_INDEPENDENT_PROCESS") //$NON-NLS-1$
                         || getBooleanParamValue(node, "USE_DYNAMIC_JOB"); //$NON-NLS-1$
-                if (withChildrens || !independent) {
+                if (!seperated) {
                     // avoid dead loop of method call
                     searchItems.add(processItem);
                     JobInfo subJobInfo = new JobInfo(processItem, context);
                     IDesignerCoreService service = CorePlugin.getDefault().getDesignerCoreService();
                     IProcess child = service.getProcessFromItem(subJobInfo.getProcessItem());
 
-                    getNeededModules(child, withChildrens, searchItems, modulesNeeded, forMR);
+                    getNeededModules(child, true, searchItems, modulesNeeded, forMR);
                 }
             }
         }
