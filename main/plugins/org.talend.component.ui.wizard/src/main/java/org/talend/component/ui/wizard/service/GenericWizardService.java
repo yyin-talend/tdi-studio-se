@@ -52,6 +52,8 @@ import org.talend.repository.model.RepositoryNode;
 public class GenericWizardService implements IGenericWizardService {
 
     private IGenericWizardInternalService internalService = null;
+    
+    List<String> typeNames = new ArrayList<>();
 
     public GenericWizardService() {
         internalService = new GenericWizardInternalService();
@@ -77,10 +79,12 @@ public class GenericWizardService implements IGenericWizardService {
 
     @Override
     public List<String> getGenericTypeNames() {
-        List<String> typeNames = new ArrayList<>();
-        Set<ComponentWizardDefinition> wizardDefinitions = internalService.getComponentService().getTopLevelComponentWizards();
-        for (ComponentWizardDefinition wizardDefinition : wizardDefinitions) {
-            typeNames.add(wizardDefinition.getName());
+        if (typeNames.isEmpty()) {
+            Set<ComponentWizardDefinition> wizardDefinitions = internalService.getComponentService()
+                    .getTopLevelComponentWizards();
+            for (ComponentWizardDefinition wizardDefinition : wizardDefinitions) {
+                typeNames.add(wizardDefinition.getName());
+            }
         }
         return typeNames;
     }

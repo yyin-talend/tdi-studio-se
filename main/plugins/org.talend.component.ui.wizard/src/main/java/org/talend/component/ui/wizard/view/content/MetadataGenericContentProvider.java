@@ -12,10 +12,8 @@
 // ============================================================================
 package org.talend.component.ui.wizard.view.content;
 
-import java.util.Collection;
 import java.util.Set;
 
-import org.eclipse.core.resources.IResourceDelta;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.ui.navigator.CommonNavigator;
@@ -26,43 +24,28 @@ import org.talend.repository.navigator.RepoViewCommonNavigator;
 import org.talend.repository.navigator.RepoViewCommonViewer;
 import org.talend.repository.tester.MetadataNodeTester;
 import org.talend.repository.viewer.content.ProjectRepoDirectChildrenNodeContentProvider;
-import org.talend.repository.viewer.content.VisitResourceHelper;
-import org.talend.repository.viewer.content.listener.RunnableResourceVisitor;
-import org.talend.repository.viewer.content.listener.TopLevelNodeRunnable;
+import org.talend.repository.viewer.content.listener.ResourceCollectorVisitor;
 
 public class MetadataGenericContentProvider extends ProjectRepoDirectChildrenNodeContentProvider {
 
     MetadataNodeTester metadataNodeTester = new MetadataNodeTester();
 
-    private final class GenericNodeDirectChildrenNodeVisitor extends RunnableResourceVisitor {
+    private final class GenericNodeDirectChildrenNodeVisitor extends ResourceCollectorVisitor {
 
+        /* (non-Javadoc)
+         * @see org.talend.repository.viewer.content.listener.ResourceCollectorVisitor#getTopNodes()
+         */
         @Override
-        protected boolean visit(IResourceDelta delta, Collection<Runnable> runnables) {
-            VisitResourceHelper visitHelper = new VisitResourceHelper(delta);
-            if (visitHelper.isIgnoredResource(delta)) {
-                return false;
-            }
-            boolean merged = ProjectRepositoryNode.getInstance().getMergeRefProject();
+        protected Set<RepositoryNode> getTopNodes() {
+            return getTopLevelNodes();
+        }
 
-            Set<RepositoryNode> topLevelNodes = getTopLevelNodes();
-
-            boolean visitChildren = true;
-            for (final RepositoryNode repoNode : topLevelNodes) {
-                IPath topLevelNodeWorkspaceRelativePath = getWorkspaceTopNodePath(repoNode);
-                if (topLevelNodeWorkspaceRelativePath != null && visitHelper.valid(topLevelNodeWorkspaceRelativePath, merged)) {
-                    visitChildren = false; // if valid, don't visit the children any more.
-                    if (viewer instanceof RepoViewCommonViewer) {
-                        runnables.add(new TopLevelNodeRunnable(repoNode) {
-
-                            @Override
-                            public void run() {
-                                refreshTopLevelNode(repoNode);
-                            }
-                        });
-                    }
-                }
-            }
-            return visitChildren;
+        /* (non-Javadoc)
+         * @see org.talend.repository.viewer.content.listener.ResourceCollectorVisitor#getTopLevelNodePath(org.talend.repository.model.RepositoryNode)
+         */
+        @Override
+        protected IPath getTopLevelNodePath(RepositoryNode repoNode) {
+            return getWorkspaceTopNodePath(repoNode);
         }
     }
 
