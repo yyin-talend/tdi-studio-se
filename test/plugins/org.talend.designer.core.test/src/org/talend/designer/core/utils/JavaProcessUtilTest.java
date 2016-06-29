@@ -75,7 +75,7 @@ public class JavaProcessUtilTest {
         when(node.getComponent()).thenReturn(component);
         when(component.getName()).thenReturn("tLogRow");
 
-        List<ModuleNeeded> childrenModules = JavaProcessUtil.getChildrenModules(node, Collections.emptySet(), false, false);
+        List<ModuleNeeded> childrenModules = JavaProcessUtil.getChildrenModules(node, Collections.emptySet(), false);
         assertTrue(childrenModules.isEmpty());
     }
 
