@@ -992,16 +992,16 @@ public class LoginProjectPage extends AbstractLoginActionPage {
     }
 
     public void finishPressed() {
-        // This is for check if the reference project need to update
-        try {
-            saveUpdateStatus(getProject());
-        } catch (JSONException e) {
-            // TODO Auto-generated catch block
-            ExceptionHandler.process(e);
-        }
         if (LoginHelper.isRestart) {
             loginDialog.okPressed();
         } else {
+            // This is for check if the reference project need to update
+            try {
+                saveUpdateStatus(getProject());
+            } catch (Exception e) {
+                // show exception
+                MessageBoxExceptionHandler.process(e, loginHelper.getUsableShell());
+            }
             boolean isLogInOk = loginHelper.logIn(getConnection(), getProject());
             if (isLogInOk) {
                 LoginHelper.setAlwaysAskAtStartup(alwaysAsk.getSelection());
@@ -1024,8 +1024,9 @@ public class LoginProjectPage extends AbstractLoginActionPage {
         RepositoryContext repositoryContext = (RepositoryContext) ctx.getProperty(Context.REPOSITORY_CONTEXT_KEY);
         PreferenceManipulator prefManipulator = new PreferenceManipulator();
         String url = project.getEmfProject().getUrl();
-        if (url == null || !"git".equals(getStorage(url)))
+        if (url == null || !"git".equals(getStorage(url))) {
             return;
+        }
         String location = getLocation(url);
         String projectName = project.getTechnicalLabel();
         String branch = getBranch();
