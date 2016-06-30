@@ -55,13 +55,21 @@ public class TabFolderEditors extends CTabFolder {
     private StyledTextHandler styledTextHandler;
 
     private StyledText styledSqlText;
+    
+    private String dbmsId;
 
-    public TabFolderEditors(Composite parent, int style, MapperManager mapperManager) {
+    public TabFolderEditors(Composite parent, int style, MapperManager mapperManager, String dbmsId) {
         super(parent, style);
         tabFolderEditors = this;
         this.mapperManager = mapperManager;
+        this.dbmsId = dbmsId;
         createComponents();
     }
+    
+    public TabFolderEditors(Composite parent, int style, MapperManager mapperManager) {
+        this(parent, style, mapperManager, null);
+    }
+
 
     /**
      * DOC amaumont Comment method "createComponents".
@@ -128,6 +136,7 @@ public class TabFolderEditors extends CTabFolder {
         CommandStack commandStack = mapperManager.getCommandStack();
 
         inputMetaEditor = new MetadataTableEditorView(inOutMetaEditorContainer, SWT.BORDER);
+        inputMetaEditor.setCurrentDbms(dbmsId);
         inputMetaEditor.setShowDbTypeColumn(true, false, true);
         inputMetaEditor.setShowDbColumnName(true, false);
         inputMetaEditor.setShowPatternColumn(false);
@@ -136,6 +145,7 @@ public class TabFolderEditors extends CTabFolder {
         inputMetaEditor.getExtendedTableViewer().setCommandStack(commandStack);
 
         outputMetaEditor = new MetadataTableEditorView(inOutMetaEditorContainer, SWT.BORDER);
+        outputMetaEditor.setCurrentDbms(dbmsId);
         outputMetaEditor.setShowDbTypeColumn(true, false, true);
         outputMetaEditor.setShowDbColumnName(true, false);
         outputMetaEditor.setShowTalendTypeColumn(false);
