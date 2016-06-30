@@ -333,7 +333,7 @@ public class GenericElementParameter extends ElementParameter {
         }
     }
 
-    private String getParameterName() {
+    public String getParameterName() {
         String paramName = getName();
         if (paramName.indexOf(IGenericConstants.EXP_SEPARATOR) != -1) {
             paramName = paramName.substring(paramName.lastIndexOf(IGenericConstants.EXP_SEPARATOR) + 1);
