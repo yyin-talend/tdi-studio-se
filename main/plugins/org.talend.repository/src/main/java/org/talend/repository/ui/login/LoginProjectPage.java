@@ -1023,6 +1023,10 @@ public class LoginProjectPage extends AbstractLoginActionPage {
         Context ctx = CoreRuntimePlugin.getInstance().getContext();
         RepositoryContext repositoryContext = (RepositoryContext) ctx.getProperty(Context.REPOSITORY_CONTEXT_KEY);
         PreferenceManipulator prefManipulator = new PreferenceManipulator();
+        if (!LoginHelper.isRemoteConnection(getConnection())) {
+            repositoryContext.setNoUpdateWhenLogon(true);
+            return;
+        }
         String url = project.getEmfProject().getUrl();
         if (url == null || !"git".equals(getStorage(url))) {
             return;
