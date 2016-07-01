@@ -1,5 +1,7 @@
 package org.talend.designer.webservice.ws.wsdlutil;
 
+import java.io.File;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -20,6 +22,7 @@ import javax.wsdl.Output;
 import javax.wsdl.Part;
 import javax.wsdl.Port;
 import javax.wsdl.Service;
+import javax.wsdl.WSDLException;
 import javax.wsdl.extensions.ExtensibilityElement;
 import javax.wsdl.extensions.UnknownExtensibilityElement;
 import javax.wsdl.extensions.soap.SOAPAddress;
@@ -48,7 +51,6 @@ import org.apache.ws.commons.schema.XmlSchemaObjectTable;
 import org.apache.ws.commons.schema.XmlSchemaParticle;
 import org.apache.ws.commons.schema.XmlSchemaSimpleType;
 import org.apache.ws.commons.schema.XmlSchemaType;
-import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.designer.webservice.ws.wsdlinfo.OperationInfo;
 import org.talend.designer.webservice.ws.wsdlinfo.ParameterInfo;
 import org.talend.designer.webservice.ws.wsdlinfo.PortNames;
@@ -79,20 +81,13 @@ public class ComponentBuilder {
 
     private XmlSchemaCollection schemaCollection;
 
-    public String exceptionMessage = "";
-
     public final static String DEFAULT_SOAP_ENCODING_STYLE = "http://schemas.xmlsoap.org/soap/encoding/";
 
     // SimpleTypesFactory simpleTypesFactory = null;
 
-    public ComponentBuilder() {
-        try {
-            wsdlFactory = WSDLFactory.newInstance();
-            // simpleTypesFactory = new SimpleTypesFactory();
-        } catch (Exception e) {
-            exceptionMessage = exceptionMessage + e.getMessage();
-            ExceptionHandler.process(e);
-        }
+    public ComponentBuilder() throws WSDLException {
+        wsdlFactory = WSDLFactory.newInstance();
+        // simpleTypesFactory = new SimpleTypesFactory();
     }
 
     /**
@@ -134,7 +129,9 @@ public class ComponentBuilder {
         Map services = defs.get(0).getServices();
         if (services != null) {
             Iterator svcIter = services.values().iterator();
-            populateComponent(serviceinfo, (Service) svcIter.next());
+            while (svcIter.hasNext()) {
+                populateComponent(serviceinfo, (Service) svcIter.next());
+            }
         }
         return serviceinfo;
     }
@@ -179,7 +176,7 @@ public class ComponentBuilder {
 
     }
 
-    protected Vector<XmlSchema> createSchemaFromTypes(List<Definition> wsdlDefinitions) {
+    protected Vector<XmlSchema> createSchemaFromTypes(List<Definition> wsdlDefinitions) throws WSDLException {
         Vector<XmlSchema> schemas = new Vector<XmlSchema>();
         Set<String> imports = new HashSet<String>();
         org.w3c.dom.Element schemaElementt = null;
@@ -257,8 +254,9 @@ public class ComponentBuilder {
      * @param wsdlDefinition
      * @param schemas
      * @param includeElement
+     * @throws WSDLException
      */
-    private void findIncludesSchema(Definition wsdlDefinition, Vector schemas, List includeElement) {
+    private void findIncludesSchema(Definition wsdlDefinition, Vector schemas, List includeElement) throws WSDLException {
         org.w3c.dom.Element schemaElementt;
         for (int i = 0; i < includeElement.size(); i++) {
 
@@ -276,7 +274,8 @@ public class ComponentBuilder {
         }
     }
 
-    private void findImportSchema(Definition wsdlDefinition, Vector schemas, Map importElement, Set<String> imports) {
+    private void findImportSchema(Definition wsdlDefinition, Vector schemas, Map importElement, Set<String> imports)
+            throws WSDLException {
         org.w3c.dom.Element schemaElementt;
         List includeElement = null;
         Iterator keyIterator = importElement.keySet().iterator();
@@ -359,20 +358,33 @@ public class ComponentBuilder {
         return elements;
     }
 
-    private XmlSchema createschemafromtype(org.w3c.dom.Element schemaElement, Definition wsdlDefinition, String documentBase) {
+    private XmlSchema createschemafromtype(org.w3c.dom.Element schemaElement, Definition wsdlDefinition, String documentBase)
+            throws WSDLException {
         if (schemaElement == null) {
-            exceptionMessage = exceptionMessage + "Unable to find schema extensibility element in WSDL";
-            return null;
+            throw new WSDLException(WSDLException.INVALID_WSDL, "Unable to find schema extensibility element in WSDL");
         }
+
         XmlSchema xmlSchema = null;
         XmlSchemaCollection xmlSchemaCollection = new XmlSchemaCollection();
-        xmlSchemaCollection.setBaseUri(documentBase);
+        xmlSchemaCollection.setBaseUri(fixDocumentBase(documentBase));
 
         xmlSchema = xmlSchemaCollection.read(schemaElement);
 
         // XmlSchemaObjectTable xmlSchemaObjectTable = xmlSchema.getSchemaTypes();
 
         return xmlSchema;
+    }
+
+    private String fixDocumentBase(String documentBase) {
+        String fixedPath = documentBase;
+        try {
+            URL url = new URL(documentBase);
+            File file = new File(url.getFile());
+            fixedPath = file.toURI().toString();
+        } catch (Exception e) {
+            fixedPath = documentBase;
+        }
+        return fixedPath;
     }
 
     private Boolean isIncludeSchema(String documentBase) {
@@ -1068,7 +1080,4 @@ public class ComponentBuilder {
         }
     }
 
-    public String getExceptionMessage() {
-        return this.exceptionMessage;
-    }
 }

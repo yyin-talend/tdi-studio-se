@@ -5,6 +5,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.List;
 
+import javax.wsdl.WSDLException;
 import javax.xml.namespace.QName;
 
 import org.apache.ws.commons.schema.XmlSchema;
@@ -24,7 +25,7 @@ public class ComponentBuilderTest {
 
     @Test
     public void testBuildParameterFromTypes() throws NoSuchFieldException, SecurityException, IllegalArgumentException,
-            IllegalAccessException, NoSuchMethodException, InvocationTargetException {
+            IllegalAccessException, NoSuchMethodException, InvocationTargetException, WSDLException {
         ParameterInfo parameter = new ParameterInfo();
         String name = "parameter";
         String nameSpace = "http://parameter";
