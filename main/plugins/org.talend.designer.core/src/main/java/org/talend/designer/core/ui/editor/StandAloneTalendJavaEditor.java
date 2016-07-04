@@ -419,7 +419,7 @@ public class StandAloneTalendJavaEditor extends CompilationUnitEditor implements
         if (!isEditable()) {
             return false;
         }
-        return propertyIsDirty || super.isDirty();
+        return super.isDirty();
     }
 
     @Override
@@ -562,14 +562,12 @@ public class StandAloneTalendJavaEditor extends CompilationUnitEditor implements
 
     private FileItem item;
 
-    private boolean propertyIsDirty;
 
     private final AdapterImpl dirtyListener = new AdapterImpl() {
 
         @Override
         public void notifyChanged(Notification notification) {
             if (notification.getEventType() != Notification.REMOVING_ADAPTER) {
-                propertyIsDirty = true;
                 Display.getDefault().syncExec(new Runnable() {
 
                     @Override
@@ -611,7 +609,6 @@ public class StandAloneTalendJavaEditor extends CompilationUnitEditor implements
 
         ICompilationUnit unit = (ICompilationUnit) this.getInputJavaElement();
         String newName = item.getProperty().getLabel();
-        propertyIsDirty = false;
         try {
             boolean noError = true;
             // String newName2 = newName + SuffixConstants.SUFFIX_STRING_java;
