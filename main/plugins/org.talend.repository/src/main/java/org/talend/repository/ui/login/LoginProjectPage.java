@@ -1034,8 +1034,16 @@ public class LoginProjectPage extends AbstractLoginActionPage {
         String location = getLocation(url);
         String projectName = project.getTechnicalLabel();
         String branch = getBranch();
+        if (branch.startsWith("tags/")) {
+            repositoryContext.setNoUpdateWhenLogon(true);
+            return;
+        }
+        if (branch.startsWith("branches/"))
+            branch=branch.substring("branches/".length());
         JSONObject json = prefManipulator.getLogonLocalBranchStatus(location, projectName);
         if (json != null) {
+            if (!json.has(branch))
+                return;
             Object noUpdateWhenLogon = json.get(branch);
             if (noUpdateWhenLogon != null) {
                 repositoryContext.setNoUpdateWhenLogon((Boolean) noUpdateWhenLogon);
