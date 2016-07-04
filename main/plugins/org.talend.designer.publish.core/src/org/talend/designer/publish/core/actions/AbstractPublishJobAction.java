@@ -161,7 +161,7 @@ public abstract class AbstractPublishJobAction implements IRunnableWithProgress 
 
             ProcessItem processItem = (ProcessItem) node.getObject().getProperty().getItem();
 
-            BuildJobManager.getInstance().buildJob(tmpJob.getAbsolutePath(), processItem, processItem.getProperty().getVersion(),
+            BuildJobManager.getInstance().buildJob(tmpJob.getAbsolutePath(), processItem, jobVersion,
                     processItem.getProcess().getDefaultContext(), exportChoiceMap, exportType, monitor);
 
             monitor.beginTask("Deploy to Artifact Repository....", IProgressMonitor.UNKNOWN);
