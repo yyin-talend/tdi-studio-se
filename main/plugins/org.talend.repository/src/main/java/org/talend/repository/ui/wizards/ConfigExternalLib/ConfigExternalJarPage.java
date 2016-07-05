@@ -50,16 +50,18 @@ import org.talend.commons.utils.io.FilesUtils;
 import org.talend.core.CorePlugin;
 import org.talend.core.GlobalServiceRegister;
 import org.talend.core.ILibraryManagerService;
+import org.talend.core.language.ECodeLanguage;
 import org.talend.core.model.general.ModuleNeeded;
 import org.talend.core.model.properties.RoutineItem;
 import org.talend.designer.core.model.utils.emf.component.ComponentFactory;
 import org.talend.designer.core.model.utils.emf.component.IMPORTType;
+import org.talend.librariesmanager.prefs.LibrariesManagerUtils;
 import org.talend.repository.i18n.Messages;
 
 /**
  * Page of the Job Scripts Export Wizard. <br/>
  * 
- * @referto WizardArchiveFileResourceExportPage1 $Id: JobScriptsExportWizardPage.java 1 2006-12-13 下午03:09:07 bqian
+ * @referto WizardArchiveFileResourceExportPage1 $Id: JobScriptsExportWizardPage.java 1 2006-12-13 ä¸‹å�ˆ03:09:07 bqian
  * 
  */
 public class ConfigExternalJarPage extends ConfigExternalLibPage {
@@ -171,12 +173,19 @@ public class ConfigExternalJarPage extends ConfigExternalLibPage {
                 CorePlugin.getDefault().getLibrariesService().resetModulesNeeded();
                 // TDI-18870
                 CorePlugin.getDefault().getRunProcessService().updateLibraries(new HashSet<ModuleNeeded>(), null);
+                for (File file : newJarFiles.values()) {
+                    try {
+                        CorePlugin.getDefault().getLibrariesService().deployProjectLibrary(file);
+                    } catch (Exception e) {
+                        ExceptionHandler.process(e);
+                    }
+                }
             }
         });
 
         return true;
     }
-
+    
     /*
      * (non-Javadoc)
      * 
