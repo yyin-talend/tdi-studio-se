@@ -50,6 +50,7 @@ import org.eclipse.core.runtime.Platform;
 import org.osgi.framework.Bundle;
 import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.commons.utils.io.FilesUtils;
+import org.talend.core.model.general.ModuleNeeded;
 import org.talend.core.model.process.JobInfo;
 import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.model.utils.JavaResourcesHelper;
@@ -79,16 +80,32 @@ public class JobJavaScriptsWSManager extends JobJavaScriptsManager {
 
     public static final String EXPORT_METHOD = "runJob"; //$NON-NLS-1$
 
-    private static List<String> axisLib = new ArrayList<String>();
+    private static List<ModuleNeeded> axisLib = new ArrayList<ModuleNeeded>();
     static {
-        axisLib.add("axis.jar"); //$NON-NLS-1$
-        axisLib.add("jaxrpc.jar"); //$NON-NLS-1$
-        axisLib.add("saaj.jar"); //$NON-NLS-1$
-        axisLib.add("wsdl4j-1.6.2.jar"); //$NON-NLS-1$
-        axisLib.add("commons-discovery-0.2.jar"); //$NON-NLS-1$
-        axisLib.add("commons-logging-1.1.jar"); //$NON-NLS-1$
-        axisLib.add("mail.jar"); //$NON-NLS-1$
-        axisLib.add("activation.jar"); //$NON-NLS-1$
+        ModuleNeeded axis = new ModuleNeeded("Current Operation", "axis.jar", null, true); //$NON-NLS-1$ //$NON-NLS-2$
+        axis.setMavenUri("mvn:org.talend.libraries/axis/6.0.0/jar");//$NON-NLS-1$
+        axisLib.add(axis);
+        ModuleNeeded jaxrpc = new ModuleNeeded("Current Operation", "jaxrpc.jar", null, true); //$NON-NLS-1$ //$NON-NLS-2$
+        jaxrpc.setMavenUri("mvn:org.talend.libraries/jaxrpc/6.0.0/jar");//$NON-NLS-1$
+        axisLib.add(jaxrpc);
+        ModuleNeeded saaj = new ModuleNeeded("Current Operation", "saaj.jar", null, true); //$NON-NLS-1$ //$NON-NLS-2$
+        saaj.setMavenUri("mvn:org.talend.libraries/saaj/6.0.0/jar");//$NON-NLS-1$
+        axisLib.add(saaj);
+        ModuleNeeded wsdl4j = new ModuleNeeded("Current Operation", "wsdl4j-1.6.2.jar", null, true); //$NON-NLS-1$ //$NON-NLS-2$
+        wsdl4j.setMavenUri("mvn:org.talend.libraries/wsdl4j-1.6.2/6.0.0/jar");//$NON-NLS-1$
+        axisLib.add(wsdl4j);
+        ModuleNeeded commons_discovery = new ModuleNeeded("Current Operation", "commons-discovery-0.2.jar", null, true); //$NON-NLS-1$ //$NON-NLS-2$
+        commons_discovery.setMavenUri("mvn:org.talend.libraries/commons-discovery-0.2/6.0.0/jar");//$NON-NLS-1$
+        axisLib.add(commons_discovery);
+        ModuleNeeded commons_logging = new ModuleNeeded("Current Operation", "commons-logging-1.1.jar", null, true); //$NON-NLS-1$ //$NON-NLS-2$
+        commons_logging.setMavenUri("mvn:org.talend.libraries/commons-logging-1.1/6.0.0/jar");//$NON-NLS-1$
+        axisLib.add(commons_logging);
+        ModuleNeeded mail = new ModuleNeeded("Current Operation", "mail.jar", null, true); //$NON-NLS-1$ //$NON-NLS-2$
+        mail.setMavenUri("mvn:org.talend.libraries/mail/6.0.0/jar");//$NON-NLS-1$
+        axisLib.add(mail);
+        ModuleNeeded activation = new ModuleNeeded("Current Operation", "activation.jar", null, true); //$NON-NLS-1$ //$NON-NLS-2$
+        activation.setMavenUri("mvn:org.talend.libraries/activation/6.0.0/jar");//$NON-NLS-1$
+        axisLib.add(activation);
     }
 
     /*
@@ -208,7 +225,7 @@ public class JobJavaScriptsWSManager extends JobJavaScriptsManager {
         libResource.addResources(userRoutineList);
 
         // Gets axis libraries
-        List<String> newAxisLib = new ArrayList<String>(axisLib);
+        List<ModuleNeeded> newAxisLib = new ArrayList<ModuleNeeded>(axisLib);
         for (URL libUrl : talendLibraries) {
             if (libUrl.getFile() != null) {
                 newAxisLib.remove(new File(libUrl.getFile()).getName());
