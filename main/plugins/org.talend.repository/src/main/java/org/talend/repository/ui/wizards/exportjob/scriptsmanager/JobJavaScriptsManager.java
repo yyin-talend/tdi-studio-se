@@ -1826,37 +1826,13 @@ public class JobJavaScriptsManager extends JobScriptsManager {
         return JavaResourcesHelper.getProjectFolderName(item);
     }
 
-    protected List<URL> getLib(List<String> libs, Boolean needLib) {
+    protected List<URL> getLib(List<ModuleNeeded> libs, Boolean needLib) {
         List<URL> list = new ArrayList<URL>();
         if (!needLib) {
             return list;
         }
 
         try {
-            // IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
-            // IProject prj = root.getProject(JavaUtils.JAVA_PROJECT_NAME);
-            // IJavaProject project = JavaCore.create(prj);
-            // IPath libPath = project.getResource().getLocation().append(JavaUtils.JAVA_LIB_DIRECTORY);
-            // File file = libPath.toFile();
-            // File[] files = file.listFiles(new FilenameFilter() {
-            //
-            // public boolean accept(File dir, String name) {
-            //                    return name.toLowerCase().endsWith(".jar") || name.toLowerCase().endsWith(".properties") //$NON-NLS-1$ //$NON-NLS-2$
-            //                            || name.toLowerCase().endsWith(".zip") ? true : false; //$NON-NLS-1$
-            // }
-            // });
-            //
-            // for (int i = 0; i < files.length; i++) {
-            // File tempFile = files[i];
-            // try {
-            // if (libs.contains(tempFile.getName())) {
-            // list.add(tempFile.toURL());
-            // }
-            // } catch (MalformedURLException e) {
-            // ExceptionHandler.process(e);
-            // }
-            // }
-
             org.talend.core.model.general.Project projecdddt = ProjectManager.getInstance().getCurrentProject();
             IProject fsProject = null;
             try {
@@ -1867,7 +1843,7 @@ public class JobJavaScriptsManager extends JobScriptsManager {
             IPath temPath = fsProject.getLocation().append(File.separator + "temp"); //$NON-NLS-1$
             ILibraryManagerService repositoryBundleService = CorePlugin.getDefault().getRepositoryBundleService();
             if (repositoryBundleService != null) {
-                repositoryBundleService.retrieve(libs, temPath.toString());
+                repositoryBundleService.retrieve(new HashSet<ModuleNeeded>(libs), temPath.toString(), true);
             }
             File file = temPath.toFile();
             File[] files = file.listFiles(new FilenameFilter() {
@@ -1880,9 +1856,14 @@ public class JobJavaScriptsManager extends JobScriptsManager {
                 }
             });
 
+            Set<String> moduleNames = new HashSet<String>();
+            for (ModuleNeeded m : libs) {
+                moduleNames.add(m.getModuleName());
+            }
+
             for (File tempFile : files) {
                 try {
-                    if (libs.contains(tempFile.getName())) {
+                    if (moduleNames.contains(tempFile.getName())) {
                         list.add(tempFile.toURL());
                     }
                 } catch (MalformedURLException e) {
