@@ -92,19 +92,16 @@ public class TopRecord {
                 }
             }
         } else {
+        	if(!columnLocalNameList.contains(ome.getLocalName())){
+                columnLocalNameList.add(ome.getLocalName());
+            }
             if (ome.getText() == null || "".equals(ome.getText())) {
-                if(!columnLocalNameList.contains(ome.getLocalName())){
-                    columnLocalNameList.add(ome.getLocalName());
-                }
                 return;
             }
             String newPrefixName = prefixName + TopConfig.COLUMNNAME_DELIMTER + ome.getLocalName();
             // add the columnName to List one by one(order is important)
             if (!columnNameList.contains(newPrefixName)) {
                 columnNameList.add(newPrefixName);
-            }
-            if(!columnLocalNameList.contains(ome.getLocalName())){
-            	columnLocalNameList.add(ome.getLocalName());
             }
             Object value = valueMap.get(newPrefixName);
             if (value != null) {
