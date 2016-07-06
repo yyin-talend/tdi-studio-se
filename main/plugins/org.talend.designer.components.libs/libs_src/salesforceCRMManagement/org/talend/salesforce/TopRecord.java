@@ -93,6 +93,9 @@ public class TopRecord {
             }
         } else {
             if (ome.getText() == null || "".equals(ome.getText())) {
+                if(!columnLocalNameList.contains(ome.getLocalName())){
+                    columnLocalNameList.add(ome.getLocalName());
+                }
                 return;
             }
             String newPrefixName = prefixName + TopConfig.COLUMNNAME_DELIMTER + ome.getLocalName();
