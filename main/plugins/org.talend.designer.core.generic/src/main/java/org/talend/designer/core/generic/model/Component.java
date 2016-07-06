@@ -1242,7 +1242,7 @@ public class Component extends AbstractBasicComponent {
             return "\"" + value.replace("\\\"", "\\\\\"").replace("\"", "\\\"") + "\"";//$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$
         }
         if (GenericTypeUtils.isIntegerType(property) && ContextParameterUtils.isContainContextParam(value)) {
-            value = "((" + value + ")!=null? Integer.valueOf(" + value + ") : null)";
+            value = "Integer.valueOf(" + value + ")";
         }
         return value;
     }
