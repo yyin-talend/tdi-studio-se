@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.commons.ui.runtime.exception.MessageBoxExceptionHandler;
 import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.designer.webservice.ws.wsdlinfo.Function;
@@ -26,8 +25,6 @@ public class WSDLDiscoveryHelper {
 
     public List<ParameterInfo> outputParameters;
 
-    private String exceptionMessage;
-
     /**
      * DOC gcui Comment method "getFunctionsAvailable".
      * 
@@ -46,111 +43,106 @@ public class WSDLDiscoveryHelper {
             serviceInfo.setAuthConfig(config);
             serviceInfo = builder.buildserviceinformation(serviceInfo);
 
-            exceptionMessage = builder.getExceptionMessage();
+            if (serviceInfo != null) {
+                Iterator iter = serviceInfo.getOperations();
+                while (iter.hasNext()) {
 
-            Iterator iter = serviceInfo.getOperations();
-            while (iter.hasNext()) {
+                    OperationInfo oper = (OperationInfo) iter.next();
+                    // operationName
+                    Function f = new Function(oper.getTargetMethodName());
+                    String operationName = oper.getTargetMethodName() + "(";
 
-                OperationInfo oper = (OperationInfo) iter.next();
-                // operationName
-                Function f = new Function(oper.getTargetMethodName());
-                String operationName = oper.getTargetMethodName() + "(";
-
-                if (serviceInfo.getServerName() != null) {
-                    f.setServerName(serviceInfo.getServerName());
-                }
-                if (serviceInfo.getServerNameSpace() != null) {
-                    f.setServerNameSpace(serviceInfo.getServerNameSpace());
-                }
-                if (serviceInfo.getPortNames() != null) {
-                    f.setPortNames(serviceInfo.getPortNames());
-                }
-                if (oper.getSoapActionURI() != null) {
-                    f.setSoapAction(oper.getSoapActionURI());
-                }
-                if (oper.getNamespaceURI() != null) {
-                    f.setNameSpaceURI(oper.getNamespaceURI());
-                }
-                if (oper.getEncodingStyle() != null) {
-                    f.setEncodingStyle(oper.getEncodingStyle());
-                }
-
-                if (oper.getTargetURL() != null) {
-                    f.setAddressLocation(oper.getTargetURL());
-                }
-
-                List inps = oper.getInparameters();
-                List outps = oper.getOutparameters();
-                // input parameters
-                inputParameters = new ArrayList();
-                if (inps.size() == 0) {
-                    inputParameters.add(new ParameterInfo());
-                    operationName = operationName + "):";
-                } else if (inps.size() > 0 && inps != null) {
-                    for (Iterator iterator1 = inps.iterator(); iterator1.hasNext();) {
-                        ParameterInfo element = (ParameterInfo) iterator1.next();
-                        getParaFullName(element);
-                        // ParameterInfo p = new ParameterInfo();
-                        // p.setType(element.getKind());
-                        inputParameters.add(element);
-                        if (element.getType() != null) {
-                            operationName = operationName + element.getType() + ",";
-                        } else if (element.getType() == null && element.getName() != null) {
-                            operationName = operationName + element.getName() + ",";
-                        } else if (element.getType() == null) {
-                            operationName = operationName + "noType" + ",";
-                        }
-                        if (element.getType() == null
-                                && (element.getParameterInfos() == null || element.getParameterInfos().isEmpty())
-                                && inps.size() == 1) {
-
-                            element.setName(element.getName());
-                        }
+                    if (serviceInfo.getServerName() != null) {
+                        f.setServerName(serviceInfo.getServerName());
                     }
-                    int operationNamelen = operationName.length();
-                    operationName = operationName.substring(0, operationNamelen - 1) + "):";
-                    f.setInputParameters(inputParameters);
-                }
-                // output parameters
-                outputParameters = new ArrayList();
-                if (outps.size() == 0) {
-                    outputParameters.add(new ParameterInfo());
-                } else {
-                    for (Iterator iterator2 = outps.iterator(); iterator2.hasNext();) {
-                        ParameterInfo element = (ParameterInfo) iterator2.next();
-                        getParaFullName(element);
-                        // ParameterInfo p = new ParameterInfo();
-                        // p.setType(element.getKind());
-                        outputParameters.add(element);
-                        if (element.getType() != null) {
-                            operationName = operationName + element.getType() + ",";
-                        } else if (element.getParameterInfos() != null && !element.getParameterInfos().isEmpty()) {
-                            for (Object element2 : element.getParameterInfos()) {
-                                ParameterInfo elementBranch = (ParameterInfo) element2;
-                                if (elementBranch.getType() != null) {
-                                    operationName = operationName + elementBranch.getType() + ",";
-                                } else {
-                                    operationName = operationName + "noType" + ",";
+                    if (serviceInfo.getServerNameSpace() != null) {
+                        f.setServerNameSpace(serviceInfo.getServerNameSpace());
+                    }
+                    if (serviceInfo.getPortNames() != null) {
+                        f.setPortNames(serviceInfo.getPortNames());
+                    }
+                    if (oper.getSoapActionURI() != null) {
+                        f.setSoapAction(oper.getSoapActionURI());
+                    }
+                    if (oper.getNamespaceURI() != null) {
+                        f.setNameSpaceURI(oper.getNamespaceURI());
+                    }
+                    if (oper.getEncodingStyle() != null) {
+                        f.setEncodingStyle(oper.getEncodingStyle());
+                    }
+
+                    if (oper.getTargetURL() != null) {
+                        f.setAddressLocation(oper.getTargetURL());
+                    }
+
+                    List inps = oper.getInparameters();
+                    List outps = oper.getOutparameters();
+                    // input parameters
+                    inputParameters = new ArrayList();
+                    if (inps.size() == 0) {
+                        inputParameters.add(new ParameterInfo());
+                        operationName = operationName + "):";
+                    } else if (inps.size() > 0 && inps != null) {
+                        for (Iterator iterator1 = inps.iterator(); iterator1.hasNext();) {
+                            ParameterInfo element = (ParameterInfo) iterator1.next();
+                            getParaFullName(element);
+                            // ParameterInfo p = new ParameterInfo();
+                            // p.setType(element.getKind());
+                            inputParameters.add(element);
+                            if (element.getType() != null) {
+                                operationName = operationName + element.getType() + ",";
+                            } else if (element.getType() == null && element.getName() != null) {
+                                operationName = operationName + element.getName() + ",";
+                            } else if (element.getType() == null) {
+                                operationName = operationName + "noType" + ",";
+                            }
+                            if (element.getType() == null
+                                    && (element.getParameterInfos() == null || element.getParameterInfos().isEmpty())
+                                    && inps.size() == 1) {
+
+                                element.setName(element.getName());
+                            }
+                        }
+                        int operationNamelen = operationName.length();
+                        operationName = operationName.substring(0, operationNamelen - 1) + "):";
+                        f.setInputParameters(inputParameters);
+                    }
+                    // output parameters
+                    outputParameters = new ArrayList();
+                    if (outps.size() == 0) {
+                        outputParameters.add(new ParameterInfo());
+                    } else {
+                        for (Iterator iterator2 = outps.iterator(); iterator2.hasNext();) {
+                            ParameterInfo element = (ParameterInfo) iterator2.next();
+                            getParaFullName(element);
+                            // ParameterInfo p = new ParameterInfo();
+                            // p.setType(element.getKind());
+                            outputParameters.add(element);
+                            if (element.getType() != null) {
+                                operationName = operationName + element.getType() + ",";
+                            } else if (element.getParameterInfos() != null && !element.getParameterInfos().isEmpty()) {
+                                for (Object element2 : element.getParameterInfos()) {
+                                    ParameterInfo elementBranch = (ParameterInfo) element2;
+                                    if (elementBranch.getType() != null) {
+                                        operationName = operationName + elementBranch.getType() + ",";
+                                    } else {
+                                        operationName = operationName + "noType" + ",";
+                                    }
                                 }
                             }
                         }
+                        int operationNamelen = operationName.length();
+                        operationName = operationName.substring(0, operationNamelen - 1);
+                        f.setOutputParameters(outputParameters);
                     }
-                    int operationNamelen = operationName.length();
-                    operationName = operationName.substring(0, operationNamelen - 1);
-                    f.setOutputParameters(outputParameters);
+                    f.setName(operationName);
+                    functionsAvailable.add(f);
                 }
-                f.setName(operationName);
-                functionsAvailable.add(f);
             }
         } catch (Exception e) {
-            exceptionMessage = exceptionMessage + e.getMessage();
-            ExceptionHandler.process(e);
-        }
-
-        if (!"".equals(exceptionMessage)) {
-            Exception e = new Exception(exceptionMessage);
             MessageBoxExceptionHandler.process(e);
         }
+
         return functionsAvailable;
     }
 
