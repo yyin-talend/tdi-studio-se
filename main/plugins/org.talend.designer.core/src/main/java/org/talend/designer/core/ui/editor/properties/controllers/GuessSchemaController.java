@@ -360,6 +360,12 @@ public class GuessSchemaController extends AbstractElementPropertySectionControl
                     IMetadataColumn oneColum = new MetadataColumn();
                     // get the column name from the temp file genenrated by GuessSchemaProcess.java
                     String labelName = (schemaContent.get(0))[i - 1];
+                    if (info != null && info.isHive()) {
+                        if (labelName != null && labelName.indexOf(TalendTextUtils.JAVA_END_STRING) != -1) {
+                            labelName = labelName.substring(labelName.lastIndexOf(TalendTextUtils.JAVA_END_STRING) + 1,
+                                    labelName.length());
+                        }
+                    }
                     String name = labelName;
                     String sub = "";
                     String sub2 = "";
