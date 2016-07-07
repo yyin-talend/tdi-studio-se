@@ -76,9 +76,8 @@ public final class ExportItemAction extends AContextualAction implements IWorkbe
                 Object nodProperty = node.getProperties(EProperties.CONTENT_TYPE);
                 ERepositoryObjectType contentType = node.getContentType();
 
-                if (contentType != null && !contentType.equals(ERepositoryObjectType.JOB_DOC)
-                        && !contentType.equals(ERepositoryObjectType.JOBLET_DOC)
-                        && !nodProperty.equals(ERepositoryObjectType.GENERATED)
+                if (!ERepositoryObjectType.JOB_DOC.equals(nodProperty) && !ERepositoryObjectType.JOBLET_DOC.equals(nodProperty)
+                        && !ERepositoryObjectType.GENERATED.equals(nodProperty)
                         && !ERepositoryObjectType.SQLPATTERNS.equals(nodProperty)
                         && !ERepositoryObjectType.METADATA_CON_CDC.equals(nodProperty)
                         && !ERepositoryObjectType.METADATA_CON_TABLE.equals(nodProperty)
