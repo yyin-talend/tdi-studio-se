@@ -102,7 +102,7 @@ class LogUtil extends BasicLogUtil{
     
     public void logCompSetting(){
     %>
-    	class byteLimit65535_<%=cid%>{
+    	class BytesLimit65535_<%=cid%>{
     		public void limitLog4jByte() throws Exception{
     			<%
        			 if(log4jEnabled){
@@ -176,7 +176,7 @@ class LogUtil extends BasicLogUtil{
     		}
     	}
     	
-        new byteLimit65535_<%=cid%>().limitLog4jByte();
+        new BytesLimit65535_<%=cid%>().limitLog4jByte();
         <%
     }
     
