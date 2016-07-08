@@ -1553,11 +1553,14 @@ if((cid.equals("talendLogs_DB") || cid.equals("talendStats_DB") || cid.equals("t
             }
             <%
         }
+         %>
             	//////////batch execute by batch size///////
-    	if (useBatch) {
-    		%>
-    			if ((batchSize_<%=cid%> > 0) && (batchSize_<%=cid%> <= batchSizeCounter_<%=cid%>)) {
-                try {
+
+    	class LimitBytesHelper_<%=cid%>{
+            		public void limitBytePart1(int batchSize_<%=cid%>,int batchSizeCounter_<%=cid%>,int insertedCount_<%=cid%>,
+					int updatedCount_<%=cid%>,int deletedCount_<%=cid%>,java.sql.PreparedStatement pstmt_<%=cid %>) throws Exception {
+            			if ((batchSize_<%=cid%> > 0) && (batchSize_<%=cid%> <= batchSizeCounter_<%=cid%>)) {          			
+            		 try {
 						int countSum_<%=cid%> = 0;
 						<%dbLog.batch().executeTry(dbLog.str(dataAction));%>
 						for(int countEach_<%=cid%>: pstmt_<%=cid %>.executeBatch()) {
@@ -1609,23 +1612,17 @@ if((cid.equals("talendLogs_DB") || cid.equals("talendStats_DB") || cid.equals("t
             	    	%>
                 		System.err.println(e.getMessage());
                 	<%
-                	}%>
-                }
-    			}
-    		<%
-    	}
+                	}
+                	%>
+               			 }
+    				}
+            			
+            	}
 
-    	////////////commit every////////////
-    	if(!useExistingConnection) {
-    		if(!("").equals(commitEvery) && !("0").equals(commitEvery)) {
-    		    %>
-    		    commitCounter_<%=cid%>++;
-                if(commitEvery_<%=cid%> <= commitCounter_<%=cid%>) {
-                <%
-                if (useBatch) {
-                %>
-                if ((batchSize_<%=cid%> > 0) && (batchSizeCounter_<%=cid%> > 0)) {
-                try {
+    	public void limitBytePart2(int batchSize_<%=cid%>,int batchSizeCounter_<%=cid%>,int insertedCount_<%=cid%>,
+            								int updatedCount_<%=cid%>,int deletedCount_<%=cid%>,java.sql.PreparedStatement pstmt_<%=cid %>) throws Exception {
+            		if ((batchSize_<%=cid%> > 0) && (batchSizeCounter_<%=cid%> > 0)) {
+              	  try {
                 		int countSum_<%=cid%> = 0;
                 		<%dbLog.batch().executeTry(dbLog.str(dataAction));%>
 						for(int countEach_<%=cid%>: pstmt_<%=cid %>.executeBatch()) {
@@ -1677,10 +1674,36 @@ if((cid.equals("talendLogs_DB") || cid.equals("talendStats_DB") || cid.equals("t
             	    	%>
                         System.err.println(e.getMessage());
                 	<%
-                	}%>
-                }
+                	}
+					%>
+                		}		
+					}
+            	}
             }
-        <%
+
+            <%
+    	if (useBatch) {
+    		%>
+    			new LimitBytesHelper_<%=cid%>().limitBytePart1(batchSize_<%=cid%>,batchSizeCounter_<%=cid%>,insertedCount_<%=cid%>,
+																	updatedCount_<%=cid%>,deletedCount_<%=cid%>,pstmt_<%=cid %>);
+    		<%
+    		}
+    		%>
+
+    	////////////commit every////////////
+    			<%
+    	if(!useExistingConnection) {
+    		if(!("").equals(commitEvery) && !("0").equals(commitEvery)) {
+    		    %>
+    		    commitCounter_<%=cid%>++;
+                if(commitEvery_<%=cid%> <= commitCounter_<%=cid%>) {
+                <%
+                if (useBatch) {
+                %>
+                
+                new LimitBytesHelper_<%=cid%>().limitBytePart2(batchSize_<%=cid%>,batchSizeCounter_<%=cid%>,insertedCount_<%=cid%>,
+            														updatedCount_<%=cid%>,deletedCount_<%=cid%>,pstmt_<%=cid %>);
+        <%    														
         }
         %>
                 	<%dbLog.commit().commitTry(null, dbLog.var("commitCounter"));%>

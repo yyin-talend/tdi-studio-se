@@ -101,9 +101,14 @@ class LogUtil extends BasicLogUtil{
     }
     
     public void logCompSetting(){
-        if(log4jEnabled){
-        %>
-            StringBuilder <%=var("log4jParamters")%> = new StringBuilder();
+
+       %>
+    	class BytesLimit65535_<%=cid%>{
+    		public void limitLog4jByte() throws Exception{
+    			<%
+       			 if(log4jEnabled){
+       			 %>
+		 StringBuilder <%=var("log4jParamters")%> = new StringBuilder();
             <%=var("log4jParamters")%>.append("Parameters:");
             <%
             java.util.Set<org.talend.core.model.process.EParameterFieldType> ignoredParamsTypes = new java.util.HashSet<org.talend.core.model.process.EParameterFieldType>(); 
@@ -167,7 +172,13 @@ class LogUtil extends BasicLogUtil{
             <%
             }
         }
+
         debug(var("log4jParamters"));
+		%>
+    		}
+    	}
+        new BytesLimit65535_<%=cid%>().limitLog4jByte();
+        <%
     }
     
     //no use for now, because we log the data by rowStruct
