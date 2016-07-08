@@ -199,6 +199,13 @@ public class BuildJobHandler extends AbstractBuildJobHandler {
                 items.add(repositoryObject.getProperty().getItem());
             }
         }
+        if(isOptionChoosed(ExportChoice.executeTests)){
+        	 IPath path = talendProcessJavaProject.getTargetFolder().getFolder("surefire-reports").getLocation();
+             File reports = new File(path.toOSString());
+             if (reports.exists()) {
+            	 FilesUtils.deleteFolder(reports, false);
+             }
+        }
         if (isOptionChoosed(ExportChoice.needJobItem)) {
             File destination = new File(itemsFolder.getLocation().toFile().getAbsolutePath());
             exportItemUtil.setProjectNameAsLowerCase(isProjectNameLowerCase());
