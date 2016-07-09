@@ -26,23 +26,16 @@ import org.talend.designer.runprocess.ui.ProcessManager;
  *
  */
 
-@RunWith(PowerMockRunner.class)
-@PrepareForTest({ ProcessManager.class })
 public class SparkJavaProcessorUtilTest {
 
     @Test
-    public void testIsStatisticsPMIsNull() {
-        PowerMockito.mockStatic(ProcessManager.class);
-        PowerMockito.when(ProcessManager.getInstance()).thenReturn(null);
-
+    public void testIsStatistics() {
+        ProcessManager.getInstance().setStat(Boolean.FALSE);
         assertFalse(SparkJavaProcessorUtil.isStatistics());
+        ProcessManager.getInstance().setStat(null);
+        assertFalse(SparkJavaProcessorUtil.isStatistics());
+        ProcessManager.getInstance().setStat(Boolean.TRUE);
+        assertTrue(SparkJavaProcessorUtil.isStatistics());
     }
 
-    /*
-     * TODO: Missing 2 test cases:
-     * 
-     * 1 - Test when getStat() returns false.
-     * 
-     * 2 - Test when getStat() returns true.
-     */
 }
