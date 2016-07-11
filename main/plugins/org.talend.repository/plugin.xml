@@ -2786,6 +2786,15 @@
               name="AddDefaultVersionValueForElasticsearchLookupInput"
               version="6.2.1">
         </projecttask>
+        <projecttask
+              beforeLogon="false"
+              breaks="6.0.0"
+              class="org.talend.repository.model.migration.ReviseInvalidContextNamesMigrationTask"
+              description="Revise invalid context names of context items."
+              id="org.talend.repository.model.migration.ReviseInvalidContextNamesMigrationTask"
+              name="ReviseInvalidContextNamesMigrationTask"
+              version="6.1.2">
+        </projecttask>
    </extension>
 
    <extension
