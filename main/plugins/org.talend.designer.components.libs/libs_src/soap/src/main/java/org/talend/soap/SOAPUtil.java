@@ -30,6 +30,7 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 
+import org.apache.commons.codec.binary.Base64;
 import org.jdom.input.DOMBuilder;
 import org.jdom.output.XMLOutputter;
 import org.w3c.dom.Document;
@@ -52,6 +53,12 @@ public class SOAPUtil {
 
     private String reFaultMessage;
 
+    private String username;
+
+    private String password;
+
+    private boolean basicAuth;
+
     private boolean hasFault = false;
 
     public SOAPUtil() throws SOAPException {
@@ -64,6 +71,13 @@ public class SOAPUtil {
     }
 
     public void setBasicAuth(final String username, final String password) {
+        this.username = username;
+        this.password = password;
+        this.basicAuth = true;
+        setAuthenticator(username, password);
+    }
+
+    public void setAuthenticator(final String username, final String password) {
         Authenticator.setDefault(new Authenticator() {
 
             public PasswordAuthentication getPasswordAuthentication() {
@@ -73,7 +87,7 @@ public class SOAPUtil {
     }
 
     public void setNTLMAuth(String domain, String username, String password) {
-        setBasicAuth(domain + "\\" + username, password);
+        setAuthenticator(domain + "\\" + username, password);
     }
 
     public void setProxy(String host, int port, String username, String password) {
@@ -95,6 +109,9 @@ public class SOAPUtil {
         SOAPMessage message = messageFactory.createMessage();
         MimeHeaders mimeHeaders = message.getMimeHeaders();
         mimeHeaders.setHeader("SOAPAction", soapAction);
+        if (basicAuth) {
+            addBasicAuthHeader(mimeHeaders, username, password);
+        }
 
         // Create objects for the message parts
         SOAPPart soapPart = message.getSOAPPart();
@@ -299,6 +316,12 @@ public class SOAPUtil {
         }
 
         return result;
+    }
+	
+	private void addBasicAuthHeader(MimeHeaders headers, String username, String password) {
+        String encodeUserInfo = username + ":" + password;
+        encodeUserInfo = Base64.encodeBase64String(encodeUserInfo.getBytes());
+        headers.setHeader("Authorization", "Basic " + encodeUserInfo);
     }
 	
 }

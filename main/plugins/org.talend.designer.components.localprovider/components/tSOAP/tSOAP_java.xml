@@ -143,6 +143,7 @@
 			<IMPORT NAME="jdom" MODULE="jdom-1.1.jar" UrlPath="platform:/plugin/org.talend.libraries.jdom/lib/jdom-1.1.jar" REQUIRED="true" BundleID="org.apache.servicemix.bundles.jdom" />
 			<IMPORT NAME="talendsoap" MODULE="talend-soap-1.0.0.jar" REQUIRED="true" />
 			<IMPORT NAME="Java_xercesImpl" MODULE="xercesImpl.jar" UrlPath="platform:/plugin/org.talend.libraries.apache.xml/lib/xercesImpl.jar" REQUIRED="true" />
+			<IMPORT NAME="apache_commons_codec_1_7" MODULE="commons-codec-1.7.jar" UrlPath="platform:/plugin/org.talend.libraries.apache.common/lib/commons-codec-1.7.jar" REQUIRED="true" BundleID="" />
 		</IMPORTS>
 	</CODEGENERATION>
 
