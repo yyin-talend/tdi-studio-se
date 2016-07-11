@@ -859,7 +859,10 @@ public abstract class AbstractSchemaController extends AbstractRepositoryControl
                 metaDialog.setInputReadOnly(inputReadOnly);
                 metaDialog.setOutputReadOnly(outputReadOnly);
 
+                setMetadataTableOriginalNameList(inputMetadata, inputMetaCopy);
+                setMetadataTableOriginalNameList(originaleOutputTable, outputMetaCopy);
                 if (metaDialog.open() == MetadataDialog.OK) {
+
                     inputMetaCopy = metaDialog.getInputMetaData();
                     outputMetaCopy = metaDialog.getOutputMetaData();
                     boolean modified = false;
@@ -1103,6 +1106,19 @@ public abstract class AbstractSchemaController extends AbstractRepositoryControl
             }
         }
         return null;
+    }
+
+    private void setMetadataTableOriginalNameList(IMetadataTable metadataTable, IMetadataTable tableCopy) {
+        if (metadataTable != null) {
+            if (metadataTable.isRepository() && metadataTable.getOriginalColumns() == null) {
+                List<String> columnNames = new ArrayList<String>();
+                for (IMetadataColumn column : metadataTable.getListColumns()) {
+                    columnNames.add(column.getLabel());
+                }
+                metadataTable.setOriginalColumns(columnNames);
+            }
+            tableCopy.setOriginalColumns(metadataTable.getOriginalColumns());
+        }
     }
 
     public IMetadataTable getMetadataTableFromXml(INode node) {
