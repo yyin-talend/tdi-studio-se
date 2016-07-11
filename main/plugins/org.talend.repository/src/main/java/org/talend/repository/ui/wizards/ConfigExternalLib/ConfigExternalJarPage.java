@@ -171,6 +171,13 @@ public class ConfigExternalJarPage extends ConfigExternalLibPage {
                 CorePlugin.getDefault().getLibrariesService().resetModulesNeeded();
                 // TDI-18870
                 CorePlugin.getDefault().getRunProcessService().updateLibraries(new HashSet<ModuleNeeded>(), null);
+                for (File file : newJarFiles.values()) {
+                	 try {
+                	     CorePlugin.getDefault().getLibrariesService().deployProjectLibrary(file);
+                	 } catch (Exception e) {
+                	     ExceptionHandler.process(e);
+                	 }
+                }
             }
         });
 
