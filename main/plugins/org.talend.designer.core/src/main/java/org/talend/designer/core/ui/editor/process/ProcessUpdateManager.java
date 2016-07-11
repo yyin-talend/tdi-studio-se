@@ -1316,6 +1316,11 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
                                     final IMetadataTable copyOfrepositoryMetadata = table.clone();
                                     copyOfrepositoryMetadata.setTableName(uniqueName);
                                     copyOfrepositoryMetadata.setAttachedConnector(schemaTypeParam.getContext());
+                                    List<String> columnNames = new ArrayList<String>();
+                                    for (IMetadataColumn column : copyOfrepositoryMetadata.getListColumns()) {
+                                        columnNames.add(column.getLabel());
+                                    }
+                                    copyOfrepositoryMetadata.setOriginalColumns(columnNames);
 
                                     // // fixed the such as tContextDump component.
                                     // MetadataTool.initilializeSchemaFromElementParameters(copyOfrepositoryMetadata,

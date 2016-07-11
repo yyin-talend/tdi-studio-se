@@ -13,6 +13,7 @@
 package org.talend.designer.core.ui.editor.properties.controllers;
 
 import java.beans.PropertyChangeEvent;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -845,6 +846,8 @@ public class SchemaTypeController extends AbstractRepositoryController {
                 metaDialog.setInputReadOnly(inputReadOnly);
                 metaDialog.setOutputReadOnly(outputReadOnly);
 
+                setMetadataTableOriginalNameList(inputMetadata, inputMetaCopy);
+                setMetadataTableOriginalNameList(originaleOutputTable, outputMetaCopy);
                 if (metaDialog.open() == MetadataDialog.OK) {
                     inputMetaCopy = metaDialog.getInputMetaData();
                     outputMetaCopy = metaDialog.getOutputMetaData();
@@ -1101,6 +1104,19 @@ public class SchemaTypeController extends AbstractRepositoryController {
         }
 
         return null;
+    }
+
+    private void setMetadataTableOriginalNameList(IMetadataTable metadataTable, IMetadataTable tableCopy) {
+        if (metadataTable != null) {
+            if (metadataTable.isRepository() && metadataTable.getOriginalColumns() == null) {
+                List<String> columnNames = new ArrayList<String>();
+                for (IMetadataColumn column : metadataTable.getListColumns()) {
+                    columnNames.add(column.getLabel());
+                }
+                metadataTable.setOriginalColumns(columnNames);
+            }
+            tableCopy.setOriginalColumns(metadataTable.getOriginalColumns());
+        }
     }
 
     private RepositoryNode getTopParent(RepositoryNode node) {

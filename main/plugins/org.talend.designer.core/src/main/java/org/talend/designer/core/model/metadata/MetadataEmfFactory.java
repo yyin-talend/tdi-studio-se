@@ -185,6 +185,11 @@ public class MetadataEmfFactory {
             listMetadataColumn.add(metaCol);
         }
         metadataTable.setListColumns(listMetadataColumn);
+        List<String> columnNames = new ArrayList<String>();
+        for (IMetadataColumn column : listMetadataColumn) {
+            columnNames.add(column.getLabel());
+        }
+        metadataTable.setOriginalColumns(columnNames);
     }
 
     public MetadataType getMetadataType() {
