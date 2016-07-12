@@ -101,8 +101,12 @@ class LogUtil extends BasicLogUtil{
     }
     
     public void logCompSetting(){
-        if(log4jEnabled){
-        %>
+    %>
+    	class BytesLimit65535_<%=cid%>{
+    		public void limitLog4jByte() throws Exception{
+    			<%
+       			 if(log4jEnabled){
+       			 %>
             StringBuilder <%=var("log4jParamters")%> = new StringBuilder();
             <%=var("log4jParamters")%>.append("Parameters:");
             <%
@@ -167,7 +171,13 @@ class LogUtil extends BasicLogUtil{
             <%
             }
         }
-        debug(var("log4jParamters"));
+		debug(var("log4jParamters"));
+		%>
+    		}
+    	}
+    	
+        new BytesLimit65535_<%=cid%>().limitLog4jByte();
+        <%
     }
     
     //no use for now, because we log the data by rowStruct
