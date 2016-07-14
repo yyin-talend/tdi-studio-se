@@ -27,13 +27,13 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.ui.views.properties.tabbed.ITabbedPropertyConstants;
 import org.talend.commons.ui.runtime.image.ImageProvider;
 import org.talend.core.model.process.IElementParameter;
+import org.talend.core.model.utils.ContextParameterUtils;
 import org.talend.core.ui.CoreUIPlugin;
 import org.talend.core.ui.properties.tab.IDynamicProperty;
 import org.talend.designer.core.generic.i18n.Messages;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.ui.editor.cmd.PropertyChangeCommand;
 import org.talend.designer.core.ui.editor.properties.controllers.TextController;
-import org.talend.utils.security.CryptoHelper;
 
 /**
  * created by hcyi on Feb 19, 2016 Detailled comment
@@ -49,6 +49,9 @@ public class GenericHiddenTextController extends TextController {
 
     @Override
     protected boolean isPasswordParam(IElementParameter parameter) {
+        if (ContextParameterUtils.containContextVariables(String.valueOf(parameter.getValue()))) {
+            return false;
+        }
         return true;
     }
 
@@ -61,7 +64,7 @@ public class GenericHiddenTextController extends TextController {
     public Control createControl(Composite subComposite, IElementParameter param, int numInRow, int nbInRow, int top,
             Control lastControl) {
         Control lastControlUsed = super.createControl(subComposite, param, numInRow, nbInRow, top, lastControl);
-        if (labelText != null) {
+        if (labelText != null && param != null && isPasswordParam(param)) {
             labelText.setEchoChar('*');
         }
         FormData data = (FormData) lastControlUsed.getLayoutData();
