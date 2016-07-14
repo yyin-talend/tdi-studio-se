@@ -165,6 +165,7 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer {
 
         store.setDefault(IRepositoryPrefConstants.USE_EXPORT_SAVE, false);
         store.setDefault(IRepositoryPrefConstants.ADD_CLASSPATH_JAR, false);
+        store.setDefault(IRepositoryPrefConstants.REBUILD_RELATIONSHIPS, false);
 
         store.setDefault(TalendDesignerPrefConstants.NOT_SHOW_WARNING_WHEN_DELETE_LINK_WITH_JOBLETTRIGGERLINKCOMPONENT, false);
 
