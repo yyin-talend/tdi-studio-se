@@ -2319,7 +2319,7 @@
               description="Update Joblet context in jobs"
               id="org.talend.repository.model.migration.UpdateJobletContextInJobMigrationTask"
               name="UpdateJobletContextInJobMigrationTask"
-              version="5.6.3">
+              version="5.6.1">
         </projecttask>
    </extension>
 
