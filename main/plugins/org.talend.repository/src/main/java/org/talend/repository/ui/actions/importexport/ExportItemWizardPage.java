@@ -864,9 +864,7 @@ public class ExportItemWizardPage extends WizardPage {
                 final List<IRepositoryViewObject> repositoryObjects = new ArrayList<IRepositoryViewObject>();
 
                 ProcessUtils.clearFakeProcesses();
-                for (Item item : selectedItems) {
-                    RepositoryNodeUtilities.checkItemDependencies(item, repositoryObjects, false, true);
-                }
+                RepositoryNodeUtilities.checkItemDependencies(selectedItems, repositoryObjects, false, true);
                 monitor.worked(60);
                 for (IRepositoryViewObject repositoryObject : repositoryObjects) {
                     RepositoryNode repositoryNode = RepositoryNodeUtilities.getRepositoryNode(repositoryObject, monitor);
