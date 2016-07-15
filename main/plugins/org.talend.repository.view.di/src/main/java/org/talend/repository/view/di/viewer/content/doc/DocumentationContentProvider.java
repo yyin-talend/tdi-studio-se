@@ -18,6 +18,7 @@ import org.talend.core.repository.model.ProjectRepositoryNode;
 import org.talend.designer.core.ICamelDesignerCoreService;
 import org.talend.repository.model.IRepositoryNode;
 import org.talend.repository.model.RepositoryNode;
+import org.talend.repository.model.IRepositoryNode.EProperties;
 import org.talend.repository.viewer.content.ProjectRepoDirectChildrenNodeContentProvider;
 
 /**
@@ -72,6 +73,26 @@ public class DocumentationContentProvider extends ProjectRepoDirectChildrenNodeC
             }
         }
     }
+
+	@Override
+	public Object[] getChildren(Object element) {
+		if (element instanceof RepositoryNode) {
+			RepositoryNode repNode = (RepositoryNode) element;
+			IRepositoryNode docTopNode = repNode.getRoot().getRootRepositoryNode(ERepositoryObjectType.DOCUMENTATION);
+			if(docTopNode == repNode){
+				IRepositoryNode generatedNode = ((RepositoryNode)element).getRoot().getRootRepositoryNode(ERepositoryObjectType.GENERATED);
+			    if (generatedNode != null) {
+			    	if (!repNode.getChildren().contains(generatedNode)) {
+			    		repNode.getChildren().add(generatedNode); // add back
+			        }
+			    }
+			}
+	    }
+		
+		return super.getChildren(element);
+	}
+    
+    
 
     // @Override
     // protected void initializeChildren(RepositoryNode parent) {
