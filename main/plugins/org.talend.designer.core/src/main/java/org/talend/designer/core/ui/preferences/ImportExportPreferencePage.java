@@ -42,6 +42,10 @@ public class ImportExportPreferencePage extends FieldEditorPreferencePage implem
         CheckBoxFieldEditor addClasspathJarButton = new CheckBoxFieldEditor(IRepositoryPrefConstants.ADD_CLASSPATH_JAR,
                 Messages.getString("ImportExportPreferencePage.addClasspathJar"), getFieldEditorParent()); //$NON-NLS-1$
         addField(addClasspathJarButton);
+        
+        CheckBoxFieldEditor needRebuild = new CheckBoxFieldEditor(IRepositoryPrefConstants.REBUILD_RELATIONSHIPS,
+                Messages.getString("ImportExportPreferencePage.rebuildRelationships"), getFieldEditorParent()); //$NON-NLS-1$
+        addField(needRebuild);
     }
 
     @Override
