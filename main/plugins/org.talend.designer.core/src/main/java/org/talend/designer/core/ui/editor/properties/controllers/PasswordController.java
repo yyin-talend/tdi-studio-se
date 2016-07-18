@@ -29,6 +29,7 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.ui.views.properties.tabbed.ITabbedPropertyConstants;
 import org.talend.commons.ui.runtime.image.ImageProvider;
 import org.talend.core.model.process.IElementParameter;
+import org.talend.core.model.utils.ContextParameterUtils;
 import org.talend.core.ui.CoreUIPlugin;
 import org.talend.core.ui.properties.tab.IDynamicProperty;
 import org.talend.designer.core.i18n.Messages;
@@ -156,9 +157,17 @@ public class PasswordController extends TextController {
 
     protected Command createButtonCommand(final Button button) {
         if (button.getData(NAME).equals(PASSWORD)) {
+            String paramName = (String) button.getData(PARAMETER_NAME);
+            IElementParameter param = elem.getElementParameter(paramName);
+            String initValue = "\"\"";//$NON-NLS-1$
+            if (param.getValue() != null && ContextParameterUtils.containContextVariables(param.getValue().toString())) {
+                initValue = param.getValue().toString();
+            }
+
             InputDialog dlg = new InputDialog(
                     button.getShell(),
-                    Messages.getString("PasswordController.NewPassword"), Messages.getString("PasswordController.NoteConvention"), "\"\"", null) { //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                    Messages.getString("PasswordController.NewPassword"), Messages.getString("PasswordController.NoteConvention"), //$NON-NLS-1$ //$NON-NLS-2$
+                    initValue, null) {
 
                 /*
                  * (non-Javadoc)
@@ -175,7 +184,6 @@ public class PasswordController extends TextController {
                 }
             };
             if (dlg.open() == Window.OK) {
-                String paramName = (String) button.getData(PARAMETER_NAME);
                 elem.setPropertyValue(EParameterName.UPDATE_COMPONENTS.getName(), new Boolean(true));
                 return new PropertyChangeCommand(elem, paramName, dlg.getValue());
             }
