@@ -108,7 +108,7 @@ for (Component.CodegenPropInfo propInfo : propsToProcess) { // propInfo
                 } else if (value != null && "java.util.Date".equals(property.getType())){
                     %>
                     props_<%=cid %><%=propInfo.fieldName%>.setValue("<%=property.getName()%>",
-                        TalendDate.parseDate("yyyy-MM-dd HH:mm:ss",<%=component.getCodegenValue(property, property.getStringValue())%>));
+                        TalendDate.parseDate("yyyy-MM-dd HH:mm:ss",<%=component.getCodegenValue(property, value.toString())%>));
                     <%
                 } else if (property instanceof org.talend.daikon.properties.property.EnumProperty) {
                     %>
