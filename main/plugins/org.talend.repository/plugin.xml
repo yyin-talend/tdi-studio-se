@@ -2734,6 +2734,15 @@
               name="ReviseInvalidContextNamesMigrationTask"
               version="6.1.2">
         </projecttask>
+        <projecttask
+              beforeLogon="false"
+              breaks="6.1.1"
+              class="org.talend.repository.model.migration.UpdateELTComponentMigrationTask"
+              description="Update ELT components"
+              id="org.talend.repository.model.migration.UpdateELTComponentMigrationTask"
+              name="UpdateELTComponentMigrationTask"
+              version="6.1.2">
+        </projecttask>
    </extension>
 
    <extension

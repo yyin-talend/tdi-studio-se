@@ -35,7 +35,12 @@ import org.talend.designer.dbmap.model.tableentry.TableEntryLocation;
  */
 public class DataMapExpressionParser {
 
-    private final static String EXPRESSION_PATTERN = "(\\s*(\\w+)\\s*\\.(\\w+)\\s*\\.(\\w+)\\s*)|(\\s*(\\w+)\\s*\\.(\\w+)\\s*)";//$NON-NLS-1$
+    private final static String EXPRESSION_PATTERN = "(\\s*(\\w+)\\s*\\.\\s*(\\w+)\\s*\\.\\s*(\\w+)\\s*\\.\\s*(\\w+)\\s*\\.\\s*(\\w+)\\s*)" //$NON-NLS-1$
+            + "|(\\s*(\\w+)\\s*\\.\\s*(\\w+)\\s*\\.\\s*(\\w+)\\s*\\.\\s*(\\w+)\\s*)" //$NON-NLS-1$
+            + "|(\\s*(\\w+)\\s*\\.\\s*(\\w+)\\s*\\.\\s*(\\w+)\\s*)" //$NON-NLS-1$
+            + "|(\\s*(\\w+)\\s*\\.\\s*(\\w+)\\s*)"; //$NON-NLS-1$
+
+    private final String DOT_STR = "."; //$NON-NLS-1$
 
     private Perl5Matcher matcher = new Perl5Matcher();
 
@@ -78,14 +83,25 @@ public class DataMapExpressionParser {
             recompilePatternIfNecessary(EXPRESSION_PATTERN);
             while (matcher.contains(patternMatcherInput, pattern)) {
                 MatchResult matchResult = matcher.getMatch();
-                if (matchResult.group(5) != null) {
-                    // tablename.columnname
-                    TableEntryLocation location = new TableEntryLocation(matchResult.group(6), matchResult.group(7));
-                    resultList.add(location);
-                } else if (matchResult.group(1) != null) {
-                    // tablename.schemaname.columnname
-                    TableEntryLocation location = new TableEntryLocation(matchResult.group(2) + "." + matchResult.group(3),
-                            matchResult.group(4));
+                TableEntryLocation location = null;
+                if (matchResult.group(1) != null) {
+                    // context.schema.context.table.comlumn
+                    location = new TableEntryLocation(matchResult.group(2) + DOT_STR + matchResult.group(3) + DOT_STR
+                            + matchResult.group(4) + DOT_STR + matchResult.group(5), matchResult.group(6));
+                } else if (matchResult.group(7) != null) {
+                    // context.schema.table.comlumn | schema.context.table.comlumn
+                    location = new TableEntryLocation(
+                            matchResult.group(8) + DOT_STR + matchResult.group(9) + DOT_STR + matchResult.group(10),
+                            matchResult.group(11));
+                } else if (matchResult.group(12) != null) {
+                    // schema.table.column
+                    location = new TableEntryLocation(matchResult.group(13) + DOT_STR + matchResult.group(14),
+                            matchResult.group(15));
+                } else if (matchResult.group(16) != null) {
+                    // table.column
+                    location = new TableEntryLocation(matchResult.group(17), matchResult.group(18));
+                }
+                if (location != null) {
                     resultList.add(location);
                 }
             }
