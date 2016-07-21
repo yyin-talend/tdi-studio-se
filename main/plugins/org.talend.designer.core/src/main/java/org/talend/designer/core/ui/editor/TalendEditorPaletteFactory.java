@@ -71,6 +71,7 @@ import org.talend.core.ui.component.settings.ComponentsSettingsHelper;
 import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.IPaletteFilter;
 import org.talend.designer.core.i18n.Messages;
+import org.talend.designer.core.model.components.ComponentHit;
 import org.talend.designer.core.model.process.AbstractProcessProvider;
 import org.talend.designer.core.model.process.GenericProcessProvider;
 import org.talend.designer.core.ui.editor.nodes.Node;
@@ -212,13 +213,7 @@ public final class TalendEditorPaletteFactory {
             // if a==1, then means hide folder mode
             recentlyUsedComponents = new LinkedList<TalendEditorPaletteFactory.RecentlyUsedComponent>();
             recentlyUsedComponentNames = getRecentlyUsedList(recentlyUsedComponents);
-            Collections.sort(recentlyUsedComponents, new Comparator<TalendEditorPaletteFactory.RecentlyUsedComponent>() {
-
-                @Override
-                public int compare(RecentlyUsedComponent arg0, RecentlyUsedComponent arg1) {
-                    return -1 * arg0.getTimestamp().compareTo(arg1.getTimestamp());
-                }
-            });
+            recentlyUsedComponents = sortRecentlyUsed(recentlyUsedComponents);
 
             families.add(0, FAVORITES);
             familyMap.put(FAVORITES, FAVORITES);
@@ -387,6 +382,8 @@ public final class TalendEditorPaletteFactory {
         }
 
         if (compFac != null && lowerCasedKeyword != null && 0 < lowerCasedKeyword.length()) {
+            componentSet = new LinkedHashSet<IComponent>();
+
             // 1. match the full name component
             Map<String, Map<String, Set<IComponent>>> componentNameMap = compFac.getComponentNameMap();
             if (componentNameMap != null) {
@@ -410,12 +407,13 @@ public final class TalendEditorPaletteFactory {
                             componentIter.remove();
                         }
                     }
-                    componentSet = new LinkedHashSet<IComponent>(filteredComponent);
+                    if (!filteredComponent.isEmpty()) {
+                        componentSet.addAll(filteredComponent);
+                    }
                 }
             }
-            // 2. if no matched full name comoponent, then just do usual search
-            if ((componentSet == null || componentSet.isEmpty()) && componentNameMap != null) {
-                componentSet = new LinkedHashSet<IComponent>();
+            // 2. do usual search
+            if (componentNameMap != null) {
 
                 // 2.1 search from local palette
                 addComponentsByNameFilter(compFac, componentSet, lowerCasedKeyword);
@@ -486,7 +484,61 @@ public final class TalendEditorPaletteFactory {
             }
         }
 
+        relatedComponents = sortResultsBasedOnRecentlyUsed(relatedComponents);
+
         return relatedComponents;
+    }
+
+    private static List<IComponent> sortResultsBasedOnRecentlyUsed(List<IComponent> relatedComponents) {
+        if (relatedComponents == null) {
+            return relatedComponents;
+        }
+        List<RecentlyUsedComponent> recentlyUsedComponents = new LinkedList<TalendEditorPaletteFactory.RecentlyUsedComponent>();
+        getRecentlyUsedList(recentlyUsedComponents);
+        recentlyUsedComponents = sortRecentlyUsed(recentlyUsedComponents);
+
+        if (recentlyUsedComponents != null && !recentlyUsedComponents.isEmpty()) {
+            final List<String> recentlyUsedComponentNames = new ArrayList<String>(recentlyUsedComponents.size());
+            for (RecentlyUsedComponent ruc : recentlyUsedComponents) {
+                recentlyUsedComponentNames.add(ruc.getName());
+            }
+
+            Collections.sort(relatedComponents, new Comparator<IComponent>() {
+
+                @Override
+                public int compare(IComponent arg0, IComponent arg1) {
+                    int result = 0;
+                    int arg0InRecentlyUsed = recentlyUsedComponentNames.indexOf(arg0.getName());
+                    int arg1InRecentlyUsed = recentlyUsedComponentNames.indexOf(arg1.getName());
+
+                    if (0 <= arg0InRecentlyUsed && 0 <= arg1InRecentlyUsed) {
+                        result = (arg0InRecentlyUsed - arg1InRecentlyUsed);
+                    } else if (0 <= arg0InRecentlyUsed && arg1InRecentlyUsed < 0) {
+                        result = -1;
+                    } else if (arg0InRecentlyUsed < 0 && 0 <= arg1InRecentlyUsed) {
+                        result = 1;
+                    }
+
+                    return result;
+                }
+            });
+        }
+
+        return relatedComponents;
+    }
+
+    private static List<RecentlyUsedComponent> sortRecentlyUsed(List<RecentlyUsedComponent> recentlyUsedComponents) {
+        if (recentlyUsedComponents == null) {
+            return recentlyUsedComponents;
+        }
+        Collections.sort(recentlyUsedComponents, new Comparator<TalendEditorPaletteFactory.RecentlyUsedComponent>() {
+
+            @Override
+            public int compare(RecentlyUsedComponent arg0, RecentlyUsedComponent arg1) {
+                return -1 * arg0.getTimestamp().compareTo(arg1.getTimestamp());
+            }
+        });
+        return recentlyUsedComponents;
     }
 
     protected static boolean filterComponent(IComponent component, IComponentsHandler componentsHandler) {
@@ -515,15 +567,40 @@ public final class TalendEditorPaletteFactory {
             Set<IComponent> components = compFac.getComponents();
             Iterator<IComponent> iter = components.iterator();
             String regex = getFilterRegex(nameFilter);
+            Pattern pattern = Pattern.compile(regex);
+            Set<ComponentHit> resultByName = new LinkedHashSet<ComponentHit>();
+            Set<ComponentHit> resultByLongName = new LinkedHashSet<ComponentHit>();
             while (iter.hasNext()) {
                 IComponent xmlComponent = iter.next();
-                if (!xmlComponent.getName().toLowerCase().matches(regex)
-                        && !xmlComponent.getLongName().toLowerCase().matches(regex)) {
+
+                Matcher matcher = pattern.matcher(xmlComponent.getName().toLowerCase());
+                if (matcher.find()) {
+                    resultByName.add(new ComponentHit(xmlComponent, matcher.start()));
                     continue;
-                } else {
-                    componentSet.add(xmlComponent);
+                }
+
+                matcher = pattern.matcher(xmlComponent.getLongName().toLowerCase());
+                if (matcher.find()) {
+                    resultByLongName.add(new ComponentHit(xmlComponent, matcher.start()));
+                    continue;
                 }
             }
+            if (!resultByName.isEmpty()) {
+                ComponentHit[] hitArray = resultByName.toArray(new ComponentHit[resultByName.size()]);
+                Arrays.sort(hitArray);
+                addComponents(componentSet, hitArray);
+            }
+            if (!resultByLongName.isEmpty()) {
+                ComponentHit[] hitArray = resultByLongName.toArray(new ComponentHit[resultByLongName.size()]);
+                Arrays.sort(hitArray);
+                addComponents(componentSet, hitArray);
+            }
+        }
+    }
+
+    private static void addComponents(Set<IComponent> componentSet, ComponentHit[] hitArray) {
+        for (ComponentHit ch : hitArray) {
+            componentSet.add(ch.getComponent());
         }
     }
 
@@ -1028,7 +1105,7 @@ public final class TalendEditorPaletteFactory {
      * @return
      */
     private static String getFilterRegex(String nameFilter) {
-        String regex = "\\b.*" + nameFilter.replaceAll("\\*", ".*") + ".*\\b"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+        String regex = nameFilter.replaceAll("\\*", ".*"); //$NON-NLS-1$ //$NON-NLS-2$
         regex = regex.replaceAll(" ", ".*"); //$NON-NLS-1$ //$NON-NLS-2$
         regex = regex.replaceAll("\\?", ".?"); //$NON-NLS-1$ //$NON-NLS-2$
         regex = regex.replaceAll("[\\{\\}\\[\\]]", "\\."); //$NON-NLS-1$ //$NON-NLS-2$
@@ -1272,13 +1349,18 @@ public final class TalendEditorPaletteFactory {
             @SuppressWarnings("restriction")
             @Override
             protected IStatus run(IProgressMonitor monitor) {
+                String helpKeyword = keyword;
                 try {
                     TalendPaletteSearchIndex searchIndex = TalendPaletteSearchIndex.getInstance();
                     LocalSearchManager localSearchManager = BaseHelpSystem.getLocalSearchManager();
                     // if not work or null, maybe should throw a warn to inform user and help us trace
                     // if (searchIndex != null && localSearchManager != null) {
                     localSearchManager.ensureIndexUpdated(monitor, searchIndex);
-                    ISearchQuery searchQuery = new SearchQuery(keyword, false, new ArrayList<String>(), Platform.getNL());
+
+                    final String WHITESPACE = " "; //$NON-NLS-1$
+                    helpKeyword = helpKeyword + WHITESPACE + "OR" + WHITESPACE + helpKeyword + "*"; //$NON-NLS-1$//$NON-NLS-2$
+
+                    ISearchQuery searchQuery = new SearchQuery(helpKeyword, false, new ArrayList<String>(), Platform.getNL());
                     searchIndex.search(searchQuery, new ISearchHitCollector() {
 
                         @Override
