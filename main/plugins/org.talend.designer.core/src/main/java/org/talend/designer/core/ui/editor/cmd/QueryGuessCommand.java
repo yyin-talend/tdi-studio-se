@@ -49,7 +49,6 @@ import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.model.components.EmfComponent;
 import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.utils.JavaProcessUtil;
-
 import orgomg.cwm.objectmodel.core.ModelElement;
 import orgomg.cwm.resource.relational.Catalog;
 import orgomg.cwm.resource.relational.Schema;
@@ -122,7 +121,9 @@ public class QueryGuessCommand extends Command {
 
     public QueryGuessCommand(INode node2, IMetadataTable metadataTable, String schema, String dbType, Connection conn) {// 9594
         this(node2, metadataTable);
-        this.schema = schema;
+        if (!"".equals(schema)) {
+            this.schema = schema;
+        }
         this.dbType = dbType;
         this.conn = conn;
     }
