@@ -59,6 +59,9 @@ public class ComponentHit implements Comparable<ComponentHit> {
         if (result == 0) {
             result = this.getComponent().getName().length() - o.getComponent().getName().length();
         }
+        if (result == 0) {
+            result = this.getComponent().getName().compareTo(o.getComponent().getName());
+        }
         return result;
     }
 

@@ -489,7 +489,7 @@ public final class TalendEditorPaletteFactory {
         return relatedComponents;
     }
 
-    private static List<IComponent> sortResultsBasedOnRecentlyUsed(List<IComponent> relatedComponents) {
+    protected static List<IComponent> sortResultsBasedOnRecentlyUsed(List<IComponent> relatedComponents) {
         if (relatedComponents == null) {
             return relatedComponents;
         }
