@@ -4128,4 +4128,9 @@ public class EmfComponent extends AbstractBasicComponent {
         EList listConnType = compType.getCONNECTORS().getCONNECTOR();
         return listConnType;
     }
+
+    @Override
+    public String toString() {
+        return getName() + ":" + getLongName(); //$NON-NLS-1$
+    }
 }
