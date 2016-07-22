@@ -44,8 +44,8 @@ import org.eclipse.gef.palette.PaletteGroup;
 import org.eclipse.gef.palette.PaletteRoot;
 import org.eclipse.gef.palette.PaletteSeparator;
 import org.eclipse.gef.tools.CreationTool;
-import org.eclipse.gef.ui.palette.PaletteViewer;
 import org.eclipse.gef.ui.palette.FlyoutPaletteComposite.FlyoutPreferences;
+import org.eclipse.gef.ui.palette.PaletteViewer;
 import org.eclipse.help.internal.base.BaseHelpSystem;
 import org.eclipse.help.internal.search.ISearchHitCollector;
 import org.eclipse.help.internal.search.ISearchQuery;
@@ -74,7 +74,6 @@ import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.model.components.ComponentHit;
 import org.talend.designer.core.model.process.AbstractProcessProvider;
 import org.talend.designer.core.model.process.GenericProcessProvider;
-import org.talend.designer.core.ui.editor.TalendEditorPaletteFactory.RecentlyUsedComponent;
 import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.notes.NoteCreationFactory;
 import org.talend.designer.core.ui.editor.palette.TalendCombinedTemplateCreationEntry;
@@ -507,7 +506,7 @@ public final class TalendEditorPaletteFactory {
     }
 
     protected static List<IComponent> sortResultsBasedOnRecentlyUsed(List<IComponent> relatedComponents) {
-        if (relatedComponents == null) {
+        if (relatedComponents == null || relatedComponents.isEmpty()) {
             return relatedComponents;
         }
         List<RecentlyUsedComponent> recentlyUsedComponents = new LinkedList<TalendEditorPaletteFactory.RecentlyUsedComponent>();
@@ -545,7 +544,7 @@ public final class TalendEditorPaletteFactory {
     }
 
     private static List<RecentlyUsedComponent> sortRecentlyUsed(List<RecentlyUsedComponent> recentlyUsedComponents) {
-        if (recentlyUsedComponents == null) {
+        if (recentlyUsedComponents == null || recentlyUsedComponents.isEmpty()) {
             return recentlyUsedComponents;
         }
         Collections.sort(recentlyUsedComponents, new Comparator<TalendEditorPaletteFactory.RecentlyUsedComponent>() {
