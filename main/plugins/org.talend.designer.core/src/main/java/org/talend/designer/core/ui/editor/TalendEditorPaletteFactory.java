@@ -44,8 +44,8 @@ import org.eclipse.gef.palette.PaletteGroup;
 import org.eclipse.gef.palette.PaletteRoot;
 import org.eclipse.gef.palette.PaletteSeparator;
 import org.eclipse.gef.tools.CreationTool;
-import org.eclipse.gef.ui.palette.FlyoutPaletteComposite.FlyoutPreferences;
 import org.eclipse.gef.ui.palette.PaletteViewer;
+import org.eclipse.gef.ui.palette.FlyoutPaletteComposite.FlyoutPreferences;
 import org.eclipse.help.internal.base.BaseHelpSystem;
 import org.eclipse.help.internal.search.ISearchHitCollector;
 import org.eclipse.help.internal.search.ISearchQuery;
@@ -74,6 +74,7 @@ import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.model.components.ComponentHit;
 import org.talend.designer.core.model.process.AbstractProcessProvider;
 import org.talend.designer.core.model.process.GenericProcessProvider;
+import org.talend.designer.core.ui.editor.TalendEditorPaletteFactory.RecentlyUsedComponent;
 import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.notes.NoteCreationFactory;
 import org.talend.designer.core.ui.editor.palette.TalendCombinedTemplateCreationEntry;
@@ -381,6 +382,11 @@ public final class TalendEditorPaletteFactory {
             lowerCasedKeyword = keyword.toLowerCase().trim();
         }
 
+        /**
+         * No need to sort result from help, since it may confuse user
+         */
+        boolean needSort = true;
+
         if (compFac != null && lowerCasedKeyword != null && 0 < lowerCasedKeyword.length()) {
             componentSet = new LinkedHashSet<IComponent>();
 
@@ -417,6 +423,11 @@ public final class TalendEditorPaletteFactory {
 
                 // 2.1 search from local palette
                 addComponentsByNameFilter(compFac, componentSet, lowerCasedKeyword);
+                if (!componentSet.isEmpty()) {
+                    componentSet = new LinkedHashSet<IComponent>(
+                            sortResultsBasedOnRecentlyUsed(new ArrayList<IComponent>(componentSet)));
+                    needSort = false;
+                }
 
                 // 2.2 search from help document
                 boolean shouldSearchFromHelpAPI = PaletteSettingsPreferencePage.isPaletteSearchFromHelp();
@@ -454,6 +465,10 @@ public final class TalendEditorPaletteFactory {
                                 // componentSet.addAll(findedComponents);
                             }
                         }
+
+                        if (0 < i) {
+                            needSort = false;
+                        }
                     }
                 }
             }
@@ -484,7 +499,9 @@ public final class TalendEditorPaletteFactory {
             }
         }
 
-        relatedComponents = sortResultsBasedOnRecentlyUsed(relatedComponents);
+        if (needSort) {
+            relatedComponents = sortResultsBasedOnRecentlyUsed(relatedComponents);
+        }
 
         return relatedComponents;
     }
