@@ -1631,14 +1631,7 @@ public class DataProcess implements IGeneratingProcess {
         }
         // Build a simple copy of the process (to have new objects, avoid to modify the ones in the designer..)
         List<INode> newGraphicalNodeList = buildCopyOfGraphicalNodeList(graphicalNodeList);
-        if (ProcessUtils.isTestContainer(graphicalNodeList.get(0).getProcess())) {
-            for (IReplaceNodeInProcess replaceProvider : ReplaceNodesInProcessProvider.findReplaceNodesProvider()) {
-                replaceProvider.rebuildGraphicProcessFromNode(newGraphicalNodeList.get(0), newGraphicalNodeList);
-            }
-        } else {
-            // Replace all providers like joblet by the content inside the job
-            replaceNodeFromProviders(newGraphicalNodeList);
-        }
+        replaceNodeFromProviders(newGraphicalNodeList);
         // job settings extra (feature 2710)
         if (JobSettingsManager.isImplicittContextLoadActived(duplicatedProcess)) {
             List<DataNode> contextLoadNodes = JobSettingsManager.createExtraContextLoadNodes(duplicatedProcess);
