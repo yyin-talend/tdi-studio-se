@@ -150,14 +150,14 @@ public class RepositoryChangeMetadataCommand extends ChangeMetadataCommand {
         }
 
         node.getElementParameter(EParameterName.UPDATE_COMPONENTS.getName()).setValue(true);
+        String componentName = node.getComponent().getName();
         if (newOutputMetadata != null) {
             Map<String, String> addMap = newOutputMetadata.getAdditionalProperties();
-            if (addMap.get(TaggedValueHelper.SYSTEMTABLENAME) != null && node.getComponent().getName().equals("tAS400CDC")) { //$NON-NLS-1$
+            if (addMap.get(TaggedValueHelper.SYSTEMTABLENAME) != null && componentName.equals("tAS400CDC")) { //$NON-NLS-1$
                 setDBTableFieldValue(node, addMap.get(TaggedValueHelper.SYSTEMTABLENAME), oldOutputMetadata.getTableName());
             } else if (isXstreamCdcTypeMode) {
                 IElementParameter elementParameter = node.getElementParameter(propName);
                 if (elementParameter != null) {
-                    String componentName = node.getComponent().getName();
                     if (oracleCdcComponent[0].equals(componentName) || oracleCdcComponent[1].equals(componentName)) {
                         IElementParameter schemaTypeParam = elementParameter.getParentParameter().getChildParameters()
                                 .get(EParameterName.SCHEMA_TYPE.getName());
@@ -220,7 +220,6 @@ public class RepositoryChangeMetadataCommand extends ChangeMetadataCommand {
                                         table, newOutputMetadata);
                                 param.setRepositoryValueUsed(true);
                             } else {
-                                String componentName = node.getComponent().getName();
                                 if (connection != null
                                         && (xmlComponent[0].equals(componentName) || xmlComponent[1].equals(componentName) || xmlComponent[2]
                                                 .equals(componentName))
@@ -236,6 +235,16 @@ public class RepositoryChangeMetadataCommand extends ChangeMetadataCommand {
                                         param.setValue(value);
                                     }
                                 }
+                            }
+                        }
+                        // TBD-3869 hbase column family
+                        if (connection != null && EParameterFieldType.TABLE.equals(param.getFieldType()) && componentName != null
+                                && componentName.startsWith("tHBase") //$NON-NLS-1$
+                                && ("MAPPING".equals(param.getName()) || "FAMILIES".equals(param.getName()))) { //$NON-NLS-1$ //$NON-NLS-2$
+                            Object value = RepositoryToComponentProperty.getColumnMappingValue(
+                                    ((ConnectionItem) item).getConnection(), newOutputMetadata);
+                            if (value != null) {
+                                param.setValue(value);
                             }
                         }
                     }
@@ -315,5 +324,4 @@ public class RepositoryChangeMetadataCommand extends ChangeMetadataCommand {
         }
 
     }
-
 }
