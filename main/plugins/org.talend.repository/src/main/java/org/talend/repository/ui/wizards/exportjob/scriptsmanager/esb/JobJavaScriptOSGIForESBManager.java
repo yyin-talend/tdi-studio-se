@@ -184,7 +184,7 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
                  * export current item's dependencies. this used for TDM components specially and need more discussion
                  * about then
                  */
-                BuildExportManager.getInstance().exportDependencies(osgiResource, processItem);
+                BuildExportManager.getInstance().exportOSGIDependencies(osgiResource, processItem);
             }
 
             ExportFileResource libResource = getCompiledLibExportFileResource(processes);
