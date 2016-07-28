@@ -37,6 +37,7 @@ import org.talend.core.model.properties.Item;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.repository.model.ProxyRepositoryFactory;
+import org.talend.core.runtime.util.GenericTypeUtils;
 import org.talend.core.utils.ReflectionUtils;
 import org.talend.cwm.helper.ConnectionHelper;
 import org.talend.daikon.NamedThing;
@@ -46,6 +47,7 @@ import org.talend.designer.core.generic.utils.ComponentsUtils;
 import org.talend.designer.core.generic.utils.SchemaUtils;
 import org.talend.repository.generic.model.genericMetadata.GenericConnection;
 import org.talend.repository.generic.model.genericMetadata.GenericConnectionItem;
+
 import orgomg.cwm.objectmodel.core.CoreFactory;
 import orgomg.cwm.objectmodel.core.TaggedValue;
 
@@ -112,7 +114,18 @@ public class NewSalesforceWizardMigrationTask extends NewGenericWizardMigrationT
                     property.setValue(newValue);
                     Property<?> endpoint = componentProperties.getValuedProperty("endpoint");
                     SalesforceSchemaConnection sfConnection = (SalesforceSchemaConnection) connection;
-                    componentProperties.setValue("endpoint", sfConnection.getWebServiceUrlTextForOAuth()); //$NON-NLS-1$//$NON-NLS-2$
+                    componentProperties.setValue("endpoint", sfConnection.getWebServiceUrlTextForOAuth()); //$NON-NLS-1$
+                }
+                if (GenericTypeUtils.isEnumType(property)) {
+                    List<?> propertyPossibleValues = ((Property<?>) property).getPossibleValues();
+                    if (propertyPossibleValues != null) {
+                        for (Object possibleValue : propertyPossibleValues) {
+                            if (possibleValue.toString().equals(property.getStoredValue())) {
+                                property.setStoredValue(possibleValue);
+                                break;
+                            }
+                        }
+                    }
                 }
             }
             // set empty value instead of default null value, this will add automatically the double quotes in the job
