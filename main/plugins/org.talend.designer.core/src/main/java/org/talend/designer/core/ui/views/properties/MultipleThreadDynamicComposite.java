@@ -708,7 +708,7 @@ public class MultipleThreadDynamicComposite extends ScrolledComposite implements
 
     }
 
-    private final Listener resizeListener = new Listener() {
+    protected final Listener resizeListener = new Listener() {
 
         @Override
         public void handleEvent(Event event) {
@@ -726,19 +726,24 @@ public class MultipleThreadDynamicComposite extends ScrolledComposite implements
 
                     @Override
                     public void run() {
-                        if (!isDisposed() && !getParent().isDisposed()) {
-                            int currentSize = getParent().getClientArea().height;
-                            if (getLastCompositeSize() != currentSize) {
-                                addComponents(true);
-                                refresh();
-                            }
-                        }
+                        handleResize();
                     }
 
                 });
             }
         }
     };
+
+    protected void handleResize() {
+        if (!isDisposed() && !getParent().isDisposed()) {
+            int currentSize = getParent().getClientArea().height;
+            if (getLastCompositeSize() != currentSize) {
+                addComponents(true);
+                refresh();
+            }
+        }
+
+    }
 
     /**
      * Getter for isCompactView.
