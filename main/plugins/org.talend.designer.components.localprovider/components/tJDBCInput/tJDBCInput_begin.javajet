@@ -69,8 +69,12 @@ imports="
 %>
 				java.util.Map<String, routines.system.TalendDataSource> dataSources_<%=cid%> = (java.util.Map<String, routines.system.TalendDataSource>) globalMap.get(KEY_DB_DATASOURCES);
 				if (null != dataSources_<%=cid%>) {
-					conn_<%=cid%> = dataSources_<%=cid%>.get(<%=(null != alias && !("".equals(alias)))?alias:"\"\""%>).getConnection();
-				} else {
+        			String dsAlias_<%=cid%> = <%=(null != alias && !("".equals(alias)))?alias:"\"\""%>;
+            		if (dataSources_<%=cid%>.get(dsAlias_<%=cid%>) == null) {
+               			throw new RuntimeException("No DataSource with alias: " + dsAlias_<%=cid%> + " available!");
+                  	}
+            		conn_<%=cid%> = dataSources_<%=cid%>.get(dsAlias_<%=cid%>).getConnection();
+        		} else {
 <%
 			}
 %>
