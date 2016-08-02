@@ -124,5 +124,20 @@ public class ConnectionTest {
         connection.setTraceData(null);
         assertNull(connection.getTraceData());
     }
+    
+    @Test
+    public void testCreateParallelizeParameters() {
+        IComponent componentPar = ComponentsFactoryProvider.getInstance().get("tPartitioner",
+                ComponentCategory.CATEGORY_4_DI.getName());
+        INode node = new Node(componentPar, (Process) source.getProcess());
+        assertEquals(node.getPropertyValue("NUM_PARTITIONS").toString(), connection.getPropertyValue("NUM_PARTITIONS").toString());
+        assertEquals(node.getPropertyValue("HASH_PARTITION").toString(), connection.getPropertyValue("HASH_PARTITION").toString());
+        assertEquals(node.getPropertyValue("HASH_KEYS").toString(), connection.getPropertyValue("HASH_KEYS").toString());
+        
+        IComponent componentCol = ComponentsFactoryProvider.getInstance().get("tRecollector",
+                ComponentCategory.CATEGORY_4_DI.getName());
+        node = new Node(componentCol, (Process) source.getProcess());
+        assertEquals(node.getPropertyValue("IS_SORTING").toString(), connection.getPropertyValue("IS_SORTING").toString());
+    }
 
 }
