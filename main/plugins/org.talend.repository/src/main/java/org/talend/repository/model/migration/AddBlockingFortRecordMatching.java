@@ -110,8 +110,8 @@ public class AddBlockingFortRecordMatching extends AbstractJobMigrationTask {
                         blockings.add(elementValue);
 
                         ElementValueType elementValue2 = fileFact.createElementValueType();
-                        elementValue.setElementRef("LOOKUP_COLUMN");
-                        elementValue.setValue(entry.getValue());
+                        elementValue2.setElementRef("LOOKUP_COLUMN");
+                        elementValue2.setValue(entry.getValue());
                         blockings.add(elementValue2);
                     }
                 }
