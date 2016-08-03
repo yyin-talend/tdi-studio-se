@@ -144,6 +144,7 @@ import org.talend.designer.core.ui.views.properties.WidgetFactory;
 import org.talend.designer.core.utils.UpgradeParameterHelper;
 import org.talend.designer.runprocess.IRunProcessService;
 import org.talend.hadoop.distribution.constants.HiveConstant;
+import org.talend.hadoop.distribution.constants.ImpalaConstant;
 import org.talend.repository.RepositoryPlugin;
 import org.talend.repository.model.IMetadataService;
 import org.talend.repository.model.IProxyRepositoryFactory;
@@ -302,7 +303,8 @@ public abstract class AbstractElementPropertySectionController implements Proper
         for (int i = 0; i < valuesList.length; i++) {
             if (valuesList[i].equals(value)) {
                 if ("DB_VERSION".equals(repositoryName) || HiveConstant.DISTRIBUTION_PARAMETER.equals(repositoryName)
-                        || HiveConstant.VERSION_PARAMETER.equals(repositoryName)) {
+                        || HiveConstant.VERSION_PARAMETER.equals(repositoryName) || ImpalaConstant.DISTRIBUTION_PARAMETER.equals(repositoryName)
+                        || ImpalaConstant.VERSION_PARAMETER.equals(repositoryName)) {
                     return valuesList[i].toString();
                 }
                 return originalList[i];
@@ -1841,6 +1843,12 @@ public abstract class AbstractElementPropertySectionController implements Proper
             // elem.getElementParameter("CONNECTION_MODE").getValue())) {
             setSpecialParamsForHiveEmbedded(elem);
             // }
+        }else if (EDatabaseTypeName.IMPALA.getProduct().equalsIgnoreCase(type)) {
+            String distroKey = getValueFromRepositoryName(elem, "DISTRIBUTION");
+            connParameters.getParameters().put(ConnParameterKeys.CONN_PARA_KEY_IMPALA_DISTRIBUTION, distroKey);
+
+            String distroVersion = getValueFromRepositoryName(elem, "IMPALA_VERSION");
+            connParameters.getParameters().put(ConnParameterKeys.CONN_PARA_KEY_IMPALA_VERSION, distroVersion);
         }
         // Get real hsqldb type
         if (type.equals(EDatabaseTypeName.HSQLDB.name())

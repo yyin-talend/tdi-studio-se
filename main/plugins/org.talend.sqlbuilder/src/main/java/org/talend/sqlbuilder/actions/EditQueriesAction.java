@@ -193,6 +193,7 @@ public class EditQueriesAction extends AContextualAction {
                     canWork = false;
                 }
                 // Studio does not support this action for hive, TDI-25365.
+                // Studio does not support this action for impala, TBD-3827.
                 if (!isUnderDBConnection(repositoryNode)) {
                     canWork = false;
                 }
@@ -202,7 +203,8 @@ public class EditQueriesAction extends AContextualAction {
                     DatabaseConnection dbConn = (DatabaseConnection) dbItem.getConnection();
                     String dbType = dbConn.getDatabaseType();
                     if (EDatabaseTypeName.HIVE.getXmlName().equalsIgnoreCase(dbType)
-                            || EDatabaseTypeName.HBASE.getXmlName().equalsIgnoreCase(dbType)) {
+                            || EDatabaseTypeName.HBASE.getXmlName().equalsIgnoreCase(dbType)
+                            || EDatabaseTypeName.IMPALA.getXmlName().equalsIgnoreCase(dbType)) {
                         canWork = false;
                         break;
                     }
