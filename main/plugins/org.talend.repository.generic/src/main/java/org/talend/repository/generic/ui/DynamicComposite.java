@@ -15,11 +15,9 @@ package org.talend.repository.generic.ui;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.graphics.Color;
@@ -36,7 +34,6 @@ import org.talend.core.model.process.Element;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.INode;
 import org.talend.core.model.properties.ConnectionItem;
-import org.talend.core.model.properties.Property;
 import org.talend.core.ui.check.Checker;
 import org.talend.core.ui.check.IChecker;
 import org.talend.daikon.NamedThing;
@@ -97,9 +94,8 @@ public class DynamicComposite extends MultipleThreadDynamicComposite implements 
         checker = new Checker();
         internalService = new GenericWizardInternalService();
         if (drivedByForm) {
-            internalService.getComponentService().makeFormCancelable((ComponentProperties) form.getProperties(), form.getName());
+            internalService.getComponentService().makeFormCancelable(form.getProperties(), form.getName());
         }
-        resetParameters();
     }
 
     private void resetComponentProperties() {
