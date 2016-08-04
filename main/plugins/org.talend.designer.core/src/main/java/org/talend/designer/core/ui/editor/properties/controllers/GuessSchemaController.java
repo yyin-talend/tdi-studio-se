@@ -95,6 +95,7 @@ import org.talend.designer.core.ui.editor.properties.ConfigureConnParamDialog;
 import org.talend.designer.core.ui.editor.properties.controllers.uidialog.OpenContextChooseComboDialog;
 import org.talend.designer.runprocess.ProcessorException;
 import org.talend.metadata.managment.connection.manager.HiveConnectionManager;
+import org.talend.metadata.managment.connection.manager.ImpalaConnectionManager;
 import org.talend.metadata.managment.ui.dialog.MappingFileSelectDialog;
 import org.talend.repository.ui.utils.ColumnNameValidator;
 
@@ -901,6 +902,17 @@ public class GuessSchemaController extends AbstractElementPropertySectionControl
                         JavaSqlFactory.doHivePreSetup((DatabaseConnection) metadataConnection.getCurrentConnection());
                     }
                     HiveConnectionManager.getInstance().checkConnection(metadataConnection);
+                    connectionStatus.setResult(true);
+                } catch (Exception e) {
+                    log.error("" + "\n" + e.toString()); //$NON-NLS-1$//$NON-NLS-2$
+                }
+                return connectionStatus.getResult();
+            }
+            if (EDatabaseTypeName.IMPALA.getDisplayName().equals(metadataConnection.getDbType())) {
+                ConnectionStatus connectionStatus = new ConnectionStatus();
+                connectionStatus.setResult(false);
+                try {   
+                    ImpalaConnectionManager.getInstance().checkConnection(metadataConnection);
                     connectionStatus.setResult(true);
                 } catch (Exception e) {
                     log.error("" + "\n" + e.toString()); //$NON-NLS-1$//$NON-NLS-2$

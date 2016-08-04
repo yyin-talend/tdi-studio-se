@@ -131,13 +131,15 @@ public class ReadQueriesAction extends AContextualAction {
                     canWork = false;
                 }
                 // Studio does not support this action for hive, TDI-25365.
+                // Studio does not support this action for impala, TBD-3827.
                 if (canWork) {
                     if (isUnderDBConnection(repositoryNode)) {
                         DatabaseConnectionItem item = (DatabaseConnectionItem) repositoryNode.getObject().getProperty().getItem();
                         DatabaseConnection dbConn = (DatabaseConnection) item.getConnection();
                         String dbType = dbConn.getDatabaseType();
                         if (EDatabaseTypeName.HIVE.getXmlName().equalsIgnoreCase(dbType)
-                                || EDatabaseTypeName.HBASE.getXmlName().equalsIgnoreCase(dbType)) {
+                                || EDatabaseTypeName.HBASE.getXmlName().equalsIgnoreCase(dbType)
+                                || EDatabaseTypeName.IMPALA.getXmlName().equalsIgnoreCase(dbType)) {
                             canWork = false;
                             break;
                         }

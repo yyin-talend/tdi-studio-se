@@ -248,7 +248,9 @@ public class SqlMemoController extends AbstractElementPropertySectionController 
         if (typePara != null && "Hive".equalsIgnoreCase((String) typePara.getValue())) { //$NON-NLS-1$
             openSQLEditorButton.setVisible(false);
         }
-
+        if (typePara != null && "Impala".equalsIgnoreCase((String) typePara.getValue())) { //$NON-NLS-1$
+            openSQLEditorButton.setVisible(false);
+        }
         FormData data1 = new FormData();
         data1.right = new FormAttachment(100, -ITabbedPropertyConstants.HSPACE);
         data1.left = new FormAttachment(100, -(ITabbedPropertyConstants.HSPACE + STANDARD_BUTTON_WIDTH));
