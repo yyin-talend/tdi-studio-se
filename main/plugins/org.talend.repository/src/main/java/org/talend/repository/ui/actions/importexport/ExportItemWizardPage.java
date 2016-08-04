@@ -76,6 +76,7 @@ import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.Project;
 import org.talend.core.model.properties.Property;
 import org.talend.core.model.repository.ERepositoryObjectType;
+import org.talend.core.model.repository.Folder;
 import org.talend.core.model.repository.IExtendedRepositoryNodeHandler;
 import org.talend.core.model.repository.IRepositoryReviewFilter;
 import org.talend.core.model.repository.IRepositoryViewObject;
@@ -93,6 +94,7 @@ import org.talend.repository.model.IRepositoryNode;
 import org.talend.repository.model.IRepositoryNode.ENodeType;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.RepositoryNodeUtilities;
+import org.talend.repository.model.nodes.IProjectRepositoryNode;
 import org.talend.repository.viewer.ui.provider.INavigatorContentServiceProvider;
 import org.talend.repository.viewer.ui.provider.RepoCommonViewerProvider;
 
@@ -1053,6 +1055,28 @@ public class ExportItemWizardPage extends WizardPage {
                 selectedItems.add(object.getProperty().getItem());
             }
         }
+        List<String> folders = new ArrayList<String>();
+        for (Object obj : filteredCheckboxTree.getViewer().getCheckedElements()) {
+            if (obj instanceof RepositoryNode) {
+                RepositoryNode repositoryNode = (RepositoryNode) obj;
+                if (repositoryNode.getType() == ENodeType.SIMPLE_FOLDER && repositoryNode.getObject() instanceof Folder) {
+                    Folder folder = (Folder) repositoryNode.getObject();
+                    ERepositoryObjectType contentType = repositoryNode.getContentType();
+                    IProjectRepositoryNode root = repositoryNode.getRoot();
+                    if (root != null && root.getProject() != null) {
+                        IPath path = new Path(root.getProject().getTechnicalLabel());
+                        path = path.append(contentType.getFolder());
+                        String folderPath = folder.getPath();
+                        if (folderPath != null && !"".equals(folderPath)) {
+                            path = path.append(folderPath);
+                        }
+                        path = path.append(folder.getLabel());
+                        folders.add(path.toPortableString() + "/");
+                    }
+                }
+            }
+        }
+
         try {
             ExportItemUtil exportItemUtil = new ExportItemUtil();
             if (itemFromArchiveRadio.getSelection()) {
@@ -1065,7 +1089,7 @@ public class ExportItemWizardPage extends WizardPage {
             }
 
             // MOD sgandon 31/03/2010 bug 12229: moved getAllVersion into ExportItemUtil.exportitems() method.
-            exportItemUtil.exportItems(new File(lastPath), selectedItems, true, new NullProgressMonitor());
+            exportItemUtil.exportItems(new File(lastPath), selectedItems, folders, true, new NullProgressMonitor());
 
         } catch (Exception e) {
             MessageBoxExceptionHandler.process(e);
