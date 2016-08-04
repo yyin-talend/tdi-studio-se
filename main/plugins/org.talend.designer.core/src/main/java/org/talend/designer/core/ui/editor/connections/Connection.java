@@ -46,6 +46,7 @@ import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.model.components.ElementParameter;
+import org.talend.designer.core.model.process.DataNode;
 import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.process.Process;
 import org.talend.designer.core.ui.editor.properties.controllers.ColumnListController;
@@ -582,7 +583,7 @@ public class Connection extends Element implements IConnection, IPerformance {
 
         IComponent componentPar = ComponentsFactoryProvider.getInstance().get("tPartitioner",
                 ComponentCategory.CATEGORY_4_DI.getName());
-        Node tmpNode = new Node(componentPar, (Process) source.getProcess());
+        INode tmpNode = new DataNode(componentPar, source.getUniqueName());
 
         tmpParam = (ElementParameter) tmpNode.getElementParameter("NUM_PARTITIONS");
         tmpParam.setCategory(EComponentCategory.PARALLELIZATION);
@@ -612,12 +613,8 @@ public class Connection extends Element implements IConnection, IPerformance {
         tmpParam = (ElementParameter) tmpNode.getElementParameter("HASH_KEYS");
         tmpParam.setCategory(EComponentCategory.PARALLELIZATION);
         tmpParam.setShowIf("(PARTITIONER == 'true' or REPARTITIONER=='true') and (HASH_PARTITION=='true')");
-        ColumnListController.updateColumnList(tmpNode, null, true);
         tmpParam.setDefaultValue(tmpParam.getValue());
         addElementParameter(tmpParam);
-
-        componentPar = ComponentsFactoryProvider.getInstance().get("tDepartitioner", ComponentCategory.CATEGORY_4_DI.getName());
-        tmpNode = new Node(componentPar, (Process) source.getProcess());
 
         tmpParam = new ElementParameter(this);
         tmpParam.setName("DEPART_QUEUE_SIZE");
@@ -634,7 +631,7 @@ public class Connection extends Element implements IConnection, IPerformance {
 
         IComponent componentCol = ComponentsFactoryProvider.getInstance().get("tRecollector",
                 ComponentCategory.CATEGORY_4_DI.getName());
-        Node tmpNode1 = new Node(componentCol, (Process) source.getProcess());
+        INode tmpNode1 = new DataNode(componentCol, source.getUniqueName());
 
         tmpParam = (ElementParameter) tmpNode1.getElementParameter("IS_SORTING");
         tmpParam.setCategory(EComponentCategory.PARALLELIZATION);

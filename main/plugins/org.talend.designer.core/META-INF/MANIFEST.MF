@@ -56,7 +56,8 @@ Require-Bundle: org.talend.model,
  org.apache.servicemix.bundles.avro,
  org.eclipse.e4.ui.model.workbench,
  org.eclipse.e4.ui.workbench.renderers.swt,
- org.eclipse.e4.ui.workbench
+ org.eclipse.e4.ui.workbench,
+ org.eclipse.core.resources
 Eclipse-LazyStart: true
 Plugin-Class: org.talend.designer.core.DesignerPlugin
 Export-Package: org.talend.designer.core;
