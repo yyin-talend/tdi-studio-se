@@ -96,17 +96,9 @@ public class ExportItemUtil {
 
     private IFileExporterFullPath exporter = null;
 
-    /**
-     * export the sected TOS model elements to the destination
-     * 
-     * @param destination zip file or folder to store the exported elements
-     * @param items, the items to be exported
-     * @param exportAllVersions whether all the versions are export or only the selected once
-     * @param progressMonitor, to show the progress during export
-     * @throws Exception in case of problem
-     */
-    public void exportItems(File destination, final Collection<Item> items, boolean exportAllVersions,
+    public void exportItems(File destination, final Collection<Item> items, List<String> folders, boolean exportAllVersions,
             IProgressMonitor progressMonitor) throws Exception {
+
         // bug 11301 :export 0 items
         Collection<Item> workItems = items;
         if (workItems == null) {
@@ -156,8 +148,43 @@ public class ExportItemUtil {
                         // exporter.write(file.getAbsolutePath(), rootPath.append(path).toString());
                         exporter.write(file.getAbsolutePath(), path.toString());
                     }
+                    if (folders != null) {
+                        // filter folders that already created
+                        List<String> toRemove = new ArrayList<String>();
+                        for (String folderPath : folders) {
+                            for (IPath resourcePath : toExport.values()) {
+                                if (resourcePath.toPortableString().contains(folderPath)) {
+                                    toRemove.add(folderPath);
+                                    break;
+                                }
+                            }
+                        }
+                        folders.removeAll(toRemove);
+                        for (String folderPath : folders) {
+                            exporter.writeFolder(folderPath);
+                        }
+                    }
                 } else {
                     toExport = exportItems2(workItems, destination, true, progressMonitor);
+                    if (folders != null) {
+                        // filter folders that already created
+                        List<String> toRemove = new ArrayList<String>();
+                        for (String folderPath : folders) {
+                            for (IPath resourcePath : toExport.values()) {
+                                if (resourcePath.toPortableString().contains(folderPath)) {
+                                    toRemove.add(folderPath);
+                                    break;
+                                }
+                            }
+                        }
+                        folders.removeAll(toRemove);
+                        for (String folderPath : folders) {
+                            IPath fullPath = new Path(destination.getAbsolutePath());
+                            fullPath = fullPath.append(folderPath);
+                            FilesUtils.createFoldersIfNotExists(fullPath.toPortableString(), false);
+                        }
+                    }
+
                 }
             } catch (Exception e) {
                 throw e;
@@ -176,6 +203,21 @@ public class ExportItemUtil {
             }
 
         }
+
+    }
+
+    /**
+     * export the sected TOS model elements to the destination
+     * 
+     * @param destination zip file or folder to store the exported elements
+     * @param items, the items to be exported
+     * @param exportAllVersions whether all the versions are export or only the selected once
+     * @param progressMonitor, to show the progress during export
+     * @throws Exception in case of problem
+     */
+    public void exportItems(File destination, final Collection<Item> items, boolean exportAllVersions,
+            IProgressMonitor progressMonitor) throws Exception {
+        exportItems(destination, items, null, exportAllVersions, progressMonitor);
     }
 
     /**
