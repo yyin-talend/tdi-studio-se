@@ -76,13 +76,15 @@ public class CorrectBatchSizeForDBComponentsMore extends AbstractJobMigrationTas
                 }
 
                 if (elementParaType != null && elementParaType.getValue().equalsIgnoreCase("true")) {
-                	String batchSizeInStr = ComponentUtilities.getNodeProperty(node, "BATCH_SIZE").getValue();
-                	if(batchSizeInStr != null && !"".equals(batchSizeInStr)){
-                		int batchSize = Integer.valueOf(batchSizeInStr);
-                		if(batchSize <= 0){
-                			 ComponentUtilities.getNodeProperty(node, "BATCH_SIZE").setValue("1");
-                		}
-                	}                       
+                    String batchSizeInStr = ComponentUtilities.getNodeProperty(node, "BATCH_SIZE").getValue();
+                    if (batchSizeInStr != null && !"".equals(batchSizeInStr)) {
+                        if (batchSizeInStr.matches("\\d+")) { //$NON-NLS-1$
+                            int batchSize = Integer.valueOf(batchSizeInStr);
+                            if (batchSize <= 0) {
+                                ComponentUtilities.getNodeProperty(node, "BATCH_SIZE").setValue("1");
+                            }
+                        }
+                    }
                 }
             
             }
