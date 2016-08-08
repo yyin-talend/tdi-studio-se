@@ -666,7 +666,24 @@ public class Connection extends Element implements IConnection, IPerformance {
                 IConnection.TRACE_SCHEMA_COLUMN_CONDITION };
         param.setListItemsDisplayCodeName(columns);
         param.setListItemsDisplayName(columns);
-        param.setListItemsValue(new ElementParameter[0]);
+
+        ElementParameter traceColumn = new ElementParameter(this);
+        traceColumn.setName(IConnection.TRACE_SCHEMA_COLUMN);
+        traceColumn.setDisplayName(""); //$NON-NLS-1$
+        traceColumn.setFieldType(EParameterFieldType.TEXT);
+        traceColumn.setValue(""); //$NON-NLS-1$
+        ElementParameter traceColumnChecked = new ElementParameter(this);
+        traceColumnChecked.setName(IConnection.TRACE_SCHEMA_COLUMN_CHECKED);
+        traceColumnChecked.setDisplayName(""); //$NON-NLS-1$
+        traceColumnChecked.setFieldType(EParameterFieldType.CHECK);
+        traceColumnChecked.setValue(true);
+        ElementParameter traceColumnCondition = new ElementParameter(this);
+        traceColumnCondition.setName(IConnection.TRACE_SCHEMA_COLUMN_CHECKED);
+        traceColumnCondition.setDisplayName(""); //$NON-NLS-1$
+        traceColumnCondition.setFieldType(EParameterFieldType.TEXT);
+        traceColumnCondition.setValue(""); //$NON-NLS-1$
+        ElementParameter[] listItemsValue = new ElementParameter[] { traceColumn, traceColumnChecked, traceColumnCondition };
+        param.setListItemsValue(listItemsValue);
         param.setValue(new ArrayList<Map<String, Object>>());
         param.setCategory(EComponentCategory.ADVANCED);
         param.setShow(false);
