@@ -117,12 +117,6 @@
       </page>
       <page
             category="org.talend.designer.core.ui.preferences.SpecificSettingPreferencePage"
-            class="org.talend.designer.core.ui.preferences.MetadataTalendTypePreferencePage"
-            id="org.talend.designer.core.ui.pref.metadataTalendType"
-            name="%metadataofTalendType">
-      </page>
-      <page
-            category="org.talend.designer.core.ui.preferences.SpecificSettingPreferencePage"
             class="org.talend.designer.core.ui.preferences.MetadataTypeLengthPreferencePage"
             id="org.talend.designer.core.ui.pref.defaultMetadataTypeAndLength"
             name="%defaultTypeAndLength">
