@@ -117,6 +117,7 @@ import org.talend.core.model.utils.JavaResourcesHelper;
 import org.talend.core.prefs.ITalendCorePrefConstants;
 import org.talend.core.runtime.process.ITalendProcessJavaProject;
 import org.talend.core.runtime.process.LastGenerationInfo;
+import org.talend.core.runtime.process.TalendProcessOptionConstants;
 import org.talend.core.ui.services.IRulesProviderService;
 import org.talend.core.utils.BitwiseOptionUtils;
 import org.talend.designer.codegen.ICodeGenerator;
@@ -506,8 +507,8 @@ public class JavaProcessor extends AbstractJavaProcessor implements IJavaBreakpo
      * boolean, boolean)
      */
     @Override
-    public void generateCode(boolean statistics, boolean trace, boolean javaProperties) throws ProcessorException {
-        super.generateCode(statistics, trace, javaProperties);
+    public void generateCode(boolean statistics, boolean trace, boolean javaProperties, int option) throws ProcessorException {
+        super.generateCode(statistics, trace, javaProperties, option);
         try {
             // hywang modified for 6484
             String currentJavaProject = ProjectManager.getInstance().getProject(property).getTechnicalLabel();
@@ -571,96 +572,9 @@ public class JavaProcessor extends AbstractJavaProcessor implements IJavaBreakpo
                 ExceptionHandler.process(e);
             }
 
-            // format the code before save the file.
-            final String toFormat = processCode;
-            writeCodesToFile(toFormat, "1-beforeFormat");//$NON-NLS-1$
-            // fix for 21320
-            final Job job = new Job("t") { //$NON-NLS-1$
-
-                private Thread workThread;
-
-                @Override
-                protected IStatus run(IProgressMonitor monitor) {
-                    monitor.beginTask("Format code", IProgressMonitor.UNKNOWN); //$NON-NLS-1$
-                    FutureTask<Boolean> ft = new FutureTask<Boolean>(new Callable<Boolean>() {
-
-                        @Override
-                        public Boolean call() throws Exception {
-                            formatedCode = formatCode(toFormat);
-                            return Boolean.TRUE;
-                        }
-                    });
-                    Boolean isSucceed = null;
-                    try {
-                        workThread = new Thread(ft);
-                        workThread.start();
-                        isSucceed = ft.get();
-                    } catch (Throwable e) {
-                        if (!monitor.isCanceled()) {
-                            ExceptionHandler.process(e);
-                        }
-                    }
-                    if (isSucceed == Boolean.TRUE && !monitor.isCanceled()) {
-                        writeCodesToFile(formatedCode, "2-afterFormat");//$NON-NLS-1$
-                    }
-                    monitor.done();
-                    return Status.OK_STATUS;
-                }
-
-                @Override
-                protected void canceling() {
-                    try {
-                        super.canceling();
-                        if (workThread != null) {
-                            workThread.stop();
-                        }
-                    } catch (Throwable e) {
-                        // should catch the ThreadDeath, in case to crash Studio
-                    }
-                }
-            };
-            long time1 = System.currentTimeMillis();
-
-            job.setSystem(true);
-            job.schedule();
-            boolean f = true;
-            long timeout = 1000 * DesignerPlugin.getDefault().getPreferenceStore()
-                    .getInt(ITalendCorePrefConstants.PERFORMANCE_JAVA_PROCESS_CODE_FORMATE_TIMEOUT);
-            if (timeout <= 0) {
-                timeout = 30000;
+            if (!BitwiseOptionUtils.containOption(option, TalendProcessOptionConstants.GENERATE_WITHOUT_FORMAT)) {
+                processCode = doFormat(processCode);
             }
-            while (f) {
-                long time2 = System.currentTimeMillis();
-                if (time2 - time1 > timeout) {
-                    if (job.getResult() == null || !job.getResult().isOK()) {
-                        f = false;
-                        job.cancel();
-                        if (!CommonsPlugin.isHeadless()) {
-                            Display.getDefault().asyncExec(new Runnable() {
-
-                                @Override
-                                public void run() {
-                                    MessageDialog.openWarning(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),
-                                            Messages.getString("JavaProcessor.warn.codeFormatTimeout.title"), //$NON-NLS-1$
-                                            Messages.getString("JavaProcessor.warn.codeFormatTimeout.message")); //$NON-NLS-1$
-                                }
-                            });
-                        }
-                    } else {
-                        processCode = formatedCode;
-                        f = false;
-                    }
-                } else {
-                    if (job.getState() != Job.RUNNING) {
-                        if (job.getResult() != null && job.getResult().isOK()) {
-                            processCode = formatedCode;
-                            f = false;
-                        }
-                    }
-                }
-
-            }
-            formatedCode = null;
 
             // see feature 4610:option to see byte length of each code method
             processCode = computeMethodSizeIfNeeded(processCode);
@@ -745,6 +659,100 @@ public class JavaProcessor extends AbstractJavaProcessor implements IJavaBreakpo
         }
     }
 
+    private String doFormat(String processCode) {
+        // format the code before save the file.
+        final String toFormat = processCode;
+        writeCodesToFile(toFormat, "1-beforeFormat");//$NON-NLS-1$
+        // fix for 21320
+        final Job job = new Job("t") { //$NON-NLS-1$
+
+            private Thread workThread;
+
+            @Override
+            protected IStatus run(IProgressMonitor monitor) {
+                monitor.beginTask("Format code", IProgressMonitor.UNKNOWN); //$NON-NLS-1$
+                FutureTask<Boolean> ft = new FutureTask<Boolean>(new Callable<Boolean>() {
+
+                    @Override
+                    public Boolean call() throws Exception {
+                        formatedCode = formatCode(toFormat);
+                        return Boolean.TRUE;
+                    }
+                });
+                Boolean isSucceed = null;
+                try {
+                    workThread = new Thread(ft);
+                    workThread.start();
+                    isSucceed = ft.get();
+                } catch (Throwable e) {
+                    if (!monitor.isCanceled()) {
+                        ExceptionHandler.process(e);
+                    }
+                }
+                if (isSucceed == Boolean.TRUE && !monitor.isCanceled()) {
+                    writeCodesToFile(formatedCode, "2-afterFormat");//$NON-NLS-1$
+                }
+                monitor.done();
+                return Status.OK_STATUS;
+            }
+
+            @Override
+            protected void canceling() {
+                try {
+                    super.canceling();
+                    if (workThread != null) {
+                        workThread.stop();
+                    }
+                } catch (Throwable e) {
+                    // should catch the ThreadDeath, in case to crash Studio
+                }
+            }
+        };
+        long time1 = System.currentTimeMillis();
+
+        job.setSystem(true);
+        job.schedule();
+        boolean f = true;
+        long timeout = 1000 * DesignerPlugin.getDefault().getPreferenceStore()
+                .getInt(ITalendCorePrefConstants.PERFORMANCE_JAVA_PROCESS_CODE_FORMATE_TIMEOUT);
+        if (timeout <= 0) {
+            timeout = 30000;
+        }
+        while (f) {
+            long time2 = System.currentTimeMillis();
+            if (time2 - time1 > timeout) {
+                if (job.getResult() == null || !job.getResult().isOK()) {
+                    f = false;
+                    job.cancel();
+                    if (!CommonsPlugin.isHeadless()) {
+                        Display.getDefault().asyncExec(new Runnable() {
+
+                            @Override
+                            public void run() {
+                                MessageDialog.openWarning(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),
+                                        Messages.getString("JavaProcessor.warn.codeFormatTimeout.title"), //$NON-NLS-1$
+                                        Messages.getString("JavaProcessor.warn.codeFormatTimeout.message")); //$NON-NLS-1$
+                            }
+                        });
+                    }
+                } else {
+                    processCode = formatedCode;
+                    f = false;
+                }
+            } else {
+                if (job.getState() != Job.RUNNING) {
+                    if (job.getResult() != null && job.getResult().isOK()) {
+                        processCode = formatedCode;
+                        f = false;
+                    }
+                }
+            }
+
+        }
+        formatedCode = null;
+        return processCode;
+    }
+
     /**
      * DOC nrousseau Comment method "formatCode".
      * 
@@ -755,8 +763,9 @@ public class JavaProcessor extends AbstractJavaProcessor implements IJavaBreakpo
      */
     @SuppressWarnings({ "unchecked" })
     private String formatCode(String processCode) {
+        // if export, won't format too.
         // we cannot make calls to Ui in headless mode
-        if (CommonsPlugin.isHeadless()) {
+        if (ProcessorUtilities.isExportConfig() || CommonsPlugin.isHeadless()) {
             return processCode; // nothing to do
         }
         final IDocument document = new Document(processCode);
