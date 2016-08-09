@@ -28,7 +28,6 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.SubProgressMonitor;
 import org.eclipse.core.runtime.jobs.ISchedulingRule;
-import org.eclipse.jface.viewers.StructuredSelection;
 import org.osgi.framework.FrameworkUtil;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.core.CorePlugin;
@@ -97,10 +96,6 @@ public class BuildJobManager {
         if (processes.size() == 1) {
             ProcessItem item = processes.get(0);
             buildJob(destinationPath, item, version, context, exportChoiceMap, jobExportType, pMonitor);
-            // TODO check error , need to change the way to check error latter
-            if (CorePlugin.getDefault().getRunProcessService().checkExportProcess(new StructuredSelection(nodes.get(0)), true)) {
-                return false;
-            }
         } else {
             int scale = 1000;
             int steps = 3;
@@ -126,11 +121,6 @@ public class BuildJobManager {
                 buildJobHandler.build(new SubProgressMonitor(pMonitor, scale));
                 IFile jobTargetFile = buildJobHandler.getJobTargetFile();
                 if (jobTargetFile != null && jobTargetFile.exists()) {
-                    // TODO check error , need to change the way to check error latter
-                    if (CorePlugin.getDefault().getRunProcessService()
-                            .checkExportProcess(new StructuredSelection(nodes.get(i)), true)) {
-                        return false;
-                    }
                     // unzip to temp folder
                     FilesUtils.unzip(jobTargetFile.getLocation().toPortableString(), tempProFolder.getAbsolutePath());
                     String zipPath = jobTargetFile.getLocation().toPortableString();
@@ -245,4 +235,5 @@ public class BuildJobManager {
         }
         return addClasspathJar;
     }
+
 }

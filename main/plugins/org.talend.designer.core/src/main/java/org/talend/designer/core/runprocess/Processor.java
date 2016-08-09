@@ -483,6 +483,10 @@ public abstract class Processor implements IProcessor, IEclipseProcessor, Talend
         // do something...
     }
 
+    public void generateCode(boolean statistics, boolean trace, boolean properties, int option) throws ProcessorException {
+        generateCode(statistics, trace, properties);
+    }
+
     /*
      * (non-Javadoc)
      * 

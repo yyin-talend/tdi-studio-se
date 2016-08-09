@@ -143,10 +143,11 @@ public class JobErrorsChecker {
                         }
                         // check the item has compile error when export job
                         boolean ret = false;
+                        String message = null;
                         IMarker[] markers = sourceFile.findMarkers(IMarker.PROBLEM, true, IResource.DEPTH_ONE);
                         for (IMarker marker : markers) {
                             Integer lineNr = (Integer) marker.getAttribute(IMarker.LINE_NUMBER);
-                            String message = (String) marker.getAttribute(IMarker.MESSAGE);
+                            message = (String) marker.getAttribute(IMarker.MESSAGE);
                             Integer severity = (Integer) marker.getAttribute(IMarker.SEVERITY);
                             Integer start = (Integer) marker.getAttribute(IMarker.CHAR_START);
                             Integer end = (Integer) marker.getAttribute(IMarker.CHAR_END);
@@ -164,11 +165,11 @@ public class JobErrorsChecker {
                             if (isJob) {
                                 throw new ProcessorException(Messages.getString("JobErrorsChecker_compile_errors") + '\n' + //$NON-NLS-1$
                                         Messages.getString("JobErrorsChecker_compile_error_content", item.getProperty() //$NON-NLS-1$
-                                                .getLabel()));
+                                                .getLabel()) + '\n' + message);
                             } else {
                                 throw new ProcessorException(Messages.getString("CamelJobErrorsChecker_compile_errors") + '\n' + //$NON-NLS-1$
                                         Messages.getString("CamelJobErrorsChecker_compile_error_content", item.getProperty() //$NON-NLS-1$
-                                                .getLabel()));
+                                                .getLabel()) + '\n' + message);
                             }
                         }
 
