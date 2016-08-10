@@ -1067,6 +1067,7 @@ public class JobJavaScriptsManager extends JobScriptsManager {
                     if (GlobalServiceRegister.getDefault().isServiceRegistered(ICoreService.class)) {
                         ICoreService coreService = (ICoreService) GlobalServiceRegister.getDefault().getService(ICoreService.class);
                         coreService.synchronizeMapptingXML();
+                        coreService.syncLog4jSettings();
                     }
                     List<URL> xmlMappingFileUrls = new ArrayList<URL>();
                     if (xmlMappingFolder.exists()) {
@@ -1566,6 +1567,7 @@ public class JobJavaScriptsManager extends JobScriptsManager {
                 if (GlobalServiceRegister.getDefault().isServiceRegistered(ICoreService.class)) {
                     ICoreService coreService = (ICoreService) GlobalServiceRegister.getDefault().getService(ICoreService.class);
                     coreService.synchronizeMapptingXML();
+                    coreService.syncLog4jSettings();
                 }
             }
 

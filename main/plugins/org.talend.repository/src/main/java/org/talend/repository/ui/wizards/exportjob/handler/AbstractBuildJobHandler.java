@@ -188,6 +188,7 @@ public abstract class AbstractBuildJobHandler implements IBuildJobHandler {
             if (GlobalServiceRegister.getDefault().isServiceRegistered(ICoreService.class)) {
                 ICoreService coreService = (ICoreService) GlobalServiceRegister.getDefault().getService(ICoreService.class);
                 coreService.synchronizeMapptingXML();
+                coreService.syncLog4jSettings();
             }
         }
         // If the map doesn't contain the assembly key, then take the default value activation from the POM.
