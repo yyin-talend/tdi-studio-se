@@ -52,6 +52,7 @@ import org.talend.designer.core.ui.editor.process.Process;
 import org.talend.designer.core.ui.editor.properties.controllers.ColumnListController;
 import org.talend.designer.core.ui.editor.properties.controllers.TableController;
 import org.talend.designer.core.utils.ConnectionUtil;
+import org.talend.designer.runprocess.IRunProcessService;
 
 /**
  * Class that define the connection. It's the model part of the Gef element <br/>
@@ -731,14 +732,18 @@ public class Connection extends Element implements IConnection, IPerformance {
 
     public boolean checkTraceShowEnable() {
         // enable
-        IProcess process = DesignerPlugin.getDefault().getRunProcessService().getActiveProcess();
-        if (process == null || this.getSource() == null) {
+        final IRunProcessService runProcessService = DesignerPlugin.getDefault().getRunProcessService();
+        if (runProcessService == null) {
+            return false;
+        }
+        IProcess process = runProcessService.getActiveProcess();
+        if (process == null || process.getId() == null || this.getSource() == null || this.getSource().getProcess() == null) {
             return false;
         }
         if (!process.getId().equals(this.getSource().getProcess().getId())) {
             return false;
         }
-        boolean enabled = DesignerPlugin.getDefault().getRunProcessService().enableTraceForActiveRunProcess();
+        boolean enabled = runProcessService.enableTraceForActiveRunProcess();
         return enabled;
     }
 
