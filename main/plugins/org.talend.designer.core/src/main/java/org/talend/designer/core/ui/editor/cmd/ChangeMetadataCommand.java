@@ -252,8 +252,8 @@ public class ChangeMetadataCommand extends Command {
 
     public static boolean askPropagate() {
         Boolean needPropagate = MessageDialog.openQuestion(new Shell(),
-                    Messages.getString("ChangeMetadataCommand.messageDialog.propagate"), //$NON-NLS-1$
-                    Messages.getString("ChangeMetadataCommand.messageDialog.questionMessage")); //$NON-NLS-1$ 
+                Messages.getString("ChangeMetadataCommand.messageDialog.propagate"), //$NON-NLS-1$
+                Messages.getString("ChangeMetadataCommand.messageDialog.questionMessage")); //$NON-NLS-1$ 
         return needPropagate;
     }
 
@@ -637,7 +637,7 @@ public class ChangeMetadataCommand extends Command {
                 newOutputMetadata);
         syncOutputNodeColumnsList(outputColumnNameChangedExt);
 
-        setXMLMAPPING();
+        setTableMAPPING();
 
         if (!internal) {
             updateColumnList(oldOutputMetadata, newOutputMetadata);
@@ -726,23 +726,28 @@ public class ChangeMetadataCommand extends Command {
 
     }
 
-    /**
-     * qzhang Comment method "setXMLMAPPING".
-     */
-    protected void setXMLMAPPING() {
+    protected void setTableMAPPING() {
         if (getConnection() != null) {
+            String componentName = node.getComponent().getName();
             for (IElementParameter parameter : node.getElementParameters()) {
-                if (parameter.getFieldType() == EParameterFieldType.TABLE && parameter.getRepositoryValue() != null
-                        && parameter.getRepositoryValue().equals("XML_MAPPING")) { //$NON-NLS-1$
-                    List<Map<String, Object>> value2 = (List<Map<String, Object>>) parameter.getValue();
-                    RepositoryToComponentProperty.getTableXMLMappingValue(getConnection(), value2, newOutputMetadata,
-                            getColumnRenameMap());
-                    IElementParameter elementParameter = node.getElementParameter(EParameterName.PROPERTY_TYPE.getName());
-                    if (elementParameter != null) {
-                        if (EmfComponent.BUILTIN.equals(elementParameter.getValue())) {
-                            parameter.setRepositoryValueUsed(false);
-                        } else {
-                            parameter.setRepositoryValueUsed(true);
+                if (parameter.getFieldType() == EParameterFieldType.TABLE) {
+                    if (parameter.getRepositoryValue() != null && parameter.getRepositoryValue().equals("XML_MAPPING")) { //$NON-NLS-1$
+                        List<Map<String, Object>> value2 = (List<Map<String, Object>>) parameter.getValue();
+                        RepositoryToComponentProperty.getTableXMLMappingValue(getConnection(), value2, newOutputMetadata,
+                                getColumnRenameMap());
+                        IElementParameter elementParameter = node.getElementParameter(EParameterName.PROPERTY_TYPE.getName());
+                        if (elementParameter != null) {
+                            if (EmfComponent.BUILTIN.equals(elementParameter.getValue())) {
+                                parameter.setRepositoryValueUsed(false);
+                            } else {
+                                parameter.setRepositoryValueUsed(true);
+                            }
+                        }
+                    } else if (componentName != null && componentName.startsWith("tHBase") //$NON-NLS-1$
+                            && ("MAPPING".equals(parameter.getName()) || "FAMILIES".equals(parameter.getName()))) {//$NON-NLS-1$//$NON-NLS-2$
+                        Object value = RepositoryToComponentProperty.getColumnMappingValue(connection, newOutputMetadata);
+                        if (value != null) {
+                            parameter.setValue(value);
                         }
                     }
                 }
@@ -886,9 +891,9 @@ public class ChangeMetadataCommand extends Command {
         }
     }
 
-    
     /**
      * Sets the propagate.
+     * 
      * @param propagate the propagate to set
      */
     public void setPropagate(Boolean propagate) {
@@ -902,9 +907,9 @@ public class ChangeMetadataCommand extends Command {
         return this.propagate;
     }
 
-    
     /**
      * Sets the currentConnector.
+     * 
      * @param currentConnector the currentConnector to set
      */
     public void setCurrentConnector(String currentConnector) {
