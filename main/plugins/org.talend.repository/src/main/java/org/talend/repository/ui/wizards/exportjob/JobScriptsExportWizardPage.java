@@ -1480,8 +1480,10 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
                 String userDir = System.getProperty("user.dir"); //$NON-NLS-1$
                 destination = userDir + File.separator + destination;
             }
+            Map<ExportChoice, Object> exportChoiceMap = getExportChoiceMap();
+            exportChoiceMap.put(ExportChoice.addStatistics, Boolean.TRUE);
             return BuildJobManager.getInstance().buildJobs(destination, Arrays.asList(getCheckNodes()), getSelectedJobVersion(),
-                    context, getExportChoiceMap(), jobExportType, monitor);
+                    context, exportChoiceMap, jobExportType, monitor);
 
         } catch (Exception e) {
             MessageBoxExceptionHandler.process(e, getShell());
