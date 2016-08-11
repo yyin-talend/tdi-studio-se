@@ -279,16 +279,6 @@ public class RepositoryChangeMetadataCommand extends ChangeMetadataCommand {
                                 }
                             }
                         }
-                        // TBD-3869 hbase column family
-                        if (connection != null && EParameterFieldType.TABLE.equals(param.getFieldType()) && componentName != null
-                                && componentName.startsWith("tHBase") //$NON-NLS-1$
-                                && ("MAPPING".equals(param.getName()) || "FAMILIES".equals(param.getName()))) { //$NON-NLS-1$ //$NON-NLS-2$
-                            Object value = RepositoryToComponentProperty.getColumnMappingValue(
-                                    ((ConnectionItem) item).getConnection(), newOutputMetadata);
-                            if (value != null) {
-                                param.setValue(value);
-                            }
-                        }
                     }
                 }
             }
