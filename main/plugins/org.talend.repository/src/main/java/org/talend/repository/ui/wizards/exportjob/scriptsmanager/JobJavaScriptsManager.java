@@ -66,6 +66,7 @@ import org.talend.commons.utils.io.FilesUtils;
 import org.talend.commons.utils.workbench.resources.ResourceUtils;
 import org.talend.core.CorePlugin;
 import org.talend.core.GlobalServiceRegister;
+import org.talend.core.ICoreService;
 import org.talend.core.ILibraryManagerService;
 import org.talend.core.PluginChecker;
 import org.talend.core.language.ECodeLanguage;
@@ -1063,6 +1064,11 @@ public class JobJavaScriptsManager extends JobScriptsManager {
                     // for db mapping xml
                     IFolder xmlMappingFolder = talendProcessJavaProject.getResourcesFolder()
                             .getFolder(JavaUtils.JAVA_XML_MAPPING);
+                    if (GlobalServiceRegister.getDefault().isServiceRegistered(ICoreService.class)) {
+                        ICoreService coreService = (ICoreService) GlobalServiceRegister.getDefault().getService(ICoreService.class);
+                        coreService.synchronizeMapptingXML();
+                        coreService.syncLog4jSettings();
+                    }
                     List<URL> xmlMappingFileUrls = new ArrayList<URL>();
                     if (xmlMappingFolder.exists()) {
                         for (IResource fileResource : xmlMappingFolder.members()) {
@@ -1558,6 +1564,11 @@ public class JobJavaScriptsManager extends JobScriptsManager {
             include.add(SYSTEM_ROUTINES_PATH);
             if (needMappingInSystemRoutine) {
                 include.add(JavaUtils.JAVA_XML_MAPPING);
+                if (GlobalServiceRegister.getDefault().isServiceRegistered(ICoreService.class)) {
+                    ICoreService coreService = (ICoreService) GlobalServiceRegister.getDefault().getService(ICoreService.class);
+                    coreService.synchronizeMapptingXML();
+                    coreService.syncLog4jSettings();
+                }
             }
 
             File jarFile = new File(getTmpFolder() + File.separatorChar + SYSTEMROUTINE_JAR);

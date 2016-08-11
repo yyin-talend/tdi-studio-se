@@ -22,6 +22,8 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.core.CorePlugin;
+import org.talend.core.GlobalServiceRegister;
+import org.talend.core.ICoreService;
 import org.talend.core.model.process.ProcessUtils;
 import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.ProcessItem;
@@ -182,7 +184,13 @@ public abstract class AbstractBuildJobHandler implements IBuildJobHandler {
         // xmlMappings folders
         addArg(profileBuffer, needXmlMappings(), TalendMavenConstants.PROFILE_INCLUDE_XMLMAPPINGS);
         addArg(profileBuffer, needXmlMappings() && isBinaries, TalendMavenConstants.PROFILE_INCLUDE_RUNNING_XMLMAPPINGS);
-
+        if (needXmlMappings()) {
+            if (GlobalServiceRegister.getDefault().isServiceRegistered(ICoreService.class)) {
+                ICoreService coreService = (ICoreService) GlobalServiceRegister.getDefault().getService(ICoreService.class);
+                coreService.synchronizeMapptingXML();
+                coreService.syncLog4jSettings();
+            }
+        }
         // If the map doesn't contain the assembly key, then take the default value activation from the POM.
         boolean isAssemblyNeeded = exportChoice.get(ExportChoice.needAssembly) == null
                 || isOptionChoosed(ExportChoice.needAssembly);

@@ -10,13 +10,19 @@
 // 9 rue Pages 92150 Suresnes, France
 //
 // ============================================================================
-package org.talend.designer.core.ui.preferences;
+package org.talend.repository.preference;
 
 import org.eclipse.jface.preference.FieldEditorPreferencePage;
-import org.eclipse.ui.IWorkbench;
-import org.eclipse.ui.IWorkbenchPreferencePage;
-import org.talend.commons.ui.runtime.exception.ExceptionHandler;
-import org.talend.designer.core.DesignerPlugin;
+import org.eclipse.jface.preference.IPreferenceStore;
+import org.eclipse.swt.widgets.Shell;
+import org.talend.commons.exception.ExceptionHandler;
+import org.talend.commons.exception.PersistenceException;
+import org.talend.commons.ui.swt.dialogs.ErrorDialogWidthDetailArea;
+import org.talend.core.repository.model.ProxyRepositoryFactory;
+import org.talend.metadata.managment.ui.editor.MetadataTalendTypeEditor;
+import org.talend.repository.RepositoryPlugin;
+import org.talend.repository.i18n.Messages;
+import org.talend.repository.model.RepositoryPreferenceStore;
 
 /**
  * Preference for the Metadata Talend type files.
@@ -24,7 +30,7 @@ import org.talend.designer.core.DesignerPlugin;
  * $Id: MetadataTalendTypePreferencePage.java 2738 2007-04-26 13:12:27Z cantoine $
  * 
  */
-public class MetadataTalendTypePreferencePage extends FieldEditorPreferencePage implements IWorkbenchPreferencePage {
+public class MetadataTalendTypePreferencePage extends FieldEditorPreferencePage {
 
     /**
      * MetadataTalendTypePreferencePage.
@@ -35,7 +41,6 @@ public class MetadataTalendTypePreferencePage extends FieldEditorPreferencePage 
 
     public MetadataTalendTypePreferencePage() {
         super(FLAT);
-        setPreferenceStore(DesignerPlugin.getDefault().getPreferenceStore());
     }
 
     @Override
@@ -64,7 +69,15 @@ public class MetadataTalendTypePreferencePage extends FieldEditorPreferencePage 
     }
 
     @Override
-    public void init(IWorkbench workbench) {
+    protected IPreferenceStore doGetPreferenceStore() {
+        RepositoryPreferenceStore preferenceStore = new RepositoryPreferenceStore(ProxyRepositoryFactory.getInstance());
+        try {
+            preferenceStore.load();
+        } catch (PersistenceException e) {
+            String detailError = e.getMessage();
+            new ErrorDialogWidthDetailArea(new Shell(), RepositoryPlugin.PLUGIN_ID, Messages
+                    .getString("CommonWizard.persistenceException"), detailError); //$NON-NLS-1$
+        }
+        return preferenceStore;
     }
-
 }

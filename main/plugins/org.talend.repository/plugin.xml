@@ -2948,6 +2948,12 @@
             order="6"
             title="Log4j">
       </page>
+      <page
+            category="general"
+            class="org.talend.repository.preference.MetadataTalendTypePreferencePage"
+            id="org.talend.repository.preference.MetadataTalendTypePreferencePage"
+            title="%projectSetting.talendType">
+      </page>
    </extension>
    <extension
          id="CreateAutomaticConnectionApplication"
