@@ -2237,7 +2237,7 @@ public class TalendEditorDropTargetListener extends TemplateTransferDropTargetLi
     }
 
     private String generateItemIdWithProjectLabel(String projectLabel, String pureItemId) {
-        return ProxyRepositoryFactory.getInstance().generateItemIdWithProjectLabel(projectLabel, pureItemId);
+        return ProxyRepositoryFactory.getInstance().generateFullId(projectLabel, pureItemId);
     }
 
     private String generateItemIdWithProjectLabel(RepositoryNode selectedNode, String propertyId) {

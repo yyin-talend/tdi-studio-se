@@ -58,6 +58,7 @@ import org.talend.core.model.repository.IRepositoryTypeProcessor;
 import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.model.repository.RepositoryContentManager;
 import org.talend.core.model.utils.RepositoryManagerHelper;
+import org.talend.core.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.IRepositoryNode;
 import org.talend.repository.model.IRepositoryNode.ENodeType;
@@ -587,6 +588,10 @@ public class RepositoryReviewDialog extends Dialog {
         this.selectedNodeName = selectionNode;
     }
 
+    public void setIsSelectionId(boolean isSelectionId) {
+        this.isSelectionId = isSelectionId;
+    }
+
     public void setSelectedNodeName(ERepositoryObjectType selectionType, String selectionNode, boolean isSelectionId) {
         setSelectedNodeName(selectionNode);
         this.selectionType = selectionType;
@@ -597,7 +602,7 @@ public class RepositoryReviewDialog extends Dialog {
         /*
          * Make sure expand all. Just notice it here, because have been expand before.
          */
-        // getRepositoryTreeViewer().expandAll();
+        getRepositoryTreeViewer().expandAll();
         RepositoryNode root = (RepositoryNode) getRepositoryTreeViewer().getInput();
         selectNode(root, this.selectionType, this.selectedNodeName, this.isSelectionId);
     }
@@ -614,8 +619,28 @@ public class RepositoryReviewDialog extends Dialog {
         boolean valid = false;
         if (isSelectionId) {
             IRepositoryViewObject object = root.getObject();
-            if (object != null && idOrLabel.equals(object.getId())) {
-                valid = true;
+            if (object != null) {
+                String idWithoutSchema = idOrLabel;
+                String schemaLabel = null;
+                String schemaSeperator = " - "; //$NON-NLS-1$
+                String[] ids = idOrLabel.split(schemaSeperator);
+                if (ids != null && 1 < ids.length) {
+                    idWithoutSchema = ids[0];
+                    schemaLabel = ids[1];
+                }
+                String itemId = null;
+                if (ProxyRepositoryFactory.getInstance().getProjectLabelFromItemId(idWithoutSchema) == null) {
+                    itemId = object.getId();
+                } else {
+                    itemId = ProxyRepositoryFactory.getInstance().getFullId(object);
+                }
+                if (idWithoutSchema.equals(itemId)) {
+                    if (schemaLabel != null && !schemaLabel.isEmpty()) {
+                        selectNode(root, selectionType, schemaLabel, false);
+                    } else {
+                        valid = true;
+                    }
+                }
             }
         } else if (idOrLabel.equals(root.getProperties(EProperties.LABEL))) {
             valid = true;
@@ -660,6 +685,11 @@ public class RepositoryReviewDialog extends Dialog {
         if (this.typeProcessor instanceof JobTypeProcessor) {
             ((JobTypeProcessor) this.typeProcessor).setJobIDList(jobIDList);
         }
+    }
+
+    public String getSelectedFullId() {
+        IRepositoryViewObject object = getResult().getObject();
+        return ProxyRepositoryFactory.getInstance().getFullId(object);
     }
 }
 

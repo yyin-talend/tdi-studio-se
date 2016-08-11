@@ -890,6 +890,7 @@ public class SapSchemaTypeController extends AbstractRepositoryController {
         } else if (button.getData(NAME).equals(REPOSITORY_CHOICE)) {
             String paramName = (String) button.getData(PARAMETER_NAME);
             IElementParameter schemaParam = elem.getElementParameter(paramName);
+            String fullParamName = paramName + ":" + getRepositoryChoiceParamName(); //$NON-NLS-1$
 
             ERepositoryObjectType type = ERepositoryObjectType.METADATA_CON_TABLE;
             String filter = schemaParam.getFilter();
@@ -903,6 +904,11 @@ public class SapSchemaTypeController extends AbstractRepositoryController {
             }
 
             RepositoryReviewDialog dialog = new RepositoryReviewDialog(button.getShell(), type, filter);
+            String oldValue = (String) elem.getPropertyValue(fullParamName);
+            if (oldValue != null && !oldValue.isEmpty()) {
+                dialog.setSelectedNodeName(oldValue);
+                dialog.setIsSelectionId(true);
+            }
             if (dialog.open() == RepositoryReviewDialog.OK) {
                 RepositoryNode node = dialog.getResult();
                 while (node.getObject().getProperty().getItem() == null
@@ -910,7 +916,7 @@ public class SapSchemaTypeController extends AbstractRepositoryController {
                     node = node.getParent();
                 }
 
-                String id = dialog.getResult().getObject().getProperty().getId();
+                String id = dialog.getSelectedFullId();
                 String name = dialog.getResult().getObject().getLabel();// The name is Table Name.
                 if (name != null) {
                     if (elem instanceof Node) {
@@ -989,8 +995,6 @@ public class SapSchemaTypeController extends AbstractRepositoryController {
                     }
                 }
                 String value = id + " - " + name; //$NON-NLS-1$
-
-                String fullParamName = paramName + ":" + getRepositoryChoiceParamName(); //$NON-NLS-1$
 
                 org.talend.core.model.metadata.builder.connection.Connection connection = null;
                 if (elem instanceof Node) {

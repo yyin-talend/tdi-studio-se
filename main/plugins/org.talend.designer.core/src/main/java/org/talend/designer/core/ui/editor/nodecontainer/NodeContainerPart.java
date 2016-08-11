@@ -27,6 +27,8 @@ import org.eclipse.gef.SnapToGrid;
 import org.eclipse.gef.SnapToHelper;
 import org.eclipse.gef.editparts.AbstractGraphicalEditPart;
 import org.eclipse.gef.rulers.RulerProvider;
+import org.eclipse.swt.widgets.Display;
+import org.talend.commons.CommonsPlugin;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.ui.editor.nodes.Node;
@@ -54,6 +56,7 @@ public class NodeContainerPart extends AbstractGraphicalEditPart implements Prop
         return false;
     }
 
+    @Override
     public void activate() {
         if (!isActive()) {
             super.activate();
@@ -62,6 +65,7 @@ public class NodeContainerPart extends AbstractGraphicalEditPart implements Prop
         }
     }
 
+    @Override
     public void deactivate() {
         if (isActive()) {
             super.deactivate();
@@ -116,6 +120,7 @@ public class NodeContainerPart extends AbstractGraphicalEditPart implements Prop
         installEditPolicy(EditPolicy.LAYOUT_ROLE, new NodeContainerLayoutEditPolicy());
     }
 
+    @Override
     protected void refreshVisuals() {
         Rectangle rectangle = ((NodeContainer) this.getModel()).getNodeContainerRectangle();
         Rectangle cleanRectangle = ((NodeContainer) this.getModel()).getNodeMarkRectangle();
@@ -123,6 +128,7 @@ public class NodeContainerPart extends AbstractGraphicalEditPart implements Prop
         ((NodeContainerFigure) getFigure()).initializeNodeContainer(cleanRectangle);
     }
 
+    @Override
     protected List getModelChildren() {
         return ((NodeContainer) this.getModel()).getElements();
     }
@@ -132,7 +138,25 @@ public class NodeContainerPart extends AbstractGraphicalEditPart implements Prop
      * 
      * @see java.beans.PropertyChangeListener#propertyChange(java.beans.PropertyChangeEvent)
      */
+    @Override
     public void propertyChange(PropertyChangeEvent changeEvent) {
+        if (!CommonsPlugin.isHeadless() && Display.getCurrent() == null) {
+            /**
+             * If not running in UI thread, should run it in UI thread, use asyncExec to avoid potential UI block issue
+             */
+            Display.getDefault().asyncExec(new Runnable() {
+
+                @Override
+                public void run() {
+                    onPropertyChange(changeEvent);
+                }
+            });
+        } else {
+            onPropertyChange(changeEvent);
+        }
+    }
+
+    private void onPropertyChange(PropertyChangeEvent changeEvent) {
         if (changeEvent.getPropertyName().equals(EParameterName.VALIDATION_RULES.getName())) {
             Node node = ((NodeContainer) getModel()).getNode();
             ((NodeContainerFigure) this.getFigure()).updateValidationRuleFigure(node.isHasValidationRule());

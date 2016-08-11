@@ -37,7 +37,6 @@ import org.talend.core.model.process.INode;
 import org.talend.core.model.process.INodeConnector;
 import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.model.properties.Item;
-import org.talend.core.model.properties.Property;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.model.utils.TalendTextUtils;
@@ -360,10 +359,16 @@ public class SchemaReferenceController extends AbstractSchemaController {
         } else if (button.getData(NAME).equals(REPOSITORY_CHOICE)) {
             String paramName = (String) button.getData(PARAMETER_NAME);
             IElementParameter schemaParam = elem.getElementParameter(paramName);
+            String fullParamName = paramName + ":" + getRepositoryChoiceParamName(); //$NON-NLS-1$
 
             ERepositoryObjectType type = ERepositoryObjectType.METADATA_CON_TABLE;
             String filter = schemaParam.getFilter();
             RepositoryReviewDialog dialog = new RepositoryReviewDialog(button.getShell(), type, filter);
+            String oldValue = (String) elem.getPropertyValue(fullParamName);
+            if (oldValue != null && !oldValue.isEmpty()) {
+                dialog.setSelectedNodeName(oldValue);
+                dialog.setIsSelectionId(true);
+            }
             if (dialog.open() == RepositoryReviewDialog.OK) {
                 RepositoryNode node = dialog.getResult();
                 while (node.getObject().getProperty().getItem() == null
@@ -372,8 +377,7 @@ public class SchemaReferenceController extends AbstractSchemaController {
                 }
 
                 IRepositoryViewObject object = dialog.getResult().getObject();
-                Property property = object.getProperty();
-                String id = property.getId();
+                String id = dialog.getSelectedFullId();
                 String name = object.getLabel();// The name is Table Name.
                 if (name != null) {
                     if (elem instanceof Node) {
@@ -384,7 +388,6 @@ public class SchemaReferenceController extends AbstractSchemaController {
                     }
                 }
                 String value = id + " - " + name; //$NON-NLS-1$
-                String fullParamName = paramName + ":" + getRepositoryChoiceParamName(); //$NON-NLS-1$
 
                 org.talend.core.model.metadata.builder.connection.Connection connection = null;
                 if (elem instanceof Node) {

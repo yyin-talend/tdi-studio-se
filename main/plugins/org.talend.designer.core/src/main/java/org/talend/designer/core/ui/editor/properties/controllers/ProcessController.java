@@ -52,6 +52,7 @@ import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.model.utils.PerlResourcesHelper;
+import org.talend.core.repository.model.ProxyRepositoryFactory;
 import org.talend.core.ui.CoreUIPlugin;
 import org.talend.core.ui.branding.IBrandingService;
 import org.talend.core.ui.properties.tab.IDynamicProperty;
@@ -456,6 +457,7 @@ public class ProcessController extends AbstractElementPropertySectionController 
                 isSelectUseDynamic = (Boolean) useDynamicJobValue;
             }
         }
+        ProxyRepositoryFactory repFactory = ProxyRepositoryFactory.getInstance();
         if (isSelectUseDynamic) {
             UseDynamicJobSelectionDialog usedialog = new UseDynamicJobSelectionDialog((button).getShell(),
                     ERepositoryObjectType.PROCESS, procssId, isSelectUseDynamic);
@@ -471,8 +473,7 @@ public class ProcessController extends AbstractElementPropertySectionController 
                     for (int i = 0; i < repositoryNodeList.size(); i++) {
                         RepositoryNode node = repositoryNodeList.get(i);
                         IRepositoryViewObject repositoryViewObject = node.getObject();
-                        final Item item = repositoryViewObject.getProperty().getItem();
-                        String id = item.getProperty().getId();
+                        String id = repFactory.getFullId(repositoryViewObject);
                         if (i > 0) {
                             ids.append(ProcessController.COMMA);
                         }
@@ -499,9 +500,7 @@ public class ProcessController extends AbstractElementPropertySectionController 
             selectJobNodeIfExists(button, dialog);
 
             if (dialog.open() == RepositoryReviewDialog.OK) {
-                IRepositoryViewObject repositoryObject = dialog.getResult().getObject();
-                final Item item = repositoryObject.getProperty().getItem();
-                String id = item.getProperty().getId();
+                String id = dialog.getSelectedFullId();
 
                 String paramName = (String) button.getData(PARAMETER_NAME);
                 return new PropertyChangeCommand(elem, paramName, id);
@@ -524,11 +523,12 @@ public class ProcessController extends AbstractElementPropertySectionController 
                 String paramName = (String) button.getData(PARAMETER_NAME);
                 String jobId = (String) runJobNode.getPropertyValue(paramName); // .getElementParameter(name).getValue();
                 if (StringUtils.isNotEmpty(jobId)) {
-                    // if user have selected job
-                    ProcessItem processItem = ItemCacheManager.getProcessItem(jobId);
-                    String jobName = processItem.getProperty().getLabel();
+                    // // if user have selected job
+                    // ProcessItem processItem = ItemCacheManager.getProcessItem(jobId);
+                    // String jobName = processItem.getProperty().getLabel();
                     // expand the tree node and reveal it
-                    dialog.setSelectedNodeName(jobName);
+                    dialog.setSelectedNodeName(jobId);
+                    dialog.setIsSelectionId(true);
                 }
             }
         } catch (Throwable e) {

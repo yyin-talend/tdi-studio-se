@@ -96,6 +96,7 @@ import org.talend.core.model.update.UpdatesConstants;
 import org.talend.core.model.update.extension.UpdateManagerProviderDetector;
 import org.talend.core.model.utils.SAPConnectionUtils;
 import org.talend.core.model.utils.TalendTextUtils;
+import org.talend.core.repository.model.ProxyRepositoryFactory;
 import org.talend.core.runtime.services.IGenericWizardService;
 import org.talend.core.service.IDesignerMapperService;
 import org.talend.core.service.IEBCDICProviderService;
@@ -149,10 +150,12 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
         if (jobletProcessProvider == null) {
             return;
         }
+        ProxyRepositoryFactory repFactory = ProxyRepositoryFactory.getInstance();
         for (INode node : this.getProcess().getGraphicalNodes()) {
             Item jobletItem = jobletProcessProvider.getJobletItem(node);
             if (jobletItem != null) {
-                jobletReferenceMap.put(jobletItem.getProperty().getId(), jobletItem.getProperty().getModificationDate());
+                jobletReferenceMap.put(repFactory.getFullId(jobletItem.getProperty()),
+                        jobletItem.getProperty().getModificationDate());
             }
         }
     }
@@ -2292,17 +2295,19 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
         }
         List<IProcess2> openedProcesses = UpdateManagerUtils.getOpenedProcess();
         List<UpdateResult> nodeResults = new ArrayList<UpdateResult>();
+        ProxyRepositoryFactory repFactory = ProxyRepositoryFactory.getInstance();
+        String currentFullId = repFactory.getFullId(getProcess().getProperty());
         for (INode node : this.getProcess().getGraphicalNodes()) {
             final Item jobletItem = jobletProcessProvider.getJobletItem(node);
             if (jobletItem != null) {
                 final Property property = jobletItem.getProperty();
-                final String id = property.getId();
+                String fullId = repFactory.getFullId(property);
                 final Date modificationDate = property.getModificationDate();
 
-                final Date oldDate = this.jobletReferenceMap.get(id);
+                final Date oldDate = this.jobletReferenceMap.get(fullId);
 
                 if (((oldDate != null && !modificationDate.equals(oldDate)) || onlySimpleShow)
-                        && !getProcess().getId().equals(id)) {
+                        && !currentFullId.equals(fullId)) {
                     List<INode> jobletNodes = findRelatedJobletNode(getProcess(), property.getLabel(), null);
                     if (jobletNodes != null && !jobletNodes.isEmpty()) {
                         String source = UpdatesConstants.JOBLET + UpdatesConstants.COLON + property.getLabel();

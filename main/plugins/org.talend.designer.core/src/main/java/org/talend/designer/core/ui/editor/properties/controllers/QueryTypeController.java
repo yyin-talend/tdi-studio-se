@@ -163,7 +163,7 @@ public class QueryTypeController extends AbstractRepositoryController {
                         || (!(node.getObject().getProperty().getItem() instanceof ConnectionItem))) {
                     node = node.getParent();
                 }
-                String id = node.getObject().getProperty().getId();
+                String id = dialog.getSelectedFullId();
                 String name = dialog.getResult().getObject().getLabel();
                 String paramName = (String) button.getData(PARAMETER_NAME);
                 String value = id + " - " + name; //$NON-NLS-1$
