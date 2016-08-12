@@ -594,7 +594,12 @@ public class VersionManagementPage extends ProjectSettingPage {
         RelationshipItemBuilder builder = RelationshipItemBuilder.getInstance();
         for (ItemVersionObject object : getModifiedVersionItems()) {
             if (object.getRepositoryNode() != null) {
-                List<Relation> relations = builder.getItemsRelatedTo(object.getRepositoryNode().getId(), object.getOldVersion(),
+                String fullId = factory.getFullId(object.getRepositoryNode().getObject());
+                if (fullId == null || fullId.isEmpty()) {
+                    fullId = object.getRepositoryNode().getId();
+                }
+
+                List<Relation> relations = builder.getItemsRelatedTo(fullId, object.getOldVersion(),
                         RelationshipItemBuilder.JOB_RELATION);
 
                 for (Relation relation : relations) {
@@ -637,8 +642,15 @@ public class VersionManagementPage extends ProjectSettingPage {
 
         for (ItemVersionObject object : getModifiedVersionItems()) {
             if (object.getRepositoryNode() != null) {
-                List<Relation> relations = builder.getItemsJobRelatedTo(object.getRepositoryNode().getId(),
-                        object.getOldVersion(), RelationshipItemBuilder.JOB_RELATION);
+                String fullId = factory.getFullId(object.getRepositoryNode().getObject());
+                if (fullId == null || fullId.isEmpty()) {
+                    fullId = factory.getFullId(object.getItem().getProperty());
+                }
+                if (fullId == null || fullId.isEmpty()) {
+                    fullId = object.getRepositoryNode().getId();
+                }
+                List<Relation> relations = builder.getItemsJobRelatedTo(fullId, object.getOldVersion(),
+                        RelationshipItemBuilder.JOB_RELATION);
                 for (Relation relation : relations) {
                     try {
                         IRepositoryViewObject obj = factory.getLastVersion(relation.getId());
@@ -669,11 +681,18 @@ public class VersionManagementPage extends ProjectSettingPage {
 
     private void checkAllVerSionLatest(List<ItemVersionObject> tableList, ItemVersionObject object) {
         // List<ItemVersionObject> tableList = new ArrayList<ItemVersionObject>();
-        IProxyRepositoryFactory factory = CorePlugin.getDefault().getProxyRepositoryFactory();
         RelationshipItemBuilder builder = RelationshipItemBuilder.getInstance();
         // for (ItemVersionObject object : getModifiedVersionItems()) {
         if (object.getRepositoryNode() != null) {
-            List<Relation> relations = builder.getItemsJobRelatedTo(object.getRepositoryNode().getId(), object.getOldVersion(),
+            String fullId = factory.getFullId(object.getRepositoryNode().getObject());
+            if (fullId == null) {
+                fullId = factory.getFullId(object.getItem().getProperty());
+            }
+            if (fullId == null) {
+                fullId = object.getRepositoryNode().getId();
+            }
+
+            List<Relation> relations = builder.getItemsJobRelatedTo(fullId, object.getOldVersion(),
                     RelationshipItemBuilder.JOB_RELATION);
             for (Relation relation : relations) {
                 try {
@@ -709,12 +728,18 @@ public class VersionManagementPage extends ProjectSettingPage {
         }
 
         tableList.addAll(jobList);
-        IProxyRepositoryFactory factory = CorePlugin.getDefault().getProxyRepositoryFactory();
         RelationshipItemBuilder builder = RelationshipItemBuilder.getInstance();
         for (ItemVersionObject object : jobList) {
             if (object.getRepositoryNode() != null) {
-                List<Relation> relations = builder.getItemsJobRelatedTo(object.getRepositoryNode().getId(),
-                        object.getOldVersion(), RelationshipItemBuilder.JOB_RELATION);
+                String fullId = factory.getFullId(object.getRepositoryNode().getObject());
+                if (fullId == null || fullId.isEmpty()) {
+                    fullId = factory.getFullId(object.getItem().getProperty());
+                }
+                if (fullId == null || fullId.isEmpty()) {
+                    fullId = object.getRepositoryNode().getId();
+                }
+                List<Relation> relations = builder.getItemsJobRelatedTo(fullId, object.getOldVersion(),
+                        RelationshipItemBuilder.JOB_RELATION);
                 for (Relation relation : relations) {
                     try {
                         IRepositoryViewObject obj = factory.getLastVersion(relation.getId());

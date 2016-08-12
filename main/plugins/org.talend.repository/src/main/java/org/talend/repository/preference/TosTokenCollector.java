@@ -159,8 +159,12 @@ public class TosTokenCollector extends AbstractTokenCollector {
                                 || ERepositoryObjectType.CONTEXT.equals(type) || type.equals(ERepositoryObjectType.JOBLET)) {
                             int nbUsed = 0;
                             for (IRepositoryViewObject object : all) {
-                                List<Relation> relations = RelationshipItemBuilder.getInstance().getItemsHaveRelationWith(
-                                        object.getId());
+                                String fullId = factory.getFullId(object);
+                                if (fullId == null || fullId.isEmpty()) {
+                                    fullId = object.getId();
+                                }
+
+                                List<Relation> relations = RelationshipItemBuilder.getInstance().getItemsHaveRelationWith(fullId);
                                 relations.addAll(RelationshipItemBuilder.getInstance()
                                         .getItemsHaveRelationWith(object.getLabel()));
                                 if (relations.size() > 0) {
@@ -190,7 +194,7 @@ public class TosTokenCollector extends AbstractTokenCollector {
                 }
             }
         }
-        jObject.put(PROJECTS.getKey(), repoStats); //$NON-NLS-1$
+        jObject.put(PROJECTS.getKey(), repoStats); 
         jObject.put(TYPE.getKey(), ProjectManager.getInstance().getProjectType(currentProject));
         int nbRef = ProjectManager.getInstance().getAllReferencedProjects().size();
         if (nbRef > 0) {
