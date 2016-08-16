@@ -76,6 +76,7 @@
 #if ($endpoint.useBusinesCorrelation)
 			<bean class="org.talend.esb.policy.correlation.feature.CorrelationIDFeature" />
 #end
+            <bean class="org.apache.cxf.metrics.MetricsFeature" />
 		</jaxrs:features>
 		<jaxrs:properties>
 #if ($endpoint.useAuthentication && $endpoint.authenticationType == "SAML")
@@ -148,9 +149,5 @@
 ]]#
 #end
 
-	<!-- Wiring the counter repository -->
-	<bean class="org.apache.cxf.management.counters.CounterRepository">
-		<property name="bus" ref="cxf" />
-	</bean>
 
 </blueprint>
