@@ -20,6 +20,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.eclipse.gef.commands.Command;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IEditorReference;
 import org.eclipse.ui.PlatformUI;
 import org.talend.commons.exception.PersistenceException;
@@ -68,6 +69,16 @@ public class UpdateContextParameterCommand extends Command {
     @SuppressWarnings("unchecked")
     @Override
     public void execute() {
+        Display.getDefault().syncExec(new Runnable() {
+            
+            @Override
+            public void run() {
+                doExecute();
+            }
+        });
+    }
+
+    private void doExecute() {
         if (result == null) {
             return;
         }
