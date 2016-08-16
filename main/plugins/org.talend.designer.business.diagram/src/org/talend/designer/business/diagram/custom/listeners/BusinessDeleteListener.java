@@ -18,10 +18,12 @@ import java.beans.PropertyChangeListener;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.core.CorePlugin;
+import org.talend.core.model.general.Project;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryObject;
 import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.repository.model.ProxyRepositoryFactory;
+import org.talend.repository.ProjectManager;
 import org.talend.repository.documentation.ERepositoryActionName;
 import org.talend.repository.model.IProxyRepositoryFactory;
 
@@ -75,7 +77,15 @@ public class BusinessDeleteListener implements PropertyChangeListener {
 
     public void deleteSVGObjectLogicalOrPhysical(IRepositoryObject object, boolean isDeleteBusinessLogical)
             throws PersistenceException {
-        IRepositoryViewObject svgObjectToDelete = ProxyRepositoryFactory.getInstance().getLastVersion("svg_" + object.getId());
+        ProxyRepositoryFactory repFactory = ProxyRepositoryFactory.getInstance();
+        String fullId = object.getId();
+        Project project = repFactory.getProjectFromItemId(fullId);
+        if (project != null) {
+            project = ProjectManager.getInstance().getCurrentProject();
+        }
+        String pureItemId = repFactory.getPureItemId(fullId);
+        IRepositoryViewObject svgObjectToDelete = ProxyRepositoryFactory.getInstance().getLastVersion(project,
+                "svg_" + pureItemId); //$NON-NLS-1$
 
         if (svgObjectToDelete != null) {
             try {

@@ -63,7 +63,6 @@ import org.talend.core.model.process.INodeConnector;
 import org.talend.core.model.process.IProcess;
 import org.talend.core.model.process.IProcess2;
 import org.talend.core.model.process.IReplaceNodeInProcess;
-import org.talend.core.model.process.ProcessUtils;
 import org.talend.core.model.process.ReplaceNodesInProcessProvider;
 import org.talend.core.model.process.UniqueNodeNameGenerator;
 import org.talend.core.model.properties.Item;
@@ -2330,10 +2329,10 @@ public class DataProcess implements IGeneratingProcess {
         DataConnection dataConnection = null;
         if (isOutput) {
             validRuleConnections = (List<IConnection>) nodeUseValidationRule.getIncomingConnections();
-            mainConnections = nodeUseValidationRule.getIncomingConnections(EConnectionType.FLOW_MAIN);//$NON-NLS-1$
+            mainConnections = nodeUseValidationRule.getIncomingConnections(EConnectionType.FLOW_MAIN);
         } else {
             validRuleConnections = (List<IConnection>) nodeUseValidationRule.getOutgoingConnections();
-            mainConnections = nodeUseValidationRule.getOutgoingConnections(EConnectionType.FLOW_MAIN);//$NON-NLS-1$
+            mainConnections = nodeUseValidationRule.getOutgoingConnections(EConnectionType.FLOW_MAIN);
         }
 
         if (validRuleConnections == null || validRuleConnections.size() == 0) {
@@ -3109,6 +3108,7 @@ public class DataProcess implements IGeneratingProcess {
             return Collections.emptyList();
         }
         buildGraphicalMap.clear();
+        IProxyRepositoryFactory repFactory = ProxyRepositoryFactory.getInstance();
 
         Property property = null;
         AbstractMultiPageTalendEditor editor = null;
@@ -3120,7 +3120,7 @@ public class DataProcess implements IGeneratingProcess {
             }
         } else {
             property = PropertiesFactory.eINSTANCE.createProperty();
-            property.setId(graphicalNodeList.get(0).getProcess().getId() + "_generated");
+            property.setId(repFactory.getPureItemId(graphicalNodeList.get(0).getProcess().getId()) + "_generated");
         }
         duplicatedProcess = new Process(property);
         ((Process) duplicatedProcess).setComponentsType(process.getComponentsType());

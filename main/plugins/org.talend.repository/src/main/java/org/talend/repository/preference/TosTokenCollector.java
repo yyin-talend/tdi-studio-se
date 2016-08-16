@@ -159,12 +159,8 @@ public class TosTokenCollector extends AbstractTokenCollector {
                                 || ERepositoryObjectType.CONTEXT.equals(type) || type.equals(ERepositoryObjectType.JOBLET)) {
                             int nbUsed = 0;
                             for (IRepositoryViewObject object : all) {
-                                String fullId = factory.getFullId(object);
-                                if (fullId == null || fullId.isEmpty()) {
-                                    fullId = object.getId();
-                                }
-
-                                List<Relation> relations = RelationshipItemBuilder.getInstance().getItemsHaveRelationWith(fullId);
+                                List<Relation> relations = RelationshipItemBuilder.getInstance()
+                                        .getItemsHaveRelationWith(object.getId());
                                 relations.addAll(RelationshipItemBuilder.getInstance()
                                         .getItemsHaveRelationWith(object.getLabel()));
                                 if (relations.size() > 0) {

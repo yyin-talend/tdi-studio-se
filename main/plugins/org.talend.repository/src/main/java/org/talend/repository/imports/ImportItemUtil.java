@@ -215,6 +215,7 @@ public class ImportItemUtil {
 
     private boolean checkItem(ItemRecord itemRecord, boolean overwrite) {
 
+        IProxyRepositoryFactory repFactory = ProxyRepositoryFactory.getInstance();
         boolean result = false;
 
         try {
@@ -245,8 +246,9 @@ public class ImportItemUtil {
             for (IRepositoryViewObject current : cache.getItemsFromRepository().get(itemType)) {
                 final Property property = itemRecord.getProperty();
                 if (property != null) {
+                    String currentPureId = repFactory.getPureItemId(current.getId());
                     if (property.getLabel() != null && property.getLabel().equalsIgnoreCase(current.getLabel())
-                            && property.getId() != current.getId()) {
+                            && property.getId() != currentPureId) {
                         // To check SQLPattern in same path. see bug 0005038: unable to add a SQLPattern into
                         // repository.
                         if (!isAllowMultipleName || current.getPath().equals(itemPath)) {
@@ -258,7 +260,7 @@ public class ImportItemUtil {
                             itemWithSameName = current;
                         }
                     }
-                    if (property.getId() != null && property.getId().equalsIgnoreCase(current.getId())) {
+                    if (property.getId() != null && property.getId().equalsIgnoreCase(currentPureId)) {
                         itemWithSameId = current;
                     }
                 }
