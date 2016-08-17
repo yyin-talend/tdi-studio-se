@@ -98,6 +98,7 @@ import org.talend.core.model.temp.ECodePart;
 import org.talend.core.model.utils.SQLPatternUtils;
 import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.core.prefs.ITalendCorePrefConstants;
+import org.talend.core.repository.model.ProxyRepositoryFactory;
 import org.talend.core.ui.branding.IBrandingService;
 import org.talend.core.ui.component.ComponentsFactoryProvider;
 import org.talend.core.ui.component.settings.ComponentsSettingsHelper;
@@ -709,8 +710,8 @@ public class EmfComponent extends AbstractBasicComponent {
             if (sqlItem == null) {
                 continue;
             }
-            map.put(SQLPatternUtils.SQLPATTERNLIST, sqlItem.getProperty().getId() + SQLPatternUtils.ID_SEPARATOR
-                    + sqlItem.getProperty().getLabel());
+            map.put(SQLPatternUtils.SQLPATTERNLIST, ProxyRepositoryFactory.getInstance().getFullId(sqlItem.getProperty())
+                    + SQLPatternUtils.ID_SEPARATOR + sqlItem.getProperty().getLabel());
             patternNames.add(pattern.getNAME());
             value.add(map);
         }

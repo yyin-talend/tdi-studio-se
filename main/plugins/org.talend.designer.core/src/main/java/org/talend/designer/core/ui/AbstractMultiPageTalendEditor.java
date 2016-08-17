@@ -446,7 +446,7 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
                                 Object o = event.getProperty(Constant.ITEM_EVENT_PROPERTY_KEY);
                                 if (o != null && o instanceof Item) {
                                     Item item = (Item) o;
-                                    String itemId = item.getProperty().getId();
+                                    String itemId = ProxyRepositoryFactory.getInstance().getFullId(item.getProperty());
                                     if (itemId.equals(currentProcess.getId())) {
                                         if (currentProcess.isReadOnly()) {
                                             boolean readOnly = currentProcess.checkReadOnly();
@@ -1302,7 +1302,7 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
 
                                         Set<String> curContextVars = getCurrentContextVariables(manager);
                                         IProcess2 process2 = getProcess();
-                                        String jobId = process2.getProperty().getId();
+                                        String jobId = factory.getFullId(process2.getProperty());
                                         IEditorReference[] reference = PlatformUI.getWorkbench().getActiveWorkbenchWindow()
                                                 .getActivePage().getEditorReferences();
                                         List<IProcess2> processes = CorePlugin.getDefault().getDesignerCoreService()

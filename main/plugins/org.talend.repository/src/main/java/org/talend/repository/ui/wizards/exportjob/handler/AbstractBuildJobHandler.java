@@ -28,6 +28,7 @@ import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.model.properties.Project;
 import org.talend.core.model.properties.Property;
 import org.talend.core.model.utils.JavaResourcesHelper;
+import org.talend.core.repository.model.ProxyRepositoryFactory;
 import org.talend.core.runtime.process.IBuildJobHandler;
 import org.talend.core.runtime.process.ITalendProcessJavaProject;
 import org.talend.core.runtime.process.LastGenerationInfo;
@@ -119,10 +120,12 @@ public abstract class AbstractBuildJobHandler implements IBuildJobHandler {
 
     protected boolean needRules() {
         if (this.version == null) {
-            return LastGenerationInfo.getInstance().isUseRules(processItem.getProperty().getId(),
+            return LastGenerationInfo.getInstance().isUseRules(
+                    ProxyRepositoryFactory.getInstance().getFullId(processItem.getProperty()),
                     processItem.getProperty().getVersion());
         }
-        return LastGenerationInfo.getInstance().isUseRules(processItem.getProperty().getId(), this.version);
+        return LastGenerationInfo.getInstance()
+                .isUseRules(ProxyRepositoryFactory.getInstance().getFullId(processItem.getProperty()), this.version);
     }
 
     protected boolean needPigUDFs() {

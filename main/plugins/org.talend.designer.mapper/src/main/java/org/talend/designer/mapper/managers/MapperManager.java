@@ -43,6 +43,7 @@ import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.IExternalData;
 import org.talend.core.model.process.IProcess;
 import org.talend.core.model.process.IProcess2;
+import org.talend.core.runtime.CoreRuntimePlugin;
 import org.talend.core.ui.metadata.dialog.CustomTableManager;
 import org.talend.core.ui.metadata.editor.MetadataTableEditor;
 import org.talend.core.ui.metadata.editor.MetadataTableEditorView;
@@ -869,8 +870,9 @@ public class MapperManager extends AbstractMapperManager {
      * @return
      */
     private String getPreviewFileName() {
-        return getAbstractMapComponent().getProcess().getId()
-                + "-" + getAbstractMapComponent().getUniqueName() + "-" + EParameterName.PREVIEW.getName() //$NON-NLS-1$ //$NON-NLS-2$
+        return CoreRuntimePlugin.getInstance().getProxyRepositoryFactory()
+                .getPureItemId(getAbstractMapComponent().getProcess().getId()) + "-" + getAbstractMapComponent().getUniqueName() //$NON-NLS-1$
+                + "-" + EParameterName.PREVIEW.getName() //$NON-NLS-1$
                 + ".bmp"; //$NON-NLS-1$
     }
 

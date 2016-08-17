@@ -35,6 +35,7 @@ import org.talend.core.model.properties.Property;
 import org.talend.core.model.properties.User;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryViewObject;
+import org.talend.core.runtime.CoreRuntimePlugin;
 import org.talend.designer.rowgenerator.RowGeneratorComponent;
 import org.talend.designer.rowgenerator.i18n.Messages;
 import org.talend.designer.runprocess.IProcessor;
@@ -313,7 +314,7 @@ public class RowGenProcess extends Element implements IProcess {
      */
     @Override
     public String getId() {
-        return getProperty().getId();
+        return CoreRuntimePlugin.getInstance().getProxyRepositoryFactory().getFullId(getProperty());
     }
 
     /*

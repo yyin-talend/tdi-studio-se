@@ -115,6 +115,7 @@ import org.talend.core.model.properties.Property;
 import org.talend.core.model.runprocess.IJavaProcessorStates;
 import org.talend.core.model.utils.JavaResourcesHelper;
 import org.talend.core.prefs.ITalendCorePrefConstants;
+import org.talend.core.repository.model.ProxyRepositoryFactory;
 import org.talend.core.runtime.process.ITalendProcessJavaProject;
 import org.talend.core.runtime.process.LastGenerationInfo;
 import org.talend.core.ui.services.IRulesProviderService;
@@ -332,7 +333,8 @@ public class JavaProcessor extends AbstractJavaProcessor implements IJavaBreakpo
             // test/shadowfileinputtodelimitedoutput_0_1/ShadowFileInputToDelimitedOutput.java,
             // test/preview_data/Preview_Data.java
             jobClassFilePath = jobClassPackageFolder + JavaUtils.PATH_SEPARATOR
-                    + (filenameFromLabel ? JavaResourcesHelper.escapeFileName(process.getName()) : process.getId())
+                    + (filenameFromLabel ? JavaResourcesHelper.escapeFileName(process.getName())
+                            : ProxyRepositoryFactory.getInstance().getPureItemId(process.getId()))
                     + JavaUtils.JAVA_EXTENSION;
             // test.shadowfileinputtodelimitedoutput_0_1.ShadowFileInputToDelimitedOutput,
             // test.preview_data.Preview_Data

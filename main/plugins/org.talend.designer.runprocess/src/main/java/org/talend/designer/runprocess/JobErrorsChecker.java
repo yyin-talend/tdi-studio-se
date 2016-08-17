@@ -43,6 +43,7 @@ import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.Property;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryViewObject;
+import org.talend.core.repository.model.ProxyRepositoryFactory;
 import org.talend.core.runtime.process.LastGenerationInfo;
 import org.talend.designer.codegen.ITalendSynchronizer;
 import org.talend.designer.core.IDesignerCoreService;
@@ -84,7 +85,7 @@ public class JobErrorsChecker {
                 if (sourceFile == null) {
                     continue;
                 }
-                jobIds.add(item.getProperty().getId());
+                jobIds.add(proxyRepositoryFactory.getFullId(item.getProperty()));
 
                 // Property property = process.getProperty();
                 Problems.addJobRoutineFile(sourceFile, ProblemType.JOB, item, true);
@@ -129,6 +130,7 @@ public class JobErrorsChecker {
         if (!selection.isEmpty()) {
             final ITalendSynchronizer synchronizer = CorePlugin.getDefault().getCodeGeneratorService()
                     .createRoutineSynchronizer();
+            IProxyRepositoryFactory repFactory = ProxyRepositoryFactory.getInstance();
             Set<String> jobIds = new HashSet<String>();
 
             List<RepositoryNode> nodes = selection.toList();
@@ -172,7 +174,7 @@ public class JobErrorsChecker {
                             }
                         }
 
-                        jobIds.add(item.getProperty().getId());
+                        jobIds.add(repFactory.getFullId(item.getProperty()));
 
                         Problems.addRoutineFile(sourceFile, ProblemType.JOB, item.getProperty().getLabel(), item.getProperty()
                                 .getVersion(), true);

@@ -550,8 +550,8 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
         List<IProcess2> openedProcessList = CorePlugin.getDefault().getDesignerCoreService().getOpenedProcess(reference);
         for (IProcess2 process : openedProcessList) {
             Property property = curProcess.getProperty();
-            if (process.getId().equals(property.getId()) && process.getName().equals(property.getLabel())
-                    && process.getVersion().equals(property.getVersion())) {
+            if (process.getId().equals(ProxyRepositoryFactory.getInstance().getFullId(property))
+                    && process.getName().equals(property.getLabel()) && process.getVersion().equals(property.getVersion())) {
                 return true;
             }
         }

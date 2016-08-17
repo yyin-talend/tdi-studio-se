@@ -367,8 +367,8 @@ public class StatLogsAndImplicitcontextTreeViewPage extends ProjectSettingPage {
         Property property = node.getObject().getProperty();
         if (property.getItem() instanceof ProcessItem) {
             for (IProcess process : opendProcess) {
-                if (process.getId().equals(property.getId()) && process.getName().equals(property.getLabel())
-                        && process.getVersion().equals(property.getVersion())) {
+                if (process.getId().equals(ProxyRepositoryFactory.getInstance().getFullId(property))
+                        && process.getName().equals(property.getLabel()) && process.getVersion().equals(property.getVersion())) {
                     return true;
                 }
             }

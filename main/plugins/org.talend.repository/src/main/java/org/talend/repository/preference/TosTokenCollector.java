@@ -247,7 +247,8 @@ public class TosTokenCollector extends AbstractTokenCollector {
                 }
 
             }
-            if (factory.getStatus(item) != ERepositoryStatus.LOCK_BY_USER && !idsOpened.contains(item.getProperty().getId())) {
+            if (factory.getStatus(item) != ERepositoryStatus.LOCK_BY_USER
+                    && !idsOpened.contains(factory.getFullId(item.getProperty()))) {
                 // job is not locked and not opened by editor, so we can unload.
                 if (item.getParent() instanceof FolderItem) {
                     ((FolderItem) item.getParent()).getChildren().remove(item);

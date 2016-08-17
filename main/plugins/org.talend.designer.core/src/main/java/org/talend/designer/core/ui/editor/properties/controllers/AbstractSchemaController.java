@@ -518,7 +518,8 @@ public abstract class AbstractSchemaController extends AbstractRepositoryControl
         // find IRepositoryObject from repository that contains current connection
         IRepositoryViewObject node = findRepositoryObject(schemaId);
         RepositoryNode repositoryNode = null;
-        IRepositoryNode iRepNode = RepositorySeekerManager.getInstance().searchRepoViewNode(node.getProperty().getId());
+        IRepositoryNode iRepNode = RepositorySeekerManager.getInstance()
+                .searchRepoViewNode(ProxyRepositoryFactory.getInstance().getFullId(node.getProperty()));
         if (iRepNode instanceof RepositoryNode) {
             repositoryNode = (RepositoryNode) iRepNode;
         }
@@ -940,7 +941,7 @@ public abstract class AbstractSchemaController extends AbstractRepositoryControl
 
                 IRepositoryViewObject object = dialog.getResult().getObject();
                 Property property = object.getProperty();
-                String id = ProxyRepositoryFactory.getInstance().getFullId(object);
+                String id = object.getId();
                 String name = object.getLabel();// The name is Table Name.
                 org.talend.core.model.metadata.builder.connection.MetadataTable table = null;
                 if (property.getItem() instanceof SAPConnectionItem && object instanceof MetadataTableRepositoryObject) {

@@ -469,12 +469,13 @@ public class JobletUtil {
     public boolean needReadOnlyJoblet(JobletProcessItem jobletItem) {
         IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
         IEditorPart[] editors = page.getEditors();
+        IProxyRepositoryFactory repFactory = ProxyRepositoryFactory.getInstance();
         for (IEditorPart editor : editors) {
             if (editor instanceof AbstractMultiPageTalendEditor) {
                 List<? extends INode> nodeList = ((AbstractMultiPageTalendEditor) editor).getProcess().getGraphicalNodes();
                 for (INode node : nodeList) {
                     if (((Node) node).isJoblet() && jobletItem.getProperty() != null) {
-                        if (jobletItem.getProperty().getId().equals(node.getComponent().getProcess().getId())) {
+                        if (repFactory.getFullId(jobletItem.getProperty()).equals(node.getComponent().getProcess().getId())) {
                             boolean haveLock = jobletItem.getState().isLocked();
                             boolean isSvn = false;
                             ISVNProviderService service = null;
@@ -510,6 +511,7 @@ public class JobletUtil {
     public boolean openedInJob(JobletProcessItem jobletItem, Node currNode) {
         IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
         IEditorPart[] editors = page.getEditors();
+        IProxyRepositoryFactory repFactory = ProxyRepositoryFactory.getInstance();
         for (IEditorPart editor : editors) {
             if (editor instanceof AbstractMultiPageTalendEditor) {
                 IProcess2 pro = ((AbstractMultiPageTalendEditor) editor).getProcess();
@@ -522,7 +524,8 @@ public class JobletUtil {
                                 continue;
                             } else {
                                 if (((Node) node).isJoblet() && jobletItem.getProperty() != null) {
-                                    if (jobletItem.getProperty().getId().equals(node.getComponent().getProcess().getId())) {
+                                    if (repFactory.getFullId(jobletItem.getProperty())
+                                            .equals(node.getComponent().getProcess().getId())) {
                                         boolean haveOpened = !((Node) node).getNodeContainer().isCollapsed();
                                         if (haveOpened) {
                                             return true;
@@ -538,7 +541,7 @@ public class JobletUtil {
                 List<? extends INode> nodeList = pro.getGraphicalNodes();
                 for (INode node : nodeList) {
                     if (((Node) node).isJoblet() && jobletItem.getProperty() != null) {
-                        if (jobletItem.getProperty().getId().equals(node.getComponent().getProcess().getId())) {
+                        if (repFactory.getFullId(jobletItem.getProperty()).equals(node.getComponent().getProcess().getId())) {
                             boolean haveOpened = !((Node) node).getNodeContainer().isCollapsed();
                             if (haveOpened) {
                                 return true;

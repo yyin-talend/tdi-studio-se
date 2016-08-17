@@ -355,8 +355,8 @@ public abstract class AbstractJobSettingsPage extends ProjectSettingPage {
         Property property = object.getProperty();
         if (property.getItem() instanceof ProcessItem) {
             for (IProcess2 process : openedProcessList) {
-                if (process.getId().equals(property.getId()) && process.getName().equals(property.getLabel())
-                        && process.getVersion().equals(property.getVersion())) {
+                if (process.getId().equals(ProxyRepositoryFactory.getInstance().getFullId(property))
+                        && process.getName().equals(property.getLabel()) && process.getVersion().equals(property.getVersion())) {
                     return true;
                 }
             }

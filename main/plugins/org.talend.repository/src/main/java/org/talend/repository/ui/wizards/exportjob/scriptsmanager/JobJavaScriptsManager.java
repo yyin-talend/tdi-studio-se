@@ -1048,7 +1048,8 @@ public class JobJavaScriptsManager extends JobScriptsManager {
             if (resource.getItem() instanceof ProcessItem) {
                 List<JobInfo> list = new ArrayList<JobInfo>();
 
-                hasDynamicMetadata = LastGenerationInfo.getInstance().isUseDynamic(resource.getItem().getProperty().getId(),
+                hasDynamicMetadata = LastGenerationInfo.getInstance().isUseDynamic(
+                        ProxyRepositoryFactory.getInstance().getFullId(resource.getItem().getProperty()),
                         resource.getItem().getProperty().getVersion());
 
             }

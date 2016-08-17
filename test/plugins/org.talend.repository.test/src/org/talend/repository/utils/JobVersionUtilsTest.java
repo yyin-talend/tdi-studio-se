@@ -12,9 +12,8 @@
 // ============================================================================
 package org.talend.repository.utils;
 
-import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -94,12 +93,13 @@ public class JobVersionUtilsTest {
      */
     @Test
     public void testGetCurrentVersion() throws PersistenceException {
+        IProxyRepositoryFactory repFactory = ProxyRepositoryFactory.getInstance();
 
         repositoryObject = createRepositoryObject("job1");
 
         RepositoryNode childrenNode = mock(RepositoryNode.class);
         when(childrenNode.getObject()).thenReturn(repositoryObject);
-        when(childrenNode.getId()).thenReturn(repositoryObject.getProperty().getId());
+        when(childrenNode.getId()).thenReturn(repFactory.getFullId(repositoryObject.getProperty()));
 
         List<IRepositoryNode> children = new ArrayList<IRepositoryNode>();
         children.add(childrenNode);

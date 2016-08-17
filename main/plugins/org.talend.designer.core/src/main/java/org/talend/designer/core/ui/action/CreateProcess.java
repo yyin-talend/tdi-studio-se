@@ -135,7 +135,7 @@ public class CreateProcess extends AContextualAction implements IIntroAction {
                 fileEditorInput = new ProcessEditorInput(processWizard.getProcess(), false, true, false);
 
                 IRepositoryNode repositoryNode = RepositorySeekerManager.getInstance().searchRepoViewNode(
-                        fileEditorInput.getItem().getProperty().getId(), false);
+                        ProxyRepositoryFactory.getInstance().getFullId(fileEditorInput.getItem().getProperty()), false);
                 fileEditorInput.setRepositoryNode(repositoryNode);
 
                 IWorkbenchPage page = getActivePage();

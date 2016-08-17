@@ -2829,7 +2829,7 @@ public class Process extends Element implements IProcess2, IGEFProcess, ILastVer
      */
     @Override
     public String getId() {
-        return getProperty().getId();
+        return ProxyRepositoryFactory.getInstance().getFullId(getProperty());
     }
 
     /*

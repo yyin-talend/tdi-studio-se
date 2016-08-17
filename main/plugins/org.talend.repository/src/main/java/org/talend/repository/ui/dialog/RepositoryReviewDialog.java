@@ -600,9 +600,11 @@ public class RepositoryReviewDialog extends Dialog {
 
     private void selectNode() {
         /*
-         * Make sure expand all. Just notice it here, because have been expand before.
+         * Make sure expand all to initialise the tree map. Just notice it here, because have been expand before.
          */
         getRepositoryTreeViewer().expandAll();
+        // collapse them, in case there are too many items
+        getRepositoryTreeViewer().collapseAll();
         RepositoryNode root = (RepositoryNode) getRepositoryTreeViewer().getInput();
         selectNode(root, this.selectionType, this.selectedNodeName, this.isSelectionId);
     }
