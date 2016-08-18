@@ -40,7 +40,6 @@ import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.model.components.EmfComponent;
 import org.talend.designer.core.ui.editor.TalendEditorPaletteFactory;
 import org.talend.designer.core.utils.DesignerColorUtils;
-import org.talend.repository.ProjectManager;
 
 /**
  * Preference Initializer for the designer.
@@ -79,13 +78,13 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer {
         store.setDefault(TalendEditorPaletteFactory.PALETTE_STATE, FlyoutPaletteComposite.STATE_PINNED_OPEN);
         store.setDefault(TalendDesignerPrefConstants.COMP_DEFAULT_FILE_DIR, Platform.getLocation().toPortableString());
         // MOD by zshen for TDQ_INSTALL_DIR bug 17622
-        store.setDefault(TalendDesignerPrefConstants.PRODUCT_ROOT_DIR,
-                Platform.getLocation().removeLastSegments(1).toPortableString());
+        store.setDefault(TalendDesignerPrefConstants.PRODUCT_ROOT_DIR, Platform.getLocation().removeLastSegments(1)
+                .toPortableString());
         // see feature 7758 add project dir to COMP_DEFAULT_PROJECT_DIR.
-//        if (ProjectManager.getInstance().getCurrentProject() != null) {
-//            store.setDefault(TalendDesignerPrefConstants.COMP_DEFAULT_PROJECT_DIR, Platform.getLocation().toPortableString() + "/" //$NON-NLS-1$
-//                    + ProjectManager.getInstance().getCurrentProject().getTechnicalLabel());
-//        }
+        // if (ProjectManager.getInstance().getCurrentProject() != null) {
+        //            store.setDefault(TalendDesignerPrefConstants.COMP_DEFAULT_PROJECT_DIR, Platform.getLocation().toPortableString() + "/" //$NON-NLS-1$
+        // + ProjectManager.getInstance().getCurrentProject().getTechnicalLabel());
+        // }
         // // ADD sizhaoliu TDQ-6698
         Bundle refBundle = Platform.getBundle("org.talend.dataquality.reporting"); //$NON-NLS-1$
         if (refBundle != null) {
@@ -163,7 +162,7 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer {
             store.setDefault(ITalendCorePrefConstants.SVN_UPDATE_INFO_AUTO_CHECK_TIME_INTERVAL, 1);
             store.setDefault(ITalendCorePrefConstants.SVN_UPDATE_INFO_AUTO_CHECK, true);
             store.setDefault(ITalendCorePrefConstants.AUTO_REFRESH_LOCKS, true);
-            store.setDefault(ITalendCorePrefConstants.PERFORMANCE_TAC_CONNECTION_TIMEOUT, 30);
+            store.setDefault(ITalendCorePrefConstants.PERFORMANCE_TAC_CONNECTION_TIMEOUT, 5);
         }
 
         store.setDefault(ITalendCorePrefConstants.NEXUS_TIMEOUT, 10000);
