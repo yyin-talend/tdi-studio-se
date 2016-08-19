@@ -142,6 +142,7 @@ public class DetecteViewImpactAction extends AContextualAction {
                             || objectType == ERepositoryObjectType.JOBLET_DOC
                             || objectType == ERepositoryObjectType.DOCUMENTATION
                             || objectType == ERepositoryObjectType.PROCESS_MR
+                            || objectType == ERepositoryObjectType.METADATA_CON_COLUMN
                             ||(ERepositoryObjectType.TEST_CONTAINER != null&&objectType == ERepositoryObjectType.TEST_CONTAINER)) {
                         canWork = false;
                     } else {
