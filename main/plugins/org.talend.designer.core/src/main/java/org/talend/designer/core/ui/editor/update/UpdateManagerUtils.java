@@ -445,11 +445,12 @@ public final class UpdateManagerUtils {
                         @Override
                         public void run() {
                             refreshRelatedViewers(results);
+                            
+                            // hyWang add method checkandRefreshProcess for bug7248
+                            checkandRefreshProcess(results);
                         }
                     });
 
-                    // hyWang add method checkandRefreshProcess for bug7248
-                    checkandRefreshProcess(results);
 
                     monitor.worked(1 * UpdatesConstants.SCALE);
                     monitor.done();
