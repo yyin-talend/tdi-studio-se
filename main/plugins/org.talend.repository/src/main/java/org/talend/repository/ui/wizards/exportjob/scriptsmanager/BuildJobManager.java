@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.IWorkspaceRunnable;
 import org.eclipse.core.resources.ResourcesPlugin;
@@ -216,7 +217,7 @@ public class BuildJobManager {
             }
             FilesUtils.copyFile(jobZipFile, jobFileTarget);
         } else if (jobTargetFile != null) {
-            throw new Exception("Job was not built successfully, please check the logs for more details");
+            throw new Exception("Job was not built successfully, please check the logs for more details available on the workspace/.Java/lastGenerated.log");
         }
         pMonitor.worked(scale);
         pMonitor.done();
