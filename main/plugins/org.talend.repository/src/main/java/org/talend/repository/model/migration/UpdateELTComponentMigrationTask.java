@@ -44,7 +44,12 @@ public class UpdateELTComponentMigrationTask extends AbstractJobMigrationTask {
                 }
                 String tableName = TalendQuoteUtils.removeQuotes(orginalTableName);
                 String schemaName = TalendQuoteUtils.removeQuotes(orginalSchemaName);
-                String connectionName = schemaName + "." + tableName; //$NON-NLS-1$
+                String connectionName;
+                if (schemaName.trim().equals("")) { //$NON-NLS-1$
+                    connectionName = tableName;
+                } else {
+                    connectionName = schemaName + "." + tableName; //$NON-NLS-1$
+                }
                 if (connection.getLabel().equals(tableName)) {
                     connection.setLabel(connectionName);
                     isModified = true;
