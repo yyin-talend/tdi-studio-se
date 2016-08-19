@@ -2954,6 +2954,12 @@
             id="org.talend.repository.preference.MetadataTalendTypePreferencePage"
             title="%projectSetting.talendType">
       </page>
+      <page
+            category="general"
+            class="org.talend.repository.preference.AutoConversionTypesPreferencePage"
+            id="org.talend.repository.preference.AutoConversionTypesPreferencePage"
+            title="%projectSetting.auto-ConversionTypes">
+      </page>
    </extension>
    <extension
          id="CreateAutomaticConnectionApplication"
