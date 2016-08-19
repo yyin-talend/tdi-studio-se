@@ -69,7 +69,6 @@ public class MavenJavaProcessor extends JavaProcessor {
         // only job, now for Shadow Process/Data Preview.
         if (isStandardJob()) {
             generatePom();
-            // removeGeneratedJobs(null);
         }
 
         updateProjectPom(null);
@@ -78,14 +77,13 @@ public class MavenJavaProcessor extends JavaProcessor {
     @Override
     public Set<JobInfo> getBuildChildrenJobs() {
         if (buildChildrenJobs == null || buildChildrenJobs.isEmpty()) {
-            buildChildrenJobs = new HashSet<JobInfo>();
+            buildChildrenJobs = new HashSet<>();
 
             if (property != null) {
                 Set<JobInfo> infos = ProcessorUtilities.getChildrenJobInfo((ProcessItem) property.getItem());
                 for (JobInfo jobInfo : infos) {
-                    if (jobInfo.isTestContainer()
-                            && !ProcessUtils.isOptionChecked(getArguments(), TalendProcessArgumentConstant.ARG_GENERATE_OPTION,
-                                    TalendProcessOptionConstants.GENERATE_TESTS)) {
+                    if (jobInfo.isTestContainer() && !ProcessUtils.isOptionChecked(getArguments(),
+                            TalendProcessArgumentConstant.ARG_GENERATE_OPTION, TalendProcessOptionConstants.GENERATE_TESTS)) {
                         continue;
                     }
                     buildChildrenJobs.add(jobInfo);
@@ -110,8 +108,6 @@ public class MavenJavaProcessor extends JavaProcessor {
             String contextName = JavaResourcesHelper.getJobContextName(this.context);
             setPlatformValues(Platform.OS_WIN32, contextName);
             setPlatformValues(Platform.OS_LINUX, contextName);
-
-            // ProcessorUtilities.resetExportConfig(); because will set back, so no used
         } finally {
             ProcessorUtilities.setExportConfig(oldInterpreter, oldCodeLocation, oldLibraryPath, oldExportConfig,
                     oldExportTimestamp);
@@ -306,20 +302,6 @@ public class MavenJavaProcessor extends JavaProcessor {
         argumentsMap.put(TalendProcessArgumentConstant.ARG_GOAL, getGoals());
 
         talendJavaProject.buildModules(monitor, null, argumentsMap);
-        // try {
-        //
-        // IFolder jobSrcFolder = talendJavaProject.getProject().getFolder(this.getSrcCodePath().removeLastSegments(1));
-        // if (jobSrcFolder.exists()) {
-        // jobSrcFolder.refreshLocal(IResource.DEPTH_INFINITE, null);
-        // }
-        // if (isTestJob) {
-        // talendJavaProject.getTestOutputFolder().refreshLocal(IResource.DEPTH_INFINITE, null);
-        // } else {
-        // talendJavaProject.getOutputFolder().refreshLocal(IResource.DEPTH_INFINITE, null);
-        // }
-        // } catch (CoreException e) {
-        // ExceptionHandler.process(e);
-        // }
     }
 
     protected String getGoals() {
