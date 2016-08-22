@@ -173,7 +173,7 @@ public class AutoConversionTypesEditorView extends AbstractDataTableEditorView<A
         column.setCellEditor(new TextCellEditor(tableViewerCreator.getTable()));
 
         column.setModifiable(true);
-        column.setWeight(30);
+        column.setWeight(60);
         column.setMinimumWidth(50);
         column.setDefaultInternalValue(""); //$NON-NLS-1$
         return column;

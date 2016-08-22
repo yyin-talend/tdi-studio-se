@@ -30,13 +30,16 @@ import org.talend.repository.model.RepositoryPreferenceStore;
  */
 public class AutoConversionTypesPreferencePage extends FieldEditorPreferencePage {
 
+    public AutoConversionTypesEditor editor = null;
+
     public AutoConversionTypesPreferencePage() {
         super(FLAT);
     }
 
     @Override
     protected void createFieldEditors() {
-        addField(new AutoConversionTypesEditor(AutoConversionTypesEditor.ID, getFieldEditorParent()));
+        editor = new AutoConversionTypesEditor(AutoConversionTypesEditor.ID, getFieldEditorParent());
+        addField(editor);
     }
 
     @Override
