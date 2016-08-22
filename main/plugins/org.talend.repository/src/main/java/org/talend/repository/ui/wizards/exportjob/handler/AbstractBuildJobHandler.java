@@ -229,14 +229,12 @@ public abstract class AbstractBuildJobHandler implements IBuildJobHandler {
         }
         Property jobProperty = processItem.getProperty();
         String jobZipName = JavaResourcesHelper.getJobJarName(jobProperty.getLabel(), jobProperty.getVersion()) + JOB_EXTENSION;
+        IFolder targetFolder = talendProcessJavaProject.getTargetFolder();
         try {
-            if (talendProcessJavaProject.getProject().isSynchronized(IResource.DEPTH_INFINITE)) {
-                talendProcessJavaProject.getProject().refreshLocal(IResource.DEPTH_INFINITE, null);
-            }
+            targetFolder.refreshLocal(IResource.DEPTH_ONE, null);
         } catch (CoreException e) {
             ExceptionHandler.process(e);
         }
-        IFolder targetFolder = talendProcessJavaProject.getTargetFolder();
         IFile jobFile = targetFolder.getFile(jobZipName);
         return jobFile;
     }
