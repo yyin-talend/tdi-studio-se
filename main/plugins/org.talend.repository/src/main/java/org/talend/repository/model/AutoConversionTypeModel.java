@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.talend.commons.ui.swt.extended.table.ExtendedTableModel;
+import org.talend.core.model.metadata.types.AutoConversionType;
 
 /**
  * 

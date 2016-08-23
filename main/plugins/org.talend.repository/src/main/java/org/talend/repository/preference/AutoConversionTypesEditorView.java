@@ -36,12 +36,17 @@ import org.talend.commons.ui.swt.tableviewer.TableViewerCreatorColumn;
 import org.talend.commons.utils.data.bean.IBeanPropertyAccessors;
 import org.talend.commons.utils.data.list.ListenableListEvent;
 import org.talend.core.model.metadata.MetadataTalendType;
+import org.talend.core.model.metadata.types.AutoConversionType;
 import org.talend.core.model.metadata.types.JavaTypesManager;
 import org.talend.core.ui.metadata.celleditor.JavaTypeComboValueAdapter;
 import org.talend.repository.i18n.Messages;
-import org.talend.repository.model.AutoConversionType;
 import org.talend.repository.model.AutoConversionTypeModel;
 
+/**
+ * 
+ * created by hcyi on Aug 23, 2016 Detailled comment
+ *
+ */
 public class AutoConversionTypesEditorView extends AbstractDataTableEditorView<AutoConversionType> {
 
     public AutoConversionTypesEditorView(Composite parent, AutoConversionTypeModel model) {

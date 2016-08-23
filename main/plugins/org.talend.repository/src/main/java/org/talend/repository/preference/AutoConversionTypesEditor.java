@@ -37,12 +37,12 @@ import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.ui.runtime.exception.MessageBoxExceptionHandler;
 import org.talend.commons.utils.workbench.resources.ResourceUtils;
+import org.talend.core.model.metadata.types.AutoConversionType;
 import org.talend.core.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.ProjectManager;
 import org.talend.repository.RepositoryPlugin;
 import org.talend.repository.RepositoryWorkUnit;
 import org.talend.repository.i18n.Messages;
-import org.talend.repository.model.AutoConversionType;
 import org.talend.repository.model.AutoConversionTypeModel;
 import org.talend.repository.model.RepositoryConstants;
 import org.talend.repository.utils.AutoConvertTypesUtils;
@@ -62,7 +62,7 @@ public class AutoConversionTypesEditor extends FieldEditor {
 
     public AutoConversionTypesEditorView tableEditorView;
 
-    IPreferenceStore preferenceStore = RepositoryPlugin.getDefault().getPreferenceStore();
+    public IPreferenceStore preferenceStore = RepositoryPlugin.getDefault().getPreferenceStore();
 
     public AutoConversionTypesEditor(String name, Composite parent) {
         init(name, Messages.getString("AutoConversionTypesEditor.title"));//$NON-NLS-1$
@@ -91,7 +91,6 @@ public class AutoConversionTypesEditor extends FieldEditor {
         tableData.heightHint = 300;
         tableComposite.setLayoutData(tableData);
         typeModel.setModifiedBeanListenable(tableEditorView.getTableViewerCreator());
-        tableEditorView.setReadOnly(true);
         //
         addListeners();
         init();
@@ -99,6 +98,7 @@ public class AutoConversionTypesEditor extends FieldEditor {
 
     public void init() {
         enableBtn.setSelection(preferenceStore.getBoolean(AutoConvertTypesUtils.ENABLE_AUTO_CONVERSION));
+        tableEditorView.setReadOnly(!enableBtn.getSelection());
     }
 
     protected void addListeners() {

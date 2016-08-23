@@ -255,6 +255,10 @@
             class="org.talend.repository.MigrationDIMetadataItemService"
             serviceId="IMigrateDIMetadataItemService">
       </Service>
+      <Service
+            class="org.talend.repository.AutoConvertTypesService"
+            serviceId="IAutoConvertTypesService">
+      </Service>
    </extension>
 
    <!--extension
