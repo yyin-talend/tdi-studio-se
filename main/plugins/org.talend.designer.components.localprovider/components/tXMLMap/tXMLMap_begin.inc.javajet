@@ -723,10 +723,12 @@ if(valueMap.get("<%=currEleName%>")!=null) {//open if 8080
         		String prefix = null;
         		String localname = name;
         		
-        		int index = name.indexOf(":");
-        		if(index > 0) {
-        			prefix = name.substring(0,index);
-        			localname = name.substring(index+1);
+				int colon1 = name.indexOf(':');
+                int colon2 = name.lastIndexOf(':');
+        		
+        		if(colon1 > 0) {
+        			prefix = name.substring(0, colon1);
+                    localname = name.substring(colon2 + 1);
         		}
 %>
     			routines.system.DocumentHelper.applyNamespace2Attribute(<%=currEleName%>, <%if(prefix != null) {%> "<%=prefix%>" <%} else {%> null <%}%>, "<%=localname%>", currentValue);
