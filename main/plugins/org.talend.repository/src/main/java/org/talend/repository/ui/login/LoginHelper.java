@@ -488,6 +488,9 @@ public class LoginHelper {
         String location = getLocation(url);
         String projectName = project.getTechnicalLabel();
         String branch = ProjectManager.getInstance().getMainProjectBranch(project);
+        if (branch == null) {
+            return;
+        }
         if (branch.startsWith("tags/")) {
             repositoryContext.setNoUpdateWhenLogon(true);
             return;
