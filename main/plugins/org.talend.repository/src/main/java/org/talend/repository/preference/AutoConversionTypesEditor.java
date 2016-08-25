@@ -181,7 +181,7 @@ public class AutoConversionTypesEditor extends FieldEditor {
         try {
             IProject project = ResourceUtils.getProject(ProjectManager.getInstance().getCurrentProject());
             IFolder prefsSettingFolder = ResourceUtils.getFolder(project, RepositoryConstants.SETTING_DIRECTORY, false);
-            AutoConvertTypesUtils.save(typeModel.getBeansList());
+            AutoConvertTypesUtils.save(typeModel.getBeansList(), AutoConvertTypesUtils.getTypeFile());
             prefsSettingFolder.refreshLocal(IResource.DEPTH_ONE, null);
         } catch (CoreException e) {
             ExceptionHandler.process(e);

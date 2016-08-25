@@ -98,7 +98,7 @@ public class AutoConvertTypesUtils {
         return beanList;
     }
 
-    public static boolean save(List<AutoConversionType> beanList) throws Exception {
+    public static boolean save(List<AutoConversionType> beanList, File file) throws Exception {
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
         OutputStreamWriter output = null;
         try {
@@ -140,7 +140,7 @@ public class AutoConvertTypesUtils {
                 OutputFormat outputFormat = new OutputFormat();
                 outputFormat.setIndenting(true);
                 serializer.setOutputFormat(outputFormat);
-                output = new OutputStreamWriter(new FileOutputStream(AutoConvertTypesUtils.getTypeFile()));
+                output = new OutputStreamWriter(new FileOutputStream(file));
                 serializer.setOutputCharStream(output);
                 serializer.serialize(document);
             }
@@ -151,7 +151,7 @@ public class AutoConvertTypesUtils {
                 output.close();
             }
         }
-        return false;
+        return true;
     }
 
     public static boolean hasTypesFile() {
