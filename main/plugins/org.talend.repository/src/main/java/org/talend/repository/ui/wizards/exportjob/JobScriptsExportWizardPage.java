@@ -449,6 +449,7 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
         versionCombo.setLayoutData(gd);
 
         String[] allVersions = JobVersionUtils.getAllVersions(nodes[0]);
+        Arrays.sort(allVersions);
         String currentVersion = JobVersionUtils.getCurrentVersion(nodes[0]);
         versionCombo.setItems(allVersions);
         if (allVersions.length > 1) {
