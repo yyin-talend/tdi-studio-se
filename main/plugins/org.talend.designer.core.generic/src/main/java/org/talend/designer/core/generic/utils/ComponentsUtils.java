@@ -327,6 +327,7 @@ public class ComponentsUtils {
                     curParam.setNoContextAssist(false);
                     curParam.setRaw(false);
                     curParam.setReadOnly(false);
+                    fillDefaultValsForListType(curParam);
                     codeNames.add(curParam.getName());
                     possValsDisplay.add(curParam.getDisplayName());
                 }
@@ -351,6 +352,28 @@ public class ComponentsUtils {
             }
         }
         return elementParameters;
+    }
+
+    private static void fillDefaultValsForListType(ElementParameter param) {
+        if (param == null) {
+            return;
+        }
+        switch (param.getFieldType()) {
+        case CONTEXT_PARAM_NAME_LIST:
+        case CLOSED_LIST:
+        case DBTYPE_LIST:
+        case COLUMN_LIST:
+        case COMPONENT_LIST:
+        case CONNECTION_LIST:
+        case LOOKUP_COLUMN_LIST:
+        case PREV_COLUMN_LIST:
+            if (param.getValue() != null) {
+                param.setDefaultClosedListValue(param.getValue().toString());
+            }
+            break;
+        default:
+            return;
+        }
     }
 
     /**
