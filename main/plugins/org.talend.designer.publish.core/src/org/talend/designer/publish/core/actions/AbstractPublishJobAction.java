@@ -162,6 +162,7 @@ public abstract class AbstractPublishJobAction implements IRunnableWithProgress 
             // TDI-32861, because for publish job, so means, must be binaries
             exportChoiceMap.put(ExportChoice.binaries, true);
             exportChoiceMap.put(ExportChoice.includeLibs, true);
+            exportChoiceMap.put(ExportChoice.addStatistics, true);
 
             ProcessItem processItem = (ProcessItem) node.getObject().getProperty().getItem();
 
