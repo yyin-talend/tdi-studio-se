@@ -33,6 +33,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.PlatformUI;
+import org.talend.commons.CommonsPlugin;
 import org.talend.commons.exception.BusinessException;
 import org.talend.commons.exception.CommonExceptionHandler;
 import org.talend.commons.exception.LoginException;
@@ -477,6 +478,10 @@ public class LoginHelper {
         Context ctx = CoreRuntimePlugin.getInstance().getContext();
         RepositoryContext repositoryContext = (RepositoryContext) ctx.getProperty(Context.REPOSITORY_CONTEXT_KEY);
         PreferenceManipulator prefManipulator = new PreferenceManipulator();
+        if (CommonsPlugin.isHeadless()) {
+            repositoryContext.setNoUpdateWhenLogon(false);
+            return;
+        }
         if (!LoginHelper.isRemoteConnection(getCurrentSelectedConnBean())) {
             repositoryContext.setNoUpdateWhenLogon(true);
             return;
