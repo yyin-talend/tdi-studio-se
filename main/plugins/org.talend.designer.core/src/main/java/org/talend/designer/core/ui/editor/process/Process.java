@@ -3264,12 +3264,12 @@ public class Process extends Element implements IProcess2, IGEFProcess, ILastVer
      */
     @Override
     public void checkProcess() {
-        if (isActivate()) {
+        if (isActivate() && !isDuplicate()) {
             checkProblems();
         }
     }
 
-    private void checkProblems() {
+    protected void checkProblems() {
         Problems.removeProblemsByProcess(this);
 
         for (INode node : nodes) {
