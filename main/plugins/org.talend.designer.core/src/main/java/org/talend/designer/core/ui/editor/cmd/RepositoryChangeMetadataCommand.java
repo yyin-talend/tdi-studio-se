@@ -185,6 +185,7 @@ public class RepositoryChangeMetadataCommand extends ChangeMetadataCommand {
             }
             setTableRelevantParameterValues();
         }
+        super.setConnection(connection);
         super.execute();
         String propertyType = (String) node.getPropertyValue(EParameterName.PROPERTY_TYPE.getName());
         if (propertyType != null) {
