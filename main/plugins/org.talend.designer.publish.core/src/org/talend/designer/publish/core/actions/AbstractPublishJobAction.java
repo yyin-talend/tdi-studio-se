@@ -164,9 +164,12 @@ public abstract class AbstractPublishJobAction implements IRunnableWithProgress 
             exportChoiceMap.put(ExportChoice.includeLibs, true);
 
             ProcessItem processItem = (ProcessItem) node.getObject().getProperty().getItem();
-
-            BuildJobManager.getInstance().buildJob(tmpJob.getAbsolutePath(), processItem, processItem.getProperty().getVersion(),
-                    processItem.getProcess().getDefaultContext(), exportChoiceMap, exportType, monitor);
+            String contextName = (String) exportChoiceMap.get(ExportChoice.contextName);
+            if (contextName == null) {
+                contextName = processItem.getProcess().getDefaultContext();
+            }
+            BuildJobManager.getInstance().buildJob(tmpJob.getAbsolutePath(), processItem, jobVersion, contextName,
+                    exportChoiceMap, exportType, monitor);
             if (GlobalServiceRegister.getDefault().isServiceRegistered(IRunProcessService.class)) {
                 IRunProcessService service = (IRunProcessService) GlobalServiceRegister.getDefault().getService(
                         IRunProcessService.class);
