@@ -1,0 +1,14 @@
+<%@ jet 
+%>
+
+	<%@ include file="@{org.talend.designer.components.localprovider}/components/templates/Amazon/CredentialsProvider.javajet"%>
+	
+	com.amazonaws.services.elasticmapreduce.AmazonElasticMapReduceClient emr_<%=cid%> = new com.amazonaws.services.elasticmapreduce.AmazonElasticMapReduceClient(credentialsProvider_<%=cid%>);
+	
+	<%
+	if(region!=null && !region.isEmpty() && !"DEFAULT".equalsIgnoreCase(region)){
+		%>
+		emr_<%=cid%>.setRegion(com.amazonaws.regions.RegionUtils.getRegion(<%=region%>));
+		<%
+	}
+	%>
