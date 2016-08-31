@@ -1473,7 +1473,8 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
     }
 
     protected boolean buildJobWithMaven(JobExportType jobExportType, IProgressMonitor monitor) {
-        String context = (contextCombo == null || contextCombo.isDisposed()) ? IContext.DEFAULT : contextCombo.getText();
+        String context = (contextCombo == null || contextCombo.isDisposed()) ? processItem.getProcess().getDefaultContext()
+                : contextCombo.getText();
         try {
             String destination = getDestinationValue();
             int separatorIndex = destination.lastIndexOf(File.separator);
