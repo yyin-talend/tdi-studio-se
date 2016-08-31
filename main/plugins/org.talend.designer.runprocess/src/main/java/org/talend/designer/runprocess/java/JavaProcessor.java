@@ -1206,11 +1206,12 @@ public class JavaProcessor extends AbstractJavaProcessor implements IJavaBreakpo
         if (isExportConfig() || isRunAsExport()) {
             libsStr += classPathSeparator + getExportJarsStr();
         } else {
-            File libDir = JavaProcessorUtilities.getJavaProjectLibFolder();
-            if (libDir != null) {
-                String libFolder = new Path(libDir.getAbsolutePath()).toPortableString();
-                libsStr += classPathSeparator + libFolder;
-            }
+            // fix for TUP-4960 to remove .java/lib from classpath
+            // File libDir = JavaProcessorUtilities.getJavaProjectLibFolder();
+            // if (libDir != null) {
+            // String libFolder = new Path(libDir.getAbsolutePath()).toPortableString();
+            // libsStr += classPathSeparator + libFolder;
+            // }
         }
         // no classPathSeparator in the end.
         if (libsStr.lastIndexOf(classPathSeparator) != libsStr.length() - 1) {
