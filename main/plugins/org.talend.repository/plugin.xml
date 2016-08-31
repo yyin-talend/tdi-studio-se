@@ -2641,6 +2641,14 @@
               name="UpdateJobletContextInJobMigrationTask"
               version="6.0.2">
         </projecttask>
+        <projecttask
+              beforeLogon="false"
+              breaks="6.0.1"
+              class="org.talend.repository.model.migration.ReplaceVarcharArrayWithVarcharIssueTDI35719"
+              id="org.talend.repository.model.migration.ReplaceVarcharArrayWithVarcharIssueTDI35719"
+              name="ReplaceVarcharArrayWithVarcharIssueTDI35719"
+              version="6.0.2">
+        </projecttask>
    </extension>
 
    <extension
