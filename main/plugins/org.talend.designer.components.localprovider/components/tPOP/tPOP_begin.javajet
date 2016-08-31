@@ -129,13 +129,7 @@ boolean isNewerEmailFirst = ("true").equals(ElementParameterParser.getValue(node
 	}
 	<%if("false".equals(allEmails)&&(isNewerEmailFirst)){%>
 		int folderSize_<%=cid %> = folder_<%=cid %>.getMessageCount();
-		int differValue_<%=cid%> = folderSize_<%=cid %>-<%=maxEmails%>;
-		javax.mail.Message[] msgs_<%=cid%> = {};
-		if(differValue_<%=cid%>>=0){
-		msgs_<%=cid %> = folder_<%=cid %>.getMessages(differValue_<%=cid%>+1,folderSize_<%=cid %>);
-		}else{
-		msgs_<%=cid %> = folder_<%=cid %>.getMessages();
-		}
+		javax.mail.Message[] msgs_<%=cid %> = folder_<%=cid %>.getMessages(Math.max(0,folderSize_<%=cid %>-<%=maxEmails%>)+1,folderSize_<%=cid %>);
 	<%} else {%>
 		javax.mail.Message[] msgs_<%=cid %> = folder_<%=cid %>.getMessages();
 	<%}%>
