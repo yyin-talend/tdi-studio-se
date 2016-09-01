@@ -63,7 +63,6 @@ import org.talend.core.model.process.INodeConnector;
 import org.talend.core.model.process.IProcess;
 import org.talend.core.model.process.IProcess2;
 import org.talend.core.model.process.IReplaceNodeInProcess;
-import org.talend.core.model.process.ProcessUtils;
 import org.talend.core.model.process.ReplaceNodesInProcessProvider;
 import org.talend.core.model.process.UniqueNodeNameGenerator;
 import org.talend.core.model.properties.Item;
@@ -77,6 +76,7 @@ import org.talend.core.model.utils.NodeUtil;
 import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.core.repository.model.ProxyRepositoryFactory;
 import org.talend.core.ui.component.ComponentsFactoryProvider;
+import org.talend.daikon.properties.presentation.Form;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.model.components.AbstractBasicComponent;
 import org.talend.designer.core.model.components.EParameterName;
@@ -3054,6 +3054,12 @@ public class DataProcess implements IGeneratingProcess {
         }
 
         copyElementParametersValue(graphicalNode, newGraphicalNode);
+        if (newGraphicalNode.getComponentProperties() != null) {
+            List<Form> forms = newGraphicalNode.getComponentProperties().getForms();
+            for (Form form : forms) {
+                newGraphicalNode.getComponentProperties().refreshLayout(form);
+            }
+        }
         newGraphicalNode.setDummy(graphicalNode.isDummy());
 
         ValidationRulesUtil.createRejectConnector(newGraphicalNode);
