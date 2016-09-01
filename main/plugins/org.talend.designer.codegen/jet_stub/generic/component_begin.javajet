@@ -143,6 +143,10 @@ org.talend.components.api.container.RuntimeContainer container_<%=cid%> = new or
     public String getCurrentComponentId() {
         return "<%=cid%>";
     }
+    
+    public Object getGlobalData(String key) {
+    	return globalMap.get(key);
+    }
 };
 
 int nb_line_<%=cid %> = 0;
