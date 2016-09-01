@@ -557,8 +557,6 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 //
 		}
 					}%>
-					nb_line_<%=cid%>++;
-					<%log4jFileUtil.debugRetriveData(node);%>
 <%if(rejectConnName.equals(firstConnName)) {%> <%=firstConnName %> = null; <%}%>
 
 <%
@@ -570,7 +568,8 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 <%
 	}
 %>
-
+			nb_line_<%=cid%>++;
+			<%log4jFileUtil.debugRetriveData(node);%>
     } catch (java.lang.Exception e) {
         whetherReject_<%=cid%> = true;
         <%
@@ -1106,8 +1105,6 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 		}
 					}
 %>
-					nb_line_<%=cid%>++;
-					<%log4jFileUtil.debugRetriveData(node);%>
 <%if(rejectConnName.equals(firstConnName)) {%> <%=firstConnName %> = null; <%}%>
 
 <%
@@ -1119,6 +1116,8 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 <%
 	}
 %>
+				nb_line_<%=cid%>++;
+				<%log4jFileUtil.debugRetriveData(node);%>
 			}catch(java.lang.Exception e){
 			whetherReject_<%=cid%> = true;
 <%
@@ -1450,20 +1449,9 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 		}
 					}//TD128
 %>
-
-					nb_line_<%=cid%>++;
-					<%log4jFileUtil.debugRetriveData(node);%>
 <%if(rejectConnName.equals(firstConnName)) {%> <%=firstConnName %> = null; <%}%>
-
-<%
-	if(stopOnEmptyRow && false){
-%>
-        if(emptyColumnCount_<%= cid %> >= <%=size %><%if(hasDynamic){%>+dynamic_column_count_<%=cid%>-1<%}%>){
-        	break; //if meet the empty row, there will break the iterate.
-        }
-<%
-	}
-%>
+			nb_line_<%=cid%>++;
+			<%log4jFileUtil.debugRetriveData(node);%>
 		} catch(java.lang.Exception e) {
 			whetherReject_<%=cid%> = true;
 <%
