@@ -196,17 +196,7 @@ public class EditQueriesAction extends AContextualAction {
                 if (!isUnderDBConnection(repositoryNode)) {
                     canWork = false;
                 }
-                Item item = repositoryNode.getObject().getProperty().getItem();
-                if (item instanceof DatabaseConnectionItem) {
-                    DatabaseConnectionItem dbItem = (DatabaseConnectionItem) item;
-                    DatabaseConnection dbConn = (DatabaseConnection) dbItem.getConnection();
-                    String dbType = dbConn.getDatabaseType();
-                    if (EDatabaseTypeName.HIVE.getXmlName().equalsIgnoreCase(dbType)
-                            || EDatabaseTypeName.HBASE.getXmlName().equalsIgnoreCase(dbType)) {
-                        canWork = false;
-                        break;
-                    }
-                }
+
                 if (repositoryNode.getObjectType() != ERepositoryObjectType.METADATA_CONNECTIONS
                         && repositoryNode.getObjectType() != ERepositoryObjectType.METADATA_CON_QUERY
                         && repositoryNode.getObjectType() != ERepositoryObjectType.METADATA_CON_TABLE) {
@@ -227,6 +217,20 @@ public class EditQueriesAction extends AContextualAction {
                     if (!repFactory.isPotentiallyEditable(repositoryNode.getObject())) {
                         canWork = false;
                         break;
+                    }
+                }
+                if (canWork) {
+                    Item item = repositoryNode.getObject().getProperty().getItem();
+                    if (item instanceof DatabaseConnectionItem) {
+                        DatabaseConnectionItem dbItem = (DatabaseConnectionItem) item;
+                        DatabaseConnection dbConn = (DatabaseConnection) dbItem.getConnection();
+                        String dbType = dbConn.getDatabaseType();
+                        if (EDatabaseTypeName.HIVE.getXmlName().equalsIgnoreCase(dbType)
+                                || EDatabaseTypeName.HBASE.getXmlName().equalsIgnoreCase(dbType)
+                                || EDatabaseTypeName.IMPALA.getXmlName().equalsIgnoreCase(dbType)) {
+                            canWork = false;
+                            break;
+                        }
                     }
                 }
                 break;
