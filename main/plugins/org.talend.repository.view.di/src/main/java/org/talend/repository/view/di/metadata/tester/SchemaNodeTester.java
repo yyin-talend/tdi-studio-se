@@ -13,11 +13,8 @@
 package org.talend.repository.view.di.metadata.tester;
 
 import org.talend.core.model.repository.ERepositoryObjectType;
-<<<<<<< maintenance/6.1
-=======
 import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.repository.model.repositoryObject.MetadataTableRepositoryObject;
->>>>>>> 016bc00 TUP-5267: Avoid to load property so often (#636)
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.tester.SubNodeTester;
 
