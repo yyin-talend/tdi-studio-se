@@ -13,6 +13,11 @@
 package org.talend.repository.view.di.metadata.tester;
 
 import org.talend.core.model.repository.ERepositoryObjectType;
+<<<<<<< maintenance/6.1
+=======
+import org.talend.core.model.repository.IRepositoryViewObject;
+import org.talend.core.repository.model.repositoryObject.MetadataTableRepositoryObject;
+>>>>>>> 016bc00 TUP-5267: Avoid to load property so often (#636)
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.tester.SubNodeTester;
 
@@ -48,18 +53,13 @@ public class SchemaNodeTester extends SubNodeTester {
     public ERepositoryObjectType findParentItemType(RepositoryNode repositoryNode) {
         final ERepositoryObjectType objectType = repositoryNode.getObjectType();
         if (objectType == ERepositoryObjectType.METADATA_CON_TABLE) {
-            // RepositoryNode parent = repositoryNode.getParent();
-            // if (parent != null) {
-            // parent = parent.getParent();
-            // }
-            // if (parent != null) {
-            // return parent.getObjectType();
-            // }
-            if (repositoryNode.getObject() != null) {
-                // FIXME there should be a problem for the performance, when getProperty() for IRepositoryViewObject
-                ERepositoryObjectType parentType = ERepositoryObjectType.getItemType(repositoryNode.getObject().getProperty()
-                        .getItem());
-                return parentType;
+            final IRepositoryViewObject object = repositoryNode.getObject();
+            if (object != null && object instanceof MetadataTableRepositoryObject) {
+                final MetadataTableRepositoryObject tableObj = (MetadataTableRepositoryObject) object;
+                final IRepositoryViewObject itemObj = tableObj.getViewObject();
+                if (itemObj != null) {
+                    return itemObj.getRepositoryObjectType();
+                }
             }
         }
         return null;
