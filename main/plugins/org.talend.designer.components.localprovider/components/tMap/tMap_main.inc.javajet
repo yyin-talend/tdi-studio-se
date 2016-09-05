@@ -38,11 +38,8 @@
 
 %>
 <%
-
-
 	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 	MapperComponent node = (MapperComponent) codeGenArgument.getArgument();
-	
 	
 	boolean stats = codeGenArgument.isStatistics(); 
 
@@ -127,10 +124,30 @@
 
         gm.setInputTables(inputTables);
         gm.setVarsTables(varsTables);
-
+        
+        //get the auto convert parameters from the global project setting
+        Map<String,String> autoConverterMap = new HashMap<String,String>();
+        IAutoConvertTypesService autoConvertTypesService = (IAutoConvertTypesService)GlobalServiceRegister.getDefault().getService(IAutoConvertTypesService.class);
+    	List<AutoConversionType> autoConversionTypes = autoConvertTypesService.getAllAutoConversionTypes();
+    	for(AutoConversionType autoConversionType : autoConversionTypes) {
+    		autoConverterMap.put(autoConversionType.getSourceDataType() + ":" + autoConversionType.getTargetDataType(), autoConversionType.getConversionFunction());
+    	}
+    	
+    	//store all the input columns to map for looking up for auto data convert
+    	Map<TableEntryLocation, ExternalMapperTableEntry> locationMap = new HashMap<TableEntryLocation, ExternalMapperTableEntry>();
+    	for(ExternalMapperTable inputTable : inputTables) {
+    		List<ExternalMapperTableEntry> entries = inputTable.getMetadataTableEntries();
+    		if(entries == null || entries.isEmpty()) {
+    			continue;
+    		}
+    		
+    		for(ExternalMapperTableEntry entry : entries) {
+    			TableEntryLocation location = new TableEntryLocation(inputTable.getName(), entry.getName());
+    			locationMap.put(location, entry);
+    		}
+    	}
         
         HashMap<String, ExternalMapperTableEntry> hExternalInputTableEntries = new HashMap<String, ExternalMapperTableEntry>();
-
 		int sizeInputTables = inputTables.size();
 
 		ExternalMapperTable mainInputTable = null;
@@ -267,9 +284,10 @@
 	    	        				%>
 	 	           						<%= CodeGenerationUtils.buildJavaStartFieldKey(key) %>
     	    	    				<%
-            						}	
-
-
+            						}
+            						
+            						expressionKey = getExpressionWithAutoConvertFunction(expressionKey, externalInputTableEntry, expressionParser, locationMap, autoConverterMap);
+        	                        
                        		    	if(javaPrimitiveKeyColumn) {
                         		    	
                        		    		JavaType javaType = JavaTypesManager.getJavaTypeFromName(typeToGenerate);
@@ -577,6 +595,7 @@
                     ArrayList<String> keysNames = new ArrayList<String>();
                     ArrayList<String> keysValues = new ArrayList<String>();
                     ArrayList<String> keysTypes = new ArrayList<String>();
+                    ArrayList<ExternalMapperTableEntry> keysExternalInputTableEntry = new ArrayList<ExternalMapperTableEntry>();
                     
                     boolean hasPrimitiveKey = false;
                     
@@ -594,6 +613,8 @@
                                 if(javaPrimitiveKeyColumn) {
                                 	hasPrimitiveKey = true;
                                 }
+                                
+                                keysExternalInputTableEntry.add(externalInputTableEntry);
                             }
                         }
                     }
@@ -666,6 +687,8 @@
 
                        		    	String typeToGenerate = keysTypes.get(iKeyName);
                        		        boolean javaPrimitiveKeyColumn = JavaTypesManager.isJavaPrimitiveType(typeToGenerate);
+                       		        
+                       		        aKeysValues[iKeyName] = getExpressionWithAutoConvertFunction(aKeysValues[iKeyName], keysExternalInputTableEntry.get(iKeyName), expressionParser, locationMap, autoConverterMap);
                        		        
 									if(isPersistentSortedTable) {
 
@@ -1088,9 +1111,10 @@
  	           										<%= CodeGenerationUtils.buildJavaStartFieldKey(key) %>
         	    								<%
             									}
-
+            									
+            									expressionKey = getExpressionWithAutoConvertFunction(expressionKey, externalInputTableEntry, expressionParser, locationMap, autoConverterMap);
+                    	                        
 				                       	    	if(javaPrimitiveKeyColumn) {
-                        		    	
                        		    					JavaType javaType = JavaTypesManager.getJavaTypeFromName(typeToGenerate);
                        		    					String nullableType = JavaTypesManager.getTypeToGenerate(javaType.getId(), true);
                        		    					String defaultValue = JavaTypesManager.getDefaultValueFromJavaIdType(javaType.getId(), false);
@@ -1307,7 +1331,11 @@ if(!isVirtualOut) { // T_TM_M_320
                 if (varExpression == null || varExpression.trim().length() == 0) {
                     varExpression = JavaTypesManager.getDefaultValueFromJavaIdType(varsTableEntry.getType(),
                             varsTableEntry.isNullable());
+                } else {
+                	varExpression = getExpressionWithAutoConvertFunction(varExpression, varsTableEntry, expressionParser, locationMap, autoConverterMap);
                 }
+                
+                //TODO : remove the code below as it's never be used.
                 TableEntryLocation[] entryLocations = expressionParser.parseTableEntryLocations(varExpression);
                 ArrayList<TableEntryLocation> listCoupleForAddTablePrefix = new ArrayList<TableEntryLocation>();
                 for (TableEntryLocation location : entryLocations) {
@@ -1323,7 +1351,7 @@ if(!isVirtualOut) { // T_TM_M_320
                 if (checkingSyntax) {
                     %><%= cr  + CodeGenerationUtils.buildJavaStartFieldKey(key) %><%
                 }
-
+                
                 %><%= cr + gm.getGeneratedCodeTableColumnVariable(uniqueNameComponent, varsTableName, varsColumnName, false) + " = " + varExpression
                         + ";" %><%
 
@@ -1641,23 +1669,22 @@ if(!isVirtualOut) { // T_TM_M_320
 	                                    + " dummyVar" + (dummyVarCounter++);
 	                            }
 	                        }
+	                        
+	                        outputExpression = getExpressionWithAutoConvertFunction(outputExpression, outputTableEntry, expressionParser, locationMap, autoConverterMap);
+                            
     	                    String expression = assignationVar + " = " + outputExpression + ";";
-	
 	                        sb.append(cr).append(expression);
-	
+	                        
 	                        if (checkingSyntax) {
 	                            sb.append("\n").append(CodeGenerationUtils.buildJavaEndFieldKey(key));
 	                        }
 	                        needAppendColumnLog = true;
 	                    } // for entries
 						
-						
-	
 	                    if (connectionExists) {
 	                    	if(hasJoinedTable(outputTableName, data)){
 	                    		sb.append(cr + outputTableName + "_List.add(" + outputTableName + "_tmp);");
 	                       		sb.append(cr + outputTableName + " = " + outputTableName + "_tmp;");
-
 	                    	} else if (outputTable.getIsJoinTableOf()!=null) {
 	                    		sb.append(cr + outputTable.getIsJoinTableOf() + "_List.add(" + outputTable.getIsJoinTableOf() + "_tmp);");
 	                    		sb.append(cr + outputTable.getIsJoinTableOf() + " = " + outputTable.getIsJoinTableOf() + "_tmp;");

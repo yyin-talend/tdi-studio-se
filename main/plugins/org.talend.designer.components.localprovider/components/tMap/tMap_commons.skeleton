@@ -151,7 +151,42 @@ public class CLASS {
         return false;
     }
 
-
+	public String getExpressionWithAutoConvertFunction(String expression, ExternalMapperTableEntry targetTableEntry, DataMapExpressionParser expressionParser, Map<TableEntryLocation, ExternalMapperTableEntry> locationMap, Map<String,String> autoConverterMap) {
+		//TODO there is a parameter in tmap setting to enable the auto converter, but now we can't get it, will use it after the ui fix it.
+	
+		if(expression == null || expression.isEmpty()) {
+			return expression;
+		}
+	
+		TableEntryLocation[] entryLocations = expressionParser.parseTableEntryLocations(expression);
+        if(entryLocations == null || entryLocations.length != 1) {
+        	return expression;
+        }
+        
+    	TableEntryLocation uniqueLocation = entryLocations[0];
+    	ExternalMapperTableEntry uniqueSourceEntry = locationMap.get(uniqueLocation);
+    	String source_talend_type = uniqueSourceEntry.getType();
+        String target_talend_type = targetTableEntry.getType();
+        
+        String convertFunction = autoConverterMap.get(source_talend_type + ":" + target_talend_type);
+        if(convertFunction!=null && !convertFunction.isEmpty()) {
+        	StringBuilder strbuilder = new StringBuilder();
+        	
+	        if(uniqueSourceEntry.isNullable()) {
+	      		strbuilder.append("(((").append(expression).append(") == null) ? null : (");
+	        }
+        
+        	strbuilder.append(convertFunction.replace("${0}", expression));
+        	
+        	if(uniqueSourceEntry.isNullable()) {
+      			strbuilder.append("))");
+        	}
+        	
+        	return strbuilder.toString();
+        }
+        
+        return expression;
+	}
 
     public String generate(Object argument) {
 
