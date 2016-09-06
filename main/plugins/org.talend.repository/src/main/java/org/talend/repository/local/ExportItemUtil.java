@@ -147,18 +147,20 @@ public class ExportItemUtil {
      * @param progressMonitor, to show the progress during export
      * @throws Exception in case of problem
      */
-    public void exportItems(File destination, Collection<Item> items, boolean exportAllVersions, IProgressMonitor progressMonitor)
-            throws Exception {
+    public void exportItems(File destination, final Collection<Item> items, List<String> folders, boolean exportAllVersions,
+            IProgressMonitor progressMonitor) throws Exception {
+
         // bug 11301 :export 0 items
-        if (items == null) {
-            items = new ArrayList<Item>();
+        Collection<Item> workItems = items;
+        if (workItems == null) {
+            workItems = new ArrayList<Item>();
         }
 
         Collection<Item> otherVersions = new ArrayList<Item>();
         // get all versions of the exported items if wanted
         if (exportAllVersions) {
-            otherVersions = getOtherVersions(items);
-            items.addAll(otherVersions);
+            otherVersions = getOtherVersions(workItems);
+            workItems.addAll(otherVersions);
             otherVersions.clear();
         }// else keep current items version only
         try {
@@ -188,7 +190,7 @@ public class ExportItemUtil {
 
             try {
                 if (exporter != null) {
-                    toExport = exportItems2(items, tmpDirectory, true, progressMonitor);
+                    toExport = exportItems2(workItems, tmpDirectory, true, progressMonitor);
 
                     // in case of .tar.gz we remove extension twice
                     // IPath rootPath = new Path(destination.getName()).removeFileExtension().removeFileExtension();
@@ -197,8 +199,43 @@ public class ExportItemUtil {
                         // exporter.write(file.getAbsolutePath(), rootPath.append(path).toString());
                         exporter.write(file.getAbsolutePath(), path.toString());
                     }
+                    if (folders != null) {
+                        // filter folders that already created
+                        List<String> toRemove = new ArrayList<String>();
+                        for (String folderPath : folders) {
+                            for (IPath resourcePath : toExport.values()) {
+                                if (resourcePath.toPortableString().contains(folderPath)) {
+                                    toRemove.add(folderPath);
+                                    break;
+                                }
+                            }
+                        }
+                        folders.removeAll(toRemove);
+                        for (String folderPath : folders) {
+                            exporter.writeFolder(folderPath);
+                        }
+                    }
                 } else {
-                    toExport = exportItems2(items, destination, true, progressMonitor);
+                    toExport = exportItems2(workItems, destination, true, progressMonitor);
+                    if (folders != null) {
+                        // filter folders that already created
+                        List<String> toRemove = new ArrayList<String>();
+                        for (String folderPath : folders) {
+                            for (IPath resourcePath : toExport.values()) {
+                                if (resourcePath.toPortableString().contains(folderPath)) {
+                                    toRemove.add(folderPath);
+                                    break;
+                                }
+                            }
+                        }
+                        folders.removeAll(toRemove);
+                        for (String folderPath : folders) {
+                            IPath fullPath = new Path(destination.getAbsolutePath());
+                            fullPath = fullPath.append(folderPath);
+                            FilesUtils.createFoldersIfNotExists(fullPath.toPortableString(), false);
+                        }
+                    }
+
                 }
             } catch (Exception e) {
                 throw e;
@@ -217,6 +254,21 @@ public class ExportItemUtil {
             }
 
         }
+
+    }
+
+    /**
+     * export the sected TOS model elements to the destination
+     * 
+     * @param destination zip file or folder to store the exported elements
+     * @param items, the items to be exported
+     * @param exportAllVersions whether all the versions are export or only the selected once
+     * @param progressMonitor, to show the progress during export
+     * @throws Exception in case of problem
+     */
+    public void exportItems(File destination, final Collection<Item> items, boolean exportAllVersions,
+            IProgressMonitor progressMonitor) throws Exception {
+        exportItems(destination, items, null, exportAllVersions, progressMonitor);
     }
 
     /**
