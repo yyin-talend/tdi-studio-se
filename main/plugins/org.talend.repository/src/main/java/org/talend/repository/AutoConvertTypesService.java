@@ -12,7 +12,6 @@
 // ============================================================================
 package org.talend.repository;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.talend.core.model.metadata.IAutoConvertTypesService;
@@ -25,13 +24,8 @@ import org.talend.repository.utils.AutoConvertTypesUtils;
  */
 public class AutoConvertTypesService implements IAutoConvertTypesService {
 
-    public List<AutoConversionType> beanList = new ArrayList<>();
-
     @Override
     public List<AutoConversionType> getAllAutoConversionTypes() {
-        if (beanList.isEmpty()) {
-            beanList = AutoConvertTypesUtils.load(AutoConvertTypesUtils.getTypeFile());
-        }
-        return beanList;
+        return AutoConvertTypesUtils.getAllAutoConversionTypes();
     }
 }

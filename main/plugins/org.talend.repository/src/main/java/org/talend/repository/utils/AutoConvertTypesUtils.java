@@ -58,8 +58,17 @@ public class AutoConvertTypesUtils {
 
     public static final String ENABLE_AUTO_CONVERSION = "ENABLE_AUTO_CONVERSION";//$NON-NLS-1$
 
+    private static List<AutoConversionType> beanList = null;
+
+    public static List<AutoConversionType> getAllAutoConversionTypes() {
+        if (beanList == null) {
+            load(AutoConvertTypesUtils.getTypeFile());
+        }
+        return beanList;
+    }
+
     public static List<AutoConversionType> load(File file) {
-        List<AutoConversionType> beanList = new ArrayList<>();
+        beanList = new ArrayList<>();
         try {
             DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
             DocumentBuilder analyseur = documentBuilderFactory.newDocumentBuilder();
@@ -98,7 +107,7 @@ public class AutoConvertTypesUtils {
         return beanList;
     }
 
-    public static boolean save(List<AutoConversionType> beanList, File file) throws Exception {
+    public static boolean save(List<AutoConversionType> beans, File file) throws Exception {
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
         OutputStreamWriter output = null;
         try {
@@ -125,8 +134,8 @@ public class AutoConvertTypesUtils {
             //document.setXmlVersion("1.0");//$NON-NLS-1$
             Element root = document.createElement("mapping");//$NON-NLS-1$
             document.appendChild(root);
-            for (int i = 0; i < beanList.size(); i++) {
-                AutoConversionType bean = beanList.get(i);
+            for (int i = 0; i < beans.size(); i++) {
+                AutoConversionType bean = beans.get(i);
                 Element typeNode = document.createElement("conversionType");//$NON-NLS-1$
                 typeNode.setAttribute("source", bean.getSourceDataType());//$NON-NLS-1$
                 typeNode.setAttribute("target", bean.getTargetDataType());//$NON-NLS-1$
@@ -143,6 +152,9 @@ public class AutoConvertTypesUtils {
                 output = new OutputStreamWriter(new FileOutputStream(file));
                 serializer.setOutputCharStream(output);
                 serializer.serialize(document);
+                // update
+                beanList = new ArrayList<>();
+                beanList.addAll(beans);
             }
         } catch (ParserConfigurationException e) {
             e.printStackTrace();
