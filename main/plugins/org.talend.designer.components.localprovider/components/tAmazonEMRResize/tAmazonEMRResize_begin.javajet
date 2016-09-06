@@ -22,7 +22,7 @@
 	boolean request_spot = "true".equals(ElementParameterParser.getValue(node, "__REQUEST_SPOT__"));
 	String bid_price = ElementParameterParser.getValue(node, "__BID_PRICE__");
 	
-	int instance_count = Integer.parseInt(ElementParameterParser.getValue(node, "__INSTANCE_COUNT__"));
+	String instance_count = ElementParameterParser.getValue(node, "__INSTANCE_COUNT__");
 	
 	String task_instance_type = ElementParameterParser.getValue(node, "__TASK_INSTANCE_TYPE__");
 		
