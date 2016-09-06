@@ -151,9 +151,11 @@ public class CLASS {
         return false;
     }
 
-	public String getExpressionWithAutoConvertFunction(String expression, ExternalMapperTableEntry targetTableEntry, DataMapExpressionParser expressionParser, Map<TableEntryLocation, ExternalMapperTableEntry> locationMap, Map<String,String> autoConverterMap) {
-		//TODO there is a parameter in tmap setting to enable the auto converter, but now we can't get it, will use it after the ui fix it.
-	
+	public String getExpressionWithAutoConvertFunction(String expression, ExternalMapperTableEntry targetTableEntry, DataMapExpressionParser expressionParser, Map<TableEntryLocation, ExternalMapperTableEntry> locationMap, Map<String,String> autoConverterMap, boolean enable_auto_convert_type) {
+		if(!enable_auto_convert_type) {
+			return expression;
+		}
+		
 		if(expression == null || expression.isEmpty()) {
 			return expression;
 		}

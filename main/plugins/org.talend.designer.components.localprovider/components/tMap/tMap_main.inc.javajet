@@ -127,24 +127,34 @@
         
         //get the auto convert parameters from the global project setting
         Map<String,String> autoConverterMap = new HashMap<String,String>();
-        IAutoConvertTypesService autoConvertTypesService = (IAutoConvertTypesService)GlobalServiceRegister.getDefault().getService(IAutoConvertTypesService.class);
-    	List<AutoConversionType> autoConversionTypes = autoConvertTypesService.getAllAutoConversionTypes();
-    	for(AutoConversionType autoConversionType : autoConversionTypes) {
-    		autoConverterMap.put(autoConversionType.getSourceDataType() + ":" + autoConversionType.getTargetDataType(), autoConversionType.getConversionFunction());
-    	}
-    	
-    	//store all the input columns to map for looking up for auto data convert
+        
+        //store all the input columns to map for looking up for auto data convert
     	Map<TableEntryLocation, ExternalMapperTableEntry> locationMap = new HashMap<TableEntryLocation, ExternalMapperTableEntry>();
-    	for(ExternalMapperTable inputTable : inputTables) {
-    		List<ExternalMapperTableEntry> entries = inputTable.getMetadataTableEntries();
-    		if(entries == null || entries.isEmpty()) {
-    			continue;
-    		}
-    		
-    		for(ExternalMapperTableEntry entry : entries) {
-    			TableEntryLocation location = new TableEntryLocation(inputTable.getName(), entry.getName());
-    			locationMap.put(location, entry);
-    		}
+    	
+    	boolean enable_auto_convert_type = "true".equals(ElementParameterParser.getValue(node, "__ENABLE_AUTO_CONVERT_TYPE__"));
+    	
+    	if(enable_auto_convert_type) {
+            if(GlobalServiceRegister.getDefault().isServiceRegistered(IAutoConvertTypesService.class)) {
+                IAutoConvertTypesService autoConvertTypesService = (IAutoConvertTypesService)GlobalServiceRegister.getDefault().getService(IAutoConvertTypesService.class);
+            	List<AutoConversionType> autoConversionTypes = autoConvertTypesService.getAllAutoConversionTypes();
+            	if(autoConversionTypes!=null) {
+                	for(AutoConversionType autoConversionType : autoConversionTypes) {
+                		autoConverterMap.put(autoConversionType.getSourceDataType() + ":" + autoConversionType.getTargetDataType(), autoConversionType.getConversionFunction());
+                	}
+            	}
+        	}
+        	
+        	for(ExternalMapperTable inputTable : inputTables) {
+        		List<ExternalMapperTableEntry> entries = inputTable.getMetadataTableEntries();
+        		if(entries == null || entries.isEmpty()) {
+        			continue;
+        		}
+        		
+        		for(ExternalMapperTableEntry entry : entries) {
+        			TableEntryLocation location = new TableEntryLocation(inputTable.getName(), entry.getName());
+        			locationMap.put(location, entry);
+        		}
+        	}
     	}
         
         HashMap<String, ExternalMapperTableEntry> hExternalInputTableEntries = new HashMap<String, ExternalMapperTableEntry>();
@@ -286,7 +296,7 @@
     	    	    				<%
             						}
             						
-            						expressionKey = getExpressionWithAutoConvertFunction(expressionKey, externalInputTableEntry, expressionParser, locationMap, autoConverterMap);
+            						expressionKey = getExpressionWithAutoConvertFunction(expressionKey, externalInputTableEntry, expressionParser, locationMap, autoConverterMap, enable_auto_convert_type);
         	                        
                        		    	if(javaPrimitiveKeyColumn) {
                         		    	
@@ -688,7 +698,7 @@
                        		    	String typeToGenerate = keysTypes.get(iKeyName);
                        		        boolean javaPrimitiveKeyColumn = JavaTypesManager.isJavaPrimitiveType(typeToGenerate);
                        		        
-                       		        aKeysValues[iKeyName] = getExpressionWithAutoConvertFunction(aKeysValues[iKeyName], keysExternalInputTableEntry.get(iKeyName), expressionParser, locationMap, autoConverterMap);
+                       		        aKeysValues[iKeyName] = getExpressionWithAutoConvertFunction(aKeysValues[iKeyName], keysExternalInputTableEntry.get(iKeyName), expressionParser, locationMap, autoConverterMap, enable_auto_convert_type);
                        		        
 									if(isPersistentSortedTable) {
 
@@ -1112,7 +1122,7 @@
         	    								<%
             									}
             									
-            									expressionKey = getExpressionWithAutoConvertFunction(expressionKey, externalInputTableEntry, expressionParser, locationMap, autoConverterMap);
+            									expressionKey = getExpressionWithAutoConvertFunction(expressionKey, externalInputTableEntry, expressionParser, locationMap, autoConverterMap, enable_auto_convert_type);
                     	                        
 				                       	    	if(javaPrimitiveKeyColumn) {
                        		    					JavaType javaType = JavaTypesManager.getJavaTypeFromName(typeToGenerate);
@@ -1332,7 +1342,7 @@ if(!isVirtualOut) { // T_TM_M_320
                     varExpression = JavaTypesManager.getDefaultValueFromJavaIdType(varsTableEntry.getType(),
                             varsTableEntry.isNullable());
                 } else {
-                	varExpression = getExpressionWithAutoConvertFunction(varExpression, varsTableEntry, expressionParser, locationMap, autoConverterMap);
+                	varExpression = getExpressionWithAutoConvertFunction(varExpression, varsTableEntry, expressionParser, locationMap, autoConverterMap, enable_auto_convert_type);
                 }
                 
                 //TODO : remove the code below as it's never be used.
@@ -1637,11 +1647,11 @@ if(!isVirtualOut) { // T_TM_M_320
 	    	                                .getTalendType(), metadataColumnFromConn.isNullable());
 	    	                    }
 	                        } else {
-	                        
+	                        	outputExpression = getExpressionWithAutoConvertFunction(outputExpression, outputTableEntry, expressionParser, locationMap, autoConverterMap, enable_auto_convert_type);
+	                        	
 	                        	if(metadataColumnFromConn == null) {
 									continue;
-								}	                        
-	                        
+								}
 	                        }
 	
 	                        String key = CodeGenerationUtils.buildProblemKey(componentNameForKeyProblem,
@@ -1670,8 +1680,6 @@ if(!isVirtualOut) { // T_TM_M_320
 	                            }
 	                        }
 	                        
-	                        outputExpression = getExpressionWithAutoConvertFunction(outputExpression, outputTableEntry, expressionParser, locationMap, autoConverterMap);
-                            
     	                    String expression = assignationVar + " = " + outputExpression + ";";
 	                        sb.append(cr).append(expression);
 	                        
@@ -1859,15 +1867,13 @@ if(!isVirtualOut) { // T_TM_M_320
                                     .getTalendType(), metadataColumnFromConn.isNullable());
                         }
                     } else {
-                    
+                    	outputExpression = getExpressionWithAutoConvertFunction(outputExpression, outputTableEntry, expressionParser, locationMap, autoConverterMap, enable_auto_convert_type);
+                    	
                     	if(metadataColumnFromConn == null) {
             				continue;
-            			}	                        
-                    
+            			}
                     }
 					
-
-                    
                     String key = CodeGenerationUtils.buildProblemKey(componentNameForKeyProblem,
                             JavaGenerationManager.PROBLEM_KEY_FIELD.METADATA_COLUMN.toString(), outputTableName,
                             outputColumnName);
@@ -1893,17 +1899,14 @@ if(!isVirtualOut) { // T_TM_M_320
                                 + " dummyVar" + (dummyVarCounter++);
                         }
                     }
+                    
                     String expression = assignationVar + " = " + outputExpression + ";";
-
                     sb.append(cr).append(expression);
-
+                    
                     if (checkingSyntax) {
                         sb.append("\n").append(CodeGenerationUtils.buildJavaEndFieldKey(key));
                     }
-
                 } // for entries  
-                
-                 	
 %>            
                
                 <% stringBuffer.append(sb.toString()); %>
