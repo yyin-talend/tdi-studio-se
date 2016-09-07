@@ -125,39 +125,89 @@
         gm.setInputTables(inputTables);
         gm.setVarsTables(varsTables);
         
+     	HashMap<String, ExternalMapperTableEntry> hExternalInputTableEntries = new HashMap<String, ExternalMapperTableEntry>();
+        
         //get the auto convert parameters from the global project setting
         Map<String,String> autoConverterMap = new HashMap<String,String>();
         
-        //store all the input columns to map for looking up for auto data convert
-    	Map<TableEntryLocation, ExternalMapperTableEntry> locationMap = new HashMap<TableEntryLocation, ExternalMapperTableEntry>();
+        //store all the input entries to map for looking up for auto data convert
+    	Map<TableEntryLocation, ExternalMapperTableEntry> locationMap4Entry = new HashMap<TableEntryLocation, ExternalMapperTableEntry>();
+    	
+    	//store all the input columns to map for looking up for auto data convert
+    	Map<TableEntryLocation, IMetadataColumn> locationMap4Column = new HashMap<TableEntryLocation, IMetadataColumn>();
     	
     	boolean enable_auto_convert_type = "true".equals(ElementParameterParser.getValue(node, "__ENABLE_AUTO_CONVERT_TYPE__"));
     	
     	if(enable_auto_convert_type) {
+%>
+			<%@ include file="./default_auto_convert_function.javajet"%>
+<%
             if(GlobalServiceRegister.getDefault().isServiceRegistered(IAutoConvertTypesService.class)) {
                 IAutoConvertTypesService autoConvertTypesService = (IAutoConvertTypesService)GlobalServiceRegister.getDefault().getService(IAutoConvertTypesService.class);
             	List<AutoConversionType> autoConversionTypes = autoConvertTypesService.getAllAutoConversionTypes();
             	if(autoConversionTypes!=null) {
                 	for(AutoConversionType autoConversionType : autoConversionTypes) {
-                		autoConverterMap.put(autoConversionType.getSourceDataType() + ":" + autoConversionType.getTargetDataType(), autoConversionType.getConversionFunction());
+                		autoConverterMap.put(contact(autoConversionType.getSourceDataType(), ":", autoConversionType.getTargetDataType()), autoConversionType.getConversionFunction());
                 	}
             	}
         	}
         	
         	for(ExternalMapperTable inputTable : inputTables) {
-        		List<ExternalMapperTableEntry> entries = inputTable.getMetadataTableEntries();
-        		if(entries == null || entries.isEmpty()) {
+        		IConnection connection = hNameToConnection.get(inputTable.getName());
+        		
+        		if(connection == null) {
         			continue;
         		}
         		
-        		for(ExternalMapperTableEntry entry : entries) {
-        			TableEntryLocation location = new TableEntryLocation(inputTable.getName(), entry.getName());
-        			locationMap.put(location, entry);
+        		IMetadataTable metadata = connection.getMetadataTable();
+        		
+        		if(metadata == null) {
+        			continue;
+        		}
+        		
+        		List<IMetadataColumn> columns = metadata.getListColumns();
+        		
+        		if(columns == null || columns.isEmpty()) {
+        			continue;
+        		}
+        		
+        		List<ExternalMapperTableEntry> metadataTableEntries = inputTable.getMetadataTableEntries();
+        		
+        		if(metadataTableEntries == null || metadataTableEntries.isEmpty()) {
+        			continue;
+        		}
+        		
+        		for (ExternalMapperTableEntry externalTableEntry : metadataTableEntries) {
+                	hExternalInputTableEntries.put(externalTableEntry.getName(), externalTableEntry);
+        		}
+        		
+        		for(IMetadataColumn column : columns) {
+        			ExternalMapperTableEntry entry = hExternalInputTableEntries.get(column.getLabel());
+        			
+        			if(entry == null) {
+        				continue;
+        			}
+        			
+        			TableEntryLocation location = new TableEntryLocation(inputTable.getName(), column.getLabel());
+        			
+        			locationMap4Entry.put(location, entry);
+        			locationMap4Column.put(location, column);
+        		}
+        	}
+        	
+        	for(ExternalMapperTable varsTable : varsTables) {
+        		List<ExternalMapperTableEntry> varsTableEntries = varsTable.getMetadataTableEntries();
+                if (varsTableEntries == null || varsTableEntries.isEmpty()) {
+                    continue;
+                }
+                
+                for (ExternalMapperTableEntry varsTableEntry : varsTableEntries) {
+                	TableEntryLocation location = new TableEntryLocation(varsTable.getName(), varsTableEntry.getName());
+                	locationMap4Entry.put(location, varsTableEntry);
         		}
         	}
     	}
         
-        HashMap<String, ExternalMapperTableEntry> hExternalInputTableEntries = new HashMap<String, ExternalMapperTableEntry>();
 		int sizeInputTables = inputTables.size();
 
 		ExternalMapperTable mainInputTable = null;
@@ -296,7 +346,7 @@
     	    	    				<%
             						}
             						
-            						expressionKey = getExpressionWithAutoConvertFunction(expressionKey, externalInputTableEntry, expressionParser, locationMap, autoConverterMap, enable_auto_convert_type);
+            						expressionKey = getExpressionWithAutoConvertFunction(expressionKey, externalInputTableEntry, column, expressionParser, locationMap4Entry, locationMap4Column, autoConverterMap, enable_auto_convert_type);
         	                        
                        		    	if(javaPrimitiveKeyColumn) {
                         		    	
@@ -605,7 +655,8 @@
                     ArrayList<String> keysNames = new ArrayList<String>();
                     ArrayList<String> keysValues = new ArrayList<String>();
                     ArrayList<String> keysTypes = new ArrayList<String>();
-                    ArrayList<ExternalMapperTableEntry> keysExternalInputTableEntry = new ArrayList<ExternalMapperTableEntry>();
+                    ArrayList<ExternalMapperTableEntry> keysEntries = new ArrayList<ExternalMapperTableEntry>();
+                    ArrayList<IMetadataColumn> keysColumns = new ArrayList<IMetadataColumn>();
                     
                     boolean hasPrimitiveKey = false;
                     
@@ -624,7 +675,8 @@
                                 	hasPrimitiveKey = true;
                                 }
                                 
-                                keysExternalInputTableEntry.add(externalInputTableEntry);
+                                keysEntries.add(externalInputTableEntry);
+                                keysColumns.add(column);
                             }
                         }
                     }
@@ -698,7 +750,7 @@
                        		    	String typeToGenerate = keysTypes.get(iKeyName);
                        		        boolean javaPrimitiveKeyColumn = JavaTypesManager.isJavaPrimitiveType(typeToGenerate);
                        		        
-                       		        aKeysValues[iKeyName] = getExpressionWithAutoConvertFunction(aKeysValues[iKeyName], keysExternalInputTableEntry.get(iKeyName), expressionParser, locationMap, autoConverterMap, enable_auto_convert_type);
+                       		        aKeysValues[iKeyName] = getExpressionWithAutoConvertFunction(aKeysValues[iKeyName], keysEntries.get(iKeyName), keysColumns.get(iKeyName), expressionParser, locationMap4Entry, locationMap4Column, autoConverterMap, enable_auto_convert_type);
                        		        
 									if(isPersistentSortedTable) {
 
@@ -1122,7 +1174,7 @@
         	    								<%
             									}
             									
-            									expressionKey = getExpressionWithAutoConvertFunction(expressionKey, externalInputTableEntry, expressionParser, locationMap, autoConverterMap, enable_auto_convert_type);
+            									expressionKey = getExpressionWithAutoConvertFunction(expressionKey, externalInputTableEntry, column, expressionParser, locationMap4Entry, locationMap4Column, autoConverterMap, enable_auto_convert_type);
                     	                        
 				                       	    	if(javaPrimitiveKeyColumn) {
                        		    					JavaType javaType = JavaTypesManager.getJavaTypeFromName(typeToGenerate);
@@ -1342,7 +1394,7 @@ if(!isVirtualOut) { // T_TM_M_320
                     varExpression = JavaTypesManager.getDefaultValueFromJavaIdType(varsTableEntry.getType(),
                             varsTableEntry.isNullable());
                 } else {
-                	varExpression = getExpressionWithAutoConvertFunction(varExpression, varsTableEntry, expressionParser, locationMap, autoConverterMap, enable_auto_convert_type);
+                	varExpression = getExpressionWithAutoConvertFunction(varExpression, varsTableEntry, null, expressionParser, locationMap4Entry, locationMap4Column, autoConverterMap, enable_auto_convert_type);
                 }
                 
                 //TODO : remove the code below as it's never be used.
@@ -1647,7 +1699,7 @@ if(!isVirtualOut) { // T_TM_M_320
 	    	                                .getTalendType(), metadataColumnFromConn.isNullable());
 	    	                    }
 	                        } else {
-	                        	outputExpression = getExpressionWithAutoConvertFunction(outputExpression, outputTableEntry, expressionParser, locationMap, autoConverterMap, enable_auto_convert_type);
+	                        	outputExpression = getExpressionWithAutoConvertFunction(outputExpression, outputTableEntry, metadataColumnFromConn, expressionParser, locationMap4Entry, locationMap4Column, autoConverterMap, enable_auto_convert_type);
 	                        	
 	                        	if(metadataColumnFromConn == null) {
 									continue;
@@ -1867,7 +1919,7 @@ if(!isVirtualOut) { // T_TM_M_320
                                     .getTalendType(), metadataColumnFromConn.isNullable());
                         }
                     } else {
-                    	outputExpression = getExpressionWithAutoConvertFunction(outputExpression, outputTableEntry, expressionParser, locationMap, autoConverterMap, enable_auto_convert_type);
+                    	outputExpression = getExpressionWithAutoConvertFunction(outputExpression, outputTableEntry, metadataColumnFromConn, expressionParser, locationMap4Entry, locationMap4Column, autoConverterMap, enable_auto_convert_type);
                     	
                     	if(metadataColumnFromConn == null) {
             				continue;
