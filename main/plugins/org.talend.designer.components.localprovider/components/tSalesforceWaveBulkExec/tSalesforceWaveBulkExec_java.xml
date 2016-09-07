@@ -86,7 +86,7 @@
           REPOSITORY_VALUE="ENDPOINT"
           SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
         >
-          <DEFAULT>"https://login.salesforce.com/services/Soap/u/34.0"</DEFAULT>
+          <DEFAULT>"https://login.salesforce.com/services/Soap/u/37.0"</DEFAULT>
         </PARAMETER>
 
         <PARAMETER
@@ -347,8 +347,8 @@
         />
         <IMPORT
             NAME="partner"
-            MODULE="partner-34.0.0.jar"
-            MVN="mvn:org.talend.components.salesforce/partner/34.0.0"
+            MODULE="force-partner-api-37.0.3.jar"
+            MVN="mvn:org.talend.components.salesforce/partner/37.0.3"
             REQUIRED_IF="USE_EXISTING_CONNECTION == 'false'"
         />
         <IMPORT
