@@ -5001,7 +5001,7 @@ public class Node extends Element implements IGraphicalNode {
     @Override
     public List<ModuleNeeded> getModulesNeeded() {
         // same as the component, but an override is possible in the AbstractNode when generate the code
-        return component.getModulesNeeded();
+        return component.getModulesNeeded(this);
     }
 
     @Override
