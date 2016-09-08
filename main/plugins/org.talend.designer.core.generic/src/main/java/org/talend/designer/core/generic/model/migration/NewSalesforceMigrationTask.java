@@ -86,6 +86,8 @@ public class NewSalesforceMigrationTask extends NewComponentFrameworkMigrationTa
             	} else if("OAUTH".equals(value)) {
             		paramType.setValue("OAuth");
             	}
+            } else if ("QUERY".equals(paramName)) {
+                paramType.setValue(String.valueOf(value).replaceAll("\n", " ").replaceAll("\r", " "));
             }
     	}
     	return paramType;
