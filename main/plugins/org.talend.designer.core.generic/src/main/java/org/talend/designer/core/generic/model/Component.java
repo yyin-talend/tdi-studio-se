@@ -1062,6 +1062,8 @@ public class Component extends AbstractBasicComponent {
                     topology = ConnectorTopology.INCOMING;
                 } else if (hasOutput) {
                     topology = ConnectorTopology.OUTGOING;
+                } else {
+                    topology = ConnectorTopology.NONE;
                 }
             } else {
                 Set<ConnectorTopology> topologies = componentDefinition.getSupportedConnectorTopologies();
