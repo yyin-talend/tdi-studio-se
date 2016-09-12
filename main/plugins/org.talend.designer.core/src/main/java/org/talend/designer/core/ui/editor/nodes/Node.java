@@ -439,6 +439,10 @@ public class Node extends Element implements IGraphicalNode {
         this.oldcomponent = component;
         this.process = process;
         init(component);
+        IElementParameter param = getElementParameter(EParameterName.REPOSITORY_ALLOW_AUTO_SWITCH.getName());
+        if (param != null) {
+            param.setValue(Boolean.TRUE);
+        }
         needlibrary = false;
     }
 
