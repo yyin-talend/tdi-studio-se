@@ -128,8 +128,8 @@ public class GuessSchemaProcess {
 
         // create the tLibraryLoad for the input node
 
-        if (node.getComponent().getModulesNeeded().size() > 0 && !node.getComponent().getName().equals("tRedshiftInput")) {//$NON-NLS-1$
-            for (ModuleNeeded module : node.getComponent().getModulesNeeded()) {
+        if (node.getModulesNeeded().size() > 0 && !node.getComponent().getName().equals("tRedshiftInput")) {//$NON-NLS-1$
+            for (ModuleNeeded module : node.getModulesNeeded()) {
                 if (module.isRequired(node.getElementParameters())) {
                     Node libNode1 = new Node(ComponentsFactoryProvider.getInstance().get(LIB_NODE,
                             ComponentCategory.CATEGORY_4_DI.getName()), process);

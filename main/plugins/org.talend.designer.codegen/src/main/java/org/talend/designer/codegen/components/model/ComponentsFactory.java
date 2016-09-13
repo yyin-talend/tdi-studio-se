@@ -510,7 +510,7 @@ public class ComponentsFactory implements IComponentsFactory {
                             currentComp.getTranslatedFamilyName();
                             currentComp.getPluginExtension();
                             currentComp.getVersion();
-                            currentComp.getModulesNeeded();
+                            currentComp.getModulesNeeded(null);
                             currentComp.getPluginDependencies();
                             // end of force cache update.
 
