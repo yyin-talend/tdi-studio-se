@@ -293,8 +293,11 @@ public class MainComposite extends AbstractTabComposite {
             jobTypeValue = jobTypeCCombo.getText();
             jobTypeCCombo.setEnabled(allowEnableControl);
 
-            CLabel jobTypeLabel = widgetFactory.createCLabel(composite,
-                    Messages.getString("MainComposite.JobTypeSection.jobTypeLabel")); //$NON-NLS-1$
+            String type = Messages.getString("MainComposite.JobTypeSection.jobTypeLabel"); //$NON-NLS-1$
+            if(obj.getProperty().getItem() instanceof JobletProcessItem){
+                type = Messages.getString("MainComposite.JobTypeSection.jobletTypeLabel"); //$NON-NLS-1$
+            }
+            CLabel jobTypeLabel = widgetFactory.createCLabel(composite, type);
             data = new FormData();
             data.left = new FormAttachment(0, 0);
             data.right = new FormAttachment(jobTypeCCombo, -ITabbedPropertyConstants.HSPACE);
