@@ -108,7 +108,7 @@ import org.talend.repository.utils.JobVersionUtils;
 /**
  * Page of the Job Scripts Export Wizard. <br/>
  * 
- * @referto WizardArchiveFileResourceExportPage1 $Id: JobScriptsExportWizardPage.java 1 2006-12-13 下午03:09:07 bqian
+ * @referto WizardArchiveFileResourceExportPage1 $Id: JobScriptsExportWizardPage.java 1 2006-12-13 ä¸‹å�ˆ03:09:07 bqian
  * 
  */
 public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourceExportPage1 {
@@ -1480,8 +1480,10 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
                 String userDir = System.getProperty("user.dir"); //$NON-NLS-1$
                 destination = userDir + File.separator + destination;
             }
-            return BuildJobManager.getInstance().buildJobs(destination, Arrays.asList(getCheckNodes()), getSelectedJobVersion(),
-                    context, getExportChoiceMap(), jobExportType, monitor);
+            Map<ExportChoice, Object> exportChoiceMap = getExportChoiceMap();
+            exportChoiceMap.put(ExportChoice.addStatistics, Boolean.TRUE);
+            return BuildJobManager.getInstance().buildJobs(destination, Arrays.asList(getCheckNodes()), getDefaultFileName(), getSelectedJobVersion(), 
+                    context, exportChoiceMap, jobExportType, monitor);
 
         } catch (Exception e) {
             MessageBoxExceptionHandler.process(e, getShell());
