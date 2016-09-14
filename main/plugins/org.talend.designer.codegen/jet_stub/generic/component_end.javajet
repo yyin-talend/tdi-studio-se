@@ -52,6 +52,8 @@ if(hasOutputOnly){
     org.talend.components.api.component.runtime.Result resultObject_<%=cid%> = (org.talend.components.api.component.runtime.Result)writer_<%=cid%>.close();
     final java.util.Map<String, Object> resultMap_<%=cid%> = writer_<%=cid%>.getWriteOperation().finalize(java.util.Arrays.<org.talend.components.api.component.runtime.Result>asList(resultObject_<%=cid%>), container_<%=cid%>);
 <%
+} else {
+	return stringBuffer.toString();
 }
 %>
 if(resultMap_<%=cid%>!=null) {
