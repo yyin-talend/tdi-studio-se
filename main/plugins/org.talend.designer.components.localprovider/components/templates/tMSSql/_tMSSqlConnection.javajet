@@ -47,7 +47,7 @@ if(useExistingConnection) {
     %>
     dbschema_<%=cid%> = <%=dbschema%>;
     <%
-    if(driver.equals("JTDS") {
+    if(driver.equals("JTDS")) {
     %>
     String driverClass_<%=cid%> = "net.sourceforge.jtds.jdbc.Driver";
     <%
@@ -55,14 +55,14 @@ if(useExistingConnection) {
     %>
     String driverClass_<%=cid%> = "com.microsoft.sqlserver.jdbc.SQLServerDriver";
     <% 
-    {
+    }
     %>
 	<%dbLog.conn().logJDBCDriver(dbLog.var("driverClass"));%>
     java.lang.Class.forName(driverClass_<%=cid%>);
     String port_<%=cid%> = <%=dbport%>;
     String dbname_<%=cid%> = <%=dbname%> ;
     <%
-    if(driver.equals("JTDS") {
+    if(driver.equals("JTDS")) {
     %>
     String url_<%=cid %> = "jdbc:jtds:sqlserver://" + <%=dbhost%> ;
     <%
