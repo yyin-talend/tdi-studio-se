@@ -53,6 +53,7 @@ import org.talend.core.model.general.ILibrariesService;
 import org.talend.core.model.process.IProcess2;
 import org.talend.core.model.process.Problem;
 import org.talend.core.model.process.Problem.ProblemStatus;
+import org.talend.core.model.properties.JobletProcessItem;
 import org.talend.designer.core.ui.dialog.mergeorder.ErrorMessageDialog;
 import org.talend.designer.core.ui.editor.jobletcontainer.AbstractJobletContainer;
 import org.talend.designer.core.ui.editor.jobletcontainer.JobletContainer;
@@ -161,7 +162,7 @@ public class SubjobContainerPart extends AbstractGraphicalEditPart implements Pr
         IProcess2 process = container.getProcess();
         Object obj = process.getAdditionalProperties().get("FRAMEWORK");//$NON-NLS-1$
         SubjobContainerFigure subjobContainer = null;
-        if ("Spark Streaming".equals(obj)) { //$NON-NLS-1$
+        if ("Spark Streaming".equals(obj) && !(process.getProperty().getItem() instanceof JobletProcessItem)) { //$NON-NLS-1$
             subjobContainer = new SparkStreamingSubjobContainerFigure(container);
         } else {
             subjobContainer = new SubjobContainerFigure(container);
