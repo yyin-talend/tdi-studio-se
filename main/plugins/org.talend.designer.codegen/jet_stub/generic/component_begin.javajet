@@ -62,8 +62,9 @@ List<Component.CodegenPropInfo> propsToProcess = component.getCodegenPropInfos(c
 
 <%= componentProps.getClass().getName()%> props_<%=cid %> =
         (<%= componentProps.getClass().getName()%>) def_<%=cid %>.createRuntimeProperties();
+        
+Object propValue_<%=cid%> = null;
 <%
-
 for (Component.CodegenPropInfo propInfo : propsToProcess) { // propInfo
     List<NamedThing> properties = propInfo.props.getProperties();
     for (NamedThing prop : properties) { // property
@@ -121,14 +122,17 @@ for (Component.CodegenPropInfo propInfo : propsToProcess) { // propInfo
                     <%
                 } else if (value != null && "java.lang.Integer".equals(property.getType())){
                 	String displayValue = value.toString();
-                    %>
-                    props_<%=cid %><%=propInfo.fieldName%>.setValue("<%=property.getName()%>",
-                        <%if(ContextParameterUtils.isContainContextParam(displayValue)) {%>
-                        Integer.valueOf(<%=displayValue%>)
-                        <%} else {%>
-                        <%=displayValue%>
-                        <%}%>
-                    );
+                    if(ContextParameterUtils.isContainContextParam(displayValue)) {%>
+                    try {
+            			propValue_<%=cid%> = Integer.valueOf(<%=displayValue%>);
+            		} catch (java.lang.NullPointerException re_<%=cid%>) {
+            			propValue_<%=cid%> = null;
+            		}
+                	<%} else {%>
+                	propValue_<%=cid%> = <%=displayValue%>;
+                	<%}%>
+                	
+                    props_<%=cid %><%=propInfo.fieldName%>.setValue("<%=property.getName()%>",propValue_<%=cid%>);
                     <%
                 } else if (!(value instanceof String) || !((String)value).equals("")) { // if
                     %>
