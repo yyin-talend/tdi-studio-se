@@ -41,6 +41,7 @@ public class MetadataSchemaExt extends MetadataSchema {
      */
     protected MetadataSchemaExt(FunctionManagerExt funManager) {
         super();
+        this.funManager = funManager;
     }
 
     @Override
