@@ -10,13 +10,30 @@ imports="
 
 	class DBRowBeginUtil extends DefaultDBRowUtil{
 	
+		private String driver;
+	
 		public void beforeComponentProcess(INode node){
 			super.beforeComponentProcess(node);
 			cid = node.getUniqueName();
+			this.driver = ElementParameterParser.getValue(node, "__DRIVER__");
+	    }
+	    
+	    public void afterUseExistConnection(INode node) {
+	    	super.afterUseExistConnection(node);
+	    	String connection = ElementParameterParser.getValue(node,"__CONNECTION__");
+			String conn = "conn_" + connection;
+			String schema = "dbschema_" + connection;
+			INode connectionNode = null; 
+			for (INode processNode : node.getProcess().getGeneratingNodes()) { 
+				if(connection.equals(processNode.getUniqueName())) { 
+					connectionNode = processNode; 
+					break; 
+				} 
+			}
+			driver = ElementParameterParser.getValue(connectionNode,"__DRIVER__");
 	    }
 	    
 		public void setURL(INode node) {
-			String driver = ElementParameterParser.getValue(node, "__DRIVER__");
 		%>
 			String port_<%=cid%> = <%=dbport%>;
 		    String dbname_<%=cid%> = <%=dbname%> ;
@@ -52,7 +69,6 @@ imports="
 		}
 		
 		public String getDirverClassName(INode node){
-			String driver = ElementParameterParser.getValue(node, "__DRIVER__");
 			if(driver.equals("JTDS")) {
 				return "net.sourceforge.jtds.jdbc.Driver";
 			}

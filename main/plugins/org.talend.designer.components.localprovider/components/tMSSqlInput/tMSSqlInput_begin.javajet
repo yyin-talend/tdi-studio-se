@@ -17,6 +17,7 @@ imports="
 
 	class DBInputBeginUtil extends DefaultDBInputUtil{
 	
+		private String driver;
 	
 		public void beforeComponentProcess(INode node){
 			super.beforeComponentProcess(node);
@@ -33,13 +34,25 @@ imports="
 			String connection = ElementParameterParser.getValue(node,"__CONNECTION__");
 			String conn = "conn_" + connection;
 			String schema = "dbschema_" + connection;
+			INode connectionNode = null; 
+			for (INode processNode : node.getProcess().getGeneratingNodes()) { 
+				if(connection.equals(processNode.getUniqueName())) { 
+					connectionNode = processNode; 
+					break; 
+				} 
+			}
+			driver = ElementParameterParser.getValue(connectionNode,"__DRIVER__");
 %>
 			String dbschema_<%=cid%> = (String)globalMap.get("<%=schema%>");
 <%
 	    }
+	    
+	    public void createConnection(INode node, boolean needUserAndPassword) {
+	    	this.driver = ElementParameterParser.getValue(node,"__DRIVER__");
+	    	super.createConnection(node, needUserAndPassword);
+	    }
 	
 		public void setURL(INode node) {
-			String driver = ElementParameterParser.getValue(node, "__DRIVER__");
 			String dbschema = ElementParameterParser.getValue(node, "__DB_SCHEMA__");
 %>
 		    String port_<%=cid%> = <%=dbport%>;
@@ -77,7 +90,6 @@ imports="
 		}
 		
 		public String getDirverClassName(INode node){
-			String driver = ElementParameterParser.getValue(node, "__DRIVER__");
 			if(driver.equals("JTDS")) {
 				return "net.sourceforge.jtds.jdbc.Driver";
 			}
