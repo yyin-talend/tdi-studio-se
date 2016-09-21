@@ -201,6 +201,7 @@ public abstract class JobScriptsManager {
         binaries,
         needContext,
         contextName,
+        onlyDefautContext,
         applyToChildren,
         applyLog4jToChildren,
         needLog4jLevel,
