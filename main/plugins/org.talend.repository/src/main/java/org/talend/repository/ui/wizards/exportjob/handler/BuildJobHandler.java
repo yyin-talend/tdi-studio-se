@@ -120,6 +120,11 @@ public class BuildJobHandler extends AbstractBuildJobHandler {
             }
             argumentsMap.put(TalendProcessArgumentConstant.ARG_CONTEXT_NAME, context);
         }
+        boolean onlyDefaultContext = isOptionChoosed(ExportChoice.onlyDefautContext);
+        if (onlyDefaultContext) {
+            argumentsMap.put(TalendProcessArgumentConstant.ARG_ONLY_DEFAUT_CONTEXT, onlyDefaultContext);
+        }
+
         boolean needParamValues = isOptionChoosed(ExportChoice.needParameterValues);
         if (needParamValues) {
             argumentsMap.put(TalendProcessArgumentConstant.ARG_CONTEXT_PARAMS,
