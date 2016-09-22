@@ -1196,12 +1196,6 @@ public class JavaProcessor extends AbstractJavaProcessor implements IJavaBreakpo
         String libsStr = basePathClasspath + classPathSeparator + neededModulesJarStr.toString();
         if (isExportConfig() || isRunAsExport()) {
             libsStr += classPathSeparator + getExportJarsStr();
-        } else {
-            File libDir = JavaProcessorUtilities.getJavaProjectLibFolder();
-            if (libDir != null) {
-                String libFolder = new Path(libDir.getAbsolutePath()).toPortableString();
-                libsStr += classPathSeparator + libFolder;
-            }
         }
         // no classPathSeparator in the end.
         if (libsStr.lastIndexOf(classPathSeparator) != libsStr.length() - 1) {
@@ -1578,8 +1572,8 @@ public class JavaProcessor extends AbstractJavaProcessor implements IJavaBreakpo
         if (null != uniqueName && null != wsdlContent && !wsdlContent.trim().isEmpty()) {
 
             // configure decoding and uncompressing
-            InputStream wsdlStream = new BufferedInputStream(
-                    new InflaterInputStream(new Base64InputStream(new ByteArrayInputStream(wsdlContent.getBytes()))));
+            InputStream wsdlStream = new BufferedInputStream(new InflaterInputStream(new Base64InputStream(
+                    new ByteArrayInputStream(wsdlContent.getBytes()))));
 
             if (!wsdlsPackageFolder.exists()) {
                 wsdlsPackageFolder.create(true, true, null);
