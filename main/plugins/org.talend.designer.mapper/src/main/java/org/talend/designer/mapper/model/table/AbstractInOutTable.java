@@ -48,6 +48,8 @@ public abstract class AbstractInOutTable extends AbstractDataMapTable {
 
     private boolean activateExpressionFilter;
 
+    private boolean activateColumnNameFilter;
+
     private boolean activateCondensedTool;
 
     protected List<GlobalMapEntry> mapSettingEntries = new ArrayList<GlobalMapEntry>();
@@ -103,6 +105,7 @@ public abstract class AbstractInOutTable extends AbstractDataMapTable {
         if (externalMapperTable != null) {
             this.expressionFilterEntry.setExpression(externalMapperTable.getExpressionFilter());
             this.activateExpressionFilter = externalMapperTable.isActivateExpressionFilter();
+            this.activateColumnNameFilter = externalMapperTable.isActivateColumnNameFilter();
             this.activateCondensedTool = externalMapperTable.isActivateCondensedTool();
             this.id = externalMapperTable.getId();
             this.isRepository = this.id == null ? false : true;
@@ -200,6 +203,14 @@ public abstract class AbstractInOutTable extends AbstractDataMapTable {
      */
     public void setActivateExpressionFilter(boolean activateExpressionFilter) {
         this.activateExpressionFilter = activateExpressionFilter;
+    }
+
+    public boolean isActivateColumnNameFilter() {
+        return this.activateColumnNameFilter;
+    }
+
+    public void setActiveColumnNameFilter(boolean activateColumnNameFilter) {
+        this.activateColumnNameFilter = activateColumnNameFilter;
     }
 
     public boolean isActivateCondensedTool() {
