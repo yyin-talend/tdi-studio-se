@@ -2705,6 +2705,15 @@
               name="ReviseInvalidContextNamesMigrationTask"
               version="6.1.1">
         </projecttask>
+        <projecttask
+              beforeLogon="false"
+              breaks="6.1.0"
+              class="org.talend.repository.model.migration.FixMissingChildJobMigrationTask"
+              description="Fix Missing Child Job "
+              id="org.talend.repository.model.migration.FixMissingChildJobMigrationTask"
+              name="FixMissingChildJobMigrationTask"
+              version="6.1.1">
+        </projecttask>
    </extension>
 
    <extension
