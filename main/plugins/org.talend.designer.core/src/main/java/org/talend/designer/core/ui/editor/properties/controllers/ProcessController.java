@@ -743,8 +743,8 @@ public class ProcessController extends AbstractElementPropertySectionController 
                     // label = path.toString() + IPath.SEPARATOR + label;
                     // }
                 } else {
-                    final String parentName = processParam.getName() + ":"; //$NON-NLS-1$
-                    elem.setPropertyValue(parentName + jobNameParam.getName(), ""); //$NON-NLS-1$
+                    //final String parentName = processParam.getName() + ":"; //$NON-NLS-1$
+                    //elem.setPropertyValue(parentName + jobNameParam.getName(), ""); //$NON-NLS-1$
                 }
             }
         }
