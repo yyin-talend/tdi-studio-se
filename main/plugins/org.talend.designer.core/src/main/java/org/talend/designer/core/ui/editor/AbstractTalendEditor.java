@@ -1117,14 +1117,14 @@ public abstract class AbstractTalendEditor extends GraphicalEditorWithFlyoutPale
         IFigure contentLayer = layerManager.getLayer(LayerConstants.PRINTABLE_LAYERS);
         // create image from root figure
         FreeformViewport viewport = (FreeformViewport) ((TalendScalableFreeformRootEditPart) layerManager).getFigure();
+        viewport.getUpdateManager().performUpdate();
         int width = contentLayer.getBounds().width;
         int height = contentLayer.getBounds().height;
         Image img = new Image(null, width, height);
         GC gc = new GC(img);
         Graphics graphics = new SWTGraphics(gc);
-        graphics.translate(-1 * contentLayer.getBounds().x + viewport.getViewLocation().x, -1 * contentLayer.getBounds().y
-                + viewport.getViewLocation().y);
         Point point = contentLayer.getBounds().getTopLeft();
+        graphics.translate(-point.x, -point.y);
         IProcess2 process = getProcess();
         process.setPropertyValue(IProcess.SCREEN_OFFSET_X, String.valueOf(-point.x));
         process.setPropertyValue(IProcess.SCREEN_OFFSET_Y, String.valueOf(-point.y));
