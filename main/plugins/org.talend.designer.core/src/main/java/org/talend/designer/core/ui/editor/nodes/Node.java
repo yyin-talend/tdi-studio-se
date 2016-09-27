@@ -4935,7 +4935,7 @@ public class Node extends Element implements IGraphicalNode {
     
     public boolean isSparkStreamingJoblet() {
         boolean isSparkStreamingJoblet = false;
-        if (GlobalServiceRegister.getDefault().isServiceRegistered(ISparkJobletProviderService.class)) {
+        if (GlobalServiceRegister.getDefault().isServiceRegistered(ISparkStreamingJobletProviderService.class)) {
             ISparkStreamingJobletProviderService sparkJobletService = (ISparkStreamingJobletProviderService) GlobalServiceRegister
                     .getDefault().getService(ISparkStreamingJobletProviderService.class);
             if (sparkJobletService != null) {
