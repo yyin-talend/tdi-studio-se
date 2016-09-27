@@ -167,8 +167,8 @@ public class GuessSchemaProcess {
             IElementParameter connector = node.getElementParameter("CONNECTION");
             if (connector != null) {
                 String connectorValue = connector.getValue().toString();
-                List<? extends INode> graphicalNodes = originalProcess.getGraphicalNodes();
-                for (INode node : graphicalNodes) {
+                List<? extends INode> generatingNodes = originalProcess.getGeneratingNodes();
+                for (INode node : generatingNodes) {
                     if (node.getUniqueName().equals(connectorValue)) {
                         connectionNode = node;
                         break;
