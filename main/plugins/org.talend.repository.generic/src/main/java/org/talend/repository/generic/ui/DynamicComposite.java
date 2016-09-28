@@ -390,13 +390,17 @@ public class DynamicComposite extends MultipleThreadDynamicComposite implements 
 
     @Override
     public void refresh() {
-        DisplayUtils.getDisplay().syncExec(new Runnable() {
+        if (element instanceof FakeElement) {
+            DisplayUtils.getDisplay().syncExec(new Runnable() {
 
-            @Override
-            public void run() {
-                operationInThread();
-            }
-        });
+                @Override
+                public void run() {
+                    operationInThread();
+                }
+            });
+        } else {
+            super.refresh();
+        }
     }
 
     @Override
