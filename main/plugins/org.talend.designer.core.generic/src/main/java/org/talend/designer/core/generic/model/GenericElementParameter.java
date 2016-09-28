@@ -303,10 +303,10 @@ public class GenericElementParameter extends ElementParameter {
                     Schema schema = null;
                     schema = getRootProperties().getSchema(componentConnector, ((GenericNodeConnector) connector).isOutput());
                     IMetadataTable mainTable = node.getMetadataFromConnector(connector.getName());
-                    if (schema != null) {
+                    if (schema != null && mainTable != null) {
                         MetadataTable metadataTable = MetadataToolAvroHelper.convertFromAvro(schema);
                         IMetadataTable newTable = MetadataToolHelper.convert(metadataTable);
-                        if ((!mainTable.sameMetadataAs(newTable) || !newTable.sameMetadataAs(mainTable))) {
+                        if (!mainTable.sameMetadataAs(newTable) || !newTable.sameMetadataAs(mainTable)) {
                             mainTable.setListColumns(newTable.getListColumns());
                             if (this.askPropagate == null && node.getOutgoingConnections().size() != 0) {
                                 Display.getDefault().syncExec(new Runnable() {
