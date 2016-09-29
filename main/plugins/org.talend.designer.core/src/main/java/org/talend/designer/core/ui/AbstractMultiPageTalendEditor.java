@@ -695,9 +695,9 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
         }
         oldPageIndex = getActivePage();
     }
-    
-    protected void turnToJobScriptPage(int newPageIndex){
-        if(jobletEditor != getEditor(newPageIndex)){
+
+    protected void turnToJobScriptPage(int newPageIndex) {
+        if (jobletEditor != getEditor(newPageIndex)) {
             return;
         }
 
@@ -762,11 +762,11 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
             ExceptionHandler.process(e);
         }
         changeContextsViewStatus(false);
-    
+
     }
-    
-    protected void turnToCodePage(int newPageIndex){
-     // TDI-25866:In case select a component and switch to the code page,need clean its componentSetting view
+
+    protected void turnToCodePage(int newPageIndex) {
+        // TDI-25866:In case select a component and switch to the code page,need clean its componentSetting view
         IComponentSettingsView viewer = (IComponentSettingsView) PlatformUI.getWorkbench().getActiveWorkbenchWindow()
                 .getActivePage().findView(IComponentSettingsView.ID);
 
@@ -777,8 +777,7 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
             moveCursorToSelectedComponent();
 
             /*
-             * Belowing method had been called at line 331 within the generateCode method, as soon as code
-             * generated.
+             * Belowing method had been called at line 331 within the generateCode method, as soon as code generated.
              */
             // ((ISyntaxCheckableEditor) codeEditor).validateSyntax();
         }
@@ -1515,11 +1514,12 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
             return (Boolean) param.getValue() && param.isRequired(node.getElementParameters());
         }
 
-        if (node.getUniqueName().startsWith("tMap")) { //$NON-NLS-1$
+        final String componentName = node.getComponent().getName();
+        if (componentName.equals("tMap")) { //$NON-NLS-1$
             isVirtualNode = CorePlugin.getDefault().getMapperService().isVirtualComponent(node);
-        } else if (node.getUniqueName().startsWith("tXMLMap")) { //$NON-NLS-1$
+        } else if (componentName.equals("tXMLMap")) { //$NON-NLS-1$
             isVirtualNode = CorePlugin.getDefault().getXMLMapperService().isVirtualComponent(node);
-        } else if (node.getUniqueName().startsWith("tAvroMap")) { //$NON-NLS-1$
+        } else if (componentName.equals("tAvroMap")) { //$NON-NLS-1$
             isVirtualNode = CorePlugin.getDefault().getSparkMapperService().isVirtualComponent(node);
         } else {
             List<IMultipleComponentManager> multipleComponentManagers = node.getComponent().getMultipleComponentManagers();
