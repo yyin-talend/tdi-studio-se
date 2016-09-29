@@ -278,8 +278,10 @@ public class ComponentsUtils {
                 param.setRequired(property.isRequired());
                 param.setValue(getParameterValue(element, property, fieldType, isInitializing));
                 boolean isNameProperty = IGenericConstants.NAME_PROPERTY.equals(param.getParameterName());
-                if (EParameterFieldType.NAME_SELECTION_AREA.equals(fieldType) || isNameProperty) {
-                    // Disable context support for this filed type.
+                if (EParameterFieldType.NAME_SELECTION_AREA.equals(fieldType) || EParameterFieldType.JSON_TABLE.equals(fieldType)
+                        || EParameterFieldType.CLOSED_LIST.equals(fieldType) || EParameterFieldType.CHECK.equals(fieldType)
+                        || isNameProperty) {
+                    // Disable context support for those filed types and name parameter.
                     param.setSupportContext(false);
                 } else {
                     param.setSupportContext(isSupportContext(property));
