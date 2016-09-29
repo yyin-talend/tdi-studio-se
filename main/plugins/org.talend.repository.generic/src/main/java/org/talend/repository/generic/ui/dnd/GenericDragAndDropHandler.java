@@ -90,7 +90,8 @@ public class GenericDragAndDropHandler extends AbstractDragAndDropServiceHandler
                 Property<?> property = compPro.getValuedProperty(value);
                 if (property != null) {
                     Object paramValue = property.getStoredValue();
-                    if (GenericTypeUtils.isStringType(property)) {
+                    if (GenericTypeUtils.isStringType(property)
+                            || Boolean.valueOf(String.valueOf(property.getTaggedValue(IGenericConstants.DND_ADD_QUOTES)))) {
                         if (paramValue != null) {
                             return getRepositoryValueOfStringType(connection, paramValue.toString());
                         } else {

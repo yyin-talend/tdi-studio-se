@@ -60,4 +60,9 @@ public interface IGenericConstants {
 
     public static final String IS_DYNAMIC = "IS_DYNAMIC"; //$NON-NLS-1$
 
+    /**
+     * Tag key which estimates whether need to add quotes for property value when do the DND.
+     */
+    public static final String DND_ADD_QUOTES = "ADD_QUOTES_FOR_DND"; //$NON-NLS-1$
+
 }
