@@ -289,6 +289,13 @@ public class ComponentsUtils {
                 param.setReadOnly(Boolean.valueOf(String.valueOf(cmTV)));
                 boolean isDynamic = Boolean.valueOf(String.valueOf(property.getTaggedValue(IGenericConstants.IS_DYNAMIC)));
                 param.setContextMode(isDynamic);
+                // If property type is Object, widget type is File and form is in wizard then set
+                // IGenericConstants.DND_ADD_QUOTES tag to true to indicate the propety value should be surrounded by
+                // quotes when do the DND(For TUP-15948).
+                if (element instanceof FakeElement && EParameterFieldType.FILE.equals(fieldType)
+                        && GenericTypeUtils.isObjectType(property)) {
+                    property.setTaggedValue(IGenericConstants.DND_ADD_QUOTES, true);
+                }
                 List<?> values = property.getPossibleValues();
                 if (values != null || EParameterFieldType.CLOSED_LIST.equals(fieldType)) {
                     if (values == null) {
