@@ -364,6 +364,7 @@ public class ComponentsUtils {
                 param.setBasedOnSchema(
                         Boolean.valueOf(String.valueOf(widget.getConfigurationValue(Widget.HIDE_TOOLBAR_WIDGET_CONF))));
             }
+            param.setReadOnly(widget.isReadonly());
             if (!param.isReadOnly()) {
                 param.setReadOnly(element.isReadOnly());
             }
