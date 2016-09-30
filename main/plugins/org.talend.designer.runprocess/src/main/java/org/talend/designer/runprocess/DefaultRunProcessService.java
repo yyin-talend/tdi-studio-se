@@ -338,6 +338,11 @@ public class DefaultRunProcessService implements IRunProcessService {
     public boolean checkExportProcess(IStructuredSelection selection, boolean isJob) {
         return JobErrorsChecker.checkExportErrors(selection, isJob);
     }
+    
+    @Override
+    public void checkLastGenerationHasCompilationError(boolean updateProblemsView) throws ProcessorException {
+         JobErrorsChecker.checkLastGenerationHasCompilationError(updateProblemsView);
+    }
 
     /*
      * (non-Javadoc)

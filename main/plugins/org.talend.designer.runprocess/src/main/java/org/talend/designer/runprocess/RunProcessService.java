@@ -195,7 +195,10 @@ public class RunProcessService implements IRunProcessService {
     public void refreshView() {
         delegateService.refreshView();
     }
-
+    @Override
+    public void checkLastGenerationHasCompilationError(boolean updateProblemsView) throws ProcessorException {
+        delegateService.checkLastGenerationHasCompilationError(updateProblemsView);
+    }
     /*
      * (non-Javadoc)
      * 
