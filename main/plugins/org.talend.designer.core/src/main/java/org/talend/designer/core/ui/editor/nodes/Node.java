@@ -3373,6 +3373,11 @@ public class Node extends Element implements IGraphicalNode {
                     }
                 }
             }
+            // check if we have circle for current node
+            if (checkNodeCircle(this)) {
+                String errorMessage = Messages.getString("Node.notFormedLoop"); //$NON-NLS-1$
+                Problems.add(ProblemStatus.ERROR, this, errorMessage);
+            }
         }
         int tableOutLinkNum = 0;
         int tableRefOutLinkNum = 0;
@@ -3539,6 +3544,24 @@ public class Node extends Element implements IGraphicalNode {
         }
     }
 
+    private static boolean checkNodeCircle(INode currentNode) {
+        List<INode> nodeList = new ArrayList<INode>();
+        Set<INode> nodeSet = new HashSet<INode>();
+        getAllSourceNode(currentNode, nodeList);
+        for (INode node : nodeList) {
+            nodeSet.add(node);
+        }
+        return !(nodeSet.size() == nodeList.size());
+    }
+
+    private static void getAllSourceNode(INode source, List<INode> list) {
+        List<? extends IConnection> connections = source.getIncomingConnections();
+        for (IConnection connection : connections) {
+            INode node = connection.getSource();
+            list.add(node);
+            getAllSourceNode(node, list);
+        }
+    }
     public boolean isSchemaSynchronized() {
         return schemaSynchronized;
     }
