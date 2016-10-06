@@ -21,20 +21,18 @@ import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.talend.commons.exception.ExceptionHandler;
-import org.talend.commons.utils.generation.JavaUtils;
+import org.talend.commons.exception.PersistenceException;
+import org.talend.commons.utils.workbench.resources.ResourceUtils;
 import org.talend.core.CorePlugin;
 import org.talend.core.model.process.ProcessUtils;
 import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.model.properties.Project;
-import org.talend.core.model.properties.Property;
-import org.talend.core.model.utils.JavaResourcesHelper;
 import org.talend.core.runtime.process.IBuildJobHandler;
 import org.talend.core.runtime.process.ITalendProcessJavaProject;
 import org.talend.core.runtime.process.LastGenerationInfo;
 import org.talend.designer.maven.model.TalendMavenConstants;
 import org.talend.designer.runprocess.IRunProcessService;
-import org.talend.designer.runprocess.ProcessorUtilities;
 import org.talend.repository.ProjectManager;
 import org.talend.repository.ui.utils.Log4jPrefsSettingManager;
 import org.talend.repository.ui.wizards.exportjob.scriptsmanager.JobScriptsManager.ExportChoice;
@@ -53,7 +51,7 @@ public abstract class AbstractBuildJobHandler implements IBuildJobHandler {
 
     protected static final String NEGATION = "!"; //$NON-NLS-1$
 
-    protected static final String JOB_EXTENSION = ".zip"; //$NON-NLS-1$
+    protected static final String JOB_EXTENSION = "zip"; //$NON-NLS-1$
 
     protected static final String JOB_NAME_SEP = "-"; //$NON-NLS-1$
 
@@ -81,6 +79,12 @@ public abstract class AbstractBuildJobHandler implements IBuildJobHandler {
         }
         IRunProcessService runProcessService = CorePlugin.getDefault().getRunProcessService();
         this.talendProcessJavaProject = runProcessService.getTalendProcessJavaProject();
+        IFolder targetFolder = talendProcessJavaProject.getTargetFolder();
+        try {
+            ResourceUtils.emptyFolder(targetFolder);
+        } catch (PersistenceException e) {
+            ExceptionHandler.process(e);
+        }
     }
 
     protected boolean isOptionChoosed(Object key) {
@@ -237,15 +241,23 @@ public abstract class AbstractBuildJobHandler implements IBuildJobHandler {
         if (talendProcessJavaProject == null) {
             return null;
         }
-        Property jobProperty = processItem.getProperty();
-        String jobZipName = JavaResourcesHelper.getJobJarName(jobProperty.getLabel(), jobProperty.getVersion()) + JOB_EXTENSION;
         IFolder targetFolder = talendProcessJavaProject.getTargetFolder();
+        IFile jobFile = null;
         try {
             targetFolder.refreshLocal(IResource.DEPTH_ONE, null);
+            // we only build one zip at a time, so just get the zip file to be able to manage some pom customizations.
+            for (IResource resource : targetFolder.members()) {
+                if (resource instanceof IFile) {
+                    IFile file = (IFile) resource;
+                    if (JOB_EXTENSION.equals(file.getFileExtension())) {
+                        jobFile = file;
+                        break;
+                    }
+                }
+            }
         } catch (CoreException e) {
             ExceptionHandler.process(e);
         }
-        IFile jobFile = targetFolder.getFile(jobZipName);
         return jobFile;
     }
 
