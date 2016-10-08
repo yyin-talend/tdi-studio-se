@@ -803,7 +803,10 @@ public class LoginProjectPage extends AbstractLoginActionPage {
                 finishButton.setEnabled(false);
                 Project project = getProject();
                 if (project != null) {
-                    loginHelper.getPrefManipulator().setLastProject(project.getLabel());
+
+                    // last used project will be saved when click finish
+                    // loginHelper.getPrefManipulator().setLastProject(project.getLabel());
+
                     try {
                         fillUIBranches(project, false);
                     } catch (JSONException e) {
@@ -820,19 +823,21 @@ public class LoginProjectPage extends AbstractLoginActionPage {
 
             @Override
             public void selectionChanged(SelectionChangedEvent event) {
-                String branch = getBranch();
-                if (branch == null) {
-                    branch = SVNConstant.EMPTY;
-                }
-                Project project = getProject();
-                try {
-                    loginHelper.getPrefManipulator().setLastSVNBranch(
-                            new JSONObject(project.getEmfProject().getUrl()).getString("location"), project.getTechnicalLabel(),
-                            branch);
-                } catch (JSONException e) {
-                    // TODO Auto-generated catch block
-                    ExceptionHandler.process(e);
-                }
+
+                // last used branch of project will be saved when click finish
+                // String branch = getBranch();
+                // if (branch == null) {
+                // branch = SVNConstant.EMPTY;
+                // }
+                // Project project = getProject();
+                // try {
+                // loginHelper.getPrefManipulator().setLastSVNBranch(
+                // new JSONObject(project.getEmfProject().getUrl()).getString("location"), project.getTechnicalLabel(),
+                // branch);
+                // } catch (JSONException e) {
+                // // TODO Auto-generated catch block
+                // ExceptionHandler.process(e);
+                // }
             }
         });
 
@@ -994,6 +999,8 @@ public class LoginProjectPage extends AbstractLoginActionPage {
         if (LoginHelper.isRestart) {
             loginDialog.okPressed();
         } else {
+            // should save before login, since svn related codes will read them
+            saveLastUsedProjectAndBranch();
             boolean isLogInOk = loginHelper.logIn(getConnection(), getProject());
             if (isLogInOk) {
                 LoginHelper.setAlwaysAskAtStartup(alwaysAsk.getSelection());
@@ -1009,6 +1016,28 @@ public class LoginProjectPage extends AbstractLoginActionPage {
         Context ctx = CoreRuntimePlugin.getInstance().getContext();
         RepositoryContext repositoryContext = (RepositoryContext) ctx.getProperty(Context.REPOSITORY_CONTEXT_KEY);
         repositoryContext.setNoUpdateWhenLogon(false);
+    }
+
+    private void saveLastUsedProjectAndBranch() {
+
+        Project project = getProject();
+        loginHelper.getPrefManipulator().setLastProject(project.getLabel());
+
+        if (loginHelper.isRemoteConnection(getConnection())) {
+            String branch = getBranch();
+            if (branch == null) {
+                branch = SVNConstant.EMPTY;
+            }
+            try {
+                loginHelper.getPrefManipulator().setLastSVNBranch(
+                        new JSONObject(project.getEmfProject().getUrl()).getString("location"), project.getTechnicalLabel(),
+                        branch);
+            } catch (JSONException e) {
+                // TODO Auto-generated catch block
+                ExceptionHandler.process(e);
+            }
+        }
+
     }
 
     @Override
