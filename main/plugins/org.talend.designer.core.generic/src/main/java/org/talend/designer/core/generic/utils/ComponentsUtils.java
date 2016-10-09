@@ -278,8 +278,10 @@ public class ComponentsUtils {
                 param.setRequired(property.isRequired());
                 param.setValue(getParameterValue(element, property, fieldType, isInitializing));
                 boolean isNameProperty = IGenericConstants.NAME_PROPERTY.equals(param.getParameterName());
-                if (EParameterFieldType.NAME_SELECTION_AREA.equals(fieldType) || isNameProperty) {
-                    // Disable context support for this filed type.
+                if (EParameterFieldType.NAME_SELECTION_AREA.equals(fieldType) || EParameterFieldType.JSON_TABLE.equals(fieldType)
+                        || EParameterFieldType.CLOSED_LIST.equals(fieldType) || EParameterFieldType.CHECK.equals(fieldType)
+                        || isNameProperty) {
+                    // Disable context support for those filed types and name parameter.
                     param.setSupportContext(false);
                 } else {
                     param.setSupportContext(isSupportContext(property));
@@ -289,6 +291,13 @@ public class ComponentsUtils {
                 param.setReadOnly(Boolean.valueOf(String.valueOf(cmTV)));
                 boolean isDynamic = Boolean.valueOf(String.valueOf(property.getTaggedValue(IGenericConstants.IS_DYNAMIC)));
                 param.setContextMode(isDynamic);
+                // If property type is Object, widget type is File and form is in wizard then set
+                // IGenericConstants.DND_ADD_QUOTES tag to true to indicate the propety value should be surrounded by
+                // quotes when do the DND(For TUP-15948).
+                if (element instanceof FakeElement && EParameterFieldType.FILE.equals(fieldType)
+                        && GenericTypeUtils.isObjectType(property)) {
+                    property.setTaggedValue(IGenericConstants.DND_ADD_QUOTES, true);
+                }
                 List<?> values = property.getPossibleValues();
                 if (values != null || EParameterFieldType.CLOSED_LIST.equals(fieldType)) {
                     if (values == null) {
@@ -356,7 +365,7 @@ public class ComponentsUtils {
                         Boolean.valueOf(String.valueOf(widget.getConfigurationValue(Widget.HIDE_TOOLBAR_WIDGET_CONF))));
             }
             if (!param.isReadOnly()) {
-                param.setReadOnly(element.isReadOnly());
+                param.setReadOnly(widget.isReadonly() || element.isReadOnly());
             }
             param.setSerialized(true);
             param.setDynamicSettings(true);
