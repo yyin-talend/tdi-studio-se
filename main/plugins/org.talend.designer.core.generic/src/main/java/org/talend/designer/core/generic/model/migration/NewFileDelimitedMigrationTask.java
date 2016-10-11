@@ -52,11 +52,13 @@ public class NewFileDelimitedMigrationTask extends NewComponentFrameworkMigratio
                 if("true".equals(String.valueOf(value))){
                     ElementParameterType csvRowSeparator = ParameterUtilTool.findParameterType(node, "CSVROWSEPARATOR");
                     ElementParameterType rowSeparator = ParameterUtilTool.findParameterType(node, "ROWSEPARATOR");
-                    rowSeparator.setValue(String.valueOf(ParameterUtilTool.convertParameterValue(csvRowSeparator)));
+                    if(csvRowSeparator != null && rowSeparator != null){
+                        rowSeparator.setValue(String.valueOf(ParameterUtilTool.convertParameterValue(csvRowSeparator)));
+                    }
                 }
             } else if ("FILENAME".equals(paramName) && "tFileOutputDelimited".equals(node.getComponentName())) {
                 ElementParameterType useStream = ParameterUtilTool.findParameterType(node, "USESTREAM");
-                if (Boolean.valueOf(String.valueOf(ParameterUtilTool.convertParameterValue(useStream)))) {
+                if (useStream != null && Boolean.valueOf(String.valueOf(ParameterUtilTool.convertParameterValue(useStream)))) {
                     ElementParameterType streamName = ParameterUtilTool.findParameterType(node, "STREAMNAME");
                     paramType.setValue(String.valueOf(ParameterUtilTool.convertParameterValue(streamName)));
                 }
