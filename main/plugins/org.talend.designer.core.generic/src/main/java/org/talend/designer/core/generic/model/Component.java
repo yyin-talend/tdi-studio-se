@@ -822,7 +822,7 @@ public class Component extends AbstractBasicComponent {
             if (!(schemaProperty.getValue() instanceof Schema)) {
                 continue;
             }
-            Schema schema = (Schema) schemaProperty.getValue();
+            Schema schema = schemaProperty.getValue();
             if (connector instanceof PropertyPathConnector) {
                 String linkedSchema = ((PropertyPathConnector) connector).getPropertyPath() + ".schema"; //$NON-NLS-1$
                 if (paramName.equals(linkedSchema)) {
@@ -830,6 +830,7 @@ public class Component extends AbstractBasicComponent {
                     ElementParameter param = new ElementParameter(node);
                     param.setName(paramName);
                     param.setFieldType(EParameterFieldType.SCHEMA_REFERENCE);
+                    param.setShow(false);
                     if (!isOutput) {
                         param.setContext(EConnectionType.FLOW_MAIN.getName());
                     } else {
