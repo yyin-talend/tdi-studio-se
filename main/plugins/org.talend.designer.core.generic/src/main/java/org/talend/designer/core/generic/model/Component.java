@@ -822,7 +822,7 @@ public class Component extends AbstractBasicComponent {
             if (!(schemaProperty.getValue() instanceof Schema)) {
                 continue;
             }
-            Schema schema = (Schema) schemaProperty.getValue();
+            Schema schema = schemaProperty.getValue();
             if (connector instanceof PropertyPathConnector) {
                 String linkedSchema = ((PropertyPathConnector) connector).getPropertyPath() + ".schema"; //$NON-NLS-1$
                 if (paramName.equals(linkedSchema)) {
@@ -917,7 +917,8 @@ public class Component extends AbstractBasicComponent {
             connector.setMaxLinkOutput(0);
         } else {
             for (Connector connector : inputConnectors) {
-                addGenericType(listConnector, EConnectionType.FLOW_MAIN, connector.getName(), parentNode, false);
+                addGenericType(listConnector, EConnectionType.FLOW_MAIN, connector.getName(), parentNode, componentProperties,
+                        false);
             }
         }
 
@@ -941,7 +942,7 @@ public class Component extends AbstractBasicComponent {
             if (Connector.REJECT_NAME.equals(connector.getName())) {
                 type = EConnectionType.REJECT;
             }
-            addGenericType(listConnector, type, connector.getName(), parentNode, true);
+            addGenericType(listConnector, type, connector.getName(), parentNode, componentProperties, true);
         }
         addStandardType(listConnector, EConnectionType.RUN_IF, parentNode);
         addStandardType(listConnector, EConnectionType.ON_COMPONENT_OK, parentNode);
@@ -1011,8 +1012,9 @@ public class Component extends AbstractBasicComponent {
     }
 
     private void addGenericType(List<INodeConnector> listConnector, EConnectionType type, String genericConnectorType,
-            INode parentNode, boolean isOutput) {
+            INode parentNode, ComponentProperties componentProperties, boolean isOutput) {
         GenericNodeConnector nodeConnector = new GenericNodeConnector(parentNode, isOutput);
+        nodeConnector.setComponentProperties(componentProperties);
         nodeConnector.setDefaultConnectionType(EConnectionType.FLOW_MAIN);
         nodeConnector.setGenericConnectorType(genericConnectorType);
         nodeConnector.setLinkName(type.getDefaultLinkName());
