@@ -109,6 +109,9 @@ public class ComponentsUtils {
     }
 
     public static void loadComponents(ComponentService service) {
+        if(service == null){
+            return;
+        }
         IComponentsFactory componentsFactory = null;
         if (componentsFactory == null) {
             componentsFactory = ComponentsFactoryProvider.getInstance();
