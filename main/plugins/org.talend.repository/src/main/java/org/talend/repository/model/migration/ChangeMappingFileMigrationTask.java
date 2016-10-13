@@ -12,6 +12,8 @@ import org.dom4j.Element;
 import org.dom4j.io.SAXReader;
 import org.dom4j.io.XMLWriter;
 import org.talend.commons.exception.ExceptionHandler;
+import org.talend.core.GlobalServiceRegister;
+import org.talend.core.ICoreService;
 import org.talend.core.model.general.Project;
 import org.talend.core.model.metadata.MetadataTalendType;
 import org.talend.core.model.migration.AbstractProjectMigrationTask;
@@ -21,16 +23,19 @@ public class ChangeMappingFileMigrationTask extends AbstractProjectMigrationTask
     @Override
     public ExecutionResult execute(Project project) {
         try {
-            URL p = MetadataTalendType.getProjectForderURLOfMappingsFile();
-            changeSAPHanaMappingFile(p);
-            URL s = MetadataTalendType.getSystemForderURLOfMappingsFile();
-            changeSAPHanaMappingFile(s);
-            return ExecutionResult.SUCCESS_NO_ALERT;
+            URL f = MetadataTalendType.getFolderURLOfMappingsFile();
+            changeSAPHanaMappingFile(f);
+            if (GlobalServiceRegister.getDefault().isServiceRegistered(ICoreService.class)) {
+                ICoreService service = (ICoreService) GlobalServiceRegister.getDefault().getService(ICoreService.class);
+                service.synchronizeMapptingXML();
+                return ExecutionResult.SUCCESS_NO_ALERT;
+            }
         } catch (Exception e) {
-            return ExecutionResult.FAILURE;
+            ExceptionHandler.process(e);
         }
+        return ExecutionResult.FAILURE;
     }
-    
+
     private void changeSAPHanaMappingFile(URL url) {
         File dir = new File(url.getFile());
         File target = null;
@@ -45,7 +50,7 @@ public class ChangeMappingFileMigrationTask extends AbstractProjectMigrationTask
         }
         if (target != null) {
             try {
-                SAXReader reader = new SAXReader();                
+                SAXReader reader = new SAXReader();
                 Document document = reader.read(target);
                 Element root = document.getRootElement();
                 Element node = root.element("dbms"); //$NON-NLS-1$
@@ -55,7 +60,7 @@ public class ChangeMappingFileMigrationTask extends AbstractProjectMigrationTask
                     target.delete();
                     XMLWriter writer = new XMLWriter(new FileWriter(target));
                     writer.write(document);
-                    writer.close(); 
+                    writer.close();
                 }
             } catch (Exception e) {
                 ExceptionHandler.process(e);
