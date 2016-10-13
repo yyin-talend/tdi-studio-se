@@ -339,16 +339,45 @@ public class TableController extends AbstractElementPropertySectionController {
                 String[] customizedShowIfs = param.getListItemsShowIf();
                 dqPatternService.overridePatternList(typeParam, param);
                 // Add the customized value:
-                param.setListItemsValue(ArrayUtils.addAll(param.getListItemsValue(), customizedValue));
-                param.setListItemsDisplayCodeName((String[]) ArrayUtils.addAll(param.getListItemsDisplayCodeName(),
+                param.setListItemsValue(mergeWithoutDuplicate(param.getListItemsValue(), customizedValue));
+                param.setListItemsDisplayCodeName((String[]) mergeWithoutDuplicate(param.getListItemsDisplayCodeName(),
                         customizedDisplayCodeName));
-                param.setListItemsDisplayName((String[]) ArrayUtils.addAll(param.getListItemsDisplayName(), customizedDisplayName));
-                param.setListItemsNotShowIf((String[]) ArrayUtils.addAll(new String[param.getListItemsShowIf().length],
+                param.setListItemsDisplayName((String[]) mergeWithoutDuplicate(param.getListItemsDisplayName(),
+                        customizedDisplayName));
+                param.setListItemsNotShowIf(mergeWithDuplicate(new String[param.getListItemsShowIf().length],
                         customizedNotShowIfs));
-                param.setListItemsShowIf((String[]) ArrayUtils.addAll(new String[param.getListItemsShowIf().length],
-                        customizedShowIfs));
+                param.setListItemsShowIf(mergeWithDuplicate(new String[param.getListItemsShowIf().length], customizedShowIfs));
             }
         }
+    }
+
+    /**
+     * Adds all the elements of "b" arrays into "a" array without the duplicate one in "a", and return "a".
+     * 
+     * @param a
+     * @param b
+     * @return
+     */
+    private Object[] mergeWithoutDuplicate(Object[] a, Object[] b) {
+        if (b == null || b.length == 0) {
+            return a;
+        }
+        for (Object valueB : b) {
+            if (!ArrayUtils.contains(a, valueB)) {
+                a = ArrayUtils.add(a, valueB);
+            }
+        }
+        return a;
+    }
+
+    private String[] mergeWithDuplicate(String[] a, String[] b) {
+        if (b == null || b.length == 0) {
+            return a;
+        }
+        for (String valueB : b) {
+            a = (String[]) ArrayUtils.add(a, valueB);
+        }
+        return a;
     }
 
     private boolean isDQPatternList(IElementParameter param) {
