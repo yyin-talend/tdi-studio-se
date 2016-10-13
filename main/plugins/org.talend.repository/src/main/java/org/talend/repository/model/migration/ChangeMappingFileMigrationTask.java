@@ -12,6 +12,8 @@ import org.dom4j.Element;
 import org.dom4j.io.SAXReader;
 import org.dom4j.io.XMLWriter;
 import org.talend.commons.exception.ExceptionHandler;
+import org.talend.core.GlobalServiceRegister;
+import org.talend.core.ICoreService;
 import org.talend.core.model.general.Project;
 import org.talend.core.model.metadata.MetadataTalendType;
 import org.talend.core.model.migration.AbstractProjectMigrationTask;
@@ -25,10 +27,15 @@ public class ChangeMappingFileMigrationTask extends AbstractProjectMigrationTask
             changeSAPHanaMappingFile(p);
             URL s = MetadataTalendType.getSystemForderURLOfMappingsFile();
             changeSAPHanaMappingFile(s);
-            return ExecutionResult.SUCCESS_NO_ALERT;
+            if (GlobalServiceRegister.getDefault().isServiceRegistered(ICoreService.class)) {
+                ICoreService service = (ICoreService) GlobalServiceRegister.getDefault().getService(ICoreService.class);
+                service.synchronizeMapptingXML();
+                return ExecutionResult.SUCCESS_NO_ALERT;
+            }
         } catch (Exception e) {
-            return ExecutionResult.FAILURE;
+            ExceptionHandler.process(e);
         }
+        return ExecutionResult.FAILURE;
     }
     
     private void changeSAPHanaMappingFile(URL url) {
