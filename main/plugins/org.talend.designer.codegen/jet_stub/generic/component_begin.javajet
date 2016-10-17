@@ -176,7 +176,7 @@ topology_<%=cid%> = org.talend.components.api.component.ConnectorTopology.NONE;
 }
 %>
 
-org.talend.components.api.component.runtime.RuntimeInfo runtime_info_<%=cid%> = def_<%=cid%>.getRuntimeInfo(props_<%=cid%>, topology_<%=cid%>);
+org.talend.daikon.runtime.RuntimeInfo runtime_info_<%=cid%> = def_<%=cid%>.getRuntimeInfo(props_<%=cid%>, topology_<%=cid%>);
 java.util.Set<org.talend.components.api.component.ConnectorTopology> supported_connector_topologies_<%=cid%> = def_<%=cid%>.getSupportedConnectorTopologies();
 
 org.talend.components.api.component.runtime.SourceOrSink sourceOrSink_<%=cid%> = (org.talend.components.api.component.runtime.SourceOrSink)(Class.forName(runtime_info_<%=cid%>.getRuntimeClassName()).newInstance());
