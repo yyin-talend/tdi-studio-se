@@ -1037,10 +1037,13 @@ public class LoginProjectPage extends AbstractLoginActionPage {
             }
         } else {
             try {
-                String lastLogonBranch = loginHelper.getPrefManipulator().getLastSVNBranch(
-                        new JSONObject(project.getEmfProject().getUrl()).getString("location"), project.getTechnicalLabel()); //$NON-NLS-1$
-                ProjectManager.getInstance().setMainProjectBranch(project, lastLogonBranch);
-            } catch (JSONException e) {
+                String jsonStr = project.getEmfProject().getUrl();
+                if (jsonStr != null && !jsonStr.isEmpty()) {
+                    String lastLogonBranch = loginHelper.getPrefManipulator()
+                            .getLastSVNBranch(new JSONObject(jsonStr).getString("location"), project.getTechnicalLabel()); //$NON-NLS-1$
+                    ProjectManager.getInstance().setMainProjectBranch(project, lastLogonBranch);
+                }
+            } catch (Exception e) {
                 ExceptionHandler.process(e);
             }
 
