@@ -56,4 +56,8 @@ imports="
 	}
 %>
 	com.dropbox.core.v2.files.DbxUserFilesRequests filesClient_<%=cid%> = client_<%=cid%>.files();
-	filesClient_<%=cid%>.delete(<%=path%>);
+	try {
+		filesClient_<%=cid%>.delete(<%=path%>);
+	} catch (com.dropbox.core.v2.files.DeleteErrorException e) {
+		throw new Exception(<%=path%> + " is not a valid file path on Dropbox");
+	}

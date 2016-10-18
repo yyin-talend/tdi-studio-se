@@ -62,7 +62,12 @@ imports="
 %>
 	com.dropbox.core.v2.files.DbxUserFilesRequests filesClient_<%=cid%> = client_<%=cid%>.files();
 	com.dropbox.core.v2.files.ListFolderBuilder listBuilder_<%=cid%> = filesClient_<%=cid%>.listFolderBuilder(<%=path%>).withRecursive(<%=includeSubDir%>);
-	com.dropbox.core.v2.files.ListFolderResult listResult_<%=cid%> = listBuilder_<%=cid%>.start();
+	com.dropbox.core.v2.files.ListFolderResult listResult_<%=cid%> = null;
+	try {
+		listResult_<%=cid%> = listBuilder_<%=cid%>.start();
+	} catch (com.dropbox.core.v2.files.ListFolderErrorException e) {
+		throw new Exception("No File or Directory found at " + <%=path%>);
+	}
 	
 	for (com.dropbox.core.v2.files.Metadata metadata_<%=cid%> : listResult_<%=cid%>.getEntries()) {
 		if (metadata_<%=cid%> instanceof com.dropbox.core.v2.files.FolderMetadata) {
