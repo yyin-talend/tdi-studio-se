@@ -23,6 +23,9 @@ imports="
     String connection = ElementParameterParser.getValue(node,"__CONNECTION__");
     String connectionKey = "\"conn_" + connection+"\"";
 	String path = ElementParameterParser.getValue(node, "__PATH__");
+	if ("\"/\"".equals(path)) {
+		path = "\"\"";
+	}
 	String includeSubDir = ElementParameterParser.getValue(node, "__INCLUDSUBDIR__");
 	String listMode = ElementParameterParser.getValue(node, "__LIST_MODE__");
 %>
