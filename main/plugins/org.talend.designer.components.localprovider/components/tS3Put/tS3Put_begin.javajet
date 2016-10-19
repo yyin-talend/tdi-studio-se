@@ -17,19 +17,17 @@ imports="
     String file = ElementParameterParser.getValue(node,"__FILE__");
 	String dieOnError = ElementParameterParser.getValue(node, "__DIE_ON_ERROR__");
 	String partSizeMb = ElementParameterParser.getValue(node, "__PART_SIZE__");
-	long partSizeInBytes;
 	
 	if(partSizeMb == null) {
 		partSizeMb = "5";
 	}
-	
-	partSizeInBytes = Long.parseLong(partSizeMb) * 1024 * 1024;
 	
 	boolean enableServerSideEncryption = "true".equals(ElementParameterParser.getValue(node, "__ENABLE-SERVER-SIDE-ENCRYPTION__"));
 	
 	%>
 	<%@ include file="../tS3Connection/S3Client.javajet" %>
 	boolean multiUpload_<%=cid%> = false;
+	long partSizeInBytes_<%=cid%> = <%=partSizeMb%> * 1024 * 1024;
 	try{
 		<%
 		if(isLog4jEnabled){
@@ -39,9 +37,7 @@ imports="
 		}
 		%>
 		java.io.File inputFile_<%=cid%> = new java.io.File(<%=file%>);
-		<%if(partSizeInBytes >= 5 * 1024 * 1024) {%>
-		multiUpload_<%=cid%> = (inputFile_<%=cid%>.length() > <%=partSizeInBytes%>);
-		<%}%>
+		multiUpload_<%=cid%> = (inputFile_<%=cid%>.length() > partSizeInBytes_<%=cid%>) && (partSizeInBytes_<%=cid%> >= 5 * 1024 * 1024);
 		if(!multiUpload_<%=cid%>) {
 		com.amazonaws.services.s3.model.PutObjectRequest putRequest_<%=cid%> = new com.amazonaws.services.s3.model.PutObjectRequest(<%=bucket%>, <%=key%>, inputFile_<%=cid%>);
 		
@@ -74,7 +70,7 @@ imports="
 			int partNumber_<%=cid%> = 1;
 			try {
 				while (filePosition_<%=cid%> < inputFile_<%=cid%>.length()) {
-            		long curPartSize_<%=cid%> = Math.min(<%=partSizeInBytes%>, inputFile_<%=cid%>.length() - filePosition_<%=cid%>);
+            		long curPartSize_<%=cid%> = Math.min(partSizeInBytes_<%=cid%>, inputFile_<%=cid%>.length() - filePosition_<%=cid%>);
             		com.amazonaws.services.s3.model.UploadPartRequest uploadRequest = new com.amazonaws.services.s3.model.UploadPartRequest()
                     	.withBucketName(<%=bucket%>)
                     	.withKey(<%=key%>).withUploadId(uploadId_<%=cid%>)
