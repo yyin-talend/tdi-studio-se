@@ -275,6 +275,14 @@
             <ITEM NAME="VALUE" />
           </ITEMS>
         </PARAMETER>
+        <PARAMETER
+    	  NAME="PART_SIZE"
+    	  FIELD="TEXT"
+    	  NUM_ROW="40"
+    	  REQUIRED="true"
+    	>
+    	  <DEFAULT>5</DEFAULT>
+    	</PARAMETER>
 
     </ADVANCED_PARAMETERS>
 
