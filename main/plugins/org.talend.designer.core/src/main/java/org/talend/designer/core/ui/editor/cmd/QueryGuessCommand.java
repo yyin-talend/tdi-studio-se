@@ -197,6 +197,26 @@ public class QueryGuessCommand extends Command {
         }
         return "";
     }
+    
+    private INode getConnectorNode(String connectorValue){
+        if(connectorValue == null){
+            return null;
+        }
+        List<? extends INode> graphicalNodes = process.getGraphicalNodes();
+        for (INode node : graphicalNodes) {
+            if (node.getUniqueName().equals(connectorValue)) {
+                return node;
+            }else if((node instanceof Node) && ((Node)node).isJoblet()){
+                List<? extends INode> jobletNodes = node.getComponent().getProcess().getGraphicalNodes();
+                for (INode jobletNode : jobletNodes) {
+                    if(connectorValue.equals(node.getUniqueName() +"_"+jobletNode.getUniqueName())){
+                        return jobletNode;
+                    }
+                }
+            }
+        }
+        return null;
+    }
 
     private String generateNewQuery() {
         // used for generating new Query.
@@ -229,13 +249,7 @@ public class QueryGuessCommand extends Command {
             IElementParameter connector = node.getElementParameter("CONNECTION");
             if (connector != null) {
                 String connectorValue = connector.getValue().toString();
-                List<? extends INode> graphicalNodes = process.getGraphicalNodes();
-                for (INode node : graphicalNodes) {
-                    if (node.getUniqueName().equals(connectorValue)) {
-                        connectionNode = node;
-                        break;
-                    }
-                }
+                connectionNode = getConnectorNode(connectorValue);
             }
         }
         // hywang add for bug 7575
