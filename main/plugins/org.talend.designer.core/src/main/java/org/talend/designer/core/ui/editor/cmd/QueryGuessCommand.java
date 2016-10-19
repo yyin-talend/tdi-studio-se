@@ -229,7 +229,7 @@ public class QueryGuessCommand extends Command {
             IElementParameter connector = node.getElementParameter("CONNECTION");
             if (connector != null) {
                 String connectorValue = connector.getValue().toString();
-                List<? extends INode> graphicalNodes = process.getGraphicalNodes();
+                List<? extends INode> graphicalNodes = process.getGeneratingNodes();
                 for (INode node : graphicalNodes) {
                     if (node.getUniqueName().equals(connectorValue)) {
                         connectionNode = node;
