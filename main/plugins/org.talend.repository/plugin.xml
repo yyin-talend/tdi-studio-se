@@ -1597,6 +1597,14 @@
        </projecttask>
         <projecttask
               beforeLogon="false"
+              breaks="6.2.0"
+              class="org.talend.repository.model.migration.ChangeMSSQLDBVersionMigrationTask"
+              id="org.talend.repository.model.migration.ChangeMSSQLDBVersionMigrationTask"
+              name="Change MSSQL DBVersion"
+              version="6.3.0">
+        </projecttask>
+        <projecttask
+              beforeLogon="false"
               breaks="5.1.1"
               class="org.talend.repository.model.migration.ChangeAS400DBVersionMigrationTask"
               id="org.talend.repository.model.migration.ChangeAS400DBVersionMigrationTask"
