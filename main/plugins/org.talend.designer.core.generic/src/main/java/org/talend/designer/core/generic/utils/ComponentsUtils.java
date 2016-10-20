@@ -471,7 +471,7 @@ public class ComponentsUtils {
         return paramValue;
     }
 
-    private static String unescapeForJava(String input) {
+    public static String unescapeForJava(String input) {
         CharSequenceTranslator UNESCAPE_JAVA = new AggregateTranslator(new OctalUnescaper(),
                 new UnicodeUnescaper(),
                 new LookupTranslator(new String[][] { { "\\\\", "\\" }, { "\\\"", "\"" }, { "\\'", "'" } })); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$

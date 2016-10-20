@@ -24,7 +24,6 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Shell;
 import org.talend.commons.exception.ExceptionHandler;
-import org.talend.components.api.properties.ComponentProperties;
 import org.talend.components.api.service.ComponentService;
 import org.talend.core.model.process.EComponentCategory;
 import org.talend.core.model.process.Element;
@@ -77,7 +76,7 @@ public class GenericDialog extends TitleAreaDialog {
 
         Element element = new FakeElement(form.getName());
         dynamicComposite = new DynamicComposite(comp, SWT.H_SCROLL | SWT.V_SCROLL | SWT.NO_FOCUS, EComponentCategory.BASIC,
-                element, true, comp.getBackground(), form, true);
+                element, true, form, true);
         FormData data = new FormData();
         data.left = new FormAttachment(0, 0);
         data.right = new FormAttachment(100, 0);
@@ -94,7 +93,7 @@ public class GenericDialog extends TitleAreaDialog {
     private void init() {
         if (form.isCallBeforeFormPresent()) {
             try {
-                componentService.beforeFormPresent(form.getName(), (ComponentProperties) form.getProperties());
+                componentService.beforeFormPresent(form.getName(), form.getProperties());
             } catch (Throwable e) {
                 ExceptionHandler.process(e);
             }
@@ -115,7 +114,7 @@ public class GenericDialog extends TitleAreaDialog {
     protected void okPressed() {
         if (form.isCallAfterFormFinish()) {
             try {
-                componentService.afterFormFinish(form.getName(), (ComponentProperties) form.getProperties());
+                componentService.afterFormFinish(form.getName(), form.getProperties());
             } catch (Throwable e) {
                 ExceptionHandler.process(e);
             }
@@ -125,7 +124,7 @@ public class GenericDialog extends TitleAreaDialog {
 
     @Override
     protected void cancelPressed() {
-        componentService.cancelFormValues((ComponentProperties) form.getProperties(), form.getName());
+        componentService.cancelFormValues(form.getProperties(), form.getName());
         super.cancelPressed();
     }
 

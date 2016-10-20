@@ -25,7 +25,6 @@ import java.util.Set;
 
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.talend.commons.ui.gmf.util.DisplayUtils;
@@ -60,7 +59,7 @@ import org.talend.designer.core.model.components.AbstractBasicComponent;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.model.components.ElementParameter;
 import org.talend.designer.core.model.components.EmfComponent;
-import org.talend.designer.core.ui.views.properties.MultipleThreadDynamicComposite;
+import org.talend.designer.core.ui.views.properties.composites.MissingSettingsMultiThreadDynamicComposite;
 import org.talend.metadata.managment.ui.wizard.context.MetadataContextPropertyValueEvaluator;
 import org.talend.repository.generic.i18n.Messages;
 import org.talend.repository.generic.internal.IGenericWizardInternalService;
@@ -73,7 +72,7 @@ import org.talend.repository.generic.model.genericMetadata.SubContainer;
  * created by ycbai on 2015年9月24日 Detailled comment
  *
  */
-public class DynamicComposite extends MultipleThreadDynamicComposite implements PropertyChangeListener {
+public class DynamicComposite extends MissingSettingsMultiThreadDynamicComposite implements PropertyChangeListener {
 
     private Element element;
 
@@ -88,13 +87,13 @@ public class DynamicComposite extends MultipleThreadDynamicComposite implements 
     private boolean drivedByForm;
 
     public DynamicComposite(Composite parentComposite, int styles, EComponentCategory section, Element element,
-            boolean isCompactView, Color backgroundColor, Form form) {
-        this(parentComposite, styles, section, element, isCompactView, backgroundColor, form, false);
+            boolean isCompactView, Form form) {
+        this(parentComposite, styles, section, element, isCompactView, form, false);
     }
 
     public DynamicComposite(Composite parentComposite, int styles, EComponentCategory section, Element element,
-            boolean isCompactView, Color backgroundColor, Form form, boolean drivedByForm) {
-        super(parentComposite, styles, section, element, isCompactView, backgroundColor);
+            boolean isCompactView, Form form, boolean drivedByForm) {
+        super(parentComposite, styles, section, element, isCompactView);
         this.element = element;
         this.form = form;
         this.drivedByForm = drivedByForm;
