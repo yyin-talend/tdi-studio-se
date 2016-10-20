@@ -245,8 +245,7 @@ public class ComponentSettingsView extends ViewPart implements IComponentSetting
                     if (composite instanceof MultipleThreadDynamicComposite) {
                         dc = (MultipleThreadDynamicComposite) composite;
                     }
-                }
-                if (dc == null) {
+                } else {
                     dc = new MissingSettingsMultiThreadDynamicComposite(parent, SWT.H_SCROLL | SWT.V_SCROLL | SWT.NO_FOCUS,
                             category, element, isCompactView);
                 }
