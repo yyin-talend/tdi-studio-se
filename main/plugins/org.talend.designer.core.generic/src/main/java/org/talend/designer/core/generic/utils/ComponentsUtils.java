@@ -460,6 +460,7 @@ public class ComponentsUtils {
                     value = StringUtils.EMPTY;
                 }
                 paramValue = TalendQuoteUtils.addPairQuotesIfNotExist(unescapeForJava(value));
+                property.setValue(paramValue);
             }
         } else if (GenericTypeUtils.isBooleanType(property)) {
             if (paramValue == null) {
