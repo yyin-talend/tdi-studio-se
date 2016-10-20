@@ -38,7 +38,6 @@ import org.talend.core.model.process.INode;
  * 
  * @author GaoZone
  * @since 5.6
- * @version 0.5
  */
 public class CamelEndpointBuilder {
 
@@ -401,6 +400,7 @@ public class CamelEndpointBuilder {
      * @return
      */
     public CamelEndpointBuilder addParamsWithEscapeValue(String key, String value) {
+        value = value.replaceAll("\\r|\\n", "");
         return addParam(key, SBTool.escapeJavaString(value));
     }
 
