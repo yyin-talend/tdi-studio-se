@@ -2031,9 +2031,15 @@ public class DataProcess implements IGeneratingProcess {
         if (isOutput) {
             validRuleConnections = (List<IConnection>) nodeUseValidationRule.getIncomingConnections();
             mainConnections = nodeUseValidationRule.getIncomingConnections("FLOW");//$NON-NLS-1$
+            if (nodeUseValidationRule.getComponentProperties() != null) {
+                mainConnections = nodeUseValidationRule.getIncomingConnections("MAIN");//$NON-NLS-1$
+            }
         } else {
             validRuleConnections = (List<IConnection>) nodeUseValidationRule.getOutgoingConnections();
             mainConnections = nodeUseValidationRule.getOutgoingConnections("FLOW");//$NON-NLS-1$
+            if (nodeUseValidationRule.getComponentProperties() != null) {
+                mainConnections = nodeUseValidationRule.getOutgoingConnections("MAIN");//$NON-NLS-1$
+            }
         }
         if (validRuleConnections == null || validRuleConnections.size() == 0) {
             return;
@@ -2043,7 +2049,9 @@ public class DataProcess implements IGeneratingProcess {
             dataConnection = mainConnections.get(0);
         }
 
+        String originalConnector = null;
         if (dataConnection != null) {
+            originalConnector = dataConnection.getConnectorName(); 
             validRuleConnections.remove(dataConnection);
         }
 
@@ -2086,6 +2094,7 @@ public class DataProcess implements IGeneratingProcess {
             newMetadata.setTableName(uniqueName);
             joinNode.getMetadataList().remove(0);
             joinNode.getMetadataList().add(newMetadata);
+            newMetadata.setAttachedConnector("FLOW"); //$NON-NLS-1$
         }
         joinNode.setSubProcessStart(false);
         joinNode.setProcess(node.getProcess());
@@ -2145,6 +2154,12 @@ public class DataProcess implements IGeneratingProcess {
             dataConnec.setTarget(nodeUseValidationRule);
             tJoin_outgoingConnections.add(dataConnec);
         } else {
+            if (originalConnector != null) {
+                dataConnec.setConnectorName(originalConnector);
+                dataConnec.getMetadataTable().setAttachedConnector(originalConnector);
+            } else {
+                dataConnec.setConnectorName("FLOW"); //$NON-NLS-1$    
+            }
             dataConnec.setName("after_" + nodeUseValidationRule.getUniqueName()); //$NON-NLS-1$
             dataConnec.setSource(nodeUseValidationRule);
             dataConnec.setTarget(joinNode);
@@ -2370,7 +2385,9 @@ public class DataProcess implements IGeneratingProcess {
         filterNode.setStart(false);
         filterNode.setDesignSubjobStartNode(null);
         IMetadataTable filterNodeMetadataTable = null;
+        String originalConnector = null;
         if (dataConnection != null) {
+            originalConnector = dataConnection.getConnectorName(); 
             if (dataConnection.getMetadataTable() != null) {
                 filterNodeMetadataTable = dataConnection.getMetadataTable();
             }
@@ -2450,7 +2467,12 @@ public class DataProcess implements IGeneratingProcess {
             dataConnec.setTarget(nodeUseValidationRule);
             outgoingConnections.add(dataConnec);
         } else {
-            dataConnec.setConnectorName("FLOW"); //$NON-NLS-1$
+            if (originalConnector != null) {
+                dataConnec.setConnectorName(originalConnector);
+                dataConnec.getMetadataTable().setAttachedConnector(originalConnector);
+            } else {
+                dataConnec.setConnectorName("FLOW"); //$NON-NLS-1$    
+            }
             dataConnec.setName("after_" + nodeUseValidationRule.getUniqueName()); //$NON-NLS-1$
             dataConnec.setSource(nodeUseValidationRule);
             dataConnec.setTarget(filterNode);
