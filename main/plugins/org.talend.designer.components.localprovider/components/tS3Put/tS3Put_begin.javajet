@@ -61,7 +61,7 @@ imports="
 			%>
 				com.amazonaws.services.s3.model.ObjectMetadata objectMetadata_<%=cid%> = new com.amazonaws.services.s3.model.ObjectMetadata();
 				objectMetadata_<%=cid%>.setSSEAlgorithm(com.amazonaws.services.s3.model.ObjectMetadata.AES_256_SERVER_SIDE_ENCRYPTION);
-				initRequest_<%=cid%>.setMetadata(objectMetadata_<%=cid%>);
+				initRequest_<%=cid%>.setObjectMetadata(objectMetadata_<%=cid%>);
 			<%
 			}
 			%>
