@@ -164,7 +164,7 @@ public class GenericWizardService implements IGenericWizardService {
             if (props != null) {
                 Form form = props.getForm(EComponentCategory.ADVANCED.equals(sectionCategory) ? Form.ADVANCED : Form.MAIN);
                 dynamicComposite = new DynamicComposite(composite, SWT.H_SCROLL | SWT.V_SCROLL | SWT.NO_FOCUS, sectionCategory,
-                        element, isCompactView, form);
+                        element, isCompactView, composite.getBackground(), form);
                 List<ElementParameter> elementParameters = (List<ElementParameter>) node.getElementParameters();
                 for (ElementParameter parameter : elementParameters) {
                     if (parameter instanceof GenericElementParameter) {

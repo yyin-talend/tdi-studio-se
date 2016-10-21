@@ -19,6 +19,7 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.widgets.Composite;
 import org.talend.commons.ui.swt.composites.MessagesComposite;
 import org.talend.commons.ui.swt.composites.MessagesWithActionComposite;
@@ -47,6 +48,12 @@ public class MissingSettingsMultiThreadDynamicComposite extends TopMessagesMulti
     public MissingSettingsMultiThreadDynamicComposite(Composite parentComposite, int styles, EComponentCategory section,
             Element element, boolean isCompactView) {
         super(parentComposite, styles, section, element, isCompactView);
+        ModulesNeededProvider.addChangedLibrariesListener(this);
+    }
+
+    public MissingSettingsMultiThreadDynamicComposite(Composite parentComposite, int styles, EComponentCategory section,
+            Element element, boolean isCompactView, Color backgroundColor) {
+        super(parentComposite, styles, section, element, isCompactView, backgroundColor);
         ModulesNeededProvider.addChangedLibrariesListener(this);
     }
 

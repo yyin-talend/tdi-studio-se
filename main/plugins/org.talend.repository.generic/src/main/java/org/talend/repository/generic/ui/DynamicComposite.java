@@ -25,6 +25,7 @@ import java.util.Set;
 
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.talend.commons.ui.gmf.util.DisplayUtils;
@@ -87,13 +88,13 @@ public class DynamicComposite extends MissingSettingsMultiThreadDynamicComposite
     private boolean drivedByForm;
 
     public DynamicComposite(Composite parentComposite, int styles, EComponentCategory section, Element element,
-            boolean isCompactView, Form form) {
-        this(parentComposite, styles, section, element, isCompactView, form, false);
+            boolean isCompactView, Color backgroundColor, Form form) {
+        this(parentComposite, styles, section, element, isCompactView, backgroundColor, form, false);
     }
 
     public DynamicComposite(Composite parentComposite, int styles, EComponentCategory section, Element element,
-            boolean isCompactView, Form form, boolean drivedByForm) {
-        super(parentComposite, styles, section, element, isCompactView);
+            boolean isCompactView, Color backgroundColor, Form form, boolean drivedByForm) {
+        super(parentComposite, styles, section, element, isCompactView, backgroundColor);
         this.element = element;
         this.form = form;
         this.drivedByForm = drivedByForm;

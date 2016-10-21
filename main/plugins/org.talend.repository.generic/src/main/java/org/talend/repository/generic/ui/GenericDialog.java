@@ -76,7 +76,7 @@ public class GenericDialog extends TitleAreaDialog {
 
         Element element = new FakeElement(form.getName());
         dynamicComposite = new DynamicComposite(comp, SWT.H_SCROLL | SWT.V_SCROLL | SWT.NO_FOCUS, EComponentCategory.BASIC,
-                element, true, form, true);
+                element, true, comp.getBackground(), form, true);
         FormData data = new FormData();
         data.left = new FormAttachment(0, 0);
         data.right = new FormAttachment(100, 0);
