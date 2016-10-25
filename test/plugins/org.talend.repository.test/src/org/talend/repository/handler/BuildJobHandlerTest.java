@@ -1,6 +1,6 @@
 package org.talend.repository.handler;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 import java.net.URL;
@@ -19,8 +19,11 @@ import org.junit.Before;
 import org.junit.Test;
 import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.ProcessItem;
+import org.talend.core.model.properties.Project;
 import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.repository.model.ProxyRepositoryFactory;
+import org.talend.model.bridge.ReponsitoryContextBridge;
+import org.talend.repository.ProjectManager;
 import org.talend.repository.items.importexport.handlers.ImportExportHandlersManager;
 import org.talend.repository.items.importexport.handlers.model.ImportItem;
 import org.talend.repository.items.importexport.manager.ResourcesManager;
@@ -37,8 +40,14 @@ public class BuildJobHandlerTest {
 
     private String destinationPath;
 
+    private Project bridgeProject;
+
     @Before
     public void setUp() throws Exception {
+        // Fix the NPE for org.talend.designer.core.ui.editor.process.Process.createMainParameters(Process.java:401)
+        bridgeProject = ReponsitoryContextBridge.getProject();
+        ReponsitoryContextBridge.setProject(ProjectManager.getInstance().getCurrentProject().getEmfProject());
+
         ImportExportHandlersManager importManager = new ImportExportHandlersManager();
         // job with tdm and tdq component.
         URL testJobURL = FileLocator.find(Platform.getBundle("org.talend.repository.test"), new Path(
@@ -96,6 +105,8 @@ public class BuildJobHandlerTest {
 
     @After
     public void tearDown() throws Exception {
+        ReponsitoryContextBridge.setProject(bridgeProject);
+
         ExportJobUtil.deleteTempFiles();
         File file = new File(destinationPath);
         if (file.exists()) {

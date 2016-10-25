@@ -32,9 +32,11 @@ import org.talend.repository.generic.model.genericMetadata.GenericMetadataPackag
 import org.talend.repository.generic.model.genericMetadata.SubContainer;
 import org.talend.repository.generic.ui.GenericConnWizard;
 import org.talend.repository.generic.ui.GenericSchemaWizard;
+import org.talend.repository.generic.util.GenericConnectionUtil;
 import org.talend.repository.generic.util.GenericWizardServiceFactory;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.StableRepositoryNode;
+
 import orgomg.cwm.objectmodel.core.Package;
 
 /**
@@ -91,6 +93,7 @@ public class GenericRepositoryContentHandler extends AbstractRepositoryContentHa
     public Resource save(Item item) throws PersistenceException {
         Resource itemResource = null;
         if (isProcess(item)) {
+            GenericConnectionUtil.synNamePropertyWithItem((GenericConnectionItem) item);
             itemResource = save((GenericConnectionItem) item);
         }
 
@@ -143,9 +146,12 @@ public class GenericRepositoryContentHandler extends AbstractRepositoryContentHa
     public void addNode(ERepositoryObjectType type, RepositoryNode recBinNode, IRepositoryViewObject repositoryObject,
             RepositoryNode node) {
         if (isRepObjType(type)) {
-            GenericConnection connection = (GenericConnection) ((GenericConnectionItem) repositoryObject.getProperty().getItem())
-                    .getConnection();
-            createSubNodes(node, repositoryObject, connection);
+            Item item = repositoryObject.getProperty().getItem();
+            if (item instanceof GenericConnectionItem) {
+                GenericConnectionItem connItem = (GenericConnectionItem) item;
+                GenericConnection connection = (GenericConnection) connItem.getConnection();
+                createSubNodes(node, repositoryObject, connection);
+            }
         }
     }
 

@@ -33,6 +33,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.PlatformUI;
+import org.talend.commons.CommonsPlugin;
 import org.talend.commons.exception.BusinessException;
 import org.talend.commons.exception.CommonExceptionHandler;
 import org.talend.commons.exception.LoginException;
@@ -74,6 +75,7 @@ import org.talend.repository.ui.dialog.OverTimePopupDialogTask;
 import org.talend.repository.ui.login.AbstractLoginActionPage.ErrorManager;
 import org.talend.repository.ui.login.connections.ConnectionUserPerReader;
 import org.talend.utils.json.JSONException;
+import org.talend.utils.json.JSONObject;
 
 /**
  * created by cmeng on May 22, 2015 Detailled comment
@@ -472,6 +474,66 @@ public class LoginHelper {
         return true;
     }
 
+    public void saveUpdateStatus(Project project) throws JSONException {
+        Context ctx = CoreRuntimePlugin.getInstance().getContext();
+        RepositoryContext repositoryContext = (RepositoryContext) ctx.getProperty(Context.REPOSITORY_CONTEXT_KEY);
+        PreferenceManipulator prefManipulator = new PreferenceManipulator();
+        if (CommonsPlugin.isHeadless()) {
+            repositoryContext.setNoUpdateWhenLogon(false);
+            return;
+        }
+        if (!LoginHelper.isRemoteConnection(getCurrentSelectedConnBean())) {
+            repositoryContext.setNoUpdateWhenLogon(true);
+            return;
+        }
+        String url = project.getEmfProject().getUrl();
+        if (url == null || !"git".equals(getStorage(url))) {
+            return;
+        }
+        String location = getLocation(url);
+        String projectName = project.getTechnicalLabel();
+        String branch = ProjectManager.getInstance().getMainProjectBranch(project);
+        if (branch == null) {
+            return;
+        }
+        if (branch.startsWith("tags/")) {
+            repositoryContext.setNoUpdateWhenLogon(true);
+            return;
+        }
+        if (branch.startsWith("branches/")) {
+            branch = branch.substring("branches/".length());
+        }
+        JSONObject json = prefManipulator.getLogonLocalBranchStatus(location, projectName);
+        if (json != null) {
+            if (!json.has(branch)) {
+                return;
+            }
+            Object noUpdateWhenLogon = json.get(branch);
+            if (noUpdateWhenLogon != null) {
+                repositoryContext.setNoUpdateWhenLogon((Boolean) noUpdateWhenLogon);
+            }
+        }
+
+    }
+
+    public static String getStorage(String url) throws JSONException {
+        JSONObject jsonObject = new JSONObject(url);
+        String location = ""; //$NON-NLS-1$
+        if (jsonObject.has("storage")) {
+            location = jsonObject.getString("storage"); //$NON-NLS-1$
+        }
+        return location;
+    }
+
+    private String getLocation(String url) throws JSONException {
+        JSONObject jsonObject = new JSONObject(url);
+        String location = ""; //$NON-NLS-1$
+        if (jsonObject.has("location")) {
+            location = jsonObject.getString("location"); //$NON-NLS-1$
+        }
+        return location;
+    }
+
     public Project[] getProjects(ConnectionBean connBean) {
         return getProjects(connBean, null);
     }
@@ -689,7 +751,7 @@ public class LoginHelper {
                 isAlwaysAskAtStartup);
     }
 
-    protected Shell getUsableShell() {
+    public Shell getUsableShell() {
         if (usableShell != null) {
             return usableShell;
         } else {

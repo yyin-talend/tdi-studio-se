@@ -34,6 +34,7 @@ import org.talend.core.PluginChecker;
 import org.talend.core.model.components.ComponentCategory;
 import org.talend.core.model.components.EComponentType;
 import org.talend.core.model.components.IComponent;
+import org.talend.core.model.components.IComponentsFactory;
 import org.talend.core.model.components.IMultipleComponentConnection;
 import org.talend.core.model.components.IMultipleComponentItem;
 import org.talend.core.model.components.IMultipleComponentManager;
@@ -63,7 +64,6 @@ import org.talend.core.model.process.INodeConnector;
 import org.talend.core.model.process.IProcess;
 import org.talend.core.model.process.IProcess2;
 import org.talend.core.model.process.IReplaceNodeInProcess;
-import org.talend.core.model.process.ProcessUtils;
 import org.talend.core.model.process.ReplaceNodesInProcessProvider;
 import org.talend.core.model.process.UniqueNodeNameGenerator;
 import org.talend.core.model.properties.Item;
@@ -77,6 +77,7 @@ import org.talend.core.model.utils.NodeUtil;
 import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.core.repository.model.ProxyRepositoryFactory;
 import org.talend.core.ui.component.ComponentsFactoryProvider;
+import org.talend.daikon.properties.presentation.Form;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.model.components.AbstractBasicComponent;
 import org.talend.designer.core.model.components.EParameterName;
@@ -87,7 +88,6 @@ import org.talend.designer.core.model.utils.emf.talendfile.AbstractExternalData;
 import org.talend.designer.core.model.utils.emf.talendfile.RoutinesParameterType;
 import org.talend.designer.core.ui.AbstractMultiPageTalendEditor;
 import org.talend.designer.core.ui.editor.connections.Connection;
-import org.talend.designer.core.ui.editor.jobletcontainer.JobletContainer;
 import org.talend.designer.core.ui.editor.nodecontainer.NodeContainer;
 import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.process.Process;
@@ -814,8 +814,12 @@ public class DataProcess implements IGeneratingProcess {
 
         for (IMultipleComponentItem curItem : itemList) {
             String uniqueName = graphicalNode.getUniqueName() + "_" + curItem.getName(); //$NON-NLS-1$
-            IComponent component = ComponentsFactoryProvider.getInstance().get(curItem.getComponent(),
-                    ComponentCategory.CATEGORY_4_DI.getName());
+            IComponentsFactory componentsFactory = ComponentsFactoryProvider.getInstance();
+            String currentComponent = curItem.getComponent();
+            IComponent component = componentsFactory.get(currentComponent, process.getComponentsType());
+            if (component == null) { // If cannot find the component then find it by default DI category by default.
+                component = componentsFactory.get(currentComponent, ComponentCategory.CATEGORY_4_DI.getName());
+            }
             if (component == null) {
                 continue;
             }
@@ -2027,9 +2031,15 @@ public class DataProcess implements IGeneratingProcess {
         if (isOutput) {
             validRuleConnections = (List<IConnection>) nodeUseValidationRule.getIncomingConnections();
             mainConnections = nodeUseValidationRule.getIncomingConnections("FLOW");//$NON-NLS-1$
+            if (nodeUseValidationRule.getComponentProperties() != null) {
+                mainConnections = nodeUseValidationRule.getIncomingConnections("MAIN");//$NON-NLS-1$
+            }
         } else {
             validRuleConnections = (List<IConnection>) nodeUseValidationRule.getOutgoingConnections();
             mainConnections = nodeUseValidationRule.getOutgoingConnections("FLOW");//$NON-NLS-1$
+            if (nodeUseValidationRule.getComponentProperties() != null) {
+                mainConnections = nodeUseValidationRule.getOutgoingConnections("MAIN");//$NON-NLS-1$
+            }
         }
         if (validRuleConnections == null || validRuleConnections.size() == 0) {
             return;
@@ -2039,7 +2049,9 @@ public class DataProcess implements IGeneratingProcess {
             dataConnection = mainConnections.get(0);
         }
 
+        String originalConnector = null;
         if (dataConnection != null) {
+            originalConnector = dataConnection.getConnectorName(); 
             validRuleConnections.remove(dataConnection);
         }
 
@@ -2082,6 +2094,7 @@ public class DataProcess implements IGeneratingProcess {
             newMetadata.setTableName(uniqueName);
             joinNode.getMetadataList().remove(0);
             joinNode.getMetadataList().add(newMetadata);
+            newMetadata.setAttachedConnector("FLOW"); //$NON-NLS-1$
         }
         joinNode.setSubProcessStart(false);
         joinNode.setProcess(node.getProcess());
@@ -2141,6 +2154,12 @@ public class DataProcess implements IGeneratingProcess {
             dataConnec.setTarget(nodeUseValidationRule);
             tJoin_outgoingConnections.add(dataConnec);
         } else {
+            if (originalConnector != null) {
+                dataConnec.setConnectorName(originalConnector);
+                dataConnec.getMetadataTable().setAttachedConnector(originalConnector);
+            } else {
+                dataConnec.setConnectorName("FLOW"); //$NON-NLS-1$    
+            }
             dataConnec.setName("after_" + nodeUseValidationRule.getUniqueName()); //$NON-NLS-1$
             dataConnec.setSource(nodeUseValidationRule);
             dataConnec.setTarget(joinNode);
@@ -2330,10 +2349,10 @@ public class DataProcess implements IGeneratingProcess {
         DataConnection dataConnection = null;
         if (isOutput) {
             validRuleConnections = (List<IConnection>) nodeUseValidationRule.getIncomingConnections();
-            mainConnections = nodeUseValidationRule.getIncomingConnections(EConnectionType.FLOW_MAIN);//$NON-NLS-1$
+            mainConnections = nodeUseValidationRule.getIncomingConnections(EConnectionType.FLOW_MAIN);
         } else {
             validRuleConnections = (List<IConnection>) nodeUseValidationRule.getOutgoingConnections();
-            mainConnections = nodeUseValidationRule.getOutgoingConnections(EConnectionType.FLOW_MAIN);//$NON-NLS-1$
+            mainConnections = nodeUseValidationRule.getOutgoingConnections(EConnectionType.FLOW_MAIN);
         }
 
         if (validRuleConnections == null || validRuleConnections.size() == 0) {
@@ -2366,7 +2385,9 @@ public class DataProcess implements IGeneratingProcess {
         filterNode.setStart(false);
         filterNode.setDesignSubjobStartNode(null);
         IMetadataTable filterNodeMetadataTable = null;
+        String originalConnector = null;
         if (dataConnection != null) {
+            originalConnector = dataConnection.getConnectorName(); 
             if (dataConnection.getMetadataTable() != null) {
                 filterNodeMetadataTable = dataConnection.getMetadataTable();
             }
@@ -2446,7 +2467,12 @@ public class DataProcess implements IGeneratingProcess {
             dataConnec.setTarget(nodeUseValidationRule);
             outgoingConnections.add(dataConnec);
         } else {
-            dataConnec.setConnectorName("FLOW"); //$NON-NLS-1$
+            if (originalConnector != null) {
+                dataConnec.setConnectorName(originalConnector);
+                dataConnec.getMetadataTable().setAttachedConnector(originalConnector);
+            } else {
+                dataConnec.setConnectorName("FLOW"); //$NON-NLS-1$    
+            }
             dataConnec.setName("after_" + nodeUseValidationRule.getUniqueName()); //$NON-NLS-1$
             dataConnec.setSource(nodeUseValidationRule);
             dataConnec.setTarget(filterNode);
@@ -3054,17 +3080,18 @@ public class DataProcess implements IGeneratingProcess {
         }
 
         copyElementParametersValue(graphicalNode, newGraphicalNode);
+        if (newGraphicalNode.getComponentProperties() != null) {
+            List<Form> forms = newGraphicalNode.getComponentProperties().getForms();
+            for (Form form : forms) {
+                newGraphicalNode.getComponentProperties().refreshLayout(form);
+            }
+        }
         newGraphicalNode.setDummy(graphicalNode.isDummy());
 
         ValidationRulesUtil.createRejectConnector(newGraphicalNode);
         ValidationRulesUtil.updateRejectMetatable(newGraphicalNode, graphicalNode);
 
-        NodeContainer nc = null;
-        if (newGraphicalNode.isJoblet() || newGraphicalNode.isMapReduce()) {
-            nc = new JobletContainer(newGraphicalNode);
-        } else {
-            nc = new NodeContainer(newGraphicalNode);
-        }
+        NodeContainer nc = ((Process) process).loadNodeContainer(newGraphicalNode, false);
 
         ((Process) process).addNodeContainer(nc);
         buildGraphicalMap.put(graphicalNode, newGraphicalNode);
@@ -3181,7 +3208,7 @@ public class DataProcess implements IGeneratingProcess {
      * @param graphicalNodeList
      * @return
      */
-    private void replaceNodeFromProviders(List<INode> graphicalNodeList) {
+    public void replaceNodeFromProviders(List<INode> graphicalNodeList) {
         List<INode> orginalList = new ArrayList<INode>(graphicalNodeList);
         for (INode node : orginalList) {
             for (IReplaceNodeInProcess replaceProvider : ReplaceNodesInProcessProvider.findReplaceNodesProvider()) {

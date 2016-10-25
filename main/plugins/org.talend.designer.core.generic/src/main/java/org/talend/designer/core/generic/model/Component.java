@@ -13,6 +13,7 @@
 package org.talend.designer.core.generic.model;
 
 import java.io.InputStream;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -28,9 +29,11 @@ import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.graphics.ImageData;
 import org.eclipse.swt.graphics.RGB;
 import org.talend.commons.exception.BusinessException;
+import org.talend.commons.exception.ExceptionHandler;
 import org.talend.components.api.component.ComponentDefinition;
 import org.talend.components.api.component.ComponentImageType;
 import org.talend.components.api.component.Connector;
+import org.talend.components.api.component.ConnectorTopology;
 import org.talend.components.api.component.PropertyPathConnector;
 import org.talend.components.api.component.VirtualComponentDefinition;
 import org.talend.components.api.properties.ComponentProperties;
@@ -53,12 +56,14 @@ import org.talend.core.model.process.EComponentCategory;
 import org.talend.core.model.process.EConnectionType;
 import org.talend.core.model.process.EParameterFieldType;
 import org.talend.core.model.process.ElementParameterParser;
+import org.talend.core.model.process.IConnectionCategory;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.IElementParameterDefaultValue;
 import org.talend.core.model.process.INode;
 import org.talend.core.model.process.INodeConnector;
 import org.talend.core.model.temp.ECodePart;
 import org.talend.core.model.utils.ContextParameterUtils;
+import org.talend.core.model.utils.NodeUtil;
 import org.talend.core.prefs.ITalendCorePrefConstants;
 import org.talend.core.runtime.util.ComponentReturnVariableUtils;
 import org.talend.core.runtime.util.GenericTypeUtils;
@@ -70,6 +75,7 @@ import org.talend.daikon.properties.Properties;
 import org.talend.daikon.properties.presentation.Form;
 import org.talend.daikon.properties.property.Property;
 import org.talend.daikon.properties.property.SchemaProperty;
+import org.talend.daikon.runtime.RuntimeInfo;
 import org.talend.daikon.serialize.PostDeserializeSetup;
 import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.generic.constants.IGenericConstants;
@@ -97,6 +103,8 @@ public class Component extends AbstractBasicComponent {
     private static Logger log = Logger.getLogger(Component.class);
 
     private ComponentDefinition componentDefinition;
+
+    private RuntimeInfo runtimeInfo;
 
     private List<ModuleNeeded> componentImportNeedsList;
 
@@ -189,8 +197,7 @@ public class Component extends AbstractBasicComponent {
         for (Property<?> child : componentDefinition.getReturnProperties()) {
             nodeRet = new NodeReturn();
             nodeRet.setType(ComponentsUtils.getTalendTypeFromProperty(child).getId());
-            nodeRet.setDisplayName(
-                    ComponentReturnVariableUtils.getTranslationForVariable(child.getName(), child.getDisplayName()));
+            nodeRet.setDisplayName(ComponentReturnVariableUtils.getTranslationForVariable(child.getName(), child.getDisplayName()));
             nodeRet.setName(ComponentReturnVariableUtils.getStudioNameFromVariable(child.getName()));
             if (nodeRet.getName().equals(ERROR_MESSAGE)) {
                 continue;
@@ -592,7 +599,7 @@ public class Component extends AbstractBasicComponent {
             param.setRepositoryValue(wizardDefinition.getName());
         }
         param.setValue("");//$NON-NLS-1$
-        param.setNumRow(2);
+        param.setNumRow(1);
         param.setShow(wizardDefinition != null);
 
         ElementParameter newParam = new ElementParameter(node);
@@ -816,7 +823,7 @@ public class Component extends AbstractBasicComponent {
             if (!(schemaProperty.getValue() instanceof Schema)) {
                 continue;
             }
-            Schema schema = (Schema) schemaProperty.getValue();
+            Schema schema = schemaProperty.getValue();
             if (connector instanceof PropertyPathConnector) {
                 String linkedSchema = ((PropertyPathConnector) connector).getPropertyPath() + ".schema"; //$NON-NLS-1$
                 if (paramName.equals(linkedSchema)) {
@@ -824,6 +831,7 @@ public class Component extends AbstractBasicComponent {
                     ElementParameter param = new ElementParameter(node);
                     param.setName(paramName);
                     param.setFieldType(EParameterFieldType.SCHEMA_REFERENCE);
+                    param.setShow(false);
                     if (!isOutput) {
                         param.setContext(EConnectionType.FLOW_MAIN.getName());
                     } else {
@@ -904,6 +912,7 @@ public class Component extends AbstractBasicComponent {
 
         ComponentProperties componentProperties = ComponentsUtils.getComponentProperties(getName());
         Set<? extends Connector> inputConnectors = componentProperties.getPossibleConnectors(false);
+        
         if (inputConnectors.isEmpty()) {
             INodeConnector connector = null;
             connector = addStandardType(listConnector, EConnectionType.FLOW_MAIN, parentNode);
@@ -911,7 +920,8 @@ public class Component extends AbstractBasicComponent {
             connector.setMaxLinkOutput(0);
         } else {
             for (Connector connector : inputConnectors) {
-                addGenericType(listConnector, EConnectionType.FLOW_MAIN, connector.getName(), parentNode, false);
+                addGenericType(listConnector, EConnectionType.FLOW_MAIN, connector.getName(), parentNode, componentProperties,
+                        false);
             }
         }
 
@@ -935,13 +945,16 @@ public class Component extends AbstractBasicComponent {
             if (Connector.REJECT_NAME.equals(connector.getName())) {
                 type = EConnectionType.REJECT;
             }
-            addGenericType(listConnector, type, connector.getName(), parentNode, true);
-        }
+            addGenericType(listConnector, type, connector.getName(), parentNode, componentProperties, true);
+        }       
         addStandardType(listConnector, EConnectionType.RUN_IF, parentNode);
         addStandardType(listConnector, EConnectionType.ON_COMPONENT_OK, parentNode);
         addStandardType(listConnector, EConnectionType.ON_COMPONENT_ERROR, parentNode);
         addStandardType(listConnector, EConnectionType.ON_SUBJOB_OK, parentNode);
         addStandardType(listConnector, EConnectionType.ON_SUBJOB_ERROR, parentNode);
+        
+        Set<ConnectorTopology> topologies = componentDefinition.getSupportedConnectorTopologies();
+        createIterateConnectors(topologies, listConnector, parentNode);
 
         for (int i = 0; i < EConnectionType.values().length; i++) {
             EConnectionType currentType = EConnectionType.values()[i];
@@ -983,6 +996,37 @@ public class Component extends AbstractBasicComponent {
         }
         return listConnector;
     }
+    
+    /**
+     * Create iterate connector for this {@link Component}
+     * There are 4 types of components (depending on what main connections allowed):
+     * 1. StandAlone component (can't have main connections at all)
+     * 2. Input component (can have outgoing main connection)
+     * 3. Output component (can have incoming main connection)
+     * 4. Intermediate component (can have both incoming and outgoing main connections)
+     * 
+     * Iterate connector is created by default for TCOMP component with following rules:
+     * Outgoing iterate: all types of components can have infinite outgoing iterate connections
+     * Incoming iterate: StandAlone, Input components (also called startable components) can have 1 incoming iterate flow;
+     * Output, Intermediate components can't have incoming iterate flow (because they are not startable)
+     * 
+     * Note: infinite value is defined by -1 int value
+     * 
+     * @param topologies connection topologies supported by this {@link Component}. Component could support several topologies. 
+     * Such component is called hybrid
+     * @param listConnector list of all {@link Component} connectors
+     * @param parentNode parent node
+     */
+    private void createIterateConnectors(Set<ConnectorTopology> topologies, List<INodeConnector> listConnector, INode parentNode) {
+        boolean inputOrNone = topologies.contains(ConnectorTopology.NONE) || topologies.contains(ConnectorTopology.OUTGOING);
+        INodeConnector iterateConnector = addStandardType(listConnector, EConnectionType.ITERATE, parentNode);
+        iterateConnector.setMaxLinkOutput(-1);
+        if (inputOrNone) {
+            iterateConnector.setMaxLinkInput(1);
+        } else {
+            iterateConnector.setMaxLinkInput(0);
+        }   
+    }
 
     /**
      * Add default connector type, if not already defined by component.
@@ -1005,8 +1049,9 @@ public class Component extends AbstractBasicComponent {
     }
 
     private void addGenericType(List<INodeConnector> listConnector, EConnectionType type, String genericConnectorType,
-            INode parentNode, boolean isOutput) {
+            INode parentNode, ComponentProperties componentProperties, boolean isOutput) {
         GenericNodeConnector nodeConnector = new GenericNodeConnector(parentNode, isOutput);
+        nodeConnector.setComponentProperties(componentProperties);
         nodeConnector.setDefaultConnectionType(EConnectionType.FLOW_MAIN);
         nodeConnector.setGenericConnectorType(genericConnectorType);
         nodeConnector.setLinkName(type.getDefaultLinkName());
@@ -1029,17 +1074,56 @@ public class Component extends AbstractBasicComponent {
         return componentDefinition.isDataAutoPropagate();
     }
 
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.core.model.components.IComponent#getModulesNeeded()
+     */
     @Override
     public List<ModuleNeeded> getModulesNeeded() {
-        if (componentImportNeedsList != null) {
+        return getModulesNeeded(null);
+    }
+
+    @Override
+    public List<ModuleNeeded> getModulesNeeded(INode node) {
+        if (runtimeInfo != null && componentImportNeedsList != null) {
             return componentImportNeedsList;
         } else {
-            ComponentService componentService = ComponentsUtils.getComponentService();
-            Set<String> mavenUriDependencies = componentService.getMavenUriDependencies(getName());
-            componentImportNeedsList = new ArrayList<>(mavenUriDependencies.size());
-            for (String mvnUri : mavenUriDependencies) {
-                ModuleNeeded moduleNeeded = new ModuleNeeded(getName(), "", true, mvnUri);
-                componentImportNeedsList.add(moduleNeeded);
+            componentImportNeedsList = new ArrayList<>();
+
+            ConnectorTopology topology = null;
+            if (node != null) {
+                boolean hasInput = !NodeUtil.getIncomingConnections(node, IConnectionCategory.DATA).isEmpty();
+                boolean hasOutput = !NodeUtil.getOutgoingConnections(node, IConnectionCategory.DATA).isEmpty();
+                if (hasInput && hasOutput) {
+                    topology = ConnectorTopology.INCOMING_AND_OUTGOING;
+                } else if (hasInput) {
+                    topology = ConnectorTopology.INCOMING;
+                } else if (hasOutput) {
+                    topology = ConnectorTopology.OUTGOING;
+                } else {
+                    topology = ConnectorTopology.NONE;
+                }
+            } else {
+                Set<ConnectorTopology> topologies = componentDefinition.getSupportedConnectorTopologies();
+                if (!topologies.isEmpty()) {
+                    topology = topologies.iterator().next();
+                }
+            }
+            try {
+                runtimeInfo = componentDefinition.getRuntimeInfo(node == null ? null : node.getComponentProperties(), topology);
+            } catch (Exception e) {
+                if (node == null) {
+                    // not handled, must because the runtime info must have a node configuration (properties are null)
+                } else {
+                    ExceptionHandler.process(e);
+                }
+            }
+            if (runtimeInfo != null) {
+                for (URL mvnUri : runtimeInfo.getMavenUrlDependencies()) {
+                    ModuleNeeded moduleNeeded = new ModuleNeeded(getName(), "", true, mvnUri.toString()); //$NON-NLS-1$
+                    componentImportNeedsList.add(moduleNeeded);
+                }
             }
             ModuleNeeded moduleNeeded = new ModuleNeeded(getName(), "", true,
                     "mvn:org.talend.libraries/slf4j-log4j12-1.7.2/6.0.0");
@@ -1244,6 +1328,9 @@ public class Component extends AbstractBasicComponent {
         if (GenericTypeUtils.isIntegerType(property) && ContextParameterUtils.isContainContextParam(value)) {
             value = "Integer.valueOf(" + value + ")";
         }
+        if ("\"\"\"".equals(value)) {
+            value = "\"\\\"\"";
+        }
         return value;
     }
 
@@ -1293,8 +1380,8 @@ public class Component extends AbstractBasicComponent {
     @Override
     public void initNodePropertiesFromSerialized(INode node, String serialized) {
         if (node != null) {
-            node.setComponentProperties(
-                    Properties.Helper.fromSerializedPersistent(serialized, ComponentProperties.class, new PostDeserializeSetup() {
+            node.setComponentProperties(Properties.Helper.fromSerializedPersistent(serialized, ComponentProperties.class,
+                    new PostDeserializeSetup() {
 
                         @Override
                         public void setup(Object properties) {
@@ -1377,4 +1464,5 @@ public class Component extends AbstractBasicComponent {
     public boolean hasConditionalOutputs() {
         return componentDefinition.isConditionalInputs();
     }
+
 }

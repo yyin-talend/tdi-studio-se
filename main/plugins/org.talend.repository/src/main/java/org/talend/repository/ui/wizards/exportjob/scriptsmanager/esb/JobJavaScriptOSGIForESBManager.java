@@ -116,12 +116,12 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
     private final File classesLocation = new File(getTmpFolder() + File.separator + "classes"); //$NON-NLS-1$;
 
     private static final String DLL_FILE = ".dll"; //$NON-NLS-1$
-    
+
     private static final String SO_FILE = ".so"; //$NON-NLS-1$
 
     private static final String OSGI_OS_CODE = ';' + "osname=" + System.getProperty("osgi.os") + ';' + "processor=" //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
             + System.getProperty("osgi.arch") + ','; //$NON-NLS-1$
-    
+
     @Override
     public List<ExportFileResource> getExportResources(ExportFileResource[] processes, String... codeOptions)
             throws ProcessorException {
@@ -455,6 +455,9 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
         if (!endpointUri.isEmpty() && !endpointUri.contains("://") && !endpointUri.startsWith("/")) { //$NON-NLS-1$ //$NON-NLS-2$
             endpointUri = '/' + endpointUri;
         }
+
+        endpointInfo.put("originalAddress", endpointUri); //$NON-NLS-1$  Needed by Swagger
+
         // TESB-5916: Rest service can't be deployed in the Runtime on the port said in the studio
         // if (endpointUri.contains("://")) {
         // endpointUri = new URL(endpointUri).getPath();
@@ -506,6 +509,12 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
         } else {
             endpointInfo.put("useAuthorization", false); //$NON-NLS-1$
         }
+
+
+        // expose Swagger specification
+        endpointInfo.put("exposeSwaggerSpecification", //$NON-NLS-1$
+                EmfModelUtils.computeCheckElementValue("EXPOSE_SWAGGER_SPEC", restRequestComponent)); //$NON-NLS-1$
+
 
         // Service Locator custom properties
         Map<String, String> slCustomProperties = new HashMap<String, String>();
@@ -673,13 +682,13 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
             }
         }
         analyzer.setProperty(Analyzer.BUNDLE_CLASSPATH, bundleClasspath.toString());
-        
+
         // TESB-15680: Add Bundle-NativeCode in manifest
         if (bundleNativeCode.length() > 0) {
             bundleNativeCode.setLength(bundleNativeCode.length() - 1);
             analyzer.setProperty(Analyzer.BUNDLE_NATIVECODE, bundleNativeCode.toString());
         }
-        
+
         return analyzer;
     }
 
@@ -693,7 +702,11 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
 
         NodeType restRequestComponent = getRESTRequestComponent(processItem);
         if (null != restRequestComponent) {
-            importPackages.add("org.apache.cxf.management.counters");
+            importPackages.add("org.apache.cxf.metrics");
+            if (EmfModelUtils.computeCheckElementValue("EXPOSE_SWAGGER_SPEC", restRequestComponent)) {
+                importPackages.add("org.apache.cxf.jaxrs.swagger");
+            }
+
 
             if (EmfModelUtils.computeCheckElementValue("NEED_AUTH", restRequestComponent)) { //$NON-NLS-1$
                 String authType = EmfModelUtils.computeTextElementValue("AUTH_TYPE", restRequestComponent); //$NON-NLS-1$

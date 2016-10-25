@@ -51,6 +51,10 @@ public class UpdateLabelProvider implements ITableLabelProvider {
                 Job job = (Job) element;
                 if (job.isJoblet()) {
                     image = ECoreImage.JOBLET_ICON;
+                }else if(job.isSparkJoblet()){
+                    image = ECoreImage.PROCESS_BATCH_SPARK_ICON;
+                }else if(job.isSparkStreamingJoblet()){
+                    image = ECoreImage.PROCESS_STREAMING_SPARK_ICON;
                 } else {
                     org.talend.core.model.properties.Item item = job.getModelItem();
                     if (item != null) {

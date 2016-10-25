@@ -125,7 +125,7 @@ public class IconSelectionController extends AbstractElementPropertySectionContr
                 }
             } else if (ICON_REVERT.equals(data)) {
                 if (elem instanceof IProcess2) {
-                    Image defaultIcon = RepositoryLabelProvider.getDefaultJobletImage();
+                    Image defaultIcon = RepositoryLabelProvider.getDefaultJobletImage(((IProcess2) elem).getProperty().getItem());
                     ImageDescriptor imageData = ImageDescriptor.createFromImage(defaultIcon);
                     refreshIcon(defaultIcon.getImageData());
                     return new IconSelectionCommand((IProcess2) elem, imageData, null);

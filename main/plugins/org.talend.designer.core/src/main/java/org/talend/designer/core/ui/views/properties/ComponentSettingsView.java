@@ -239,16 +239,16 @@ public class ComponentSettingsView extends ViewPart implements IComponentSetting
                 }
                 tabFactory.getTabbedPropertyComposite().setCompactViewVisible(true);
                 tabFactory.getTabbedPropertyComposite().setCompactView(isCompactView);
-                dc = new MissingSettingsMultiThreadDynamicComposite(parent, SWT.H_SCROLL | SWT.V_SCROLL | SWT.NO_FOCUS, category,
-                        element, isCompactView);
                 // Generic
                 if (generic && wizardService != null) {
                     Composite composite = wizardService.creatDynamicComposite(parent, element, EComponentCategory.BASIC, true);
                     if (composite instanceof MultipleThreadDynamicComposite) {
                         dc = (MultipleThreadDynamicComposite) composite;
                     }
+                } else {
+                    dc = new MissingSettingsMultiThreadDynamicComposite(parent, SWT.H_SCROLL | SWT.V_SCROLL | SWT.NO_FOCUS,
+                            category, element, isCompactView);
                 }
-
             } else if (category == EComponentCategory.DYNAMICS_SETTINGS) {
                 dc = new AdvancedContextComposite(parent, SWT.H_SCROLL | SWT.V_SCROLL | SWT.NO_FOCUS, element);
             } else if (category == EComponentCategory.SQL_PATTERN) {

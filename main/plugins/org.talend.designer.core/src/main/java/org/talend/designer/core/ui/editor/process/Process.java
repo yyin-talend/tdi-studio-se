@@ -152,6 +152,7 @@ import org.talend.designer.core.ui.AbstractMultiPageTalendEditor;
 import org.talend.designer.core.ui.editor.cmd.ChangeConnTextCommand;
 import org.talend.designer.core.ui.editor.cmd.PropertyChangeCommand;
 import org.talend.designer.core.ui.editor.connections.Connection;
+import org.talend.designer.core.ui.editor.jobletcontainer.AbstractJobletContainer;
 import org.talend.designer.core.ui.editor.jobletcontainer.JobletContainer;
 import org.talend.designer.core.ui.editor.jobletcontainer.JobletUtil;
 import org.talend.designer.core.ui.editor.nodecontainer.NodeContainer;
@@ -692,10 +693,10 @@ public class Process extends Element implements IProcess2, IGEFProcess, ILastVer
     public void removeNodeContainer(final NodeContainer nodeContainer) {
         String uniqueName = nodeContainer.getNode().getUniqueName();
         removeUniqueNodeName(uniqueName);
-        if (nodeContainer instanceof JobletContainer) {
+        if (nodeContainer instanceof AbstractJobletContainer) {
             // use readedContainers to record the containers alreay be read, in case of falling into dead loop
             Set<NodeContainer> readedContainers = new HashSet<NodeContainer>();
-            removeUniqueNodeNamesInJoblet((JobletContainer) nodeContainer, readedContainers);
+            removeUniqueNodeNamesInJoblet((AbstractJobletContainer) nodeContainer, readedContainers);
         }
         removeNode(uniqueName);
         Element toRemove = nodeContainer;
@@ -720,7 +721,7 @@ public class Process extends Element implements IProcess2, IGEFProcess, ILastVer
         // fireStructureChange(NEED_UPDATE_JOB, elem);
     }
 
-    private void removeUniqueNodeNamesInJoblet(JobletContainer jobletContainer, Set<NodeContainer> readedContainers) {
+    private void removeUniqueNodeNamesInJoblet(AbstractJobletContainer jobletContainer, Set<NodeContainer> readedContainers) {
         List<NodeContainer> nodeContainers = jobletContainer.getNodeContainers();
         if (nodeContainers == null) {
             return;
@@ -730,9 +731,9 @@ public class Process extends Element implements IProcess2, IGEFProcess, ILastVer
         readedContainers.add(jobletContainer);
         while (iter.hasNext()) {
             NodeContainer nodeContainer = iter.next();
-            if (nodeContainer instanceof JobletContainer) {
+            if (nodeContainer instanceof AbstractJobletContainer) {
                 if (!readedContainers.contains(nodeContainer)) {
-                    removeUniqueNodeNamesInJoblet((JobletContainer) nodeContainer, readedContainers);
+                    removeUniqueNodeNamesInJoblet((AbstractJobletContainer) nodeContainer, readedContainers);
                 }
             } else {
                 String uniqueName = nodeContainer.getNode().getUniqueName();
@@ -1530,12 +1531,9 @@ public class Process extends Element implements IProcess2, IGEFProcess, ILastVer
             if (element instanceof SubjobContainer) {
                 saveSubjob(fileFact, processType, (SubjobContainer) element);
                 for (NodeContainer container : ((SubjobContainer) element).getNodeContainers()) {
-                    if (container.getNode().isJoblet()) {
-                        if (checkJoblet) {
-                            if (!(container instanceof JobletContainer)) {
-                                continue;
-                            }
-                            JobletContainer jobletCon = (JobletContainer) container;
+                    if (container instanceof AbstractJobletContainer) {
+                        if (checkJoblet && container.getNode().isJoblet()) {
+                            AbstractJobletContainer jobletCon = (AbstractJobletContainer) container;
                             boolean needUpdate = false;
                             IJobletProviderService service = (IJobletProviderService) GlobalServiceRegister.getDefault()
                                     .getService(IJobletProviderService.class);
@@ -1551,10 +1549,9 @@ public class Process extends Element implements IProcess2, IGEFProcess, ILastVer
                         saveNode(fileFact, processType, nList, cList, container.getNode(), factory);
                     }
                 }
-            }
-            if (element instanceof JobletContainer) {
-                if (checkJoblet) {
-                    JobletContainer jobletCon = (JobletContainer) element;
+            }else if (element instanceof AbstractJobletContainer) {
+            	if (checkJoblet && ((AbstractJobletContainer)element).getNode().isJoblet()) {
+                    AbstractJobletContainer jobletCon = (AbstractJobletContainer) element;
                     boolean needUpdate = false;
                     IJobletProviderService service = (IJobletProviderService) GlobalServiceRegister.getDefault().getService(
                             IJobletProviderService.class);
@@ -2165,6 +2162,23 @@ public class Process extends Element implements IProcess2, IGEFProcess, ILastVer
             nc = loadNode(nType, component, nodesHashtable, listParamType);
 
         }
+        
+        if(!unloadedNode.isEmpty()){
+            List<NodeType> tempNodes = new ArrayList<NodeType>(unloadedNode);
+            for(NodeType unNode:tempNodes){
+                listParamType = unNode.getElementParameter();
+                boolean isCurrentProject = ProjectManager.getInstance().isInCurrentMainProject(this.getProperty());
+                String componentName = unNode.getComponentName();
+                if(!isCurrentProject){
+                    componentName = componentName +"_"+ProjectManager.getInstance().getProject(this.getProperty()).getLabel();
+                }
+                IComponent component = ComponentsFactoryProvider.getInstance().get(componentName, componentsType);
+                if(component!=null){
+                    unloadedNode.remove(unNode);
+                    nc = loadNode(unNode, component, nodesHashtable, listParamType);
+                }
+            }
+        }
 
         if (!unloadedNode.isEmpty()) {
             for (int i = 0; i < unloadedNode.size(); i++) {
@@ -2184,12 +2198,7 @@ public class Process extends Element implements IProcess2, IGEFProcess, ILastVer
             nc.setSize(new Dimension(nType.getSizeX(), nType.getSizeY()));
         }
         loadElementParameters(nc, nType.getElementParameter());
-        NodeContainer nodec = null;
-        if (nc.isJoblet() || nc.isMapReduce()) {
-            nodec = new JobletContainer(nc);
-        } else {
-            nodec = new NodeContainer(nc);
-        }
+        NodeContainer nodec = loadNodeContainer(nc, false);
         loadSchema(nc, nType);
         addNodeContainer(nodec);
         nodesHashtable.put(nc.getUniqueName(), nc);
@@ -2264,22 +2273,8 @@ public class Process extends Element implements IProcess2, IGEFProcess, ILastVer
         ValidationRulesUtil.createRejectConnector(nc);
 
         loadColumnsBasedOnSchema(nc, listParamType);
-        NodeContainer nodeContainer = null;// loadNodeContainer(nc, nType);
-        if (isJunitContainer) {
-            if (GlobalServiceRegister.getDefault().isServiceRegistered(ITestContainerGEFService.class)) {
-                ITestContainerGEFService testContainerService = (ITestContainerGEFService) GlobalServiceRegister.getDefault()
-                        .getService(ITestContainerGEFService.class);
-                if (testContainerService != null) {
-                    nodeContainer = testContainerService.createJunitContainer(nc);
-                }
-            }
-        } else if (nc.isJoblet()) {
-            nodeContainer = new JobletContainer(nc);
-        } else if (nc.isMapReduce()) {
-            nodeContainer = new JobletContainer(nc);
-        } else {
-            nodeContainer = new NodeContainer(nc);
-        }
+        NodeContainer nodeContainer = loadNodeContainer(nc,isJunitContainer);
+       
 
         addNodeContainer(nodeContainer);
         nodesHashtable.put(nc.getUniqueName(), nc);
@@ -2293,6 +2288,26 @@ public class Process extends Element implements IProcess2, IGEFProcess, ILastVer
             }
         }
         return nc;
+    }
+    
+    public NodeContainer loadNodeContainer(Node node,boolean isJunitContainer){
+        NodeContainer nodeContainer = null;
+        if (isJunitContainer) {
+            if (GlobalServiceRegister.getDefault().isServiceRegistered(ITestContainerGEFService.class)) {
+                ITestContainerGEFService testContainerService = (ITestContainerGEFService) GlobalServiceRegister.getDefault()
+                        .getService(ITestContainerGEFService.class);
+                if (testContainerService != null) {
+                    nodeContainer = testContainerService.createJunitContainer(node);
+                }
+            }
+        } else if (node.isJoblet()) {
+            nodeContainer = new JobletContainer(node);
+        } else if (node.isMapReduce()) {
+            nodeContainer = new JobletContainer(node);
+        } else {
+            nodeContainer = new NodeContainer(node);
+        }
+        return nodeContainer;
     }
 
     protected void loadColumnsBasedOnSchema(Node nc, EList listParamType) {
@@ -3295,12 +3310,12 @@ public class Process extends Element implements IProcess2, IGEFProcess, ILastVer
      */
     @Override
     public void checkProcess() {
-        if (isActivate()) {
+        if (isActivate() && !isDuplicate()) {
             checkProblems();
         }
     }
 
-    private void checkProblems() {
+    protected void checkProblems() {
         Problems.removeProblemsByProcess(this);
 
         for (INode node : nodes) {
@@ -4270,9 +4285,12 @@ public class Process extends Element implements IProcess2, IGEFProcess, ILastVer
         checkProcess();
     }
 
-    private void saveJobletNode(JobletContainer jobletContainer, boolean needUpdate) {
+    private void saveJobletNode(AbstractJobletContainer jobletContainer, boolean needUpdate) {
         INode jobletNode = jobletContainer.getNode();
         IProcess jobletProcess = jobletNode.getComponent().getProcess();
+        if(jobletProcess == null){
+        	return;
+        }
         if (jobletProcess instanceof IProcess2) {
             Item item = ((IProcess2) jobletProcess).getProperty().getItem();
             if (item instanceof JobletProcessItem) {

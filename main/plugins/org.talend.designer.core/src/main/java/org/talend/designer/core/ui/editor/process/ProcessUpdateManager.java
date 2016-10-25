@@ -341,8 +341,8 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
                                 final ContextType contextType = ContextUtils.getContextTypeByName((ContextItem) contextItem,
                                         context.getName(), true);
                                 if (contextType != null) {
-                                    final ContextParameterType contextParameterType = ContextUtils.getContextParameterTypeByName(
-                                            contextType, paramName);
+                                    final ContextParameterType contextParameterType = ContextUtils
+                                            .getContextParameterTypeByName(contextType, paramName);
                                     if (contextParameterType != null) {
                                         if (onlySimpleShow
                                                 || !ContextUtils.samePropertiesForContextParameter(param, contextParameterType)) {
@@ -578,8 +578,8 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
         switch (type) {
         case JOB_PROPERTY_MAPREDUCE:
             if (ComponentCategory.CATEGORY_4_MAPREDUCE.getName().equals(getProcess().getComponentsType())) {
-                mainResults.addAll(checkJobSettingsParameters(EComponentCategory.MAPREDUCE_JOB_CONFIG_FOR_HADOOP, type,
-                        onlySimpleShow));
+                mainResults.addAll(
+                        checkJobSettingsParameters(EComponentCategory.MAPREDUCE_JOB_CONFIG_FOR_HADOOP, type, onlySimpleShow));
             } else if (ComponentCategory.CATEGORY_4_SPARK.getName().equals(getProcess().getComponentsType())) {
                 mainResults.addAll(checkJobSettingsParameters(EComponentCategory.SPARK_JOB_CONFIG, type, onlySimpleShow));
             }
@@ -688,8 +688,8 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
             }
 
             IElementParameter footerIDParameter = process2.getElementParameter(EParameterName.HEADERFOOTER_FOOTERID.getName());
-            IRepositoryViewObject footerLastVersion = UpdateRepositoryUtils.getRepositoryObjectById((String) footerIDParameter
-                    .getValue());
+            IRepositoryViewObject footerLastVersion = UpdateRepositoryUtils
+                    .getRepositoryObjectById((String) footerIDParameter.getValue());
             HeaderFooterConnection footerRepositoryConnection = null;
             String footerSource = null;
             if (footerLastVersion != null) {
@@ -788,8 +788,8 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
                     // get the connection
                     Connection repositoryConnection = null;
                     String source = null;
-                    IRepositoryViewObject lastVersion = UpdateRepositoryUtils.getRepositoryObjectById((String) repositoryParam
-                            .getValue());
+                    IRepositoryViewObject lastVersion = UpdateRepositoryUtils
+                            .getRepositoryObjectById((String) repositoryParam.getValue());
                     if (lastVersion != null) {
                         final Item item = lastVersion.getProperty().getItem();
                         if (item != null && item instanceof ConnectionItem) {
@@ -837,7 +837,8 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
                                                 List repoHadoopPros = (List) repValue;
                                                 List<Map<String, Object>> jobHadoopPros = (List<Map<String, Object>>) param
                                                         .getValue();
-                                                List<Map<String, Object>> filterBuildInList = collectHadoopPropertiesList(jobHadoopPros);
+                                                List<Map<String, Object>> filterBuildInList = collectHadoopPropertiesList(
+                                                        jobHadoopPros);
                                                 if (repoHadoopPros.size() != filterBuildInList.size()) {
                                                     sameValues = false;
                                                 } else {
@@ -1058,12 +1059,12 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
                                 fileHtml = (String) elementParameter6.getValue();
                                 fileHtml = TalendTextUtils.removeQuotes(fileHtml);
                             }
-                            if (!((gatewayService == null && iDocUnit.getGatewayService() == null) || (gatewayService != null && gatewayService
-                                    .equals(iDocUnit.getGatewayService())))) {
+                            if (!((gatewayService == null && iDocUnit.getGatewayService() == null)
+                                    || (gatewayService != null && gatewayService.equals(iDocUnit.getGatewayService())))) {
                                 same = false;
                             }
-                            if (!((programId == null && iDocUnit.getProgramId() == null) || (programId != null && programId
-                                    .equals(iDocUnit.getProgramId())))) {
+                            if (!((programId == null && iDocUnit.getProgramId() == null)
+                                    || (programId != null && programId.equals(iDocUnit.getProgramId())))) {
                                 same = false;
                             }
                             if (!((formatXml && iDocUnit.isUseXmlOutput()) || (!formatXml && !iDocUnit.isUseXmlOutput()))) {
@@ -1073,12 +1074,12 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
                                 same = false;
                             }
 
-                            if (!((fileXml == null && iDocUnit.getXmlFile() == null) || (fileXml != null && fileXml
-                                    .equals(iDocUnit.getXmlFile())))) {
+                            if (!((fileXml == null && iDocUnit.getXmlFile() == null)
+                                    || (fileXml != null && fileXml.equals(iDocUnit.getXmlFile())))) {
                                 same = false;
                             }
-                            if (!((fileHtml == null && iDocUnit.getHtmlFile() == null) || (fileHtml != null && fileHtml
-                                    .equals(iDocUnit.getHtmlFile())))) {
+                            if (!((fileHtml == null && iDocUnit.getHtmlFile() == null)
+                                    || (fileHtml != null && fileHtml.equals(iDocUnit.getHtmlFile())))) {
                                 same = false;
                             }
                             if (!same || onlySimpleShow) {
@@ -1240,8 +1241,8 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
                             final String uniqueName = node.getUniqueName();
                             String newSourceId = getSchemaRenamedMap().get(propertyValue);
                             Map<String, EUpdateResult> deletedOrReselect = getDeletedOrReselectTablesMap();
-                            String connectionId = (String) node.getPropertyValue(EParameterName.REPOSITORY_PROPERTY_TYPE
-                                    .getName());
+                            String connectionId = (String) node
+                                    .getPropertyValue(EParameterName.REPOSITORY_PROPERTY_TYPE.getName());
                             List<Object> parameter = null;
                             // renamed
                             if (newSourceId != null && !newSourceId.equals(propertyValue)) {
@@ -1295,17 +1296,17 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
                                 IMetadataTable table = null;
                                 IGenericWizardService wizardService = null;
                                 if (GlobalServiceRegister.getDefault().isServiceRegistered(IGenericWizardService.class)) {
-                                    wizardService = (IGenericWizardService) GlobalServiceRegister.getDefault().getService(
-                                            IGenericWizardService.class);
+                                    wizardService = (IGenericWizardService) GlobalServiceRegister.getDefault()
+                                            .getService(IGenericWizardService.class);
                                 }
                                 // Generic
                                 if (wizardService != null && wizardService.isGenericItem(connectionItem)) {
-                                    List<MetadataTable> metadataTables = wizardService.getMetadataTables(connectionItem
-                                            .getConnection());
+                                    List<MetadataTable> metadataTables = wizardService
+                                            .getMetadataTables(connectionItem.getConnection());
                                     for (MetadataTable metadataTable : metadataTables) {
                                         if (metadataTable.getLabel().equals(schemaName)) {
-                                            if (GlobalServiceRegister.getDefault().isServiceRegistered(
-                                                    IMetadataManagmentService.class)) {
+                                            if (GlobalServiceRegister.getDefault()
+                                                    .isServiceRegistered(IMetadataManagmentService.class)) {
                                                 IMetadataManagmentService mmService = (IMetadataManagmentService) GlobalServiceRegister
                                                         .getDefault().getService(IMetadataManagmentService.class);
                                                 table = mmService.convertMetadataTable(metadataTable);
@@ -1315,8 +1316,8 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
                                 } else {
                                     String innerIOType = null;
                                     IMetadataTable metadataTable = node.getMetadataFromConnector(schemaTypeParam.getContext());
-                                    innerIOType = metadataTable.getAdditionalProperties().get(
-                                            SAPBWTableHelper.SAP_INFOOBJECT_INNER_TYPE);
+                                    innerIOType = metadataTable.getAdditionalProperties()
+                                            .get(SAPBWTableHelper.SAP_INFOOBJECT_INNER_TYPE);
                                     if (innerIOType != null) {
                                         Connection connection = connectionItem.getConnection();
                                         if (connection != null && connection instanceof SAPConnection) {
@@ -1350,44 +1351,46 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
                                     // MetadataTool.initilializeSchemaFromElementParameters(copyOfrepositoryMetadata,
                                     // (List<IElementParameter>) node.getElementParameters());
 
-                                    final IMetadataTable metadataTable = node.getMetadataFromConnector(schemaTypeParam
-                                            .getContext());
+                                    final IMetadataTable metadataTable = node
+                                            .getMetadataFromConnector(schemaTypeParam.getContext());
                                     /*
                                      * should ignore the db type column. because database component can use other
                                      * database schema.
                                      */
-                                    if (this.isAddColumn) {
-                                        Display.getDefault().syncExec(new Runnable() {
+                                    if (metadataTable != null) {
+                                        if (this.isAddColumn) {
+                                            Display.getDefault().syncExec(new Runnable() {
 
-                                            @Override
-                                            public void run() {
-                                                isColumnUsed = MessageDialog.openQuestion(Display.getDefault().getActiveShell(),
-                                                        Messages.getString("ProcessUpdateManager.Question"),
-                                                        Messages.getString("ProcessUpdateManager.QuestionString"));
+                                                @Override
+                                                public void run() {
+                                                    isColumnUsed = MessageDialog.openQuestion(
+                                                            Display.getDefault().getActiveShell(),
+                                                            Messages.getString("ProcessUpdateManager.Question"),
+                                                            Messages.getString("ProcessUpdateManager.QuestionString"));
+                                                    copyUsefulAttribute(copyOfrepositoryMetadata, metadataTable, isColumnUsed);
+                                                }
+
+                                            });
+                                            this.isAddColumn = false;
+                                        } else {
+                                            if (node.getComponentProperties() != null) {
+                                                // always set columns as used for new component framework
+                                                copyUsefulAttribute(copyOfrepositoryMetadata, metadataTable, true);
+                                            } else {
                                                 copyUsefulAttribute(copyOfrepositoryMetadata, metadataTable, isColumnUsed);
                                             }
-
-                                        });
-                                        this.isAddColumn = false;
-                                    } else {
-                                        if (node.getComponentProperties() != null) {
-                                            // always set columns as used for new component framework
-                                            copyUsefulAttribute(copyOfrepositoryMetadata, metadataTable, true);
-                                        } else {
-                                            copyUsefulAttribute(copyOfrepositoryMetadata, metadataTable, isColumnUsed);
                                         }
-                                    }
 
-                                    if (onlySimpleShow
-                                            || !metadataTable.sameMetadataAs(copyOfrepositoryMetadata,
-                                                    IMetadataColumn.OPTIONS_IGNORE_DBTYPE)
-                                            || connectionItem instanceof GenericSchemaConnectionItem
-                                            && !metadataTable.sameMetadataAs(copyOfrepositoryMetadata,
-                                                    IMetadataColumn.OPTIONS_NONE)) {
-                                        result = new UpdateCheckResult(node);
-                                        result.setResult(EUpdateItemType.NODE_SCHEMA, EUpdateResult.UPDATE,
-                                                copyOfrepositoryMetadata, source);
-                                        result.setContextModeConnectionItem(connectionItem);
+                                        if (onlySimpleShow
+                                                || !metadataTable.sameMetadataAs(copyOfrepositoryMetadata,
+                                                        IMetadataColumn.OPTIONS_IGNORE_DBTYPE)
+                                                || connectionItem instanceof GenericSchemaConnectionItem && !metadataTable
+                                                        .sameMetadataAs(copyOfrepositoryMetadata, IMetadataColumn.OPTIONS_NONE)) {
+                                            result = new UpdateCheckResult(node);
+                                            result.setResult(EUpdateItemType.NODE_SCHEMA, EUpdateResult.UPDATE,
+                                                    copyOfrepositoryMetadata, source);
+                                            result.setContextModeConnectionItem(connectionItem);
+                                        }
                                     }
                                     builtIn = false;
                                 }
@@ -1451,8 +1454,8 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
         IExternalData externalData = node.getExternalNode().getExternalData();
         List<UpdateResult> schemaResults = new ArrayList<UpdateResult>();
 
-        IDesignerMapperService service = (IDesignerMapperService) GlobalServiceRegister.getDefault().getService(
-                IDesignerMapperService.class);
+        IDesignerMapperService service = (IDesignerMapperService) GlobalServiceRegister.getDefault()
+                .getService(IDesignerMapperService.class);
         if (service != null) {
             List<String> schemaIds = service.getRepositorySchemaIds(externalData);
             if (schemaIds.size() > 0) {
@@ -1533,8 +1536,8 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
         List<UpdateResult> schemaResults = new ArrayList<UpdateResult>();
 
         if (PluginChecker.isEBCDICPluginLoaded()) {
-            IEBCDICProviderService service = (IEBCDICProviderService) GlobalServiceRegister.getDefault().getService(
-                    IEBCDICProviderService.class);
+            IEBCDICProviderService service = (IEBCDICProviderService) GlobalServiceRegister.getDefault()
+                    .getService(IEBCDICProviderService.class);
             if (service != null) {
                 EbcdicConnectionItem repositoryItem = service.getRepositoryItem(node);
                 if (repositoryItem != null) {
@@ -1588,7 +1591,8 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
                                                 && schemaParam.getChildParameters().get("SCHEMA_TYPE") != null) {
                                             boolean isBuildinSchemaType = schemaParam.getChildParameters().get("SCHEMA_TYPE")
                                                     .getValue().equals("BUILT_IN");
-                                            isNeedUpdateSchemaFromRepo = !(schemaParam.isShow(node.getElementParameters()) && isBuildinSchemaType);
+                                            isNeedUpdateSchemaFromRepo = !(schemaParam.isShow(node.getElementParameters())
+                                                    && isBuildinSchemaType);
                                         }
                                         IMetadataTable table = UpdateRepositoryUtils.getTableByName(repositoryItem, schemaName);
                                         if (table != null && isNeedUpdateSchemaFromRepo) {
@@ -1610,10 +1614,10 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
 
                                                     @Override
                                                     public void run() {
-                                                        isColumnUsed = MessageDialog.openQuestion(Display.getDefault()
-                                                                .getActiveShell(), Messages
-                                                                .getString("ProcessUpdateManager.Question"), Messages
-                                                                .getString("ProcessUpdateManager.QuestionString"));
+                                                        isColumnUsed = MessageDialog.openQuestion(
+                                                                Display.getDefault().getActiveShell(),
+                                                                Messages.getString("ProcessUpdateManager.Question"),
+                                                                Messages.getString("ProcessUpdateManager.QuestionString"));
                                                     }
 
                                                 });
@@ -1683,8 +1687,8 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
             if (propertyType != null) {
                 if (propertyType.equals(EmfComponent.REPOSITORY)) {
                     List<IProcess2> openedProcesses = UpdateManagerUtils.getOpenedProcess();
-                    IElementParameter repositoryPropertyParam = curPropertyParam.getChildParameters().get(
-                            EParameterName.REPOSITORY_PROPERTY_TYPE.getName());
+                    IElementParameter repositoryPropertyParam = curPropertyParam.getChildParameters()
+                            .get(EParameterName.REPOSITORY_PROPERTY_TYPE.getName());
 
                     String propertyValue = (String) repositoryPropertyParam.getValue();
 
@@ -1773,27 +1777,28 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
                             }
                             String repositoryValue = param.getRepositoryValue();
                             String relatedComponent = node.getComponent().getName();
-                            if ((repositoryValue != null)
-                                    && (param.isShow(node.getElementParameters())
-                                            || (node instanceof INode && ((INode) node).getComponent().getName()
-                                                    .equals("tESBProviderRequest")) || (node instanceof INode && ((INode) node)
-                                            .getComponent().getName().equals("tAdvancedFileOutputXML")))) { //$NON-NLS-1$
+                            if ((repositoryValue != null) && (param.isShow(node.getElementParameters())
+                                    || (node instanceof INode
+                                            && ((INode) node).getComponent().getName().equals("tESBProviderRequest"))
+                                    || (node instanceof INode
+                                            && ((INode) node).getComponent().getName().equals("tAdvancedFileOutputXML")))) { //$NON-NLS-1$
                                 if ((param.getFieldType().equals(EParameterFieldType.FILE) && isXsdPath)
                                         || (repositoryConnection instanceof SalesforceSchemaConnection
-                                                && "MODULENAME".equals(repositoryValue) && !((SalesforceSchemaConnection) repositoryConnection)
-                                                    .isUseCustomModuleName())) {
+                                                && "MODULENAME".equals(repositoryValue)
+                                                && !((SalesforceSchemaConnection) repositoryConnection)
+                                                        .isUseCustomModuleName())) {
                                     continue;
                                 }
                                 IMetadataTable table = null;
                                 if (!node.getMetadataList().isEmpty()) {
                                     table = node.getMetadataList().get(0);
                                 }
-                                Object objectValue = RepositoryToComponentProperty.getValue(repositoryConnection,
-                                        repositoryValue, table, relatedComponent);
+                                Object objectValue = RepositoryToComponentProperty.getValue(repositoryConnection, repositoryValue,
+                                        table, relatedComponent);
                                 if (objectValue == null || "".equals(objectValue)) {
                                     if (GlobalServiceRegister.getDefault().isServiceRegistered(IESBService.class)) {
-                                        IESBService service = (IESBService) GlobalServiceRegister.getDefault().getService(
-                                                IESBService.class);
+                                        IESBService service = (IESBService) GlobalServiceRegister.getDefault()
+                                                .getService(IESBService.class);
                                         if (service != null) {
                                             Object objectValueFromESB = service.getValue(item, repositoryValue, node);
                                             if (objectValueFromESB != null) {
@@ -1834,8 +1839,8 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
                                 }
                                 Object value = param.getValue();
                                 if (objectValue != null) {
-                                    if ((param.getFieldType().equals(EParameterFieldType.CLOSED_LIST) && UpdatesConstants.TYPE
-                                            .equals(param.getRepositoryValue()))) {
+                                    if ((param.getFieldType().equals(EParameterFieldType.CLOSED_LIST)
+                                            && UpdatesConstants.TYPE.equals(param.getRepositoryValue()))) {
                                         boolean found = false;
                                         String[] list = param.getListRepositoryItems();
                                         for (int i = 0; (i < list.length) && (!found); i++) {
@@ -1863,14 +1868,18 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
                                                         Map<String, Object> objectMap = (Map<String, Object>) objectList.get(i);
                                                         if (oldMap.get("PATH").equals(objectMap.get("PATH")) //$NON-NLS-1$ //$NON-NLS-2$
                                                                 && oldMap.get("ATTRIBUTE").equals(objectMap.get("ATTRIBUTE")) //$NON-NLS-1$ //$NON-NLS-2$
-                                                                && ((oldMap.get("VALUE") == null && objectMap.get("VALUE") == null) || (oldMap //$NON-NLS-1$ //$NON-NLS-2$
-                                                                        .get("VALUE") != null //$NON-NLS-1$
-                                                                        && objectMap.get("VALUE") != null && oldMap.get("VALUE") //$NON-NLS-1$ //$NON-NLS-2$
-                                                                        .equals(objectMap.get("VALUE")))) //$NON-NLS-1$
-                                                                && ((oldMap.get("COLUMN") == null && objectMap.get("COLUMN") == null) || (oldMap //$NON-NLS-1$ //$NON-NLS-2$
-                                                                        .get("COLUMN") != null //$NON-NLS-1$
-                                                                        && oldMap.get("COLUMN") != null && oldMap.get("COLUMN") //$NON-NLS-1$ //$NON-NLS-2$
-                                                                        .equals(objectMap.get("COLUMN"))))) { //$NON-NLS-1$
+                                                                && ((oldMap.get("VALUE") == null //$NON-NLS-1$
+                                                                        && objectMap.get("VALUE") == null) //$NON-NLS-1$
+                                                                        || (oldMap.get("VALUE") != null //$NON-NLS-1$
+                                                                                && objectMap.get("VALUE") != null //$NON-NLS-1$
+                                                                                && oldMap.get("VALUE") //$NON-NLS-1$
+                                                                                        .equals(objectMap.get("VALUE")))) //$NON-NLS-1$
+                                                                && ((oldMap.get("COLUMN") == null //$NON-NLS-1$
+                                                                        && objectMap.get("COLUMN") == null) //$NON-NLS-1$
+                                                                        || (oldMap.get("COLUMN") != null //$NON-NLS-1$
+                                                                                && oldMap.get("COLUMN") != null //$NON-NLS-1$
+                                                                                && oldMap.get("COLUMN") //$NON-NLS-1$
+                                                                                        .equals(objectMap.get("COLUMN"))))) { //$NON-NLS-1$
                                                             sameValues = true;
                                                         } else {
                                                             sameValues = false;
@@ -1906,8 +1915,8 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
                                                     sameValues = false;
                                                 }
                                             } else if (("HADOOP_ADVANCED_PROPERTIES".equals(param.getName())
-                                                    || "ADVANCED_PROPERTIES".equals(param.getName()) || param.getName().equals(
-                                                    "HBASE_PARAMETERS")) && oldList != null //$NON-NLS-1$
+                                                    || "ADVANCED_PROPERTIES".equals(param.getName())
+                                                    || param.getName().equals("HBASE_PARAMETERS")) && oldList != null //$NON-NLS-1$
                                                     && objectValue instanceof List) {
                                                 List objectList = (List) objectValue;
                                                 // TUP-2028: for hadoop properties,since in the repository mode it can
@@ -1915,7 +1924,8 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
                                                 // property manually or drag from repository at the same list,so when
                                                 // check
                                                 // repositroy update,need to filter the build-in property
-                                                List<Map<String, Object>> filterBuildInList = collectHadoopPropertiesList(oldList);
+                                                List<Map<String, Object>> filterBuildInList = collectHadoopPropertiesList(
+                                                        oldList);
                                                 if (filterBuildInList.size() != objectList.size()) {
                                                     sameValues = false;
                                                 } else {
@@ -1975,9 +1985,10 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
                                         if (value instanceof String && objectValue instanceof String) {
                                             if (!value.equals("CustomModule") && !value.equals(objectValue)) {//$NON-NLS-1$
                                                 if (repositoryConnection instanceof XmlFileConnection) {
-                                                    if ((((XmlFileConnection) repositoryConnection).getXmlFilePath().endsWith(
-                                                            "xsd") || ((XmlFileConnection) repositoryConnection) //$NON-NLS-1$
-                                                            .getXmlFilePath().endsWith("xsd\"")) //$NON-NLS-1$
+                                                    if ((((XmlFileConnection) repositoryConnection).getXmlFilePath()
+                                                            .endsWith("xsd") //$NON-NLS-1$
+                                                            || ((XmlFileConnection) repositoryConnection).getXmlFilePath()
+                                                                    .endsWith("xsd\"")) //$NON-NLS-1$
                                                             && repositoryValue.equals("FILE_PATH")) { //$NON-NLS-1$
                                                     } else {
                                                         sameValues = false;
@@ -1988,13 +1999,13 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
                                             }
 
                                             if (repositoryValue.equals("ENCODING")) { //$NON-NLS-1$
-                                                IElementParameter paramEncoding = param.getChildParameters().get(
-                                                        EParameterName.ENCODING_TYPE.getName());
+                                                IElementParameter paramEncoding = param.getChildParameters()
+                                                        .get(EParameterName.ENCODING_TYPE.getName());
                                                 if (paramEncoding != null) {
                                                     if (repositoryConnection instanceof FTPConnection) {
                                                         if (((FTPConnection) repositoryConnection).getEcoding() != null) {
-                                                            paramEncoding.setValue(((FTPConnection) repositoryConnection)
-                                                                    .getEcoding());
+                                                            paramEncoding.setValue(
+                                                                    ((FTPConnection) repositoryConnection).getEcoding());
                                                         } else {
                                                             paramEncoding.setValue(EmfComponent.ENCODING_TYPE_CUSTOM);
                                                         }
@@ -2032,21 +2043,21 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
                                             if (oldmap != null && sameValues) {
                                                 Object o = newmap.get(UpdatesConstants.QUERY);
                                                 if (o != null) {
-                                                    sameValues = newmap.get(UpdatesConstants.QUERY).equals(
-                                                            oldmap.get(UpdatesConstants.QUERY));
+                                                    sameValues = newmap.get(UpdatesConstants.QUERY)
+                                                            .equals(oldmap.get(UpdatesConstants.QUERY));
                                                 } else {
                                                     sameValues = oldmap.get(UpdatesConstants.QUERY) == null;
                                                 }
                                             }
                                             // for hl7
                                             if (newmap.get(UpdatesConstants.SCHEMA) != null) {
-                                                if (!newmap.get(UpdatesConstants.SCHEMA).equals(
-                                                        newmap.get(UpdatesConstants.SCHEMA))) {
+                                                if (!newmap.get(UpdatesConstants.SCHEMA)
+                                                        .equals(newmap.get(UpdatesConstants.SCHEMA))) {
                                                     oldmap = null;
                                                     for (int j = 0; j < oldMaps.size(); j++) {
                                                         Map<String, Object> m = oldMaps.get(j);
-                                                        if (newmap.get(UpdatesConstants.SCHEMA).equals(
-                                                                m.get(UpdatesConstants.SCHEMA))) {
+                                                        if (newmap.get(UpdatesConstants.SCHEMA)
+                                                                .equals(m.get(UpdatesConstants.SCHEMA))) {
                                                             oldmap = m;
                                                         }
                                                     }
@@ -2133,15 +2144,15 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
                                     && !param.getRepositoryProperty().equals(curPropertyParam.getName())) {
                                 continue;
                             }
-                            if (repositoryValue != null
-                                    && (!param.getName().equals(EParameterName.PROPERTY_TYPE.getName()))
+                            if (repositoryValue != null && (!param.getName().equals(EParameterName.PROPERTY_TYPE.getName()))
                                     && param.getFieldType() != EParameterFieldType.MEMO_SQL
                                     && !("tMDMReceive".equals(node.getComponent().getName()) && "XPATH_PREFIX".equals(param //$NON-NLS-1$ //$NON-NLS-2$
                                             .getRepositoryValue()))
-                                    && !("tSAPOutput".equals(node.getComponent().getName()) && param.getName().equals(
-                                            UpdatesConstants.MAPPING))
-                                    && !("tFileInputEBCDIC".equals(node.getComponent().getName()) && "DATA_FILE"
-                                            .equals(repositoryValue)) && param.isShow(node.getElementParameters())) {
+                                    && !("tSAPOutput".equals(node.getComponent().getName())
+                                            && param.getName().equals(UpdatesConstants.MAPPING))
+                                    && !("tFileInputEBCDIC".equals(node.getComponent().getName())
+                                            && "DATA_FILE".equals(repositoryValue))
+                                    && param.isShow(node.getElementParameters())) {
                                 param.setRepositoryValueUsed(true);
                                 param.setReadOnly(true);
                             }
@@ -2197,8 +2208,8 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
                         if (addedVars != null && !addedVars.isEmpty()) {
                             UpdateCheckResult result = new UpdateCheckResult(addedVars);
                             String remark = UpdateRepositoryUtils.getRepositorySourceName(connItem);
-                            result.setResult(EUpdateItemType.CONTEXT, EUpdateResult.ADD, contextItem, remark
-                                    + UpdatesConstants.CONTEXT_MODE);
+                            result.setResult(EUpdateItemType.CONTEXT, EUpdateResult.ADD, contextItem,
+                                    remark + UpdatesConstants.CONTEXT_MODE);
                             List<IProcess2> openedProcesses = UpdateManagerUtils.getOpenedProcess();
                             if (!openedProcesses.contains(getProcess())) {
                                 result.setFromItem(true);
@@ -2408,16 +2419,15 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
         if (newJobletName == null) {
             newJobletName = oldjobletName;
         }
-        IComponent newComponent = ComponentsFactoryProvider.getInstance().get(newJobletName,
-                ComponentCategory.CATEGORY_4_DI.getName());
+        IComponent newComponent = ComponentsFactoryProvider.getInstance().get(newJobletName, process.getComponentsType());
         if (newComponent == null) {
             return Collections.EMPTY_LIST;
         }
 
         List<INode> jobletNodes = new ArrayList<INode>();
         if (PluginChecker.isJobLetPluginLoaded()) {
-            IJobletProviderService service = (IJobletProviderService) GlobalServiceRegister.getDefault().getService(
-                    IJobletProviderService.class);
+            IJobletProviderService service = (IJobletProviderService) GlobalServiceRegister.getDefault()
+                    .getService(IJobletProviderService.class);
             if (service != null) {
                 for (Node node : (List<Node>) process.getGraphicalNodes()) {
                     if (service.isJobletComponent(node) && node.getComponent().getName().equals(newJobletName)) {

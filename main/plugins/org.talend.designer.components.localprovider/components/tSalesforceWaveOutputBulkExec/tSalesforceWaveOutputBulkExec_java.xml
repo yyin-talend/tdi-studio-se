@@ -118,7 +118,7 @@
           GROUP="CONNECTION_INFO"
           SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
         >
-          <DEFAULT>"https://login.salesforce.com/services/Soap/u/34.0"</DEFAULT>
+          <DEFAULT>"https://login.salesforce.com/services/Soap/u/37.0"</DEFAULT>
         </PARAMETER>
 
         <PARAMETER
@@ -456,7 +456,7 @@
     <CODEGENERATION>
       <TEMPLATES INPUT="in" OUTPUT="out">
 
-        <TEMPLATE NAME="in" COMPONENT="tFileOutputDelimited">
+        <TEMPLATE NAME="in" COMPONENT="tFileOutputDelimitedOld">
           <LINK_TO NAME="out" CTYPE="ROWS_END"/>
         </TEMPLATE>
 

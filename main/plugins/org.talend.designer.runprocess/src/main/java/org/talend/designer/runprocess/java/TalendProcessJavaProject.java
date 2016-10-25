@@ -258,7 +258,6 @@ public class TalendProcessJavaProject implements ITalendProcessJavaProject {
                 mavenBuildCodeProjectPom(goals, TalendMavenConstants.CURRENT_PATH, argumentsMap, monitor);
             } else { // JDT build
                 buildWholeCodeProject();
-                buildWholeCodeProject();
             }
         } else if (childrenModules.length > 0) {
             for (String module : childrenModules) {
@@ -294,16 +293,15 @@ public class TalendProcessJavaProject implements ITalendProcessJavaProject {
             MavenPomCommandLauncher mavenLauncher = null;
             // by default is compile
             if (goals == null || goals.trim().length() == 0 || goals.equals(TalendMavenConstants.GOAL_COMPILE)) {
-                mavenLauncher = new MavenPomCommandLauncher(childModulePomFile, TalendMavenConstants.GOAL_REFRESH);
-                mavenLauncher.setArgumentsMap(argumentsMap);
-                mavenLauncher.execute(monitor);
+//                mavenLauncher = new MavenPomCommandLauncher(childModulePomFile, TalendMavenConstants.GOAL_REFRESH);
+//                mavenLauncher.setArgumentsMap(argumentsMap);
+//                mavenLauncher.execute(monitor);
+                buildWholeCodeProject();
             } else {
                 mavenLauncher = new MavenPomCommandLauncher(childModulePomFile, goals);
                 mavenLauncher.setArgumentsMap(argumentsMap);
                 mavenLauncher.execute(monitor);
             }
-            buildWholeCodeProject();
-            buildWholeCodeProject();
         } else {
             throw new RuntimeException("The pom.xml is not existed. Can't build the job: " + module); //$NON-NLS-1$
         }
@@ -321,6 +319,7 @@ public class TalendProcessJavaProject implements ITalendProcessJavaProject {
                 project.refreshLocal(IResource.DEPTH_INFINITE, monitor);
             }
             project.build(IncrementalProjectBuilder.FULL_BUILD, monitor);
+            project.build(IncrementalProjectBuilder.INCREMENTAL_BUILD, monitor);
         } catch (CoreException e) {
             ExceptionHandler.process(e);
         }

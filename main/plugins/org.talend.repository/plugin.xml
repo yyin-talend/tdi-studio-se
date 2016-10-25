@@ -255,6 +255,10 @@
             class="org.talend.repository.MigrationDIMetadataItemService"
             serviceId="IMigrateDIMetadataItemService">
       </Service>
+      <Service
+            class="org.talend.repository.AutoConvertTypesService"
+            serviceId="IAutoConvertTypesService">
+      </Service>
    </extension>
 
    <!--extension
@@ -1593,6 +1597,14 @@
        </projecttask>
         <projecttask
               beforeLogon="false"
+              breaks="6.2.0"
+              class="org.talend.repository.model.migration.ChangeMSSQLDBVersionMigrationTask"
+              id="org.talend.repository.model.migration.ChangeMSSQLDBVersionMigrationTask"
+              name="Change MSSQL DBVersion"
+              version="6.3.0">
+        </projecttask>
+        <projecttask
+              beforeLogon="false"
               breaks="5.1.1"
               class="org.talend.repository.model.migration.ChangeAS400DBVersionMigrationTask"
               id="org.talend.repository.model.migration.ChangeAS400DBVersionMigrationTask"
@@ -2804,6 +2816,15 @@
               name="UpdateELTComponentMigrationTask"
               version="6.1.2">
         </projecttask>
+        <projecttask
+              beforeLogon="true"
+              breaks="6.2.1"
+              class="org.talend.repository.model.migration.ChangeMappingFileMigrationTask"
+              description="Change mapping file"
+              id="org.talend.repository.model.migration.ChangeMappingFileMigrationTask"
+              name="ChangeMappingFileMigrationTask"
+              version="6.2.2">
+        </projecttask>
    </extension>
 
    <extension
@@ -2953,6 +2974,12 @@
             class="org.talend.repository.preference.MetadataTalendTypePreferencePage"
             id="org.talend.repository.preference.MetadataTalendTypePreferencePage"
             title="%projectSetting.talendType">
+      </page>
+      <page
+            category="general"
+            class="org.talend.repository.preference.AutoConversionTypesPreferencePage"
+            id="org.talend.repository.preference.AutoConversionTypesPreferencePage"
+            title="%projectSetting.auto-ConversionTypes">
       </page>
    </extension>
    <extension

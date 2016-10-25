@@ -140,6 +140,7 @@ public class HL7OutputManager extends HL7Manager {
             }
             current = temp;
             currentPath = newPath;
+            temp.setRepetable(repeatable);
             if (haveOrder) {
                 temp.setOrder(nodeOrder);
             }

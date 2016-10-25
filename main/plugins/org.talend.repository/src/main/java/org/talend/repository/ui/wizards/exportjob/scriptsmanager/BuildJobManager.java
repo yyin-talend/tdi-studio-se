@@ -21,6 +21,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.IWorkspaceRunnable;
 import org.eclipse.core.resources.ResourcesPlugin;
@@ -91,7 +92,7 @@ public class BuildJobManager {
         return value;
     }
 
-    public boolean buildJobs(String destinationPath, List<? extends IRepositoryNode> nodes, String version, String context,
+    public boolean buildJobs(String destinationPath, List<? extends IRepositoryNode> nodes, List<String> topNames, String version, String context,
             Map<ExportChoice, Object> exportChoiceMap, JobExportType jobExportType, IProgressMonitor monitor) throws Exception {
         IProgressMonitor pMonitor = new NullProgressMonitor();
         if (monitor != null) {
@@ -106,14 +107,19 @@ public class BuildJobManager {
             int steps = 3;
             pMonitor.beginTask(
                     Messages.getString("JobScriptsExportWizardPage.newExportJobScript", jobExportType), steps * scale * nodes.size()); //$NON-NLS-1$
-            String projectLabel = ProjectManager.getInstance().getCurrentProject().getLabel();
+            String topName = null;
+            if(topNames!=null&&!topNames.isEmpty()){
+                topName = topNames.get(0);
+            }else{
+                topName = ProjectManager.getInstance().getCurrentProject().getLabel();
+            }
             File desFile = new File(destinationPath);
 
             File tempFolder = new File(desFile.getParent() + File.separator + File.createTempFile("building_job", "").getName()); //$NON-NLS-1$ //$NON-NLS-2$
             if (tempFolder.exists()) {
                 tempFolder.delete();
             }
-            File tempProFolder = new File(tempFolder, projectLabel);
+            File tempProFolder = new File(tempFolder, topName);
             tempProFolder.mkdirs();
             for (int i = 0; i < processes.size(); i++) {
                 ProcessItem processItem = processes.get(i);
@@ -239,7 +245,7 @@ public class BuildJobManager {
             }
             FilesUtils.copyFile(jobZipFile, jobFileTarget);
         } else if (jobTargetFile != null) {
-            throw new Exception("Job was not built successfully, please check the logs for more details");
+            throw new Exception("Job was not built successfully, please check the logs for more details available on the workspace/.Java/lastGenerated.log");
         }
         if (checkCompilationError) {
             CorePlugin.getDefault().getRunProcessService().checkLastGenerationHasCompilationError(false);

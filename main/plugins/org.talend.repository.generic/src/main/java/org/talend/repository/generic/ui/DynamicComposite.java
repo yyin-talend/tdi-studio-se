@@ -15,8 +15,13 @@ package org.talend.repository.generic.ui;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
 
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.jface.dialogs.MessageDialog;
@@ -55,7 +60,7 @@ import org.talend.designer.core.model.components.AbstractBasicComponent;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.model.components.ElementParameter;
 import org.talend.designer.core.model.components.EmfComponent;
-import org.talend.designer.core.ui.views.properties.MultipleThreadDynamicComposite;
+import org.talend.designer.core.ui.views.properties.composites.MissingSettingsMultiThreadDynamicComposite;
 import org.talend.metadata.managment.ui.wizard.context.MetadataContextPropertyValueEvaluator;
 import org.talend.repository.generic.i18n.Messages;
 import org.talend.repository.generic.internal.IGenericWizardInternalService;
@@ -68,7 +73,7 @@ import org.talend.repository.generic.model.genericMetadata.SubContainer;
  * created by ycbai on 2015年9月24日 Detailled comment
  *
  */
-public class DynamicComposite extends MultipleThreadDynamicComposite implements PropertyChangeListener {
+public class DynamicComposite extends MissingSettingsMultiThreadDynamicComposite implements PropertyChangeListener {
 
     private Element element;
 
@@ -218,10 +223,35 @@ public class DynamicComposite extends MultipleThreadDynamicComposite implements 
             newParameters.add(currentParameter);
         }
         if (element instanceof FakeElement) {
-            newParameters.addAll(parameters);
+            newParameters.addAll(reverseParameters(parameters));
         }
         element.setElementParameters(newParameters);
         return newParameters;
+    }
+
+    private List<ElementParameter> reverseParameters(List<ElementParameter> parameters) {
+        List<ElementParameter> reversedParameters = new ArrayList<>();
+        Map<Integer, List<ElementParameter>> paramMap = new LinkedHashMap<>();
+        for (ElementParameter parameter : parameters) {
+            int numRow = parameter.getNumRow();
+            List<ElementParameter> params = paramMap.get(numRow);
+            if (params == null) {
+                params = new ArrayList<>();
+                paramMap.put(numRow, params);
+            }
+            params.add(parameter);
+        }
+        Set<Entry<Integer, List<ElementParameter>>> paramEntrySet = paramMap.entrySet();
+        Iterator<Entry<Integer, List<ElementParameter>>> paramIterator = paramEntrySet.iterator();
+        while (paramIterator.hasNext()) {
+            Entry<Integer, List<ElementParameter>> paramEntry = paramIterator.next();
+            List<ElementParameter> params = paramEntry.getValue();
+            if (params != null && params.size() > 1) {
+                Collections.reverse(params);
+            }
+            reversedParameters.addAll(params);
+        }
+        return reversedParameters;
     }
 
     private boolean isRepository(Element element) {
@@ -267,7 +297,10 @@ public class DynamicComposite extends MultipleThreadDynamicComposite implements 
         String validationMessage = validationResult.getMessage();
         Result validationStatus = validationResult.getStatus();
         if (validationMessage == null) {
-            if (validationStatus == Result.ERROR) {
+            if (validationStatus == Result.OK) {
+                checker.updateStatus(IStatus.OK, null);
+                return;
+            } else if (validationStatus == Result.ERROR) {
                 validationMessage = Messages.getString("DynamicComposite.defaultErrorMessage"); //$NON-NLS-1$
             } else {
                 // skip every empty messages
@@ -279,17 +312,17 @@ public class DynamicComposite extends MultipleThreadDynamicComposite implements 
         case WARNING:
             checker.updateStatus(IStatus.WARNING, null);
             DisplayUtils.getDisplay().syncExec(new Runnable() {
-                
+
                 @Override
                 public void run() {
-                    MessageDialog.openWarning(getShell(), elem.getElementName(), message);                    
+                    MessageDialog.openWarning(getShell(), elem.getElementName(), message);
                 }
             });
             break;
         case ERROR:
             checker.updateStatus(IStatus.ERROR, null);
             DisplayUtils.getDisplay().syncExec(new Runnable() {
-                
+
                 @Override
                 public void run() {
                     MessageDialog.openError(getShell(), elem.getElementName(), message);
@@ -299,7 +332,7 @@ public class DynamicComposite extends MultipleThreadDynamicComposite implements 
         default:
             checker.updateStatus(IStatus.OK, null);
             DisplayUtils.getDisplay().syncExec(new Runnable() {
-                
+
                 @Override
                 public void run() {
                     MessageDialog.openInformation(getShell(), elem.getElementName(), message);
@@ -353,6 +386,31 @@ public class DynamicComposite extends MultipleThreadDynamicComposite implements 
                 }
             });
         }
+    }
+
+    @Override
+    public void refresh() {
+        if (element instanceof FakeElement) {
+            DisplayUtils.getDisplay().syncExec(new Runnable() {
+
+                @Override
+                public void run() {
+                    operationInThread();
+                }
+            });
+        } else {
+            super.refresh();
+        }
+    }
+
+    @Override
+    public int getMinHeight() {
+        if (minHeight < 200) {
+            return 200;
+        } else if (minHeight > 700) {
+            return 700;
+        }
+        return minHeight;
     }
 
     @Override

@@ -93,12 +93,15 @@ import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.model.utils.NodeUtil;
 import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.core.prefs.ITalendCorePrefConstants;
+import org.talend.core.repository.utils.ConvertJobsUtil;
 import org.talend.core.runtime.CoreRuntimePlugin;
 import org.talend.core.service.IMRProcessService;
 import org.talend.core.service.IStormProcessService;
 import org.talend.core.services.ICoreTisService;
 import org.talend.core.ui.CoreUIPlugin;
 import org.talend.core.ui.IJobletProviderService;
+import org.talend.core.ui.ISparkJobletProviderService;
+import org.talend.core.ui.ISparkStreamingJobletProviderService;
 import org.talend.core.ui.ITestContainerProviderService;
 import org.talend.core.ui.component.ComponentsFactoryProvider;
 import org.talend.core.ui.metadata.dialog.MetadataDialog;
@@ -134,7 +137,9 @@ import org.talend.designer.core.utils.UpgradeElementHelper;
 import org.talend.designer.joblet.model.JobletNode;
 import org.talend.designer.joblet.model.JobletProcess;
 import org.talend.designer.runprocess.IRunProcessService;
+import org.talend.repository.RepositoryPlugin;
 import org.talend.repository.model.IProxyRepositoryFactory;
+import org.talend.repository.utils.AutoConvertTypesUtils;
 
 /**
  * Object that describes the node. All informations on nodes are stored in this class. <br/>
@@ -410,6 +415,7 @@ public class Node extends Element implements IGraphicalNode {
         currentStatus = 0;
 
         init(component);
+        initDefaultElementParameters();
         IElementParameter param = getElementParameter(EParameterName.REPOSITORY_ALLOW_AUTO_SWITCH.getName());
         if (param != null) {
             param.setValue(Boolean.TRUE);
@@ -439,6 +445,10 @@ public class Node extends Element implements IGraphicalNode {
         this.oldcomponent = component;
         this.process = process;
         init(component);
+        IElementParameter param = getElementParameter(EParameterName.REPOSITORY_ALLOW_AUTO_SWITCH.getName());
+        if (param != null) {
+            param.setValue(Boolean.TRUE);
+        }
         needlibrary = false;
     }
 
@@ -678,6 +688,15 @@ public class Node extends Element implements IGraphicalNode {
         }
     }
 
+    public void initDefaultElementParameters() {
+        boolean enable = RepositoryPlugin.getDefault().getPreferenceStore()
+                .getBoolean(AutoConvertTypesUtils.ENABLE_AUTO_CONVERSION);
+        IElementParameter convertElemParam = getElementParameter(AutoConvertTypesUtils.ENABLE_AUTO_CONVERT_TYPE);
+        if (enable && convertElemParam != null) {
+            convertElemParam.setValue(enable);
+        }
+    }
+
     /**
      * 
      * Note that if there is several connectors of the same type, it will return the first one.
@@ -914,54 +933,55 @@ public class Node extends Element implements IGraphicalNode {
                     }
                 }
             } else {
-                List<Map<String, String>> map = (List<Map<String, String>>) ElementParameterParser
-                        .getObjectValue(this, "__MAP__"); //$NON-NLS-1$
-                IMetadataTable metadata = inMainConn.getMetadataTable();
-                // The if statement is added by Marvin Wang on May 7, 2013 for bug TDI-25659.
-                if (metadata != null) {
-                    List<IMetadataColumn> listColumns = metadata.getListColumns();
+                Object obj = ElementParameterParser.getObjectValue(this, "__MAP__"); //$NON-NLS-1$
+                if (obj != null) {
+                    List<Map<String, String>> map = (List<Map<String, String>>) obj;
+                    IMetadataTable metadata = inMainConn.getMetadataTable();
+                    // The if statement is added by Marvin Wang on May 7, 2013 for bug TDI-25659.
+                    if (map != null && metadata != null) {
+                        List<IMetadataColumn> listColumns = metadata.getListColumns();
 
-                    for (int i = 0; i < map.size(); i++) {
-                        Map<String, String> line = map.get(i);
-                        String keyName = TalendTextUtils.removeQuotes(line.get("KEY")); //$NON-NLS-1$
+                        for (int i = 0; i < map.size(); i++) {
+                            Map<String, String> line = map.get(i);
+                            String keyName = TalendTextUtils.removeQuotes(line.get("KEY")); //$NON-NLS-1$
 
-                        INodeReturn flowToIterateReturn = new NodeReturn() {
+                            INodeReturn flowToIterateReturn = new NodeReturn() {
 
-                            @Override
-                            public String getVarName() {
-                                String varName = super.getVarName();
-                                switch (LanguageManager.getCurrentLanguage()) {
-                                case PERL:
-                                    varName = varName.replace(UNIQUE_NAME, ""); //$NON-NLS-1$
-                                    break;
-                                case JAVA:
-                                    varName = varName.replace(UNIQUE_NAME + "_", ""); //$NON-NLS-1$ //$NON-NLS-2$
+                                @Override
+                                public String getVarName() {
+                                    String varName = super.getVarName();
+                                    switch (LanguageManager.getCurrentLanguage()) {
+                                    case PERL:
+                                        varName = varName.replace(UNIQUE_NAME, ""); //$NON-NLS-1$
+                                        break;
+                                    case JAVA:
+                                        varName = varName.replace(UNIQUE_NAME + "_", ""); //$NON-NLS-1$ //$NON-NLS-2$
+                                    }
+                                    return varName;
                                 }
-                                return varName;
-                            }
-                        };
+                            };
 
-                        String cueeName = line.get("VALUE"); //$NON-NLS-1$
-                        for (int j = 0; j < listColumns.size(); j++) {
-                            String columnName = listColumns.get(j).getLabel();
-                            if (columnName.equals(cueeName)) {
-                                String columnType = listColumns.get(j).getTalendType();
-                                flowToIterateReturn.setType(columnType);
+                            String cueeName = line.get("VALUE"); //$NON-NLS-1$
+                            for (int j = 0; j < listColumns.size(); j++) {
+                                String columnName = listColumns.get(j).getLabel();
+                                if (columnName.equals(cueeName)) {
+                                    String columnType = listColumns.get(j).getTalendType();
+                                    flowToIterateReturn.setType(columnType);
+                                }
+
                             }
+
+                            flowToIterateReturn.setName(keyName);
+                            flowToIterateReturn.setDisplayName(cueeName);
+                            flowToIterateReturn.setVarName(keyName);
+                            flowToIterateReturn.setAvailability("AFTER"); //$NON-NLS-1$
+
+                            allReturns.add(flowToIterateReturn);
 
                         }
-
-                        flowToIterateReturn.setName(keyName);
-                        flowToIterateReturn.setDisplayName(cueeName);
-                        flowToIterateReturn.setVarName(keyName);
-                        flowToIterateReturn.setAvailability("AFTER"); //$NON-NLS-1$
-
-                        allReturns.add(flowToIterateReturn);
-
                     }
                 }
             }
-
         }
 
     }
@@ -3368,6 +3388,11 @@ public class Node extends Element implements IGraphicalNode {
                     }
                 }
             }
+            // check if we have circle for current node
+            if (checkNodeCircle(this)) {
+                String errorMessage = Messages.getString("Node.notFormedLoop"); //$NON-NLS-1$
+                Problems.add(ProblemStatus.ERROR, this, errorMessage);
+            }
         }
         int tableOutLinkNum = 0;
         int tableRefOutLinkNum = 0;
@@ -3534,6 +3559,24 @@ public class Node extends Element implements IGraphicalNode {
         }
     }
 
+    private static boolean checkNodeCircle(INode currentNode) {
+        List<INode> nodeList = new ArrayList<INode>();
+        Set<INode> nodeSet = new HashSet<INode>();
+        getAllSourceNode(currentNode, nodeList);
+        for (INode node : nodeList) {
+            nodeSet.add(node);
+        }
+        return !(nodeSet.size() == nodeList.size());
+    }
+
+    private static void getAllSourceNode(INode source, List<INode> list) {
+        List<? extends IConnection> connections = source.getIncomingConnections();
+        for (IConnection connection : connections) {
+            INode node = connection.getSource();
+            list.add(node);
+            getAllSourceNode(node, list);
+        }
+    }
     public boolean isSchemaSynchronized() {
         return schemaSynchronized;
     }
@@ -4889,6 +4932,18 @@ public class Node extends Element implements IGraphicalNode {
         this.needlibrary = isNeedLib;
     }
 
+    public boolean isStandardJoblet() {
+        boolean isJoblet = false;
+        if (PluginChecker.isJobLetPluginLoaded()) {
+            IJobletProviderService service = (IJobletProviderService) GlobalServiceRegister.getDefault().getService(
+                    IJobletProviderService.class);
+            if (service != null && service.isStandardJobletComponent(this)) {
+                isJoblet = true;
+            }
+        }
+        return isJoblet;
+    }
+
     public boolean isJoblet() {
         boolean isJoblet = false;
         if (PluginChecker.isJobLetPluginLoaded()) {
@@ -4899,6 +4954,30 @@ public class Node extends Element implements IGraphicalNode {
             }
         }
         return isJoblet;
+    }
+
+    public boolean isSparkJoblet() {
+        boolean isSparkJoblet = false;
+        if (GlobalServiceRegister.getDefault().isServiceRegistered(ISparkJobletProviderService.class)) {
+            ISparkJobletProviderService sparkJobletService = (ISparkJobletProviderService) GlobalServiceRegister.getDefault()
+                    .getService(ISparkJobletProviderService.class);
+            if (sparkJobletService != null) {
+                isSparkJoblet = sparkJobletService.isSparkJobletComponent(this);
+            }
+        }
+        return isSparkJoblet;
+    }
+
+    public boolean isSparkStreamingJoblet() {
+        boolean isSparkStreamingJoblet = false;
+        if (GlobalServiceRegister.getDefault().isServiceRegistered(ISparkStreamingJobletProviderService.class)) {
+            ISparkStreamingJobletProviderService sparkJobletService = (ISparkStreamingJobletProviderService) GlobalServiceRegister
+                    .getDefault().getService(ISparkStreamingJobletProviderService.class);
+            if (sparkJobletService != null) {
+                isSparkStreamingJoblet = sparkJobletService.isSparkStreamingJobletComponent(this);
+            }
+        }
+        return isSparkStreamingJoblet;
     }
 
     public boolean isMapReduceStart() {
@@ -4915,18 +4994,13 @@ public class Node extends Element implements IGraphicalNode {
     }
 
     public boolean isMapReduce() {
-        if (GlobalServiceRegister.getDefault().isServiceRegistered(IMRProcessService.class)) {
-            IMRProcessService mrService = (IMRProcessService) GlobalServiceRegister.getDefault().getService(
-                    IMRProcessService.class);
-            return mrService.isMapReduceItem(process.getProperty().getItem());
-        } else {
-            if (this.getProcess().getComponentsType() == null) {
-                return false;
-            }
-            if (this.getProcess().getComponentsType().equals("MR")) { //$NON-NLS-1$
-                return true;
-            }
-
+        String sourceJobFramework = (String) ((Process) this.getProcess()).getProperty().getAdditionalProperties()
+                .get(ConvertJobsUtil.FRAMEWORK);
+        if (sourceJobFramework == null) {
+            return false;
+        }
+        if (sourceJobFramework.equals(ConvertJobsUtil.MAPREDUCE_FRAMEWORK)) {
+            return true;
         }
         return false;
     }
@@ -5001,7 +5075,7 @@ public class Node extends Element implements IGraphicalNode {
     @Override
     public List<ModuleNeeded> getModulesNeeded() {
         // same as the component, but an override is possible in the AbstractNode when generate the code
-        return component.getModulesNeeded();
+        return component.getModulesNeeded(this);
     }
 
     @Override

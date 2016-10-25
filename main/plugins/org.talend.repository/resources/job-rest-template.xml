@@ -19,6 +19,13 @@
 	<reference id="eventFeature" interface="org.talend.esb.sam.agent.feature.EventFeature" />
 #end
 
+#if ($endpoint.exposeSwaggerSpecification)
+    <!-- CXF Swagger2Feature -->
+    <bean id="swagger2Feature" class="org.apache.cxf.jaxrs.swagger.Swagger2Feature">
+        <property name="basePath" value="${endpoint.originalAddress}"/>
+    </bean>
+#end
+
 	<jaxrs:server xmlns:jaxrs="http://cxf.apache.org/blueprint/jaxrs"
 			id="service"
 #if ($endpoint.useSL)
@@ -75,6 +82,10 @@
 #end
 #if ($endpoint.useBusinesCorrelation)
 			<bean class="org.talend.esb.policy.correlation.feature.CorrelationIDFeature" />
+#end
+            <bean class="org.apache.cxf.metrics.MetricsFeature" />
+#if ($endpoint.exposeSwaggerSpecification)
+            <ref component-id="swagger2Feature" />
 #end
 		</jaxrs:features>
 		<jaxrs:properties>
@@ -148,9 +159,5 @@
 ]]#
 #end
 
-	<!-- Wiring the counter repository -->
-	<bean class="org.apache.cxf.management.counters.CounterRepository">
-		<property name="bus" ref="cxf" />
-	</bean>
 
 </blueprint>

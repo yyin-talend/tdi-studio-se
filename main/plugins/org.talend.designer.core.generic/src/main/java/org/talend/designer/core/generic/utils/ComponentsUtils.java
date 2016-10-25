@@ -23,6 +23,11 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import org.apache.avro.Schema;
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.text.translate.AggregateTranslator;
+import org.apache.commons.lang3.text.translate.CharSequenceTranslator;
+import org.apache.commons.lang3.text.translate.LookupTranslator;
+import org.apache.commons.lang3.text.translate.OctalUnescaper;
+import org.apache.commons.lang3.text.translate.UnicodeUnescaper;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.FrameworkUtil;
 import org.osgi.framework.ServiceReference;
@@ -104,6 +109,9 @@ public class ComponentsUtils {
     }
 
     public static void loadComponents(ComponentService service) {
+        if(service == null){
+            return;
+        }
         IComponentsFactory componentsFactory = null;
         if (componentsFactory == null) {
             componentsFactory = ComponentsFactoryProvider.getInstance();
@@ -273,8 +281,10 @@ public class ComponentsUtils {
                 param.setRequired(property.isRequired());
                 param.setValue(getParameterValue(element, property, fieldType, isInitializing));
                 boolean isNameProperty = IGenericConstants.NAME_PROPERTY.equals(param.getParameterName());
-                if (EParameterFieldType.NAME_SELECTION_AREA.equals(fieldType) || isNameProperty) {
-                    // Disable context support for this filed type.
+                if (EParameterFieldType.NAME_SELECTION_AREA.equals(fieldType) || EParameterFieldType.JSON_TABLE.equals(fieldType)
+                        || EParameterFieldType.CLOSED_LIST.equals(fieldType) || EParameterFieldType.CHECK.equals(fieldType)
+                        || isNameProperty) {
+                    // Disable context support for those filed types and name parameter.
                     param.setSupportContext(false);
                 } else {
                     param.setSupportContext(isSupportContext(property));
@@ -293,14 +303,22 @@ public class ComponentsUtils {
                     List<String> possVals = new ArrayList<>();
                     List<String> possValsDisplay = new ArrayList<>();
                     for (Object obj : values) {
+                        String value = null;
+                        String valueDisplay = null;
                         if (obj instanceof NamedThing) {
                             NamedThing nal = (NamedThing) obj;
-                            possVals.add(nal.getName());
-                            possValsDisplay.add(nal.getDisplayName());
+                            value = nal.getName();
+                            valueDisplay = nal.getDisplayName();
                         } else {
-                            possVals.add(String.valueOf(obj));
-                            possValsDisplay.add(String.valueOf(obj));
+                            value = String.valueOf(obj);
+                            valueDisplay = String.valueOf(obj);
                         }
+                        String pvDisplayName = property.getPossibleValuesDisplayName(obj);
+                        if (StringUtils.isNotBlank(pvDisplayName) && !"null".equals(pvDisplayName)) { //$NON-NLS-1$
+                            valueDisplay = pvDisplayName;
+                        }
+                        possVals.add(value);
+                        possValsDisplay.add(valueDisplay);
                     }
                     param.setListItemsDisplayName(possValsDisplay.toArray(new String[0]));
                     param.setListItemsDisplayCodeName(possValsDisplay.toArray(new String[0]));
@@ -327,6 +345,7 @@ public class ComponentsUtils {
                     curParam.setNoContextAssist(false);
                     curParam.setRaw(false);
                     curParam.setReadOnly(false);
+                    fillDefaultValsForListType(curParam);
                     codeNames.add(curParam.getName());
                     possValsDisplay.add(curParam.getDisplayName());
                 }
@@ -338,9 +357,11 @@ public class ComponentsUtils {
                 param.setListItemsShowIf(listItemsShowIf);
                 param.setListItemsNotShowIf(listItemsNotShowIf);
                 param.setValue(GenericTableUtils.getTableValues(table, param));
+                param.setBasedOnSchema(
+                        Boolean.valueOf(String.valueOf(widget.getConfigurationValue(Widget.HIDE_TOOLBAR_WIDGET_CONF))));
             }
             if (!param.isReadOnly()) {
-                param.setReadOnly(element.isReadOnly());
+                param.setReadOnly(widget.isReadonly() || element.isReadOnly());
             }
             param.setSerialized(true);
             param.setDynamicSettings(true);
@@ -351,6 +372,28 @@ public class ComponentsUtils {
             }
         }
         return elementParameters;
+    }
+
+    private static void fillDefaultValsForListType(ElementParameter param) {
+        if (param == null) {
+            return;
+        }
+        switch (param.getFieldType()) {
+        case CONTEXT_PARAM_NAME_LIST:
+        case CLOSED_LIST:
+        case DBTYPE_LIST:
+        case COLUMN_LIST:
+        case COMPONENT_LIST:
+        case CONNECTION_LIST:
+        case LOOKUP_COLUMN_LIST:
+        case PREV_COLUMN_LIST:
+            if (param.getValue() != null) {
+                param.setDefaultClosedListValue(param.getValue().toString());
+            }
+            break;
+        default:
+            return;
+        }
     }
 
     /**
@@ -413,7 +456,11 @@ public class ComponentsUtils {
             String value = (String) paramValue;
             if ((isInitializing || StringUtils.isEmpty(value))
                     && !(element instanceof FakeElement || ContextParameterUtils.isContainContextParam(value))) {
-                paramValue = TalendQuoteUtils.addPairQuotesIfNotExist(StringUtils.trimToEmpty(value));
+                if (value == null) {
+                    value = StringUtils.EMPTY;
+                }
+                paramValue = TalendQuoteUtils.addPairQuotesIfNotExist(unescapeForJava(value));
+                property.setValue(paramValue);
             }
         } else if (GenericTypeUtils.isBooleanType(property)) {
             if (paramValue == null) {
@@ -422,6 +469,13 @@ public class ComponentsUtils {
             }
         }
         return paramValue;
+    }
+
+    public static String unescapeForJava(String input) {
+        CharSequenceTranslator UNESCAPE_JAVA = new AggregateTranslator(new OctalUnescaper(),
+                new UnicodeUnescaper(),
+                new LookupTranslator(new String[][] { { "\\\\", "\\" }, { "\\\"", "\"" }, { "\\'", "'" } })); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$
+        return UNESCAPE_JAVA.translate(input);
     }
 
     private static String getPropertiesPath(String parentPropertiesPath, String currentPropertiesName) {

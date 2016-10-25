@@ -42,7 +42,6 @@ import org.talend.core.prefs.ITalendCorePrefConstants;
 import org.talend.core.ui.component.ComponentsFactoryProvider;
 import org.talend.core.utils.CsvArray;
 import org.talend.designer.core.i18n.Messages;
-import org.talend.designer.core.ui.editor.jobletcontainer.JobletContainer;
 import org.talend.designer.core.ui.editor.nodecontainer.NodeContainer;
 import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.process.EDatabaseComponentName;
@@ -128,18 +127,13 @@ public class GuessSchemaProcess {
 
         // create the tLibraryLoad for the input node
 
-        if (node.getComponent().getModulesNeeded().size() > 0 && !node.getComponent().getName().equals("tRedshiftInput")) {//$NON-NLS-1$
-            for (ModuleNeeded module : node.getComponent().getModulesNeeded()) {
+        if (node.getModulesNeeded().size() > 0 && !node.getComponent().getName().equals("tRedshiftInput")) {//$NON-NLS-1$
+            for (ModuleNeeded module : node.getModulesNeeded()) {
                 if (module.isRequired(node.getElementParameters())) {
                     Node libNode1 = new Node(ComponentsFactoryProvider.getInstance().get(LIB_NODE,
                             ComponentCategory.CATEGORY_4_DI.getName()), process);
                     libNode1.setPropertyValue("LIBRARY", "\"" + module.getModuleName() + "\""); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-                    NodeContainer nc = null;
-                    if (libNode1.isJoblet() || libNode1.isMapReduce()) {
-                        nc = new JobletContainer(libNode1);
-                    } else {
-                        nc = new NodeContainer(libNode1);
-                    }
+                    NodeContainer nc = process.loadNodeContainer(libNode1, false);
                     process.addNodeContainer(nc);
                 }
             }
@@ -167,8 +161,8 @@ public class GuessSchemaProcess {
             IElementParameter connector = node.getElementParameter("CONNECTION");
             if (connector != null) {
                 String connectorValue = connector.getValue().toString();
-                List<? extends INode> graphicalNodes = originalProcess.getGraphicalNodes();
-                for (INode node : graphicalNodes) {
+                List<? extends INode> generatingNodes = originalProcess.getGeneratingNodes();
+                for (INode node : generatingNodes) {
                     if (node.getUniqueName().equals(connectorValue)) {
                         connectionNode = node;
                         break;
@@ -239,6 +233,11 @@ public class GuessSchemaProcess {
         }
         // the VERTICA
         if (ConnectionUtils.isVertica(info.getUrl())) {
+            createStatament = "conn.createStatement()";
+        }
+        if (EDatabaseTypeName.GENERAL_JDBC.getXmlName().equals(info.getDbType())
+                && "com.sap.db.jdbc.Driver".equals(info.getDriverClassName())
+                || EDatabaseTypeName.SAPHana.getXmlName().equals(info.getDbType())) {
             createStatament = "conn.createStatement()";
         }
         codeStart = systemProperty

@@ -201,6 +201,7 @@ public abstract class JobScriptsManager {
         binaries,
         needContext,
         contextName,
+        onlyDefautContext,
         applyToChildren,
         applyLog4jToChildren,
         needLog4jLevel,
@@ -219,7 +220,8 @@ public abstract class JobScriptsManager {
         esbCategory,
         esbExportType,
         properties,
-        needAssembly
+        needAssembly,
+        deployVersion
     }
 
     /**

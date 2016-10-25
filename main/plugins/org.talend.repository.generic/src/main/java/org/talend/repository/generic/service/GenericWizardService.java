@@ -46,8 +46,10 @@ import org.talend.repository.generic.model.genericMetadata.GenericConnection;
 import org.talend.repository.generic.model.genericMetadata.GenericMetadataPackage;
 import org.talend.repository.generic.model.genericMetadata.SubContainer;
 import org.talend.repository.generic.ui.DynamicComposite;
+import org.talend.repository.generic.util.RepTypeMappingManager;
 import org.talend.repository.model.IRepositoryNode.ENodeType;
 import org.talend.repository.model.RepositoryNode;
+
 import orgomg.cwm.objectmodel.core.TaggedValue;
 
 /**
@@ -178,6 +180,13 @@ public class GenericWizardService implements IGenericWizardService {
     }
 
     @Override
+    public void refreshDynamicComposite(Composite composite) {
+        if (composite instanceof DynamicComposite) {
+            ((DynamicComposite) composite).resetParameters();
+        }
+    }
+
+    @Override
     public void updateComponentSchema(INode node, IMetadataTable metadataTable) {
         SchemaUtils.updateComponentSchema(node, metadataTable, Boolean.FALSE);
     }
@@ -199,6 +208,9 @@ public class GenericWizardService implements IGenericWizardService {
                 metadataTables = Arrays.asList(SchemaUtils.getMetadataTable(genericConnection, tableLabel, SubContainer.class));
             }
             for (MetadataTable metadataTable : metadataTables) {
+            	if (metadataTable == null) {
+            		continue;
+            	}
                 for (TaggedValue taggedValue : metadataTable.getTaggedValue()) {
                     if (IComponentConstants.COMPONENT_PROPERTIES_TAG.equals(taggedValue.getTag())) {
                         ComponentProperties compPros = ComponentsUtils.getComponentPropertiesFromSerialized(
@@ -212,6 +224,11 @@ public class GenericWizardService implements IGenericWizardService {
             }
         }
         return componentProperties;
+    }
+
+    @Override
+    public ERepositoryObjectType getNewRepType(String oldRepTypeName) {
+        return RepTypeMappingManager.getInstance().getNewRepType(oldRepTypeName);
     }
 
 }

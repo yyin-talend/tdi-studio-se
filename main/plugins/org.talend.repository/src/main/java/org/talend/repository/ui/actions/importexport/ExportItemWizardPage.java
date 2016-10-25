@@ -309,6 +309,13 @@ public class ExportItemWizardPage extends WizardPage {
                     if (node.getObject() != null) {
                         property = node.getObject().getProperty();
                     }
+                }else if(objectType == ERepositoryObjectType.METADATA_CON_COLUMN){
+                    if (node.getObject() != null && (node.getObject() instanceof MetadataColumnRepositoryObject)) {
+                        IRepositoryViewObject viewObj = ((MetadataColumnRepositoryObject)node.getObject()).getViewObject();
+                        if(viewObj!=null){
+                            property = viewObj.getProperty();
+                        }
+                    }
                 }
 
             }
