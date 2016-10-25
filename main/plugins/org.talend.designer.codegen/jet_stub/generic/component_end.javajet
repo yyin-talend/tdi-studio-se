@@ -1,7 +1,9 @@
 <%@ jet
 imports="
         java.util.List
+        java.util.Set
         org.talend.components.api.component.ComponentDefinition
+        org.talend.components.api.component.ConnectorTopology
         org.talend.core.model.metadata.IMetadataColumn
         org.talend.core.model.metadata.IMetadataTable
         org.talend.core.model.process.ElementParameterParser
@@ -36,12 +38,15 @@ if (metadata == null) {
 boolean hasInput = !NodeUtil.getIncomingConnections(node, IConnectionCategory.DATA).isEmpty();
 boolean hasOutput = !NodeUtil.getOutgoingConnections(node, IConnectionCategory.DATA).isEmpty();
 boolean hasOutputOnly = hasOutput && !hasInput;
+
+Set<ConnectorTopology> connectorTopologies = def.getSupportedConnectorTopologies();
+boolean asInputComponent = connectorTopologies!=null && (connectorTopologies.size() < 3) && connectorTopologies.contains(ConnectorTopology.OUTGOING);
 %>
 
 resourceMap.put("finish_<%=cid%>", Boolean.TRUE);
 
 <%
-if(hasOutputOnly){
+if(hasOutputOnly || asInputComponent){
 %>
     } // while
     reader_<%=cid%>.close();
