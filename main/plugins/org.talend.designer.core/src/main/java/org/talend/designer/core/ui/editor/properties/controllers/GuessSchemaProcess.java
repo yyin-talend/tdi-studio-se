@@ -241,6 +241,11 @@ public class GuessSchemaProcess {
         if (ConnectionUtils.isVertica(info.getUrl())) {
             createStatament = "conn.createStatement()";
         }
+        if (EDatabaseTypeName.GENERAL_JDBC.getXmlName().equals(info.getDbType())
+                && "com.sap.db.jdbc.Driver".equals(info.getDriverClassName())
+                || EDatabaseTypeName.SAPHana.getXmlName().equals(info.getDbType())) {
+            createStatament = "conn.createStatement()";
+        }
         codeStart = systemProperty
                 + "java.lang.Class.forName(\"" + info.getDriverClassName() + "\");\r\n" + "String url = \"" + info.getUrl() //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
                 + "\";\r\n" + "java.sql.Connection conn = java.sql.DriverManager.getConnection(url, \"" + info.getUsername() //$NON-NLS-1$ //$NON-NLS-2$
