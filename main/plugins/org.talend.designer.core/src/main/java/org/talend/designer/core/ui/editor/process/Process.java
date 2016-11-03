@@ -1085,7 +1085,8 @@ public class Process extends Element implements IProcess2, IGEFProcess, ILastVer
                     return;
                 }
             }
-            if (param.getParentParameter().getFieldType().equals(EParameterFieldType.SCHEMA_TYPE)) {
+            if (param.getParentParameter().getFieldType().equals(EParameterFieldType.SCHEMA_TYPE)
+                    ||param.getParentParameter().getFieldType().equals(EParameterFieldType.SCHEMA_REFERENCE)) {
                 IElementParameter paramBuiltInRepository = param.getParentParameter().getChildParameters()
                         .get(EParameterName.SCHEMA_TYPE.getName());
                 if (isJoblet && param.getName().equals(EParameterName.CONNECTION.getName())) {
