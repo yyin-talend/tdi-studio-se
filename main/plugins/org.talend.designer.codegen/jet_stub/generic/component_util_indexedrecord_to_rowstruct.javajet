@@ -66,8 +66,7 @@ class IndexedRecordToRowStructGenerator {
         }
 
         %>
-        org.talend.daikon.di.DiOutgoingSchemaEnforcer <%=codeVarSchemaEnforcer%>
-                = new org.talend.daikon.di.DiOutgoingSchemaEnforcer(<%=codeVarSchemaToEnforce%>, <%=dynamicByPosition%>);
+        org.talend.daikon.di.DiOutgoingSchemaEnforcer <%=codeVarSchemaEnforcer%> = org.talend.daikon.di.EnforcerCreator.createOutgoingEnforcer(<%=codeVarSchemaToEnforce%>, <%=dynamicByPosition%>);
 
         // Create a reusable factory that converts the output of the reader to an IndexedRecord.
         org.talend.daikon.avro.converter.IndexedRecordConverter<Object, ? extends org.apache.avro.generic.IndexedRecord> <%=codeVarIndexedRecordAdapter%> = null;
