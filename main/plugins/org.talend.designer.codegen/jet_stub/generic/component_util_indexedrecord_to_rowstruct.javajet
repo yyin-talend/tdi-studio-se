@@ -111,7 +111,7 @@ class IndexedRecordToRowStructGenerator {
         if (dynamicColName != null) {
             %>
             if (!<%=codeVarIsDynamicInitialized%>) {
-                org.apache.avro.Schema dynSchema_<%=cid%> = <%=codeVarSchemaEnforcer%>.getOutgoingDynamicRuntimeSchema();
+                org.apache.avro.Schema dynSchema_<%=cid%> = ((org.talend.daikon.di.DiOutgoingDynamicSchemaEnforcer) <%=codeVarSchemaEnforcer%>).getDynamicFieldsSchema();
                 for (org.apache.avro.Schema.Field childDynamic_<%=cid%> : dynSchema_<%=cid%>.getFields()){
                     routines.system.DynamicMetadata dynamicMetadata_<%=cid%> = new routines.system.DynamicMetadata();
                     dynamicMetadata_<%=cid%>.setName(childDynamic_<%=cid%>.name());
