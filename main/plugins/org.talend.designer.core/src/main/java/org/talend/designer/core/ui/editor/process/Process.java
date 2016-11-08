@@ -1243,11 +1243,6 @@ public class Process extends Element implements IProcess2, IGEFProcess, ILastVer
                                     if (!param.isSerialized()) {
                                         continue;
                                     }
-                                    if ((param.isReadOnly() && !isJunitLoad)
-                                            && !(param.getName().equals(EParameterName.UNIQUE_NAME.getName()) || param.getName()
-                                                    .equals(EParameterName.VERSION.getName()))) {
-                                        continue;
-                                    }
                                     Object object = comp
                                             .getElementParameterValueFromComponentProperties((INode) elemParam, param);
                                     param.setValue(object);
