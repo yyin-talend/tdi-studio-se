@@ -1308,6 +1308,8 @@ public class Process extends Element implements IProcess2, IGEFProcess, ILastVer
                 }
             }
         } else {
+            String tempLabel = null;
+            String tempParaName = null;
             for (int j = 0; j < listParamType.size(); j++) {
                 pType = (ElementParameterType) listParamType.get(j);
                 if (pType != null) {
@@ -1326,14 +1328,23 @@ public class Process extends Element implements IProcess2, IGEFProcess, ILastVer
                         continue;
                     }
                     param = elemParam.getElementParameter(pType.getName());
+                    if(pType.getField().equals(EParameterFieldType.DBTABLE.getName()) && param == null){
+                        tempLabel = pType.getValue();
+                        tempParaName = pType.getName();
+                    }
                     if (param != null) {
                         if ((param.isReadOnly() && !isJunitLoad)
                                 && !(param.getName().equals(EParameterName.UNIQUE_NAME.getName()) || param.getName().equals(
                                         EParameterName.VERSION.getName()))) {
                             continue;
                         }
-                        //
-                        loadElementParameters(elemParam, pType, param, pType.getName(), pType.getValue(), false);
+                        String paraValue = pType.getValue();
+                        if(pType.getName().equals(EParameterName.LABEL.getName()) && tempLabel!=null){
+                            if(tempParaName!=null && pType.getValue().equals(DesignerUtilities.getParameterVar(tempParaName))){
+                                paraValue = tempLabel;
+                            }
+                        }
+                        loadElementParameters(elemParam, pType, param, pType.getName(), paraValue, false);
                     }
                 }
             }
