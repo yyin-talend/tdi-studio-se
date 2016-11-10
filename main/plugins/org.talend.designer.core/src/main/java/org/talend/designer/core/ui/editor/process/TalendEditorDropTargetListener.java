@@ -78,6 +78,7 @@ import org.talend.core.model.components.ComponentCategory;
 import org.talend.core.model.components.ComponentUtilities;
 import org.talend.core.model.components.IComponent;
 import org.talend.core.model.components.IComponentsService;
+import org.talend.core.model.general.Project;
 import org.talend.core.model.metadata.IEbcdicConstant;
 import org.talend.core.model.metadata.IHL7Constant;
 import org.talend.core.model.metadata.IMetadataTable;
@@ -191,6 +192,7 @@ import org.talend.designer.core.ui.preferences.TalendDesignerPrefConstants;
 import org.talend.designer.core.utils.DesignerUtilities;
 import org.talend.designer.core.utils.ValidationRulesUtil;
 import org.talend.metadata.managment.ui.utils.ConnectionContextHelper;
+import org.talend.repository.ProjectManager;
 import org.talend.repository.RepositoryPlugin;
 import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.IRepositoryNode;
@@ -626,7 +628,8 @@ public class TalendEditorDropTargetListener extends TemplateTransferDropTargetLi
         }
 
         Item subItem = repositoryNode.getObject().getProperty().getItem();
-        Item hadoopClusterItem = hadoopClusterService.getHadoopClusterBySubitemId(subItem.getProperty().getId());
+        Item hadoopClusterItem = hadoopClusterService.getHadoopClusterBySubitemId(
+                new Project(ProjectManager.getInstance().getProject(subItem)), subItem.getProperty().getId());
         String hadoopClusterId = hadoopClusterItem.getProperty().getId();
 
         String propertyParamName = MR_PROPERTY_PREFIX + EParameterName.PROPERTY_TYPE.getName();
