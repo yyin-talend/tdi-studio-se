@@ -173,9 +173,9 @@ public class UnifyPasswordEncryption4ParametersInJobMigrationTask extends UnifyP
     }
 
     protected boolean checkNodes(Item item, ProcessType processType) throws Exception {
-        boolean modified = false;
+        boolean modified = checkNodesFromEmf(item, processType);
 
-        if (!checkNodesFromEmf(item, processType)) {
+        if (!modified) {
             // some versions of the job doesn't have any field type saved in the job, so we will check from the existing
             // component field type
             ComponentCategory category = ComponentCategory.getComponentCategoryFromItem(item);
