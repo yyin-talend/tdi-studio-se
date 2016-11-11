@@ -16,9 +16,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.commons.lang3.StringUtils;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.components.api.component.ComponentDefinition;
 import org.talend.components.api.properties.ComponentProperties;
+import org.talend.components.api.wizard.ComponentWizard;
 import org.talend.core.GlobalServiceRegister;
 import org.talend.core.model.components.EComponentType;
 import org.talend.core.model.components.IComponent;
@@ -49,6 +51,8 @@ import org.talend.designer.core.generic.model.Component;
 import org.talend.designer.core.generic.model.GenericElementParameter;
 import org.talend.designer.core.generic.utils.ComponentsUtils;
 import org.talend.designer.core.generic.utils.SchemaUtils;
+import org.talend.repository.generic.internal.IGenericWizardInternalService;
+import org.talend.repository.generic.internal.service.GenericWizardInternalService;
 import org.talend.repository.generic.model.genericMetadata.GenericConnection;
 import org.talend.repository.generic.model.genericMetadata.GenericConnectionItem;
 import org.talend.repository.model.RepositoryNode;
@@ -61,6 +65,12 @@ import orgomg.cwm.objectmodel.core.ModelElement;
  *
  */
 public class GenericDragAndDropHandler extends AbstractDragAndDropServiceHandler {
+
+    public static final String COMPONENT_PREFIX = "t"; //$NON-NLS-1$
+
+    public static final String INPUT = "Input"; //$NON-NLS-1$
+
+    public static final String OUTPUT = "Output"; //$NON-NLS-1$
 
     @Override
     public boolean canHandle(Connection connection) {
@@ -207,8 +217,12 @@ public class GenericDragAndDropHandler extends AbstractDragAndDropServiceHandler
         RepositoryComponentSetting setting = null;
         List<Class<Item>> list = new ArrayList<Class<Item>>();
         if (item instanceof GenericConnectionItem) {
+            GenericConnection connection = (GenericConnection) ((GenericConnectionItem) item).getConnection();
             setting = new RepositoryComponentSetting();
             setting.setWithSchema(true);
+            String componentMainName = getComponentMainName(connection);
+            setting.setInputComponent(getInputComponentName(componentMainName));
+            setting.setOutputComponent(getOutputComponentName(componentMainName));
             Class clazz = null;
             try {
                 clazz = Class.forName(GenericConnectionItem.class.getName());
@@ -219,6 +233,37 @@ public class GenericDragAndDropHandler extends AbstractDragAndDropServiceHandler
             setting.setClasses(list.toArray(new Class[0]));
         }
         return setting;
+    }
+
+    private String getComponentMainName(GenericConnection connection) {
+        IGenericWizardInternalService internalService = new GenericWizardInternalService();
+        ComponentWizard componentWizard = null;
+        String compPropertiesStr = connection.getCompProperties();
+        if (compPropertiesStr != null) {
+            ComponentProperties properties = ComponentsUtils.getComponentPropertiesFromSerialized(compPropertiesStr, connection);
+            if (properties != null) {
+                componentWizard = internalService.getTopLevelComponentWizard(properties, null);
+            }
+        }
+        if (componentWizard != null) {
+            return StringUtils.capitalize(componentWizard.getDefinition().getName());
+        }
+        return null;
+    }
+
+    private String getInputComponentName(String componentMainName) {
+        return getInputOrOutputComponentName(componentMainName, true);
+    }
+
+    private String getOutputComponentName(String componentMainName) {
+        return getInputOrOutputComponentName(componentMainName, false);
+    }
+
+    private String getInputOrOutputComponentName(String componentMainName, boolean isInput) {
+        if (isInput) {
+            return COMPONENT_PREFIX.concat(componentMainName).concat(INPUT);
+        }
+        return COMPONENT_PREFIX.concat(componentMainName).concat(OUTPUT);
     }
 
     private void setGenericRepositoryValue(GenericConnection connection, INode node, IElementParameter param) {
