@@ -442,6 +442,9 @@ public class MainComposite extends AbstractTabComposite {
         descriptionData.top = new FormAttachment(statusText, ITabbedPropertyConstants.VSPACE);
         descriptionData.height = NB_LINES * descriptionText.getLineHeight();
         descriptionText.setLayoutData(descriptionData);
+        if (!allowEnableControl) {
+            descriptionData.bottom = new FormAttachment(100);
+        }
 
         String description = repositoryObject.getDescription();
         descriptionText.setText(description != null ? description : ""); //$NON-NLS-1$
