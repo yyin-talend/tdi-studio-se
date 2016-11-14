@@ -29,6 +29,7 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.eclipse.draw2d.geometry.Dimension;
 import org.eclipse.draw2d.geometry.Point;
+import org.eclipse.emf.common.util.EList;
 import org.eclipse.gef.commands.Command;
 import org.eclipse.gef.commands.CommandStack;
 import org.eclipse.jface.dialogs.MessageDialog;
@@ -75,6 +76,8 @@ import org.talend.core.model.process.Element;
 import org.talend.core.model.process.ElementParameterParser;
 import org.talend.core.model.process.IConnection;
 import org.talend.core.model.process.IConnectionCategory;
+import org.talend.core.model.process.IContext;
+import org.talend.core.model.process.IContextParameter;
 import org.talend.core.model.process.IElement;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.IExternalData;
@@ -88,6 +91,7 @@ import org.talend.core.model.process.IProcess2;
 import org.talend.core.model.process.Problem;
 import org.talend.core.model.process.Problem.ProblemStatus;
 import org.talend.core.model.properties.JobletProcessItem;
+import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.model.repository.ExternalNodesFactory;
 import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.model.utils.NodeUtil;
@@ -108,11 +112,14 @@ import org.talend.core.ui.services.IDesignerCoreUIService;
 import org.talend.designer.core.CheckNodeManager;
 import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.ICheckNodesService;
+import org.talend.designer.core.IDesignerCoreService;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.model.components.AbstractBasicComponent;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.model.components.EmfComponent;
 import org.talend.designer.core.model.components.NodeReturn;
+import org.talend.designer.core.model.utils.emf.talendfile.ContextParameterType;
+import org.talend.designer.core.model.utils.emf.talendfile.ContextType;
 import org.talend.designer.core.model.utils.emf.talendfile.ElementParameterType;
 import org.talend.designer.core.ui.AbstractMultiPageTalendEditor;
 import org.talend.designer.core.ui.ActiveProcessTracker;
@@ -134,6 +141,7 @@ import org.talend.designer.core.utils.UpgradeElementHelper;
 import org.talend.designer.joblet.model.JobletNode;
 import org.talend.designer.joblet.model.JobletProcess;
 import org.talend.designer.runprocess.IRunProcessService;
+import org.talend.designer.runprocess.ItemCacheManager;
 import org.talend.repository.model.IProxyRepositoryFactory;
 
 /**
@@ -2641,14 +2649,19 @@ public class Node extends Element implements IGraphicalNode {
                             if (itemParameter.getFieldType() == EParameterFieldType.PREV_COLUMN_LIST) {
                                 preColumnListParamNames.add(itemParameter.getName());
                             }
-                            if (itemParameter.getFieldType() == EParameterFieldType.CONTEXT_PARAM_NAME_LIST) {
+                            if (itemParameter.getFieldType() == EParameterFieldType.CONTEXT_PARAM_NAME_LIST && tableValues.size() > 0) {
+                                Object[] itemsValue = itemParameter.getListItemsValue();
+                                if (itemParameter.getListItemsDisplayName() == null || itemParameter.getListItemsDisplayName().length == 0) {
+                                     itemsValue = getContextParamsFromProcess();
+                                } 
+                                
                                 for (int index = 0; index < tableValues.size(); index++) {
                                     Map<String, Object> tabMap = tableValues.get(index);
-
                                     Object value = tabMap.get(itemParameter.getName());
+
                                     if (itemParameter.getListItemsValue() != null && value != null) {
                                         boolean found = false;
-                                        for (Object o : itemParameter.getListItemsValue()) {
+                                        for (Object o : itemsValue) {
                                             if (o.equals(value)) {
                                                 found = true;
                                                 break;
@@ -2948,6 +2961,50 @@ public class Node extends Element implements IGraphicalNode {
             }
         }
 
+    }
+    
+    private Object[] getContextParamsFromProcess() {
+        IElementParameter processTypeParam = this.getElementParameterFromField(EParameterFieldType.PROCESS_TYPE);
+        if (processTypeParam == null) {
+            processTypeParam = this.getElementParameterFromField(EParameterFieldType.ROUTE_INPUT_PROCESS_TYPE);
+        }
+        if (processTypeParam != null) {
+            IElementParameter jobElemParam = processTypeParam.getChildParameters()
+                    .get(EParameterName.PROCESS_TYPE_PROCESS.getName());
+            IElementParameter jobVersionParam = processTypeParam.getChildParameters()
+                    .get(EParameterName.PROCESS_TYPE_VERSION.getName());
+            IElementParameter contextElemParam = processTypeParam.getChildParameters()
+                    .get(EParameterName.PROCESS_TYPE_CONTEXT.getName());
+            // get context list
+            String processId = (String) jobElemParam.getValue();
+            String contextName = (String) contextElemParam.getValue();
+            if (contextName == null) {
+                contextName = new String();
+            }
+
+            if (processId != null && contextName != null) {
+                IElementParameter useDynamic = this.getElementParameter(EParameterName.USE_DYNAMIC_JOB.getName());
+                if (useDynamic != null && Boolean.valueOf(String.valueOf(useDynamic.getValue()))) {
+                    String[] split = processId.split(";");
+                    processId = split[0];
+                }
+                ProcessItem processItem = ItemCacheManager.getProcessItem(processId, (String) jobVersionParam.getValue());
+                if (processItem != null && processItem.getProcess() != null) {
+                    final EList context = processItem.getProcess().getContext();
+                    if (!context.isEmpty()) {
+                        List<String> contextParameterNamesList = new ArrayList<String>();
+                        final ContextType contextType = (ContextType) context.get(0);
+                        for (Object p : contextType.getContextParameter()) {
+                            if (p instanceof ContextParameterType) {
+                                contextParameterNamesList.add(((ContextParameterType) p).getName());
+                            }
+                        }
+                        return contextParameterNamesList.toArray(new String[0]);
+                    }
+                }
+            }
+        }
+        return new String[0];
     }
 
     private List<String> getColumnLabels(IMetadataTable metadataTable) {
