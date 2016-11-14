@@ -913,6 +913,30 @@
             uripath="platform:/plugin/org.talend.libraries.zookeeper/lib/zookeeper-3.4.6.2.3.2.0-2950.jar">
         </libraryNeeded>
 
+       <libraryNeeded
+            context="plugin:org.talend.libraries.s3"
+            id="aws-java-sdk-1.7.4"
+            name="aws-java-sdk-1.7.4.jar"
+            mvn_uri="mvn:org.talend.libraries/aws-java-sdk-1.7.4/6.1.0"
+            uripath="platform:/plugin/org.talend.libraries.s3/lib/aws-java-sdk-1.7.4.jar">
+        </libraryNeeded>
+        
+       <libraryNeeded
+            context="plugin:org.talend.libraries.s3"
+            id="aws-java-sdk-1.9.16"
+            name="aws-java-sdk-1.9.16.jar"
+            mvn_uri="mvn:org.talend.libraries/aws-java-sdk-1.9.16/6.0.0"
+            uripath="platform:/plugin/org.talend.libraries.s3/lib/aws-java-sdk-1.9.16.jar">
+        </libraryNeeded>        
+
+       <libraryNeeded
+            context="plugin:org.talend.libraries.s3"
+            id="hadoop-aws-2.7.1.2.3.0.0-2557"
+            name="hadoop-aws-2.7.1.2.3.0.0-2557.jar"
+            mvn_uri="mvn:org.talend.libraries/hadoop-aws-2.7.1.2.3.0.0-2557/6.1.0"
+            uripath="platform:/plugin/org.talend.libraries.s3/lib/hadoop-aws-2.7.1.2.3.0.0-2557.jar">
+        </libraryNeeded>
+
     	<!-- hdp2.2 libraries -->
 	   	<libraryNeeded
 	   		context="plugin:org.talend.libraries.hadoop.hdp.2.2"
@@ -1318,6 +1342,22 @@
             name="aws-java-sdk-s3-1.10.4.jar"
             uripath="platform:/plugin/org.talend.libraries.s3/lib/aws-java-sdk-s3-1.10.4.jar">
         </libraryNeeded>
+   
+        <libraryNeeded
+            context="plugin:org.talend.libraries.s3"
+            id="aws-java-sdk-core-1.9.16"
+            name="aws-java-sdk-core-1.9.16.jar"
+            mvn_uri="mvn:org.talend.libraries/aws-java-sdk-core-1.9.16/6.0.0"
+            uripath="platform:/plugin/org.talend.libraries.s3/lib/aws-java-sdk-core-1.9.16.jar">
+        </libraryNeeded>  
+        
+        <libraryNeeded
+            context="plugin:org.talend.libraries.s3"
+            id="aws-java-sdk-s3-1.9.16"
+            name="aws-java-sdk-s3-1.9.16.jar"
+            mvn_uri="mvn:org.talend.libraries/aws-java-sdk-s3-1.9.16/6.0.0"
+            uripath="platform:/plugin/org.talend.libraries.s3/lib/aws-java-sdk-s3-1.9.16.jar">
+        </libraryNeeded>        
 
         <libraryNeeded
             context="plugin:org.talend.libraries.s3"
@@ -3543,6 +3583,19 @@
             <library id="servlet-api-2.5.jar"/>
             <library id="slf4j-api-1.7.10.jar"/>
             <library id="slf4j-log4j12-1.7.10.jar"/>
+        </libraryNeededGroup>
+
+        <libraryNeededGroup
+                description="The latest S3 libraries for HDP 2.3.0"
+                id="S3-LIB-HDP_2_3_0_LATEST"
+                name="S3-LIB-HDP_2_3_0_LATEST">
+            <library id="aws-java-sdk-1.9.16" />
+            <library id="aws-java-sdk-core-1.9.16" />
+            <library id="aws-java-sdk-s3-1.9.16" />            
+            <library id="hadoop-aws-2.7.1.2.3.0.0-2557" />
+            <library id="jets3t-0.9.0" />
+            <library id="httpclient-4.2.5.jar" />
+            <library id="httpcore-4.2.5.jar" />
         </libraryNeededGroup>
 
         <!-- MapReduce libraries for HDP 2.2 -->
