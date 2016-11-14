@@ -588,6 +588,7 @@ public class JobSettingsView extends ViewPart implements IJobSettingsView, ISele
         tabFactory.setTitle(null, null);
         if (tabFactory.getTabComposite() != null) {
             for (Control curControl : tabFactory.getTabComposite().getChildren()) {
+                curControl.setVisible(false);
                 curControl.dispose();
             }
         }
