@@ -17,7 +17,7 @@
 		<cxf.version>3.1.1</cxf.version>
 		<talend.nexus.url>http://newbuild.talend.com:8081</talend.nexus.url>
 	</properties>
-	
+
 	<distributionManagement>
 		<snapshotRepository>
 			<id>talend_nexus_deployment</id>
