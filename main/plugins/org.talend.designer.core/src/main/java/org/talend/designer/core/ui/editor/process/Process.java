@@ -1328,7 +1328,7 @@ public class Process extends Element implements IProcess2, IGEFProcess, ILastVer
                         continue;
                     }
                     param = elemParam.getElementParameter(pType.getName());
-                    if(pType.getField().equals(EParameterFieldType.DBTABLE.getName()) && param == null){
+                    if(pType.getField()!=null && pType.getField().equals(EParameterFieldType.DBTABLE.getName()) && param == null){
                         tempLabel = pType.getValue();
                         tempParaName = pType.getName();
                     }
