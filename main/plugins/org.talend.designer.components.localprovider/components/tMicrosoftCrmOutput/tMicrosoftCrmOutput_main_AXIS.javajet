@@ -250,9 +250,13 @@
                                             if(columnName.equals(lookupMapper.get("INPUT_COLUMN"))){
                                                 hasFound = true;
                                                 %>
-                                                xmlObject_<%=cid%> = com.microsoft.schemas.xrm._2011.contracts.EntityReference.Factory.newInstance();
-                                                ((com.microsoft.schemas.xrm._2011.contracts.EntityReference)xmlObject_<%=cid%>).setId(<%=connName%>.<%=columnName%>);
-                                                ((com.microsoft.schemas.xrm._2011.contracts.EntityReference)xmlObject_<%=cid%>).setLogicalName(<%=lookupMapper.get("TYPE")%>);
+												if(<%=connName%>.<%=columnName%> != null) {
+		                                            xmlObject_<%=cid%> = com.microsoft.schemas.xrm._2011.contracts.EntityReference.Factory.newInstance();
+                                                	((com.microsoft.schemas.xrm._2011.contracts.EntityReference)xmlObject_<%=cid%>).setId(<%=connName%>.<%=columnName%>);
+	                                               	((com.microsoft.schemas.xrm._2011.contracts.EntityReference)xmlObject_<%=cid%>).setLogicalName(<%=lookupMapper.get("TYPE")%>);
+                                                } else {
+                                                	xmlObject_<%=cid%> = null;
+                                                }
                                             <%
                                             }
                                         }
