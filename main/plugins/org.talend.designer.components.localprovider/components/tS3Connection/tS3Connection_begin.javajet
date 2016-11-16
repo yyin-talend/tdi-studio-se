@@ -15,7 +15,7 @@ imports="
 	<%@ include file="S3Client.javajet" %>
 	
 	try{
-			conn_tS3Connection_1.getBucketLoggingConfiguration("Check-Connection-Only");
+			conn_<%=cid%>.getBucketLoggingConfiguration("Check-Connection-Only");
 	}catch(com.amazonaws.AmazonServiceException ase){
 			if(ase.getErrorCode().equals("NoSuchBucket")){
 			//ignore
