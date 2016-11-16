@@ -13,7 +13,6 @@ imports="
         org.talend.designer.codegen.config.CodeGeneratorArgument
 		"
 %>
-int nb_line_<%=cid%> = 0;
 <%
 List<IMetadataTable> metadatas = node.getMetadataList();
 if ((metadatas != null) && (metadatas.size() > 0)) {

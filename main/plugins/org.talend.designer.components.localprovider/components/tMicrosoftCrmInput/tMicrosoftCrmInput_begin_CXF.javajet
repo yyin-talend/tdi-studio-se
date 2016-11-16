@@ -52,7 +52,6 @@ class CrmClass2JavaClassHelper{
 
 CrmClass2JavaClassHelper crmClazzHelper_<%= cid %> = new CrmClass2JavaClassHelper();
 
-int nb_line_<%=cid%> = 0;
 <%
    List<IMetadataTable> metadataTableList = node.getMetadataList();
    if((metadataTableList != null) && (metadataTableList.size() > 0)){

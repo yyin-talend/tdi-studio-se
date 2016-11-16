@@ -26,7 +26,9 @@ imports="
     String crmVersion = ElementParameterParser.getValue(node, "__MS_CRM_VERSION__");
 
     boolean isMsCrm2015OnPremise = "ON_PREMISE".equals(authenticationType) && "CRM_2015".equals(crmVersion);
-
+%>
+	int nb_line_<%=cid%> = 0;
+<%
     if(isMsCrm2015OnPremise){
        %>
           <%@ include file="@{org.talend.designer.components.localprovider}/components/tMicrosoftCrmInput/tMicrosoftCrmInput_begin_CXF.javajet"%>
