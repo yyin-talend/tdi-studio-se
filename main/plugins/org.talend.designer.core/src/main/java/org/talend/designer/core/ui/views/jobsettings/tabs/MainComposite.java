@@ -613,12 +613,6 @@ public class MainComposite extends AbstractTabComposite {
                         Item originalItem = repositoryObject.getProperty().getItem();
                         if (ConvertJobsUtil.isNeedConvert(originalItem, originalJobType, originalFramework, true)) {
                             boolean hasTestCase = ConvertJobsUtil.hasTestCase(repositoryObject.getProperty());
-                            if (hasTestCase
-                                    && !MessageDialogWithToggle
-                                            .openConfirm(null, "Warning",
-                                                    "Warning: You will lost all the testcases when you do converting, do you want to continue?")) {
-                                return;
-                            }
                             final List<ItemReferenceBean> unDeleteItems = RepositoryNodeDeleteManager.getInstance()
                                     .getUnDeleteItems(repositoryObject, null, true);
                             if (!unDeleteItems.isEmpty()) {
@@ -630,6 +624,9 @@ public class MainComposite extends AbstractTabComposite {
                             // Convert
                             final Item newItem = ConvertJobsUtil.createOperation(originalName, originalJobType,
                                     originalFramework, repositoryObject);
+                            if(newItem!=null){
+                                ConvertJobsUtil.convertTestcases(newItem,repositoryObject,originalJobType);
+                            }
                             RepositoryWorkUnit repositoryWorkUnit = new RepositoryWorkUnit("Convert job") { //$NON-NLS-1$
 
                                 @Override
