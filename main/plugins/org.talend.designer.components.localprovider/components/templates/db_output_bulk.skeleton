@@ -2901,7 +2901,7 @@ public class CLASS {
                         String suffix = "";
                         String comma = "";
                         
-                        if("DECIMAL".equalsIgnoreCase(dataType) 
+                        if(("DECIMAL".equalsIgnoreCase(dataType) || "NUMERIC".equalsIgnoreCase(dataType)) 
                         	&& (column.getColumn().getLength() == null || 0 == column.getColumn().getLength())
                             && (column.getColumn().getPrecision() == null || 0 == column.getColumn().getPrecision())
                         ) {
