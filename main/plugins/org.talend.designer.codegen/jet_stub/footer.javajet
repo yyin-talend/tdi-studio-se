@@ -727,12 +727,14 @@ this.globalResumeTicket = false;//to run others jobs
 
             if (!componentName.equals("tLogCatcher") && !componentName.equals("tFlowMeterCatcher") && !componentName.equals("tAssertCatcher") && !componentName.equals("tStatCatcher")) {
 %>
+        final Thread launchingThread = Thread.currentThread();
         runningThreadCount.add(1);
         new Thread(){
             public void run() {
                 java.util.Map threadRunResultMap = new java.util.HashMap();
                 threadRunResultMap.put("errorCode", null);
                 threadRunResultMap.put("status", "");
+                threadRunResultMap.put("ESBJobInterruptedException", "false");
                 threadLocal.set(threadRunResultMap);
 
                 <%=createCallProcess(rootNode, className, true) %>
@@ -748,6 +750,10 @@ this.globalResumeTicket = false;//to run others jobs
                         status = localStatus;
                     }
 
+                    if ("true".equals(((java.util.Map) threadLocal.get()).get("ESBJobInterruptedException"))) {
+                        launchingThread.interrupt();
+                    }
+
                     runningThreadCount.add(-1);
                 }
             }
@@ -757,12 +763,17 @@ this.globalResumeTicket = false;//to run others jobs
             }
         }
 %>
+    boolean interrupted = false;
     while (runningThreadCount.getCount() > 0) {
         try {
             Thread.sleep(10);
-        } catch (java.lang.Exception e) {
-            e.printStackTrace();
+        } catch (java.lang.InterruptedException e) {
+            interrupted = true;
         }
+    }
+
+    if (interrupted) {
+        Thread.currentThread().interrupt();
     }
 <%
     } else { // isRunInMultiThread  //5. all others sub-job (SingleThread  mode)

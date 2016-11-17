@@ -1001,7 +1001,7 @@ public class ImportTreeFromRepository extends SelectionAction {
     @Override
     protected boolean calculateEnabled() {
         RepositoryNode rootNode = ProjectRepositoryNode.getInstance().getRootRepositoryNode(ERepositoryObjectType.METADATA);
-        if (getSelectedObjects().isEmpty() || rootNode == null || rootNode.getChildren().size() == 0) {
+        if (getSelectedObjects().isEmpty() || rootNode == null) {
             return false;
         } else {
             // get the last selection to run the action

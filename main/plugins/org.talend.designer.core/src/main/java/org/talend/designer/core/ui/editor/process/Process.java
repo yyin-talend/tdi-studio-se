@@ -17,6 +17,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
@@ -65,6 +66,7 @@ import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.runtime.model.emf.EmfHelper;
 import org.talend.commons.runtime.model.repository.ERepositoryStatus;
 import org.talend.commons.ui.runtime.image.ImageUtils;
+import org.talend.commons.utils.Hex;
 import org.talend.commons.utils.VersionUtils;
 import org.talend.core.CorePlugin;
 import org.talend.core.GlobalServiceRegister;
@@ -190,7 +192,9 @@ import org.talend.repository.ui.utils.Log4jPrefsSettingManager;
  * 
  */
 public class Process extends Element implements IProcess2, IGEFProcess, ILastVersionChecker {
-
+   
+    private static String UTF8 = "UTF-8";
+    
     protected List<INode> nodes = new ArrayList<INode>();
 
     protected List<Element> elem = new ArrayList<Element>();
@@ -1085,7 +1089,8 @@ public class Process extends Element implements IProcess2, IGEFProcess, ILastVer
                     return;
                 }
             }
-            if (param.getParentParameter().getFieldType().equals(EParameterFieldType.SCHEMA_TYPE)) {
+            if (param.getParentParameter().getFieldType().equals(EParameterFieldType.SCHEMA_TYPE)
+                    ||param.getParentParameter().getFieldType().equals(EParameterFieldType.SCHEMA_REFERENCE)) {
                 IElementParameter paramBuiltInRepository = param.getParentParameter().getChildParameters()
                         .get(EParameterName.SCHEMA_TYPE.getName());
                 if (isJoblet && param.getName().equals(EParameterName.CONNECTION.getName())) {
@@ -1136,6 +1141,7 @@ public class Process extends Element implements IProcess2, IGEFProcess, ILastVer
             List<Map<String, Object>> tableValues = (List<Map<String, Object>>) value;
             for (Map<String, Object> currentLine : tableValues) {
                 for (int i = 0; i < param.getListItemsDisplayCodeName().length; i++) {
+                    boolean isHexValue = false;
                     ElementValueType elementValue = fileFact.createElementValueType();
                     elementValue.setElementRef(param.getListItemsDisplayCodeName()[i]);
                     Object o = currentLine.get(param.getListItemsDisplayCodeName()[i]);
@@ -1154,6 +1160,14 @@ public class Process extends Element implements IProcess2, IGEFProcess, ILastVer
                     } else {
                         if (o instanceof String) {
                             strValue = (String) o;
+                            isHexValue = isNeedConvertToHex(strValue);
+                            if (isHexValue) {
+                                try {
+                                    strValue = Hex.encodeHexString(strValue.getBytes(UTF8));
+                                } catch (UnsupportedEncodingException e) {
+                                    ExceptionHandler.process(e);
+                                }
+                            }
                         } else {
                             if (o instanceof Boolean) {
                                 strValue = ((Boolean) o).toString();
@@ -1165,7 +1179,9 @@ public class Process extends Element implements IProcess2, IGEFProcess, ILastVer
                     } else {
                         elementValue.setValue(strValue);
                     }
-                    //
+                    if (isHexValue) {
+                    	elementValue.setHexValue(true);
+                    }
                     Object object = currentLine.get(param.getListItemsDisplayCodeName()[i] + IEbcdicConstant.REF_TYPE);
                     if (object != null) {
                         elementValue.setType((String) object);
@@ -1209,6 +1225,19 @@ public class Process extends Element implements IProcess2, IGEFProcess, ILastVer
         listParamType.add(pType);
     }
 
+	protected boolean isNeedConvertToHex(String value) {
+		if (value == null || "".equals(value.trim())) {
+			return false;
+		}
+		for (int i = 0; i < value.length(); i++) {
+			int ch = value.charAt(i);
+			if (ch < 32) {
+				return true;
+			}
+		}
+		return false;
+	}
+
     private void loadElementParameters(Element elemParam, EList listParamType) {
         loadElementParameters(elemParam, listParamType, false);
     }
@@ -1241,11 +1270,6 @@ public class Process extends Element implements IProcess2, IGEFProcess, ILastVer
                                 for (int m = 0; m < paramList.size(); m++) {
                                     IElementParameter param = paramList.get(m);
                                     if (!param.isSerialized()) {
-                                        continue;
-                                    }
-                                    if ((param.isReadOnly() && !isJunitLoad)
-                                            && !(param.getName().equals(EParameterName.UNIQUE_NAME.getName()) || param.getName()
-                                                    .equals(EParameterName.VERSION.getName()))) {
                                         continue;
                                     }
                                     Object object = comp
@@ -1284,6 +1308,8 @@ public class Process extends Element implements IProcess2, IGEFProcess, ILastVer
                 }
             }
         } else {
+            String tempLabel = null;
+            String tempParaName = null;
             for (int j = 0; j < listParamType.size(); j++) {
                 pType = (ElementParameterType) listParamType.get(j);
                 if (pType != null) {
@@ -1302,14 +1328,23 @@ public class Process extends Element implements IProcess2, IGEFProcess, ILastVer
                         continue;
                     }
                     param = elemParam.getElementParameter(pType.getName());
+                    if(pType.getField()!=null && pType.getField().equals(EParameterFieldType.DBTABLE.getName()) && param == null){
+                        tempLabel = pType.getValue();
+                        tempParaName = pType.getName();
+                    }
                     if (param != null) {
                         if ((param.isReadOnly() && !isJunitLoad)
                                 && !(param.getName().equals(EParameterName.UNIQUE_NAME.getName()) || param.getName().equals(
                                         EParameterName.VERSION.getName()))) {
                             continue;
                         }
-                        //
-                        loadElementParameters(elemParam, pType, param, pType.getName(), pType.getValue(), false);
+                        String paraValue = pType.getValue();
+                        if(pType.getName().equals(EParameterName.LABEL.getName()) && tempLabel!=null){
+                            if(tempParaName!=null && pType.getValue().equals(DesignerUtilities.getParameterVar(tempParaName))){
+                                paraValue = tempLabel;
+                            }
+                        }
+                        loadElementParameters(elemParam, pType, param, pType.getName(), paraValue, false);
                     }
                 }
             }
@@ -1389,16 +1424,23 @@ public class Process extends Element implements IProcess2, IGEFProcess, ILastVer
                                 }
                             }
                         }
-
+                        
                         String elemValue = elementValue.getValue();
                         if (tmpParam != null && EParameterFieldType.PASSWORD.equals(tmpParam.getFieldType())) {
                             elemValue = elementValue.getRawValue();
-                        }
+                        }                       
+                        if (elementValue.isHexValue() && elemValue != null) {
+                            byte[] decodeBytes = Hex.decodeHex(elemValue.toCharArray());
+                            try {
+                                elemValue = new String(decodeBytes, UTF8);
+                            } catch (UnsupportedEncodingException e) {
+                                ExceptionHandler.process(e);
+                            }
+                        }             
                         if (needRemoveQuotes) {
-                            lineValues.put(elementValue.getElementRef(), TalendTextUtils.removeQuotes(elemValue));
-                        } else {
-                            lineValues.put(elementValue.getElementRef(), elemValue);
-                        }
+                        	elemValue = TalendTextUtils.removeQuotes(elemValue);
+                        }                   
+                        lineValues.put(elementValue.getElementRef(), elemValue);
                         if (elementValue.getType() != null) {
                             lineValues.put(elementValue.getElementRef() + IEbcdicConstant.REF_TYPE, elementValue.getType());
                         }
@@ -2149,12 +2191,17 @@ public class Process extends Element implements IProcess2, IGEFProcess, ILastVer
         Node nc;
 
         EList listParamType;
-
+        boolean isCurrentProject = ProjectManager.getInstance().isInCurrentMainProject(this.getProperty());
         unloadedNode = new ArrayList<NodeType>();
         for (int i = 0; i < nodeList.size(); i++) {
             nType = (NodeType) nodeList.get(i);
             listParamType = nType.getElementParameter();
-            IComponent component = ComponentsFactoryProvider.getInstance().get(nType.getComponentName(), componentsType);
+            String componentName = nType.getComponentName();
+            IComponent component = ComponentsFactoryProvider.getInstance().get(componentName, componentsType);
+            if(!isCurrentProject && component!=null && (component.getComponentType() == EComponentType.JOBLET) && !componentName.contains(":")){  //$NON-NLS-1$
+                componentName = ProjectManager.getInstance().getProject(this.getProperty()).getLabel() +":"+componentName; //$NON-NLS-1$
+                component = ComponentsFactoryProvider.getInstance().get(componentName, componentsType);
+            }
             if (component == null) {
                 unloadedNode.add(nType);
                 continue;
@@ -2167,10 +2214,12 @@ public class Process extends Element implements IProcess2, IGEFProcess, ILastVer
             List<NodeType> tempNodes = new ArrayList<NodeType>(unloadedNode);
             for(NodeType unNode:tempNodes){
                 listParamType = unNode.getElementParameter();
-                boolean isCurrentProject = ProjectManager.getInstance().isInCurrentMainProject(this.getProperty());
                 String componentName = unNode.getComponentName();
-                if(!isCurrentProject){
-                    componentName = componentName +"_"+ProjectManager.getInstance().getProject(this.getProperty()).getLabel();
+                if(!isCurrentProject && !componentName.contains(":")){
+                    componentName = ProjectManager.getInstance().getProject(this.getProperty()).getLabel() +":"+componentName; //$NON-NLS-1$
+                }else if(new JobletUtil().matchExpression(componentName)){
+                    String[] names = componentName.split(":"); //$NON-NLS-1$
+                    componentName = names[1];
                 }
                 IComponent component = ComponentsFactoryProvider.getInstance().get(componentName, componentsType);
                 if(component!=null){
