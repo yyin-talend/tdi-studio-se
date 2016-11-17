@@ -1,6 +1,8 @@
 <%
     String authType = ElementParameterParser.getValue(node, "__AUTH_TYPE__");
     boolean isAPI2011 = ("API_2011").equals(ElementParameterParser.getValue(node,"__API_VERSION__"));
+    
+    boolean emptyLookupIntoNull = "true".equals(ElementParameterParser.getValue(node,"__EMPTY_LOOKUP_TO_NULL__"));
 
     String str4nil = "\"\"";
     String entityname = ElementParameterParser.getValue(node, "__ENTITYNAME__").trim();
@@ -250,7 +252,7 @@
                                             if(columnName.equals(lookupMapper.get("INPUT_COLUMN"))){
                                                 hasFound = true;
                                                 %>
-												if(<%=connName%>.<%=columnName%> != null) {
+												if(<%=connName%>.<%=columnName%> != null<%if(emptyLookupIntoNull) {%> && !(String.valueOf(<%=connName%>.<%=columnName%>).isEmpty())<%}%>) {
 		                                            xmlObject_<%=cid%> = com.microsoft.schemas.xrm._2011.contracts.EntityReference.Factory.newInstance();
                                                 	((com.microsoft.schemas.xrm._2011.contracts.EntityReference)xmlObject_<%=cid%>).setId(<%=connName%>.<%=columnName%>);
 	                                               	((com.microsoft.schemas.xrm._2011.contracts.EntityReference)xmlObject_<%=cid%>).setLogicalName(<%=lookupMapper.get("TYPE")%>);
