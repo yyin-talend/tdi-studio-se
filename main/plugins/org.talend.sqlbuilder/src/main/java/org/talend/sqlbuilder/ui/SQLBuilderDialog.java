@@ -468,6 +468,9 @@ public class SQLBuilderDialog extends Dialog implements ISQLBuilderDialog, IRepo
 
     private void shutDownDb(DatabaseConnection databaseConnection) {
         IMetadataConnection iMetadataConnection = null;
+        if (selectedContext == null) {
+            selectedContext = databaseConnection.getContextName();
+        }
         iMetadataConnection = ConvertionHelper.convert(databaseConnection, false, selectedContext);
         String dbType = iMetadataConnection.getDbType();
         String driverClassName = iMetadataConnection.getDriverClass();
