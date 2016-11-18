@@ -31,4 +31,13 @@ public class JobDesignsContentProvider extends ProjectRepoDirectChildrenNodeCont
         return projectNode.getRootRepositoryNode(ERepositoryObjectType.PROCESS);
     }
 
+    @Override
+    public Object getParent(Object element) {
+        if (element instanceof RepositoryNode) {
+            final RepositoryNode node = (RepositoryNode) element;
+            return node.getParent();
+        }
+
+        return super.getParent(element);
+    }
 }
