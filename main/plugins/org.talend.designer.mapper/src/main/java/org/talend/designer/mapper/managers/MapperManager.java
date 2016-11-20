@@ -532,8 +532,8 @@ public class MapperManager extends AbstractMapperManager {
         IDataMapTable abstractDataMapTable = dataMapTableView.getDataMapTable();
         GlobalMapEntry dataMapTableEntry = null;
         if (dataMapTableView.getZone() == Zone.INPUTS) {
-            dataMapTableEntry = new GlobalMapEntry(abstractDataMapTable, "\"" + tableEntrySource.getParentName() + "." //$NON-NLS-1$ //$NON-NLS-2$
-                    + tableEntrySource.getName() + "\"", null); //$NON-NLS-1$
+            dataMapTableEntry = new GlobalMapEntry(abstractDataMapTable,
+                    "\"" + dataMapTableView.findUniqueName("myKey") + "\"", null); //$NON-NLS-1$//$NON-NLS-2$//$NON-NLS-3$
         } else {
             throw new IllegalArgumentException(Messages.getString("MapperManager.exceptionMessage.useOtherSignature")); //$NON-NLS-1$
         }

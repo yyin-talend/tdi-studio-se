@@ -523,4 +523,8 @@ public class VarsDataMapTableView extends DataMapTableView {
         super.loaded();
     }
 
+    @Override
+    public String findUniqueName(String baseName) {
+        return "\"\""; //$NON-NLS-1$
+    }
 }
