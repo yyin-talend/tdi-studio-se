@@ -15,6 +15,10 @@ package org.talend.designer.mapper.ui.visualmap.table;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.oro.text.regex.MalformedPatternException;
+import org.apache.oro.text.regex.Pattern;
+import org.apache.oro.text.regex.Perl5Compiler;
+import org.apache.oro.text.regex.Perl5Matcher;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.CellEditor;
@@ -66,6 +70,7 @@ import org.talend.commons.utils.data.bean.IBeanPropertyAccessors;
 import org.talend.core.PluginChecker;
 import org.talend.core.model.metadata.IMetadataColumn;
 import org.talend.core.model.process.TraceData;
+import org.talend.core.utils.TalendQuoteUtils;
 import org.talend.designer.abstractmap.model.table.IDataMapTable;
 import org.talend.designer.abstractmap.model.tableentry.ITableEntry;
 import org.talend.designer.mapper.i18n.Messages;
@@ -1081,8 +1086,8 @@ public class InputDataMapTableView extends DataMapTableView {
             @Override
             public void widgetSelected(SelectionEvent arg0) {
                 if (!mapperManager.componentIsReadOnly()) {
-                    getInputTable().addGlobalMapEntry(new GlobalMapEntry(getInputTable(), "\"myKey\"", "")); //$NON-NLS-1$ //$NON-NLS-2$
-
+                    getInputTable().addGlobalMapEntry(
+                            new GlobalMapEntry(getInputTable(), "\"" + findUniqueName("myKey") + "\"", "")); //$NON-NLS-1$ //$NON-NLS-2$//$NON-NLS-3$
                     updateGridDataHeightForTableGlobalMap();
                     resizeAtExpandedSize();
                 }
@@ -1257,4 +1262,53 @@ public class InputDataMapTableView extends DataMapTableView {
 
     }
 
+    /**
+     * Manage to find a unique name with the given name.
+     * 
+     * @param titleName
+     */
+    @Override
+    public String findUniqueName(String baseName) {
+        if (baseName == null) {
+            throw new IllegalArgumentException(Messages.getString("InputDataMapTableView.baseNameCannotNull")); //$NON-NLS-1$
+        }
+        String uniqueName = baseName + 1;
+
+        int counter = 1;
+        boolean exists = true;
+        while (exists) {
+            exists = !checkValidName(uniqueName);
+            if (!exists) {
+                break;
+            }
+            uniqueName = baseName + counter++;
+        }
+        return uniqueName;
+    }
+
+    /**
+     * Check if the given name will be unique in the process. If already exists with that name, false will be returned.
+     * 
+     * @param uniqueName
+     * @return true if the name is unique
+     */
+    public boolean checkValidName(String name) {
+        for (ITableEntry entry : getInputTable().getGlobalMapEntries()) {
+            if (TalendQuoteUtils.removeQuotesIfExist(entry.getName()).equals(name)) {
+                return false;
+            }
+        }
+        Perl5Matcher matcher = new Perl5Matcher();
+        Perl5Compiler compiler = new Perl5Compiler();
+        Pattern pattern;
+        try {
+            pattern = compiler.compile("^[A-Za-z_][A-Za-z0-9_]*$"); //$NON-NLS-1$
+            if (!matcher.matches(name, pattern)) {
+                return false;
+            }
+        } catch (MalformedPatternException e) {
+            throw new RuntimeException(e);
+        }
+        return true;
+    }
 }

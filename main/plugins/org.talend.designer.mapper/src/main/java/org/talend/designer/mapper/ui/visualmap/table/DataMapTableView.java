@@ -3307,4 +3307,11 @@ public abstract class DataMapTableView extends Composite implements IDataMapTabl
         }
 
     }
+
+    /**
+     * Get unique name with the given name.
+     * 
+     * @param titleName
+     */
+    public abstract String findUniqueName(String baseName);
 }

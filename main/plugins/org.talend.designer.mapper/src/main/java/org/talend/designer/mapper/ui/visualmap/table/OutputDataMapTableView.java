@@ -90,6 +90,7 @@ public class OutputDataMapTableView extends DataMapTableView {
         createTableForColumns();
     }
 
+    @Override
     protected void createMapSettingTable() {
 
         ExtendedTableModel<GlobalMapEntry> tableMapSettingEntriesModel = ((OutputTable) abstractDataMapTable)
@@ -155,6 +156,7 @@ public class OutputDataMapTableView extends DataMapTableView {
         });
     }
 
+    @Override
     protected IBeanPropertyAccessors<GlobalMapEntry, Object> getMapSettingValueAccess(final CellEditor cellEditor) {
         return new IBeanPropertyAccessors<GlobalMapEntry, Object>() {
 
@@ -221,44 +223,54 @@ public class OutputDataMapTableView extends DataMapTableView {
         };
     }
 
+    @Override
     protected void refreshCondensedImage(AbstractInOutTable absTable, String option, Object previousValue) {
         OutputTable table = (OutputTable) absTable;
         if (OUTPUT_REJECT.equals(option)) {
             if (mapperManager.getDefaultSetting().get(OUTPUT_REJECT).equals(table.isReject())) {
-                if (changedOptions > 0)
+                if (changedOptions > 0) {
                     changedOptions--;
+                }
             } else if (mapperManager.getDefaultSetting().get(OUTPUT_REJECT).equals(previousValue)) {
-                if (changedOptions < 6)
+                if (changedOptions < 6) {
                     changedOptions++;
+                }
             }
         } else if (LOOK_UP_INNER_JOIN_REJECT.equals(option)) {
             if (mapperManager.getDefaultSetting().get(LOOK_UP_INNER_JOIN_REJECT).equals(table.isRejectInnerJoin())) {
-                if (changedOptions > 0)
+                if (changedOptions > 0) {
                     changedOptions--;
+                }
             } else if (mapperManager.getDefaultSetting().get(LOOK_UP_INNER_JOIN_REJECT).equals(previousValue)) {
-                if (changedOptions < 6)
+                if (changedOptions < 6) {
                     changedOptions++;
+                }
             }
         } else if (SCHEMA_TYPE.equals(option)) {
             if (mapperManager.getDefaultSetting().get(SCHEMA_TYPE).equals(table.isRepository())) {
-                if (changedOptions > 0)
+                if (changedOptions > 0) {
                     changedOptions--;
+                }
             } else if (mapperManager.getDefaultSetting().get(SCHEMA_TYPE).equals(previousValue)) {
-                if (changedOptions < 6)
+                if (changedOptions < 6) {
                     changedOptions++;
+                }
             }
         } else if (SCHEMA_ID.equals(option)) {
             if (mapperManager.getDefaultSetting().get(SCHEMA_ID) == table.getId()) {
-                if (changedOptions > 0)
+                if (changedOptions > 0) {
                     changedOptions--;
+                }
             } else if (mapperManager.getDefaultSetting().get(SCHEMA_ID) == previousValue) {
-                if (changedOptions < 6)
+                if (changedOptions < 6) {
                     changedOptions++;
+                }
             }
         }
         condensedItem.setImage(ImageProviderMapper.getImage(getCondencedItemImage(changedOptions)));
     }
 
+    @Override
     protected boolean needColumnBgColor(GlobalMapEntry bean) {
         OutputTable outputTable = (OutputTable) bean.getParent();
 
@@ -282,22 +294,27 @@ public class OutputDataMapTableView extends DataMapTableView {
         return false;
     }
 
+    @Override
     protected void initCondensedItemImage() {
         if (!mapperManager.getDefaultSetting().get(OUTPUT_REJECT).equals(getOutputTable().isReject())) {
-            if (changedOptions < 4)
+            if (changedOptions < 4) {
                 changedOptions++;
+            }
         }
         if (!mapperManager.getDefaultSetting().get(LOOK_UP_INNER_JOIN_REJECT).equals(getOutputTable().isRejectInnerJoin())) {
-            if (changedOptions < 4)
+            if (changedOptions < 4) {
                 changedOptions++;
+            }
         }
         if (!mapperManager.getDefaultSetting().get(SCHEMA_TYPE).equals(getOutputTable().isRepository())) {
-            if (changedOptions < 4)
+            if (changedOptions < 4) {
                 changedOptions++;
+            }
         }
         if (mapperManager.getDefaultSetting().get(SCHEMA_ID) != getOutputTable().getId()) {
-            if (changedOptions < 4)
+            if (changedOptions < 4) {
                 changedOptions++;
+            }
         }
 
         condensedItem.setImage(ImageProviderMapper.getImage(getCondencedItemImage(changedOptions)));
@@ -693,4 +710,8 @@ public class OutputDataMapTableView extends DataMapTableView {
 
     }
 
+    @Override
+    public String findUniqueName(String baseName) {
+        return "\"\""; //$NON-NLS-1$
+    }
 }
