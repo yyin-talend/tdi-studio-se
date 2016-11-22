@@ -23,6 +23,7 @@ import java.util.regex.Pattern;
 import org.talend.core.PluginChecker;
 import org.talend.core.language.LanguageManager;
 import org.talend.core.model.components.ComponentCategory;
+import org.talend.core.model.components.EComponentType;
 import org.talend.core.model.components.IComponent;
 import org.talend.core.model.metadata.IMetadataColumn;
 import org.talend.core.model.metadata.IMetadataTable;
@@ -1400,6 +1401,10 @@ public class Connection extends Element implements IConnection, IPerformance {
         if (source != null && this.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {
             INodeConnector sourceNodeConnector = getSourceNodeConnector();
             if (sourceNodeConnector != null) {
+                String connectorName = sourceNodeConnector.getName();
+                if (EComponentType.GENERIC.equals(source.getComponent().getComponentType())) {
+                    connectorName = "MAIN";
+                }
                 if (sourceNodeConnector.isMultiSchema()) {
                     IMetadataTable table = source.getMetadataTable(metaName);
                     if (table == null && source.getJobletNode() != null) {
@@ -1409,11 +1414,11 @@ public class Connection extends Element implements IConnection, IPerformance {
                         // MOD by zshen when call the TGenkeyViewAction from tMatchGroup node which have tMap node
                         // before it there only case about one output then need get metadata as follow:
                     } else if (table == null && source.getMetadataList() != null && source.getMetadataList().size() == 1) {
-                        table = source.getMetadataFromConnector(sourceNodeConnector.getName());
+                        table = source.getMetadataFromConnector(connectorName);
                     }
                     return table;
                 } else {
-                    IMetadataTable table = source.getMetadataFromConnector(sourceNodeConnector.getName());
+                    IMetadataTable table = source.getMetadataFromConnector(connectorName);
                     if (table == null && source.getJobletNode() != null) {
                         if (source.getMetadataList().size() > 0) {
                             table = source.getMetadataList().get(0);

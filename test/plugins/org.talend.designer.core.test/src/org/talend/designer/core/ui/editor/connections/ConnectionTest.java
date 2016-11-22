@@ -18,6 +18,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.junit.After;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.talend.core.model.components.ComponentCategory;
@@ -41,6 +42,8 @@ import org.talend.designer.core.ui.editor.process.Process;
  */
 public class ConnectionTest {
 
+    private IProcess2 process;
+
     private Connection connection = null;
 
     private INode source;
@@ -57,7 +60,7 @@ public class ConnectionTest {
     @Before
     public void setUp() throws Exception {
         Property property = PropertiesFactory.eINSTANCE.createProperty();
-        IProcess2 process = new Process(property);
+        process = new Process(property);
         IComponent sourceCom = ComponentsFactoryProvider.getInstance().get("tMysqlInput",
                 ComponentCategory.CATEGORY_4_DI.getName());
         IComponent targetCom = ComponentsFactoryProvider.getInstance().get("tMysqlOutput",
@@ -124,7 +127,7 @@ public class ConnectionTest {
         connection.setTraceData(null);
         assertNull(connection.getTraceData());
     }
-    
+
     @Test
     public void testCreateParallelizeParameters() {
         IComponent componentPar = ComponentsFactoryProvider.getInstance().get("tPartitioner",
@@ -133,11 +136,30 @@ public class ConnectionTest {
         assertEquals(node.getPropertyValue("NUM_PARTITIONS").toString(), connection.getPropertyValue("NUM_PARTITIONS").toString());
         assertEquals(node.getPropertyValue("HASH_PARTITION").toString(), connection.getPropertyValue("HASH_PARTITION").toString());
         assertEquals(node.getPropertyValue("HASH_KEYS").toString(), connection.getPropertyValue("HASH_KEYS").toString());
-        
+
         IComponent componentCol = ComponentsFactoryProvider.getInstance().get("tRecollector",
                 ComponentCategory.CATEGORY_4_DI.getName());
         node = new Node(componentCol, (Process) source.getProcess());
         assertEquals(node.getPropertyValue("IS_SORTING").toString(), connection.getPropertyValue("IS_SORTING").toString());
     }
 
+    @Test
+    public void testGetMetadataTable() {
+        // test getMetadataTable() for old component
+        IMetadataTable metadataTable = connection.getMetadataTable();
+        Assert.assertNotNull(metadataTable);
+
+        // test getMetadataTable() for new component freamwork
+        IComponent componentDataset = ComponentsFactoryProvider.getInstance().get("tDatasetInput",
+                ComponentCategory.CATEGORY_4_DI.getName());
+        IComponent targetCom = ComponentsFactoryProvider.getInstance().get("tMysqlOutput",
+                ComponentCategory.CATEGORY_4_DI.getName());
+        Node source = new Node(componentDataset, process);
+        Node target = new Node(targetCom, process);
+
+        Connection connection = new Connection(source, target, EConnectionType.FLOW_MAIN, EConnectionType.FLOW_MAIN.getName(),
+                "test", "test", "test", false);
+        metadataTable = connection.getMetadataTable();
+        Assert.assertNotNull(metadataTable);
+    }
 }
