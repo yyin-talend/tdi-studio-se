@@ -1172,7 +1172,11 @@ skeleton="../templates/db_output_bulk.skeleton"
 						int countSum_<%=cid%> = 0;
 						<%dbLog.batch().executeTry(dbLog.str(dataAction));%>
 						for(int countEach_<%=cid%>: pstmt_<%=cid %>.executeBatch()) {
-							countSum_<%=cid%> += (countEach_<%=cid%> < 0 ? 0 : countEach_<%=cid%>);
+							if(countEach_<%=cid%> == java.sql.Statement.SUCCESS_NO_INFO ){
+        						countSum_<%=cid%> += 1;
+        					}else{
+        						countSum_<%=cid%> += (countEach_<%=cid%> < 0 ? 0 : countEach_<%=cid%>);
+        					}
 						}
 						<%dbLog.batch().executeDone(dbLog.str(dataAction));%>
             	    	<%if (("INSERT").equals(dataAction)) {
@@ -1198,7 +1202,11 @@ skeleton="../templates/db_output_bulk.skeleton"
                 	%>
                 	int countSum_<%=cid%> = 0;
 					for(int countEach_<%=cid%>: e.getUpdateCounts()) {
-						countSum_<%=cid%> += (countEach_<%=cid%> < 0 ? 0 : countEach_<%=cid%>);
+						if(countEach_<%=cid%> == java.sql.Statement.SUCCESS_NO_INFO ){
+    						countSum_<%=cid%> += 1;
+    					}else{
+    						countSum_<%=cid%> += (countEach_<%=cid%> < 0 ? 0 : countEach_<%=cid%>);
+    					}
 					}
 					<%if (("INSERT").equals(dataAction)) {
 			    	%>
@@ -1238,7 +1246,11 @@ skeleton="../templates/db_output_bulk.skeleton"
                 		int countSum_<%=cid%> = 0;
                 		<%dbLog.batch().executeTry(dbLog.str(dataAction));%>
 						for(int countEach_<%=cid%>: pstmt_<%=cid %>.executeBatch()) {
-							countSum_<%=cid%> += (countEach_<%=cid%> < 0 ? 0 : countEach_<%=cid%>);
+							if(countEach_<%=cid%> == java.sql.Statement.SUCCESS_NO_INFO ){
+        						countSum_<%=cid%> += 1;
+        					}else{
+        						countSum_<%=cid%> += (countEach_<%=cid%> < 0 ? 0 : countEach_<%=cid%>);
+        					}
 						}
 						<%dbLog.batch().executeDone(dbLog.str(dataAction));%>
             	    	<%if (("INSERT").equals(dataAction)) {
@@ -1263,7 +1275,11 @@ skeleton="../templates/db_output_bulk.skeleton"
                 	%>
                 		int countSum_<%=cid%> = 0;
 						for(int countEach_<%=cid%>: e.getUpdateCounts()) {
-							countSum_<%=cid%> += (countEach_<%=cid%> < 0 ? 0 : countEach_<%=cid%>);
+							if(countEach_<%=cid%> == java.sql.Statement.SUCCESS_NO_INFO ){
+        						countSum_<%=cid%> += 1;
+        					}else{
+        						countSum_<%=cid%> += (countEach_<%=cid%> < 0 ? 0 : countEach_<%=cid%>);
+        					}
 						}
 						<%if (("INSERT").equals(dataAction)) {
             	    	%>
