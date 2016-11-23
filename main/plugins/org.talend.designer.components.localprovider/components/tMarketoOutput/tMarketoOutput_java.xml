@@ -62,14 +62,14 @@
 		<COLUMN NAME="Status" TYPE="id_String" READONLY="false" CUSTOM="true"/>
 		<COLUMN NAME="ERROR_MSG" TYPE="id_String" READONLY="false" CUSTOM="true"/>
       </TABLE>
-      <TABLE IF="(USE_REST_API == 'true') AND (OPERATION=='syncLead')">
+      <TABLE IF="(USE_SOAP_API == 'false') AND (OPERATION=='syncLead')">
         <COLUMN NAME="id" TYPE="id_Integer" READONLY="false" />
 		<COLUMN KEY="false" LENGTH="255" NAME="email" TYPE="id_String" />
 		<COLUMN KEY="false" LENGTH="255" NAME="firstName" TYPE="id_String" />
 		<COLUMN KEY="false" LENGTH="255" NAME="lastName" TYPE="id_String" />
         <COLUMN NAME="Status" TYPE="id_String" READONLY="true" CUSTOM="true"/>
       </TABLE>
-      <TABLE IF="(USE_REST_API == 'true') AND (OPERATION=='syncMultipleLeads')">
+      <TABLE IF="(USE_SOAP_API == 'false') AND (OPERATION=='syncMultipleLeads')">
       	<COLUMN NAME="id" TYPE="id_Integer" READONLY="false" />
 		<COLUMN KEY="false" LENGTH="255" NAME="email" TYPE="id_String" />
 		<COLUMN KEY="false" LENGTH="255" NAME="firstName" TYPE="id_String" />
