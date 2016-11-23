@@ -53,7 +53,7 @@
 			<COLUMN NAME="LeadKeyType" TYPE="id_String" READONLY="true"/>
 			<COLUMN NAME="LeadKeyValue" TYPE="id_String" READONLY="true"/>
 	    </TABLE>
-	    <TABLE READONLY="true" IF="(USE_REST_API == 'true')">
+	    <TABLE READONLY="true" IF="(USE_SOAP_API == 'false')">
 	        <COLUMN NAME="ListId" TYPE="id_Integer" READONLY="true"/>
 			<COLUMN NAME="LeadId" TYPE="id_Integer" READONLY="true"/>
 	    </TABLE>
@@ -78,11 +78,11 @@
 		<COLUMN NAME="LeadKeyValue" TYPE="id_String" READONLY="true"/>
         <COLUMN NAME="Success" TYPE="id_Boolean" READONLY="true"/>
       </TABLE>
-      <TABLE READONLY="true" IF="(USE_REST_API == 'true') and ((OPERATION=='ADDTOLIST') or (OPERATION=='REMOVEFROMLIST')) and (MUTIPLE_OPERATION=='true')">
+      <TABLE READONLY="true" IF="(USE_SOAP_API == 'false') and ((OPERATION=='ADDTOLIST') or (OPERATION=='REMOVEFROMLIST')) and (MUTIPLE_OPERATION=='true')">
 	    <COLUMN NAME="ListId" TYPE="id_Integer" READONLY="true"/>
 	    <COLUMN NAME="LeadId" TYPE="id_Integer" READONLY="true"/>
       </TABLE>
-      <TABLE READONLY="true" IF="(USE_REST_API == 'true') and ((OPERATION=='ISMEMBEROFLIST') or (MUTIPLE_OPERATION=='false'))">
+      <TABLE READONLY="true" IF="(USE_SOAP_API == 'false') and ((OPERATION=='ISMEMBEROFLIST') or (MUTIPLE_OPERATION=='false'))">
 	    <COLUMN NAME="ListId" TYPE="id_Integer" READONLY="true"/>
 	    <COLUMN NAME="LeadId" TYPE="id_Integer" READONLY="true"/>
         <COLUMN NAME="Status" TYPE="id_String" READONLY="true"/>
@@ -103,7 +103,7 @@
 		<COLUMN NAME="LeadKeyValue" TYPE="id_String" READONLY="true"/>
         <COLUMN NAME="ERROR_MSG" TYPE="id_String" READONLY="true"/>
       </TABLE>
-      <TABLE READONLY="true"  IF="(USE_REST_API == 'true')">
+      <TABLE READONLY="true"  IF="(USE_SOAP_API == 'false')">
 	    <COLUMN NAME="ListId" TYPE="id_Integer" READONLY="true"/>
 	    <COLUMN NAME="LeadId" TYPE="id_Integer" READONLY="true"/>
         <COLUMN NAME="Status" TYPE="id_String" READONLY="true"/>
