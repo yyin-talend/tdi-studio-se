@@ -86,7 +86,7 @@
 			<COLUMN KEY="false" LENGTH="255" NAME="OrgName" TYPE="id_String" />
 			<COLUMN KEY="false" LENGTH="255" NAME="ForeignSysOrgId" TYPE="id_String" />
 		</TABLE>
-		<TABLE IF="(USE_REST_API == 'true') and ((OPERATION=='getLead') or (OPERATION=='getMutipleLeads'))">
+		<TABLE IF="(USE_SOAP_API == 'false') and ((OPERATION=='getLead') or (OPERATION=='getMutipleLeads'))">
 			<COLUMN KEY="true" LENGTH="255" NAME="id" TYPE="id_Integer" />
 			<COLUMN KEY="false" LENGTH="255" NAME="email" TYPE="id_String" />
 			<COLUMN KEY="false" LENGTH="255" NAME="firstName" TYPE="id_String" />
@@ -94,7 +94,7 @@
 			<COLUMN KEY="false" LENGTH="255" NAME="createdAt" TYPE="id_Date" PATTERN="&quot;yyyy-MM-dd&apos;T&apos;HH:mm:ssZ&quot;"/>
 			<COLUMN KEY="false" LENGTH="255" NAME="updatedAt" TYPE="id_Date" PATTERN="&quot;yyyy-MM-dd&apos;T&apos;HH:mm:ssZ&quot;"/>
 		</TABLE>
-		<TABLE IF="(USE_REST_API == 'true') AND (OPERATION=='getLeadChanges')">
+		<TABLE IF="(USE_SOAP_API == 'false') AND (OPERATION=='getLeadChanges')">
 			<COLUMN KEY="true" LENGTH="255" NAME="id" TYPE="id_Long" />
 			<COLUMN KEY="false" LENGTH="255" NAME="leadId" TYPE="id_Integer" />
 			<COLUMN KEY="false" LENGTH="255" NAME="activityDate" TYPE="id_Date" PATTERN="&quot;yyyy-MM-dd&apos;T&apos;HH:mm:ssZ&quot;" />
@@ -102,7 +102,7 @@
 			<COLUMN KEY="false" LENGTH="255" NAME="activityTypeValue" TYPE="id_String" />
 			<COLUMN KEY="false" LENGTH="255" NAME="fields" TYPE="id_String" />
 		</TABLE>
-		<TABLE IF="(USE_REST_API == 'true') AND (OPERATION=='getLeadActivity')">
+		<TABLE IF="(USE_SOAP_API == 'false') AND (OPERATION=='getLeadActivity')">
 			<COLUMN KEY="true" LENGTH="255" NAME="id" TYPE="id_Long" />
 			<COLUMN KEY="false" LENGTH="255" NAME="leadId" TYPE="id_Integer" />
 			<COLUMN KEY="false" LENGTH="255" NAME="activityDate" TYPE="id_Date" PATTERN="&quot;yyyy-MM-dd&apos;T&apos;HH:mm:ssZ&quot;" />
@@ -167,7 +167,7 @@
 		</ITEMS>
 	</PARAMETER>
 	<PARAMETER NAME="LEAD_KEYTYPE_REST" FIELD="OPENED_LIST" NUM_ROW="60"
-			REQUIRED="true" SHOW_IF="(USE_REST_API == 'true') AND((OPERATION=='getLead') or ((USE_SOAP_API == 'true') AND (OPERATION=='getLeadActivity')) or ((OPERATION=='getMutipleLeads') AND (LEAD_SELECTOR == 'LEAD_KEY_SELECTOR'))) ">
+			REQUIRED="true" SHOW_IF="(USE_REST_API == 'true') AND((OPERATION=='getLead') or ((OPERATION=='getMutipleLeads') AND (LEAD_SELECTOR == 'LEAD_KEY_SELECTOR'))) ">
 		<ITEMS DEFAULT="ID">
 			<ITEM NAME="ID" VALUE="id" />
 			<ITEM NAME="COOKIE" VALUE="cookie" />
