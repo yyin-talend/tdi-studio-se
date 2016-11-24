@@ -185,7 +185,7 @@ public class RepositoryService implements IRepositoryService, IRepositoryContext
 
     @Override
     public IPath getRepositoryPath(IRepositoryNode node) {
-        return RepositoryNodeUtilities.getPath((RepositoryNode) node);
+        return RepositoryNodeUtilities.getPath(node);
     }
 
     /*
@@ -663,6 +663,7 @@ public class RepositoryService implements IRepositoryService, IRepositoryContext
     public ContextItem openRepositoryReviewDialog(ERepositoryObjectType type, String repositoryType,
             List<IContextParameter> params, IContextManager contextManager) {
         ContextRepositoryReviewDialog dialog = new ContextRepositoryReviewDialog(new Shell(), type, params, contextManager);
+        dialog.setUseReferenceProjectNode(false);
         if (dialog.open() == Window.OK) {
             return dialog.getItem();
         }
