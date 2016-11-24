@@ -309,5 +309,19 @@
 				<pigudfs.binaries.includes.set>org.talend.pigudf.${talend.project.name.lowercase}:*</pigudfs.binaries.includes.set>
 			</properties>
 		</profile>
+		
+		<profile>
+            <id>include-microservice-configs</id>
+            <properties>
+                <microservice.configs.dir>${current.resources.dir}/</microservice.configs.dir>
+            </properties>
+        </profile>
+        
+        <profile>
+            <id>include-microservice-running-configs</id>
+            <properties>
+                <microservice.running.configs.dir>${current.resources.dir}/</microservice.running.configs.dir>
+            </properties>
+        </profile>
 	</profiles>
 </project>
