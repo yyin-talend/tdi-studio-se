@@ -76,8 +76,6 @@ import org.talend.core.model.process.Element;
 import org.talend.core.model.process.ElementParameterParser;
 import org.talend.core.model.process.IConnection;
 import org.talend.core.model.process.IConnectionCategory;
-import org.talend.core.model.process.IContext;
-import org.talend.core.model.process.IContextParameter;
 import org.talend.core.model.process.IElement;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.IExternalData;
@@ -112,7 +110,6 @@ import org.talend.core.ui.services.IDesignerCoreUIService;
 import org.talend.designer.core.CheckNodeManager;
 import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.ICheckNodesService;
-import org.talend.designer.core.IDesignerCoreService;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.model.components.AbstractBasicComponent;
 import org.talend.designer.core.model.components.EParameterName;
@@ -3433,7 +3430,7 @@ public class Node extends Element implements IGraphicalNode {
             // check if we have circle for current node
             if (checkNodeCircle(this)) {
                 String errorMessage = Messages.getString("Node.notFormedLoop"); //$NON-NLS-1$
-                Problems.add(ProblemStatus.ERROR, this, errorMessage);
+                Problems.add(ProblemStatus.WARNING, this, errorMessage);
             }
         }
         int tableOutLinkNum = 0;
