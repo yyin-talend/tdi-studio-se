@@ -23,7 +23,6 @@ import java.util.regex.Pattern;
 import org.talend.core.PluginChecker;
 import org.talend.core.language.LanguageManager;
 import org.talend.core.model.components.ComponentCategory;
-import org.talend.core.model.components.EComponentType;
 import org.talend.core.model.components.IComponent;
 import org.talend.core.model.metadata.IMetadataColumn;
 import org.talend.core.model.metadata.IMetadataTable;
@@ -1402,9 +1401,6 @@ public class Connection extends Element implements IConnection, IPerformance {
             INodeConnector sourceNodeConnector = getSourceNodeConnector();
             if (sourceNodeConnector != null) {
                 String connectorName = sourceNodeConnector.getName();
-                if (EComponentType.GENERIC.equals(source.getComponent().getComponentType())) {
-                    connectorName = "MAIN";
-                }
                 if (sourceNodeConnector.isMultiSchema()) {
                     IMetadataTable table = source.getMetadataTable(metaName);
                     if (table == null && source.getJobletNode() != null) {

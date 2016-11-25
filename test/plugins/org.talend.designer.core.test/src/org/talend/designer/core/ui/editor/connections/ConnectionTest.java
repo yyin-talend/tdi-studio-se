@@ -18,7 +18,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.junit.After;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.talend.core.model.components.ComponentCategory;
@@ -143,23 +142,4 @@ public class ConnectionTest {
         assertEquals(node.getPropertyValue("IS_SORTING").toString(), connection.getPropertyValue("IS_SORTING").toString());
     }
 
-    @Test
-    public void testGetMetadataTable() {
-        // test getMetadataTable() for old component
-        IMetadataTable metadataTable = connection.getMetadataTable();
-        Assert.assertNotNull(metadataTable);
-
-        // test getMetadataTable() for new component freamwork
-        IComponent componentDataset = ComponentsFactoryProvider.getInstance().get("tDatasetInput",
-                ComponentCategory.CATEGORY_4_DI.getName());
-        IComponent targetCom = ComponentsFactoryProvider.getInstance().get("tMysqlOutput",
-                ComponentCategory.CATEGORY_4_DI.getName());
-        Node source = new Node(componentDataset, process);
-        Node target = new Node(targetCom, process);
-
-        Connection connection = new Connection(source, target, EConnectionType.FLOW_MAIN, EConnectionType.FLOW_MAIN.getName(),
-                "test", "test", "test", false);
-        metadataTable = connection.getMetadataTable();
-        Assert.assertNotNull(metadataTable);
-    }
 }
