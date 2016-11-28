@@ -329,7 +329,7 @@ public class DownloadComponenentsAction extends Action implements IIntroAction {
             }
         }
 
-        protected boolean installUpdateSiteComponent(File localZipFile) {
+        protected boolean installUpdateSiteComponent(File localZipFile) throws Exception {
             final File tmpFolder = org.talend.utils.files.FileUtils.createTmpFolder("components", "updatesite"); //$NON-NLS-1$ //$NON-NLS-2$
             try {
                 boolean success = false;
@@ -348,12 +348,9 @@ public class DownloadComponenentsAction extends Action implements IIntroAction {
                     }
                 }
                 return success;
-            } catch (Exception e) {
-                ExceptionHandler.process(e);
             } finally {
                 FilesUtils.deleteFolder(tmpFolder, true);
             }
-            return false;
         }
 
         private void askReboot() {
