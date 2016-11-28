@@ -58,6 +58,7 @@ import org.talend.core.model.repository.IRepositoryTypeProcessor;
 import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.model.repository.RepositoryContentManager;
 import org.talend.core.model.utils.RepositoryManagerHelper;
+import org.talend.repository.ProjectManager;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.IRepositoryNode;
 import org.talend.repository.model.IRepositoryNode.ENodeType;
@@ -129,6 +130,8 @@ public class RepositoryReviewDialog extends Dialog {
     private static final String ISSPARK = "ISSPARK"; //$NON-NLS-1$
 
     private static final String USEYARN = "USEYARN"; //$NON-NLS-1$
+
+    private boolean filterReferenceNode = false;
 
     protected RepositoryReviewDialog(Shell parentShell) {
         super(parentShell);
@@ -536,14 +539,18 @@ public class RepositoryReviewDialog extends Dialog {
         } else {
             RepositoryNode node = (RepositoryNode) selection.getFirstElement();
 
-            if (node.getType() != ENodeType.REPOSITORY_ELEMENT) {
+            if (filterReferenceNode && !ProjectManager.getInstance().isInCurrentMainProject(node)) {
                 highlightOKButton = false;
-            }
-            // else if (t == ERepositoryObjectType.SERVICESOPERATION) {
-            // return highlightOKButton;
-            // }
-            else if (!typeProcessor.isSelectionValid(node)) {
-                highlightOKButton = false;
+            } else {
+                if (node.getType() != ENodeType.REPOSITORY_ELEMENT) {
+                    highlightOKButton = false;
+                }
+                // else if (t == ERepositoryObjectType.SERVICESOPERATION) {
+                // return highlightOKButton;
+                // }
+                else if (!typeProcessor.isSelectionValid(node)) {
+                    highlightOKButton = false;
+                }
             }
         }
         return highlightOKButton;
@@ -660,6 +667,10 @@ public class RepositoryReviewDialog extends Dialog {
         if (this.typeProcessor instanceof JobTypeProcessor) {
             ((JobTypeProcessor) this.typeProcessor).setJobIDList(jobIDList);
         }
+    }
+
+    public void setFilterReferenceNode(boolean filterRefNode) {
+        this.filterReferenceNode = filterRefNode;
     }
 }
 
