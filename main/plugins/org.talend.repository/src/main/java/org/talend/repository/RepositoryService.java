@@ -663,7 +663,7 @@ public class RepositoryService implements IRepositoryService, IRepositoryContext
     public ContextItem openRepositoryReviewDialog(ERepositoryObjectType type, String repositoryType,
             List<IContextParameter> params, IContextManager contextManager) {
         ContextRepositoryReviewDialog dialog = new ContextRepositoryReviewDialog(new Shell(), type, params, contextManager);
-        dialog.setUseReferenceProjectNode(false);
+        dialog.setFilterReferenceNode(true);
         if (dialog.open() == Window.OK) {
             return dialog.getItem();
         }

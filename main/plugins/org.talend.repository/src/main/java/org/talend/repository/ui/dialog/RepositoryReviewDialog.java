@@ -131,7 +131,7 @@ public class RepositoryReviewDialog extends Dialog {
 
     private static final String USEYARN = "USEYARN"; //$NON-NLS-1$
 
-    private boolean useReferenceProjectNode = true;
+    private boolean filterReferenceNode = false;
 
     protected RepositoryReviewDialog(Shell parentShell) {
         super(parentShell);
@@ -539,7 +539,7 @@ public class RepositoryReviewDialog extends Dialog {
         } else {
             RepositoryNode node = (RepositoryNode) selection.getFirstElement();
 
-            if (!useReferenceProjectNode && !ProjectManager.getInstance().isInCurrentMainProject(node)) {
+            if (filterReferenceNode && !ProjectManager.getInstance().isInCurrentMainProject(node)) {
                 highlightOKButton = false;
             } else {
                 if (node.getType() != ENodeType.REPOSITORY_ELEMENT) {
@@ -669,8 +669,8 @@ public class RepositoryReviewDialog extends Dialog {
         }
     }
 
-    public void setUseReferenceProjectNode(boolean useRefNode) {
-        this.useReferenceProjectNode = useRefNode;
+    public void setFilterReferenceNode(boolean filterRefNode) {
+        this.filterReferenceNode = filterRefNode;
     }
 }
 
