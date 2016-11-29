@@ -727,7 +727,7 @@ this.globalResumeTicket = false;//to run others jobs
 
             if (!componentName.equals("tLogCatcher") && !componentName.equals("tFlowMeterCatcher") && !componentName.equals("tAssertCatcher") && !componentName.equals("tStatCatcher")) {
 %>
-        final Thread launchingThread = Thread.currentThread();
+        final Thread launchingThread_<%=uniqueName %> = Thread.currentThread();
         runningThreadCount.add(1);
         new Thread(){
             public void run() {
@@ -751,7 +751,7 @@ this.globalResumeTicket = false;//to run others jobs
                     }
 
                     if ("true".equals(((java.util.Map) threadLocal.get()).get("ESBJobInterruptedException"))) {
-                        launchingThread.interrupt();
+                        launchingThread_<%=uniqueName %>.interrupt();
                     }
 
                     runningThreadCount.add(-1);
