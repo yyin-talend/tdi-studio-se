@@ -1632,7 +1632,6 @@ public class EmfComponent extends AbstractComponent {
                         showIfMap.put(distribution, new HashSet<ComponentCondition>());
                     }
                     showIfMap.get(distribution).add(hc.getDisplayCondition(componentType));
-                    defaultVersionPerDistribution.put(distribution, version);
                 }
             }
 
@@ -1655,17 +1654,24 @@ public class EmfComponent extends AbstractComponent {
                 }
             });
 
+            // The versionList is sorted by distribution name (ASC) and version name (DSC)
             Collections.sort(versionList, new Comparator<Bean>() {
 
                 @Override
                 public int compare(Bean b1, Bean b2) {
                     int cmp = b1.getDistributionName().compareTo(b2.getDistributionName());
                     if (cmp == 0) {
-                        cmp = b1.getName().compareTo(b2.getName());
+                        cmp = b2.getName().compareTo(b1.getName());
                     }
                     return cmp;
                 }
             });
+
+            // We store the highest version per distribution which will become the default one in the versions drop down
+            // list.
+            for (Bean version : versionList) {
+                defaultVersionPerDistribution.putIfAbsent(version.getDistributionName(), version.getName());
+            }
 
             ElementParameter newParam = new ElementParameter(node);
             newParam.setCategory(EComponentCategory.BASIC);
