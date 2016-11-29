@@ -311,7 +311,8 @@ public class UpdateNodeParameterCommand extends Command {
                                     || param.getFieldType() == EParameterFieldType.MEMO_SQL) {
                                 continue;
                             }
-                            if (param.getFieldType().equals(EParameterFieldType.FILE) && isXsdPath) {
+                            //    TUP-16466:XML/XSD:Studio hang on after detect update
+                            if (node.getComponent().getName().startsWith("tESB")&&param.getFieldType().equals(EParameterFieldType.FILE) && isXsdPath) {
                                 continue;
                             }
                             IMetadataTable table = null;
