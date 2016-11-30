@@ -59,6 +59,7 @@ import org.talend.designer.codegen.i18n.Messages;
 import org.talend.designer.codegen.model.CodeGeneratorEmittersPoolFactory;
 import org.talend.designer.codegen.model.CodeGeneratorInternalTemplatesFactoryProvider;
 import org.talend.designer.codegen.proxy.JetProxy;
+import org.talend.designer.core.generic.model.Component;
 
 /**
  * CodeGenerator.
@@ -573,6 +574,13 @@ public class CodeGenerator implements ICodeGenerator {
                     // if (!isIterate) {
                     codeComponent.append(generateComponentCode(subProcess, node, ECodePart.END, incomingName, typeGen));
                     // }
+                    if (node.getComponent() instanceof Component) {
+                    	if (((Component)node.getComponent()).getComponentDefinition().isRejectAfterClose()) {
+                            codeComponent.append(generateTypedComponentCode(EInternalTemplate.HANDLE_REJECTS_START, node, ECodePart.END, incomingName, subProcess));
+                    		codeComponent.append(generatesTreeCode(subProcess, node, ECodePart.MAIN, typeGen));
+                            codeComponent.append(generateTypedComponentCode(EInternalTemplate.HANDLE_REJECTS_END, node, ECodePart.END, incomingName, subProcess));
+                    	}
+                    }
                     codeComponent.append(generatesTreeCode(subProcess, node, part, typeGen));
                     // if (isIterate) {
                     // codeComponent.append(generateComponentCode(node,
