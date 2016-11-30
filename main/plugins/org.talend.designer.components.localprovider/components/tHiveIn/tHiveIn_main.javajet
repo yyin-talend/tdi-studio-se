@@ -6,9 +6,9 @@ imports="
 		org.talend.core.model.metadata.IMetadataColumn
 		org.talend.designer.codegen.config.CodeGeneratorArgument
 		org.talend.core.model.process.IConnection
-      org.talend.core.model.process.IConnectionCategory
-      org.talend.core.model.metadata.MappingTypeRetriever
-      org.talend.core.model.metadata.MetadataTalendType
+        org.talend.core.model.process.IConnectionCategory
+        org.talend.core.model.metadata.MappingTypeRetriever
+        org.talend.core.model.metadata.MetadataTalendType
 		org.talend.designer.runprocess.ProcessorException
 		org.talend.designer.runprocess.ProcessorUtilities
 		java.util.List
@@ -26,7 +26,6 @@ imports="
 
 	String dbname = ElementParameterParser.getValue(node, "__DBNAME__");
 	boolean useParquet = "true".equals(ElementParameterParser.getValue(node,"__USE_PARQUET__"));
-	boolean generateAddJarCodeForAll = useParquet;
 	String dieOnError = ElementParameterParser.getValue(node, "__DIE_ON_ERROR__");
 	boolean isLog4jEnabled = "true".equals(org.talend.core.model.process.ElementParameterParser.getValue(node.getProcess(), "__LOG4J_ACTIVATE__"));
 
@@ -65,28 +64,29 @@ imports="
 <%
 	}
 
-	// Register jars to handle the parquet format.
+	// Register jars
 
 	java.util.List<String> jarsToRegister = null;
 	java.util.List<String> jars = null;
-	if(generateAddJarCodeForAll) {
-		String[] commandLine = new String[] {"<command>"};
-		try {
-			commandLine = ProcessorUtilities.getCommandLine("win32",true, processId, "",org.talend.designer.runprocess.IProcessor.NO_STATISTICS,org.talend.designer.runprocess.IProcessor.NO_TRACES, new String[]{});
-		} catch (ProcessorException e) {
-			e.printStackTrace();
-		}
+	String[] commandLine = new String[] {"<command>"};
+	try {
+		commandLine = ProcessorUtilities.getCommandLine("win32",true, processId, "",org.talend.designer.runprocess.IProcessor.NO_STATISTICS,org.talend.designer.runprocess.IProcessor.NO_TRACES, new String[]{});
+	} catch (ProcessorException e) {
+		e.printStackTrace();
+	}
 
-		jarsToRegister = new java.util.ArrayList();
+	jarsToRegister = new java.util.ArrayList();
 
-		jarsToRegister.add("snappy-java");
-		jarsToRegister.add("parquet-hive-bundle");
+    if(useParquet) {
+	  jarsToRegister.add("snappy-java");
+	  jarsToRegister.add("parquet-hive-bundle");
+	}
+	jarsToRegister.add("jets3t");
 
-		for (int j = 0; j < commandLine.length; j++) {
-			if(commandLine[j].contains("jar")) {
-				jars = java.util.Arrays.asList(commandLine[j].split(";"));
-				break;
-			}
+	for (int j = 0; j < commandLine.length; j++) {
+		if(commandLine[j].contains("jar")) {
+			jars = java.util.Arrays.asList(commandLine[j].split(";"));
+			break;
 		}
 	}
 
@@ -95,16 +95,14 @@ imports="
 %>
 		routines.system.GetJarsToRegister getJarsToRegister_<%=cid %> = new routines.system.GetJarsToRegister();
 <%
-		if(generateAddJarCodeForAll) {
-			for(int i=0; i<jarsToRegister.size(); i++) {
-				String jarToRegister = jarsToRegister.get(i);
-				for(int j=0; j<jars.size(); j++) {
-					if(jars.get(j).contains(jarToRegister)) {
+		for(int i=0; i<jarsToRegister.size(); i++) {
+			String jarToRegister = jarsToRegister.get(i);
+			for(int j=0; j<jars.size(); j++) {
+				if(jars.get(j).contains(jarToRegister)) {
 %>
-						bw_<%=cid%>.write("ADD JAR " + wasbPath_<%=cid%> + new java.io.File(getJarsToRegister_<%=cid %>.replaceJarPaths("<%=jars.get(j)%>")).getName() + ";");
-						libjars_<%=cid%>.append(getJarsToRegister_<%=cid %>.replaceJarPaths("<%=jars.get(j)%>") + ",");
+					bw_<%=cid%>.write("ADD JAR " + wasbPath_<%=cid%> + new java.io.File(getJarsToRegister_<%=cid %>.replaceJarPaths("<%=jars.get(j)%>")).getName() + ";");
+					libjars_<%=cid%>.append(getJarsToRegister_<%=cid %>.replaceJarPaths("<%=jars.get(j)%>") + ",");
 <%
-					}
 				}
 			}
 		}
