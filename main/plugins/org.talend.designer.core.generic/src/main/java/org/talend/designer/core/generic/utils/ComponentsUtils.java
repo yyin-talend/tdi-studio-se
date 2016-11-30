@@ -588,13 +588,21 @@ public class ComponentsUtils {
     }
 
     public static ComponentProperties getComponentPropertiesFromSerialized(String serialized, Connection connection) {
+        return getComponentPropertiesFromSerialized(serialized, connection, true);
+    }
+
+    public static ComponentProperties getComponentPropertiesFromSerialized(String serialized, Connection connection,
+            boolean withEvaluator) {
         if (serialized != null) {
-            SerializerDeserializer.Deserialized<ComponentProperties> fromSerialized = Properties.Helper.fromSerializedPersistent(serialized,
-                    ComponentProperties.class, new PostDeserializeSetup() {
+            SerializerDeserializer.Deserialized<ComponentProperties> fromSerialized = Properties.Helper
+                    .fromSerializedPersistent(serialized, ComponentProperties.class, new PostDeserializeSetup() {
 
                         @Override
                         public void setup(Object properties) {
-                            ((Properties)properties).setValueEvaluator(new MetadataContextPropertyValueEvaluator(connection));
+                            if (withEvaluator) {
+                                ((Properties) properties)
+                                        .setValueEvaluator(new MetadataContextPropertyValueEvaluator(connection));
+                            }
                         }
                     });
             if (fromSerialized != null) {
