@@ -136,19 +136,30 @@ public class MarketoRestClient {
 
     public RequestResult executePostRequest(Class<?> resultClass,
             JsonObject inputJson) throws Exception {
-
-        Response response = webClient.post(inputJson.toString());
-        if (response.getStatus() == 200 && response.hasEntity()) {
-
-            InputStream inStream = response.readEntity(InputStream.class);
-            Reader reader = new InputStreamReader(inStream);
-            Gson gson = new Gson();
-            return (RequestResult) gson.fromJson(reader, resultClass);
-        } else {
-            throw new Exception(
-                    "Reauest failed! Please check your request ssetting!");
-        }
-
+    	
+    	return doPost(resultClass,inputJson.toString());
+    }
+    
+    public RequestResult executePostRequest(Class<?> resultClass,
+            String postContent) throws Exception {
+    	
+    	webClient.type(MediaType.APPLICATION_FORM_URLENCODED_TYPE);
+    	return doPost(resultClass,postContent);
+    }
+    
+    public RequestResult doPost(Class<?> resultClass,String postContent) throws Exception{
+    	
+    	 Response response = webClient.post(postContent);
+         
+         if (response.getStatus() == 200 && response.hasEntity()) {
+         	
+             InputStream inStream = response.readEntity(InputStream.class);
+             Reader reader = new InputStreamReader(inStream);
+             Gson gson = new Gson();
+             return (RequestResult) gson.fromJson(reader, resultClass);
+         } 
+             throw new Exception( "Reauest failed! Please check your request ssetting!");
+    	
     }
 
     public String getPageToken(String sinceDatetime) throws Exception {
@@ -177,24 +188,34 @@ public class MarketoRestClient {
             throws Exception {
 
         webClient.resetQuery();
-        webClient.replacePath(basicPath + "/v1/leads.json").query(
-                "access_token", accessToken);
+        webClient.replacePath(basicPath + "/v1/leads.json");
+        webClient.query("_method", "GET");
+        webClient.query("access_token", accessToken);
+        
+        String postContent ="filterType="+filterType;
         if (fields != null && fields.length > 0) {
-            webClient.query("fields", MarketoUtils.unionString(",", fields));
+        	postContent+="&fields="+MarketoUtils.unionString(",", fields);
         }
-        webClient.query("filterType", filterType);
+        
         if (filterValues != null && filterValues.length > 0) {
-            webClient.query("filterValues",
-                    MarketoUtils.unionString(",", filterValues));
+        	postContent+="&filterValues="+MarketoUtils.unionString(",", filterValues);
         }
+        
         if (batchSize != null) {
-            webClient.query("batchSize", batchSize);
+            postContent+="&batchSize="+batchSize;
         }
+        
+        
         if (nextPageToken != null && nextPageToken.length() > 0) {
-            webClient.query("nextPageToken", nextPageToken);
+            postContent+="&nextPageToken="+nextPageToken;
         }
+        ResultBasic rb = (ResultBasic)executePostRequest(ResultBasic.class,postContent);
+        if(rb.isSuccess()){
+        	return rb;
+        }
+        throw new Exception(rb.getErrors().toString());
 
-        return (ResultBasic) executeGetRequest(ResultBasic.class);
+        
     }
 
     public ResultBasic getLeadsByListId(String[] fields, Integer batchSize,
@@ -212,8 +233,11 @@ public class MarketoRestClient {
         if (nextPageToken != null) {
             webClient.query("nextPageToken", nextPageToken);
         }
-
-        return (ResultBasic) executeGetRequest(ResultBasic.class);
+        ResultBasic rb = (ResultBasic) executeGetRequest(ResultBasic.class);
+        if(rb.isSuccess()){
+        	return rb;
+        }
+        throw new Exception(rb.getErrors().toString());
     }
 
     public Integer getListIdByName(String listName) throws Exception {
@@ -230,6 +254,8 @@ public class MarketoRestClient {
                     return listObject.getId();
                 }
             }
+        }else if(!getResponse.isSuccess()){
+        	throw new Exception(getResponse.getErrors().toString());
         }
         return null;
     }
@@ -257,7 +283,11 @@ public class MarketoRestClient {
         if (listId != null) {
             webClient.query("listId", listId);
         }
-        return (ResultGetLeadActivities) executeGetRequest(ResultGetLeadActivities.class);
+        ResultGetLeadActivities rga = (ResultGetLeadActivities) executeGetRequest(ResultGetLeadActivities.class);
+        if(rga.isSuccess()){
+        	return rga;
+        }
+        throw new Exception(rga.getErrors().toString());
     }
 
     public Map<Integer, String> getServerActivityTypes() throws Exception {
@@ -294,8 +324,12 @@ public class MarketoRestClient {
         if (fields != null && fields.length > 0) {
             webClient.query("fields", MarketoUtils.unionString(",", fields));
         }
+        ResultGetLeadChanges rglc = (ResultGetLeadChanges) executeGetRequest(ResultGetLeadChanges.class);
+        if(rglc.isSuccess()){
+        	return rglc;
+        }
+        throw new Exception(rglc.getErrors().toString());
 
-        return (ResultGetLeadChanges) executeGetRequest(ResultGetLeadChanges.class);
     }
 
     public ResultSync syncLead(String action, String lookupField,
@@ -330,8 +364,12 @@ public class MarketoRestClient {
             inputJson.addProperty("partitionName", partitionName);
         }
         inputJson.add("input", gson.toJsonTree(leadsObjects));
+        ResultSync rs = (ResultSync) executePostRequest(ResultSync.class,inputJson);
+        if(rs.isSuccess()){
+        	return rs;
+        }
+        throw new Exception(rs.getErrors().toString());
 
-        return (ResultSync) executePostRequest(ResultSync.class, inputJson);
     }
 
     public ResultSync listOperation(String operation, int listId,
@@ -362,7 +400,13 @@ public class MarketoRestClient {
         // inputData.put("input", json);
         JsonObject jsonObj = new JsonObject();
         jsonObj.add("input", json);
-        return (ResultSync) executePostRequest(ResultSync.class, jsonObj);
+        
+        ResultSync rs = (ResultSync) executePostRequest(ResultSync.class, jsonObj);
+        if(rs.isSuccess()){
+        	return rs;
+        }
+        throw new Exception(rs.getErrors().toString());
+        
     }
 
     public Map<String, String> readActivity(LeadActivityRecord record) {
