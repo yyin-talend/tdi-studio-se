@@ -51,16 +51,12 @@ import org.talend.core.model.repository.RepositoryObject;
 import org.talend.core.repository.model.ProxyRepositoryFactory;
 import org.talend.core.runtime.CoreRuntimePlugin;
 import org.talend.core.runtime.services.IGenericWizardService;
-import org.talend.daikon.properties.Properties;
 import org.talend.daikon.properties.presentation.Form;
-import org.talend.daikon.serialize.PostDeserializeSetup;
-import org.talend.daikon.serialize.SerializerDeserializer;
 import org.talend.designer.core.generic.constants.IGenericConstants;
 import org.talend.designer.core.generic.utils.ComponentsUtils;
 import org.talend.designer.core.model.components.ElementParameter;
 import org.talend.metadata.managment.ui.utils.ConnectionContextHelper;
 import org.talend.metadata.managment.ui.wizard.CheckLastVersionRepositoryWizard;
-import org.talend.metadata.managment.ui.wizard.context.MetadataContextPropertyValueEvaluator;
 import org.talend.repository.generic.i18n.Messages;
 import org.talend.repository.generic.internal.IGenericWizardInternalService;
 import org.talend.repository.generic.internal.service.GenericWizardInternalService;
@@ -147,6 +143,9 @@ public class GenericConnWizard extends CheckLastVersionRepositoryWizard {
             RepositoryObject object = new RepositoryObject(node.getObject().getProperty());
             setRepositoryObject(object);
             connection = (GenericConnection) ((ConnectionItem) object.getProperty().getItem()).getConnection();
+            // Set context name to null so as to open context select dialog once if there are more than one context
+            // group when opening a connection.
+            connection.setContextName(null);
             connectionProperty = object.getProperty();
             connectionItem = (ConnectionItem) object.getProperty().getItem();
             // set the repositoryObject, lock and set isRepositoryObjectEditable
@@ -190,7 +189,8 @@ public class GenericConnWizard extends CheckLastVersionRepositoryWizard {
         } else {
             String compPropertiesStr = connection.getCompProperties();
             if (compPropertiesStr != null) {
-                ComponentProperties properties = ComponentsUtils.getComponentPropertiesFromSerialized(compPropertiesStr, connection);
+                ComponentProperties properties = ComponentsUtils.getComponentPropertiesFromSerialized(compPropertiesStr,
+                        connection, false);
                 if (properties != null) {
                     componentWizard = internalService.getTopLevelComponentWizard(properties, repNode.getId());
                 }
@@ -264,7 +264,7 @@ public class GenericConnWizard extends CheckLastVersionRepositoryWizard {
                         if (creation) {
                             factory.create(connectionItem, pathToSave);
                         }
-                        compService.afterFormFinish(form.getName(), (ComponentProperties) form.getProperties());
+                        compService.afterFormFinish(form.getName(), form.getProperties());
                     }
                     updateConnectionItem(factory);
                 } catch (Throwable e) {

@@ -188,7 +188,7 @@ public class GenericWizardService implements IGenericWizardService {
         if (isGenericConnection(connection)) {
             GenericConnection genericConnection = (GenericConnection) connection;
             String compProperties = genericConnection.getCompProperties();
-            ComponentProperties cp = ComponentsUtils.getComponentPropertiesFromSerialized(compProperties, connection);
+            ComponentProperties cp = ComponentsUtils.getComponentPropertiesFromSerialized(compProperties, connection, false);
             if (cp != null) {
                 componentProperties.add(cp);
             }
@@ -205,7 +205,7 @@ public class GenericWizardService implements IGenericWizardService {
                 for (TaggedValue taggedValue : metadataTable.getTaggedValue()) {
                     if (IComponentConstants.COMPONENT_PROPERTIES_TAG.equals(taggedValue.getTag())) {
                         ComponentProperties compPros = ComponentsUtils.getComponentPropertiesFromSerialized(
-                                taggedValue.getValue(), connection);
+                                taggedValue.getValue(), connection, false);
                         if (compPros != null && !componentProperties.contains(compPros)) {
                             compPros.updateNestedProperties(cp);
                             componentProperties.add(compPros);
