@@ -33,6 +33,7 @@ import org.talend.components.api.properties.ComponentProperties;
 import org.talend.components.api.service.ComponentService;
 import org.talend.core.model.components.EComponentType;
 import org.talend.core.model.components.IComponent;
+import org.talend.core.model.metadata.IMetadataColumn;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.metadata.MetadataToolAvroHelper;
 import org.talend.core.model.metadata.MetadataToolHelper;
@@ -314,7 +315,8 @@ public class GenericElementParameter extends ElementParameter {
                     if (schema != null && mainTable != null) {
                         MetadataTable metadataTable = MetadataToolAvroHelper.convertFromAvro(schema);
                         IMetadataTable newTable = MetadataToolHelper.convert(metadataTable);
-                        if (!mainTable.sameMetadataAs(newTable) || !newTable.sameMetadataAs(mainTable)) {
+                        if (!mainTable.sameMetadataAs(newTable, IMetadataColumn.OPTIONS_IGNORE_LABEL)
+                                || !newTable.sameMetadataAs(mainTable, IMetadataColumn.OPTIONS_IGNORE_LABEL)) {
                             mainTable.setListColumns(newTable.getListColumns());
                             List<IElementParameter> schemaParameters = node
                                     .getElementParametersFromField(EParameterFieldType.SCHEMA_REFERENCE);

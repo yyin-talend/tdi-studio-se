@@ -107,7 +107,10 @@ public class GenericSchemaForm extends AbstractForm {
         Composite compositeTable = Form.startNewDimensionnedGridLayout(compositeMetaData, 1, WIDTH_GRIDDATA_PIXEL, 200);
         compositeTable.setLayout(new FillLayout());
         metadataEditor = new MetadataEmfTableEditor(Messages.getString("GenericSchemaForm.metadataDescription")); //$NON-NLS-1$
-        tableEditorView = new MetadataEmfTableEditorView(compositeTable, SWT.NONE);
+        tableEditorView = new MetadataEmfTableEditorView(compositeTable, SWT.NONE, false);
+        tableEditorView.setShowDbColumnName(true, true);
+        tableEditorView.setNewFramework(true);
+        tableEditorView.initGraphicComponents();
     }
 
     @Override
