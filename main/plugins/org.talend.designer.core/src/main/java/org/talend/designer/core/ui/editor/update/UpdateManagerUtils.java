@@ -471,7 +471,7 @@ public final class UpdateManagerUtils {
                 }
             };
             try {
-                new ProgressMonitorDialog(null).run(true, true, iRunnableWithProgress);
+                new ProgressMonitorDialog(null).run(false, false, iRunnableWithProgress);
             } catch (InvocationTargetException e) {
                 ExceptionHandler.process(e);
             } catch (InterruptedException e) {
