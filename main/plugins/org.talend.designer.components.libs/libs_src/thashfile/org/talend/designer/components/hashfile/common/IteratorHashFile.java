@@ -17,9 +17,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
 
-/**
- * @deprecated
- */
 public class IteratorHashFile<V> implements Iterator<V> {
 
     // it is for the MATCHING_MODE.FIRST_MATCH
