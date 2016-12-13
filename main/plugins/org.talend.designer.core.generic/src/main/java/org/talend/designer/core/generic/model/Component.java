@@ -41,6 +41,7 @@ import org.talend.components.api.component.Connector;
 import org.talend.components.api.component.ConnectorTopology;
 import org.talend.components.api.component.PropertyPathConnector;
 import org.talend.components.api.component.VirtualComponentDefinition;
+import org.talend.components.api.component.runtime.ExecutionEngine;
 import org.talend.components.api.properties.ComponentProperties;
 import org.talend.components.api.properties.ComponentPropertiesImpl;
 import org.talend.components.api.properties.ComponentReferenceProperties;
@@ -832,7 +833,7 @@ public class Component extends AbstractBasicComponent {
 
     /**
      * DOC nrousseau Comment method "setupConnector".
-     * 
+     *
      * @param node
      * @param rootProperty
      * @param paramName
@@ -875,7 +876,7 @@ public class Component extends AbstractBasicComponent {
 
     /**
      * DOC nrousseau Comment method "findSchemaProperties".
-     * 
+     *
      * @param rootProperty
      * @param listParam
      * @return
@@ -1027,14 +1028,14 @@ public class Component extends AbstractBasicComponent {
      * connections allowed): 1. StandAlone component (can't have main connections at all) 2. Input component (can have
      * outgoing main connection) 3. Output component (can have incoming main connection) 4. Intermediate component (can
      * have both incoming and outgoing main connections)
-     * 
+     *
      * Iterate connector is created by default for TCOMP component with following rules: Outgoing iterate: all types of
      * components can have infinite outgoing iterate connections Incoming iterate: StandAlone, Input components (also
      * called startable components) can have 1 incoming iterate flow; Output, Intermediate components can't have
      * incoming iterate flow (because they are not startable)
-     * 
+     *
      * Note: infinite value is defined by -1 int value
-     * 
+     *
      * @param topologies connection topologies supported by this {@link Component}. Component could support several
      * topologies. Such component is called hybrid
      * @param listConnector list of all {@link Component} connectors
@@ -1053,7 +1054,7 @@ public class Component extends AbstractBasicComponent {
 
     /**
      * Add default connector type, if not already defined by component.
-     * 
+     *
      * @param listConnector
      * @param type
      * @param parentNode
@@ -1099,7 +1100,7 @@ public class Component extends AbstractBasicComponent {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.talend.core.model.components.IComponent#getModulesNeeded()
      */
     @Override
@@ -1134,7 +1135,8 @@ public class Component extends AbstractBasicComponent {
                 }
             }
             try {
-                runtimeInfo = componentDefinition.getRuntimeInfo(node == null ? null : node.getComponentProperties(), topology);
+                runtimeInfo = componentDefinition.getRuntimeInfo(ExecutionEngine.DI,
+                        node == null ? null : node.getComponentProperties(), topology);
             } catch (Exception e) {
                 if (node == null) {
                     // not handled, must because the runtime info must have a node configuration (properties are null)
@@ -1391,7 +1393,7 @@ public class Component extends AbstractBasicComponent {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see java.lang.Object#equals(java.lang.Object)
      */
     @Override
