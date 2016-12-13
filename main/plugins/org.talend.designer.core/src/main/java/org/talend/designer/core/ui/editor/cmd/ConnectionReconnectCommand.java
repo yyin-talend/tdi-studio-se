@@ -232,13 +232,6 @@ public class ConnectionReconnectCommand extends Command {
                         newSource.getMetadataList().add(oldMetadataTable);
                     }
                 }
-                if (newSourceSchemaType != null) {
-
-                    newSource.setPropertyValue(EParameterName.SCHEMA_TYPE.getName(), EmfComponent.BUILTIN);
-                }
-                if (oldSourceSchemaType != null) {
-                    oldSource.setPropertyValue(EParameterName.SCHEMA_TYPE.getName(), EmfComponent.BUILTIN);
-                }
             } else {
                 connection.setMetaName(newSource.getUniqueName());
             }
@@ -253,7 +246,8 @@ public class ConnectionReconnectCommand extends Command {
                     // For the auto propagate.
                     if (!sameFlag && oldTarget.getComponent().isSchemaAutoPropagated()
                             && (oldMetadataTable.getListColumns().isEmpty() || getPropagateDialog())) {
-                        IElementParameter param = newTarget.getElementParameterFromField(EParameterFieldType.SCHEMA_TYPE);
+
+                        IElementParameter param = oldTarget.getElementParameterFromField(EParameterFieldType.SCHEMA_TYPE);
                         if (param != null && param.getContext() != null
                                 && !param.getContext().equals(connection.getLineStyle().getName())) {
                             param = null;
