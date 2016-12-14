@@ -231,7 +231,6 @@ public class UpdateViewerHelper {
     }
 
     private void updateJobState(Job job) {
-        getViewer().refresh(job, true);
 
         switch (updateCategoriesState(job)) {
         case ALL:
@@ -246,6 +245,8 @@ public class UpdateViewerHelper {
             break;
         default:
         }
+
+        getViewer().refresh(job, true);
     }
 
     private StateType updateCategoriesState(Job job) {
@@ -292,7 +293,6 @@ public class UpdateViewerHelper {
             if (item.isChecked()) {
                 num++;
             }
-            getViewer().refresh(item, true);
             getViewer().setChecked(item, item.isChecked());
         }
         if (num == 0) {

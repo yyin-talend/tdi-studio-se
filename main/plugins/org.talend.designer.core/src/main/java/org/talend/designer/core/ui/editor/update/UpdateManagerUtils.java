@@ -22,17 +22,24 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
+import org.eclipse.core.resources.IWorkspace;
+import org.eclipse.core.resources.IWorkspaceRunnable;
+import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.SubProgressMonitor;
+import org.eclipse.core.runtime.jobs.ISchedulingRule;
 import org.eclipse.gef.commands.Command;
 import org.eclipse.jface.dialogs.IDialogConstants;
+import org.eclipse.jface.dialogs.ProgressMonitorDialog;
+import org.eclipse.jface.operation.IRunnableWithProgress;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IEditorReference;
 import org.eclipse.ui.PlatformUI;
+import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.exception.LoginException;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.runtime.model.repository.ERepositoryStatus;
-import org.talend.commons.ui.runtime.exception.ExceptionHandler;
-import org.talend.commons.ui.swt.dialogs.ProgressDialog;
 import org.talend.core.CorePlugin;
 import org.talend.core.GlobalServiceRegister;
 import org.talend.core.model.components.IComponent;
@@ -263,10 +270,10 @@ public final class UpdateManagerUtils {
             return false;
         }
         try {
-            ProgressDialog progress = new ProgressDialog(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell()) {
+            final IWorkspaceRunnable op = new IWorkspaceRunnable() {
 
                 @Override
-                public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
+                public void run(IProgressMonitor monitor) throws CoreException {
                     monitor.setCanceled(false);
                     int size = (results.size() * 2 + 1) * UpdatesConstants.SCALE;
                     monitor.beginTask(Messages.getString("UpdateManagerUtils.Update"), size); //$NON-NLS-1$
@@ -433,7 +440,13 @@ public final class UpdateManagerUtils {
                     upadateJobletReferenceInfor();
 
                     // refresh
-                    refreshRelatedViewers(results);
+                    Display.getDefault().asyncExec(new Runnable() {
+                        
+                        @Override
+                        public void run() {
+                            refreshRelatedViewers(results);
+                        }
+                    });
 
                     // hyWang add method checkandRefreshProcess for bug7248
                     checkandRefreshProcess(results);
@@ -441,19 +454,28 @@ public final class UpdateManagerUtils {
                     monitor.worked(1 * UpdatesConstants.SCALE);
                     monitor.done();
                 }
+            };
+            
+            IRunnableWithProgress iRunnableWithProgress = new IRunnableWithProgress() {
 
+                @Override
+                public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
+                    IWorkspace workspace = ResourcesPlugin.getWorkspace();
+                    try {
+                        ISchedulingRule schedulingRule = workspace.getRoot();
+                        workspace.run(op, schedulingRule, IWorkspace.AVOID_UPDATE, monitor);
+                    } catch (CoreException e) {
+                        throw new InvocationTargetException(e);
+                    }
+                }
             };
             try {
-                progress.executeProcess();
+                new ProgressMonitorDialog(null).run(true, false, iRunnableWithProgress);
             } catch (InvocationTargetException e) {
                 ExceptionHandler.process(e);
-                //
             } catch (InterruptedException e) {
-                ExceptionHandler.process(e);
-                //
             }
             return !results.isEmpty();
-            // }
         } finally {
             results.clear();
         }

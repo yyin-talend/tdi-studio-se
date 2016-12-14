@@ -256,6 +256,20 @@ public class Process extends Element implements IProcess2, IGEFProcess, ILastVer
     private String componentsType;
 
     private boolean isNeedLoadmodules = true;
+    
+    private static Perl5Matcher matcher;
+    
+    private static Pattern pattern;
+    
+    static {
+        matcher = new Perl5Matcher();
+        Perl5Compiler compiler = new Perl5Compiler();
+        try {
+            pattern = compiler.compile("^[A-Za-z_][A-Za-z0-9_]*$"); //$NON-NLS-1$
+        } catch (MalformedPatternException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
     protected boolean generic = false;
 
@@ -2959,17 +2973,9 @@ public class Process extends Element implements IProcess2, IGEFProcess, ILastVer
         if (checkExists && checkIgnoreCase(connectionName)) {
             return false;
         }
-        Perl5Matcher matcher = new Perl5Matcher();
-        Perl5Compiler compiler = new Perl5Compiler();
-        Pattern pattern;
-
-        try {
-            pattern = compiler.compile("^[A-Za-z_][A-Za-z0-9_]*$"); //$NON-NLS-1$
-            if (!matcher.matches(connectionName, pattern)) {
-                return false;
-            }
-        } catch (MalformedPatternException e) {
-            throw new RuntimeException(e);
+        
+        if (!matcher.matches(connectionName, pattern)) {
+            return false;
         }
 
         return !KeywordsValidator.isKeyword(connectionName);
