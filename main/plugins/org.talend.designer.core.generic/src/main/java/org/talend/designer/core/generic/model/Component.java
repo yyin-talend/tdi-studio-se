@@ -47,6 +47,7 @@ import org.talend.core.model.components.EComponentType;
 import org.talend.core.model.components.IMultipleComponentItem;
 import org.talend.core.model.components.IMultipleComponentManager;
 import org.talend.core.model.general.ModuleNeeded;
+import org.talend.core.model.metadata.builder.connection.Connection;
 import org.talend.core.model.metadata.types.JavaTypesManager;
 import org.talend.core.model.param.ERepositoryCategoryType;
 import org.talend.core.model.process.EComponentCategory;
@@ -60,6 +61,9 @@ import org.talend.core.model.process.INodeConnector;
 import org.talend.core.model.temp.ECodePart;
 import org.talend.core.model.utils.ContextParameterUtils;
 import org.talend.core.prefs.ITalendCorePrefConstants;
+import org.talend.core.runtime.maven.MavenArtifact;
+import org.talend.core.runtime.maven.MavenUrlHelper;
+import org.talend.core.runtime.services.IGenericWizardService;
 import org.talend.core.runtime.util.ComponentReturnVariableUtils;
 import org.talend.core.runtime.util.GenericTypeUtils;
 import org.talend.core.ui.component.ComponentsFactoryProvider;
@@ -800,7 +804,7 @@ public class Component extends AbstractBasicComponent {
 
     /**
      * DOC nrousseau Comment method "setupConnector".
-     * 
+     *
      * @param node
      * @param rootProperty
      * @param paramName
@@ -842,7 +846,7 @@ public class Component extends AbstractBasicComponent {
 
     /**
      * DOC nrousseau Comment method "findSchemaProperties".
-     * 
+     *
      * @param rootProperty
      * @param listParam
      * @return
@@ -986,7 +990,7 @@ public class Component extends AbstractBasicComponent {
 
     /**
      * Add default connector type, if not already defined by component.
-     * 
+     *
      * @param listConnector
      * @param type
      * @param parentNode
@@ -1258,7 +1262,7 @@ public class Component extends AbstractBasicComponent {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see java.lang.Object#equals(java.lang.Object)
      */
     @Override
@@ -1377,4 +1381,25 @@ public class Component extends AbstractBasicComponent {
     public boolean hasConditionalOutputs() {
         return componentDefinition.isConditionalInputs();
     }
+
+    @Override
+    public String getRepositoryType(Connection connection) {
+        String propertiesStr = null;
+        IGenericWizardService wizardService = null;
+        if (GlobalServiceRegister.getDefault().isServiceRegistered(IGenericWizardService.class)) {
+            wizardService = (IGenericWizardService) GlobalServiceRegister.getDefault().getService(IGenericWizardService.class);
+        }
+        if (wizardService != null) {
+            propertiesStr = wizardService.getConnectionProperties(connection);
+        }
+        ComponentProperties properties = ComponentsUtils.getComponentPropertiesFromSerialized(propertiesStr, connection, false);
+        if (properties != null) {
+            ComponentWizardDefinition wizardDefinition = getWizardDefinition(properties);
+            if (wizardDefinition != null) {
+                return wizardDefinition.getName();
+            }
+        }
+        return null;
+    }
+
 }

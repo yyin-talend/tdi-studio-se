@@ -217,4 +217,14 @@ public class GenericWizardService implements IGenericWizardService {
         return componentProperties;
     }
 
+    @Override
+    public String getConnectionProperties(Connection connection) {
+        if (isGenericConnection(connection)) {
+            GenericConnection genericConnection = (GenericConnection) connection;
+            String compProperties = genericConnection.getCompProperties();
+            return compProperties;
+        }
+        return null;
+    }
+
 }
