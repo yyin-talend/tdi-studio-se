@@ -1,25 +1,21 @@
 Talend Open Studio for Data Integration
-Copyright (c) 2006 - 2016 Talend Inc. - www.talend.com
+Copyright (c) 2011 - 2017 Talend Inc. - www.talend.com
 All rights reserved.
-
-
+ 
 This program and the accompanying materials are made available
-under the terms of the Apache License, Version 2.0
-
-
+under the terms of the Talend Commercial Software License and
+Services Agreement which accompanies this distribution.
+ 
 This product includes software developed at
 Talend Inc. (http://www.talend.com).
-
-
+ 
 This product includes software developed at
 The Apache Software Foundation (http://www.apache.org).
-Licensed under the Apache License Version 2.0.
-
-
+Licensed under the Apache License Version 2.0
+ 
 This product includes software developed at
 The Eclipse Foundation (http://www.eclipse.org).
 Licensed under the Eclipse Public License - v1.0
-
 
 This product includes software developed at 
 ASM Helper Minidev.
@@ -57,6 +53,11 @@ Licensed under Apache-2.0
 
 
 This product includes software developed at 
+Bean Validation API.
+Licensed under Apache-2.0
+
+
+This product includes software developed at 
 Box Java SDK (V2) (https://github.com/box/box-java-sdk-v2/blob/master/LICENSE).
 Licensed under Apache-2.0
 
@@ -70,6 +71,11 @@ This product includes software developed at
 Castor.
 Licensed under Apache-2.0
 
+
+This product includes software developed at 
+EhCache (http://www.ehcache.org/).
+Licensed under Apache-2.0
+Terracotta Inc.
 
 This product includes software developed at 
 Ehcache.
@@ -152,6 +158,16 @@ Licensed under Apache-2.0
 
 
 This product includes software developed at 
+Jackson (https://github.com/FasterXML/jackson).
+Licensed under Apache-2.0
+FasterXML, LLC
+
+This product includes software developed at 
+Jackson (http://wiki.fasterxml.com/JacksonLicensing).
+Licensed under Apache-2.0
+FasterXML, LLC
+
+This product includes software developed at 
 Jackson JSON Processor (http://wiki.fasterxml.com/JacksonLicensing).
 Licensed under Apache-2.0
 Copyright © 2012-2013 FasterXML.
@@ -164,12 +180,12 @@ Licensed under Apache-2.0
 This product includes software developed at 
 Jackson Java JSON-processor.
 Licensed under Apache-2.0
-Copyright ©2009 FasterXML, LLC
+
 
 This product includes software developed at 
 Jackson Java JSON-processor.
 Licensed under Apache-2.0
-
+Copyright ©2009 FasterXML, LLC
 
 This product includes software developed at 
 Jackson Libraries.
@@ -202,14 +218,14 @@ Licensed under Apache-2.0
 Copyright ©2002-2016 Joda.org
 
 This product includes software developed at 
+Joda-Time (http://joda-time.sourceforge.net/license.html).
+Licensed under Apache-2.0
+
+
+This product includes software developed at 
 Joda-Time (http://www.joda.org/joda-time/).
 Licensed under Apache-2.0
 Copyright ©2002-2015 Joda.org
-
-This product includes software developed at 
-Joda-Time.
-Licensed under Apache-2.0
-
 
 This product includes software developed at 
 Json Simple (https://code.google.com/p/json-simple/).
@@ -244,11 +260,6 @@ Licensed under Apache-2.0
 
 
 This product includes software developed at 
-Plexus (https://codehaus-plexus.github.io/index.html).
-Licensed under Apache-2.0
-
-
-This product includes software developed at 
 Resty : A simple HTTP REST client for Java.
 Licensed under Apache-2.0
 
@@ -260,14 +271,9 @@ Licensed under Apache-2.0
 
 
 This product includes software developed at 
-Sisu Guice (https://github.com/sonatype/sisu-guice).
+SnakeYaml (https://bitbucket.org/asomov/snakeyaml).
 Licensed under Apache-2.0
-Copyright (c) 2006 Google, Inc. All rights reserved.
-
-This product includes software developed at 
-Sonatype Plexus (https://github.com/sonatype?utf8=%E2%9C%93&query=plexus).
-Licensed under Apache-2.0
-Copyright The Codehaus Foundation.
+Andrey Somov
 
 This product includes software developed at 
 Spring.
@@ -290,9 +296,9 @@ Licensed under Apache-2.0
 
 
 This product includes software developed at 
-Talend ESB Libraries.
+Swagger (http://swagger.io/).
 Licensed under Apache-2.0
-Talend
+SmartBear Software
 
 This product includes software developed at 
 WSS4J.
@@ -355,9 +361,9 @@ Licensed under Apache-2.0
 
 
 This product includes software developed at 
-Jetty (http://www.eclipse.org/jetty/).
+Jetty (http://www.eclipse.org/jetty/licenses.php).
 Licensed under Apache-2.0;EPL-1.0
-Copyright © 2016 The Eclipse Foundation.
+
 
 This product includes software developed at 
 Jetty.
@@ -365,9 +371,9 @@ Licensed under Apache-2.0;EPL-1.0
 
 
 This product includes software developed at 
-Jetty (http://www.eclipse.org/jetty/licenses.php).
+Jetty (https://www.eclipse.org/jetty/).
 Licensed under Apache-2.0;EPL-1.0
-
+Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 
 This product includes software developed at 
 Jackson Java JSON-processor.
@@ -385,9 +391,19 @@ Licensed under Apache-2.0;LGPL-2.1
 
 
 This product includes software developed at 
+Javassist (https://github.com/jboss-javassist/javassist/releases).
+Licensed under Apache-2.0;LGPL-2.1+;MPL-1.1
+Copyright (C) 1999- by Shigeru Chiba, All rights reserved.
+
+This product includes software developed at 
 Cryptacular.
 Licensed under Apache-2.0;LGPL-3.0
 
+
+This product includes software developed at 
+Dom4J (http://www.dom4j.org/dom4j-1.6.1/).
+Licensed under BSD
+Copyright 2001-2005 (C) MetaStuff, Ltd. All Rights Reserved.
 
 This product includes software developed at 
 SqliteJDBC.
@@ -440,7 +456,7 @@ Licensed under BSD-3-Clause
 
 
 This product includes software developed at 
-Salesforce.com (http://www.force.com).
+Salesforce (http://www.force.com).
 Licensed under BSD-3-Clause
 Copyright (c) 2005-2013, salesforce.com
 
@@ -470,12 +486,17 @@ Licensed under BSD-3-Clause
 
 
 This product includes software developed at 
-Java API for RESTful Services.
+Javax Servlet API (http://download.oracle.com/otndocs/jcp/javaee-6.0-fr-oth-JSpec/javaee-6.0-fr-oth-JSpec-license.html).
+Licensed under CDDL-1.0
+Copyright © 2009-2011, Oracle Corporation and/or its affiliates.
+
+This product includes software developed at 
+Java API for RESTful Services (http://grepcode.com/snapshot/repo1.maven.org/maven2/javax.ws.rs/javax.ws.rs-api/2.0-m10).
 Licensed under CDDL-1.1
 
 
 This product includes software developed at 
-Java API for RESTful Services (http://grepcode.com/snapshot/repo1.maven.org/maven2/javax.ws.rs/javax.ws.rs-api/2.0-m10).
+Java API for RESTful Services.
 Licensed under CDDL-1.1
 
 
@@ -490,24 +511,9 @@ Licensed under CPL-1.0
 
 
 This product includes software developed at 
-Aether (http://www.eclipse.org/aether/).
-Licensed under EPL-1.0
-Copyright (c) 2010, 2014 Sonatype, Inc.
-
-This product includes software developed at 
-Eclipse Sisu.
-Licensed under EPL-1.0
-Copyright (c) 2010, 2015 Sonatype, Inc.
-
-This product includes software developed at 
 H2 Embedded Database and JDBC Driver (H2 is EPL 1.0 !).
 Licensed under EPL-1.0
 
-
-This product includes software developed at 
-Jetty.
-Licensed under EPL-1.0
-Copyright (c) ${copyright-range} Mort Bay Consulting Pty. Ltd.
 
 This product includes software developed at 
 Mondrian.
@@ -535,6 +541,11 @@ Licensed under Json
 
 
 This product includes software developed at 
+BouncyCastle (http://www.bouncycastle.org/latest_releases.html).
+Licensed under PDDL-1.0
+Copyright (c) 2000 - 2016 The Legion of the Bouncy Castle Inc. (https://www.bouncycastle.org)
+
+This product includes software developed at 
 AOP Alliance (Java/J2EE AOP standards) (http://aopalliance.sourceforge.net/).
 Licensed under Public Domain
 
@@ -545,9 +556,9 @@ Licensed under W3C
 
 
 This product includes software developed at 
-BCProv.
-Licensed under X11
-Copyright (c) 2000 - 2016 The Legion of the Bouncy Castle Inc. (https://www.bouncycastle.org)
+Reflections (http://github.com/ronmamo/reflections).
+Licensed under WTFPL
+ronmano
 
 This product includes software developed at 
 BouncyCastle.
@@ -565,9 +576,9 @@ Licensed under X11
 
 
 This product includes software developed at 
-SL4J.
+SL4J (http://www.slf4j.org/).
 Licensed under X11
-Copyright (c) 2004-2013 QOS.ch
+QOS.ch
 
 This product includes software developed at 
 Simple Logging Facade for Java (http://www.slf4j.org/license.html).
@@ -582,5 +593,7 @@ Licensed under X11
 This product includes software developed at 
 dropbox-sdk-java : Java library for the Dropbox Core API.
 Licensed under X11
+
+
 
 
