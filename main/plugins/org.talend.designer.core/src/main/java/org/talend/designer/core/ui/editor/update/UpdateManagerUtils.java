@@ -396,9 +396,9 @@ public final class UpdateManagerUtils {
                             boolean isTestContainer = false;
                             ITestContainerProviderService testContainerService = null;
                             if (GlobalServiceRegister.getDefault().isServiceRegistered(ITestContainerProviderService.class)) {
-                                testContainerService = (ITestContainerProviderService) GlobalServiceRegister
-                                        .getDefault().getService(ITestContainerProviderService.class);
-                                if (testContainerService != null ) {
+                                testContainerService = (ITestContainerProviderService) GlobalServiceRegister.getDefault()
+                                        .getService(ITestContainerProviderService.class);
+                                if (testContainerService != null) {
                                     isTestContainer = testContainerService.isTestContainerItem(item);
                                 }
                             }
@@ -408,14 +408,14 @@ public final class UpdateManagerUtils {
                                 ProcessType processType;
                                 try {
                                     processType = process2.saveXmlFile(false);
-                                    if(isTestContainer){
-                                        testContainerService.setTestContainerProcess(processType,item);
-                                    }else if (item instanceof JobletProcessItem) {
+                                    if (isTestContainer) {
+                                        testContainerService.setTestContainerProcess(processType, item);
+                                    } else if (item instanceof JobletProcessItem) {
                                         ((JobletProcessItem) item).setJobletProcess((JobletProcess) processType);
                                     } else {
                                         ((ProcessItem) item).setProcess(processType);
                                     }
-                                    factory.save(item);
+                                    factory.save(item, true);
                                 } catch (IOException e) {
                                     ExceptionHandler.process(e);
                                 } catch (PersistenceException e) {
@@ -441,7 +441,7 @@ public final class UpdateManagerUtils {
 
                     // refresh
                     Display.getDefault().asyncExec(new Runnable() {
-                        
+
                         @Override
                         public void run() {
                             refreshRelatedViewers(results);
@@ -455,7 +455,7 @@ public final class UpdateManagerUtils {
                     monitor.done();
                 }
             };
-            
+
             IRunnableWithProgress iRunnableWithProgress = new IRunnableWithProgress() {
 
                 @Override
