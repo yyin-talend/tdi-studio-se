@@ -46,12 +46,12 @@ public class FlowVariablesReader implements Reader<Object> {
      * Job runtime container
      */
     private final RuntimeContainer runtimeContainer;
-    
+
     /**
      * Strategy for output data processing
      */
     private DataProcessor dataProcessor;
-    
+
     /**
      * Denotes whether current data is first or not
      */

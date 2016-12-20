@@ -131,7 +131,7 @@ public class DiOutgoingSchemaEnforcer implements IndexedRecord {
      * Constructor sets design schema and {@link IndexMapper} instance
      *
      * @param designSchema design schema specified by user
-     * @param indexMapper  tool, which computes correspondence between design and runtime fields
+     * @param indexMapper tool, which computes correspondence between design and runtime fields
      */
     public DiOutgoingSchemaEnforcer(Schema designSchema, IndexMapper indexMapper) {
         this.designSchema = designSchema;
@@ -192,9 +192,9 @@ public class DiOutgoingSchemaEnforcer implements IndexedRecord {
     /**
      * Transforms record column value from Avro type to Talend type
      *
-     * @param value      record column value, which should be transformed into Talend compatible value.
-     *                   It can be null when null
-     *                   corresponding wrapped field.
+     * @param value record column value, which should be transformed into Talend compatible value.
+     * It can be null when null
+     * corresponding wrapped field.
      * @param valueField field, which contain information about value's Talend type. It mustn't be null
      */
     protected Object transformValue(Object value, Field valueField) {

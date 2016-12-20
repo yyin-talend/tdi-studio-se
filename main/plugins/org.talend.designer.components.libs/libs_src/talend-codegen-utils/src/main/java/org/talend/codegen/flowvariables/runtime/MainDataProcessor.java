@@ -29,7 +29,7 @@ class MainDataProcessor extends DataProcessor {
     }
 
     /**
-     * Processes incoming <code>dataIterable</code> as Main data {@link Iterable}, thus returns it without 
+     * Processes incoming <code>dataIterable</code> as Main data {@link Iterable}, thus returns it without
      * any changes
      * 
      * @param dataIterable data {@link Iterable} object retrieved from component runtime classes
