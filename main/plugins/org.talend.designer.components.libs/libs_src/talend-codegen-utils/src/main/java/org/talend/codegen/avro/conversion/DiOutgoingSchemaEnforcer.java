@@ -12,7 +12,7 @@
 // ============================================================================
 package org.talend.codegen.avro.conversion;
 
-import static org.talend.daikon.di.DiSchemaConstants.TALEND6_COLUMN_TALEND_TYPE;
+import static org.talend.codegen.avro.conversion.DiSchemaConstants.TALEND6_COLUMN_TALEND_TYPE;
 
 import java.math.BigDecimal;
 import java.util.Calendar;
