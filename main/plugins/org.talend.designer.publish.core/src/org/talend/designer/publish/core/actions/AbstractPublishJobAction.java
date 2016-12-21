@@ -28,6 +28,7 @@ import org.talend.designer.publish.core.models.BundleModel;
 import org.talend.designer.publish.core.models.FeatureModel;
 import org.talend.designer.publish.core.models.FeaturesModel;
 import org.talend.designer.runprocess.IProcessor;
+import org.talend.designer.runprocess.ProcessorException;
 import org.talend.repository.model.IRepositoryNode;
 import org.talend.repository.ui.wizards.exportjob.JavaJobScriptsExportWSWizardPage.JobExportType;
 import org.talend.repository.ui.wizards.exportjob.action.JobExportAction;
@@ -43,7 +44,7 @@ public abstract class AbstractPublishJobAction implements IRunnableWithProgress 
 
     private static final String THMAP_COMPONENT_NAME = "tHMap";
 
-    private final IRepositoryNode node;
+    protected final IRepositoryNode node;
 
     private final String groupId;
 
@@ -169,6 +170,9 @@ public abstract class AbstractPublishJobAction implements IRunnableWithProgress 
             FeaturesModel featuresModel = getFeatureModel(tmpJob);
             process(processItem, featuresModel, monitor);
         } catch (Exception e) {
+            if (e.getCause() instanceof ProcessorException) {
+                throw new InvocationTargetException(e.getCause());
+            }
             throw new InvocationTargetException(e);
         } finally {
             if (tmpJob != null && tmpJob.exists()) {

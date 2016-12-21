@@ -145,6 +145,12 @@ public class BuildJobManager {
 
     public void buildJob(String destinationPath, ProcessItem itemToExport, String version, String context,
             Map<ExportChoice, Object> exportChoiceMap, JobExportType jobExportType, IProgressMonitor monitor) throws Exception {
+        buildJob(destinationPath, itemToExport, version, context, exportChoiceMap, jobExportType, false, monitor);
+    }
+
+    public void buildJob(String destinationPath, ProcessItem itemToExport, String version, String context,
+            Map<ExportChoice, Object> exportChoiceMap, JobExportType jobExportType, boolean checkCompilationError,
+            IProgressMonitor monitor) throws Exception {
         IProgressMonitor pMonitor = new NullProgressMonitor();
         if (monitor != null) {
             pMonitor = monitor;
@@ -219,8 +225,12 @@ public class BuildJobManager {
         } else if (jobTargetFile != null) {
             throw new Exception("Job was not built successfully, please check the logs for more details available on the workspace/.Java/lastGenerated.log");
         }
+        if (checkCompilationError) {
+            CorePlugin.getDefault().getRunProcessService().checkLastGenerationHasCompilationError(false);
+        }
         pMonitor.worked(scale);
         pMonitor.done();
+
     }
 
     private boolean needClasspathJar(Map<ExportChoice, Object> exportChoiceMap) {

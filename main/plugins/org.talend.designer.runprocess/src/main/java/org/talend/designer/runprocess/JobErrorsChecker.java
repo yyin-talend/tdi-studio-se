@@ -305,13 +305,13 @@ public class JobErrorsChecker {
         }
         if (hasError && item != null) {
             if (isJob) {
-                throw new ProcessorException(Messages.getString("JobErrorsChecker_compile_errors") + '\n' + //$NON-NLS-1$
+                throw new ProcessorException(Messages.getString("JobErrorsChecker_compile_errors") + " " + '\n' + //$NON-NLS-1$
                         Messages.getString("JobErrorsChecker_compile_error_message", item.getProperty().getLabel()) + '\n' //$NON-NLS-1$
                         + Messages.getString("JobErrorsChecker_compile_error_line") + ':' + ' ' + line + '\n' //$NON-NLS-1$
                         + Messages.getString("JobErrorsChecker_compile_error_detailmessage") + ':' + ' ' + errorMessage + '\n' //$NON-NLS-1$
                         + Messages.getString("JobErrorsChecker_compile_error_jvmmessage")); //$NON-NLS-1$
             } else {
-                throw new ProcessorException(Messages.getString("CamelJobErrorsChecker_compile_errors") + '\n' + //$NON-NLS-1$
+                throw new ProcessorException(Messages.getString("CamelJobErrorsChecker_compile_errors") + " " + '\n' + //$NON-NLS-1$
                         Messages.getString("JobErrorsChecker_compile_error_message", item.getProperty().getLabel()) + '\n' //$NON-NLS-1$
                         + Messages.getString("JobErrorsChecker_compile_error_line") + ':' + ' ' + line + '\n' //$NON-NLS-1$
                         + Messages.getString("JobErrorsChecker_compile_error_detailmessage") + ':' + ' ' + errorMessage + '\n' //$NON-NLS-1$
