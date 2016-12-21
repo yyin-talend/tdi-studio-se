@@ -438,13 +438,14 @@ public class ConnectionManager {
         if (source.equals(newTarget)) {
             return false;
         }
-        if ((source.getDesignSubjobStartNode().getOutgoingConnections(EConnectionType.ON_SUBJOB_OK).size() != 0 || source
-                .getDesignSubjobStartNode().getOutgoingConnections(EConnectionType.ON_SUBJOB_ERROR).size() != 0)
+        final INode designSubjobStartNode = source.getDesignSubjobStartNode();
+        if ((designSubjobStartNode.getOutgoingConnections(EConnectionType.ON_SUBJOB_OK).size() != 0 || 
+                designSubjobStartNode.getOutgoingConnections(EConnectionType.ON_SUBJOB_ERROR).size() != 0)
                 && !newTarget.checkIfCanBeStart() && isMainConn && !((Node) newTarget).isJoblet()) {
             return false;
         }
-        if ((source.getDesignSubjobStartNode().getIncomingConnections(EConnectionType.ON_SUBJOB_OK).size() != 0 || source
-                .getDesignSubjobStartNode().getIncomingConnections(EConnectionType.ON_SUBJOB_ERROR).size() != 0)
+        if ((designSubjobStartNode.getIncomingConnections(EConnectionType.ON_SUBJOB_OK).size() != 0 || 
+                designSubjobStartNode.getIncomingConnections(EConnectionType.ON_SUBJOB_ERROR).size() != 0)
                 && !newTarget.checkIfCanBeStart() && isMainConn && !((Node) newTarget).isJoblet()) {
             return false;
         }
