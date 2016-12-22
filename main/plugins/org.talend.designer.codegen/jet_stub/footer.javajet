@@ -300,6 +300,7 @@
             <%
         for(String testData : ProcessUtils.getTestData(process,instance)){
             String path =  ProcessUtils.getTestDataValue(process, instance, testData);
+            String paramemterName = ProcessUtils.getTestDataParamemter(process, instance, testData);
             if(path!=null&&path.length()>0){
             %>
             
@@ -326,6 +327,12 @@
                     e.printStackTrace();
                 }
                 
+            <%
+            }else if(paramemterName!=null){
+            %>
+                java.net.URL url_<%=testData%> = getClass().getResource("<%=path%>");
+                instance_<%=testData%>="<%=paramemterName%>=" + java.net.URLDecoder.decode(url_<%=testData%>.getPath(), "<%=encoding%>");
+            
             <%
             }else{
             %>
