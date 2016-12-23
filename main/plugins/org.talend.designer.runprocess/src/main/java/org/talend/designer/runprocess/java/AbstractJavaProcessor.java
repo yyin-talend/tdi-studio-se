@@ -22,27 +22,18 @@ import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Path;
-import org.eclipse.emf.common.util.EList;
 import org.talend.commons.CommonsPlugin;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.utils.resource.FileExtensions;
 import org.talend.core.CorePlugin;
-import org.talend.core.GlobalServiceRegister;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.INode;
 import org.talend.core.model.process.IProcess;
-import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.ProcessItem;
-import org.talend.core.model.properties.PropertiesPackage;
 import org.talend.core.model.properties.Property;
 import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.prefs.ITalendCorePrefConstants;
-import org.talend.core.service.IMRProcessService;
-import org.talend.core.service.IStormProcessService;
-import org.talend.designer.core.model.utils.emf.talendfile.ElementParameterType;
-import org.talend.designer.core.model.utils.emf.talendfile.NodeType;
-import org.talend.designer.core.model.utils.emf.talendfile.ProcessType;
 import org.talend.designer.core.runprocess.Processor;
 import org.talend.designer.runprocess.IProcessMessageManager;
 import org.talend.designer.runprocess.ProcessorConstants;
@@ -269,8 +260,8 @@ public abstract class AbstractJavaProcessor extends Processor implements IJavaPr
                             IRepositoryViewObject lastVersion = RunProcessPlugin.getDefault().getRepositoryService()
                                     .getProxyRepositoryFactory().getLastVersion(value.toString());
                             if (lastVersion != null) {
-                                boolean hasBatchOrStreamingSubProcess = hasBatchOrStreamingSubProcess(lastVersion.getProperty()
-                                        .getItem());
+                                boolean hasBatchOrStreamingSubProcess = JavaProcessorUtilities
+                                        .hasBatchOrStreamingSubProcess(lastVersion.getProperty().getItem());
                                 if (hasBatchOrStreamingSubProcess) {
                                     return true;
                                 }
@@ -282,52 +273,6 @@ public abstract class AbstractJavaProcessor extends Processor implements IJavaPr
 
         } catch (PersistenceException e) {
             return false;
-        }
-        return false;
-    }
-
-    /**
-     * copied from ExportModelJavaProcessor
-     */
-    @SuppressWarnings("unchecked")
-    private boolean hasBatchOrStreamingSubProcess(Item item) throws PersistenceException {
-        if (GlobalServiceRegister.getDefault().isServiceRegistered(IMRProcessService.class)) {
-            IMRProcessService batchService = (IMRProcessService) GlobalServiceRegister.getDefault().getService(
-                    IMRProcessService.class);
-            if (batchService.isMapReduceItem(item)) {
-                return true;
-            }
-        }
-        if (GlobalServiceRegister.getDefault().isServiceRegistered(IStormProcessService.class)) {
-            IStormProcessService streamingService = (IStormProcessService) GlobalServiceRegister.getDefault().getService(
-                    IStormProcessService.class);
-            if (streamingService.isStormItem(item)) {
-                return true;
-            }
-        }
-        if (GlobalServiceRegister.getDefault().isServiceRegistered(IMRProcessService.class)
-                || GlobalServiceRegister.getDefault().isServiceRegistered(IStormProcessService.class)) {
-            if (item != null && item.eClass() == PropertiesPackage.Literals.PROCESS_ITEM) {
-                ProcessType processType = ((ProcessItem) item).getProcess();
-                EList<NodeType> nodes = processType.getNode();
-                for (NodeType node : nodes) {
-                    if ("tRunJob".equals(node.getComponentName())) {//$NON-NLS-1$
-                        EList<ElementParameterType> elementParameters = node.getElementParameter();
-                        for (ElementParameterType param : elementParameters) {
-                            if (param.getName() != null && "PROCESS:PROCESS_TYPE_PROCESS".equals(param.getName())) {//$NON-NLS-1$
-                                Object value = param.getValue();
-                                if (value != null && !"".equals(value)) {//$NON-NLS-1$
-                                    IRepositoryViewObject lastVersion = RunProcessPlugin.getDefault().getRepositoryService()
-                                            .getProxyRepositoryFactory().getLastVersion(value.toString());
-                                    if (lastVersion != null) {
-                                        return hasBatchOrStreamingSubProcess(lastVersion.getProperty().getItem());
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
         }
         return false;
     }

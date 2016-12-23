@@ -112,11 +112,11 @@ import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.model.properties.Property;
 import org.talend.core.model.runprocess.IJavaProcessorStates;
-import org.talend.core.model.runprocess.LastGenerationInfo;
-import org.talend.core.runtime.process.TalendProcessOptionConstants;
 import org.talend.core.model.utils.JavaResourcesHelper;
 import org.talend.core.prefs.ITalendCorePrefConstants;
 import org.talend.core.runtime.process.ITalendProcessJavaProject;
+import org.talend.core.runtime.process.LastGenerationInfo;
+import org.talend.core.runtime.process.TalendProcessOptionConstants;
 import org.talend.core.ui.services.IRulesProviderService;
 import org.talend.core.utils.BitwiseOptionUtils;
 import org.talend.designer.codegen.ICodeGenerator;
@@ -455,8 +455,7 @@ public class JavaProcessor extends AbstractJavaProcessor implements IJavaBreakpo
                     for (IResource resource : javaCodeFolder.members()) {
                         if ("java".equals(resource.getFileExtension())) {//$NON-NLS-1$
                             if (processSourceFileName != null && processSourceFileName.equals(resource.getName())) {
-                                ((IFile) resource).setContents(new ByteArrayInputStream(new byte[0]), true, false,
-                                        null);
+                                ((IFile) resource).setContents(new ByteArrayInputStream(new byte[0]), true, false, null);
                             } else {
                                 resource.delete(true, null);
                             }
@@ -507,7 +506,7 @@ public class JavaProcessor extends AbstractJavaProcessor implements IJavaBreakpo
      */
     @Override
     public void generateCode(boolean statistics, boolean trace, boolean javaProperties, int option) throws ProcessorException {
-    	super.generateCode(statistics, trace, javaProperties, option);
+        super.generateCode(statistics, trace, javaProperties, option);
         try {
             // hywang modified for 6484
             String currentJavaProject = ProjectManager.getInstance().getProject(property).getTechnicalLabel();
@@ -572,7 +571,7 @@ public class JavaProcessor extends AbstractJavaProcessor implements IJavaBreakpo
             }
 
             if (!BitwiseOptionUtils.containOption(option, TalendProcessOptionConstants.GENERATE_WITHOUT_FORMAT)) {
-            	processCode = doFormat(processCode);
+                processCode = doFormat(processCode);
             }
 
             // see feature 4610:option to see byte length of each code method
@@ -657,6 +656,7 @@ public class JavaProcessor extends AbstractJavaProcessor implements IJavaBreakpo
             }
         }
     }
+
     private String doFormat(String processCode) {
         // format the code before save the file.
         final String toFormat = processCode;
@@ -742,7 +742,7 @@ public class JavaProcessor extends AbstractJavaProcessor implements IJavaBreakpo
                     if (job.getResult() != null && job.getResult().isOK()) {
                         processCode = formatedCode;
                         f = false;
-                   }
+                    }
                 }
             }
 
@@ -750,6 +750,7 @@ public class JavaProcessor extends AbstractJavaProcessor implements IJavaBreakpo
         formatedCode = null;
         return processCode;
     }
+
     /**
      * DOC nrousseau Comment method "formatCode".
      * 
