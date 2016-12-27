@@ -718,6 +718,7 @@ this.globalResumeTicket = false;//to run others jobs
 
     //5. all others sub-job (MultiThread mode)
     if(isRunInMultiThread){
+        %>final Thread launchingThread = Thread.currentThread();<%
         for (INode rootNode : rootNodes) {
             String componentName = rootNode.getComponent().getName();
             String uniqueName = rootNode.getUniqueName();
@@ -755,6 +756,10 @@ this.globalResumeTicket = false;//to run others jobs
                         status = localStatus;
                     }
 
+                    if ("true".equals(((java.util.Map) threadLocal.get()).get("JobInterrupted"))) {
+                        launchingThread.interrupt();
+                    }
+
                     runningThreadCount.add(-1);
                 }
             }
@@ -764,13 +769,22 @@ this.globalResumeTicket = false;//to run others jobs
             }
         }
 %>
+    boolean interrupted = false;
     while (runningThreadCount.getCount() > 0) {
         try {
             Thread.sleep(10);
+        } catch (java.lang.InterruptedException e) {
+            interrupted = true;
         } catch (java.lang.Exception e) {
             e.printStackTrace();
         }
     }
+
+    if (interrupted) {
+        Thread.currentThread().interrupt();
+    }
+
+
 <%
     } else { // isRunInMultiThread  //5. all others sub-job (SingleThread  mode)
         for (INode rootNode : rootNodes) {
