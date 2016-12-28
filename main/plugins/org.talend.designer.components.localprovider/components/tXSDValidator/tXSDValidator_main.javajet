@@ -137,6 +137,9 @@ if("FLOW_MODE".equals(mode)){
 					<%=rejectConnName %> = new <%=rejectConnName %>Struct();
 <%
 				}
+%>
+				String errorMessageRow_<%=cid%> = "";
+<%
 				for(IMetadataColumn column : columns){
 					String outLabel = column.getLabel();
 		    		if(allocateMap.containsKey(outLabel)){
@@ -167,6 +170,7 @@ if("FLOW_MODE".equals(mode)){
 						errorMessage_<%=cid %> = errorHandler_<%=cid %>.returnMessage();
 						if (errorMessage_<%=cid%>==null || errorMessage_<%=cid%>.length()<1) {
 							<%=outConnName%>.<%=column.getLabel()%> = <%=inConnName%>.<%=column.getLabel()%>;
+							validate_<%=cid %> = 1;
 <%
 							if(rejectConnName != null){
 %>
@@ -175,6 +179,7 @@ if("FLOW_MODE".equals(mode)){
 							}
 %>
 						} else {
+						    errorMessageRow_<%=cid%> = errorMessageRow_<%=cid%> + "<%=column.getLabel()%>: "+errorMessage_<%=cid%>+'\n';
 <%
 							if(rejectConnName != null){
 %>
@@ -190,7 +195,7 @@ if("FLOW_MODE".equals(mode)){
 %>
 								<%=outConnName%> = null;
 <%
-							}
+                            }
 %>
 						}
 <%
@@ -198,6 +203,7 @@ if("FLOW_MODE".equals(mode)){
 %>
 						if (errorMessage_<%=cid%>==null || errorMessage_<%=cid%>.length()<1) {
 							<%=outConnName%>.<%=column.getLabel()%> = <%=inConnName%>.<%=column.getLabel()%>;
+							validate_<%=cid %> = 1;
 						}
 						<%
 						if(rejectConnName!=null){
@@ -209,6 +215,11 @@ if("FLOW_MODE".equals(mode)){
                     }
 	    		}
 	    	}
+%>
+            globalMap.put("<%=cid %>_DIFFERENCE", "" + validate_<%=cid %>);
+            globalMap.put("<%=cid %>_VALID", (validate_<%=cid %> == 1)?true:false);
+	    	globalMap.put("<%=cid %>_XSD_ERROR_MESSAGE", errorMessageRow_<%=cid%>);
+<%
 	    }
 	}
 }else{
