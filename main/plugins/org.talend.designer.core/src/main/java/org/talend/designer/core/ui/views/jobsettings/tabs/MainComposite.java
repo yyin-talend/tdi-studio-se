@@ -74,6 +74,7 @@ import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.model.repository.RepositoryViewObject;
 import org.talend.core.repository.model.ItemReferenceBean;
 import org.talend.core.repository.model.ProxyRepositoryFactory;
+import org.talend.core.repository.seeker.RepositorySeekerManager;
 import org.talend.core.repository.ui.actions.DeleteActionCache;
 import org.talend.core.repository.ui.dialog.ItemReferenceDialog;
 import org.talend.core.repository.utils.ConvertJobsUtil;
@@ -84,12 +85,15 @@ import org.talend.core.runtime.CoreRuntimePlugin;
 import org.talend.core.ui.branding.IBrandingService;
 import org.talend.core.ui.editor.IJobEditorHandler;
 import org.talend.core.ui.editor.JobEditorHandlerManager;
+import org.talend.core.ui.properties.tab.HorizontalTabFactory;
+import org.talend.core.ui.properties.tab.TalendPropertyTabDescriptor;
 import org.talend.core.utils.KeywordsValidator;
 import org.talend.designer.core.ICamelDesignerCoreService;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.repository.ProjectManager;
 import org.talend.repository.RepositoryWorkUnit;
 import org.talend.repository.model.IProxyRepositoryFactory;
+import org.talend.repository.model.IRepositoryNode;
 import org.talend.repository.model.RepositoryConstants;
 import org.talend.repository.ui.properties.StatusHelper;
 import org.talend.repository.ui.views.IJobSettingsView;
@@ -100,6 +104,8 @@ import org.talend.repository.ui.views.IJobSettingsView;
 public class MainComposite extends AbstractTabComposite {
 
     private boolean enableControl;
+
+    private HorizontalTabFactory tabFactory;
 
     private Text nameText;
 
@@ -137,9 +143,14 @@ public class MainComposite extends AbstractTabComposite {
 
     protected String statusLabelText = null;
 
+    public MainComposite(Composite parent, int style, HorizontalTabFactory tabFactory, IRepositoryViewObject obj) {
+        this(parent, style, tabFactory.getWidgetFactory(), obj);
+        this.tabFactory = tabFactory;
+    }
+
     /**
      * yzhang MainComposite constructor comment.
-     * 
+     *
      * @param parent
      * @param style
      */
@@ -666,6 +677,16 @@ public class MainComposite extends AbstractTabComposite {
                                                     if (isNewItemCreated) {
                                                         newRepositoryObject = proxyRepositoryFactory.getLastVersion(
                                                                 ProjectManager.getInstance().getCurrentProject(), newId);
+                                                        if (tabFactory != null) {
+                                                            IRepositoryNode newRepoViewNode = RepositorySeekerManager
+                                                                    .getInstance().searchRepoViewNode(newId);
+                                                            if (newRepoViewNode != null) {
+                                                                TalendPropertyTabDescriptor selection = tabFactory.getSelection();
+                                                                if (selection != null) {
+                                                                    selection.setData(newRepoViewNode.getObject());
+                                                                }
+                                                            }
+                                                        }
                                                     } else {
                                                         newRepositoryObject = repositoryObject;
                                                     }
