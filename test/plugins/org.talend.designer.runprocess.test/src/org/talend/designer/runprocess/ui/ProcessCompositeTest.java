@@ -14,7 +14,7 @@ package org.talend.designer.runprocess.ui;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.ui.PlatformUI;
+import org.eclipse.swt.widgets.Shell;
 import org.junit.Assert;
 import org.junit.Test;
 import org.talend.core.model.components.ComponentCategory;
@@ -52,8 +52,7 @@ public class ProcessCompositeTest {
         Node tOracleSP_1 = new Node(tOracleSPComponent, process);
         process.addNodeContainer(new NodeContainer(tOracleSP_1));
 
-        ProcessComposite composite = new ProcessComposite(new Composite(PlatformUI.getWorkbench().getActiveWorkbenchWindow()
-                .getShell(), SWT.NONE), SWT.NONE);
+        ProcessComposite composite = new ProcessComposite(new Composite(new Shell(), SWT.NONE), SWT.NONE);
         RunProcessContext context = new RunProcessContext(process);
         composite.setProcessContext(context);
         String errorMessage1 = "Exception in component tOracleSP_1 (ParentJob)\njava.sql.SQLException: ORA-20000: Failed to execute one or more sql statements";
