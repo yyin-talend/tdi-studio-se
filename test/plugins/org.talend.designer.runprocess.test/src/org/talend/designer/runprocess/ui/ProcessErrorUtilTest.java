@@ -1,6 +1,6 @@
 // ============================================================================
 //
-// Copyright (C) 2006-2014 Talend Inc. - www.talend.com
+// Copyright (C) 2006-2016 Talend Inc. - www.talend.com
 //
 // This source code is available under agreement available at
 // %InstallDIR%\features\org.talend.rcp.branding.%PRODUCTNAME%\%PRODUCTNAME%license.txt
@@ -12,9 +12,8 @@
 // ============================================================================
 package org.talend.designer.runprocess.ui;
 
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Shell;
+import java.util.HashMap;
+
 import org.junit.Assert;
 import org.junit.Test;
 import org.talend.core.model.components.ComponentCategory;
@@ -25,6 +24,7 @@ import org.talend.core.ui.component.ComponentsFactoryProvider;
 import org.talend.designer.core.ui.editor.nodecontainer.NodeContainer;
 import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.process.Process;
+import org.talend.designer.runprocess.IProcessMessage;
 import org.talend.designer.runprocess.ProcessMessage;
 import org.talend.designer.runprocess.ProcessMessage.MsgType;
 import org.talend.designer.runprocess.RunProcessContext;
@@ -33,7 +33,7 @@ import org.talend.designer.runprocess.RunProcessContext;
  * created by wchen on Dec 27, 2016 Detailled comment
  *
  */
-public class ProcessCompositeTest {
+public class ProcessErrorUtilTest {
 
     /**
      * Test method for
@@ -52,18 +52,15 @@ public class ProcessCompositeTest {
         Node tOracleSP_1 = new Node(tOracleSPComponent, process);
         process.addNodeContainer(new NodeContainer(tOracleSP_1));
 
-        ProcessComposite composite = new ProcessComposite(new Composite(new Shell(), SWT.NONE), SWT.NONE);
         RunProcessContext context = new RunProcessContext(process);
-        composite.setProcessContext(context);
         String errorMessage1 = "Exception in component tOracleSP_1 (ParentJob)\njava.sql.SQLException: ORA-20000: Failed to execute one or more sql statements";
         ProcessMessage message1 = new ProcessMessage(MsgType.STD_ERR, errorMessage1);
-        composite.getAllErrorMess(message1);
-        Assert.assertEquals(composite.errorMessMap.get(tOracleSP_1.getUniqueName()).getContent(), errorMessage1);
+        HashMap<String, IProcessMessage> errorMessMap = ProcessErrorUtil.getAllErrorMess(message1, context);
+        Assert.assertEquals(errorMessMap.get(tOracleSP_1.getUniqueName()).getContent(), errorMessage1);
 
-        composite.errorMessMap.clear();
         String errorMessage2 = "Exception in component tOracleSP_1 (ChildJob)\njava.sql.SQLException: ORA-20000: Failed to execute one or more sql statements";
         ProcessMessage message2 = new ProcessMessage(MsgType.STD_ERR, errorMessage2);
-        composite.getAllErrorMess(message2);
-        Assert.assertNull(composite.errorMessMap.get(tOracleSP_1.getUniqueName()));
+        HashMap<String, IProcessMessage> errorMessMap2 = ProcessErrorUtil.getAllErrorMess(message2, context);
+        Assert.assertNull(errorMessMap2.get(tOracleSP_1.getUniqueName()));
     }
 }
