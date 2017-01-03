@@ -114,6 +114,11 @@
              name="widget.type.file"
              widgetType="widget.type.file">
        </Mapping>
+       <Mapping
+             mapFieldType="DIRECTORY"
+             name="widget.type.directory"
+             widgetType="widget.type.directory">
+       </Mapping>
    </extension>
    <extension
          point="org.talend.designer.core.generators">
