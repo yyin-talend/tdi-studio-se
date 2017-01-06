@@ -47,6 +47,7 @@ import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.Widget;
+import org.talend.commons.exception.ExceptionHandler;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.IProcess;
 import org.talend.core.model.process.IProcess2;
@@ -57,6 +58,10 @@ import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.ui.editor.cmd.PropertyChangeCommand;
 import org.talend.designer.runprocess.RunProcessContext;
 import org.talend.designer.runprocess.i18n.Messages;
+
+import us.monoid.json.JSONArray;
+import us.monoid.json.JSONException;
+import us.monoid.json.JSONObject;
 
 /**
  * gcui class global comment. Detailled comment <br/>
@@ -489,7 +494,7 @@ public class JobVMArgumentsComposite {
             public String getColumnText(Object element, int columnIndex) {
                 String value = ((String) element);
                 if (columnIndex == 0) {
-                    return value.replace(" ", "");
+                    return value;
                 }
                 throw new IllegalStateException();
             }
@@ -546,24 +551,49 @@ public class JobVMArgumentsComposite {
             return EMPTY_STRING_LIST;
         }
         ArrayList<String> result = new ArrayList<String>(50);
-        for (String tmp : stringList.split(" ")) {
-            if (tmp != null && !"".equals(tmp)) { //$NON-NLS-1$
-                result.add(tmp);
+        if(!isJson(stringList)){
+            return result;
+        }
+        try {
+            JSONObject root = new JSONObject(stringList);
+            Object obj =  root.get("JOB_RUN_VM_ARGUMENTS");//$NON-NLS-1$
+            if(obj != null && (obj instanceof JSONArray)){
+                JSONArray array = (JSONArray) obj;
+                for(int i=0;i<array.length();i++){
+                    result.add((String) array.get(i));
+                }
             }
+        } catch (JSONException e) {
+            ExceptionHandler.process(e);
         }
         return result;
     }
+    
+    private boolean isJson(String jsonString){
+        try {
+            new JSONObject(jsonString);
+        } catch (JSONException e) {
+            return false;
+        } 
+        return true;
+    }
 
     protected String writeString(List<String> items) {
+        JSONObject root = new JSONObject();
+        JSONArray args = new JSONArray();
         int size = items.size();
-        StringBuffer buf = new StringBuffer(size * 50);
-        buf.append(" ");
         for (int i = 0; i < size; i++) {
-            buf.append(items.get(i).trim().replaceAll(" ", ""));
-            buf.append(" "); //$NON-NLS-1$
+            String vm = items.get(i).trim();
+            args.put(vm);
         }
-        return buf.toString();
+        try {
+            root.put("JOB_RUN_VM_ARGUMENTS", args); //$NON-NLS-1$
+        } catch (JSONException e) {
+            ExceptionHandler.process(e);
+        }
+        return root.toString();
     }
+    
 
     protected String getArgumentsString() {
         String argumentsString = writeString(getList());
