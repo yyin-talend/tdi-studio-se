@@ -139,6 +139,7 @@ import org.talend.designer.runprocess.RunProcessContext;
 import org.talend.designer.runprocess.RunProcessPlugin;
 import org.talend.designer.runprocess.i18n.Messages;
 import org.talend.designer.runprocess.prefs.RunProcessPrefsConstants;
+import org.talend.designer.runprocess.utils.JobVMArgumentsUtil;
 import org.talend.repository.ProjectManager;
 import org.talend.repository.utils.EsbConfigUtils;
 import org.talend.utils.io.FilesUtils;
@@ -1441,7 +1442,8 @@ public class JavaProcessor extends AbstractJavaProcessor implements IJavaBreakpo
             string = RunProcessPlugin.getDefault().getPreferenceStore().getString(RunProcessPrefsConstants.VMARGUMENTS);
         }
         String replaceAll = string.trim();
-        String[] vmargs = replaceAll.split(" "); //$NON-NLS-1$
+        List<String> vmList = new JobVMArgumentsUtil().readString(replaceAll);
+        String[] vmargs = vmList.toArray(new String[0]);
         return vmargs;
     }
 
