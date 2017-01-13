@@ -2813,6 +2813,14 @@
               name="ChangeMappingFileMigrationTask"
               version="6.2.2">
         </projecttask>
+        <projecttask
+              beforeLogon="false"
+              breaks="6.1.0"
+              class="org.talend.repository.model.migration.FixUnevenItemContextParametersMigrationTask"
+              id="org.talend.repository.model.migration.FixUnevenItemContextParametersMigrationTask"
+              name="FixUnevenItemContextParametersMigrationTask"
+              version="6.2.2">
+        </projecttask>
    </extension>
 
    <extension
