@@ -117,7 +117,7 @@ public class Component extends AbstractBasicComponent {
     private ComponentDefinition componentDefinition;
 
     private RuntimeInfo runtimeInfo;
-    
+
     private List<ModuleNeeded> componentImportNeedsList;
 
     private ComponentsProvider provider;
@@ -1538,19 +1538,19 @@ public class Component extends AbstractBasicComponent {
         }
         return null;
     }
-    
+
     /**
      * Sets the visible.
-     * 
+     *
      * @param visible the visible to set
      */
     public void setVisible(Boolean visible) {
         this.visible = visible;
     }
-    
+
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.talend.core.model.components.IComponent#isVisible()
      */
     @Override
@@ -1568,24 +1568,21 @@ public class Component extends AbstractBasicComponent {
 
     @Override
     public boolean isVisibleInComponentDefinition() {
-        if (visible != null) {
-            return visible;
-        }
-        return false;
+        return true;
     }
 
     /**
      * Sets the technical.
-     * 
+     *
      * @param technical the technical to set
      */
     public void setTechnical(Boolean technical) {
         this.technical = technical;
     }
-    
+
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.talend.core.model.components.IComponent#isTechnical()
      */
     @Override
