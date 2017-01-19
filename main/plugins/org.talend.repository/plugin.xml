@@ -2823,11 +2823,11 @@
         </projecttask>
         <projecttask
               beforeLogon="false"
-              breaks="5.6.2"
+              breaks="6.2.1"
               class="org.talend.repository.model.migration.AddNewIgnoreNullSettingForTMicrosoftCrmOutputTask"
               id="org.talend.repository.model.migration.AddNewIgnoreNullSettingForTMicrosoftCrmOutputTask"
               name="AddNewIgnoreNullSettingForTMicrosoftCrmOutputTask"
-              version="6.0.0">
+              version="6.2.2">
         </projecttask>
    </extension>
 
