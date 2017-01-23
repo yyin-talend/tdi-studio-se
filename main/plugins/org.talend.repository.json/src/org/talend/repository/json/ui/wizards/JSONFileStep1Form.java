@@ -363,7 +363,7 @@ public class JSONFileStep1Form extends AbstractJSONFileStepForm {
                     labelLimitation.setToolTipText(MessageFormat.format(Messages.JSONLimitToolTip, commonNodesLimitation.getText()));;
                 } else {
                     limit = Integer.valueOf(str);
-                    labelLimitation.setToolTipText(MessageFormat.format(Messages.JSONLimitToolTip, limit));;
+                    labelLimitation.setToolTipText(MessageFormat.format(Messages.JSONLimitToolTip, limit));
                 }
 
                 String tempxml = null;
