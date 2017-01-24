@@ -26,6 +26,7 @@ import org.talend.designer.mapper.external.data.ExternalMapperTable;
 import org.talend.designer.mapper.external.data.ExternalMapperTableEntry;
 import org.talend.designer.mapper.managers.MapperManager;
 import org.talend.designer.mapper.model.tableentry.AbstractInOutTableEntry;
+import org.talend.designer.mapper.model.tableentry.ColumnNameFilterEntry;
 import org.talend.designer.mapper.model.tableentry.ExpressionFilterEntry;
 import org.talend.designer.mapper.model.tableentry.GlobalMapEntry;
 import org.talend.designer.mapper.model.tableentry.InputColumnTableEntry;
@@ -47,6 +48,10 @@ public abstract class AbstractInOutTable extends AbstractDataMapTable {
     private ExtendedTableModel<GlobalMapEntry> tableMapSettingEntriesModel;
 
     private boolean activateExpressionFilter;
+
+    private boolean activateColumnNameFilter;
+    
+    private ColumnNameFilterEntry columnNameFilterEntry;
 
     private boolean activateCondensedTool;
 
@@ -99,10 +104,13 @@ public abstract class AbstractInOutTable extends AbstractDataMapTable {
     protected void initFromExternalData(ExternalMapperTable externalMapperTable) {
         super.initFromExternalData(externalMapperTable);
         expressionFilterEntry = new ExpressionFilterEntry(this);
+        columnNameFilterEntry = new ColumnNameFilterEntry(this);
         tableMapSettingEntriesModel = new ExtendedTableModel<GlobalMapEntry>("Model for map setting", mapSettingEntries);
         if (externalMapperTable != null) {
             this.expressionFilterEntry.setExpression(externalMapperTable.getExpressionFilter());
+            this.columnNameFilterEntry.setColumnNameFilter(externalMapperTable.getColumnNameFilter());
             this.activateExpressionFilter = externalMapperTable.isActivateExpressionFilter();
+            this.activateColumnNameFilter = externalMapperTable.isActivateColumnNameFilter();
             this.activateCondensedTool = externalMapperTable.isActivateCondensedTool();
             this.id = externalMapperTable.getId();
             this.isRepository = this.id == null ? false : true;
@@ -180,6 +188,10 @@ public abstract class AbstractInOutTable extends AbstractDataMapTable {
         return this.expressionFilterEntry;
     }
 
+    public ColumnNameFilterEntry getColumnNameFilter() {
+        return this.columnNameFilterEntry;
+    }
+
     public ExtendedTableModel<GlobalMapEntry> getTableMapSettingEntriesModel() {
         return this.tableMapSettingEntriesModel;
     }
@@ -200,6 +212,14 @@ public abstract class AbstractInOutTable extends AbstractDataMapTable {
      */
     public void setActivateExpressionFilter(boolean activateExpressionFilter) {
         this.activateExpressionFilter = activateExpressionFilter;
+    }
+
+    public boolean isActivateColumnNameFilter() {
+        return this.activateColumnNameFilter;
+    }
+
+    public void setActiveColumnNameFilter(boolean activateColumnNameFilter) {
+        this.activateColumnNameFilter = activateColumnNameFilter;
     }
 
     public boolean isActivateCondensedTool() {

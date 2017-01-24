@@ -134,9 +134,10 @@ public class InputDataMapTableView extends DataMapTableView {
      */
     @Override
     protected void createContent() {
-        createTableForColumns();
-
         createExpressionFilter(DEFAULT_POST_MATCHING_EXPRESSION_FILTER);
+        
+        createColumnNameFilter();
+        createTableForColumns();
 
     }
 
@@ -711,6 +712,7 @@ public class InputDataMapTableView extends DataMapTableView {
         }
 
         createActivateFilterCheck();
+        createColumnNameFilterCheck();
 
         return true;
     }

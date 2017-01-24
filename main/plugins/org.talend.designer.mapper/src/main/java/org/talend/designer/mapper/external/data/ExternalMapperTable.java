@@ -77,10 +77,14 @@ public class ExternalMapperTable extends AbstractExternalMapTable implements Ser
 
     private String expressionFilter;
 
+    private String columnNameFilter;
+    
     private boolean activateExpressionFilter;
 
     private boolean activateCondensedTool;
 
+    private boolean activateColumnNameFilter;
+    
     private String matchingMode;
 
     private String lookupMode;
@@ -246,6 +250,15 @@ public class ExternalMapperTable extends AbstractExternalMapTable implements Ser
         this.expressionFilter = expressionFilter;
     }
 
+    @Override
+    public String getColumnNameFilter() {
+        return this.columnNameFilter;
+    }
+
+    public void setColumnNameFilter(String columnNameFilter) {
+        this.expressionFilter = columnNameFilter;
+    }
+    
     /**
      * Getter for activateExpressionFilter.
      * 
@@ -525,6 +538,15 @@ public class ExternalMapperTable extends AbstractExternalMapTable implements Ser
         }
 
         return false;
+    }
+    
+    @Override
+    public boolean isActivateColumnNameFilter() {
+        return this.activateColumnNameFilter;
+    }
+
+    public void setActiveColumnNameFilter(boolean activateColumnNameFilter) {
+        this.activateColumnNameFilter = activateColumnNameFilter;
     }
 
     public boolean isActivateCondensedTool() {
