@@ -54,7 +54,7 @@ public class GenericHiddenTextController extends TextController {
         if (ContextParameterUtils.containContextVariables(value)) {
             return false;
         }
-        return TalendQuoteUtils.isCommonString(value);
+        return TalendQuoteUtils.isCommonString(value) || isInWizard();
     }
 
     @Override
