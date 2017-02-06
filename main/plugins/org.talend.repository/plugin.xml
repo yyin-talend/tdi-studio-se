@@ -2883,6 +2883,14 @@
               name="Decode URI to save functionality of component correct"
               version="6.3.2">
         </projecttask>
+        <projecttask
+               beforeLogon="false"
+               breaks="6.2.1"
+               class="org.talend.repository.model.migration.AddNewIgnoreNullSettingForTMicrosoftCrmOutputTask"
+               id="org.talend.repository.model.migration.AddNewIgnoreNullSettingForTMicrosoftCrmOutputTask"
+               name="AddNewIgnoreNullSettingForTMicrosoftCrmOutputTask"
+               version="6.2.2">
+         </projecttask>
    </extension>
 
    <extension
