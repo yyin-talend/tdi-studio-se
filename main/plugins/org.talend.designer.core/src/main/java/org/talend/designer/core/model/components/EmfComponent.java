@@ -1670,7 +1670,10 @@ public class EmfComponent extends AbstractComponent {
             // We store the highest version per distribution which will become the default one in the versions drop down
             // list.
             for (Bean version : versionList) {
-                defaultVersionPerDistribution.putIfAbsent(version.getDistributionName(), version.getName());
+                String distributionName = version.getDistributionName();
+                if (!defaultVersionPerDistribution.containsKey(distributionName)) {
+                    defaultVersionPerDistribution.put(distributionName, version.getName());
+                }
             }
 
             ElementParameter newParam = new ElementParameter(node);
