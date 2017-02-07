@@ -9,18 +9,23 @@ if (!isParallelize) {
 //end issue 0010346 Parallelization crash with "Drop table if exists and create"
     manager = getManager(dbmsId, cid);
     String ending="";
-
+    
+	//TODO need to remove it as it seems not useful now
     if("VECTORWISE".equalsIgnoreCase(dbmsId)) {
         ending="WITH STRUCTURE = VECTORWISE";
     }
-
-    boolean useCascade = "true".equals(ElementParameterParser.getValue(node,"__USE_CASCADE__"));
+	
+	boolean useCascade = false;
+	if(VERTICA.equalsIgnoreCase(dbmsId)){
+        useCascade = "true".equals(ElementParameterParser.getValue(node,"__USE_CASCADE__"));
+    }
+    
     //bugfix: TDI-31650
     boolean setQueryTimeOut = false;
     String queryTimeOutInSeconds = null;
     if(SYBASE.equalsIgnoreCase(dbmsId)){
-            setQueryTimeOut = "true".equals(ElementParameterParser.getValue(node,"__SET_QUERY_TIMEOUT__"));
-            queryTimeOutInSeconds = ElementParameterParser.getValue(node,"__QUERY_TIMEOUT_IN_SECONDS__");
+        setQueryTimeOut = "true".equals(ElementParameterParser.getValue(node,"__SET_QUERY_TIMEOUT__"));
+        queryTimeOutInSeconds = ElementParameterParser.getValue(node,"__QUERY_TIMEOUT_IN_SECONDS__");
     }
 
     if(!("NONE").equals(tableAction)) {
@@ -146,6 +151,7 @@ if (!isParallelize) {
                             <%
                             } else if (ORACLE.equalsIgnoreCase(dbmsId) || SAPHANA.equalsIgnoreCase(dbmsId)) {
                             %>
+                            	//TODO adjust the code below to make it work for txxxoutput and teltjdbcoutput both
                                 <%=manager.generateCode4TabelExist()%>
                                 java.sql.DatabaseMetaData dbMetaData_<%=cid%> = conn_<%=cid%>.getMetaData();
                                 if(tableNameForSearch_<%=cid%>.indexOf("\"")==-1){
@@ -240,6 +246,7 @@ if (!isParallelize) {
 				            <%
                             } else if(REDSHIFT.equalsIgnoreCase(dbmsId)) {
                             %>
+                            	//TODO adjust the code below to make it work for txxxoutput and teltjdbcoutput both
 				                java.sql.DatabaseMetaData dbMetaData_<%=cid%> = conn_<%=cid%>.getMetaData();
                                 java.sql.ResultSet rsTable_<%=cid%> = dbMetaData_<%=cid%>.getTables(null, schemaForSearch_<%=cid%>, null, new String[]{"TABLE"});
                                 boolean whetherExist_<%=cid%> = false;
