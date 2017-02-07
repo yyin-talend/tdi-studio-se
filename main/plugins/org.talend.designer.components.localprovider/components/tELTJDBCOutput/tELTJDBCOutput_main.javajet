@@ -6,15 +6,19 @@ imports="
 		org.talend.core.model.metadata.IMetadataTable 
 		org.talend.core.model.metadata.IMetadataColumn
 		org.talend.core.model.process.IConnection
+		org.talend.core.model.metadata.MappingTypeRetriever
+		org.talend.core.model.metadata.MetadataTalendType
 	 	org.talend.commons.utils.generation.CodeGenerationUtils
 		java.util.List
 		java.util.ArrayList
 		java.util.LinkedList
 		java.util.Map
+		java.util.HashMap
 "
+skeleton="../templates/db_output_bulk.skeleton"
 %>
-	<%@ include file="../templates/Log4j/Log4jDBConnUtil.javajet"%>
-	
+	<%@ include file="@{org.talend.designer.components.localprovider}/components/templates/Log4j/Log4jDBConnUtil.javajet"%>
+	<%@ include file="@{org.talend.designer.components.localprovider}/components/templates/Log4j/DBLogUtil.javajet"%>
 	<%
 	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 	INode node = (INode)codeGenArgument.getArgument();
@@ -67,12 +71,16 @@ imports="
     	useExistingConn = ("true").equals(ElementParameterParser.getValue(previousNode, "__USE_EXISTING_CONNECTION__"));
     }
     String whereClause = ElementParameterParser.getValue(node, "__WHERE_CLAUSE__");
-    
+    %>
+    String dbUser_<%=cid %> = null;
+    <%
     if(useExistingConn) {
         String connection = ElementParameterParser.getValue(previousNode, "__CONNECTION__");
         String conn = "conn_" + connection;
+        String username = "username_" + connection;
         %>
         java.sql.Connection conn_<%=cid%> = (java.sql.Connection)globalMap.get("<%=conn%>");
+        dbUser_<%=cid %> = (String)globalMap.get("<%=username%>");
         <%
         log4jCodeGenerateUtil.useExistConnection(node);
     } else {
@@ -80,7 +88,7 @@ imports="
         String driverClass_<%=cid%> = <%=driverClass %>;
         java.lang.Class.forName(driverClass_<%=cid%>);
         String url_<%=cid %> = <%=jdbcUrl %>; 
-        String dbUser_<%=cid %> = <%=dbuser%>;	        
+        dbUser_<%=cid %> = <%=dbuser%>;	        
     	<%
     	String passwordFieldName = "__PASS__";
     	%>
@@ -108,71 +116,28 @@ imports="
 	
     <%
     if(columnList != null && columnList.size()>0){
-        class Column{
-        
-        	IMetadataColumn column;
-        	
-        	String name;
-        	
-        	String sqlStmt;
-        	
-        	String value;
-        	
-        	public Column(IMetadataColumn column){
-        		this.column = column;
-        		String columname = column.getOriginalDbColumnName();
-        		if(columname!=null && columname.trim().length()>0){
-        			this.name = columname;
-        		}else{
-        			this.name = column.getLabel();
-        		}
-        		this.sqlStmt = "=?";
-        		this.value = "?";
-        	}
-        	
-        	public IMetadataColumn getColumn(){
-        		return this.column;
-        	}
-        
-        	public String getName(){
-        		return this.name;
-        	}
-        	
-        	public String getSqlStmt(){
-        		return this.sqlStmt;
-        	}
-        	
-        	public String getValue(){
-        		return this.value;
-        	}
-        }
-
         StringBuilder insertColName = new StringBuilder();
         
         StringBuilder updateSetStmt = new StringBuilder();
         
-        List<Column> stmtStructure =  new LinkedList<Column>();
-        
-        for(IMetadataColumn column:columnList){
-        	stmtStructure.add(new Column(column));
-        }
-        
-        int counterOuter =0;
-        boolean firstKey = true;
-        boolean firstNoneKey = true;
-        boolean isfirstKey = true;
-        for(Column colStmt:stmtStructure){
+        int counterOuter = 0;
+        for(IMetadataColumn column : columnList){
         	String suffix = ",";
         	
-        	if(counterOuter==(stmtStructure.size()-1)){
-        		suffix = "";
+        	if(counterOuter==(columnList.size()-1)){
+    			suffix = "";
         	}
         	
-        	insertColName.append(colStmt.getName()+suffix);
+        	String columnName = column.getOriginalDbColumnName();
+    		if(columnName==null || columnName.trim().isEmpty()){
+				columnName = column.getLabel();
+    		}
         	
-        	updateSetStmt.append(colStmt.getName()+"=(\"+select_query.replaceFirst(java.util.regex.Pattern.quote(selectQueryColumnsName),routines.system.StringUtils.splitSQLColumns(selectQueryColumnsName)[ "+ counterOuter + "])+\")" +suffix);
+        	insertColName.append(columnName).append(suffix);
         	
-        	counterOuter ++;
+        	updateSetStmt.append(columnName+"=(\"+select_query.replaceFirst(java.util.regex.Pattern.quote(selectQueryColumnsName),routines.system.StringUtils.splitSQLColumns(selectQueryColumnsName)[ "+ counterOuter + "])+\")" + suffix);
+        	
+        	counterOuter++;
         }
 
         if(("INSERT").equals(dataAction)){
@@ -218,6 +183,21 @@ imports="
     }
 
 	if(dbtable != null && columnList != null){
+		{//use the block to limit the code scope for table action
+    		Manager manager = null;
+    		String dbmsId = ElementParameterParser.getValue(node,"__MAPPING__");
+    		String tableAction = ElementParameterParser.getValue(node,"__TABLE_ACTION__");
+    		
+    		List<Column> stmtStructure = getELTManager(dbmsId, cid).createColumnList(columnList, false, null, null);
+    		
+    		String table = useDifferentTable ? differenttable : ("\""+dbtable +"\"");
+    		
+    		dbLog = new DBLogUtil(node);
+    		%>
+    		<%@ include file="../templates/_tableActionForELT.javajet"%>
+    		<%
+		}
+		
 		if(("INSERT").equals(dataAction)){
 		%>
         System.out.println("Inserting with : \n" + insertQuery + "\n");
