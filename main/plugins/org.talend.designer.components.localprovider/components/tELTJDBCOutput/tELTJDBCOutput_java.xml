@@ -91,7 +91,15 @@
       SHOW_IF="USE_DIFFERENT_TABLE=='true'"
     >
       <DEFAULT>""</DEFAULT>
-    </PARAMETER> 
+    </PARAMETER>
+    
+    <PARAMETER
+      NAME="MAPPING"
+      FIELD="MAPPING_TYPE"
+      NUM_ROW="40"
+    >
+      <DEFAULT>mysql_id</DEFAULT>
+    </PARAMETER>
     
   </PARAMETERS>
   
