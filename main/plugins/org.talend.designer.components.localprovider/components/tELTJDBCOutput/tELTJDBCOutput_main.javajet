@@ -189,7 +189,7 @@ skeleton="../templates/db_output_bulk.skeleton"
     		String tableAction = ElementParameterParser.getValue(node,"__TABLE_ACTION__");
     		boolean isDynamic = false;
     		
-    		List<Column> stmtStructure = getManager(dbmsId, cid).createColumnList(columnList, false, null, null);
+    		List<Column> stmtStructure = getELTManager(dbmsId, cid).createColumnList(columnList, false, null, null);
     		
     		String table = useDifferentTable ? differenttable : ("\""+dbtable +"\"");
     		
