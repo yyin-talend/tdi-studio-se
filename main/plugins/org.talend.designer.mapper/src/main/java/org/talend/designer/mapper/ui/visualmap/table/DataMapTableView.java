@@ -2764,7 +2764,8 @@ public abstract class DataMapTableView extends Composite implements IDataMapTabl
         public boolean select(Viewer viewer, Object parentElement, Object element) {
              String pattern = getNameFilter();
              SearchPattern matcher = new SearchPattern();
-             matcher.setPattern(pattern);
+             // SearchPattern for dynamic search/exact match/fuzzy match
+             matcher.setPattern("*" + pattern.trim() + "*");
              if (element instanceof OutputColumnTableEntry) {
                  OutputColumnTableEntry outputColumn = (OutputColumnTableEntry) element;
                  //

@@ -250,15 +250,6 @@ public class ExternalMapperTable extends AbstractExternalMapTable implements Ser
         this.expressionFilter = expressionFilter;
     }
 
-    @Override
-    public String getColumnNameFilter() {
-        return this.columnNameFilter;
-    }
-
-    public void setColumnNameFilter(String columnNameFilter) {
-        this.expressionFilter = columnNameFilter;
-    }
-    
     /**
      * Getter for activateExpressionFilter.
      * 

@@ -33,8 +33,6 @@ public abstract class DataMapTableEntry implements ITableEntry {
 
     private String expression;
 
-    private String cloumnNameFilter;
-
     private IDataMapTable parent;
 
     private String name;
@@ -51,11 +49,6 @@ public abstract class DataMapTableEntry implements ITableEntry {
         this(abstractDataMapTable, null);
     }
 
-    public DataMapTableEntry(String cloumnNameFilter) {
-        super();
-        this.cloumnNameFilter = cloumnNameFilter;
-    }
-
     /**
      * DOC amaumont ITableEntry constructor comment.
      * 
@@ -70,13 +63,6 @@ public abstract class DataMapTableEntry implements ITableEntry {
             throw new IllegalArgumentException("Name of the TableEntry must not be null !"); //$NON-NLS-1$
         }
         this.expression = expression;
-    }
-    public String getColumnNameFilter() {
-        return this.cloumnNameFilter;
-    }
-
-    public void setColumnNameFilter(String cloumnNameFilter) {
-        this.cloumnNameFilter = cloumnNameFilter;
     }
 
     public String getExpression() {

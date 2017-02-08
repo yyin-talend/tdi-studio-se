@@ -1275,7 +1275,7 @@ public class UIManager extends AbstractUIManager {
                     } 
                 }
                 boolean allIsNull = false;
-                if(tableItem == null && isIntputEntry ){
+                if(tableItem == null && (isIntputEntry || isOutputEntry)){
                     if(tableItems.length > 0){
                         tableItem = tableItems[0];
                         checked = true;
@@ -1283,14 +1283,7 @@ public class UIManager extends AbstractUIManager {
                         allIsNull = true;
                     }
                 }
-                if(tableItem == null && isOutputEntry ){
-                    if(tableItems.length > 0){
-                        tableItem = tableItems[0];
-                        checked = true;
-                    }else {
-                        allIsNull = true;
-                    }
-                }
+
                 if(!allIsNull){
                     Table table = tableItem.getParent();
                     Rectangle boundsTableItem = tableItem.getBounds(1);// FIX for issue 1225 ("1" parameter added)
