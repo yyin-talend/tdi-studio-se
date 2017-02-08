@@ -8,12 +8,7 @@ boolean convertToUppercase_tableAction = "true".equalsIgnoreCase(ElementParamete
 if (!isParallelize) {
 //end issue 0010346 Parallelization crash with "Drop table if exists and create"
 	
-	boolean isELT = "tELTJDBCOutput".equals(node.getComponent().getName());
-	if(isELT) {
-		manager = getELTManager(dbmsId, cid);
-	} else {
-		manager = getManager(dbmsId, cid);
-	}
+	manager = getManager(dbmsId, cid);
     
     String ending="";
     
@@ -22,10 +17,7 @@ if (!isParallelize) {
         ending="WITH STRUCTURE = VECTORWISE";
     }
 	
-	boolean useCascade = false;
-	if(VERTICA.equalsIgnoreCase(dbmsId)){
-        useCascade = "true".equals(ElementParameterParser.getValue(node,"__USE_CASCADE__"));
-    }
+    boolean useCascade = "true".equals(ElementParameterParser.getValue(node,"__USE_CASCADE__"));
     
     //bugfix: TDI-31650
     boolean setQueryTimeOut = false;
@@ -149,11 +141,7 @@ if (!isParallelize) {
                                 java.sql.Statement isExistStmt_<%=cid%> = conn_<%=cid%>.createStatement();
                                 boolean whetherExist_<%=cid%> = false;
                                 try {
-                                	<%if(isELT) {%>
-                                    isExistStmt_<%=cid%>.execute("SELECT TOP 1 1 FROM " + tableName_<%=cid%>);
-                                    <%} else {%>
                                     isExistStmt_<%=cid%>.execute("SELECT TOP 1 1 FROM [" + tableName_<%=cid%> + "]" );
-                                    <%}%>
                                     whetherExist_<%=cid%> = true;
                                 } catch (java.lang.Exception e){
                                     whetherExist_<%=cid%> = false;
@@ -162,17 +150,7 @@ if (!isParallelize) {
                             <%
                             } else if (ORACLE.equalsIgnoreCase(dbmsId) || SAPHANA.equalsIgnoreCase(dbmsId)) {
                             %>
-                            	<%if(isELT) {%>
-                            	String tableNameForSearch_<%=cid%> = <%=table%>;
-                            	String dbschemaForSearch__<%=cid%> = null;
-                            	if(dbschema_<%=cid%> == null || dbschema_<%=cid%>.trim().isEmpty()) {
-                            		dbschemaForSearch__<%=cid%> = dbUser_<%=cid %>.toUpperCase();
-                            	} else {
-                            		dbschemaForSearch__<%=cid%> = dbschema_<%=cid%>.toUpperCase();
-                            	}
-                            	<%} else {%>
                                 <%=manager.generateCode4TabelExist()%>
-                                <%}%>
                                 java.sql.DatabaseMetaData dbMetaData_<%=cid%> = conn_<%=cid%>.getMetaData();
                                 if(tableNameForSearch_<%=cid%>.indexOf("\"")==-1){
                                     tableNameForSearch_<%=cid%> = tableNameForSearch_<%=cid%>.toUpperCase();
@@ -266,10 +244,6 @@ if (!isParallelize) {
 				            <%
                             } else if(REDSHIFT.equalsIgnoreCase(dbmsId)) {
                             %>
-                                <%if(isELT) {%>
-                                String schemaForSearch_<%=cid%> = null;
-								String tableForSearch_<%=cid%> = <%=table%>;
-                                <%}%>
 				                java.sql.DatabaseMetaData dbMetaData_<%=cid%> = conn_<%=cid%>.getMetaData();
                                 java.sql.ResultSet rsTable_<%=cid%> = dbMetaData_<%=cid%>.getTables(null, schemaForSearch_<%=cid%>, null, new String[]{"TABLE"});
                                 boolean whetherExist_<%=cid%> = false;

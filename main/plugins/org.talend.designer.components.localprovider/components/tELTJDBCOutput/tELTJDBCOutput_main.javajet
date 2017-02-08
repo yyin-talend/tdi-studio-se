@@ -195,7 +195,7 @@ skeleton="../templates/db_output_bulk.skeleton"
     		
     		dbLog = new DBLogUtil(node);
     		%>
-    		<%@ include file="../templates/_tableActionForOutput.javajet"%>
+    		<%@ include file="../templates/_tableActionForELT.javajet"%>
     		<%
 		}
 		
