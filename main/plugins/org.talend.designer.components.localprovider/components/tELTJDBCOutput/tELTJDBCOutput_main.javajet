@@ -71,12 +71,16 @@ skeleton="../templates/db_output_bulk.skeleton"
     	useExistingConn = ("true").equals(ElementParameterParser.getValue(previousNode, "__USE_EXISTING_CONNECTION__"));
     }
     String whereClause = ElementParameterParser.getValue(node, "__WHERE_CLAUSE__");
-    
+    %>
+    String dbUser_<%=cid %> = null;
+    <%
     if(useExistingConn) {
         String connection = ElementParameterParser.getValue(previousNode, "__CONNECTION__");
         String conn = "conn_" + connection;
+        String username = "username_" + connection;
         %>
         java.sql.Connection conn_<%=cid%> = (java.sql.Connection)globalMap.get("<%=conn%>");
+        dbUser_<%=cid %> = (String)globalMap.get("<%=username%>");
         <%
         log4jCodeGenerateUtil.useExistConnection(node);
     } else {
@@ -84,7 +88,7 @@ skeleton="../templates/db_output_bulk.skeleton"
         String driverClass_<%=cid%> = <%=driverClass %>;
         java.lang.Class.forName(driverClass_<%=cid%>);
         String url_<%=cid %> = <%=jdbcUrl %>; 
-        String dbUser_<%=cid %> = <%=dbuser%>;	        
+        dbUser_<%=cid %> = <%=dbuser%>;	        
     	<%
     	String passwordFieldName = "__PASS__";
     	%>
@@ -187,10 +191,9 @@ skeleton="../templates/db_output_bulk.skeleton"
     		
     		List<Column> stmtStructure = getManager(dbmsId, cid).createColumnList(columnList, false, null, null);
     		
-    		String table = useDifferentTable ? differenttable : dbtable;
+    		String table = useDifferentTable ? differenttable : ("\""+dbtable +"\"");
     		
     		dbLog = new DBLogUtil(node);
-    		
     		%>
     		<%@ include file="../templates/_tableActionForOutput.javajet"%>
     		<%

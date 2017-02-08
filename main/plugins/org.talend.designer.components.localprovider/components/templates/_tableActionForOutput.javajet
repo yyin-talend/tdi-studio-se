@@ -7,7 +7,14 @@ String dbms=ElementParameterParser.getValue(node, "__MAPPING__");
 boolean convertToUppercase_tableAction = "true".equalsIgnoreCase(ElementParameterParser.getValue(node, "__CONVERT_COLUMN_TABLE_TO_UPPERCASE__"));
 if (!isParallelize) {
 //end issue 0010346 Parallelization crash with "Drop table if exists and create"
-    manager = getManager(dbmsId, cid);
+	
+	boolean isELT = "tELTJDBCOutput".equals(node.getComponent().getName());
+	if(isELT) {
+		manager = getELTManager(dbmsId, cid);
+	} else {
+		manager = getManager(dbmsId, cid);
+	}
+    
     String ending="";
     
 	//TODO need to remove it as it seems not useful now
@@ -142,7 +149,11 @@ if (!isParallelize) {
                                 java.sql.Statement isExistStmt_<%=cid%> = conn_<%=cid%>.createStatement();
                                 boolean whetherExist_<%=cid%> = false;
                                 try {
-                                    isExistStmt_<%=cid%>.execute("SELECT TOP 1 1 FROM [" +  tableName_<%=cid%> + "]" );
+                                	<%if(isELT) {%>
+                                    isExistStmt_<%=cid%>.execute("SELECT TOP 1 1 FROM " + tableName_<%=cid%>);
+                                    <%} else {%>
+                                    isExistStmt_<%=cid%>.execute("SELECT TOP 1 1 FROM [" + tableName_<%=cid%> + "]" );
+                                    <%}%>
                                     whetherExist_<%=cid%> = true;
                                 } catch (java.lang.Exception e){
                                     whetherExist_<%=cid%> = false;
@@ -151,8 +162,17 @@ if (!isParallelize) {
                             <%
                             } else if (ORACLE.equalsIgnoreCase(dbmsId) || SAPHANA.equalsIgnoreCase(dbmsId)) {
                             %>
-                            	//TODO adjust the code below to make it work for txxxoutput and teltjdbcoutput both
+                            	<%if(isELT) {%>
+                            	String tableNameForSearch_<%=cid%> = <%=table%>;
+                            	String dbschemaForSearch__<%=cid%> = null;
+                            	if(dbschema_<%=cid%> == null || dbschema_<%=cid%>.trim().isEmpty()) {
+                            		dbschemaForSearch__<%=cid%> = dbUser_<%=cid %>.toUpperCase();
+                            	} else {
+                            		dbschemaForSearch__<%=cid%> = dbschema_<%=cid%>.toUpperCase();
+                            	}
+                            	<%} else {%>
                                 <%=manager.generateCode4TabelExist()%>
+                                <%}%>
                                 java.sql.DatabaseMetaData dbMetaData_<%=cid%> = conn_<%=cid%>.getMetaData();
                                 if(tableNameForSearch_<%=cid%>.indexOf("\"")==-1){
                                     tableNameForSearch_<%=cid%> = tableNameForSearch_<%=cid%>.toUpperCase();
@@ -246,7 +266,10 @@ if (!isParallelize) {
 				            <%
                             } else if(REDSHIFT.equalsIgnoreCase(dbmsId)) {
                             %>
-                            	//TODO adjust the code below to make it work for txxxoutput and teltjdbcoutput both
+                                <%if(isELT) {%>
+                                String schemaForSearch_<%=cid%> = null;
+								String tableForSearch_<%=cid%> = <%=table%>;
+                                <%}%>
 				                java.sql.DatabaseMetaData dbMetaData_<%=cid%> = conn_<%=cid%>.getMetaData();
                                 java.sql.ResultSet rsTable_<%=cid%> = dbMetaData_<%=cid%>.getTables(null, schemaForSearch_<%=cid%>, null, new String[]{"TABLE"});
                                 boolean whetherExist_<%=cid%> = false;
