@@ -55,11 +55,11 @@ if (!isParallelize) {
             } else if (ORACLE.equalsIgnoreCase(dbmsId) || SAPHANA.equalsIgnoreCase(dbmsId)) {
             %>
             	String tableNameForSearch_<%=cid%> = <%=table%>;
-            	String dbschemaForSearch__<%=cid%> = null;
+            	String dbschemaForSearch_<%=cid%> = null;
             	if(dbschema_<%=cid%> == null || dbschema_<%=cid%>.trim().isEmpty()) {
-            		dbschemaForSearch__<%=cid%> = dbUser_<%=cid %>.toUpperCase();
+            		dbschemaForSearch_<%=cid%> = dbUser_<%=cid %>.toUpperCase();
             	} else {
-            		dbschemaForSearch__<%=cid%> = dbschema_<%=cid%>.toUpperCase();
+            		dbschemaForSearch_<%=cid%> = dbschema_<%=cid%>.toUpperCase();
             	}
             	
                 java.sql.DatabaseMetaData dbMetaData_<%=cid%> = conn_<%=cid%>.getMetaData();
