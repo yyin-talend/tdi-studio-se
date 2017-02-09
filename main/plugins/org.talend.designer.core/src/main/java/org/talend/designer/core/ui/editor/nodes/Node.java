@@ -3910,7 +3910,9 @@ public class Node extends Element implements IGraphicalNode {
                     if (firstIsMerge) {
                         IMetadataTable firstSchema = inputs.get(0).getMetadataTable();
                         if (inputs.get(0).getLineStyle().equals(EConnectionType.FLOW_MERGE)) {
-                            boolean isSame = firstSchema.sameMetadataAs(getMetadataList().get(0));
+                            boolean isSame = firstSchema.sameMetadataAs(getMetadataList().get(0),
+                                    IMetadataColumn.OPTIONS_IGNORE_DBCOLUMNNAME | IMetadataColumn.OPTIONS_IGNORE_DEFAULT
+                                            | IMetadataColumn.OPTIONS_IGNORE_COMMENT | IMetadataColumn.OPTIONS_IGNORE_DBTYPE);
                             if (!isSame) {
                                 String warningMessage = Messages.getString(
                                         "Node.inputLinkDifferentFromSchemaDefined", getUniqueName()); //$NON-NLS-1$
