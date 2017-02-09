@@ -1400,7 +1400,11 @@ public class Node extends Element implements IGraphicalNode {
                             }
                         }
                         if (takeSchema.booleanValue()) {
-                            MetadataToolHelper.copyTable(mainTargetTable, connection.getMetadataTable());
+                        	  String connectionLabel = connection.getMetadataTable().getLabel();
+                              MetadataToolHelper.copyTable(mainTargetTable, connection.getMetadataTable());
+                              if (connection.getSource().isELTComponent()) {
+                                  connection.getMetadataTable().setLabel(connectionLabel);
+                              }
                             if (connection.getTarget().isELTComponent()) {
                                 IElementParameter elemParam = connection.getTarget().getElementParameter("ELT_TABLE_NAME"); //$NON-NLS-1$
                                 if (elemParam != null && elemParam.getFieldType().equals(EParameterFieldType.TEXT)) {
@@ -1751,12 +1755,8 @@ public class Node extends Element implements IGraphicalNode {
                 // still have connetions using this metadataTable, couldn't delete
                 return;
             }
-            if (table != null) { // hywang add for bug 0009593
-                String label = table.getLabel();
-                IMetadataTable metadataTable = MetadataToolHelper.getMetadataTableFromNode(source, label);
-                if (metadataTable != null) {
-                    source.metadataList.remove(metadataTable);
-                }
+            if (table != null) { 
+            	 source.metadataList.remove(table);
             }
         }
 
