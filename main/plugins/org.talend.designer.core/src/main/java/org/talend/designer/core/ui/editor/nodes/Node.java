@@ -3860,7 +3860,11 @@ public class Node extends Element implements IGraphicalNode {
                                 Problems.add(ProblemStatus.WARNING, this, errorMessage);
                             }
                         } else if (connector != null && connector.getMaxLinkInput() != 0 && connector.getMaxLinkOutput() == 0) {
-                            if (!outputMeta.sameMetadataAs(inputMeta, IMetadataColumn.OPTIONS_NONE)) {
+                            if (!outputMeta.sameMetadataAs(inputMeta, IMetadataColumn.OPTIONS_IGNORE_KEY
+                                    | IMetadataColumn.OPTIONS_IGNORE_NULLABLE | IMetadataColumn.OPTIONS_IGNORE_COMMENT
+                                    | IMetadataColumn.OPTIONS_IGNORE_PATTERN | IMetadataColumn.OPTIONS_IGNORE_DBCOLUMNNAME
+                                    | IMetadataColumn.OPTIONS_IGNORE_DBTYPE | IMetadataColumn.OPTIONS_IGNORE_DEFAULT
+                                    | IMetadataColumn.OPTIONS_IGNORE_BIGGER_SIZE)) {
                                 schemaSynchronized = false;
                                 String errorMessage = Messages.getString(
                                         "Node.differentFromSchemaDefined", inputConnecion.getName()); //$NON-NLS-1$
