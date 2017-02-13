@@ -1680,7 +1680,6 @@ public abstract class DataMapTableView extends Composite implements IDataMapTabl
                     updateColumnNameFilterTextAndLayout(true);
                     previousColumnNameFilter = columnNameFilter.getSelection();
                 }
-
             });
         }
     }   
@@ -2747,10 +2746,12 @@ public abstract class DataMapTableView extends Composite implements IDataMapTabl
                 }
 
             });
-            ColumnNameEditorToMapperStyledTextKeyListener keyAndModifyListener = new ColumnNameEditorToMapperStyledTextKeyListener(
-                    columnNameTextFilter, mapperManager.getUiManager().getTabFolderEditors().getStyledTextHandler());
-            columnNameTextFilter.addExtendedModifyListener(keyAndModifyListener);
-            columnNameTextFilter.addKeyListener(keyAndModifyListener);
+            
+            columnNameTextFilter.addModifyListener(new ModifyListener() {
+                public void modifyText(ModifyEvent e) {
+                    parseColumnNameFilterRefresh();
+                }
+            });
         }
     }
 
@@ -2763,6 +2764,9 @@ public abstract class DataMapTableView extends Composite implements IDataMapTabl
         @Override
         public boolean select(Viewer viewer, Object parentElement, Object element) {
              String pattern = getNameFilter();
+             if(!columnNameFilter.getSelection()) {
+                 pattern = "";
+             }
              SearchPattern matcher = new SearchPattern();
              // SearchPattern for dynamic search/exact match/fuzzy match
              matcher.setPattern("*" + pattern.trim() + "*");
@@ -3109,6 +3113,7 @@ public abstract class DataMapTableView extends Composite implements IDataMapTabl
             filterImageLabel.setVisible(false);         
 
         }
+        parseColumnNameFilterRefresh();
         if (buttonPressed) {
             DataMapTableView.this.changeSize(DataMapTableView.this.getPreferredSize(false, true, false), true, true);
         }
@@ -3121,6 +3126,57 @@ public abstract class DataMapTableView extends Composite implements IDataMapTabl
         }
     }
     
+    private void parseColumnNameFilterRefresh() {
+        viewer.refresh();
+        
+        if (abstractDataMapTable instanceof OutputTable) {
+            OutputTable outputTable = (OutputTable) abstractDataMapTable;
+            List<IColumnEntry> oldOuputEntries = outputTable.getDataMapTableEntries();
+//            Table tableViewerForEntries = tableViewerCreatorForColumns.getTableViewer().getTable();
+            if (oldOuputEntries != null) {
+                for (IColumnEntry entry : oldOuputEntries) {
+                    if (entry instanceof OutputColumnTableEntry) {
+                        OutputColumnTableEntry outputEntry = (OutputColumnTableEntry) entry;
+                        if(outputEntry.getExpression() != null){
+                            String[]  expressions = outputEntry.getExpression().split("\\s+");
+                            for(String expression : expressions){
+                                mapperManager.getUiManager().parseNewFilterColumn(expression, outputEntry,
+                                        false);
+                                mapperManager.getUiManager().refreshBackground(false, false);
+                            }
+                        }
+                        
+                        resizeAtExpandedSize();
+                    }
+                }
+            }
+        }
+        
+        if (abstractDataMapTable instanceof InputTable) {
+            InputTable inputTable = (InputTable) abstractDataMapTable;
+            List<IColumnEntry> oldInputEntries = inputTable.getDataMapTableEntries();
+            if (oldInputEntries != null) {
+                for (IColumnEntry entry : oldInputEntries) {
+                    if (entry instanceof InputColumnTableEntry) {
+//                        InputColumnTableEntry inputEntry = (InputColumnTableEntry) entry;
+                        StyledTextHandler textTarget = mapperManager.getUiManager().getTabFolderEditors()
+                                .getStyledTextHandler();
+                        if(textTarget.getStyledText().getText() != null && textTarget.getCurrentEntry()!=null) {
+                            String[]  expressions = textTarget.getStyledText().getText().split("\\s+");
+                            for(String expression : expressions){
+                                mapperManager.getUiManager().parseNewFilterColumn(expression, textTarget.getCurrentEntry(),
+                                        false);
+                                mapperManager.getUiManager().refreshBackground(false, false);
+                            }
+                         }                                
+                      mapperManager.getUiManager().refreshBackground(true, false); 
+                      resizeAtExpandedSize();
+                    }
+                }
+            }
+        }
+    }
+
     /**
      * 
      * DOC amaumont InputDataMapTableView class global comment. Detailled comment <br/>
@@ -3185,79 +3241,6 @@ public abstract class DataMapTableView extends Composite implements IDataMapTabl
         return false;
     }
     
-//    
-    class ColumnNameEditorToMapperStyledTextKeyListener implements ExtendedModifyListener, KeyListener {
-
-        private final Control textWidget;
-
-        private final StyledTextHandler textTarget;
-
-        private boolean modifyListenerAllowed;
-
-        public ColumnNameEditorToMapperStyledTextKeyListener(StyledText textWidgetSrc, StyledTextHandler textTarget) {
-            super();
-            this.textWidget = textWidgetSrc;
-            this.textTarget = textTarget;
-        }
-
-        public void keyPressed(KeyEvent e) {
-
-        }
-
-        public void keyReleased(KeyEvent e) {
-            viewer.refresh();
-           
-            if (abstractDataMapTable instanceof OutputTable) {
-                OutputTable outputTable = (OutputTable) abstractDataMapTable;
-                List<IColumnEntry> oldOuputEntries = outputTable.getDataMapTableEntries();
-//                Table tableViewerForEntries = tableViewerCreatorForColumns.getTableViewer().getTable();
-                if (oldOuputEntries != null) {
-                    for (IColumnEntry entry : oldOuputEntries) {
-                        if (entry instanceof OutputColumnTableEntry) {
-                            OutputColumnTableEntry outputEntry = (OutputColumnTableEntry) entry;
-                            if(outputEntry.getExpression() != null){
-                                String[]  expressions = outputEntry.getExpression().split("\\s+");
-                                for(String expression : expressions){
-                                    mapperManager.getUiManager().parseNewFilterColumn(expression, outputEntry,
-                                            false);
-                                    mapperManager.getUiManager().refreshBackground(false, false);
-                                }
-                                resizeAtExpandedSize();
-                            }
-                        }
-                    }
-                }
-            }
-            if (abstractDataMapTable instanceof InputTable) {
-                InputTable inputTable = (InputTable) abstractDataMapTable;
-                List<IColumnEntry> oldInputEntries = inputTable.getDataMapTableEntries();
-                if (oldInputEntries != null) {
-                    for (IColumnEntry entry : oldInputEntries) {
-                        if (entry instanceof InputColumnTableEntry) {
-//                            InputColumnTableEntry inputEntry = (InputColumnTableEntry) entry;
-                            if(textTarget.getStyledText().getText() != null && textTarget.getCurrentEntry()!=null) {
-                                String[]  expressions = textTarget.getStyledText().getText().split("\\s+");
-                                for(String expression : expressions){
-                                    mapperManager.getUiManager().parseNewFilterColumn(expression, textTarget.getCurrentEntry(),
-                                            false);
-                                    mapperManager.getUiManager().refreshBackground(false, false);
-                                }
-                             }                                
-                          mapperManager.getUiManager().refreshBackground(true, false); 
-                          resizeAtExpandedSize();
-                        }
-                    }
-                }
-            }
-        }
-
-        public void modifyText(ExtendedModifyEvent event) {
-            
-        }
-
-    }
-
-
     /**
      * 
      * DOC amaumont InputDataMapTableView class global comment. Detailled comment <br/>
