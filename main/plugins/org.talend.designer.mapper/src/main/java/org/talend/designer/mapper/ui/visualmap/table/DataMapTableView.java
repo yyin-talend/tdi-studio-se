@@ -51,6 +51,7 @@ import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.events.KeyListener;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
+import org.eclipse.swt.events.MouseAdapter;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.MouseListener;
 import org.eclipse.swt.events.MouseTrackListener;
@@ -73,6 +74,8 @@ import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Layout;
 import org.eclipse.swt.widgets.Listener;
+import org.eclipse.swt.widgets.Menu;
+import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
@@ -831,7 +834,6 @@ public abstract class DataMapTableView extends Composite implements IDataMapTabl
                     }
 
                 });
-
             }
 
         };
@@ -973,6 +975,55 @@ public abstract class DataMapTableView extends Composite implements IDataMapTabl
 
             });
         }
+
+        // add menu listener
+        tableForEntries.addMouseListener(new MouseAdapter() {
+
+            @Override
+            public void mouseDown(MouseEvent e) {
+                if (e.button == 3 && getZone() == Zone.OUTPUTS) {
+                    Menu mainMenu = new Menu(tableForEntries);
+                    tableForEntries.setMenu(mainMenu);
+                    new MenuItem(mainMenu, SWT.SEPARATOR);
+                    // Custom
+                    MenuItem customItem = new MenuItem(mainMenu, SWT.PUSH);
+                    customItem.setText("Custom");
+                    // Add menu listeners
+                    final IService service = GlobalServiceRegister.getDefault().getService(IExpressionBuilderDialogService.class);
+                    customItem.addListener(SWT.Selection, new Listener() {
+
+                        public void handleEvent(Event event) {
+                            IExpressionBuilderDialogController dialogForTable = ((IExpressionBuilderDialogService) service)
+                                    .getExpressionBuilderInstance(DataMapTableView.this.getCenterComposite(), null,
+                                            mapperManager.getAbstractMapComponent(), true);
+                            if (dialogForTable instanceof TrayDialog) {
+                                TrayDialog parentDialog = (TrayDialog) dialogForTable;
+                                dialogForTable.setDefaultExpression(expressionFilterText.getText());
+                                if (Window.OK == parentDialog.open()) {
+                                    String expressionForTable = dialogForTable.getExpressionForTable();
+                                    TableItem[] selectedTableItems = tableForEntries.getSelection();
+                                    for (TableItem tableItem : selectedTableItems) {
+                                        ITableEntry currentModifiedEntry = (ITableEntry) tableItem.getData();
+                                        if (expressionForTable != null
+                                                && !expressionForTable.equals(currentModifiedEntry.getExpression())) {
+                                            String replacedExpression = expressionForTable.replace("${0}",
+                                                    currentModifiedEntry.getExpression());
+                                            mapperManager.changeEntryExpression(currentModifiedEntry, replacedExpression);
+                                            StyledTextHandler textTarget = mapperManager.getUiManager().getTabFolderEditors()
+                                                    .getStyledTextHandler();
+                                            textTarget.setCurrentEntry(currentModifiedEntry);
+                                            textTarget.setTextWithoutNotifyListeners(replacedExpression);
+                                            mapperManager.getUiManager().parseNewExpression(replacedExpression,
+                                                    currentModifiedEntry, false);
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    });
+                }
+            }
+        });
     }
 
     /**
