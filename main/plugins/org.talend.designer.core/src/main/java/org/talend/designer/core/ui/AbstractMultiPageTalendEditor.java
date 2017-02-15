@@ -703,7 +703,7 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
             }
 
             codeSync();
-            updateCodeEditorContent();
+//            updateCodeEditorContent();
             changeContextsViewStatus(true);
         } else if (newPageIndex == 0 && (jobletEditor == getEditor(oldPageIndex))) {
             covertJobscriptOnPageChange();
