@@ -3144,11 +3144,10 @@ public abstract class DataMapTableView extends Composite implements IDataMapTabl
                                         false);
                                 mapperManager.getUiManager().refreshBackground(false, false);
                             }
-                        }
-                        
-                        resizeAtExpandedSize();
+                        }                        
                     }
                 }
+                resizeAtExpandedSize();
             }
         }
         
@@ -3170,9 +3169,9 @@ public abstract class DataMapTableView extends Composite implements IDataMapTabl
                             }
                          }                                
                       mapperManager.getUiManager().refreshBackground(true, false); 
-                      resizeAtExpandedSize();
                     }
                 }
+                resizeAtExpandedSize();
             }
         }
     }
