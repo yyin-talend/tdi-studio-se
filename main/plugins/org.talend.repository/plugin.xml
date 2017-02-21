@@ -2795,14 +2795,6 @@
               name="ReviseInvalidContextNamesMigrationTask"
               version="6.1.2">
         </projecttask>
-        <projecttask
-              beforeLogon="false"
-              breaks="6.2.0"
-              class="org.talend.repository.model.migration.AddNewIgnoreNullSettingForTMicrosoftCrmOutputTask"
-              id="org.talend.repository.model.migration.AddNewIgnoreNullSettingForTMicrosoftCrmOutputTask"
-              name="AddNewIgnoreNullSettingForTMicrosoftCrmOutputTask"
-              version="6.2.1">
-        </projecttask>
    </extension>
 
    <extension
