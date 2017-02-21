@@ -529,7 +529,7 @@ public class RunProcessContext {
                         final IProgressMonitor progressMonitor = new EventLoopProgressMonitor(monitor);
 
                         progressMonitor.beginTask(Messages.getString("ProcessComposite.buildTask"), IProgressMonitor.UNKNOWN); //$NON-NLS-1$
-                        try {
+                       
                             testPort();
                             // findNewStatsPort();
                             if (monitorPerf || monitorTrace) {
@@ -557,10 +557,23 @@ public class RunProcessContext {
                             final String log4jRuntimeLevel = getLog4jRuntimeLevel();
                             processor.setContext(context);
                             ((IEclipseProcessor) processor).setTargetExecutionConfig(getSelectedTargetExecutionConfig());
-
-                            ProcessorUtilities.generateCode(processor, process, context,
+                            try {
+                                ProcessorUtilities.generateCode(processor, process, context,
                                     getStatisticsPort() != IProcessor.NO_STATISTICS, getTracesPort() != IProcessor.NO_TRACES
                                             && hasConnectionTrace(), true, progressMonitor);
+                            } catch (Throwable e) {
+                                // catch any Exception or Error to kill the process,
+                                // see bug 0003567
+                                running = true;
+                                ExceptionHandler.process(e);
+                                addErrorMessage(e);
+                                kill();
+                            } finally {
+                                progressMonitor.done();
+                                // System.out.println("exitValue:" +
+                                // ps.exitValue());
+                            }
+                            
                             final boolean[] refreshUiAndWait = new boolean[1];
                             refreshUiAndWait[0] = true;
                             final Display display = shell.getDisplay();
@@ -640,18 +653,7 @@ public class RunProcessContext {
 
                             }
 
-                        } catch (Throwable e) {
-                            // catch any Exception or Error to kill the process,
-                            // see bug 0003567
-                            running = true;
-                            ExceptionHandler.process(e);
-                            addErrorMessage(e);
-                            kill();
-                        } finally {
-                            progressMonitor.done();
-                            // System.out.println("exitValue:" +
-                            // ps.exitValue());
-                        }
+                        
                     }
                 });
             } catch (InvocationTargetException e1) {
