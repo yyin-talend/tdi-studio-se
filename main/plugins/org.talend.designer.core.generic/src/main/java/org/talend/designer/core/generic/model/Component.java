@@ -18,7 +18,9 @@ import java.io.InputStream;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.Dictionary;
 import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -30,8 +32,12 @@ import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.graphics.ImageData;
 import org.eclipse.swt.graphics.RGB;
+import org.ops4j.pax.url.mvn.MavenResolver;
 import org.osgi.framework.Bundle;
+import org.osgi.framework.BundleContext;
 import org.osgi.framework.FrameworkUtil;
+import org.osgi.framework.ServiceReference;
+import org.osgi.service.cm.ManagedService;
 import org.talend.commons.exception.BusinessException;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.utils.resource.BundleFileUtil;
@@ -72,9 +78,11 @@ import org.talend.core.model.temp.ECodePart;
 import org.talend.core.model.utils.ContextParameterUtils;
 import org.talend.core.model.utils.NodeUtil;
 import org.talend.core.prefs.ITalendCorePrefConstants;
+import org.talend.core.runtime.CoreRuntimePlugin;
 import org.talend.core.runtime.maven.MavenArtifact;
 import org.talend.core.runtime.maven.MavenUrlHelper;
 import org.talend.core.runtime.services.IGenericWizardService;
+import org.talend.core.runtime.services.IMavenUIService;
 import org.talend.core.runtime.util.ComponentReturnVariableUtils;
 import org.talend.core.runtime.util.GenericTypeUtils;
 import org.talend.core.ui.component.ComponentsFactoryProvider;
@@ -1110,6 +1118,30 @@ public class Component extends AbstractBasicComponent {
     public List<ModuleNeeded> getModulesNeeded() {
         return getModulesNeeded(null);
     }
+    
+    public MavenResolver getMavenResolver(Dictionary<String, String> props) {
+        final BundleContext context = CorePlugin.getDefault().getBundle().getBundleContext();
+        ServiceReference<ManagedService> managedServiceRef = context.getServiceReference(ManagedService.class);
+        if (managedServiceRef != null) {
+            ManagedService managedService = context.getService(managedServiceRef);
+            try {
+                managedService.updated(props);
+            } catch (Exception e) {
+                throw new RuntimeException("Failed to modifiy the service properties"); //$NON-NLS-1$
+            }
+        } else {
+            throw new RuntimeException("Failed to load the service :" + ManagedService.class.getCanonicalName()); //$NON-NLS-1$
+        }
+
+        ServiceReference<org.ops4j.pax.url.mvn.MavenResolver> mavenResolverService = context
+                .getServiceReference(org.ops4j.pax.url.mvn.MavenResolver.class);
+        if (mavenResolverService != null) {
+            return context.getService(mavenResolverService);
+        } else {
+            throw new RuntimeException("Unable to acquire org.ops4j.pax.url.mvn.MavenResolver");
+        }
+
+    }
 
     @Override
     public List<ModuleNeeded> getModulesNeeded(INode node) {
@@ -1117,7 +1149,15 @@ public class Component extends AbstractBasicComponent {
             return componentImportNeedsList;
         } else {
             componentImportNeedsList = new ArrayList<>();
-
+            Dictionary<String, String> properties = new Hashtable<String, String>();
+            if (GlobalServiceRegister.getDefault().isServiceRegistered(IMavenUIService.class)) {
+                IMavenUIService mavenUIService = (IMavenUIService) GlobalServiceRegister.getDefault().getService(
+                        IMavenUIService.class);
+                if (mavenUIService != null) {
+                    properties = mavenUIService.getTalendMavenSetting();
+                }
+            }
+            getMavenResolver(properties);
             ConnectorTopology topology = null;
             if (node != null) {
                 boolean hasInput = !NodeUtil.getIncomingConnections(node, IConnectionCategory.DATA).isEmpty();
