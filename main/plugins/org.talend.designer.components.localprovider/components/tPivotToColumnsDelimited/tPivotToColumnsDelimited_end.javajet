@@ -68,11 +68,11 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
     
 		    out<%=cid%>.write(<%=rowSeparator%>);
 		
-			java.util.Iterator<List<String>> iterator = group_Keys<%=cid%>.iterator();
+			java.util.Iterator<List<String>> iterator_<%=cid%> = group_Keys<%=cid%>.iterator();
 		    
-			//for(int i = 0;i<group_Keys<%=cid%>.size();i++){
-		    while(iterator.hasNext()) {
-				List<String> next = iterator.next();
+			
+		    while(iterator_<%=cid%>.hasNext()) {
+				List<String> next = iterator_<%=cid%>.next();
 		        for(int j = 0; j < next.size(); j++) {
 					out<%=cid%>.write(next.get(j));
 					out<%=cid%>.write(<%=fieldSeparator%>);
@@ -132,10 +132,10 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 		    CsvWriter<%=cid%>.writeNext(finalStr<%=cid%>);
 		    
 		    CsvWriter<%=cid%>.flush();
-			java.util.Iterator<List<String>> iterator = group_Keys<%=cid%>.iterator();
-		    //for(int i = 0;i<group_Keys<%=cid%>.size();i++){
-		      while(iterator.hasNext()){
-				List<String> next = iterator.next();
+			java.util.Iterator<List<String>> iterator_<%=cid%> = group_Keys<%=cid%>.iterator();
+		    
+		      while(iterator_<%=cid%>.hasNext()){
+				List<String> next = iterator_<%=cid%>.next();
 		        finalStr<%=cid%> = new String[rowSize<%=cid%>];
 		
 		        java.util.List<String> gkSplit<%=cid%> = next;
