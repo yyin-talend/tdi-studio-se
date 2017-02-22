@@ -10,7 +10,7 @@
 // 9 rue Pages 92150 Suresnes, France
 //
 // ============================================================================
-package utils;
+package org.talend.designer.mapper.utils;
 
 import static org.junit.Assert.assertEquals;
 
