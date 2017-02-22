@@ -88,6 +88,10 @@ public class MSCRMClient {
 
     private Boolean reuseHttpClient;
 
+    private int maxConnectionRetries = 5;
+
+    private int attemptsInterval = 1000;
+
     public MSCRMClient(String username, String password, String orgName) {
         this.username = username;
         this.password = password;
@@ -103,8 +107,17 @@ public class MSCRMClient {
         this.reuseHttpClient = reuseHttpClient;
     }
 
+    public void setMaxConnectionRetries(int maxConnectionRetries) {
+        this.maxConnectionRetries = maxConnectionRetries;
+    }
+
+    public void setAttemptsInterval(int attemptsInterval) {
+        this.attemptsInterval = attemptsInterval;
+    }
+
     public OrganizationServiceStub getOnlineConnection(String discoveryServiceURL) throws Exception {
-        return new OrganizationServiceStubWrapper(doGetOnlineConnection(discoveryServiceURL), this, discoveryServiceURL);
+        return new OrganizationServiceStubWrapper(doGetOnlineConnection(discoveryServiceURL), this, discoveryServiceURL,
+                maxConnectionRetries, attemptsInterval);
     }
 
     /**

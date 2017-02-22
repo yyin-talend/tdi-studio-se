@@ -42,11 +42,18 @@ public class OrganizationServiceStubWrapper extends OrganizationServiceStub {
 
     private final String discoveryServiceUrl;
 
-    public OrganizationServiceStubWrapper(OrganizationServiceStub orgStub, MSCRMClient client, String discoveryServiceUrl)
+    private final int maxConnectionRetries;
+
+    private final int attemptsInterval;
+
+    public OrganizationServiceStubWrapper(OrganizationServiceStub orgStub, MSCRMClient client, String discoveryServiceUrl,
+            int maxConnectionRetries, int attemptsInterval)
             throws AxisFault {
         this.orgStub = orgStub;
         this.client = client;
         this.discoveryServiceUrl = discoveryServiceUrl;
+        this.maxConnectionRetries = maxConnectionRetries;
+        this.attemptsInterval = attemptsInterval;
     }
 
     public com.microsoft.schemas.xrm._2011.contracts.services.DisassociateResponseDocument disassociate(
@@ -96,11 +103,18 @@ public class OrganizationServiceStubWrapper extends OrganizationServiceStub {
         orgStub = client.doGetOnlineConnection(discoveryServiceUrl);
     }
 
+    private void sleep() {
+        try {
+            Thread.sleep(attemptsInterval);
+        } catch (InterruptedException e1) {
+        }
+    }
+
     private <T extends Exception, V extends XmlObject, R extends XmlObject> V perform(OperationProcessor<T, V, R> processor)
             throws RemoteException, T {
         V respDoc = null;
         boolean connectionFixed = true;
-        int retries = 5;
+        int retries = maxConnectionRetries;
         while (connectionFixed) {
             try {
                 respDoc = processor.processOperation(orgStub);
@@ -112,7 +126,10 @@ public class OrganizationServiceStubWrapper extends OrganizationServiceStub {
                         renewToken();
                         connectionFixed = true;
                         break;
-                    } catch(Exception e) {
+                    } catch (Exception e) {
+                        if (retries > 0) {
+                            sleep();
+                        }
                     }
                 }
                 if (!connectionFixed) {
