@@ -1119,13 +1119,6 @@ public class Component extends AbstractBasicComponent {
             return componentImportNeedsList;
         } else {
             componentImportNeedsList = new ArrayList<>();
-            if (GlobalServiceRegister.getDefault().isServiceRegistered(IMavenUIService.class)) {
-                IMavenUIService mavenUIService = (IMavenUIService) GlobalServiceRegister.getDefault().getService(
-                        IMavenUIService.class);
-                if (mavenUIService != null) {
-                    mavenUIService.updateMavenResolver(false);
-                }
-            }
             ConnectorTopology topology = null;
             if (node != null) {
                 boolean hasInput = !NodeUtil.getIncomingConnections(node, IConnectionCategory.DATA).isEmpty();
