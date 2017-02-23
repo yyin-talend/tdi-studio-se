@@ -566,7 +566,6 @@ public class RunProcessContext {
                                 // see bug 0003567
                                 running = true;
                                 ExceptionHandler.process(e);
-                                addErrorMessage(e);
                                 kill();
                             } finally {
                                 progressMonitor.done();
