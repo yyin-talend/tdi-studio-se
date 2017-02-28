@@ -38,8 +38,6 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
-import org.eclipse.ui.IWorkbenchPart;
-import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetWidgetFactory;
 import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.runtime.maven.MavenConstants;
@@ -48,7 +46,6 @@ import org.talend.core.runtime.repository.build.BuildExportManager;
 import org.talend.core.runtime.repository.build.BuildType;
 import org.talend.core.runtime.repository.build.IBuildParametes;
 import org.talend.designer.core.i18n.Messages;
-import org.talend.designer.core.ui.AbstractMultiPageTalendEditor;
 import org.talend.designer.core.ui.editor.cmd.MavenDeploymentValueChangeCommand;
 import org.talend.designer.core.ui.editor.process.Process;
 import org.talend.repository.utils.MavenVersionUtils;
@@ -69,13 +66,17 @@ public class DeploymentComposite extends AbstractTabComposite {
 
     private Process process;
 
+    private CommandStack commandStack;
+
     public DeploymentComposite(Composite parent, int style, TabbedPropertySheetWidgetFactory widgetFactory,
-            IRepositoryViewObject iRepositoryViewObject) {
-        super(parent, style, widgetFactory, iRepositoryViewObject);
-        if (iRepositoryViewObject instanceof Process) {
-            process = (Process) iRepositoryViewObject;
-            defaultVersion = process.getVersion();
-        }
+            IRepositoryViewObject repositoryViewObject) {
+        super(parent, style, widgetFactory, repositoryViewObject);
+
+        assert (repositoryViewObject instanceof Process);
+        process = (Process) repositoryViewObject;
+        commandStack = process.getCommandStack();
+        defaultVersion = process.getVersion();
+
         createControl();
         initialize();
         addListeners();
@@ -119,7 +120,7 @@ public class DeploymentComposite extends AbstractTabComposite {
         versionText.setLayoutData(versionTextData);
 
         versionWarningLabel = widgetFactory.createLabel(composite, Messages.getString("DeploymentComposite.versionWarning")); //$NON-NLS-1$
-        versionWarningLabel.setBackground(getDisplay().getSystemColor(SWT.COLOR_YELLOW));
+        versionWarningLabel.setBackground(getDisplay().getSystemColor(SWT.COLOR_RED));
 
         new Label(composite, SWT.NONE);
 
@@ -266,12 +267,7 @@ public class DeploymentComposite extends AbstractTabComposite {
     }
 
     private CommandStack getCommandStack() {
-        IWorkbenchPart part = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getActiveEditor();
-        if (part instanceof AbstractMultiPageTalendEditor) {
-            CommandStack cmdStack = (CommandStack) part.getAdapter(CommandStack.class);
-            return cmdStack;
-        }
-        return null;
+        return commandStack;
     }
 
 }
