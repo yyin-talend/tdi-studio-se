@@ -128,7 +128,7 @@ public class DeploymentComposite extends AbstractTabComposite {
         GridData exportTypeLabelData = new GridData(GridData.FILL_HORIZONTAL);
         exportTypeLabel.setLayoutData(exportTypeLabelData);
 
-        buildTypeCombo = new ComboViewer(widgetFactory.createCCombo(composite));
+        buildTypeCombo = new ComboViewer(widgetFactory.createCCombo(composite, SWT.BORDER));
         final Control exportTypeControl = buildTypeCombo.getControl();
         GridData exportTypeComboData = new GridData(GridData.FILL_HORIZONTAL);
         exportTypeComboData.widthHint = 200;

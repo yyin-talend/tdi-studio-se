@@ -502,13 +502,10 @@ public abstract class AbstractVersionManagementProjectSettingPage extends Projec
         String newVersion = null;
         for (ItemVersionObject object : checkedObjects) {
             newVersion = getNewVersionWithOption(object);
-            IRepositoryViewObject repositoryObject = object.getRepositoryNode().getObject();
-            if (repositoryObject != null && repositoryObject.getProperty() != null) {
-                if (!newVersion.equals(repositoryObject.getVersion())) {
-                    isApplied = false;
-                    modified = true;
-                    break;
-                }
+            if (!newVersion.equals(object.getOldVersion())) {
+                isApplied = false;
+                modified = true;
+                break;
             }
         }
         if (modified) {

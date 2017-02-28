@@ -13,11 +13,7 @@
 package org.talend.repository.preference;
 
 import java.lang.reflect.InvocationTargetException;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.IWorkspaceRunnable;
@@ -25,12 +21,10 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.jobs.ISchedulingRule;
-import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.dialogs.ProgressMonitorDialog;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.viewers.IBaseLabelProvider;
-import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.TableEditor;
 import org.eclipse.swt.events.ControlAdapter;
@@ -57,24 +51,25 @@ import org.eclipse.ui.internal.navigator.NavigatorDecoratingLabelProvider;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.exception.LoginException;
 import org.talend.commons.exception.PersistenceException;
+import org.talend.commons.runtime.model.repository.ERepositoryStatus;
 import org.talend.commons.ui.runtime.image.EImage;
 import org.talend.commons.ui.runtime.image.ImageProvider;
 import org.talend.core.model.properties.Item;
-import org.talend.core.model.properties.ItemState;
 import org.talend.core.model.properties.Property;
 import org.talend.core.model.repository.ERepositoryObjectType;
-import org.talend.core.model.repository.IRepositoryViewObject;
+import org.talend.core.model.repository.RepositoryManager;
 import org.talend.core.ui.images.CoreImageProvider;
 import org.talend.repository.RepositoryWorkUnit;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.ItemVersionObject;
 import org.talend.repository.model.RepositoryNode;
-import org.talend.repository.ui.dialog.ItemsVersionConfirmDialog;
 import org.talend.repository.utils.MavenVersionUtils;
 
 public class MavenVersionManagementProjectSettingPage extends AbstractVersionManagementProjectSettingPage {
 
-    private final Color COLOR_YELLOW = Display.getDefault().getSystemColor(SWT.COLOR_DARK_YELLOW);
+    private final Color COLOR_RED = Display.getDefault().getSystemColor(SWT.COLOR_RED);
+
+    private final Color COLOR_BLACK = Display.getDefault().getSystemColor(SWT.COLOR_BLACK);
 
     private Button applyVersionButton;
 
@@ -96,6 +91,13 @@ public class MavenVersionManagementProjectSettingPage extends AbstractVersionMan
         }
         if (node.isBin()) {
             return false;
+        }
+        if (node.getObject() != null) {
+            ERepositoryStatus status = FACTORY.getStatus(node.getObject());
+            if (status == ERepositoryStatus.LOCK_BY_OTHER
+                    || (status == ERepositoryStatus.LOCK_BY_USER && RepositoryManager.isOpenedItemInEditor(node.getObject()))) {
+                return false;
+            }
         }
         ERepositoryObjectType type = node.getObjectType();
         if (type == ERepositoryObjectType.PROCESS || type == ERepositoryObjectType.PROCESS_MR
@@ -153,8 +155,23 @@ public class MavenVersionManagementProjectSettingPage extends AbstractVersionMan
             public void widgetSelected(SelectionEvent e) {
                 fixedVersionText.setEnabled(fixedVersionButton.getSelection());
                 applyVersionButton.setEnabled(fixedVersionButton.getSelection());
-                researchMaxVersion();
                 refreshTableItems();
+            }
+        });
+
+        fixedVersionText.addModifyListener(new ModifyListener() {
+
+            @Override
+            public void modifyText(ModifyEvent e) {
+                String version = fixedVersionText.getText();
+                if (MavenVersionUtils.isValidMavenVersion(version)) {
+                    applyVersionButton.setEnabled(true);
+                    fixedVersionText.setForeground(COLOR_BLACK);
+                } else {
+                    applyVersionButton.setEnabled(false);
+                    fixedVersionText.setForeground(COLOR_RED);
+                }
+
             }
         });
 
@@ -270,6 +287,7 @@ public class MavenVersionManagementProjectSettingPage extends AbstractVersionMan
                 tableItem.setText(2, appliedFixedVersion);
             } else if (useJobVersionButton.getSelection()) {
                 tableItem.setText(2, item.getProperty().getVersion());
+                object.setNewVersion(item.getProperty().getVersion());
             } else {
                 // new version
                 versionEditor = new TableEditor(itemTable);
@@ -289,6 +307,7 @@ public class MavenVersionManagementProjectSettingPage extends AbstractVersionMan
                 String newVersion = object.getNewVersion();
                 if (newVersion == null || "".equals(newVersion.trim())) { //$NON-NLS-1$
                     newVersion = appliedFixedVersion;
+                    object.setNewVersion(newVersion);
                 }
                 text.setText(newVersion);
                 checkVersionPattern(tableItem, newVersion);
@@ -300,6 +319,7 @@ public class MavenVersionManagementProjectSettingPage extends AbstractVersionMan
                         String version = text.getText();
                         checkVersionPattern(tableItem, version);
                         object.setNewVersion(version);
+                        checkValid();
                     }
 
                 });
@@ -338,12 +358,22 @@ public class MavenVersionManagementProjectSettingPage extends AbstractVersionMan
         }
     }
 
+    private void checkValid() {
+        for (ItemVersionObject object : checkedObjects) {
+            if (!MavenVersionUtils.isValidMavenVersion(object.getNewVersion())) {
+                setValid(false);
+                return;
+            }
+        }
+        setValid(true);
+    }
+
     private void checkVersionPattern(TableItem tableItem, String version) {
         if (MavenVersionUtils.isValidMavenVersion(version)) {
             tableItem.setText(4, ""); //$NON-NLS-1$
         } else {
             tableItem.setText(4, Messages.getString("VersionManagementDialog.inValidVersionWarning")); //$NON-NLS-1$
-            tableItem.setForeground(4, COLOR_YELLOW);
+            tableItem.setForeground(4, COLOR_RED);
         }
     }
 
