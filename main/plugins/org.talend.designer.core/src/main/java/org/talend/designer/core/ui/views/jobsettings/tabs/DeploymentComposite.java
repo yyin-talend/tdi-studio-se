@@ -123,7 +123,7 @@ public class DeploymentComposite extends AbstractTabComposite {
 
         new Label(composite, SWT.NONE);
 
-        Label exportTypeLabel = widgetFactory.createLabel(composite, Messages.getString("DeploymentComposite.exportTypeLabel")); //$NON-NLS-1$
+        Label exportTypeLabel = widgetFactory.createLabel(composite, Messages.getString("DeploymentComposite.buildTypeLabel")); //$NON-NLS-1$
         GridData exportTypeLabelData = new GridData(GridData.FILL_HORIZONTAL);
         exportTypeLabel.setLayoutData(exportTypeLabelData);
 
