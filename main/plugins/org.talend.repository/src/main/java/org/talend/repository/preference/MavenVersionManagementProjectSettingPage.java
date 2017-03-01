@@ -61,6 +61,7 @@ import org.talend.core.model.repository.RepositoryManager;
 import org.talend.core.ui.images.CoreImageProvider;
 import org.talend.repository.RepositoryWorkUnit;
 import org.talend.repository.i18n.Messages;
+import org.talend.repository.model.IRepositoryNode.EProperties;
 import org.talend.repository.model.ItemVersionObject;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.utils.MavenVersionUtils;
@@ -69,7 +70,7 @@ public class MavenVersionManagementProjectSettingPage extends AbstractVersionMan
 
     private final Color COLOR_RED = Display.getDefault().getSystemColor(SWT.COLOR_RED);
 
-    private final Color COLOR_BLACK = Display.getDefault().getSystemColor(SWT.COLOR_BLACK);
+    private final Color COLOR_WHITE = Display.getDefault().getSystemColor(SWT.COLOR_WHITE);
 
     private Button applyVersionButton;
 
@@ -100,10 +101,17 @@ public class MavenVersionManagementProjectSettingPage extends AbstractVersionMan
             }
         }
         ERepositoryObjectType type = node.getObjectType();
+        if (type == null) {
+            if (node.getProperties(EProperties.LABEL) instanceof ERepositoryObjectType) {
+                type = (ERepositoryObjectType) node.getProperties(EProperties.LABEL);
+            }
+            if (type == null) {
+                return false;
+            }
+        }
         if (type == ERepositoryObjectType.PROCESS || type == ERepositoryObjectType.PROCESS_MR
                 || type == ERepositoryObjectType.PROCESS_ROUTE || type == ERepositoryObjectType.PROCESS_SPARK
-                || type == ERepositoryObjectType.PROCESS_SPARKSTREAMING || type == ERepositoryObjectType.PROCESS_STORM
-                || type == ERepositoryObjectType.TEST_CONTAINER) {
+                || type == ERepositoryObjectType.PROCESS_SPARKSTREAMING || type == ERepositoryObjectType.PROCESS_STORM) {
             return true;
         }
         return false;
@@ -137,17 +145,17 @@ public class MavenVersionManagementProjectSettingPage extends AbstractVersionMan
         fixedVersionText.setText(MavenVersionUtils.DEFAULT_MAVEN_VERSION);
 
         applyVersionButton = new Button(versionComposit, SWT.NONE);
-        applyVersionButton.setText(Messages.getString("VersionManagementDialog.applyVersion"));
+        applyVersionButton.setText(Messages.getString("VersionManagementDialog.applyVersion")); //$NON-NLS-1$
 
         subjobs = new Button(versionComposit, SWT.NONE);
-        subjobs.setText(Messages.getString("VersionManagementDialog.subjob"));
+        subjobs.setText(Messages.getString("VersionManagementDialog.subjob")); //$NON-NLS-1$
         subjobs.setEnabled(false);
 
         eachVersionButton = new Button(option, SWT.RADIO);
         eachVersionButton.setText(Messages.getString("VersionManagementDialog.EachVersion")); //$NON-NLS-1$
 
         useJobVersionButton = new Button(option, SWT.RADIO);
-        useJobVersionButton.setText(Messages.getString("VersionManagementDialog.useJobVersion"));
+        useJobVersionButton.setText(Messages.getString("VersionManagementDialog.useJobVersion")); //$NON-NLS-1$
         // event
         fixedVersionButton.addSelectionListener(new SelectionAdapter() {
 
@@ -166,10 +174,12 @@ public class MavenVersionManagementProjectSettingPage extends AbstractVersionMan
                 String version = fixedVersionText.getText();
                 if (MavenVersionUtils.isValidMavenVersion(version)) {
                     applyVersionButton.setEnabled(true);
-                    fixedVersionText.setForeground(COLOR_BLACK);
+                    fixedVersionText.setBackground(COLOR_WHITE);
+                    fixedVersionText.setToolTipText(""); //$NON-NLS-1$
                 } else {
                     applyVersionButton.setEnabled(false);
-                    fixedVersionText.setForeground(COLOR_RED);
+                    fixedVersionText.setBackground(COLOR_RED);
+                    fixedVersionText.setToolTipText(Messages.getString("VersionManagementDialog.valueWarning")); //$NON-NLS-1$
                 }
 
             }
@@ -221,7 +231,7 @@ public class MavenVersionManagementProjectSettingPage extends AbstractVersionMan
 
         TableColumn oldVersionColumn = new TableColumn(itemTable, SWT.CENTER);
         oldVersionColumn.setText(Messages.getString("VersionManagementDialog.Version")); //$NON-NLS-1$
-        oldVersionColumn.setWidth(80);
+        oldVersionColumn.setWidth(100);
 
         TableColumn versionColumn = new TableColumn(itemTable, SWT.CENTER);
         versionColumn.setText(Messages.getString("VersionManagementDialog.NewVersion")); //$NON-NLS-1$
@@ -231,10 +241,6 @@ public class MavenVersionManagementProjectSettingPage extends AbstractVersionMan
         delColumn.setText(""); //$NON-NLS-1$
         delColumn.setWidth(26);
         delColumn.setResizable(false);
-
-        TableColumn messageColumn = new TableColumn(itemTable, SWT.CENTER);
-        messageColumn.setText(""); //$NON-NLS-1$
-        messageColumn.setWidth(170);
 
         versionColumn.addControlListener(new ControlAdapter() {
 
@@ -310,14 +316,14 @@ public class MavenVersionManagementProjectSettingPage extends AbstractVersionMan
                     object.setNewVersion(newVersion);
                 }
                 text.setText(newVersion);
-                checkVersionPattern(tableItem, newVersion);
+                checkVersionPattern(text, newVersion);
 
                 text.addModifyListener(new ModifyListener() {
 
                     @Override
                     public void modifyText(ModifyEvent e) {
                         String version = text.getText();
-                        checkVersionPattern(tableItem, version);
+                        checkVersionPattern(text, version);
                         object.setNewVersion(version);
                         checkValid();
                     }
@@ -368,12 +374,13 @@ public class MavenVersionManagementProjectSettingPage extends AbstractVersionMan
         setValid(true);
     }
 
-    private void checkVersionPattern(TableItem tableItem, String version) {
+    private void checkVersionPattern(Text text, String version) {
         if (MavenVersionUtils.isValidMavenVersion(version)) {
-            tableItem.setText(4, ""); //$NON-NLS-1$
+            text.setBackground(COLOR_WHITE);
+            text.setToolTipText(""); //$NON-NLS-1$
         } else {
-            tableItem.setText(4, Messages.getString("VersionManagementDialog.inValidVersionWarning")); //$NON-NLS-1$
-            tableItem.setForeground(4, COLOR_RED);
+            text.setBackground(COLOR_RED);
+            text.setToolTipText(Messages.getString("VersionManagementDialog.valueWarning")); //$NON-NLS-1$
         }
     }
 
@@ -394,7 +401,7 @@ public class MavenVersionManagementProjectSettingPage extends AbstractVersionMan
 
             @Override
             public void run(final IProgressMonitor monitor) throws CoreException {
-                RepositoryWorkUnit<Object> rwu = new RepositoryWorkUnit<Object>(project, "Update items Maven version") {
+                RepositoryWorkUnit<Object> rwu = new RepositoryWorkUnit<Object>(project, "Update items Maven version") { //$NON-NLS-1$
 
                     @Override
                     protected void run() throws LoginException, PersistenceException {

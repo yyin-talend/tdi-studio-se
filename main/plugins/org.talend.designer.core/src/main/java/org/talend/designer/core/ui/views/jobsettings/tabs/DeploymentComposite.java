@@ -31,6 +31,7 @@ import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
@@ -52,17 +53,25 @@ import org.talend.repository.utils.MavenVersionUtils;
 
 public class DeploymentComposite extends AbstractTabComposite {
 
+    Color COLOR_RED = getDisplay().getSystemColor(SWT.COLOR_RED);
+
+    private Button groupIdCheckbox;
+
     private Text groupIdText;
 
     private Button versionCheckbox;
 
     private Text versionText;
 
-    private Label versionWarningLabel;
-
     private ComboViewer buildTypeCombo;
 
+    private String defaultGroupId;
+
+    private String groupId;
+
     private String defaultVersion;
+
+    private String version;
 
     private Process process;
 
@@ -87,52 +96,38 @@ public class DeploymentComposite extends AbstractTabComposite {
         setBackground(getParent().getBackground());
 
         Composite composite = new Composite(this, SWT.NONE);
-        GridLayout layout = new GridLayout(4, false);
+        GridLayout layout = new GridLayout(2, false);
         layout.horizontalSpacing = 10;
         layout.verticalSpacing = 10;
-        GridData gridData = new GridData(GridData.FILL_BOTH);
         composite.setLayout(layout);
-        composite.setLayoutData(gridData);
+        composite.setLayoutData(new GridData(GridData.FILL_BOTH));
 
-        new Label(composite, SWT.NONE);
-
-        Label groupIdLabel = widgetFactory.createLabel(composite, Messages.getString("DeploymentComposite.gourpIdLabel")); //$NON-NLS-1$
-        GridData groupIdLabelData = new GridData(GridData.FILL_HORIZONTAL);
-        groupIdLabel.setLayoutData(groupIdLabelData);
+        groupIdCheckbox = widgetFactory.createButton(composite, Messages.getString("DeploymentComposite.gourpIdLabel"), //$NON-NLS-1$
+                SWT.CHECK);
+        groupIdCheckbox.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 
         groupIdText = widgetFactory.createText(composite, ""); //$NON-NLS-1$
         GridData groupIdTextData = new GridData(GridData.FILL_HORIZONTAL);
         groupIdTextData.widthHint = 200;
         groupIdText.setLayoutData(groupIdTextData);
 
-        new Label(composite, SWT.NONE);
-
-        versionCheckbox = widgetFactory.createButton(composite, "", SWT.CHECK); //$NON-NLS-1$
-        GridData versionCheckBoxData = new GridData(GridData.FILL_HORIZONTAL);
-        versionCheckbox.setLayoutData(versionCheckBoxData);
-        Label versionLabel = widgetFactory.createLabel(composite, Messages.getString("DeploymentComposite.versionLabel")); //$NON-NLS-1$
-        GridData versionLabelData = new GridData(GridData.FILL_HORIZONTAL);
-        versionLabel.setLayoutData(versionLabelData);
+        versionCheckbox = widgetFactory.createButton(composite, Messages.getString("DeploymentComposite.versionLabel"), //$NON-NLS-1$
+                SWT.CHECK);
+        versionCheckbox.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 
         versionText = widgetFactory.createText(composite, ""); //$NON-NLS-1$
         GridData versionTextData = new GridData(GridData.FILL_HORIZONTAL);
         versionTextData.widthHint = 200;
         versionText.setLayoutData(versionTextData);
 
-        versionWarningLabel = widgetFactory.createLabel(composite, Messages.getString("DeploymentComposite.versionWarning")); //$NON-NLS-1$
-        versionWarningLabel.setBackground(getDisplay().getSystemColor(SWT.COLOR_RED));
+        Label buildTypeLabel = widgetFactory.createLabel(composite, Messages.getString("DeploymentComposite.buildTypeLabel")); //$NON-NLS-1$
+        buildTypeLabel.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 
-        new Label(composite, SWT.NONE);
-
-        Label exportTypeLabel = widgetFactory.createLabel(composite, Messages.getString("DeploymentComposite.buildTypeLabel")); //$NON-NLS-1$
-        GridData exportTypeLabelData = new GridData(GridData.FILL_HORIZONTAL);
-        exportTypeLabel.setLayoutData(exportTypeLabelData);
-
-        buildTypeCombo = new ComboViewer(widgetFactory.createCCombo(composite, SWT.BORDER));
-        final Control exportTypeControl = buildTypeCombo.getControl();
-        GridData exportTypeComboData = new GridData(GridData.FILL_HORIZONTAL);
-        exportTypeComboData.widthHint = 200;
-        exportTypeControl.setLayoutData(exportTypeComboData);
+        buildTypeCombo = new ComboViewer(widgetFactory.createCCombo(composite, SWT.READ_ONLY | SWT.BORDER));
+        final Control buildTypeControl = buildTypeCombo.getControl();
+        GridData buildTypeComboData = new GridData(GridData.FILL_HORIZONTAL);
+        buildTypeComboData.widthHint = 200;
+        buildTypeControl.setLayoutData(buildTypeComboData);
         buildTypeCombo.setContentProvider(ArrayContentProvider.getInstance());
         buildTypeCombo.setLabelProvider(new LabelProvider() {
 
@@ -151,26 +146,41 @@ public class DeploymentComposite extends AbstractTabComposite {
     private void initialize() {
         Map<Object, Object> processAdditionalProperties = this.process.getAdditionalProperties();
         if (processAdditionalProperties != null) {
-            String groupId = (String) processAdditionalProperties.get(MavenConstants.NAME_GROUP_ID);
+            // TODO get from PublishPlugin.getDefault().getPreferenceStore();
+            defaultGroupId = "org.example"; // $NON-NLS-1$
+            if (groupId == null) {
+                groupId = (String) processAdditionalProperties.get(MavenConstants.NAME_GROUP_ID);
+                if (groupId == null) {
+                    groupId = defaultGroupId;
+                }
+            }
             if (groupId != null) {
+                boolean isDefaultGroupId = groupId.equals(defaultGroupId);
+                groupIdCheckbox.setSelection(!isDefaultGroupId);
+                groupIdText.setEnabled(!isDefaultGroupId);
                 groupIdText.setText(groupId);
             } else {
-                // TODO get from PublishPlugin.getDefault().getPreferenceStore();
-                String defaultGroupId = "org.example"; // $NON-NLS-1$
                 groupIdText.setText(defaultGroupId);
+                groupIdCheckbox.setSelection(false);
+                groupIdText.setEnabled(false);
             }
-            String userVersion = (String) processAdditionalProperties.get(MavenConstants.NAME_USER_VERSION);
-            if (userVersion != null) {
-                boolean isDefaultVersion = userVersion.equals(defaultVersion);
+            if (version == null) {
+                version = (String) processAdditionalProperties.get(MavenConstants.NAME_USER_VERSION);
+                if (version == null) {
+                    version = defaultVersion;
+                }
+            }
+            if (version != null) {
+                boolean isDefaultVersion = version.equals(defaultVersion);
                 versionCheckbox.setSelection(!isDefaultVersion);
                 versionText.setEnabled(!isDefaultVersion);
-                versionText.setText(userVersion);
-                versionWarningLabel.setVisible(!MavenVersionUtils.isValidMavenVersion(userVersion));
+                versionText.setText(version);
+                versionText.setToolTipText(""); //$NON-NLS-1$
             } else {
                 versionCheckbox.setSelection(false);
                 versionText.setEnabled(false);
                 versionText.setText(defaultVersion);
-                versionWarningLabel.setVisible(false);
+                versionText.setToolTipText(Messages.getString("DeploymentComposite.valueWarning")); //$NON-NLS-1$ ;
             }
 
             Map<String, Object> parameters = new HashMap<String, Object>();
@@ -201,14 +211,40 @@ public class DeploymentComposite extends AbstractTabComposite {
     }
 
     private void addListeners() {
+        groupIdCheckbox.addSelectionListener(new SelectionAdapter() {
+
+            @Override
+            public void widgetSelected(SelectionEvent e) {
+                if (groupIdCheckbox.getSelection()) {
+                    groupIdText.setEnabled(true);
+                    groupIdText.setText(groupId);
+                } else {
+                    groupIdText.setEnabled(false);
+                    groupIdText.setText(defaultGroupId);
+                    // remove key, so will be default groupId
+                    Command cmd = new MavenDeploymentValueChangeCommand(process, MavenConstants.NAME_GROUP_ID, null);
+                    getCommandStack().execute(cmd);
+                }
+            }
+            
+        });
+        
         groupIdText.addModifyListener(new ModifyListener() {
 
             @Override
             public void modifyText(ModifyEvent e) {
-                if (!StringUtils.isEmpty(groupIdText.getText())) {
-                    Command cmd = new MavenDeploymentValueChangeCommand(process, MavenConstants.NAME_GROUP_ID, groupIdText
-                            .getText());
+                if (groupIdText.getText() != null && !groupIdText.getText().trim().equals("")) { //$NON-NLS-1$
+                    groupIdText.setBackground(getBackground());
+                    groupIdText.setToolTipText(""); //$NON-NLS-1$
+                    if (!defaultGroupId.equals(groupIdText.getText())) {
+                        groupId = groupIdText.getText();
+                    }
+                    Command cmd = new MavenDeploymentValueChangeCommand(process, MavenConstants.NAME_GROUP_ID,
+                            groupIdText.getText());
                     getCommandStack().execute(cmd);
+                } else {
+                    groupIdText.setBackground(COLOR_RED);
+                    groupIdText.setToolTipText(Messages.getString("DeploymentComposite.valueWarning")); //$NON-NLS-1$
                 }
             }
         });
@@ -219,7 +255,7 @@ public class DeploymentComposite extends AbstractTabComposite {
             public void widgetSelected(SelectionEvent e) {
                 if (versionCheckbox.getSelection()) {
                     versionText.setEnabled(true);
-                    versionText.setText(""); //$NON-NLS-1$
+                    versionText.setText(version);
                 } else {
                     versionText.setEnabled(false);
                     versionText.setText(defaultVersion);
@@ -235,13 +271,20 @@ public class DeploymentComposite extends AbstractTabComposite {
 
             @Override
             public void modifyText(ModifyEvent e) {
-                String version = versionText.getText();
-                if (!StringUtils.isEmpty(version) && !MavenVersionUtils.isValidMavenVersion(version)) {
-                    versionWarningLabel.setVisible(true);
+                String currentVersion = versionText.getText();
+                if (currentVersion != null && !currentVersion.trim().equals("") //$NON-NLS-1$
+                        && !MavenVersionUtils.isValidMavenVersion(currentVersion)) {
+                    versionText.setToolTipText(Messages.getString("DeploymentComposite.valueWarning")); //$NON-NLS-1$
+                    versionText.setBackground(COLOR_RED);
                 } else {
-                    versionWarningLabel.setVisible(false);
+                    versionText.setToolTipText(""); //$NON-NLS-1$
+                    versionText.setBackground(getBackground());
+                    if (!defaultVersion.equals(currentVersion)) {
+                        version = currentVersion;
+                    }
                     // if empty, remove it from job, else will set the new value
-                    Command cmd = new MavenDeploymentValueChangeCommand(process, MavenConstants.NAME_USER_VERSION, version);
+                    Command cmd = new MavenDeploymentValueChangeCommand(process, MavenConstants.NAME_USER_VERSION,
+                            currentVersion);
                     getCommandStack().execute(cmd);
                 }
             }
@@ -256,8 +299,8 @@ public class DeploymentComposite extends AbstractTabComposite {
                 if (!selection.isEmpty() && selection instanceof IStructuredSelection) {
                     final Object elem = ((IStructuredSelection) selection).getFirstElement();
                     if (elem instanceof BuildType) {
-                        Command cmd = new MavenDeploymentValueChangeCommand(process,
-                                TalendProcessArgumentConstant.ARG_BUILD_TYPE, ((BuildType) elem).getName());
+                        Command cmd = new MavenDeploymentValueChangeCommand(process, TalendProcessArgumentConstant.ARG_BUILD_TYPE,
+                                ((BuildType) elem).getName());
                         getCommandStack().execute(cmd);
                     }
                 }
