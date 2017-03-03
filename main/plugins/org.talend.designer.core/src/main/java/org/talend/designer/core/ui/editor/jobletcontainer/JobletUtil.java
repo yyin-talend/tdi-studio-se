@@ -91,7 +91,7 @@ public class JobletUtil {
         for(Object o : listParamType){
             ElementParameterType ele = ((ElementParameterType)o);
             if(ele.getName()!=null && ele.getName().equals(EParameterName.FAMILY.getName()) && ele.getValue()!=null){
-               return  ele.getValue().equals("Joblets");
+               return  ele.getValue().equals(IComponent.JOBLET_FAMILY);
             }
         }
         return false;
