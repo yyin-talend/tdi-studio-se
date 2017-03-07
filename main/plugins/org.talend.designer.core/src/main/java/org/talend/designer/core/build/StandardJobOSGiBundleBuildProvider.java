@@ -34,6 +34,12 @@ import org.talend.designer.runprocess.IProcessor;
 public class StandardJobOSGiBundleBuildProvider extends RepositoryObjectTypeBuildProvider {
 
     @Override
+    public boolean valid(Map<String, Object> parameters) {
+        // return super.valid(parameters);
+        return false; // PTODO tmp disable OSGi, because it's not finished yet.
+    }
+
+    @Override
     protected ERepositoryObjectType getObjectType() {
         return ERepositoryObjectType.PROCESS;
     }
