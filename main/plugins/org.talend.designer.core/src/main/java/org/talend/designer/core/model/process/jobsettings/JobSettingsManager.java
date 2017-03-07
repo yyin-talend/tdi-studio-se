@@ -480,7 +480,7 @@ public class JobSettingsManager {
             param.setRepositoryValue("DB_VERSION"); //$NON-NLS-1$
             param.setRequired(true);
             param.setShowIf(dbCondition
-                    + " and (" + dbTypeName + " == 'OCLE' or " + dbTypeName + " == 'OCLE_OCI' or " + dbTypeName + " =='ACCESS' or " +dbTypeName + " =='MSSQL' or " + dbTypeName + " =='MYSQL') "); //$NON-NLS-1$ //$NON-NLS-2$//$NON-NLS-3$ //$NON-NLS-4$//$NON-NLS-5$
+                    + " and (" + dbTypeName + " == 'OCLE' or " + dbTypeName + " == 'OCLE_OCI' or " + dbTypeName + " =='ACCESS' or " + dbTypeName + " =='MSSQL' or " + dbTypeName + " =='MYSQL') "); //$NON-NLS-1$ //$NON-NLS-2$//$NON-NLS-3$ //$NON-NLS-4$//$NON-NLS-5$
             param.setGroup(IMPLICIT_GROUP);
             paramList.add(param);
         }
@@ -953,7 +953,12 @@ public class JobSettingsManager {
                 if (fileSparator.equals(File.separator)) {
                     fileSparator = TalendQuoteUtils.addQuotes("\\\\\\" + fileSparator); //$NON-NLS-1$
                 } else {
-                    fileSparator = TalendQuoteUtils.addQuotes("\\\\" + fileSparator); //$NON-NLS-1$
+                    char chs[] = fileSparator.toCharArray();
+                    String chBuffer = "";
+                    for (char ch : chs) {
+                        chBuffer = chBuffer + "\\\\" + ch; //$NON-NLS-1$
+                    }
+                    fileSparator = TalendQuoteUtils.addQuotes(chBuffer);
                 }
             }
             String regex = "\"^([^\"+" + fileSparator + "+\"]*)\"+" + fileSparator + "+\"(.*)$\""; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
@@ -1219,7 +1224,7 @@ public class JobSettingsManager {
     }
 
     private static List<String> getMetadataChars() {
-        String[] metaChars = new String[] { "\\", "^", "$", ".", "?", "|", "[", "+", "*", "{", "(", ")", "}", "]" };
+        String[] metaChars = new String[] { "\\", "^", "$", ".", "?", "|", "[", "+", "*", "{", "(", ")", "}", "]", "||" };
         return Arrays.asList(metaChars);
     }
 }
