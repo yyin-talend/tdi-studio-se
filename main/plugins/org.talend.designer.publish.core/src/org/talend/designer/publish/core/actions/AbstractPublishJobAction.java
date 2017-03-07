@@ -1,6 +1,6 @@
 // ============================================================================
 //
-// Copyright (C) 2006-2016 Talend Inc. - www.talend.com
+// Copyright (C) 2006-2015 Talend Inc. - www.talend.com
 //
 // This source code is available under agreement available at
 // %InstallDIR%\features\org.talend.rcp.branding.%PRODUCTNAME%\%PRODUCTNAME%license.txt
@@ -160,12 +160,6 @@ public abstract class AbstractPublishJobAction implements IRunnableWithProgress 
             exportChoiceMap.put(ExportChoice.includeLibs, true);
 
             ProcessItem processItem = (ProcessItem) node.getObject().getProperty().getItem();
- 			String contextName = (String) exportChoiceMap.get(ExportChoice.contextName);
-			if (contextName == null) {
-				contextName = processItem.getProcess().getDefaultContext();
-			}
-			BuildJobManager.getInstance().buildJob(tmpJob.getAbsolutePath(), processItem, jobVersion, contextName,
-					exportChoiceMap, exportType, monitor);
 
             BuildJobManager.getInstance().buildJob(tmpJob.getAbsolutePath(), processItem, processItem.getProperty().getVersion(),
                     processItem.getProcess().getDefaultContext(), exportChoiceMap, exportType, monitor);
