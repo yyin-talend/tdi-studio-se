@@ -2777,7 +2777,7 @@ public abstract class DataMapTableView extends Composite implements IDataMapTabl
 
             GridData nameFilterTextGridData = new GridData(GridData.FILL_HORIZONTAL);
             nameFilterTextGridData.minimumHeight = 10;
-            nameFilterTextGridData.heightHint = 15;
+            nameFilterTextGridData.heightHint = 20;
             nameFilterTextGridData.minimumWidth = 25;
             nameFilterTextGridData.widthHint = 50;
             columnNameTextFilter.setLayoutData(nameFilterTextGridData);
