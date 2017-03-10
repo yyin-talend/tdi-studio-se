@@ -207,6 +207,11 @@ public class TalendEditorPaletteFactoryTest {
         public String getName() {
             return name;
         }
+        
+        @Override
+        public String getOriginalName(){
+            return getName();
+        }
 
         @Override
         public String getLongName() {

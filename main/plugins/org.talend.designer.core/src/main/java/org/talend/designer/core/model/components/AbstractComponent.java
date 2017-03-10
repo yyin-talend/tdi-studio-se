@@ -161,4 +161,9 @@ public abstract class AbstractComponent implements IComponent {
     public boolean isAllowedPropagated() {
         return true;
     }
+    
+    @Override
+    public String getOriginalName(){
+        return getName();
+    }
 }

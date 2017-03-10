@@ -3167,22 +3167,8 @@ public class Process extends Element implements IProcess2, IGEFProcess, ILastVer
     }
 
     public String generateUniqueNodeName(INode node) {
-        String baseName = getComponentName(node);
+        String baseName = node.getComponent().getOriginalName();
         return UniqueNodeNameGenerator.generateUniqueNodeName(baseName, uniqueNodeNameList);
-    }
-    
-    private String getComponentName(INode node){
-        String baseName = node.getComponent().getName();
-        if (PluginChecker.isJobLetPluginLoaded()) {
-            IJobletProviderService service = (IJobletProviderService) GlobalServiceRegister.getDefault().getService(
-                    IJobletProviderService.class);
-            if (service != null && service.isJobletComponent(node)) {
-                if(new JobletUtil().matchExpression(baseName)){
-                   return baseName.split(":")[1];
-                }
-            }
-        }
-        return baseName;
     }
 
     /**
