@@ -1208,7 +1208,9 @@ skeleton="../templates/db_output_bulk.skeleton"
                 }catch (java.sql.BatchUpdateException e){
                 	<%if(("true").equals(dieOnError)) {
                 	%>
-                		throw(e);
+                        String errormessage_<%=cid%> = printSQLException_<%=cid%>.getSQLException(e,true);
+                        <%dbLog.logPrintedException("errormessage_"+cid);%>
+                        throw(e);
                 	<%
                 	}else {
                 	%>
@@ -1284,7 +1286,9 @@ skeleton="../templates/db_output_bulk.skeleton"
                 }catch (java.sql.BatchUpdateException e){
                 	<%if(("true").equals(dieOnError)) {
                 	%>
-						throw(e);
+                        String errormessage_<%=cid%> = printSQLException_<%=cid%>.getSQLException(e,true);
+                        <%dbLog.logPrintedException("errormessage_"+cid);%>
+                        throw(e);
                 	<%
                 	}else {
                 	%>
