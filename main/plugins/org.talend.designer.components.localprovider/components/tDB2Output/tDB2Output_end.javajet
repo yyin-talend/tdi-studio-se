@@ -92,7 +92,9 @@ imports="
     }catch (java.sql.BatchUpdateException e){
     	<%if(("true").equals(dieOnError)) {
     	%>
-    		throw(e);
+            String errormessage_<%=cid%> = printSQLException_<%=cid%>.getSQLException(e,true);
+            <%dbLog.logPrintedException("errormessage_"+cid);%>
+            throw(e);
     	<%
     	}else {
     	%>
@@ -146,25 +148,6 @@ imports="
     <%
 	}
     %>
-        } catch (java.sql.SQLException e) {
-       
-       
-       <%
-       		if(("true").equals(dieOnError)) {
-       %>
-           String errormessage_<%=cid%> = printSQLException_<%=cid%>.getSQLException(e,true);
-    	   System.err.println(errormessage_<%=cid%>);
-           throw(e);
-       <%
-            }else{
-       %>
-            String errormessage_<%=cid%> = printSQLException_<%=cid%>.getSQLException(e,false);
-    	    System.err.println(errormessage_<%=cid%>);
-    	<%
-            }
-       %>
-   }
-    
 	nb_line_deleted_<%=cid%>=nb_line_deleted_<%=cid%>+ deletedCount_<%=cid%>;
 	nb_line_update_<%=cid%>=nb_line_update_<%=cid%> + updatedCount_<%=cid%>;
 	nb_line_inserted_<%=cid%>=nb_line_inserted_<%=cid%> + insertedCount_<%=cid%>;
