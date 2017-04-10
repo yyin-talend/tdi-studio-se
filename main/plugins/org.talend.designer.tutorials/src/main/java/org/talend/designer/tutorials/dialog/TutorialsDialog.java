@@ -72,7 +72,7 @@ public class TutorialsDialog extends TrayDialog {
     @Override
     protected void configureShell(final Shell newShell) {
         super.configureShell(newShell);
-        newShell.setSize(850, 950);
+        newShell.setSize(730, 930);
         newShell.setText(Messages.getString("TutorialsDialog.title")); //$NON-NLS-1$
     }
 
