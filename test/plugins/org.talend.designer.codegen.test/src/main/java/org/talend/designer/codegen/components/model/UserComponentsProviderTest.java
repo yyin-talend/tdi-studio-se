@@ -42,9 +42,9 @@ import org.talend.utils.json.JSONObject;
  */
 public class UserComponentsProviderTest {
 
-    final String PATH_OLD_COMPONENT = "resources/components/tHTMLInput.zip";
+    final String PATH_OLD_COMPONENT = "testresources/components/tHTMLInput.zip";
 
-    final String PATH_NEW_COMPONENT = "resources/components/components-myjira-0.16.0-SNAPSHOT-updatesite.zip";
+    final String PATH_NEW_COMPONENT = "testresources/components/components-myjira-0.16.0-SNAPSHOT-updatesite.zip";
 
     static class UserComponentsProviderTestClass extends UserComponentsProvider {
 
