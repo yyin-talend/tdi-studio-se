@@ -2838,6 +2838,15 @@
               name="ResetItemLabelMigrationTask"
               version="5.2.2">
         </projecttask>
+        <projecttask
+              beforeLogon="false"
+              breaks="6.1.0"
+              class="org.talend.repository.model.migration.AddApiModeToMarketoComponentsMigrationTask"
+              id="org.talend.repository.model.migration.AddApiModeToMarketoComponentsMigrationTask"
+              name="AddApiModeToMarketoComponentsMigrationTask"
+              description="Add USE_SOAP_API and USE_REST_API properties to Marketo jobs created before 6.1"
+              version="6.2.2">
+        </projecttask> 
    </extension>
 
    <extension
