@@ -305,7 +305,8 @@ public class UpdateNodeParameterCommand extends Command {
                         }
                         if ((repositoryValue != null)
                                 && (param.isShow(node.getElementParameters())
-                                        || node.getComponentProperties() != null || (node instanceof INode && ((INode) node).getComponent().getName()
+                                        || node.getComponentProperties() != null
+                                        || (node instanceof INode && ((INode) node).getComponent().getName()
                                                 .equals("tAdvancedFileOutputXML")) || (node instanceof INode && ((INode) node)
                                         .getComponent().getName().equals("tESBProviderRequest")))) { //$NON-NLS-1$
                             if (param.getName().equals(EParameterName.PROPERTY_TYPE.getName())
@@ -505,12 +506,22 @@ public class UpdateNodeParameterCommand extends Command {
                     if(GlobalServiceRegister.getDefault().isServiceRegistered(ITDQPatternService.class)){
                         service = (ITDQPatternService) GlobalServiceRegister.getDefault().getService(ITDQPatternService.class);
                     }
-                    if (service != null && service.isSinglePatternNode(node)&& parameter!=null && parameter instanceof IElementParameter){
+                    if (service != null && parameter!=null && parameter instanceof IElementParameter){
                         IElementParameter elementParameter = node.getElementParameter(((IElementParameter)parameter).getName());
-                        if(elementParameter!=null && !elementParameter.getValue().equals(((IElementParameter)parameter).getValue())){
-                            elementParameter.setValue(((IElementParameter)parameter).getValue());
-                            update = true;
+                        if (service.isSinglePatternNode(node)) {
+                            if (elementParameter != null
+                                    && !elementParameter.getValue().equals(((IElementParameter) parameter).getValue())) {
+                                elementParameter.setValue(((IElementParameter) parameter).getValue());
+                            }
+                        }else if(service.isMultiPatternNode(node)){
+                            List<Map<String, Object>> newParamValues = (List<Map<String, Object>>)  ((IElementParameter)parameter).getValue();
+                            List<Map<String, Object>> oldParamValues = (List<Map<String, Object>>)  ((IElementParameter)elementParameter).getValue();
+                            //update the table value for tMultiPattern
+                            oldParamValues.clear();
+                            oldParamValues.addAll(newParamValues);
+                            
                         }
+                        update = true;
                     }
                 }
             }
