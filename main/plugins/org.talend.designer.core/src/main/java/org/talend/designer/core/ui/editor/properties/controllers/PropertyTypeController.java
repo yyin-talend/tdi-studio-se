@@ -125,16 +125,19 @@ public class PropertyTypeController extends AbstractRepositoryController {
     @Override
     public void refresh(IElementParameter param, boolean check) {
         // judge only pattern mode
-        String componentName = ((Node) this.elem).getComponent().getName();
-        if ("tPatternExtract".equals(componentName) || "tPatternCheck".equals(componentName)) { //$NON-NLS-1$ //$NON-NLS-2$
+        if (elem instanceof Node) {
+            String componentName = ((Node) elem).getComponent().getName();
+            if ("tPatternExtract".equals(componentName) || "tPatternCheck".equals(componentName)) { //$NON-NLS-1$ //$NON-NLS-2$
 
-            IElementParameter patternPropertyTypeElementParameter = param.getChildParameters().get("REPOSITORY_PROPERTY_TYPE");//$NON-NLS-1$
-            if (patternPropertyTypeElementParameter.getListItemsDisplayName().length == 0
-                    && patternPropertyTypeElementParameter.getListItemsValue().length == 0) {
-                patternPropertyTypeElementParameter.setListItemsDisplayName(new String[] { param.getElement()
-                        .getPropertyValue("PATTERN_NAME").toString() }); //$NON-NLS-1$
-                patternPropertyTypeElementParameter.setListItemsValue(new String[] { patternPropertyTypeElementParameter
-                        .getValue().toString() });
+                IElementParameter patternPropertyTypeElementParameter = param.getChildParameters()
+                        .get("REPOSITORY_PROPERTY_TYPE");//$NON-NLS-1$
+                if (patternPropertyTypeElementParameter.getListItemsDisplayName().length == 0
+                        && patternPropertyTypeElementParameter.getListItemsValue().length == 0) {
+                    patternPropertyTypeElementParameter.setListItemsDisplayName(new String[] { param.getElement()
+                            .getPropertyValue("PATTERN_NAME").toString() }); //$NON-NLS-1$
+                    patternPropertyTypeElementParameter.setListItemsValue(new String[] { patternPropertyTypeElementParameter
+                            .getValue().toString() });
+                }
             }
         }
         super.refresh(param, check);
@@ -614,19 +617,21 @@ public class PropertyTypeController extends AbstractRepositoryController {
         if (service != null && elem instanceof Node) {
             Node node = (Node) elem;
             IElementParameter typeParam = node.getElementParameter("TYPE"); //$NON-NLS-1$
-            service.selectPattern(typeParam, elem);
+            boolean hadSelected = service.selectPattern(typeParam, elem);
 
-            // create the command
-            final String showId = (String) node.getElementParameter("PATTERN_ID").getValue(); //$NON-NLS-1$
-            Command command = new PropertyChangeCommand(elem, EParameterName.REPOSITORY_PROPERTY_TYPE.getName(), showId);
-            compoundCommand.add(command);
+            if (hadSelected) {
+                // create the command
+                final String showId = (String) node.getElementParameter("PATTERN_ID").getValue(); //$NON-NLS-1$
+                compoundCommand = new CompoundCommand();
+                Command command = new PropertyChangeCommand(elem, EParameterName.REPOSITORY_PROPERTY_TYPE.getName(), showId);
+                compoundCommand.add(command);
 
-            IElementParameter elementParameter = node.getElementParameter(EParameterName.REPOSITORY_PROPERTY_TYPE.getName());
-            String[] displayName = new String[1];
-            displayName[0] = (String) node.getElementParameter("PATTERN_NAME").getValue(); //$NON-NLS-1$
-            elementParameter.setListItemsDisplayName(displayName);
-            elementParameter.setListItemsValue(new String[] { showId });
-
+                IElementParameter elementParameter = node.getElementParameter(EParameterName.REPOSITORY_PROPERTY_TYPE.getName());
+                String[] displayName = new String[1];
+                displayName[0] = (String) node.getElementParameter("PATTERN_NAME").getValue(); //$NON-NLS-1$
+                elementParameter.setListItemsDisplayName(displayName);
+                elementParameter.setListItemsValue(new String[] { showId });
+            }
         }
         return compoundCommand;
 
