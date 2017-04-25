@@ -467,9 +467,9 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
                 endpointDescription = "";
             }
             if (endpointDescription.contains("\r\n")) {
-                endpointDescription = endpointDescription.replace("\r\n", " ");
+                endpointDescription = endpointDescription.replace("\r\n", "\\n");
             } else {
-                endpointDescription = endpointDescription.replace("\n", " ");
+                endpointDescription = endpointDescription.replace("\n", "\\n");
             }
         }
 
