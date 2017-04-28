@@ -68,7 +68,7 @@ public class MavenJavaProcessor extends JavaProcessor {
         super.generateCode(statistics, trace, javaProperties);
         // only job, now for Shadow Process/Data Preview.
         if (isStandardJob()) {
-            generatePom();
+            generatePom(option);
         }
 
         updateProjectPom(null);
@@ -211,13 +211,14 @@ public class MavenJavaProcessor extends JavaProcessor {
         }
     }
 
-    protected void generatePom() {
+    protected void generatePom(int option) {
         initJobClasspath();
 
         try {
 
             CreateMavenBundleTemplatePom createTemplatePom = createMavenTemplatePom();
             if (createTemplatePom != null) {
+            	createTemplatePom.setSyncCodesPoms(option == 0);
                 createTemplatePom.setOverwrite(true);
                 boolean previousValue = ProcessUtils.isHDInsight();
                 ProcessUtils.setHDInsight(ProcessUtils.isDistributionExist((ProcessItem) property.getItem()));
