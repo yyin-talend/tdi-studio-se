@@ -58,6 +58,7 @@ import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.runtime.helper.LocalComponentInstallHelper;
 import org.talend.commons.runtime.service.ComponentsInstallComponent;
 import org.talend.commons.runtime.utils.io.SHA1Util;
+import org.talend.commons.ui.runtime.CommonUIPlugin;
 import org.talend.commons.utils.io.FilesUtils;
 import org.talend.core.GlobalServiceRegister;
 import org.talend.core.language.LanguageManager;
@@ -288,7 +289,7 @@ public class ComponentsFactory implements IComponentsFactory {
                         if (component.needRelaunch()) {
                             final String message = "Have done to install some components:\n" + component.getInstalledMessages()
                                     + "\nIn order to apply the new components, need restart product first.";
-                            if (!CommonsPlugin.isHeadless()) {
+                            if (!CommonUIPlugin.isFullyHeadless()) {
                                 boolean confirm = MessageDialog.openConfirm(null, "Install new components", message);
                                 if (confirm && Workbench.getInstance() != null) {
                                     PlatformUI.getWorkbench().restart();
