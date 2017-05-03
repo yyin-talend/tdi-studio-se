@@ -2859,6 +2859,14 @@
               description="Add USE_SOAP_API and USE_REST_API properties to Marketo jobs created before 6.1"
               version="6.3.2">
         </projecttask>
+        <projecttask
+              beforeLogon="false"
+              breaks="6.1.0"
+              class="org.talend.repository.model.migration.spark.SetSparkDataframeAlphabeticalSortOrder"
+              id="org.talend.repository.model.migration.SetSparkDataframeAlphabeticalSortOrder"
+              name="Set the Spark Dataframe Alphabatical sort order in tHiveOutput and tFileOutputParquet"
+              version="6.1.0">
+        </projecttask>
    </extension>
 
    <extension
