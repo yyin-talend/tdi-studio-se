@@ -223,5 +223,7 @@
 				REQUIRED="true" />
 		</IMPORTS>
 	</CODEGENERATION>
+	
+	<RETURNS/>
 
 </COMPONENT>
