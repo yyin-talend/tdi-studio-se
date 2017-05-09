@@ -17071,7 +17071,7 @@
     </PARAMETER>
     
     <PARAMETER NAME="EMPTY_LOOKUP_TO_NULL" FIELD="CHECK" NUM_ROW="15"
-            REQUIRED="true" SHOW_IF="(AUTH_TYPE == 'ONLINE') AND (API_VERSION == 'API_2011')">
+            REQUIRED="true" SHOW_IF="(AUTH_TYPE == 'ONLINE') AND (API_VERSION == 'API_2011') AND ((ACTION=='insert') OR (ACTION=='update'))">
             <DEFAULT>false</DEFAULT>
     </PARAMETER>
     
