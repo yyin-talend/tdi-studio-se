@@ -59,7 +59,7 @@
 			NUM_ROW="21" SHOW_IF="ACTION=='START'" REQUIRED="true" GROUP="CONFIGURATION">
 			<ITEMS DEFAULT="LATEST">
 				<ITEM NAME="LATEST" VALUE="&quot;latest&quot;" />
-				<ITEM NAME="DATAPROC_1_1_0" VALUE="&quot;dataproc-1.1&quot;" />
+				<ITEM NAME="DATAPROC_1_1_0" VALUE="&quot;1.1&quot;" />
 			</ITEMS>
 		</PARAMETER>
 
