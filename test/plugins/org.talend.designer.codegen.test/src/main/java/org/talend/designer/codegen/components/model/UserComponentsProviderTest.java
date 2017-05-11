@@ -78,7 +78,7 @@ public class UserComponentsProviderTest {
     }
 
     @AfterClass
-    public static void restore() throws IOException {
+    public static void tearDown() throws Exception {
         // backup old
         UserComponentsProviderTestClass provider = new UserComponentsProviderTestClass();
         File installationFolder = provider.getInstallationFolder();
@@ -110,7 +110,26 @@ public class UserComponentsProviderTest {
         workFolder = FileUtils.createTmpFolder("UserComponentsProviderTest", "");
 
         cleanInstalledSetting();
+        cleanComponentsInProject();
 
+    }
+
+    @After
+    public void clean() throws Exception {
+        if (workFolder != null) {
+            FilesUtils.deleteFolder(workFolder, true);
+        }
+        cleanInstalledSetting();
+        cleanComponentsInProject();
+    }
+
+    private static void cleanInstalledSetting() {
+        // set empty first
+        CodeGeneratorActivator.getDefault().getPreferenceStore()
+                .setValue(IComponentPreferenceConstant.INSTALLED_USER_COMPONENTS, new JSONArray().toString());
+    }
+
+    private void cleanComponentsInProject() throws Exception {
         final Project currentProject = ProjectManager.getInstance().getCurrentProject();
         final IProject project = ResourceUtils.getProject(currentProject);
         final IFolder projectComponentsFolder = project.getFolder(ERepositoryObjectType
@@ -119,21 +138,6 @@ public class UserComponentsProviderTest {
             FilesUtils.deleteFolder(projectComponentsFolder.getLocation().toFile(), false);
         }
         projectComponentsFolder.refreshLocal(IResource.DEPTH_INFINITE, null);
-
-    }
-
-    @After
-    public void clean() {
-        if (workFolder != null) {
-            FilesUtils.deleteFolder(workFolder, true);
-        }
-        cleanInstalledSetting();
-    }
-
-    private static void cleanInstalledSetting() {
-        // set empty first
-        CodeGeneratorActivator.getDefault().getPreferenceStore()
-                .setValue(IComponentPreferenceConstant.INSTALLED_USER_COMPONENTS, new JSONArray().toString());
     }
 
     protected File getTestDataFile(String bundlePath) throws IOException {
@@ -267,7 +271,7 @@ public class UserComponentsProviderTest {
         testEmpty(provider);
     }
 
-    // @Test
+    @Test
     public void test_preComponentsLoad_contain_newUserComponent_Zip() throws Exception {
         File testDataFile = getTestDataFile(PATH_NEW_COMPONENT);
         Assert.assertTrue(testDataFile.exists());
@@ -284,7 +288,7 @@ public class UserComponentsProviderTest {
         testEmpty(provider);
     }
 
-    // @Test
+    @Test
     public void test_preComponentsLoad_contain_newUserComponent_Folder() throws Exception {
         File testDataFile = getTestDataFile(PATH_NEW_COMPONENT);
         Assert.assertTrue(testDataFile.exists());
@@ -355,8 +359,8 @@ public class UserComponentsProviderTest {
         testEmpty(provider);
     }
 
-    // @Test
-    public void test_preComponentsLoad_newComponentsInProject() throws Exception {
+    @Test
+    public void test_preComponentsLoad_contain_newComponentsInProject() throws Exception {
 
         File testDataFile = getTestDataFile(PATH_NEW_COMPONENT);
         Assert.assertTrue(testDataFile.exists());
@@ -401,5 +405,6 @@ public class UserComponentsProviderTest {
         Assert.assertEquals(target.getAbsolutePath(), path);
 
         provider.resetNewComponentsCache();
+        FilesUtils.deleteFolder(target.getParentFile(), false);
     }
 }
