@@ -2867,6 +2867,14 @@
               name="Set the Spark Dataframe Alphabatical sort order in tHiveOutput and tFileOutputParquet"
               version="6.1.0">
         </projecttask>
+        <projecttask
+              beforeLogon="false"
+              breaks="6.2.2"
+              class="org.talend.repository.model.migration.AddFailOnErrorOnTFileCopyTDI38441"
+              id="org.talend.repository.model.migration.AddFailOnErrorOnTFileCopyTDI38441"
+              name="Set FailOn property to true if copy directory else set to false"
+              version="6.3.1">
+         </projecttask>
    </extension>
 
    <extension
