@@ -7,11 +7,8 @@
 package org.talend.designer.mapper.model.emf.mapper.impl;
 
 import org.eclipse.emf.common.notify.Notification;
-
 import org.eclipse.emf.ecore.EClass;
-
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
-
 import org.talend.designer.mapper.model.emf.mapper.AbstractInOutTable;
 import org.talend.designer.mapper.model.emf.mapper.MapperPackage;
 
@@ -339,16 +336,6 @@ public abstract class AbstractInOutTableImpl extends AbstractDataMapTableImpl im
             return false;
         }
         if (getClass() != obj.getClass()) {
-            return false;
-        }
-        AbstractInOutTableImpl other = (AbstractInOutTableImpl) obj;
-        if(this.activateColumnNameFilter != other.activateColumnNameFilter){
-            return false;
-        }
-        if(this.activateColumnNameFilter != other.activateColumnNameFilter){
-            return false;
-        }
-        if(this.activateColumnNameFilter != other.activateColumnNameFilter){
             return false;
         }
         return super.equals(obj);
