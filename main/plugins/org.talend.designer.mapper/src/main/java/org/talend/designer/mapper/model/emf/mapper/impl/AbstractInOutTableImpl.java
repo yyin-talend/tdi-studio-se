@@ -338,6 +338,22 @@ public abstract class AbstractInOutTableImpl extends AbstractDataMapTableImpl im
         if (getClass() != obj.getClass()) {
             return false;
         }
+        AbstractInOutTableImpl other = (AbstractInOutTableImpl) obj;
+        if (this.activateCondensedTool != other.activateCondensedTool) {
+            return false;
+        }
+
+        if (this.activateExpressionFilter != other.activateExpressionFilter) {
+            return false;
+        }
+
+        if (this.expressionFilter == null) {
+            if (other.expressionFilter != null) {
+                return false;
+            }
+        } else if (!this.expressionFilter.equals(other.expressionFilter)) {
+            return false;
+        }
         return super.equals(obj);
     }
 
