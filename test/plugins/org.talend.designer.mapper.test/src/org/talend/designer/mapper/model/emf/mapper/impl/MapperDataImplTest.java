@@ -46,7 +46,6 @@ public class MapperDataImplTest {
         final InputTable persistentTable = MapperFactory.eINSTANCE.createInputTable();
         persistentTable.setActivateCondensedTool(true);
         persistentTable.setActivateExpressionFilter(true);
-        persistentTable.setActivateColumnNameFilter(true);
         persistentTable.setExpressionFilter("expressionFilter1");
         persistentTable.setMinimized(false);
         persistentTable.setName("tableName");
@@ -78,7 +77,6 @@ public class MapperDataImplTest {
         final InputTable persistentTable2 = MapperFactory.eINSTANCE.createInputTable();
         persistentTable2.setActivateCondensedTool(true);
         persistentTable2.setActivateExpressionFilter(true);
-        persistentTable2.setActivateColumnNameFilter(true);
         persistentTable2.setExpressionFilter("expressionFilter1");
         persistentTable2.setMinimized(false);
         persistentTable2.setName("tableName");
@@ -119,7 +117,6 @@ public class MapperDataImplTest {
         final InputTable persistentTable = MapperFactory.eINSTANCE.createInputTable();
         persistentTable.setActivateCondensedTool(true);
         persistentTable.setActivateExpressionFilter(true);
-        persistentTable.setActivateColumnNameFilter(true);
         persistentTable.setExpressionFilter("expressionFilter1");
         persistentTable.setMinimized(false);
         persistentTable.setName("tableName");
@@ -151,7 +148,6 @@ public class MapperDataImplTest {
         final InputTable persistentTable2 = MapperFactory.eINSTANCE.createInputTable();
         persistentTable2.setActivateCondensedTool(true);
         persistentTable2.setActivateExpressionFilter(true);
-        persistentTable2.setActivateColumnNameFilter(true);
         persistentTable2.setExpressionFilter("exprefssionFilter1");
         persistentTable2.setMinimized(false);
         persistentTable2.setName("tableName");
@@ -192,7 +188,6 @@ public class MapperDataImplTest {
         final OutputTable persistentTable = MapperFactory.eINSTANCE.createOutputTable();
         persistentTable.setActivateCondensedTool(true);
         persistentTable.setActivateExpressionFilter(true);
-        persistentTable.setActivateColumnNameFilter(true);
         persistentTable.setExpressionFilter("expressionFilter1");
         persistentTable.setMinimized(false);
         persistentTable.setName("tableName");
@@ -216,7 +211,6 @@ public class MapperDataImplTest {
         final OutputTable persistentTable2 = MapperFactory.eINSTANCE.createOutputTable();
         persistentTable2.setActivateCondensedTool(true);
         persistentTable2.setActivateExpressionFilter(true);
-        persistentTable2.setActivateColumnNameFilter(true);
         persistentTable2.setExpressionFilter("expressionFilter1");
         persistentTable2.setMinimized(false);
         persistentTable2.setName("tableName");
@@ -249,7 +243,6 @@ public class MapperDataImplTest {
         final OutputTable persistentTable = MapperFactory.eINSTANCE.createOutputTable();
         persistentTable.setActivateCondensedTool(true);
         persistentTable.setActivateExpressionFilter(true);
-        persistentTable.setActivateColumnNameFilter(true);
         persistentTable.setExpressionFilter("expressionFilter1");
         persistentTable.setMinimized(false);
         persistentTable.setName("tableName");
@@ -273,7 +266,6 @@ public class MapperDataImplTest {
         final OutputTable persistentTable2 = MapperFactory.eINSTANCE.createOutputTable();
         persistentTable2.setActivateCondensedTool(true);
         persistentTable2.setActivateExpressionFilter(true);
-        persistentTable2.setActivateColumnNameFilter(true);
         persistentTable2.setExpressionFilter("expressionhhFilter1");
         persistentTable2.setMinimized(false);
         persistentTable2.setName("tablebbName");

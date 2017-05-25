@@ -34,7 +34,6 @@ public class ExternalMapperDataTest {
         ExternalMapperTable externalTable = new ExternalMapperTable();
         externalTable.setActivateCondensedTool(true);
         externalTable.setActivateExpressionFilter(false);
-        externalTable.setActivateColumnNameFilter(true);
         externalTable.setExpressionFilter("ddd");
         externalTable.setSizeState("ddd");
         externalTable.setMinimized(false);
@@ -60,7 +59,6 @@ public class ExternalMapperDataTest {
         ExternalMapperTable externalTable2 = new ExternalMapperTable();
         externalTable2.setActivateCondensedTool(true);
         externalTable2.setActivateExpressionFilter(false);
-        externalTable2.setActivateColumnNameFilter(true);
         externalTable2.setExpressionFilter("ddd");
         externalTable2.setSizeState("ddd");
         externalTable2.setMinimized(false);
@@ -121,7 +119,6 @@ public class ExternalMapperDataTest {
         ExternalMapperTable externalTable = new ExternalMapperTable();
         externalTable.setActivateCondensedTool(true);
         externalTable.setActivateExpressionFilter(false);
-        externalTable.setActivateColumnNameFilter(true);
         externalTable.setExpressionFilter(inDiff);
         externalTable.setSizeState(inDiff);
         externalTable.setMinimized(false);
@@ -160,7 +157,6 @@ public class ExternalMapperDataTest {
         externalTable = new ExternalMapperTable();
         externalTable.setActivateCondensedTool(true);
         externalTable.setActivateExpressionFilter(false);
-        externalTable.setActivateColumnNameFilter(true);
         externalTable.setExpressionFilter(outDiff);
         externalTable.setSizeState(outDiff);
         externalTable.setMinimized(false);
