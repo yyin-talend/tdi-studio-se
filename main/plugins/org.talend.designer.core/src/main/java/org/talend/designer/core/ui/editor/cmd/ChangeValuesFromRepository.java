@@ -1203,7 +1203,8 @@ public class ChangeValuesFromRepository extends ChangeMetadataCommand {
     }
 
     /**
-     * Set the values to default if needed.
+     * Reset the values to default only for combo boxes, if the values set are not valid.<br>
+     * This avoids to have some invalid setup after drag&drop / setup a component from repository.
      *
      * @param currentParam Current parameter that has been modified in the interface
      * @param testedParam Tested parameter, to know if there is a link for the default values between this parameter and
@@ -1214,7 +1215,8 @@ public class ChangeValuesFromRepository extends ChangeMetadataCommand {
         if (elementParameters == null) {
             return;
         }
-        if (!testedParam.getFieldType().equals(EParameterFieldType.CLOSED_LIST)) {
+        // if not a combo box or if this parameter is linked to repository, just skip
+        if (!testedParam.getFieldType().equals(EParameterFieldType.CLOSED_LIST) || testedParam.getRepositoryValue() != null) {
             return;
         }
         boolean contains = false;
