@@ -197,6 +197,9 @@ public class ExternalDataConverter {
             for (IOConnection connection : inputConnections) {
                 InputTable inputTable = new InputTable(this.mapperManager, connection, connection.getName());
                 inputTable.initFromExternalData(null);
+                if (connection.getTable() == null) {
+                    inputTable.setReadOnly(true);
+                }
                 inputDataMapTables.add(inputTable);
             }
         } else {
@@ -218,6 +221,9 @@ public class ExternalDataConverter {
                         inputTable.setActivateCondensedTool(false);
                         inputTable.setPersistent(false);// bug TDI-8027
                     }
+                    if (connection.getTable() == null) {
+                        inputTable.setReadOnly(true);
+                    }
                 }
             }
             for (IOConnection connection : remainingConnections) {
@@ -228,6 +234,9 @@ public class ExternalDataConverter {
                 if (EConnectionType.FLOW_MAIN == connection.getConnectionType()) {
                     inputTable.setActivateCondensedTool(false);
                     inputTable.setPersistent(false);// bug TDI-8027
+                }
+                if (connection.getTable() == null) {
+                    inputTable.setReadOnly(true);
                 }
             }
         }
