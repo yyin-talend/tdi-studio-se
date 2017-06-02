@@ -1741,25 +1741,9 @@ public class Node extends Element implements IGraphicalNode {
         this.outputs.remove(connection);
         // update the order wehn remove the connection
         ((Connection) connection).updateAllId();
-        removeSourceMatadata(connection);
         removeTargetMetaData(connection);
         calculateSubtreeStartAndEnd();
         fireStructureChange(OUTPUTS, connection);
-    }
-
-    private void removeSourceMatadata(IConnection connection) {
-        Node source = (Node) connection.getSource();
-        if (source.isELTMapComponent()) {
-            IMetadataTable table = connection.getMetadataTable();
-            if (0 < source.countConnectionsUsingMetadata(table)) {
-                // still have connetions using this metadataTable, couldn't delete
-                return;
-            }
-            if (table != null) { 
-            	 source.metadataList.remove(table);
-            }
-        }
-
     }
 
     public int countConnectionsUsingMetadata(IMetadataTable metaTable) {
