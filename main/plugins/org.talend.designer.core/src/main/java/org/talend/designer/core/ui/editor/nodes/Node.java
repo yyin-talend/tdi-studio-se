@@ -2211,6 +2211,7 @@ public class Node extends Element implements IGraphicalNode {
                 }
             }
         }
+
         return null;
     }
 
