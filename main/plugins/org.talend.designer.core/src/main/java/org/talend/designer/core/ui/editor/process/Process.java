@@ -2799,6 +2799,10 @@ public class Process extends Element implements IProcess2, IGEFProcess, ILastVer
         return false;
     }
 
+    public void loadContexts() {
+        loadContexts(getProcessType());
+    }
+
     private void loadContexts(ProcessType process) {
         /**
          * Load the contexts informations
