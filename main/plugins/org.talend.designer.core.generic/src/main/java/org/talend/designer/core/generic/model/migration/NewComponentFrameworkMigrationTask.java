@@ -43,6 +43,7 @@ import org.talend.core.model.process.EConnectionType;
 import org.talend.core.model.process.EParameterFieldType;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.properties.Item;
+import org.talend.core.model.update.UpdatesConstants;
 import org.talend.core.repository.model.ProxyRepositoryFactory;
 import org.talend.core.runtime.util.GenericTypeUtils;
 import org.talend.core.ui.component.ComponentsFactoryProvider;
@@ -70,185 +71,195 @@ import org.talend.designer.core.model.utils.emf.talendfile.ProcessType;
 public abstract class NewComponentFrameworkMigrationTask extends AbstractJobMigrationTask {
 
     @Override
-    public ExecutionResult execute(final Item item) {
-        final ProcessType processType = getProcessType(item);
-        ComponentCategory category = ComponentCategory.getComponentCategoryFromItem(item);
-        Properties props = getPropertiesFromFile();
-        IComponentConversion conversion = new IComponentConversion() {
+	public ExecutionResult execute(final Item item) {
+		final ProcessType processType = getProcessType(item);
+		ComponentCategory category = ComponentCategory.getComponentCategoryFromItem(item);
+		Properties props = getPropertiesFromFile();
+		IComponentConversion conversion = new IComponentConversion() {
 
-            @Override
-            public void transform(NodeType nodeType) {
-                if (nodeType == null || props == null) {
-                    return;
-                }
-                boolean modified = false;
-                Map<String, String> schemaParamMap = new HashMap<>();
-                String currComponentName = nodeType.getComponentName();
-                String newComponentName = props.getProperty(currComponentName);
-                nodeType.setComponentName(newComponentName);
-                IComponent component = ComponentsFactoryProvider.getInstance().get(newComponentName, category.getName());
-                ComponentProperties compProperties = ComponentsUtils.getComponentProperties(newComponentName);
-                FakeNode fNode = new FakeNode(component);
-                for (IElementParameter param : fNode.getElementParameters()) {
-                    if (param instanceof GenericElementParameter) {
-                        String paramName = param.getName();
-                        NamedThing currNamedThing = ComponentsUtils.getGenericSchemaElement(compProperties, paramName);
-                        String oldParamName = props.getProperty(currComponentName + IGenericConstants.EXP_SEPARATOR + paramName);
-                        if (oldParamName != null && !(oldParamName = oldParamName.trim()).isEmpty()) {
-                            if (currNamedThing instanceof Property && (GenericTypeUtils.isSchemaType((Property<?>) currNamedThing))) {
-                                schemaParamMap.put(
-                                        paramName,
-                                        props.getProperty(currComponentName + IGenericConstants.EXP_SEPARATOR + paramName
-                                                + IGenericConstants.EXP_SEPARATOR + "connector"));
-                            }
-                            ElementParameterType paramType = getParameterType(nodeType, oldParamName);
-                            if (paramType != null) {
-                                if (currNamedThing instanceof ComponentReferenceProperties) {
-                                    ComponentReferenceProperties refProps = (ComponentReferenceProperties) currNamedThing;
-                                    refProps.referenceType
-                                            .setValue(ComponentReferenceProperties.ReferenceType.COMPONENT_INSTANCE);
-                                    refProps.componentInstanceId.setStoredValue(ParameterUtilTool.convertParameterValue(paramType));
-                                    refProps.componentInstanceId.setTaggedValue(IGenericConstants.ADD_QUOTES, true);
-                                } else {
-                                    if (EParameterFieldType.TABLE.equals(param.getFieldType())) {
-                                        String tableMapping = props.getProperty(currComponentName
-                                                + IGenericConstants.EXP_SEPARATOR + paramName + IGenericConstants.EXP_SEPARATOR
-                                                + "mapping");
-                                        GenericTableUtils.setTableValues(((ComponentProperties) currNamedThing),
-                                                getTableValues(paramType, tableMapping), param);
-                                    } else {
-                                        ((Property) currNamedThing).setValue(ParameterUtilTool.convertParameterValue(paramType));
-                                    }
-                                }
-                                ParameterUtilTool.removeParameterType(nodeType, paramType);
-                                modified = true;
-                            }
-                            if (EParameterFieldType.SCHEMA_REFERENCE.equals(param.getFieldType())) {
-                                String schemaTypeName = ":" + EParameterName.SCHEMA_TYPE.getName();//$NON-NLS-1$
-                                String repSchemaTypeName = ":" + EParameterName.REPOSITORY_SCHEMA_TYPE.getName();//$NON-NLS-1$
-                                paramType = getParameterType(nodeType, oldParamName + schemaTypeName);
-                                if (paramType != null) {
-                                    paramType.setName(param.getName() + schemaTypeName);
-                                }
-                                paramType = getParameterType(nodeType, oldParamName + repSchemaTypeName);
-                                if (paramType != null) {
-                                    paramType.setName(param.getName() + repSchemaTypeName);
-                                }
-                            }
-                        } else {
-                            if (currNamedThing instanceof Property) {
-                                if (((Property<?>) currNamedThing).isRequired()
-                                        && GenericTypeUtils.isStringType(((Property<?>) currNamedThing).getType())) {
-                                    ((Property<?>) currNamedThing).setStoredValue("\"\""); //$NON-NLS-1$
-                                }
-                            }
-                        }
-                    } else {
-                        if (EParameterFieldType.SCHEMA_REFERENCE.equals(param.getFieldType())) {
-                            String paramName = param.getName();
-                            schemaParamMap.put(
-                                    paramName,
-                                    props.getProperty(currComponentName + IGenericConstants.EXP_SEPARATOR + paramName
-                                            + IGenericConstants.EXP_SEPARATOR + "connector"));
+			@Override
+			public void transform(NodeType nodeType) {
+				if (nodeType == null || props == null) {
+					return;
+				}
+				boolean modified = false;
+				Map<String, String> schemaParamMap = new HashMap<>();
+				String currComponentName = nodeType.getComponentName();
+				String newComponentName = props.getProperty(currComponentName);
+				nodeType.setComponentName(newComponentName);
+				IComponent component = ComponentsFactoryProvider.getInstance().get(newComponentName,
+						category.getName());
+				ComponentProperties compProperties = ComponentsUtils.getComponentProperties(newComponentName);
+				FakeNode fNode = new FakeNode(component);
+				for (IElementParameter param : fNode.getElementParameters()) {
+					if (param instanceof GenericElementParameter) {
+						String paramName = param.getName();
+						NamedThing currNamedThing = ComponentsUtils.getGenericSchemaElement(compProperties, paramName);
+						if (currNamedThing instanceof Property) {
+							// Set this tag to indicate not to change the original value when do the migration.
+							((Property) currNamedThing).setTaggedValue(UpdatesConstants.CHANGED_BY_USER, true);
+						}
+						String oldParamName = props
+								.getProperty(currComponentName + IGenericConstants.EXP_SEPARATOR + paramName);
+						if (oldParamName != null && !(oldParamName = oldParamName.trim()).isEmpty()) {
+							if (currNamedThing instanceof Property
+									&& (GenericTypeUtils.isSchemaType((Property<?>) currNamedThing))) {
+								schemaParamMap.put(paramName,
+										props.getProperty(currComponentName + IGenericConstants.EXP_SEPARATOR
+												+ paramName + IGenericConstants.EXP_SEPARATOR + "connector"));
+							}
+							ElementParameterType paramType = getParameterType(nodeType, oldParamName);
+							if (paramType != null) {
+								if (currNamedThing instanceof ComponentReferenceProperties) {
+									ComponentReferenceProperties refProps = (ComponentReferenceProperties) currNamedThing;
+									refProps.referenceType
+											.setValue(ComponentReferenceProperties.ReferenceType.COMPONENT_INSTANCE);
+									refProps.componentInstanceId
+											.setStoredValue(ParameterUtilTool.convertParameterValue(paramType));
+									refProps.componentInstanceId.setTaggedValue(IGenericConstants.ADD_QUOTES, true);
+								} else {
+									if (EParameterFieldType.TABLE.equals(param.getFieldType())) {
+										String tableMapping = props
+												.getProperty(currComponentName + IGenericConstants.EXP_SEPARATOR
+														+ paramName + IGenericConstants.EXP_SEPARATOR + "mapping");
+										GenericTableUtils.setTableValues(((ComponentProperties) currNamedThing),
+												getTableValues(paramType, tableMapping), param);
+									} else {
+										((Property) currNamedThing)
+												.setValue(ParameterUtilTool.convertParameterValue(paramType));
+									}
+								}
+								ParameterUtilTool.removeParameterType(nodeType, paramType);
+								modified = true;
+							}
+							if (EParameterFieldType.SCHEMA_REFERENCE.equals(param.getFieldType())) {
+								String schemaTypeName = ":" + EParameterName.SCHEMA_TYPE.getName();//$NON-NLS-1$
+								String repSchemaTypeName = ":" + EParameterName.REPOSITORY_SCHEMA_TYPE.getName();//$NON-NLS-1$
+								paramType = getParameterType(nodeType, oldParamName + schemaTypeName);
+								if (paramType != null) {
+									paramType.setName(param.getName() + schemaTypeName);
+								}
+								paramType = getParameterType(nodeType, oldParamName + repSchemaTypeName);
+								if (paramType != null) {
+									paramType.setName(param.getName() + repSchemaTypeName);
+								}
+							}
+						} else {
+							if (currNamedThing instanceof Property) {
+								if (((Property<?>) currNamedThing).isRequired()
+										&& GenericTypeUtils.isStringType(((Property<?>) currNamedThing).getType())) {
+									((Property<?>) currNamedThing).setStoredValue("\"\""); //$NON-NLS-1$
+								}
+							}
+						}
+					} else {
+						if (EParameterFieldType.SCHEMA_REFERENCE.equals(param.getFieldType())) {
+							String paramName = param.getName();
+							schemaParamMap.put(paramName,
+									props.getProperty(currComponentName + IGenericConstants.EXP_SEPARATOR + paramName
+											+ IGenericConstants.EXP_SEPARATOR + "connector"));
 
-                            String oldParamName = props.getProperty(currComponentName + IGenericConstants.EXP_SEPARATOR + paramName);
-                            String schemaTypeName = ":" + EParameterName.SCHEMA_TYPE.getName();//$NON-NLS-1$
-                            String repSchemaTypeName = ":" + EParameterName.REPOSITORY_SCHEMA_TYPE.getName();//$NON-NLS-1$
-                            ElementParameterType paramType = getParameterType(nodeType, oldParamName + schemaTypeName);
-                            if (paramType != null) {
-                                paramType.setName(param.getName() + schemaTypeName);
-                            }
-                            paramType = getParameterType(nodeType, oldParamName + repSchemaTypeName);
-                            if (paramType != null) {
-                                paramType.setName(param.getName() + repSchemaTypeName);
-                            }
-                        }
-                    }
-                           
-                }
-                // Migrate schemas
-                Map<String, MetadataType> metadatasMap = new HashMap<>();
-                EList<MetadataType> metadatas = nodeType.getMetadata();
-                for (MetadataType metadataType : metadatas) {
-                    metadatasMap.put(metadataType.getConnector(), metadataType);
-                }
-                Iterator<Entry<String, String>> schemaParamIter = schemaParamMap.entrySet().iterator();
-                String uniqueName = ParameterUtilTool.getParameterValue(nodeType, "UNIQUE_NAME"); //$NON-NLS-1$
+							String oldParamName = props
+									.getProperty(currComponentName + IGenericConstants.EXP_SEPARATOR + paramName);
+							String schemaTypeName = ":" + EParameterName.SCHEMA_TYPE.getName();//$NON-NLS-1$
+							String repSchemaTypeName = ":" + EParameterName.REPOSITORY_SCHEMA_TYPE.getName();//$NON-NLS-1$
+							ElementParameterType paramType = getParameterType(nodeType, oldParamName + schemaTypeName);
+							if (paramType != null) {
+								paramType.setName(param.getName() + schemaTypeName);
+							}
+							paramType = getParameterType(nodeType, oldParamName + repSchemaTypeName);
+							if (paramType != null) {
+								paramType.setName(param.getName() + repSchemaTypeName);
+							}
+						}
+					}
 
-                while (schemaParamIter.hasNext()) {
-                    Entry<String, String> schemaParamEntry = schemaParamIter.next();
-                    String newParamName = schemaParamEntry.getKey();
-                    String connectorMapping = schemaParamEntry.getValue();
-                    String oldConnector = connectorMapping.split("->")[0]; //$NON-NLS-1$
-                    String newConnector = connectorMapping.split("->")[1]; //$NON-NLS-1$
-                    MetadataType metadataType = metadatasMap.get(oldConnector);
-                    if (metadataType != null) {
-                        metadataType.setConnector(newConnector);
-                        MetadataEmfFactory factory = new MetadataEmfFactory();
-                        factory.setMetadataType(metadataType);
-                        IMetadataTable metadataTable = factory.getMetadataTable();
-                        Schema schema = SchemaUtils.convertTalendSchemaIntoComponentSchema(ConvertionHelper
-                                .convert(metadataTable));
-                        compProperties.setValue(newParamName, schema);
-                    }
-                    if (!oldConnector.equals(newConnector)) {
-                        // if connector was changed, we should update the connections
-                        for (Object connectionObj : processType.getConnection()) {
-                            if (connectionObj instanceof ConnectionType) {
-                                ConnectionType connectionType = (ConnectionType) connectionObj;
-                                if (connectionType.getSource().equals(uniqueName) && connectionType.getConnectorName().equals(oldConnector)) {
-                                    connectionType.setConnectorName(newConnector);
-                                }
-                            }
-                        }
-                    }
-                }
-                for (Object connectionObj : processType.getConnection()) {
-                    ConnectionType connection = (ConnectionType) connectionObj;
-                    if (connection.getSource() != null && connection.getSource().equals(uniqueName)) {
-                        if (EConnectionType.FLOW_MAIN.getName().equals(connection.getConnectorName())) {
-                            connection.setConnectorName(Connector.MAIN_NAME);
-                        }
-                    }
-                }
+				}
+				// Migrate schemas
+				Map<String, MetadataType> metadatasMap = new HashMap<>();
+				EList<MetadataType> metadatas = nodeType.getMetadata();
+				for (MetadataType metadataType : metadatas) {
+					metadatasMap.put(metadataType.getConnector(), metadataType);
+				}
+				Iterator<Entry<String, String>> schemaParamIter = schemaParamMap.entrySet().iterator();
+				String uniqueName = ParameterUtilTool.getParameterValue(nodeType, "UNIQUE_NAME"); //$NON-NLS-1$
 
-                if (modified) {
-                    String serializedProperties = compProperties.toSerialized();
-                    if (serializedProperties != null) {
-                        ElementParameterType pType = ParameterUtilTool.createParameterType(null, "PROPERTIES", //$NON-NLS-1$
-                                serializedProperties);
-                        nodeType.getElementParameter().add(pType);
-                    }
-                }
-            }
-        };
+				while (schemaParamIter.hasNext()) {
+					Entry<String, String> schemaParamEntry = schemaParamIter.next();
+					String newParamName = schemaParamEntry.getKey();
+					String connectorMapping = schemaParamEntry.getValue();
+					String oldConnector = connectorMapping.split("->")[0]; //$NON-NLS-1$
+					String newConnector = connectorMapping.split("->")[1]; //$NON-NLS-1$
+					MetadataType metadataType = metadatasMap.get(oldConnector);
+					if (metadataType != null) {
+						metadataType.setConnector(newConnector);
+						MetadataEmfFactory factory = new MetadataEmfFactory();
+						factory.setMetadataType(metadataType);
+						IMetadataTable metadataTable = factory.getMetadataTable();
+						Schema schema = SchemaUtils
+								.convertTalendSchemaIntoComponentSchema(ConvertionHelper.convert(metadataTable));
+						compProperties.setValue(newParamName, schema);
+					}
+					if (!oldConnector.equals(newConnector)) {
+						// if connector was changed, we should update the
+						// connections
+						for (Object connectionObj : processType.getConnection()) {
+							if (connectionObj instanceof ConnectionType) {
+								ConnectionType connectionType = (ConnectionType) connectionObj;
+								if (connectionType.getSource().equals(uniqueName)
+										&& connectionType.getConnectorName().equals(oldConnector)) {
+									connectionType.setConnectorName(newConnector);
+								}
+							}
+						}
+					}
+				}
+				for (Object connectionObj : processType.getConnection()) {
+					ConnectionType connection = (ConnectionType) connectionObj;
+					if (connection.getSource() != null && connection.getSource().equals(uniqueName)) {
+						if (EConnectionType.FLOW_MAIN.getName().equals(connection.getConnectorName())) {
+							connection.setConnectorName(Connector.MAIN_NAME);
+						}
+					}
+				}
 
-        if (processType != null) {
-            boolean modified = false;
-            for (Object obj : processType.getNode()) {
-                if (obj != null && obj instanceof NodeType) {
-                    String componentName = ((NodeType) obj).getComponentName();
-                    String newComponentName = props.getProperty(componentName);
-                    if (newComponentName == null) {
-                        continue;
-                    }
-                    IComponentFilter filter = new NameComponentFilter(componentName);
-                    modified = ModifyComponentsAction.searchAndModify((NodeType) obj, filter,
-                                Arrays.<IComponentConversion> asList(conversion)) || modified;
-                }
-            }
-            if (modified) {
-                try {
-                    ProxyRepositoryFactory.getInstance().save(item, true);
-                    return ExecutionResult.SUCCESS_NO_ALERT;
-                } catch (PersistenceException e) {
-                    ExceptionHandler.process(e);
-                    return ExecutionResult.FAILURE;
-                }
-            }
-        }
-        return ExecutionResult.NOTHING_TO_DO;
-    }
+				if (modified) {
+					String serializedProperties = compProperties.toSerialized();
+					if (serializedProperties != null) {
+						ElementParameterType pType = ParameterUtilTool.createParameterType(null, "PROPERTIES", //$NON-NLS-1$
+								serializedProperties);
+						nodeType.getElementParameter().add(pType);
+					}
+				}
+			}
+		};
+
+		if (processType != null) {
+			boolean modified = false;
+			for (Object obj : processType.getNode()) {
+				if (obj != null && obj instanceof NodeType) {
+					String componentName = ((NodeType) obj).getComponentName();
+					String newComponentName = props.getProperty(componentName);
+					if (newComponentName == null) {
+						continue;
+					}
+					IComponentFilter filter = new NameComponentFilter(componentName);
+					modified = ModifyComponentsAction.searchAndModify((NodeType) obj, filter,
+							Arrays.<IComponentConversion>asList(conversion)) || modified;
+				}
+			}
+			if (modified) {
+				try {
+					ProxyRepositoryFactory.getInstance().save(item, true);
+					return ExecutionResult.SUCCESS_NO_ALERT;
+				} catch (PersistenceException e) {
+					ExceptionHandler.process(e);
+					return ExecutionResult.FAILURE;
+				}
+			}
+		}
+		return ExecutionResult.NOTHING_TO_DO;
+	}
 
     protected void migrateComponent(String componentName) {
         // with default implementation
