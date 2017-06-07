@@ -745,7 +745,6 @@ public class Node extends Element implements IGraphicalNode {
         return null;
     }
 
-    @Override
     public List<INodeConnector> getConnectorsFromType(final EConnectionType connType) {
         INodeConnector nodeConnector = null;
         List<INodeConnector> listConnectors = new ArrayList<INodeConnector>();
