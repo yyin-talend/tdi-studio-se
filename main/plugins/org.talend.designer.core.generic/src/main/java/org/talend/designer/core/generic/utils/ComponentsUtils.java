@@ -127,8 +127,10 @@ public class ComponentsUtils {
         }
         Map<String, IComponent> existComponents = new HashMap<String, IComponent>();
 
-        for (IComponent component : componentsList) {
-            existComponents.put(component.getName(), component);
+        synchronized (componentsList) {
+            for (IComponent component : componentsList) {
+                existComponents.put(component.getName(), component);
+            }
         }
 
         // Load components from service
