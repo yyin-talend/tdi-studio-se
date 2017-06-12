@@ -48,6 +48,7 @@ import org.talend.core.model.process.INode;
 import org.talend.core.model.process.INodeConnector;
 import org.talend.core.model.process.IProcess;
 import org.talend.core.model.process.IProcess2;
+import org.talend.core.model.update.UpdatesConstants;
 import org.talend.core.ui.IJobletProviderService;
 import org.talend.core.ui.component.ComponentsFactoryProvider;
 import org.talend.core.ui.process.IGraphicalNode;
@@ -72,9 +73,9 @@ import org.talend.designer.core.utils.UpgradeElementHelper;
 
 /**
  * Command used to paste all the components.
- * 
+ *
  * $Id$
- * 
+ *
  */
 public class NodesPasteCommand extends Command {
 
@@ -109,7 +110,7 @@ public class NodesPasteCommand extends Command {
 
     /**
      * Getter for isJunitCreate.
-     * 
+     *
      * @return the isJunitCreate
      */
     public boolean isJunitCreate() {
@@ -118,7 +119,7 @@ public class NodesPasteCommand extends Command {
 
     /**
      * Sets the isJunitCreate.
-     * 
+     *
      * @param isJunitCreate the isJunitCreate to set
      */
     public void setJunitCreate(boolean isJunitCreate) {
@@ -127,7 +128,7 @@ public class NodesPasteCommand extends Command {
 
     /**
      * Getter for cursorLocation.
-     * 
+     *
      * @return the cursorLocation
      */
     public Point getCursorLocation() {
@@ -136,7 +137,7 @@ public class NodesPasteCommand extends Command {
 
     /**
      * Sets the cursorLocation.
-     * 
+     *
      * @param cursorLocation the cursorLocation to set
      */
     public void setCursorLocation(Point cursorLocation) {
@@ -144,9 +145,9 @@ public class NodesPasteCommand extends Command {
     }
 
     /**
-     * 
+     *
      * cLi Comment method "setJobletRefactor".
-     * 
+     *
      * feature 6131, refactor nodes to joblet.
      */
     public void setJobletRefactor(boolean isJobletRefactor) {
@@ -196,7 +197,7 @@ public class NodesPasteCommand extends Command {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.eclipse.gef.commands.Command#canExecute()
      */
     @Override
@@ -267,9 +268,9 @@ public class NodesPasteCommand extends Command {
     }
 
     /**
-     * 
+     *
      * Will return a empty location for a component from a given point.
-     * 
+     *
      * @param location
      * @return
      */
@@ -367,8 +368,8 @@ public class NodesPasteCommand extends Command {
         Map<SubjobContainer, List<Node>> junitGroup = null;
         if (isJunitCreate()) {
             if (GlobalServiceRegister.getDefault().isServiceRegistered(ITestContainerGEFService.class)) {
-                testContainerService = (ITestContainerGEFService) GlobalServiceRegister.getDefault().getService(
-                        ITestContainerGEFService.class);
+                testContainerService = (ITestContainerGEFService) GlobalServiceRegister.getDefault()
+                        .getService(ITestContainerGEFService.class);
                 if (testContainerService != null) {
                     junitGroup = testContainerService.caculateJunitGroup(nodeParts);
                 }
@@ -389,8 +390,8 @@ public class NodesPasteCommand extends Command {
             if (component == null) {
                 boolean isJobletInOutComponent = false;
                 if (PluginChecker.isJobLetPluginLoaded()) {
-                    IJobletProviderService service = (IJobletProviderService) GlobalServiceRegister.getDefault().getService(
-                            IJobletProviderService.class);
+                    IJobletProviderService service = (IJobletProviderService) GlobalServiceRegister.getDefault()
+                            .getService(IJobletProviderService.class);
                     if (service != null && service.isJobletInOutComponent(copiedNode)) {
                         isJobletInOutComponent = true;
                     }
@@ -461,8 +462,8 @@ public class NodesPasteCommand extends Command {
                 for (IMetadataTable metaTable : copiedNode.getMetadataList()) {
                     IMetadataTable newTable = metaTable.clone();
                     if (copiedNode.isELTComponent()) {
-                        newTable.setTableName(createNewConnectionName(metaTable.getTableName(),
-                                IProcess.DEFAULT_TABLE_CONNECTION_NAME));
+                        newTable.setTableName(
+                                createNewConnectionName(metaTable.getTableName(), IProcess.DEFAULT_TABLE_CONNECTION_NAME));
                     } else {
                         if (metaTable.getTableName().equals(copiedNode.getUniqueName())) {
                             newTable.setTableName(createNewConnectionName(pastedNode.getUniqueName(), null));
@@ -505,8 +506,8 @@ public class NodesPasteCommand extends Command {
                         String oldName = metaTable.getTableName();
                         String newName = oldMetaToNewMeta.get(pastedNode.getUniqueName() + ":" + metaTable.getTableName()); //$NON-NLS-1$
                         externalNode.renameOutputConnection(oldName, newName);
-                        CorePlugin.getDefault().getMapperService()
-                                .renameJoinTable(process, externalNode.getExternalData(), createdNames);
+                        CorePlugin.getDefault().getMapperService().renameJoinTable(process, externalNode.getExternalData(),
+                                createdNames);
                     }
                     // when copy a external node, should also copy screeshot
                     if (copiedNode.getExternalNode() != null) {
@@ -536,8 +537,8 @@ public class NodesPasteCommand extends Command {
                                         boolean isSAPBapiInputSchema = "MAPPING_INPUT".equals(param.getName()) //$NON-NLS-1$
                                                 && "tSAPBapi".equals(copiedNode.getComponent().getName()); //$NON-NLS-1$
                                         if (EParameterName.SCHEMAS.name().equals(param.getName()) || isSAPBapiInputSchema) {
-                                            String newSchemaName = oldMetaToNewMeta.get(pastedNode.getUniqueName() + ":"
-                                                    + map.get(EParameterName.SCHEMA.getName()));
+                                            String newSchemaName = oldMetaToNewMeta.get(
+                                                    pastedNode.getUniqueName() + ":" + map.get(EParameterName.SCHEMA.getName()));
                                             if (newSchemaName != null) {
                                                 newMap.put(EParameterName.SCHEMA.getName(), newSchemaName);
                                             }
@@ -581,6 +582,7 @@ public class NodesPasteCommand extends Command {
                                     elementParameter.setRepositoryValueUsed(param.isRepositoryValueUsed());
                                 }
                             }
+                            ((ElementParameter) elementParameter).setTaggedValue(UpdatesConstants.CHANGED_BY_USER, true);
                         }
                     }
                 }
@@ -637,8 +639,8 @@ public class NodesPasteCommand extends Command {
                         String newNameBuiltIn = oldMetaToNewMeta.get(pastedSourceNode.getUniqueName() + ":" //$NON-NLS-1$
                                 + connection.getMetaName());
                         if (newNameBuiltIn == null) {
-                            IElementParameter formatParam = pastedSourceNode.getElementParameter(EParameterName.CONNECTION_FORMAT
-                                    .getName());
+                            IElementParameter formatParam = pastedSourceNode
+                                    .getElementParameter(EParameterName.CONNECTION_FORMAT.getName());
                             String baseName = IProcess.DEFAULT_ROW_CONNECTION_NAME;
                             if (formatParam != null) {
                                 String value = (String) formatParam.getValue();
@@ -674,7 +676,8 @@ public class NodesPasteCommand extends Command {
                     IConnection pastedConnection;
                     if (!pastedTargetNode.isELTComponent()) {
                         pastedConnection = new Connection(pastedSourceNode, pastedTargetNode, connection.getLineStyle(),
-                                connection.getConnectorName(), metaTableName, newConnectionName, connection.isMonitorConnection());
+                                connection.getConnectorName(), metaTableName, newConnectionName,
+                                connection.isMonitorConnection());
                     } else {
                         pastedConnection = new Connection(pastedSourceNode, pastedTargetNode, connection.getLineStyle(),
                                 connection.getConnectorName(), metaTableName, newConnectionName, metaTableName,
@@ -710,8 +713,8 @@ public class NodesPasteCommand extends Command {
                     // }
                     // }
 
-                    ((Connection) pastedConnection).getConnectionLabel().setOffset(
-                            new Point(((Connection) connection).getConnectionLabel().getOffset()));
+                    ((Connection) pastedConnection).getConnectionLabel()
+                            .setOffset(new Point(((Connection) connection).getConnectionLabel().getOffset()));
                     INodeConnector connector = pastedConnection.getSourceNodeConnector();
                     connector.setCurLinkNbOutput(connector.getCurLinkNbOutput() + 1);
                     connector = pastedConnection.getTargetNodeConnector();
@@ -785,8 +788,8 @@ public class NodesPasteCommand extends Command {
         }
 
         if (!usedDataMap.isEmpty() || !usedDataMapForConnections.isEmpty()) {
-            MessageBox msgBox = new MessageBox(PlatformUI.getWorkbench().getDisplay().getActiveShell(), SWT.YES | SWT.NO
-                    | SWT.ICON_WARNING);
+            MessageBox msgBox = new MessageBox(PlatformUI.getWorkbench().getDisplay().getActiveShell(),
+                    SWT.YES | SWT.NO | SWT.ICON_WARNING);
             msgBox.setMessage(Messages.getString("NodesPasteCommand.renameMessages")); //$NON-NLS-1$
             if (msgBox.open() == SWT.YES) {
                 for (NodeContainer nodeContainer : nodeContainerList) {
@@ -821,7 +824,7 @@ public class NodesPasteCommand extends Command {
     /**
      * DOC bqian Comment method "makeCopyNodeAndSubjobMapping".<br>
      * see bug 0004882: Subjob title is not copied when copying/pasting subjobs from one job to another
-     * 
+     *
      * @param copiedNode
      * @param pastedNode
      */
@@ -937,7 +940,7 @@ public class NodesPasteCommand extends Command {
 
     /**
      * Getter for multipleCommand.
-     * 
+     *
      * @return the multipleCommand
      */
     public boolean isMultipleCommand() {
@@ -946,7 +949,7 @@ public class NodesPasteCommand extends Command {
 
     /**
      * Sets the multipleCommand.
-     * 
+     *
      * @param multipleCommand the multipleCommand to set
      */
     public void setMultipleCommand(boolean multipleCommand) {
@@ -955,7 +958,7 @@ public class NodesPasteCommand extends Command {
 
     /**
      * Getter for nodeContainerList.
-     * 
+     *
      * @return the nodeContainerList
      */
     public List<NodeContainer> getNodeContainerList() {
@@ -965,7 +968,7 @@ public class NodesPasteCommand extends Command {
     /**
      * bqian Comment method "setSelectedSubjobs". <br>
      * see bug 0004882: Subjob title is not copied when copying/pasting subjobs from one job to another
-     * 
+     *
      * @param subjobParts
      */
     public void setSelectedSubjobs(List<SubjobContainerPart> subjobParts) {
