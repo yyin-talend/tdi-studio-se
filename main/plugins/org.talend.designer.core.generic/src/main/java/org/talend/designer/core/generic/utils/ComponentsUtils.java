@@ -87,8 +87,12 @@ public class ComponentsUtils {
 
     private static Set<IComponent> components = null;
 
+    private static ComponentService compService = null;
+
     public static ComponentService getComponentService() {
-        ComponentService compService = null;
+        if (compService != null) {
+            return compService;
+        }
         BundleContext bundleContext = FrameworkUtil.getBundle(ComponentsUtils.class).getBundleContext();
         ServiceReference<ComponentService> compServiceRef = bundleContext.getServiceReference(ComponentService.class);
         if (compServiceRef != null) {
@@ -112,7 +116,7 @@ public class ComponentsUtils {
     }
 
     public static void loadComponents(ComponentService service) {
-        if(service == null){
+        if (service == null) {
             return;
         }
         IComponentsFactory componentsFactory = null;
@@ -209,8 +213,8 @@ public class ComponentsUtils {
      * @return parameters list
      */
     private static List<ElementParameter> getParametersFromForm(IElement element, boolean isInitializing,
-            EComponentCategory category, ComponentProperties rootProperty, Properties compProperties,
-            String parentPropertiesPath, Form form, Widget parentWidget, AtomicInteger lastRowNum) {
+            EComponentCategory category, ComponentProperties rootProperty, Properties compProperties, String parentPropertiesPath,
+            Form form, Widget parentWidget, AtomicInteger lastRowNum) {
         List<ElementParameter> elementParameters = new ArrayList<>();
         List<String> parameterNames = new ArrayList<>();
         EComponentCategory compCategory = category;
@@ -250,8 +254,8 @@ public class ComponentsUtils {
                 if (!isSameComponentProperties(componentProperties, widgetProperty)) {
                     propertiesPath = getPropertiesPath(parentPropertiesPath, subProperties.getName());
                 }
-                elementParameters.addAll(getParametersFromForm(element, isInitializing, compCategory, rootProperty,
-                        subProperties, propertiesPath, subForm, widget, lastRN));
+                elementParameters.addAll(getParametersFromForm(element, isInitializing, compCategory, rootProperty, subProperties,
+                        propertiesPath, subForm, widget, lastRN));
                 continue;
             }
 
@@ -527,8 +531,7 @@ public class ComponentsUtils {
     }
 
     public static String unescapeForJava(String input) {
-        CharSequenceTranslator UNESCAPE_JAVA = new AggregateTranslator(new OctalUnescaper(),
-                new UnicodeUnescaper(),
+        CharSequenceTranslator UNESCAPE_JAVA = new AggregateTranslator(new OctalUnescaper(), new UnicodeUnescaper(),
                 new LookupTranslator(new String[][] { { "\\\\", "\\" }, { "\\\"", "\"" }, { "\\'", "'" } })); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$
         return UNESCAPE_JAVA.translate(input);
     }
