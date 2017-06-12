@@ -245,6 +245,10 @@ public class LoginHelper {
         return LoginHelper.getInstance().getFirstConnBean();
     }
 
+    public static boolean isRemoteConnection() {
+        return isRemoteConnection(LoginHelper.getInstance().getCurrentSelectedConnBean());
+    }
+
     protected static boolean needRestartForLocal(ConnectionBean curConnection) {
         if (curConnection != null && LoginHelper.getInstance().getFirstConnBean() != null) {
             // only switch from other connection to local.
