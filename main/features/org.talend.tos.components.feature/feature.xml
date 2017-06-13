@@ -365,42 +365,42 @@
          unpack="false"/>
 
    <plugin
-         id="org.talend.help_azurestorage"
+         id="org.talend.help.azurestorage"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
 
    <plugin
-         id="org.talend.help_jira"
+         id="org.talend.help.jira"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
 
    <plugin
-         id="org.talend.help_marketo"
+         id="org.talend.help.marketo"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
 
    <plugin
-         id="org.talend.help_salesforce"
+         id="org.talend.help.salesforce"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
 
    <plugin
-         id="org.talend.help_snowflake"
+         id="org.talend.help.snowflake"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
 
    <plugin
-         id="org.talend.help_splunk"
+         id="org.talend.help.splunk"
          download-size="0"
          install-size="0"
          version="0.0.0"
