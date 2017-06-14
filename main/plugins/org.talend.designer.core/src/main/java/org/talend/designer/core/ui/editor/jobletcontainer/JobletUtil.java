@@ -7,10 +7,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import org.apache.oro.text.regex.MalformedPatternException;
-import org.apache.oro.text.regex.Pattern;
-import org.apache.oro.text.regex.Perl5Compiler;
-import org.apache.oro.text.regex.Perl5Matcher;
 import org.eclipse.draw2d.geometry.Dimension;
 import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.draw2d.geometry.Rectangle;
@@ -20,12 +16,10 @@ import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PlatformUI;
-import org.talend.commons.exception.CommonExceptionHandler;
 import org.talend.commons.runtime.model.repository.ERepositoryStatus;
 import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.core.GlobalServiceRegister;
 import org.talend.core.PluginChecker;
-import org.talend.core.model.components.ComponentCategory;
 import org.talend.core.model.components.ComponentUtilities;
 import org.talend.core.model.components.IComponent;
 import org.talend.core.model.metadata.IMetadataColumn;
@@ -519,7 +513,8 @@ public class JobletUtil {
                                 continue;
                             } else {
                                 if (((Node) node).isJoblet()&& jobletItem.getProperty() != null) {
-                                    if (jobletItem.getProperty().getId().equals(node.getComponent().getProcess().getId())) {
+                                    if (jobletItem.getProperty().getId().equals(node.getComponent().getProcess().getId())
+                                            && jobletItem.getProperty().getVersion().equals(node.getComponent().getVersion())) {
                                         boolean haveOpened = !((Node) node).getNodeContainer().isCollapsed();
                                         if (haveOpened) {
                                             return true;
@@ -535,7 +530,8 @@ public class JobletUtil {
                 List<? extends INode> nodeList = pro.getGraphicalNodes();
                 for (INode node : nodeList) {
                     if (((Node) node).isJoblet() && jobletItem.getProperty() != null) {
-                        if (jobletItem.getProperty().getId().equals(node.getComponent().getProcess().getId())) {
+                        if (jobletItem.getProperty().getId().equals(node.getComponent().getProcess().getId())
+                                && jobletItem.getProperty().getVersion().equals(node.getComponent().getVersion())) {
                             boolean haveOpened = !((Node) node).getNodeContainer().isCollapsed();
                             if (haveOpened) {
                                 return true;
