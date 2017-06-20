@@ -122,6 +122,7 @@ import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.core.repository.model.ProxyRepositoryFactory;
 import org.talend.core.repository.utils.ConvertJobsUtil;
 import org.talend.core.repository.utils.XmiResourceManager;
+import org.talend.core.service.IScdComponentService;
 import org.talend.core.ui.IJobletProviderService;
 import org.talend.core.ui.ILastVersionChecker;
 import org.talend.core.ui.component.ComponentsFactoryProvider;
@@ -2574,6 +2575,11 @@ public class Process extends Element implements IProcess2, IGEFProcess, ILastVer
                     }
                 }
             }
+            if (GlobalServiceRegister.getDefault().isServiceRegistered(IScdComponentService.class)) {
+                IScdComponentService service = (IScdComponentService) GlobalServiceRegister.getDefault().getService(
+                        IScdComponentService.class);
+                service.updateOutputMetadata(nc, metadataTable);
+            }
         }
         List<IMetadataTable> oldComponentMetadataList = new ArrayList<IMetadataTable>(nc.getMetadataList());
         nc.setMetadataList(listMetaData);
@@ -3573,7 +3579,7 @@ public class Process extends Element implements IProcess2, IGEFProcess, ILastVer
 
         return matchingNodes;
     }
-    
+
     private List<INode> getRealGraphicalNodesFromVirtrualNodes(List<INode> generatingNodes) {
         Set<INode> set = new HashSet<INode>();
         if (generatingNodes != null) {
