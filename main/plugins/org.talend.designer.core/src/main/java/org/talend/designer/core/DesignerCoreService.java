@@ -754,10 +754,10 @@ public class DesignerCoreService implements IDesignerCoreService {
     }
 
     @Override
-    public int getDBConnectionLimit() {
+    public int getHBaseOrMaprDBScanLimit() {
         final IPreferenceStore preferenceStore = DesignerPlugin.getDefault().getPreferenceStore();
-        if (preferenceStore != null && preferenceStore.getBoolean(ITalendCorePrefConstants.DB_CONNECTION_LIMIT_ACTIVED)) {
-            return preferenceStore.getInt(ITalendCorePrefConstants.DB_CONNECTION_LIMIT);
+        if (preferenceStore != null) {
+            return preferenceStore.getInt(ITalendCorePrefConstants.HBASE_OR_MAPRDB_SCAN_LIMIT);
         }
         // disable
         return 0;
