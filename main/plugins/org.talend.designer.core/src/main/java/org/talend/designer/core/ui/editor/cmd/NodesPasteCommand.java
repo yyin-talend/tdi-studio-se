@@ -582,7 +582,6 @@ public class NodesPasteCommand extends Command {
                                     elementParameter.setRepositoryValueUsed(param.isRepositoryValueUsed());
                                 }
                             }
-                            ((ElementParameter) elementParameter).setTaggedValue(UpdatesConstants.CHANGED_BY_USER, true);
                         }
                     }
                 }

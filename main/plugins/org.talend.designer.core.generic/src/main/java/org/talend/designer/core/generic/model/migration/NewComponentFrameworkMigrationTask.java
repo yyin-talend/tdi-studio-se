@@ -95,10 +95,6 @@ public abstract class NewComponentFrameworkMigrationTask extends AbstractJobMigr
 					if (param instanceof GenericElementParameter) {
 						String paramName = param.getName();
 						NamedThing currNamedThing = ComponentsUtils.getGenericSchemaElement(compProperties, paramName);
-						if (currNamedThing instanceof Property) {
-							// Set this tag to indicate not to change the original value when do the migration.
-							((Property) currNamedThing).setTaggedValue(UpdatesConstants.CHANGED_BY_USER, true);
-						}
 						String oldParamName = props
 								.getProperty(currComponentName + IGenericConstants.EXP_SEPARATOR + paramName);
 						if (oldParamName != null && !(oldParamName = oldParamName.trim()).isEmpty()) {

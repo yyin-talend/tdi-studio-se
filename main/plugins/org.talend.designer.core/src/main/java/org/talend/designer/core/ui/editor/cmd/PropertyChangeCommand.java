@@ -222,10 +222,6 @@ public class PropertyChangeCommand extends Command {
             return;
         }
 
-        if (currentParam instanceof ElementParameter) {
-            ((ElementParameter) currentParam).setTaggedValue(UpdatesConstants.CHANGED_BY_USER, true);
-        }
-
         if (currentParam.isRepositoryValueUsed()) {
             if (currentParam.getFieldType() == EParameterFieldType.MEMO_SQL) {
                 Object queryStoreValue = elem.getPropertyValue(EParameterName.QUERYSTORE_TYPE.getName());

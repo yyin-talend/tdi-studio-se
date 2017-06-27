@@ -249,18 +249,6 @@ public class ComponentsUtilsTest {
         }
     }
 
-    @Test
-    public void testIsPropertyChangedByUser() {
-        TestProperties props = (TestProperties) new TestProperties("test").init(); //$NON-NLS-1$
-        assertFalse(ComponentsUtils.isPropertyChangedByUser(props.userId));
-
-        props.userId.setTaggedValue(UpdatesConstants.CHANGED_BY_USER, true);
-        assertTrue(ComponentsUtils.isPropertyChangedByUser(props.userId));
-
-        props.userId.setTaggedValue(UpdatesConstants.CHANGED_BY_USER, false);
-        assertFalse(ComponentsUtils.isPropertyChangedByUser(props.userId));
-    }
-
     private INode createSFTestNode() {
         IComponent component = ComponentsFactoryProvider.getInstance().get("tSalesforceConnection", "DI"); //$NON-NLS-1$ //$NON-NLS-2$
         INode node = new Node(component, new Process(new FakePropertyImpl()));
