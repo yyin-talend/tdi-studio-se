@@ -718,6 +718,12 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
             importPackages.add("org.talend.cloud"); //$NON-NLS-1$
         }
 
+        if (requireBundle != null && !requireBundle.isEmpty()) {
+            requireBundle += (", org.ops4j.pax.logging.pax-logging-api");
+        } else {
+            requireBundle = "org.ops4j.pax.logging.pax-logging-api";
+        }
+
 
         if (requireBundle != null) {
             analyzer.setProperty(Analyzer.REQUIRE_BUNDLE, requireBundle);
