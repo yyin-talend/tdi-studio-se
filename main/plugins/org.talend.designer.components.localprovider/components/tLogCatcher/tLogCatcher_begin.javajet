@@ -12,10 +12,10 @@
 	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 	INode node = (INode)codeGenArgument.getArgument();
 	String cid = node.getUniqueName();
-	boolean ignoreInternalErrors = ("true").equals(ElementParameterParser.getValue(node.getProcess(), "__IGNORE_LOG_CATCHER_INTERNAL_ERRORS__"));
+	boolean ignoreInternalErrors = "true".equalsIgnoreCase(ElementParameterParser.getValue(node, "__IGNORE_LOG_CATCHER_INTERNAL_ERRORS__"));
 
 %>
-	<%if(!ignoreInternalErrors){%>
+	<%if(ignoreInternalErrors){%>
 	try {
 	<%}%>
 	for (LogCatcherUtils.LogCatcherMessage lcm : <%=cid %>.getMessages()) {
