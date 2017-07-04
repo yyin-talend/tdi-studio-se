@@ -2862,7 +2862,15 @@
               id="org.talend.repository.model.migration.AddFailOnErrorOnTFileCopyTDI38441"
               name="Set FailOn property to true if copy directory else set to false"
               version="6.2.2">
- +        </projecttask>
+        </projecttask>
+        <projecttask
+              beforeLogon="false"
+              breaks="6.1.2"
+              class="org.talend.repository.model.migration.DecodeURIInTFileFetch"
+              id="org.talend.repository.model.migration.DecodeURIInTFileFetch"
+              name="Decode URI to save functionality of component correct"
+              version="6.2.3">
+        </projecttask>
    </extension>
 
    <extension
