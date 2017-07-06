@@ -1882,6 +1882,9 @@ public abstract class AbstractElementPropertySectionController implements Proper
         connParameters.setDbType(type);
 
         String driverName = getValueFromRepositoryName(elem, "DB_VERSION", basePropertyParameter); //$NON-NLS-1$
+        if (StringUtils.isBlank(driverName) && EDatabaseTypeName.MSSQL.getDisplayName().equals(connParameters.getDbType())) {
+            driverName = getValueFromRepositoryName(elem, "DRIVER", basePropertyParameter); //$NON-NLS-1$
+        }
         String dbVersionName = EDatabaseVersion4Drivers.getDbVersionName(type, driverName);
         if (EDatabaseTypeName.HIVE.getProduct().equalsIgnoreCase(type)) {
             if (EDatabaseVersion4Drivers.HIVE_EMBEDDED.getVersionValue().equals(
