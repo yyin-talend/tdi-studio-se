@@ -21,12 +21,9 @@ import java.util.Set;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.ImageData;
-import org.eclipse.swt.layout.FormAttachment;
-import org.eclipse.swt.layout.FormData;
-import org.eclipse.swt.layout.GridData;
-import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.talend.commons.runtime.model.components.IComponentConstants;
+import org.talend.commons.ui.swt.actions.ITreeContextualAction;
 import org.talend.components.api.properties.ComponentProperties;
 import org.talend.components.api.wizard.ComponentWizard;
 import org.talend.components.api.wizard.ComponentWizardDefinition;
@@ -36,28 +33,23 @@ import org.talend.core.model.metadata.builder.connection.Connection;
 import org.talend.core.model.metadata.builder.connection.MetadataTable;
 import org.talend.core.model.process.EComponentCategory;
 import org.talend.core.model.process.Element;
-import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.INode;
-import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.model.properties.Item;
-import org.talend.core.model.properties.Property;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.runtime.services.IGenericWizardService;
 import org.talend.daikon.properties.presentation.Form;
 import org.talend.designer.core.generic.model.GenericElementParameter;
 import org.talend.designer.core.generic.utils.ComponentsUtils;
 import org.talend.designer.core.generic.utils.SchemaUtils;
-import org.talend.designer.core.model.FakeElement;
 import org.talend.designer.core.model.components.ElementParameter;
+import org.talend.repository.generic.action.GenericAction;
 import org.talend.repository.generic.internal.IGenericWizardInternalService;
 import org.talend.repository.generic.internal.service.GenericWizardInternalService;
 import org.talend.repository.generic.model.genericMetadata.GenericConnection;
-import org.talend.repository.generic.model.genericMetadata.GenericMetadataFactory;
 import org.talend.repository.generic.model.genericMetadata.GenericMetadataPackage;
 import org.talend.repository.generic.model.genericMetadata.SubContainer;
 import org.talend.repository.generic.ui.DynamicComposite;
-import org.talend.repository.generic.ui.context.ContextComposite;
-import org.talend.repository.generic.ui.context.handler.GenericContextHandler;
+import org.talend.repository.generic.util.GenericConnectionUtil;
 import org.talend.repository.generic.util.RepTypeMappingManager;
 import org.talend.repository.model.IRepositoryNode.ENodeType;
 import org.talend.repository.model.RepositoryNode;
@@ -261,6 +253,27 @@ public class GenericWizardService implements IGenericWizardService {
             return compProperties;
         }
         return null;
+    }
+
+    @Override
+    public ITreeContextualAction getDefaultAction(RepositoryNode node) {
+        if (node == null) {
+            return null;
+        }
+        ITreeContextualAction defaultAction = null;
+        List<ComponentWizard> wizards = GenericConnectionUtil.getAllWizards(node);
+        for (ComponentWizard wizard : wizards) {
+            ComponentWizardDefinition wizardDefinition = wizard.getDefinition();
+            if (wizardDefinition.isTopLevel()) {
+                continue;
+            }
+            String wizardName = wizardDefinition.getName();
+            if (wizardName.toLowerCase().contains("edit")) { //$NON-NLS-1$
+                defaultAction = new GenericAction(wizard);
+                break;
+            }
+        }
+        return defaultAction;
     }
 
 }
