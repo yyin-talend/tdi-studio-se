@@ -2875,6 +2875,14 @@
               name="Set FailOn property to true if copy directory else set to false"
               version="6.3.1">
          </projecttask>
+         <projecttask
+              beforeLogon="false"
+              breaks="6.3.1"
+              class="org.talend.repository.model.migration.DecodeURIInTFileFetch"
+              id="org.talend.repository.model.migration.DecodeURIInTFileFetch"
+              name="Decode URI to save functionality of component correct"
+              version="6.3.2">
+        </projecttask>
    </extension>
 
    <extension
