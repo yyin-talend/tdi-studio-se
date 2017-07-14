@@ -207,6 +207,9 @@ public class JavaProcessUtil {
         if (hadoopClusterService == null) {
             return null;
         }
+        if (isUseExistingConnection(node)) {
+            return null;
+        }
         IElementParameter propertyElementParameter = node.getElementParameterFromField(EParameterFieldType.PROPERTY_TYPE);
         if (propertyElementParameter == null) {
             return null;
