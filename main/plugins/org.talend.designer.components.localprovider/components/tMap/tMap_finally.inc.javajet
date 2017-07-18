@@ -1,0 +1,93 @@
+<%@ jet 
+	imports="
+	java.util.ArrayList
+	java.util.List
+	java.util.Map
+	java.util.HashMap
+	org.talend.core.model.metadata.IMetadataTable
+	org.talend.core.model.metadata.IMetadataColumn
+	org.talend.core.model.metadata.MetadataTalendType
+	org.talend.core.model.metadata.types.JavaTypesManager
+	org.talend.core.model.metadata.types.JavaType
+	org.talend.designer.mapper.MapperMain
+	org.talend.designer.codegen.config.CodeGeneratorArgument
+	org.talend.designer.mapper.MapperComponent
+	org.talend.designer.mapper.external.data.ExternalMapperData 
+	org.talend.designer.mapper.external.data.ExternalMapperTable
+	org.talend.designer.mapper.external.data.ExternalMapperTableEntry
+	org.talend.core.model.process.IConnection
+	org.talend.designer.mapper.language.ILanguage
+	org.talend.designer.mapper.language.generation.GenerationManagerFactory
+	org.talend.designer.mapper.language.generation.JavaGenerationManager
+	org.talend.designer.mapper.language.LanguageProvider
+    org.talend.core.model.process.ElementParameterParser
+	org.talend.core.model.process.EConnectionType
+	org.talend.core.model.process.INode
+	org.talend.designer.components.lookup.common.ICommonLookup.MATCHING_MODE
+	org.talend.core.model.utils.TalendTextUtils
+	" 
+	skeleton="tMap_commons.skeleton"
+%>
+
+<%
+	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+	MapperComponent node = (MapperComponent) codeGenArgument.getArgument();
+	String componentName = node.getUniqueName();
+	
+    ExternalMapperData data = (ExternalMapperData) node.getExternalData();
+    
+	boolean isLog4jEnabled = ("true").equals(ElementParameterParser.getValue(node.getProcess(), "__LOG4J_ACTIVATE__"));
+	
+    boolean isVirtualIn = componentName.endsWith("TMAP_IN");
+    boolean isVirtualOut = componentName.endsWith("TMAP_OUT");
+    
+    String uniqueNameComponent = componentName.replaceAll("_TMAP_IN", "");
+    uniqueNameComponent = uniqueNameComponent.replaceAll("_TMAP_OUT", "");
+    
+    if(isVirtualIn) {
+    	return stringBuffer.toString();
+    }
+    
+    List<IConnection> inputConnections = (List<IConnection>) node.getIncomingConnections();
+    HashMap<String, IConnection> hNameToConnection = new HashMap<String, IConnection>();
+    for (IConnection connection : inputConnections) {
+        hNameToConnection.put(connection.getName(), connection);
+    }
+
+	List<ExternalMapperTable> inputTablesWithInvalid = new ArrayList<ExternalMapperTable>(data.getInputTables());
+
+    List<ExternalMapperTable> inputTables = new ArrayList<ExternalMapperTable>();
+    for(int i=0; i < inputTablesWithInvalid.size(); i++) {
+    	ExternalMapperTable currentLoopTable = inputTablesWithInvalid.get(i);
+    	if(hNameToConnection.get(currentLoopTable.getName()) != null) {
+    		inputTables.add(currentLoopTable);
+    	}
+    }
+
+    int lstSizeInputs = inputTables.size();
+    for (int i = 1; i < lstSizeInputs; i++) {
+        ExternalMapperTable inputTable = (ExternalMapperTable) inputTables.get(i);
+        String tableName = inputTable.getName();
+        
+        List<ExternalMapperTableEntry> tableEntries = inputTable.getMetadataTableEntries();
+        
+        if (tableEntries == null) {
+            continue;
+        }
+        
+        if(inputTable.isPersistent()) {
+        %>
+        Object lookupManager_<%=tableName%> = globalMap.get("tHash_Lookup_<%=tableName%>");
+		if(lookupManager_<%=tableName%>!=null) {
+			((org.talend.designer.components.lookup.persistent.IPersistentLookupManager)tHash_Lookup_<%=tableName%>).endGet();
+		}
+		
+		Object fsi_<%=uniqueNameComponent%>_<%=i%> = resourceMap.get("fsi_<%=uniqueNameComponent%>_<%=i%>");
+		if(fsi_<%=uniqueNameComponent%>_<%=i%>!=null) {
+			((org.talend.designer.components.lookup.persistent.PersistentRowSorterIterator)fsi_<%=uniqueNameComponent%>_<%=i%>).endPut();
+			((org.talend.designer.components.lookup.persistent.PersistentRowSorterIterator)fsi_<%=uniqueNameComponent%>_<%=i%>).endGet();
+		}
+        <%
+        }
+    }
+    %>

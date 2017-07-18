@@ -1,0 +1,45 @@
+<%@ jet 
+	imports="
+		org.talend.core.model.process.INode
+		org.talend.core.model.process.IConnection
+		org.talend.designer.codegen.config.CodeGeneratorArgument
+		org.talend.core.model.process.ElementParameterParser
+		org.talend.core.model.process.IHashableInputConnections
+		org.talend.core.model.process.IHashConfiguration
+		org.talend.core.model.process.IDataConnection
+		java.util.List
+	"
+%>
+
+<%
+	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+	INode node = (INode)codeGenArgument.getArgument();
+	String cid = node.getUniqueName();
+	List<IConnection> connections = (List<IConnection>) node.getIncomingConnections();
+
+	if (connections != null && connections.size() > 0) {
+        for (IConnection connection : connections) {
+        	String connectionName = connection.getName();
+        	
+			INode validTarget = ((IDataConnection) connection).getLinkNodeForHash();
+			if(validTarget != null) {
+				IHashConfiguration hashConfiguration = null;
+				boolean bSortOnDisk = "true".equals(ElementParameterParser.getValue(node, "__SORT_ON_DISK__")); 
+				
+			    if (validTarget instanceof IHashableInputConnections){
+					IHashableInputConnections target = (IHashableInputConnections) validTarget;
+					hashConfiguration = target.getHashConfiguration(connection.getName());
+				}
+				
+				if (hashConfiguration != null && hashConfiguration.isPersistent() || bSortOnDisk) {
+%>
+				Object lookupManager_<%=connectionName%> = globalMap.get("tHash_Lookup_<%=connectionName%>");
+				if(lookupManager_<%=connectionName%>!=null) {
+					((org.talend.designer.components.lookup.persistent.IPersistentLookupManager)lookupManager_<%=connectionName%>).endPut();
+				}
+<%
+				}
+			}
+		}
+	}
+%>

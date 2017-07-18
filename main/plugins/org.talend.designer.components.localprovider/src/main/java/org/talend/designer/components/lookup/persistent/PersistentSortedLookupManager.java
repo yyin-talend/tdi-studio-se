@@ -338,16 +338,14 @@ public class PersistentSortedLookupManager<B extends IPersistableComparableLooku
         return removePropertyName;
     }
 
-    public void endPut() throws IOException {
-
-        if (bufferBeanIndex > 0) {
-            writeBuffer();
+    public synchronized void endPut() throws IOException {
+        if (buffer != null) {
+            if (bufferBeanIndex > 0) {
+                writeBuffer();
+            }
         }
 
-        // Arrays.fill(buffer, null);
-
         buffer = null;
-
     }
 
     private void writeBuffer() throws IOException {
@@ -355,10 +353,8 @@ public class PersistentSortedLookupManager<B extends IPersistableComparableLooku
             Arrays.sort(buffer, 0, bufferBeanIndex);
         }
         File keysDataFile = new File(buildKeysFilePath(fileIndex));
-        keysDataFile.deleteOnExit();
-        
+
         File valuesDataFile = new File(buildValuesFilePath(fileIndex));
-        valuesDataFile.deleteOnExit();
 
         BufferedOutputStream keysBufferedOutputStream = new BufferedOutputStream(new FileOutputStream(keysDataFile));
         ObjectOutputStream keysDataOutputStream = null;
@@ -581,11 +577,14 @@ public class PersistentSortedLookupManager<B extends IPersistableComparableLooku
         }
     }
 
-    public void endGet() throws IOException {
-        for (ILookupManagerUnit<B> orderedBeanLookup : lookupList) {
-            orderedBeanLookup.close();
+    public synchronized void endGet() throws IOException {
+        if (lookupList != null) {
+            for (ILookupManagerUnit<B> orderedBeanLookup : lookupList) {
+                orderedBeanLookup.close();
+            }
+
+            clear();
         }
-        clear();
         lookupList = null;
     }
 

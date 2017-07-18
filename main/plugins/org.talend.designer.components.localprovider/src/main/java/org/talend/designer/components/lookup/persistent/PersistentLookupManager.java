@@ -96,16 +96,8 @@ public class PersistentLookupManager<B extends IPersistableRow<B>> implements IP
     }
 
     public void initPut() throws IOException {
-
-        // objectOutStream = new ObjectOutputStream(new BufferedOutputStream(new
-        // FileOutputStream(buildDataFilePath())));
-
-        File file = new File(buildDataFilePath());
-        file.deleteOnExit();
-
-        objectOutStream = new JBossObjectOutputStream(new BufferedOutputStream(new FileOutputStream(file)));
+        objectOutStream = new JBossObjectOutputStream(new BufferedOutputStream(new FileOutputStream(buildDataFilePath())));
         this.dataInstance = this.rowCreator.createRowInstance();
-
     }
 
     private String buildDataFilePath() {
@@ -116,10 +108,12 @@ public class PersistentLookupManager<B extends IPersistableRow<B>> implements IP
         bean.writeData(objectOutStream);
     }
 
-    public void endPut() throws IOException {
-
-        objectOutStream.close();
-
+    public synchronized void endPut() throws IOException {
+        if(objectOutStream!=null) {
+            objectOutStream.close();
+        }
+        
+        objectOutStream = null;
     }
 
     public void initGet() throws IOException {
@@ -162,14 +156,17 @@ public class PersistentLookupManager<B extends IPersistableRow<B>> implements IP
         return dataInstance;
     }
 
-    public void endGet() throws IOException {
+    public synchronized void endGet() throws IOException {
 
         if (this.objectInStream != null) {
             this.objectInStream.close();
         }
+        this.objectInStream = null;
+        
         if (this.bufferedInStream != null) {
             this.bufferedInStream.close();
         }
+        this.bufferedInStream = null;
 
         File file = new File(buildDataFilePath());
         file.delete();

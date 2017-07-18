@@ -933,8 +933,8 @@ for (int iInputTable = 0; iInputTable < sizeInputTables - 1; iInputTable++) { //
 		};
 	
 	fsi_<%=uniqueNameComponent%>_<%=currentJoinedTableIndex%>.initPut();
-
-		
+	
+	resourceMap.put("fsi_<%=uniqueNameComponent%>_<%=currentJoinedTableIndex%>", fsi_<%=uniqueNameComponent%>_<%=currentJoinedTableIndex%>);	
 		
 <%
 	} // T_TM_B_103

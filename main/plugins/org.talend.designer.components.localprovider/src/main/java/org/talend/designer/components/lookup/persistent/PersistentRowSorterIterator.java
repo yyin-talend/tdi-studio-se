@@ -239,9 +239,11 @@ public abstract class PersistentRowSorterIterator<V extends IPersistableRow> imp
         beansCount++;
     }
 
-    public void endPut() throws IOException {
-        if (bufferBeanIndex > INIT_BUFFER_INDEX) {
-            writeBuffer();
+    public synchronized void endPut() throws IOException {
+        if(buffer!=null) {
+            if (bufferBeanIndex > INIT_BUFFER_INDEX) {
+                writeBuffer();
+            }
         }
         buffer = null;
     }
@@ -273,8 +275,6 @@ public abstract class PersistentRowSorterIterator<V extends IPersistableRow> imp
         // System.out.println("Writing ordered buffer in file...");
 
         File file = new File(buildFilePath());
-        
-        file.deleteOnExit();
         
         count++;
         // ObjectOutputStream rw = new ObjectOutputStream(new BufferedOutputStream(new FileOutputStream(file)));
@@ -454,10 +454,12 @@ public abstract class PersistentRowSorterIterator<V extends IPersistableRow> imp
         scArray = null;
 
         // delete files
-        for (int i = 0; i < files.size(); i++) {
-            files.get(i).delete();
+        if(files!=null) {
+            for (int i = 0; i < files.size(); i++) {
+                files.get(i).delete();
+            }
         }
-
+        files = null;
     }
 
     public V getNextFreeRow() {
@@ -481,7 +483,7 @@ public abstract class PersistentRowSorterIterator<V extends IPersistableRow> imp
      * 
      * @see org.talend.designer.components.thash.io.IMapHashFile#endGet(java.lang.String)
      */
-    public void endGet() {
+    public synchronized void endGet() {
         afterLoopFind();
     }
 
