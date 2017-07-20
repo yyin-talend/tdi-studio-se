@@ -2916,14 +2916,6 @@
               name="Set the Spark Dataframe Alphabatical sort order in tHiveOutput and tFileOutputParquet"
               version="6.1.0">
         </projecttask>
-        <projecttask
-              beforeLogon="false"
-              breaks="6.4.1"
-              class="org.talend.repository.model.migration.DecodeURIInTFileFetch"
-              id="org.talend.repository.model.migration.DecodeURIInTFileFetch"
-              name="Decode URI to save functionality of component correct"
-              version="6.4.2">
-        </projecttask>
    </extension>
 
    <extension
