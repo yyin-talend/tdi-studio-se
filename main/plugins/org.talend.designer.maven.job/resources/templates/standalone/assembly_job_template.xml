@@ -196,6 +196,7 @@
 	<moduleSets>
 		<moduleSet>
 			<!-- for routines or talend libs -->
+			<includeSubModules>false</includeSubModules>
 			<useAllReactorProjects>true</useAllReactorProjects>
 			<includes>
 				<include>${routines.binaries.includes.set}</include>
@@ -210,6 +211,7 @@
 		</moduleSet>
 		<moduleSet>
 			<!-- for pigudfs or talend libs -->
+			<includeSubModules>false</includeSubModules>
 			<useAllReactorProjects>true</useAllReactorProjects>
 			<includes>
 				<include>${pigudfs.binaries.includes.set}</include>
