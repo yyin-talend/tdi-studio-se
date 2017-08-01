@@ -14,7 +14,9 @@ package org.talend.designer.mapper.ui.automap;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map.Entry;
 
+import org.apache.commons.text.similarity.LevenshteinDistance;
 import org.talend.designer.abstractmap.model.tableentry.IColumnEntry;
 import org.talend.designer.mapper.language.ILanguage;
 import org.talend.designer.mapper.language.LanguageProvider;
@@ -22,6 +24,7 @@ import org.talend.designer.mapper.managers.MapperManager;
 import org.talend.designer.mapper.model.table.InputTable;
 import org.talend.designer.mapper.model.table.OutputTable;
 import org.talend.designer.mapper.ui.visualmap.table.DataMapTableView;
+
 
 /**
  * DOC amaumont class global comment. Detailled comment <br/>
@@ -61,32 +64,40 @@ public class AutoMapper {
         for (OutputTable outputTable : outputTables) {
 
             List<IColumnEntry> outputEntries = outputTable.getColumnEntries();
-            boolean mapFound = false;
             for (IColumnEntry outputEntry : outputEntries) {
-
-                mapFound = false;
 
                 if (mapperManager.checkEntryHasEmptyExpression(outputEntry)) {
 
-                    String outputColumnName = outputEntry.getName();
-
+                    String outputColumnName = outputEntry.getName().toLowerCase();
+                    HashMap<IColumnEntry, Double> map = new HashMap<IColumnEntry, Double>();
                     for (InputTable inputTable : inputTables) {
 
                         List<IColumnEntry> inputColumnEntries = inputTable.getColumnEntries();
                         for (IColumnEntry inputEntry : inputColumnEntries) {
-                            if (inputEntry.getName().equalsIgnoreCase(outputColumnName)) {
-                                outputEntry.setExpression(currentLanguage.getLocation(inputTable.getName(), inputEntry
-                                        .getName()));
-                                mapFound = true;
-                                break;
+
+                            LevenshteinDistance ld = new LevenshteinDistance();
+                            String inputStr = inputEntry.getName().toLowerCase();
+                            double LevenshteinDistance = ld.apply(outputColumnName, inputStr);
+                            double maxLength = (inputStr.length() > outputColumnName.length()) ? inputStr.length()
+                                    : outputColumnName.length();
+                            double LevenshteinScore = 0.0;
+
+                            if (inputStr.contains(outputColumnName) || outputColumnName.contains(inputStr)) {
+                                LevenshteinScore = (maxLength - LevenshteinDistance + 1) / (maxLength + 1);
+                            } else {
+                                LevenshteinScore = 1 - (LevenshteinDistance / maxLength);
                             }
-                        }
-                        if (mapFound) {
-                            break;
-                        }
 
+                            map.put(inputEntry, LevenshteinScore);
+                            inputEntry.getParent();
+
+                        }
                     }
-
+                    IColumnEntry bestEntry = getMaxStr(map);
+                    if (map.get(bestEntry) < 0.30) {
+                        continue;
+                    }
+                    outputEntry.setExpression(currentLanguage.getLocation(bestEntry.getParent().getName(), bestEntry.getName()));
                 }
 
             }
@@ -103,6 +114,22 @@ public class AutoMapper {
             mapperManager.getProblemsManager().checkProblemsForAllEntries(view, true);
         }
         mapperManager.getUiManager().refreshBackground(true, false);
+
+    }
+
+    public static IColumnEntry getMaxStr(HashMap<IColumnEntry, Double> map) {
+        Double max = 0.0;
+        IColumnEntry result = null;
+
+        for (Entry<IColumnEntry, Double> entry : map.entrySet()) {
+            if (entry.getValue() > max) {
+                result = entry.getKey();
+                if (result != null)
+                    max = entry.getValue();
+            }
+
+        }
+        return result;
 
     }
 

@@ -3,7 +3,8 @@ Bundle-ManifestVersion: 2
 Bundle-Name: %pluginName
 Bundle-SymbolicName: org.talend.designer.mapper;singleton:=true
 Bundle-Version: 6.5.0.qualifier
-Bundle-ClassPath: .
+Bundle-ClassPath: .,
+ lib/commons-text-1.1.jar
 Require-Bundle: org.apache.log4j,
  org.eclipse.core.runtime,
  org.eclipse.emf.ecore;visibility:=reexport,
