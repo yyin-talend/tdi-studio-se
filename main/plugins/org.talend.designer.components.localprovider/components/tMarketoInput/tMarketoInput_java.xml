@@ -38,7 +38,7 @@
   <PARAMETERS>
 
   	<PARAMETER NAME="ENDPOINT" FIELD="TEXT" NUM_ROW="10" REQUIRED="true">
-		<DEFAULT IF="(USE_SOAP_API == 'true')">"https://123-ABC-456.mktoapi.com/soap/mktows/2_7"</DEFAULT>
+		<DEFAULT IF="(USE_SOAP_API == 'true')">"https://123-ABC-456.mktoapi.com/soap/mktows/3_1"</DEFAULT>
 		<DEFAULT IF="(USE_SOAP_API == 'false')">"https://123-ABC-456.mktorest.com/rest"</DEFAULT>
 	</PARAMETER>
 	<PARAMETER NAME="SECRET_KEY" FIELD="PASSWORD" NUM_ROW="20" REQUIRED="true">
@@ -67,7 +67,8 @@
 			<COLUMN KEY="false" LENGTH="255" NAME="ForeignSysType" TYPE="id_String" />
 		</TABLE>
 		<TABLE IF="(USE_SOAP_API == 'true') AND (OPERATION=='getLeadChanges')">
-			<COLUMN KEY="true" LENGTH="255" NAME="Id" TYPE="id_Integer" />
+			<COLUMN KEY="false" LENGTH="255" NAME="Id" TYPE="id_Integer" />
+            <COLUMN KEY="true"  LENGTH="255" NAME="marketoGUID" TYPE="id_String" />
 			<COLUMN KEY="false" LENGTH="255" NAME="ActivityDateTime" TYPE="id_Date" PATTERN="&quot;yyyy-MM-dd&apos;T&apos;HH:mm:ss&apos;.000Z&apos;&quot;" />
 			<COLUMN KEY="false" LENGTH="255" NAME="ActivityType" TYPE="id_String" />
 			<COLUMN KEY="false" LENGTH="255" NAME="MktgAssetName" TYPE="id_String" />
@@ -75,7 +76,8 @@
 			<COLUMN KEY="false" LENGTH="255" NAME="Campaign" TYPE="id_String" />
 		</TABLE>
 		<TABLE IF="(USE_SOAP_API == 'true') AND (OPERATION=='getLeadActivity')">
-			<COLUMN KEY="true" LENGTH="255" NAME="Id" TYPE="id_Integer" />
+			<COLUMN KEY="false" LENGTH="255" NAME="Id" TYPE="id_Integer" />
+            <COLUMN KEY="true"  LENGTH="255" NAME="marketoGUID" TYPE="id_String" />
 			<COLUMN KEY="false" LENGTH="255" NAME="ActivityDateTime" TYPE="id_Date" PATTERN="&quot;yyyy-MM-dd&apos;T&apos;HH:mm:ss&apos;.000Z&apos;&quot;" />
 			<COLUMN KEY="false" LENGTH="255" NAME="ActivityType" TYPE="id_String" />
 			<COLUMN KEY="false" LENGTH="255" NAME="MktgAssetName" TYPE="id_String" />
@@ -95,7 +97,8 @@
 			<COLUMN KEY="false" LENGTH="255" NAME="updatedAt" TYPE="id_Date" PATTERN="&quot;yyyy-MM-dd&apos;T&apos;HH:mm:ssZ&quot;"/>
 		</TABLE>
 		<TABLE IF="(USE_SOAP_API == 'false') AND (OPERATION=='getLeadChanges')">
-			<COLUMN KEY="true" LENGTH="255" NAME="id" TYPE="id_Long" />
+			<COLUMN KEY="false" LENGTH="255" NAME="id" TYPE="id_Long" />
+            <COLUMN KEY="true"  LENGTH="255" NAME="marketoGUID" TYPE="id_String" />
 			<COLUMN KEY="false" LENGTH="255" NAME="leadId" TYPE="id_Integer" />
 			<COLUMN KEY="false" LENGTH="255" NAME="activityDate" TYPE="id_Date" PATTERN="&quot;yyyy-MM-dd&apos;T&apos;HH:mm:ssZ&quot;" />
 			<COLUMN KEY="false" LENGTH="255" NAME="activityTypeId" TYPE="id_Integer" />
@@ -103,7 +106,8 @@
 			<COLUMN KEY="false" LENGTH="255" NAME="fields" TYPE="id_String" />
 		</TABLE>
 		<TABLE IF="(USE_SOAP_API == 'false') AND (OPERATION=='getLeadActivity')">
-			<COLUMN KEY="true" LENGTH="255" NAME="id" TYPE="id_Long" />
+			<COLUMN KEY="false" LENGTH="255" NAME="id" TYPE="id_Long" />
+            <COLUMN KEY="true"  LENGTH="255" NAME="marketoGUID" TYPE="id_String" />
 			<COLUMN KEY="false" LENGTH="255" NAME="leadId" TYPE="id_Integer" />
 			<COLUMN KEY="false" LENGTH="255" NAME="activityDate" TYPE="id_Date" PATTERN="&quot;yyyy-MM-dd&apos;T&apos;HH:mm:ssZ&quot;" />
 			<COLUMN KEY="false" LENGTH="255" NAME="activityTypeId" TYPE="id_Integer" />
@@ -567,7 +571,7 @@
 		<IMPORT NAME="SOAP-JAF" MODULE="activation.jar" MVN="mvn:org.talend.libraries/activation/6.0.0"  UrlPath="platform:/plugin/org.talend.libraries.apache.axis2/lib/activation.jar" REQUIRED_IF="(USE_SOAP_API == 'true')" />
 		<IMPORT NAME="XML-DOM4J" MODULE="dom4j-1.6.1.jar" MVN="mvn:org.talend.libraries/dom4j-1.6.1/6.0.0"  UrlPath="platform:/plugin/org.talend.libraries.dom4j-jaxen/lib/dom4j-1.6.1.jar" REQUIRED_IF="(USE_SOAP_API == 'true')" BundleID="" />
 		<IMPORT NAME="XML-XPATH-JAXEN" MODULE="jaxen-1.1.1.jar" MVN="mvn:org.talend.libraries/jaxen-1.1.1/6.0.0"  UrlPath="platform:/plugin/org.talend.libraries.dom4j-jaxen/lib/jaxen-1.1.1.jar" REQUIRED_IF="(USE_SOAP_API == 'true')" BundleID="" />
-		<IMPORT NAME="TALEND-MARKETO" MODULE="talend-marketo-2.7.jar" MVN="mvn:org.talend.libraries/talend-marketo-2.7/6.0.0"  REQUIRED_IF="(USE_SOAP_API == 'true')" />
+		<IMPORT NAME="TALEND-MARKETO" MODULE="talend-marketo-3.1.jar" MVN="mvn:org.talend.libraries/talend-marketo-3.1/6.0.0"  REQUIRED_IF="(USE_SOAP_API == 'true')" />
 
 		<!-- Rest API -->
 		<IMPORT NAME="CXF-CORE" MODULE="cxf-core-3.1.4.jar" MVN="mvn:org.talend.libraries/cxf-core-3.1.4/6.1.0" UrlPath="platform:/plugin/org.talend.libraries.apache.cxf/lib/cxf-core-3.1.4.jar" REQUIRED_IF="(USE_REST_API == 'true')" BundleID="" />
@@ -580,7 +584,7 @@
 		<IMPORT NAME="XMLSCHEMA-CORE" MODULE="xmlschema-core-2.2.1.jar" MVN="mvn:org.talend.libraries/xmlschema-core-2.2.1/6.0.0" UrlPath="platform:/plugin/org.talend.libraries.apache.cxf/lib/xmlschema-core-2.2.1.jar" REQUIRED_IF="(USE_REST_API == 'true')"/>
 		<IMPORT NAME="WOODSTOX-CORE-ASL" MODULE="woodstox-core-asl-4.4.1.jar" MVN="mvn:org.talend.libraries/woodstox-core-asl-4.4.1/6.0.0" UrlPath="platform:/plugin/org.talend.libraries.apache.cxf/lib/woodstox-core-asl-4.4.1.jar" REQUIRED_IF="(USE_REST_API == 'true')"/>
 		<IMPORT NAME="GSON" MODULE="gson-2.3.1.jar" MVN="mvn:org.talend.libraries/gson-2.3.1/6.1.0" UrlPath="platform:/plugin/org.talend.libraries.apache.google/lib/gson-2.3.1.jar" REQUIRED_IF="(USE_REST_API == 'true')"/>
-		<IMPORT NAME="TALEND-MARKETO-REST" MODULE="talend-marketo-rest-2.1-20161125.jar" MVN="mvn:org.talend.libraries/talend-marketo-rest-2.1-20161125/6.2.1"  REQUIRED_IF="(USE_REST_API == 'true')" />
+		<IMPORT NAME="TALEND-MARKETO-REST" MODULE="talend-marketo-rest-2.2-20170801.jar" MVN="mvn:org.talend.libraries/talend-marketo-rest-2.2-20170801/6.2.1" REQUIRED_IF="(USE_REST_API == 'true')" />
 
      </IMPORTS>
   </CODEGENERATION>
