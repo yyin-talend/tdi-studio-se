@@ -13,8 +13,10 @@
 package org.talend.designer.mapper.ui.automap;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map.Entry;
+import java.util.Set;
 
 import org.apache.commons.text.similarity.LevenshteinDistance;
 import org.talend.designer.abstractmap.model.tableentry.IColumnEntry;
@@ -69,12 +71,15 @@ public class AutoMapper {
                 if (mapperManager.checkEntryHasEmptyExpression(outputEntry)) {
 
                     String outputColumnName = outputEntry.getName().toLowerCase();
-                    HashMap<IColumnEntry, Double> map = new HashMap<IColumnEntry, Double>();
+                    String jaccardOutput = AutoMapper.token(outputEntry.getName());
+
+                    HashMap<IColumnEntry, Double> levenshteinMap = new HashMap<IColumnEntry, Double>();
+                    HashMap<IColumnEntry, Double> jaccardMap = new HashMap<IColumnEntry, Double>();
                     for (InputTable inputTable : inputTables) {
 
                         List<IColumnEntry> inputColumnEntries = inputTable.getColumnEntries();
                         for (IColumnEntry inputEntry : inputColumnEntries) {
-
+                            // Levenshtein
                             LevenshteinDistance ld = new LevenshteinDistance();
                             String inputStr = inputEntry.getName().toLowerCase();
                             double LevenshteinDistance = ld.apply(outputColumnName, inputStr);
@@ -88,16 +93,29 @@ public class AutoMapper {
                                 LevenshteinScore = 1 - (LevenshteinDistance / maxLength);
                             }
 
-                            map.put(inputEntry, LevenshteinScore);
+                            // Jaccard
+                            String jaccardIutput = AutoMapper.token(inputEntry.getName());
+                            double JaccardScore = AutoMapper.JaccardCompare(jaccardIutput, jaccardOutput);
+
+                            levenshteinMap.put(inputEntry, LevenshteinScore);
+                            jaccardMap.put(inputEntry, JaccardScore);
                             inputEntry.getParent();
 
                         }
                     }
-                    IColumnEntry bestEntry = getMaxStr(map);
-                    if (map.get(bestEntry) < 0.30) {
+                    // IColumnEntry bestEntry = getMaxStr(levenshteinMap);
+                    // if (levenshteinMap.get(bestEntry) < 0.30) {
+                    // continue;
+                    // }
+
+                    IColumnEntry bestEntry = getMaxStr(jaccardMap);
+                    if (bestEntry == null) {
                         continue;
+                    } else {
+                        outputEntry
+                                .setExpression(currentLanguage.getLocation(bestEntry.getParent().getName(), bestEntry.getName()));
                     }
-                    outputEntry.setExpression(currentLanguage.getLocation(bestEntry.getParent().getName(), bestEntry.getName()));
+
                 }
 
             }
@@ -115,6 +133,51 @@ public class AutoMapper {
         }
         mapperManager.getUiManager().refreshBackground(true, false);
 
+    }
+
+    private static double JaccardCompare(String res, String res1) {
+        String[] left = res.split("\\s+");
+        String[] right = res1.split("\\s+");
+        int leftLength = left.length;
+        int rightLength = right.length;
+        Set<String> unionSet = new HashSet<String>();
+        boolean unionFilled = false;
+        double intersection = 0;
+
+        if (leftLength == 0 || rightLength == 0) {
+            return 0d;
+        }
+
+        for (int leftIndex = 0; leftIndex < leftLength; leftIndex++) {
+            unionSet.add(left[leftIndex]);
+            for (int rightIndex = 0; rightIndex < rightLength; rightIndex++) {
+                if (!unionFilled) {
+                    unionSet.add(right[rightIndex]);
+                }
+                if (left[leftIndex].equals(right[rightIndex])) {
+                    int wordLength = left[leftIndex].length();
+                    if (wordLength > 1) {
+                        double weight = Math.log(wordLength) / Math.log(2);
+                        intersection = intersection + weight;
+                    } else {
+                        intersection++;
+                    }
+                }
+            }
+            unionFilled = true;
+        }
+
+        return intersection / Double.valueOf(unionSet.size());
+    }
+
+    private static String token(String outputEntry) {
+
+        String str = outputEntry.replaceAll(
+                String.format("%s|%s|%s", "(?<=[A-Z])(?=[A-Z][a-z])", "(?<=[^A-Z])(?=[A-Z])", "(?<=[A-Za-z])(?=[^A-Za-z])"), " ");
+        str = str.replaceAll("_", "");
+        str = str.replaceAll(" +", " ").toLowerCase();
+
+        return str;
     }
 
     public static IColumnEntry getMaxStr(HashMap<IColumnEntry, Double> map) {
