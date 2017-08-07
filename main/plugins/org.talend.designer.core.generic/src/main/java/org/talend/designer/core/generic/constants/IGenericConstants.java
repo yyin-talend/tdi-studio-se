@@ -66,5 +66,6 @@ public interface IGenericConstants {
      */
     public static final String LINE_SEPARATOR_REPLACED_TO = "LINE_SEPARATOR_REPLACED_TO";//$NON-NLS-1$
 
+    public static final String DYNAMIC_PROPERTY_VALUE = "DYNAMIC_PROPERTY_VALUE"; //$NON-NLS-1$
 
 }
