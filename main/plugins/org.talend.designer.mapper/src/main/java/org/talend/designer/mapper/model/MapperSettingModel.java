@@ -30,6 +30,7 @@ public class MapperSettingModel implements Cloneable {
 
     private String rowBufferSize;
 
+
     /**
      * @return the MapReduce lookup tables should be precalculated and distributed across nodes in the cluster.
      */

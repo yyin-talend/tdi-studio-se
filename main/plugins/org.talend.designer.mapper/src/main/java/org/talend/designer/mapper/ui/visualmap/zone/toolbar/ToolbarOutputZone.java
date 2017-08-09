@@ -14,14 +14,18 @@ package org.talend.designer.mapper.ui.visualmap.zone.toolbar;
 
 import java.util.List;
 
+import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.ToolItem;
 import org.talend.commons.ui.runtime.image.EImage;
+import org.talend.core.prefs.ITalendCorePrefConstants;
+import org.talend.core.ui.CoreUIPlugin;
 import org.talend.designer.mapper.i18n.Messages;
 import org.talend.designer.mapper.managers.MapperManager;
+import org.talend.designer.mapper.managers.UIManager;
 import org.talend.designer.mapper.ui.visualmap.table.DataMapTableView;
 import org.talend.designer.mapper.ui.visualmap.zone.Zone;
 
@@ -109,7 +113,7 @@ public class ToolbarOutputZone extends ToolbarZone {
      * DOC amaumont Comment method "addListeners".
      */
     private void addListeners() {
-        // final UIManager uiManager = getMapperManager().getUiManager();
+        final UIManager uiManager = getMapperManager().getUiManager();
         addOutputItem.addListener(SWT.Selection, new Listener() {
 
             public void handleEvent(Event event) {
@@ -133,7 +137,11 @@ public class ToolbarOutputZone extends ToolbarZone {
                 for (DataMapTableView dataMapTableView : outputsTablesView) {
                     dataMapTableView.notifyFocusLost();
                 }
-                getMapperManager().mapAutomaticallly();
+                // uiManager.openAutoMappingDialog();
+                IPreferenceStore weightStore = CoreUIPlugin.getDefault().getPreferenceStore();
+
+                getMapperManager().mapAutomaticallly(weightStore.getInt(ITalendCorePrefConstants.LEVENSHTEIN_WEIGHT),
+                        weightStore.getInt(ITalendCorePrefConstants.JACCARD_WEIGHT));
             }
 
         });

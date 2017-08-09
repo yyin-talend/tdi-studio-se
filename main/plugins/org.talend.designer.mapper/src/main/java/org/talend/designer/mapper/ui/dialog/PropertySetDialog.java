@@ -15,6 +15,7 @@ package org.talend.designer.mapper.ui.dialog;
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.IDialogConstants;
+import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
@@ -31,11 +32,14 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
+import org.eclipse.swt.widgets.Slider;
 import org.talend.commons.ui.swt.formtools.LabelledDirectoryField;
 import org.talend.commons.ui.swt.formtools.LabelledText;
 import org.talend.core.model.components.ComponentCategory;
 import org.talend.core.model.components.IComponent;
 import org.talend.core.model.utils.ContextParameterUtils;
+import org.talend.core.prefs.ITalendCorePrefConstants;
+import org.talend.core.ui.CoreUIPlugin;
 import org.talend.core.ui.component.ComponentsFactoryProvider;
 import org.talend.core.utils.TalendQuoteUtils;
 import org.talend.designer.mapper.i18n.Messages;
@@ -63,9 +67,24 @@ public class PropertySetDialog extends Dialog {
 
     private LabelledText sizeField;
 
+    private Slider levenshteinSlider;
+
+    private Slider jaccardSlider;
+
+    private int levenshteinWeight = 0;
+
+    private Integer jaccardWeight = 0;
+
+    private Label levenshteinWeightLabel;
+
+    private Label jaccardWeightLabel;
+
     public static final String QUOTATION_MARK = "\""; //$NON-NLS-1$
 
+    private Group autoMapGroup;
+
     private final Color color = new Color(Display.getDefault(), 238, 238, 0);
+
 
     /**
      * Create the dialog
@@ -119,6 +138,33 @@ public class PropertySetDialog extends Dialog {
         label.setText("*");
         label.setToolTipText("Required filed.");
 
+        autoMapGroup = new Group(container, SWT.NONE);
+        autoMapGroup.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
+        autoMapGroup.setText("Auto Map");
+
+        GridLayout AutogridLayout = new GridLayout(3, false);
+        AutogridLayout.horizontalSpacing = 10;
+        AutogridLayout.marginRight = 100;
+        
+        autoMapGroup.setLayout(AutogridLayout);
+        Label levenshteinLabel = new Label(autoMapGroup, SWT.NONE);
+        levenshteinLabel.setText("Levenshtein");
+        levenshteinSlider = new Slider(autoMapGroup, SWT.HORIZONTAL);
+        levenshteinSlider.setSize(200, 25);
+        levenshteinSlider.setMaximum(101);
+        levenshteinSlider.setMinimum(0);
+        levenshteinSlider.setThumb(1);
+        levenshteinWeightLabel = new Label(autoMapGroup, SWT.NONE);
+
+        Label jaccardLabel = new Label(autoMapGroup, SWT.NONE);
+        jaccardLabel.setText("Jaccard");
+        jaccardSlider = new Slider(autoMapGroup, SWT.HORIZONTAL);
+        jaccardSlider.setSize(200, 25);
+        jaccardSlider.setMaximum(101);
+        jaccardSlider.setMinimum(0);
+        jaccardSlider.setThumb(1);
+        jaccardWeightLabel = new Label(autoMapGroup, SWT.NONE);
+
         init();
         addListener();
         updateStatus();
@@ -133,6 +179,12 @@ public class PropertySetDialog extends Dialog {
         enableAutoConvertTypeBtn.setSelection(currnentModel.isEnableAutoConvertType());
         directoryField.setText(StringUtils.trimToEmpty(currnentModel.getTempDataDir()));
         sizeField.setText(StringUtils.trimToEmpty(currnentModel.getRowBufferSize()));
+
+        IPreferenceStore weightStore = CoreUIPlugin.getDefault().getPreferenceStore();
+        levenshteinWeightLabel.setText(String.valueOf(weightStore.getInt(ITalendCorePrefConstants.LEVENSHTEIN_WEIGHT)));
+        levenshteinSlider.setSelection(weightStore.getInt(ITalendCorePrefConstants.LEVENSHTEIN_WEIGHT));
+        jaccardWeightLabel.setText(String.valueOf(weightStore.getInt(ITalendCorePrefConstants.JACCARD_WEIGHT)));
+        jaccardSlider.setSelection(weightStore.getInt(ITalendCorePrefConstants.JACCARD_WEIGHT));
     }
 
     private void addListener() {
@@ -165,6 +217,22 @@ public class PropertySetDialog extends Dialog {
 
             public void modifyText(ModifyEvent e) {
                 updateStatus();
+            }
+        });
+
+        levenshteinSlider.addSelectionListener(new SelectionAdapter() {
+
+            @Override
+            public void widgetSelected(SelectionEvent e) {
+                updateAutoMap();
+            }
+        });
+
+        jaccardSlider.addSelectionListener(new SelectionAdapter() {
+
+            @Override
+            public void widgetSelected(SelectionEvent e) {
+                updateAutoMap();
             }
         });
 
@@ -205,6 +273,14 @@ public class PropertySetDialog extends Dialog {
             sizeField.getTextControl().setBackground(color);
             sizeField.setToolTipText("Default is 2000000.");
         }
+    }
+
+    private void updateAutoMap() {
+        levenshteinWeight = levenshteinSlider.getSelection();
+        jaccardWeight = jaccardSlider.getSelection();
+        levenshteinWeightLabel.setText(String.valueOf(levenshteinWeight));
+        jaccardWeightLabel.setText(String.valueOf(jaccardWeight));
+        autoMapGroup.layout();
     }
 
     /**
@@ -256,6 +332,12 @@ public class PropertySetDialog extends Dialog {
                 mapperManager.addRejectOutput();
             }
         }
+        IPreferenceStore weightStore = CoreUIPlugin.getDefault().getPreferenceStore();
+        levenshteinWeight = levenshteinSlider.getSelection();
+        jaccardWeight = jaccardSlider.getSelection();
+        weightStore.setValue(ITalendCorePrefConstants.LEVENSHTEIN_WEIGHT, levenshteinWeight);
+        weightStore.setValue(ITalendCorePrefConstants.JACCARD_WEIGHT, jaccardWeight);
+
 
         super.okPressed();
     }

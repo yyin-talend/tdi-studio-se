@@ -13,12 +13,9 @@
 package org.talend.designer.mapper.ui.automap;
 
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map.Entry;
-import java.util.Set;
 
-import org.apache.commons.text.similarity.LevenshteinDistance;
 import org.talend.designer.abstractmap.model.tableentry.IColumnEntry;
 import org.talend.designer.mapper.language.ILanguage;
 import org.talend.designer.mapper.language.LanguageProvider;
@@ -26,6 +23,8 @@ import org.talend.designer.mapper.managers.MapperManager;
 import org.talend.designer.mapper.model.table.InputTable;
 import org.talend.designer.mapper.model.table.OutputTable;
 import org.talend.designer.mapper.ui.visualmap.table.DataMapTableView;
+import org.talend.utils.string.Jaccard;
+import org.talend.utils.string.Levenshtein;
 
 
 /**
@@ -50,7 +49,10 @@ public class AutoMapper {
     /**
      * DOC amaumont Comment method "map".
      */
-    public void map() {
+    public void map(int levenshteinWeight, int jaccardWeight) {
+        int paramL = levenshteinWeight;
+        int paramJ = jaccardWeight;
+
         List<InputTable> inputTables = mapperManager.getInputTables();
         List<OutputTable> outputTables = mapperManager.getOutputTables();
 
@@ -71,45 +73,32 @@ public class AutoMapper {
                 if (mapperManager.checkEntryHasEmptyExpression(outputEntry)) {
 
                     String outputColumnName = outputEntry.getName().toLowerCase();
-                    String jaccardOutput = AutoMapper.token(outputEntry.getName());
+                    String jaccardOutput = Jaccard.tokenize(outputEntry.getName());
 
-                    HashMap<IColumnEntry, Double> levenshteinMap = new HashMap<IColumnEntry, Double>();
-                    HashMap<IColumnEntry, Double> jaccardMap = new HashMap<IColumnEntry, Double>();
+                    HashMap<IColumnEntry, Double> finalMap = new HashMap<IColumnEntry, Double>();
                     for (InputTable inputTable : inputTables) {
 
                         List<IColumnEntry> inputColumnEntries = inputTable.getColumnEntries();
                         for (IColumnEntry inputEntry : inputColumnEntries) {
                             // Levenshtein
-                            LevenshteinDistance ld = new LevenshteinDistance();
                             String inputStr = inputEntry.getName().toLowerCase();
-                            double LevenshteinDistance = ld.apply(outputColumnName, inputStr);
-                            double maxLength = (inputStr.length() > outputColumnName.length()) ? inputStr.length()
-                                    : outputColumnName.length();
-                            double LevenshteinScore = 0.0;
-
-                            if (inputStr.contains(outputColumnName) || outputColumnName.contains(inputStr)) {
-                                LevenshteinScore = (maxLength - LevenshteinDistance + 1) / (maxLength + 1);
-                            } else {
-                                LevenshteinScore = 1 - (LevenshteinDistance / maxLength);
-                            }
+                            double LevenshteinScore = Levenshtein.getLevenshteinScore(inputStr, outputColumnName);
 
                             // Jaccard
-                            String jaccardIutput = AutoMapper.token(inputEntry.getName());
-                            double JaccardScore = AutoMapper.JaccardCompare(jaccardIutput, jaccardOutput);
+                            String jaccardIutput = Jaccard.tokenize(inputEntry.getName());
+                            double JaccardScore = Jaccard.JaccardCompare(jaccardIutput, jaccardOutput);
+                            double finalScore = LevenshteinScore * paramL + JaccardScore * paramJ;
 
-                            levenshteinMap.put(inputEntry, LevenshteinScore);
-                            jaccardMap.put(inputEntry, JaccardScore);
+                            finalMap.put(inputEntry, finalScore);
                             inputEntry.getParent();
 
                         }
                     }
-                    // IColumnEntry bestEntry = getMaxStr(levenshteinMap);
-                    // if (levenshteinMap.get(bestEntry) < 0.30) {
-                    // continue;
-                    // }
-
-                    IColumnEntry bestEntry = getMaxStr(jaccardMap);
+                    IColumnEntry bestEntry = getMaxStr(finalMap);
                     if (bestEntry == null) {
+                        continue;
+                    }
+                    if (finalMap.get(bestEntry) < 30) {
                         continue;
                     } else {
                         outputEntry
@@ -135,50 +124,7 @@ public class AutoMapper {
 
     }
 
-    private static double JaccardCompare(String res, String res1) {
-        String[] left = res.split("\\s+");
-        String[] right = res1.split("\\s+");
-        int leftLength = left.length;
-        int rightLength = right.length;
-        Set<String> unionSet = new HashSet<String>();
-        boolean unionFilled = false;
-        double intersection = 0;
 
-        if (leftLength == 0 || rightLength == 0) {
-            return 0d;
-        }
-
-        for (int leftIndex = 0; leftIndex < leftLength; leftIndex++) {
-            unionSet.add(left[leftIndex]);
-            for (int rightIndex = 0; rightIndex < rightLength; rightIndex++) {
-                if (!unionFilled) {
-                    unionSet.add(right[rightIndex]);
-                }
-                if (left[leftIndex].equals(right[rightIndex])) {
-                    int wordLength = left[leftIndex].length();
-                    if (wordLength > 1) {
-                        double weight = Math.log(wordLength) / Math.log(2);
-                        intersection = intersection + weight;
-                    } else {
-                        intersection++;
-                    }
-                }
-            }
-            unionFilled = true;
-        }
-
-        return intersection / Double.valueOf(unionSet.size());
-    }
-
-    private static String token(String outputEntry) {
-
-        String str = outputEntry.replaceAll(
-                String.format("%s|%s|%s", "(?<=[A-Z])(?=[A-Z][a-z])", "(?<=[^A-Z])(?=[A-Z])", "(?<=[A-Za-z])(?=[^A-Za-z])"), " ");
-        str = str.replaceAll("_", "");
-        str = str.replaceAll(" +", " ").toLowerCase();
-
-        return str;
-    }
 
     public static IColumnEntry getMaxStr(HashMap<IColumnEntry, Double> map) {
         Double max = 0.0;
