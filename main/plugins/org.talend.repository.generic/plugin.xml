@@ -7,6 +7,10 @@
             class="org.talend.repository.generic.service.GenericWizardService"
             serviceId="IGenericWizardService">
       </Service>
+      <Service
+            class="org.talend.repository.generic.service.GenericDBService"
+            serviceId="IGenericDBService">
+      </Service>
    </extension>
    <extension
          point="org.eclipse.ui.navigator.navigatorContent">

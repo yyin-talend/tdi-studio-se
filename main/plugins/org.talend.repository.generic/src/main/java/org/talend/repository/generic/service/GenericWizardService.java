@@ -100,9 +100,9 @@ public class GenericWizardService implements IGenericWizardService {
         if(type == null){
             return false;
         }
-        if(type.equals(ERepositoryObjectType.JDBC)){
-            return true;
-        }
+//        if(type.equals(ERepositoryObjectType.JDBC)){
+//            return true;
+//        }
         return false;
     }
 
@@ -263,86 +263,4 @@ public class GenericWizardService implements IGenericWizardService {
         return null;
     }
 
-    
-    
-    @Override
-    public Composite creatDBDynamicComposite(Composite composite, EComponentCategory sectionCategory, boolean isCompactView,
-            Property property, String typeName) {
-        IGenericWizardInternalService internalService = new GenericWizardInternalService();
-        ComponentWizard componentWizard = internalService.getComponentWizard(typeName, property.getId());
-        List<Form> forms = componentWizard.getForms();
-        Element baseElement = new FakeElement(forms.get(0).getName());
-        DynamicComposite dynamicComposite = new DynamicComposite(composite, SWT.H_SCROLL | SWT.V_SCROLL | SWT.NO_FOCUS, EComponentCategory.BASIC,
-                baseElement, true, composite.getBackground(), forms.get(0), false);
-        dynamicComposite.setLayoutData(createMainFormData(true));
-//        dynamicComposite.setWizardPropertyChangeListener(this);
-        dynamicComposite.setConnectionItem((ConnectionItem)property.getItem());
-//        addCheckListener(dynamicComposite.getChecker());
-
-        Composite contextParentComp = new Composite(composite, SWT.NONE);
-        contextParentComp.setLayoutData(createFooterFormData(dynamicComposite));
-        contextParentComp.setLayout(new GridLayout());
-        
-        GenericContextHandler contextHandler = new GenericContextHandler();
-        contextHandler.setParameters(getContextParameters(baseElement));
-        ContextComposite contextComp = new ContextComposite(contextParentComp, (ConnectionItem)property.getItem(), true,
-                contextHandler);
-        
-        contextComp.addPropertyChangeListener(dynamicComposite);
-        contextComp.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-        
-        return dynamicComposite;
-    }
-    
-    private List<IElementParameter> getContextParameters(Element element) {
-        List<IElementParameter> contextParameters = new ArrayList<>();
-        for (IElementParameter parameter : element.getElementParameters()) {
-            if (parameter instanceof GenericElementParameter) {
-                GenericElementParameter genericElementParameter = (GenericElementParameter) parameter;
-                if (genericElementParameter.isSupportContext()) {
-                    contextParameters.add(parameter);
-                }
-                List<ElementParameter> relatedParameters = ComponentsUtils.getRelatedParameters(genericElementParameter);
-                for (ElementParameter relatedParameter : relatedParameters) {
-                    if (relatedParameter instanceof GenericElementParameter
-                            && ((GenericElementParameter) relatedParameter).isSupportContext()) {
-                        contextParameters.add(relatedParameter);
-                    }
-                }
-            }
-        }
-        return contextParameters;
-    }
-    
-    private FormData createMainFormData(boolean addContextSupport) {
-        FormData data = new FormData();
-        data.left = new FormAttachment(0, 0);
-        data.right = new FormAttachment(100, 0);
-        data.top = new FormAttachment(0, 0);
-        if (addContextSupport) {
-            data.bottom = new FormAttachment(85, 0);
-        } else {
-            data.bottom = new FormAttachment(100, 0);
-        }
-        return data;
-    }
-
-    private FormData createFooterFormData(Composite topComposite) {
-        FormData data = new FormData();
-        data.left = new FormAttachment(0, 0);
-        data.right = new FormAttachment(100, 0);
-        data.top = new FormAttachment(topComposite, 0);
-        data.bottom = new FormAttachment(100, 0);
-        return data;
-    }
-    
-    @Override
-    public Connection createGenericConnection() {
-        return GenericMetadataFactory.eINSTANCE.createGenericConnection();
-    }
-
-    @Override
-    public ConnectionItem createGenericConnectionItem() {
-        return GenericMetadataFactory.eINSTANCE.createGenericConnectionItem();
-    }
 }
