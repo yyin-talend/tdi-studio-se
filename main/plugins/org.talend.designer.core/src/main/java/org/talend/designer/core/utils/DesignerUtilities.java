@@ -15,12 +15,17 @@ package org.talend.designer.core.utils;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.jface.action.IAction;
+import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IEditorReference;
 import org.eclipse.ui.PlatformUI;
 import org.talend.core.CorePlugin;
+import org.talend.core.GlobalServiceRegister;
+import org.talend.core.PluginChecker;
 import org.talend.core.model.metadata.builder.connection.Connection;
 import org.talend.core.model.metadata.builder.connection.DatabaseConnection;
 import org.talend.core.model.metadata.designerproperties.RepositoryToComponentProperty;
@@ -32,13 +37,17 @@ import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.ui.editor.JobEditorInput;
+import org.talend.designer.core.ICreateMRProcessService;
+import org.talend.designer.core.ICreateStormProcessService;
 import org.talend.designer.core.IDesignerCoreService;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.model.process.jobsettings.JobSettingsConstants;
 import org.talend.designer.core.model.utils.emf.talendfile.NodeType;
+import org.talend.designer.core.ui.action.EditProcess;
 import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.process.Process;
 import org.talend.designer.runprocess.ItemCacheManager;
+import org.talend.repository.model.RepositoryNode;
 
 /**
  * DOC bqian class global comment. Detailled comment
@@ -96,6 +105,7 @@ public class DesignerUtilities {
 
         Display.getDefault().syncExec(new Runnable() {
 
+            @Override
             public void run() {
                 IEditorReference[] editors = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage()
                         .getEditorReferences();
@@ -135,10 +145,10 @@ public class DesignerUtilities {
     public static void setSchemaDB(IElementParameter schemaDB, Object value) {
         if (schemaDB != null) {
             if (value instanceof String) {
-                if (JobSettingsConstants.ORACLE_OUTPUT_SID_ALIAS.equals((String) value)
-                        || JobSettingsConstants.ORACLE_OUTPUT_SN_ALIAS.equals((String) value)
-                        || JobSettingsConstants.ORACLE_INOUT_SN_ALIAS.equals((String) value)
-                        || JobSettingsConstants.ORACLE_INPUT_SID_ALIAS.equals((String) value)) {
+                if (JobSettingsConstants.ORACLE_OUTPUT_SID_ALIAS.equals(value)
+                        || JobSettingsConstants.ORACLE_OUTPUT_SN_ALIAS.equals(value)
+                        || JobSettingsConstants.ORACLE_INOUT_SN_ALIAS.equals(value)
+                        || JobSettingsConstants.ORACLE_INPUT_SID_ALIAS.equals(value)) {
                     schemaDB.setRequired(true);
                 } else {
                     schemaDB.setRequired(false);
@@ -157,5 +167,40 @@ public class DesignerUtilities {
             aliasName += " (" + currentDbType + ")"; //$NON-NLS-1$ //$NON-NLS-2$
         }
         return aliasName;
+    }
+
+    public static IAction getEditProcessAction(RepositoryNode result) {
+        if (result != null) {
+            if (result.getContentType() == ERepositoryObjectType.PROCESS) {
+                return new EditProcess() {
+
+                    @Override
+                    public ISelection getSelection() {
+                        return new StructuredSelection(result);
+                    }
+                };
+            } else if (result.getContentType() == ERepositoryObjectType.PROCESS_STORM) {
+                if (PluginChecker.isStormPluginLoader()) {
+                    boolean isStormProcessServiceRegistered = GlobalServiceRegister.getDefault().isServiceRegistered(
+                            ICreateStormProcessService.class);
+                    if (isStormProcessServiceRegistered) {
+                        ICreateStormProcessService stromService = (ICreateStormProcessService) GlobalServiceRegister.getDefault()
+                                .getService(ICreateStormProcessService.class);
+                        return stromService.getEditProcessAction(result);
+                    }
+                }
+            } else if (result.getContentType() == ERepositoryObjectType.PROCESS_MR) {
+                if (PluginChecker.isMapReducePluginLoader()) {
+                    boolean isMRProcessServiceRegistered = GlobalServiceRegister.getDefault().isServiceRegistered(
+                            ICreateMRProcessService.class);
+                    if (isMRProcessServiceRegistered) {
+                        ICreateMRProcessService mRService = (ICreateMRProcessService) GlobalServiceRegister.getDefault()
+                                .getService(ICreateMRProcessService.class);
+                        return mRService.getEditProcessAction(result);
+                    }
+                }
+            }
+        }
+        return null;
     }
 }
