@@ -15,13 +15,28 @@ package org.talend.repository.generic.service;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.lang.exception.ExceptionUtils;
+import org.eclipse.core.resources.IWorkspace;
+import org.eclipse.core.resources.IWorkspaceRunnable;
+import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.NullProgressMonitor;
+import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.jobs.ISchedulingRule;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
+import org.talend.commons.exception.ExceptionHandler;
+import org.talend.commons.ui.swt.dialogs.ErrorDialogWidthDetailArea;
+import org.talend.components.api.service.ComponentService;
 import org.talend.components.api.wizard.ComponentWizard;
+import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.metadata.builder.connection.Connection;
 import org.talend.core.model.process.EComponentCategory;
 import org.talend.core.model.process.Element;
@@ -29,12 +44,15 @@ import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.Property;
+import org.talend.core.repository.model.ProxyRepositoryFactory;
 import org.talend.core.runtime.services.IGenericDBService;
 import org.talend.daikon.properties.presentation.Form;
+import org.talend.designer.core.generic.constants.IGenericConstants;
 import org.talend.designer.core.generic.model.GenericElementParameter;
 import org.talend.designer.core.generic.utils.ComponentsUtils;
 import org.talend.designer.core.model.FakeElement;
 import org.talend.designer.core.model.components.ElementParameter;
+import org.talend.repository.generic.i18n.Messages;
 import org.talend.repository.generic.internal.IGenericWizardInternalService;
 import org.talend.repository.generic.internal.service.GenericWizardInternalService;
 import org.talend.repository.generic.model.genericMetadata.GenericConnectionItem;
@@ -42,6 +60,8 @@ import org.talend.repository.generic.model.genericMetadata.GenericMetadataFactor
 import org.talend.repository.generic.ui.DynamicComposite;
 import org.talend.repository.generic.ui.context.ContextComposite;
 import org.talend.repository.generic.ui.context.handler.GenericContextHandler;
+import org.talend.repository.generic.update.GenericUpdateManager;
+import org.talend.repository.model.IProxyRepositoryFactory;
 
 /**
  * DOC hwang  class global comment. Detailled comment
@@ -142,6 +162,51 @@ public class GenericDBService implements IGenericDBService{
         if(item instanceof GenericConnectionItem){
             ((GenericConnectionItem)item).setTypeName(type);
         }
+    }
+
+    @Override
+    public void dbWizardPerformFinish(ConnectionItem item, Form form, boolean creation, IPath pathToSave, List<IMetadataTable> oldMetadataTable) throws CoreException {
+//        IGenericWizardInternalService internalService = new GenericWizardInternalService();
+//        ComponentWizard componentWizard = internalService.getComponentWizard("JDBC", item.getProperty().getId());
+//        List<Form> forms = componentWizard.getForms();
+        
+        ComponentService compService = new GenericWizardInternalService().getComponentService();
+        IWorkspace workspace = ResourcesPlugin.getWorkspace();
+        final IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
+        IWorkspaceRunnable operation = new IWorkspaceRunnable() {
+
+            @Override
+            public void run(IProgressMonitor monitor) throws CoreException {
+                try {
+                    if (creation) {
+                        factory.create(item, pathToSave);
+                    }
+                    if(form!=null){
+                        compService.afterFormFinish(form.getName(), form.getProperties());
+                    }
+                    factory.save(item);
+                } catch (Throwable e) {
+                    throw new CoreException(new Status(IStatus.ERROR, IGenericConstants.REPOSITORY_PLUGIN_ID,
+                            "Error when saving the connection", e));
+                }
+            }
+        };
+        ISchedulingRule schedulingRule = workspace.getRoot();
+        // the update the project files need to be done in the workspace runnable to avoid all
+        // notification of changes before the end of the modifications.
+        workspace.run(operation, schedulingRule, IWorkspace.AVOID_UPDATE, new NullProgressMonitor());
+        // Move it from WorkspaceRunnable to avoid the conflicting rules with other jobs.
+        if (!creation) {
+            GenericUpdateManager.updateGenericConnection(item, oldMetadataTable);
+        }
+    }
+    
+    @Override
+    public Form getDynamicForm(Composite composite){
+        if(composite != null && composite instanceof DynamicComposite){
+            return ((DynamicComposite)composite).getForm();
+        }
+        return null;
     }
 
 }
