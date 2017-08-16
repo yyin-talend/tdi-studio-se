@@ -560,6 +560,10 @@ for (VarTable varsTable : varsTables) {
 
 								sb.append(");" + cr + cr);
 								
+								if(hasDocumentInMainInputTable || hasDocumentInAnyLookupTable) {
+									sb.append(cr + "treeNodeAPI_"+cid+".clear();" + cr);
+								}
+								
 								/*
 								Generate the following part if:
 								1 - Virtual generation = 1 document in main input table OR 1 document with aggregate in an output table OR 1 table with "All In One" activated.

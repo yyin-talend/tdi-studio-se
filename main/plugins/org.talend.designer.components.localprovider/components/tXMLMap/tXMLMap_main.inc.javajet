@@ -594,6 +594,11 @@ skeleton="tXMLMap_java.skeleton"
 								sb.append(assignationVar + ".setDocument(gen_Doc_"+outputTableName+"_"+uniqueNameComponent+".getDocument());" + cr);
 								
 								sb.append("}" + cr);
+								
+								if(hasDocumentInMainInputTable || hasDocumentInAnyLookupTable) {
+									sb.append(cr + "treeNodeAPI_"+uniqueNameComponent+".clear();" + cr);
+								}
+								
 							} else {
 								sb.append(cr).append(expression);
 							}
