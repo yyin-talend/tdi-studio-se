@@ -57,6 +57,7 @@ import org.talend.repository.generic.internal.IGenericWizardInternalService;
 import org.talend.repository.generic.internal.service.GenericWizardInternalService;
 import org.talend.repository.generic.model.genericMetadata.GenericConnectionItem;
 import org.talend.repository.generic.model.genericMetadata.GenericMetadataFactory;
+import org.talend.repository.generic.persistence.GenericRepository;
 import org.talend.repository.generic.ui.DynamicComposite;
 import org.talend.repository.generic.ui.context.ContextComposite;
 import org.talend.repository.generic.ui.context.handler.GenericContextHandler;
@@ -166,11 +167,8 @@ public class GenericDBService implements IGenericDBService{
 
     @Override
     public void dbWizardPerformFinish(ConnectionItem item, Form form, boolean creation, IPath pathToSave, List<IMetadataTable> oldMetadataTable) throws CoreException {
-//        IGenericWizardInternalService internalService = new GenericWizardInternalService();
-//        ComponentWizard componentWizard = internalService.getComponentWizard("JDBC", item.getProperty().getId());
-//        List<Form> forms = componentWizard.getForms();
-        
         ComponentService compService = new GenericWizardInternalService().getComponentService();
+        compService.setRepository(new GenericRepository());
         IWorkspace workspace = ResourcesPlugin.getWorkspace();
         final IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
         IWorkspaceRunnable operation = new IWorkspaceRunnable() {
@@ -178,14 +176,15 @@ public class GenericDBService implements IGenericDBService{
             @Override
             public void run(IProgressMonitor monitor) throws CoreException {
                 try {
-                    if (creation) {
-                        factory.create(item, pathToSave);
-                    }
-                    if(form!=null){
+                    if (form != null && form.isCallAfterFormFinish()) {
+                        if (creation) {
+                            factory.create(item, pathToSave);
+                        }
                         compService.afterFormFinish(form.getName(), form.getProperties());
                     }
                     factory.save(item);
                 } catch (Throwable e) {
+                    //e.printStackTrace();
                     throw new CoreException(new Status(IStatus.ERROR, IGenericConstants.REPOSITORY_PLUGIN_ID,
                             "Error when saving the connection", e));
                 }
