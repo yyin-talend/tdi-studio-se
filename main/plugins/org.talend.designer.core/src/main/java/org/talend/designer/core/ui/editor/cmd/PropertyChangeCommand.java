@@ -84,7 +84,7 @@ public class PropertyChangeCommand extends Command {
 
     // private ChangeMetadataCommand changeMetadataCommand;
     private List<ChangeMetadataCommand> changeMetadataCommands;
-    
+
     private Command updateELTMapComponentCommand;
 
     private String propertyTypeName;
@@ -264,7 +264,7 @@ public class PropertyChangeCommand extends Command {
                 String tableName = TalendQuoteUtils.removeQuotes((String) elem.getPropertyValue("ELT_TABLE_NAME")); //$NON-NLS-1$
                 if (oldParamValue != null && !"".equals(oldParamValue.trim())) {
                     oldELTValue = oldParamValue + "."; //$NON-NLS-1$
-                } 
+                }
                 if (newParamValue != null && !"".equals(newParamValue.trim())) {
                     newELTValue = newParamValue + "."; //$NON-NLS-1$
                 }
@@ -274,16 +274,17 @@ public class PropertyChangeCommand extends Command {
             List<? extends IConnection> connections = ((Node) elem).getOutgoingConnections();
             for (IConnection connection : connections) {
                 if (!connection.getName().equals(oldELTValue)) {
-                    //do nothing when custom connection name.
+                    // do nothing when custom connection name.
                     continue;
                 }
                 INode targetNode = connection.getTarget();
                 String componentName = targetNode.getComponent().getName();
                 if (componentName.matches("tELT.+Map")) { //$NON-NLS-1$
                     if (GlobalServiceRegister.getDefault().isServiceRegistered(IDbMapDesignerService.class)) {
-                        IDbMapDesignerService service = (IDbMapDesignerService) GlobalServiceRegister.getDefault()
-                                .getService(IDbMapDesignerService.class);
-                        updateELTMapComponentCommand = service.getUpdateELTMapComponentCommand(targetNode, connection, oldELTValue, newELTValue);
+                        IDbMapDesignerService service = (IDbMapDesignerService) GlobalServiceRegister.getDefault().getService(
+                                IDbMapDesignerService.class);
+                        updateELTMapComponentCommand = service.getUpdateELTMapComponentCommand(targetNode, connection,
+                                oldELTValue, newELTValue);
                         updateELTMapComponentCommand.execute();
                     }
                 }
@@ -453,7 +454,10 @@ public class PropertyChangeCommand extends Command {
         if (currentParam.getName().equals(EParameterName.PROCESS_TYPE_PROCESS.getName())) {
             toUpdate = true;
         }
-
+        // TUP-18405, need update module list
+        if (currentParam.getFieldType() == EParameterFieldType.MODULE_LIST) {
+            toUpdate = true;
+        }
         if (toUpdate) {
             elem.setPropertyValue(updataComponentParamName, Boolean.TRUE);
         }
@@ -848,7 +852,7 @@ public class PropertyChangeCommand extends Command {
         }
         if (updateELTMapComponentCommand != null) {
             updateELTMapComponentCommand.undo();
-        } 
+        }
         CodeView.refreshCodeView(elem);
         ComponentSettings.switchToCurComponentSettingsView();
         JobSettings.switchToCurJobSettingsView();
@@ -909,7 +913,7 @@ public class PropertyChangeCommand extends Command {
         }
         if (updateELTMapComponentCommand != null) {
             updateELTMapComponentCommand.redo();
-        } 
+        }
         CodeView.refreshCodeView(elem);
         ComponentSettings.switchToCurComponentSettingsView();
         JobSettings.switchToCurJobSettingsView();
