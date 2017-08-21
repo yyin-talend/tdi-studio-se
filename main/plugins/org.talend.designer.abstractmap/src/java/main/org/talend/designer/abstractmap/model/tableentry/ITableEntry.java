@@ -31,6 +31,8 @@ public interface ITableEntry {
 
     public String getParentName();
 
+    public String getTableName();
+
     public IDataMapTable getParent();
 
     public String getExpression();

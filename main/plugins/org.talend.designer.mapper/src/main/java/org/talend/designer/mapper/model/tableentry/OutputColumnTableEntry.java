@@ -31,4 +31,11 @@ public class OutputColumnTableEntry extends AbstractInOutTableEntry {
         super(abstractDataMapTable, metadataColumn);
     }
 
+    /**
+     * DOC xwen OutputColumnTableEntry constructor comment.
+     */
+    public OutputColumnTableEntry(IMetadataColumn metadataColumn) {
+        super(metadataColumn);
+    }
+
 }

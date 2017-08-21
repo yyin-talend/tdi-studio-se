@@ -39,6 +39,10 @@ public abstract class DataMapTableEntry implements ITableEntry {
 
     private List<Problem> problems;
 
+    public DataMapTableEntry() {
+
+    }
+
     public DataMapTableEntry(IDataMapTable abstractDataMapTable, String expression) {
         super();
         this.parent = abstractDataMapTable;
@@ -95,6 +99,10 @@ public abstract class DataMapTableEntry implements ITableEntry {
         } else {
             throw new IllegalStateException("parent null"); //$NON-NLS-1$
         }
+    }
+
+    public String getTableName() {
+        return null;
     }
 
     public List<Problem> getProblems() {

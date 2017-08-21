@@ -26,6 +26,13 @@ public class AbstractInOutTableEntry extends DataMapTableEntry implements IColum
 
     private IMetadataColumn metadataColumn;
 
+    private String parentName;
+
+    public AbstractInOutTableEntry(IMetadataColumn metadataColumn) {
+
+        this.metadataColumn = metadataColumn;
+    }
+
     public AbstractInOutTableEntry(IDataMapTable abstractDataMapTable, IMetadataColumn metadataColumn, String expression) {
         super(abstractDataMapTable, expression);
         this.metadataColumn = metadataColumn;
@@ -68,6 +75,26 @@ public class AbstractInOutTableEntry extends DataMapTableEntry implements IColum
      */
     public boolean isColumnEntry() {
         return true;
+    }
+
+    /**
+     * Getter for parentName.
+     * 
+     * @return the parentName
+     */
+
+
+    /**
+     * Sets the parentName.
+     * 
+     * @param parentName the parentName to set
+     */
+    public void setParentName(String parentName) {
+        this.parentName = parentName;
+    }
+
+    public String getTableName() {
+        return this.parentName;
     }
 
 }

@@ -25,12 +25,20 @@ public class InputColumnTableEntry extends AbstractInOutTableEntry {
 
     private String operator;
 
+
     public InputColumnTableEntry(IDataMapTable abstractDataMapTable, IMetadataColumn metadataColumn, String expression) {
         super(abstractDataMapTable, metadataColumn, expression);
     }
 
     public InputColumnTableEntry(IDataMapTable abstractDataMapTable, IMetadataColumn metadataColumn) {
         super(abstractDataMapTable, metadataColumn);
+    }
+
+    /**
+     * DOC xwen InputColumnTableEntry constructor comment.
+     */
+    public InputColumnTableEntry(IMetadataColumn metadataColumn) {
+        super(metadataColumn);
     }
 
     /**
@@ -50,5 +58,7 @@ public class InputColumnTableEntry extends AbstractInOutTableEntry {
     public void setOperator(String operator) {
         this.operator = operator;
     }
+
+
 
 }
