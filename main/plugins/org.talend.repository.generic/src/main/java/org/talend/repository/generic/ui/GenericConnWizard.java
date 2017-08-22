@@ -173,7 +173,10 @@ public class GenericConnWizard extends CheckLastVersionRepositoryWizard {
 
     @Override
     public void addPages() {
-        ERepositoryObjectType repObjType = (ERepositoryObjectType) repNode.getProperties(EProperties.CONTENT_TYPE);
+        ERepositoryObjectType repObjType = repNode.getObjectType();
+        if(repObjType == null){
+            repObjType = (ERepositoryObjectType) repNode.getProperties(EProperties.CONTENT_TYPE);
+        }
         String typeName = repObjType.getType();
         setWindowTitle(typeName);
         Image wiardImage = wizardService.getWiardImage(typeName);

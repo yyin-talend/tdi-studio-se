@@ -46,6 +46,7 @@ import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.Property;
 import org.talend.core.repository.model.ProxyRepositoryFactory;
 import org.talend.core.runtime.services.IGenericDBService;
+import org.talend.core.ui.check.IChecker;
 import org.talend.daikon.properties.presentation.Form;
 import org.talend.designer.core.generic.constants.IGenericConstants;
 import org.talend.designer.core.generic.model.GenericElementParameter;
@@ -204,6 +205,14 @@ public class GenericDBService implements IGenericDBService{
     public Form getDynamicForm(Composite composite){
         if(composite != null && composite instanceof DynamicComposite){
             return ((DynamicComposite)composite).getForm();
+        }
+        return null;
+    }
+
+    @Override
+    public IChecker getDynamicChecker(Composite dynamicComposite) {
+        if(dynamicComposite != null && dynamicComposite instanceof DynamicComposite){
+            return ((DynamicComposite)dynamicComposite).getChecker();
         }
         return null;
     }
