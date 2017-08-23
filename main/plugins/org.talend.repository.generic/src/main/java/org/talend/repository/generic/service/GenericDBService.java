@@ -13,9 +13,10 @@
 package org.talend.repository.generic.service;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
-import org.apache.commons.lang.exception.ExceptionUtils;
 import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.IWorkspaceRunnable;
 import org.eclipse.core.resources.ResourcesPlugin;
@@ -32,8 +33,6 @@ import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
-import org.talend.commons.exception.ExceptionHandler;
-import org.talend.commons.ui.swt.dialogs.ErrorDialogWidthDetailArea;
 import org.talend.components.api.service.ComponentService;
 import org.talend.components.api.wizard.ComponentWizard;
 import org.talend.core.model.metadata.IMetadataTable;
@@ -53,7 +52,6 @@ import org.talend.designer.core.generic.model.GenericElementParameter;
 import org.talend.designer.core.generic.utils.ComponentsUtils;
 import org.talend.designer.core.model.FakeElement;
 import org.talend.designer.core.model.components.ElementParameter;
-import org.talend.repository.generic.i18n.Messages;
 import org.talend.repository.generic.internal.IGenericWizardInternalService;
 import org.talend.repository.generic.internal.service.GenericWizardInternalService;
 import org.talend.repository.generic.model.genericMetadata.GenericConnectionItem;
@@ -71,8 +69,9 @@ import org.talend.repository.model.IProxyRepositoryFactory;
 public class GenericDBService implements IGenericDBService{
     
     @Override
-    public Composite creatDBDynamicComposite(Composite composite, EComponentCategory sectionCategory, boolean isCompactView,
+    public Map<String, Composite> creatDBDynamicComposite(Composite composite, EComponentCategory sectionCategory, boolean isReadOnly,
             Property property, String typeName) {
+        Map<String, Composite> map = new HashMap<String, Composite>();
         IGenericWizardInternalService internalService = new GenericWizardInternalService();
         ComponentWizard componentWizard = internalService.getComponentWizard(typeName, property.getId());
         List<Form> forms = componentWizard.getForms();
@@ -82,6 +81,7 @@ public class GenericDBService implements IGenericDBService{
         dynamicComposite.setLayoutData(createMainFormData(true));
 //        dynamicComposite.setWizardPropertyChangeListener(this);
         dynamicComposite.setConnectionItem((ConnectionItem)property.getItem());
+        map.put("DynamicComposite", dynamicComposite);
 //        addCheckListener(dynamicComposite.getChecker());
 
         Composite contextParentComp = new Composite(composite, SWT.NONE);
@@ -90,13 +90,13 @@ public class GenericDBService implements IGenericDBService{
         
         GenericContextHandler contextHandler = new GenericContextHandler();
         contextHandler.setParameters(getContextParameters(baseElement));
-        ContextComposite contextComp = new ContextComposite(contextParentComp, (ConnectionItem)property.getItem(), true,
+        ContextComposite contextComp = new ContextComposite(contextParentComp, (ConnectionItem)property.getItem(), isReadOnly,
                 contextHandler);
         
         contextComp.addPropertyChangeListener(dynamicComposite);
         contextComp.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-        
-        return dynamicComposite;
+        map.put("ContextComposite", contextComp);
+        return map;
     }
     
     private List<IElementParameter> getContextParameters(Element element) {
@@ -215,6 +215,15 @@ public class GenericDBService implements IGenericDBService{
             return ((DynamicComposite)dynamicComposite).getChecker();
         }
         return null;
+    }
+
+    @Override
+    public void resetConnectionItem(Composite composite, ConnectionItem connectionItem) {
+        if(composite instanceof ContextComposite){
+            ((ContextComposite)composite).setConnectionItem(connectionItem);
+        }else if(composite instanceof DynamicComposite){
+            ((DynamicComposite)composite).setConnectionItem(connectionItem);
+        }
     }
 
 }
