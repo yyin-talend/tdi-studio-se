@@ -14,7 +14,9 @@ package org.talend.repository.generic.ui.dnd;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
 import org.talend.commons.exception.ExceptionHandler;
@@ -29,6 +31,7 @@ import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.metadata.MetadataToolHelper;
 import org.talend.core.model.metadata.builder.connection.Connection;
 import org.talend.core.model.metadata.builder.connection.MetadataTable;
+import org.talend.core.model.process.EParameterFieldType;
 import org.talend.core.model.process.IElement;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.INode;
@@ -45,6 +48,8 @@ import org.talend.core.repository.model.repositoryObject.MetadataTableRepository
 import org.talend.core.runtime.services.IGenericWizardService;
 import org.talend.core.runtime.util.GenericTypeUtils;
 import org.talend.core.utils.TalendQuoteUtils;
+import org.talend.daikon.NamedThing;
+import org.talend.daikon.properties.Properties;
 import org.talend.daikon.properties.property.Property;
 import org.talend.designer.core.generic.constants.IGenericConstants;
 import org.talend.designer.core.generic.model.Component;
@@ -97,19 +102,26 @@ public class GenericDragAndDropHandler extends AbstractDragAndDropServiceHandler
             String value, IMetadataTable table) {
         if (componentProperties != null && value != null) {
             for (ComponentProperties compPro : componentProperties) {
-                Property<?> property = compPro.getValuedProperty(value);
-                if (property != null) {
-                    Object paramValue = property.getStoredValue();
-                    if (GenericTypeUtils.isStringType(property) || GenericTypeUtils.isObjectType(property)) {
-                        if (paramValue != null) {
-                            return getRepositoryValueOfStringType(connection, paramValue.toString());
-                        } else {
-                            return TalendQuoteUtils.addQuotes(""); //$NON-NLS-1$
-                        }
-                    } else if (GenericTypeUtils.isEnumType(property) && paramValue != null) {
-                        return paramValue.toString();
+                if(isGenericPropertiesValue(value)){
+                    Properties properties = compPro.getProperties(value);
+                    if(properties != null){
+                        return getPropertiesValue(connection, properties, value);
                     }
-                    return paramValue;
+                }else{
+                    Property<?> property = compPro.getValuedProperty(value);
+                    if (property != null) {
+                        Object paramValue = property.getStoredValue();
+                        if (GenericTypeUtils.isStringType(property) || GenericTypeUtils.isObjectType(property)) {
+                            if (paramValue != null) {
+                                return getRepositoryValueOfStringType(connection, paramValue.toString());
+                            } else {
+                                return TalendQuoteUtils.addQuotes(""); //$NON-NLS-1$
+                            }
+                        } else if (GenericTypeUtils.isEnumType(property) && paramValue != null) {
+                            return paramValue.toString();
+                        }
+                        return paramValue;
+                    } 
                 }
             }
             if (value.indexOf(IGenericConstants.EXP_SEPARATOR) != -1) {
@@ -118,6 +130,37 @@ public class GenericDragAndDropHandler extends AbstractDragAndDropServiceHandler
             }
         }
         return null;
+    }
+    
+    private Object getPropertiesValue(GenericConnection connection, Properties properties,String value){
+        List<Map> lines = new ArrayList<Map>();
+        for(NamedThing nameThing : properties.getProperties()){
+            if(nameThing != null && nameThing instanceof Property){
+                Property property = (Property) nameThing;
+                Object paramValue = property.getStoredValue();
+                if(GenericTypeUtils.isListStringType(property) && paramValue != null){
+                    List<String> listString = (List<String>) paramValue;
+                    for(String pv : listString){
+                        Map<String, Object> line = new LinkedHashMap<String, Object>();
+                        line.put(property.getName(),TalendQuoteUtils.addQuotesIfNotExist(pv));
+                        lines.add(line);
+                    }
+                }else if (GenericTypeUtils.isStringType(property) || GenericTypeUtils.isObjectType(property)) {
+                    Map<String, Object> line = new LinkedHashMap<String, Object>();
+                    if (paramValue != null) {
+                        line.put(property.getName(), getRepositoryValueOfStringType(connection, paramValue.toString()));
+                    } else {
+                        line.put(property.getName(), TalendQuoteUtils.addQuotes(""));
+                    }
+                    lines.add(line);
+                } else if (GenericTypeUtils.isEnumType(property) && paramValue != null) {
+                    Map<String, Object> line = new LinkedHashMap<String, Object>();
+                    line.put(property.getName(), paramValue.toString());
+                    lines.add(line);
+                }
+            }
+        }
+        return lines;
     }
 
     private String getSeletetedMetadataTableName(IMetadataTable table) {
@@ -143,9 +186,21 @@ public class GenericDragAndDropHandler extends AbstractDragAndDropServiceHandler
     public Object getGenericRepositoryValue(List<ComponentProperties> componentProperties, String paramName) {
         if (componentProperties != null && paramName != null) {
             for (ComponentProperties compPro : componentProperties) {
-                Property property = compPro.getValuedProperty(paramName);
-                if (property != null) {
-                    return property.getTaggedValue(IGenericConstants.REPOSITORY_VALUE);
+                if(isGenericPropertiesValue(paramName)){
+                    Properties properties = compPro.getProperties(paramName);
+                    if(properties != null){
+                        for(NamedThing nameThing:properties.getProperties()){
+                            if(nameThing != null && nameThing instanceof Property){
+                                Property property = (Property) nameThing;
+                                return property.getTaggedValue(IGenericConstants.REPOSITORY_VALUE);
+                            }
+                        }
+                    }
+                }else{
+                    Property property = compPro.getValuedProperty(paramName);
+                    if (property != null) {
+                        return property.getTaggedValue(IGenericConstants.REPOSITORY_VALUE);
+                    }
                 }
             }
             if (paramName.indexOf(IGenericConstants.EXP_SEPARATOR) != -1) {
@@ -154,7 +209,14 @@ public class GenericDragAndDropHandler extends AbstractDragAndDropServiceHandler
             }
         }
         return null;
-
+    }
+    
+    @Override
+    public boolean isGenericPropertiesValue(String paramName){
+        if(IGenericConstants.driverTable.equals(paramName)){
+            return true;
+        }
+        return false;
     }
 
     @Override
