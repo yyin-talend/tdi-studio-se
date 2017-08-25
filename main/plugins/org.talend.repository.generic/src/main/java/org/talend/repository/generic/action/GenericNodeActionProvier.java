@@ -87,6 +87,8 @@ public class GenericNodeActionProvier extends MetedataNodeActionProvier {
             if (action == null) {
                 action = createAction(wizard, sel);
                 actionsMap.put(wizardName, action);
+            }else if(action instanceof GenericAction){
+                ((GenericAction)action).setGenericData(wizard, sel);
             }
         }
         manager.add(action);

@@ -14,6 +14,7 @@ package org.talend.repository.generic.action;
 
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.IWizard;
 import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.swt.graphics.Image;
@@ -28,6 +29,7 @@ import org.talend.repository.generic.ui.GenericConnWizard;
 import org.talend.repository.generic.ui.common.GenericWizardDialog;
 import org.talend.repository.generic.util.GenericWizardServiceFactory;
 import org.talend.repository.model.IProxyRepositoryFactory;
+import org.talend.repository.model.IRepositoryNode.ENodeType;
 import org.talend.repository.model.IRepositoryNode.EProperties;
 import org.talend.repository.model.RepositoryNode;
 
@@ -64,11 +66,23 @@ public class GenericAction extends AbstractCreateAction {
         wizardDialog.create();
         wizardDialog.open();
     }
+    
+    public void setGenericData(ComponentWizard compWizard, IStructuredSelection selection){
+        this.compWizard = compWizard;
+        Object o = selection.getFirstElement();
+        if (selection.isEmpty() || selection.size() != 1 || !(o instanceof RepositoryNode)) {
+            return;
+        }
+        this.repositoryNode = (RepositoryNode) o;
+    }
 
     @Override
     protected void init(RepositoryNode node) {
         repositoryNode = getCurrentRepositoryNode();
-        repObjType = (ERepositoryObjectType) repositoryNode.getProperties(EProperties.CONTENT_TYPE);
+        repObjType = repositoryNode.getObjectType();
+        if(repObjType == null || repositoryNode.getType() != ENodeType.REPOSITORY_ELEMENT){
+            repObjType = (ERepositoryObjectType) repositoryNode.getProperties(EProperties.CONTENT_TYPE);
+        }
         if (compWizard == null) {
             compWizard = GenericWizardServiceFactory.getGenericWizardInternalService().getComponentWizard(repObjType.getType(),
                     null);

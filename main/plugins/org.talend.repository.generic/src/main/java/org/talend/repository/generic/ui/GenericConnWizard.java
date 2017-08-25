@@ -115,7 +115,10 @@ public class GenericConnWizard extends CheckLastVersionRepositoryWizard {
         wizard = componentWizard;
         this.existingNames = existingNames;
         repNode = node;
-        repObjType = (ERepositoryObjectType) repNode.getProperties(EProperties.CONTENT_TYPE);
+        repObjType = repNode.getObjectType();
+        if(repObjType == null || repNode.getType() != ENodeType.REPOSITORY_ELEMENT){
+            repObjType = (ERepositoryObjectType) repNode.getProperties(EProperties.CONTENT_TYPE);
+        }
         wizardService = GenericWizardServiceFactory.getGenericWizardService();
         if (wizard == null) {
             wizard = getDefaultWizard(repObjType.getType());
