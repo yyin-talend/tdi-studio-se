@@ -39,7 +39,6 @@ import org.talend.core.model.process.IProcess2;
 import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
-import org.talend.core.ui.IRouteletService;
 import org.talend.core.ui.editor.JobEditorInput;
 import org.talend.designer.core.ICreateMRProcessService;
 import org.talend.designer.core.ICreateStormProcessService;
@@ -249,13 +248,6 @@ public class DesignerUtilities {
                                 .getService(ICreateMRProcessService.class);
                         return mRService.getEditProcessAction(result);
                     }
-                }
-            } else if (result.getContentType() == ERepositoryObjectType.PROCESS_ROUTE
-                    || result.getContentType() == ERepositoryObjectType.PROCESS_ROUTELET) {
-                if (GlobalServiceRegister.getDefault().isServiceRegistered(IRouteletService.class)) {
-                    IRouteletService routeletService = (IRouteletService) GlobalServiceRegister.getDefault()
-                            .getService(IRouteletService.class);
-                    return routeletService.getEditProcessAction(result, result.getContentType());
                 }
             }
         }
