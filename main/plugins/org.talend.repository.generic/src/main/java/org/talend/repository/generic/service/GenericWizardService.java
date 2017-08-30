@@ -92,9 +92,9 @@ public class GenericWizardService implements IGenericWizardService {
         if(type == null){
             return false;
         }
-//        if(type.equals(ERepositoryObjectType.JDBC)){
-//            return true;
-//        }
+        if(type.equals(ERepositoryObjectType.JDBC)){
+            return true;
+        }
         return false;
     }
 

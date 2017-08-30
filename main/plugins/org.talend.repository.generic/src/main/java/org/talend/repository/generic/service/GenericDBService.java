@@ -79,10 +79,8 @@ public class GenericDBService implements IGenericDBService{
         DynamicComposite dynamicComposite = new DynamicComposite(composite, SWT.H_SCROLL | SWT.V_SCROLL | SWT.NO_FOCUS, EComponentCategory.BASIC,
                 baseElement, true, composite.getBackground(), forms.get(0), false);
         dynamicComposite.setLayoutData(createMainFormData(true));
-//        dynamicComposite.setWizardPropertyChangeListener(this);
         dynamicComposite.setConnectionItem((ConnectionItem)property.getItem());
         map.put("DynamicComposite", dynamicComposite);
-//        addCheckListener(dynamicComposite.getChecker());
 
         Composite contextParentComp = new Composite(composite, SWT.NONE);
         contextParentComp.setLayoutData(createFooterFormData(dynamicComposite));
