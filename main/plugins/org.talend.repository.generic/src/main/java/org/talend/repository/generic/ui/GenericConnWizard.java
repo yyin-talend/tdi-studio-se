@@ -12,6 +12,7 @@
 // ============================================================================
 package org.talend.repository.generic.ui;
 
+import java.lang.reflect.Field;
 import java.util.List;
 
 import org.apache.commons.lang.exception.ExceptionUtils;
@@ -104,6 +105,8 @@ public class GenericConnWizard extends CheckLastVersionRepositoryWizard {
     private IGenericWizardService wizardService;
 
     private ComponentService compService;
+    
+    private static String location = "repositoryLocation";//$NON-NLS-1$
 
     public GenericConnWizard(IWorkbench workbench, boolean creation, RepositoryNode node, String[] existingNames) {
         this(workbench, creation, null, node, existingNames);
@@ -182,6 +185,7 @@ public class GenericConnWizard extends CheckLastVersionRepositoryWizard {
         // initialize the context mode
         ConnectionContextHelper.checkContextMode(connectionItem);
         setHelpAvailable(false);
+        setRepositoryLocation(wizard, location, connectionItem.getProperty().getId());
     }
 
     @Override
@@ -224,6 +228,23 @@ public class GenericConnWizard extends CheckLastVersionRepositoryWizard {
         IGenericWizardInternalService internalService = new GenericWizardInternalService();
         return internalService.getComponentWizard(typeName, connectionProperty.getId());
     }
+    
+    private void setRepositoryLocation(Object objectClass,String key, Object value){
+        Field declaredField = null;
+        try {
+            declaredField = objectClass.getClass().getDeclaredField(key);
+        } catch (NoSuchFieldException | SecurityException e) {
+            try {
+                declaredField = objectClass.getClass().getSuperclass().getDeclaredField(key);
+            } catch (NoSuchFieldException | SecurityException e1) {
+            }
+        } 
+        declaredField.setAccessible(true);
+        try {
+            declaredField.set(objectClass, value);
+        } catch (IllegalArgumentException | IllegalAccessException e) {
+        }
+    }
 
     @Override
     public boolean performFinish() {
@@ -257,6 +278,7 @@ public class GenericConnWizard extends CheckLastVersionRepositoryWizard {
             public void run(IProgressMonitor monitor) throws CoreException {
                 try {
                     Form form = wizPage.getForm();
+                    setRepositoryLocation(form.getProperties(), location, connectionItem.getProperty().getId());
                     if (form.isCallAfterFormFinish()) {
                         if (creation) {
                             factory.create(connectionItem, pathToSave);
