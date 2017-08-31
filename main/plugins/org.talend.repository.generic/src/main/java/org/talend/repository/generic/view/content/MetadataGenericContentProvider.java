@@ -55,6 +55,9 @@ public class MetadataGenericContentProvider extends ProjectRepoDirectChildrenNod
                 types.add(ERepositoryObjectType.JDBC);
             }
             for(ERepositoryObjectType type : types){
+                if(RepositoryManagerHelper.findRepositoryView() == null){
+                    return nodes;
+                }
                 RepositoryNode jdbc = new RepositoryNode(null, (RepositoryNode)RepositoryManagerHelper.findRepositoryView().getRoot(), ENodeType.SYSTEM_FOLDER);
                 jdbc.setProperties(EProperties.CONTENT_TYPE, type);
                 jdbc.setProperties(EProperties.LABEL, type.getType());
