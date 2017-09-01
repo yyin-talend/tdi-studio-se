@@ -28,6 +28,7 @@ import org.talend.components.api.properties.ComponentProperties;
 import org.talend.components.api.wizard.ComponentWizard;
 import org.talend.components.api.wizard.ComponentWizardDefinition;
 import org.talend.components.api.wizard.WizardImageType;
+import org.talend.core.GlobalServiceRegister;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.metadata.builder.connection.Connection;
 import org.talend.core.model.metadata.builder.connection.MetadataTable;
@@ -36,6 +37,7 @@ import org.talend.core.model.process.Element;
 import org.talend.core.model.process.INode;
 import org.talend.core.model.properties.Item;
 import org.talend.core.model.repository.ERepositoryObjectType;
+import org.talend.core.runtime.services.IGenericDBService;
 import org.talend.core.runtime.services.IGenericWizardService;
 import org.talend.daikon.properties.presentation.Form;
 import org.talend.designer.core.generic.model.GenericElementParameter;
@@ -92,10 +94,16 @@ public class GenericWizardService implements IGenericWizardService {
         if(type == null){
             return false;
         }
-        if(type.equals(ERepositoryObjectType.JDBC)){
-            return true;
+        List<ERepositoryObjectType> extraTypes = new ArrayList<ERepositoryObjectType>();
+        IGenericDBService dbService = null;
+        if (GlobalServiceRegister.getDefault().isServiceRegistered(IGenericDBService.class)) {
+            dbService = (IGenericDBService) GlobalServiceRegister.getDefault().getService(
+                    IGenericDBService.class);
         }
-        return false;
+        if(dbService != null){
+            extraTypes.addAll(dbService.getExtraTypes());
+        }
+        return extraTypes.contains(type);
     }
 
     @Override

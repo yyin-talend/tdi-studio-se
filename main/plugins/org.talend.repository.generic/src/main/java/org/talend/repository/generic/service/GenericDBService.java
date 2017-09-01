@@ -44,6 +44,7 @@ import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.Property;
 import org.talend.core.repository.model.ProxyRepositoryFactory;
+import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.runtime.services.IGenericDBService;
 import org.talend.core.ui.check.IChecker;
 import org.talend.daikon.properties.presentation.Form;
@@ -222,6 +223,15 @@ public class GenericDBService implements IGenericDBService{
         }else if(composite instanceof DynamicComposite){
             ((DynamicComposite)composite).setConnectionItem(connectionItem);
         }
+    }
+
+    @Override
+    public List<ERepositoryObjectType> getExtraTypes() {
+        List<ERepositoryObjectType> extraTypes = new ArrayList<ERepositoryObjectType>();
+        if(ERepositoryObjectType.JDBC != null){
+            extraTypes.add(ERepositoryObjectType.JDBC);
+        }
+        return extraTypes;
     }
 
 }

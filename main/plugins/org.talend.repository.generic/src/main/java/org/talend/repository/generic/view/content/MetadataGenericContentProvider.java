@@ -22,9 +22,11 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.ui.navigator.CommonNavigator;
 import org.eclipse.ui.navigator.CommonViewer;
+import org.talend.core.GlobalServiceRegister;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.utils.RepositoryManagerHelper;
 import org.talend.core.repository.model.ProjectRepositoryNode;
+import org.talend.core.runtime.services.IGenericDBService;
 import org.talend.repository.model.IRepositoryNode.ENodeType;
 import org.talend.repository.model.IRepositoryNode.EProperties;
 import org.talend.repository.model.RepositoryNode;
@@ -50,11 +52,16 @@ public class MetadataGenericContentProvider extends ProjectRepoDirectChildrenNod
         
         private Set<RepositoryNode> makeUpHideNodes(Set<RepositoryNode> topNodes){
             Set<RepositoryNode> nodes = new HashSet<RepositoryNode>(topNodes);
-            List<ERepositoryObjectType> types = new ArrayList<ERepositoryObjectType>();
-            if(ERepositoryObjectType.JDBC != null){
-                types.add(ERepositoryObjectType.JDBC);
+            List<ERepositoryObjectType> extraTypes = new ArrayList<ERepositoryObjectType>();
+            IGenericDBService dbService = null;
+            if (GlobalServiceRegister.getDefault().isServiceRegistered(IGenericDBService.class)) {
+                dbService = (IGenericDBService) GlobalServiceRegister.getDefault().getService(
+                        IGenericDBService.class);
             }
-            for(ERepositoryObjectType type : types){
+            if(dbService != null){
+                extraTypes.addAll(dbService.getExtraTypes());
+            }
+            for(ERepositoryObjectType type : extraTypes){
                 if(RepositoryManagerHelper.findRepositoryView() == null){
                     return nodes;
                 }
