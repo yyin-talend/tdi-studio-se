@@ -305,7 +305,10 @@ public class DataProcess implements IGeneratingProcess {
 
         dataNode.setMetadataList(metadataList);
         dataNode.setComponent(graphicalNode.getComponent());
-        dataNode.setComponentProperties(graphicalNode.getComponentProperties());
+        if (graphicalNode.getComponentProperties() != null && graphicalNode.getComponent() != null && graphicalNode.getComponent() instanceof AbstractBasicComponent) {
+            AbstractBasicComponent comp = (AbstractBasicComponent) graphicalNode.getComponent();
+            comp.initNodePropertiesFromSerialized(dataNode, graphicalNode.getComponentProperties().toSerialized());
+        }
         dataNode.setElementParameters(graphicalNode.getComponent().createElementParameters(dataNode));
         dataNode.setListConnector(graphicalNode.getListConnector());
         dataNode.setSubProcessContainTraceBreakpoint(graphicalNode.isSubProcessContainTraceBreakpoint());
@@ -3138,12 +3141,6 @@ public class DataProcess implements IGeneratingProcess {
         }
 
         copyElementParametersValue(graphicalNode, newGraphicalNode);
-        if (newGraphicalNode.getComponentProperties() != null) {
-            List<Form> forms = newGraphicalNode.getComponentProperties().getForms();
-            for (Form form : forms) {
-                newGraphicalNode.getComponentProperties().refreshLayout(form);
-            }
-        }
         newGraphicalNode.setDummy(graphicalNode.isDummy());
 
         ValidationRulesUtil.createRejectConnector(newGraphicalNode);
@@ -3178,7 +3175,6 @@ public class DataProcess implements IGeneratingProcess {
         }
         newGraphicalNode.setActivate(graphicalNode.isActivate());
         newGraphicalNode.setStart(graphicalNode.isStart());
-        newGraphicalNode.setComponentProperties(graphicalNode.getComponentProperties());
 
         return newGraphicalNode;
     }
