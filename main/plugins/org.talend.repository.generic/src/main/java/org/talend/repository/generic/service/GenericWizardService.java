@@ -39,6 +39,7 @@ import org.talend.core.model.properties.Item;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.runtime.services.IGenericDBService;
 import org.talend.core.runtime.services.IGenericWizardService;
+import org.talend.core.utils.ReflectionUtils;
 import org.talend.daikon.properties.presentation.Form;
 import org.talend.designer.core.generic.model.GenericElementParameter;
 import org.talend.designer.core.generic.utils.ComponentsUtils;
@@ -82,6 +83,21 @@ public class GenericWizardService implements IGenericWizardService {
             String folder = "metadata/" + name; //$NON-NLS-1$
             int ordinal = 100;
             ERepositoryObjectType repositoryType = internalService.createRepositoryType(name, displayName, name, folder, ordinal);
+            if (curParentNode == null) {
+                Class<ComponentProperties> jdbcClass = ReflectionUtils.getClass(
+                        "org.talend.components.jdbc.wizard.JDBCConnectionWizardProperties",
+                        wizardDefinition.getClass().getClassLoader());
+                if (jdbcClass != null && wizardDefinition.supportsProperties(jdbcClass)) {
+                    IGenericDBService dbService = null;
+                    if (GlobalServiceRegister.getDefault().isServiceRegistered(IGenericDBService.class)) {
+                        dbService = (IGenericDBService) GlobalServiceRegister.getDefault().getService(IGenericDBService.class);
+                    }
+                    if (dbService != null) {
+                        dbService.getExtraTypes().add(repositoryType);
+                    }
+
+                }
+            }
             if (curParentNode != null && !needHide(repositoryType)) {
                 repNodes.add(internalService.createRepositoryNode(curParentNode, wizardDefinition.getDisplayName(),
                         repositoryType, ENodeType.SYSTEM_FOLDER));
@@ -89,18 +105,17 @@ public class GenericWizardService implements IGenericWizardService {
         }
         return repNodes;
     }
-    
-    private boolean needHide(ERepositoryObjectType type){
-        if(type == null){
+
+    private boolean needHide(ERepositoryObjectType type) {
+        if (type == null) {
             return false;
         }
         List<ERepositoryObjectType> extraTypes = new ArrayList<ERepositoryObjectType>();
         IGenericDBService dbService = null;
         if (GlobalServiceRegister.getDefault().isServiceRegistered(IGenericDBService.class)) {
-            dbService = (IGenericDBService) GlobalServiceRegister.getDefault().getService(
-                    IGenericDBService.class);
+            dbService = (IGenericDBService) GlobalServiceRegister.getDefault().getService(IGenericDBService.class);
         }
-        if(dbService != null){
+        if (dbService != null) {
             extraTypes.addAll(dbService.getExtraTypes());
         }
         return extraTypes.contains(type);
@@ -230,13 +245,13 @@ public class GenericWizardService implements IGenericWizardService {
                 metadataTables = Arrays.asList(SchemaUtils.getMetadataTable(genericConnection, tableLabel, SubContainer.class));
             }
             for (MetadataTable metadataTable : metadataTables) {
-            	if (metadataTable == null) {
-            		continue;
-            	}
+                if (metadataTable == null) {
+                    continue;
+                }
                 for (TaggedValue taggedValue : metadataTable.getTaggedValue()) {
                     if (IComponentConstants.COMPONENT_PROPERTIES_TAG.equals(taggedValue.getTag())) {
-                        ComponentProperties compPros = ComponentsUtils.getComponentPropertiesFromSerialized(
-                                taggedValue.getValue(), connection, false);
+                        ComponentProperties compPros = ComponentsUtils
+                                .getComponentPropertiesFromSerialized(taggedValue.getValue(), connection, false);
                         if (compPros != null && !componentProperties.contains(compPros)) {
                             compPros.updateNestedProperties(cp);
                             componentProperties.add(compPros);

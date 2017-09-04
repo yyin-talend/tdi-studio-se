@@ -69,6 +69,8 @@ import org.talend.repository.model.IProxyRepositoryFactory;
  */
 public class GenericDBService implements IGenericDBService{
     
+    private List<ERepositoryObjectType> extraTypes = new ArrayList<ERepositoryObjectType>();
+    
     @Override
     public Map<String, Composite> creatDBDynamicComposite(Composite composite, EComponentCategory sectionCategory, boolean isReadOnly,
             Property property, String typeName) {
@@ -227,10 +229,6 @@ public class GenericDBService implements IGenericDBService{
 
     @Override
     public List<ERepositoryObjectType> getExtraTypes() {
-        List<ERepositoryObjectType> extraTypes = new ArrayList<ERepositoryObjectType>();
-        if(ERepositoryObjectType.JDBC != null){
-            extraTypes.add(ERepositoryObjectType.JDBC);
-        }
         return extraTypes;
     }
 
