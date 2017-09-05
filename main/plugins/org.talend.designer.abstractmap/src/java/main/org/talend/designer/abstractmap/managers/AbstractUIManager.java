@@ -113,6 +113,10 @@ public abstract class AbstractUIManager {
         // do nothing.
     }
 
+    public void openAutoMappingDialog() {
+        // do nothing.
+    }
+
     public abstract AbstractMapperManager getAbstractMapperManager();
 
     public abstract void refreshBackground(boolean forceRecalculate, boolean firstExecutionAfterTime);
