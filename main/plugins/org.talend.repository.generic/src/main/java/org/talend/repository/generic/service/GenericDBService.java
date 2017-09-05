@@ -33,8 +33,10 @@ import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
+import org.talend.components.api.properties.ComponentProperties;
 import org.talend.components.api.service.ComponentService;
 import org.talend.components.api.wizard.ComponentWizard;
+import org.talend.components.api.wizard.ComponentWizardDefinition;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.metadata.builder.connection.Connection;
 import org.talend.core.model.process.EComponentCategory;
@@ -55,13 +57,16 @@ import org.talend.designer.core.model.FakeElement;
 import org.talend.designer.core.model.components.ElementParameter;
 import org.talend.repository.generic.internal.IGenericWizardInternalService;
 import org.talend.repository.generic.internal.service.GenericWizardInternalService;
+import org.talend.repository.generic.model.genericMetadata.GenericConnection;
 import org.talend.repository.generic.model.genericMetadata.GenericConnectionItem;
 import org.talend.repository.generic.model.genericMetadata.GenericMetadataFactory;
 import org.talend.repository.generic.persistence.GenericRepository;
+import org.talend.repository.generic.ui.DBDynamicComposite;
 import org.talend.repository.generic.ui.DynamicComposite;
 import org.talend.repository.generic.ui.context.ContextComposite;
 import org.talend.repository.generic.ui.context.handler.GenericContextHandler;
 import org.talend.repository.generic.update.GenericUpdateManager;
+import org.talend.repository.generic.util.GenericWizardServiceFactory;
 import org.talend.repository.model.IProxyRepositoryFactory;
 
 /**
@@ -72,14 +77,36 @@ public class GenericDBService implements IGenericDBService{
     private List<ERepositoryObjectType> extraTypes = new ArrayList<ERepositoryObjectType>();
     
     @Override
-    public Map<String, Composite> creatDBDynamicComposite(Composite composite, EComponentCategory sectionCategory, boolean isReadOnly,
+    public Map<String, Composite> creatDBDynamicComposite(Composite composite, EComponentCategory sectionCategory, boolean isReadOnly, boolean isCreation,
             Property property, String typeName) {
         Map<String, Composite> map = new HashMap<String, Composite>();
         IGenericWizardInternalService internalService = new GenericWizardInternalService();
-        ComponentWizard componentWizard = internalService.getComponentWizard(typeName, property.getId());
+        Item item = property.getItem();
+        
+        ComponentWizard componentWizard = internalService.getComponentWizard(typeName, property.getId());;
+        if(!isCreation && (item instanceof GenericConnectionItem)){
+            GenericConnectionItem gitem = (GenericConnectionItem) item;
+            GenericConnection connection = (GenericConnection) gitem.getConnection();
+            ComponentProperties componentProperties = ComponentsUtils
+                    .getComponentPropertiesFromSerialized(connection.getCompProperties(), connection);
+            List<ComponentWizard> wizards = GenericWizardServiceFactory.getGenericWizardInternalService()
+                    .getComponentWizardsForProperties(componentProperties, gitem.getProperty().getId());
+            for (ComponentWizard wizard : wizards) {
+                ComponentWizardDefinition wizardDefinition = wizard.getDefinition();
+                if (wizardDefinition.isTopLevel()) {
+                    continue;
+                }
+                String wizardName = wizardDefinition.getName();
+                if (wizardName.toLowerCase().contains("edit")) { //$NON-NLS-1$
+                    componentWizard = wizard;
+                    break;
+                }
+            }
+        }
+        
         List<Form> forms = componentWizard.getForms();
         Element baseElement = new FakeElement(forms.get(0).getName());
-        DynamicComposite dynamicComposite = new DynamicComposite(composite, SWT.H_SCROLL | SWT.V_SCROLL | SWT.NO_FOCUS, EComponentCategory.BASIC,
+        DBDynamicComposite dynamicComposite = new DBDynamicComposite(composite, SWT.H_SCROLL | SWT.V_SCROLL | SWT.NO_FOCUS, EComponentCategory.BASIC,
                 baseElement, true, composite.getBackground(), forms.get(0), false);
         dynamicComposite.setLayoutData(createMainFormData(true));
         dynamicComposite.setConnectionItem((ConnectionItem)property.getItem());

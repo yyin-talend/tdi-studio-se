@@ -36,6 +36,8 @@ import org.talend.repository.view.di.metadata.action.MetedataNodeActionProvier;
  *
  */
 public class GenericNodeActionProvier extends MetedataNodeActionProvier {
+    
+    public static final String JDBC_COMPONENT_WIZARD_NAME = "JDBC.edit";
 
     private Map<String, ITreeContextualAction> actionsMap = null;
 
@@ -83,6 +85,9 @@ public class GenericNodeActionProvier extends MetedataNodeActionProvier {
         } else {
             ComponentWizardDefinition definition = wizard.getDefinition();
             String wizardName = definition.getName();
+            if(JDBC_COMPONENT_WIZARD_NAME.equals(wizardName)){
+                return;
+            }
             action = actionsMap.get(wizardName);
             if (action == null) {
                 action = createAction(wizard, sel);
