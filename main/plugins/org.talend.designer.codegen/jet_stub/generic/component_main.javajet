@@ -164,6 +164,18 @@ if(hasInput){
             
             %>
             org.apache.avro.generic.IndexedRecord data_<%=cid%> = incomingEnforcer_<%=cid%>.getCurrentRecord();
+            
+            <%
+            boolean isParallelize ="true".equalsIgnoreCase(ElementParameterParser.getValue(node, "__PARALLELIZE__"));
+            if (isParallelize) {
+            	String sourceComponentId = inputConn.getSource().getUniqueName();
+            	if(sourceComponentId!=null && sourceComponentId.contains("tAsyncIn")) {
+            	%>
+            	globalMap.put(buffersSizeKey_<%=cid%>, buffersSize_<%=sourceComponentId%>);
+            	<%
+            	}
+            }
+            %>
 
             writer_<%=cid%>.write(data_<%=cid%>);
             
