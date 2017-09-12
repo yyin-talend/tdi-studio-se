@@ -710,7 +710,7 @@ public class Component extends AbstractBasicComponent {
             param.setDisplayName(EParameterName.PARALLELIZE_NUMBER.getDisplayName());
             param.setFieldType(EParameterFieldType.TEXT);
             param.setCategory(EComponentCategory.ADVANCED);
-            param.setNumRow(200);
+            param.setNumRow(201);
             //param.setShowIf(EParameterName.PARALLELIZE.getName() + " == 'true'"); //$NON-NLS-1$
             //FIXME how to do the show if? now only show it always
             param.setShow(true);
@@ -724,7 +724,7 @@ public class Component extends AbstractBasicComponent {
             param.setDisplayName(EParameterName.PARALLELIZE_KEEP_EMPTY.getDisplayName());
             param.setFieldType(EParameterFieldType.CHECK);
             param.setCategory(EComponentCategory.ADVANCED);
-            param.setNumRow(200);
+            param.setNumRow(202);
             param.setShow(false);
             param.setDefaultValue(param.getValue());
             listParam.add(param);
