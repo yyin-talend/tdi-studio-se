@@ -20,7 +20,9 @@ import org.apache.avro.Schema;
 import org.eclipse.emf.common.util.EList;
 import org.talend.commons.runtime.model.components.IComponentConstants;
 import org.talend.components.api.properties.ComponentProperties;
+import org.talend.core.GlobalServiceRegister;
 import org.talend.core.model.metadata.IMetadataTable;
+import org.talend.core.model.metadata.MetadataManager;
 import org.talend.core.model.metadata.MetadataToolAvroHelper;
 import org.talend.core.model.metadata.MetadataToolHelper;
 import org.talend.core.model.metadata.builder.ConvertionHelper;
@@ -33,23 +35,145 @@ import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.INode;
 import org.talend.core.model.process.INodeConnector;
 import org.talend.core.model.properties.ConnectionItem;
+import org.talend.core.model.repository.ERepositoryObjectType;
+import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.repository.model.ProxyRepositoryFactory;
 import org.talend.core.repository.model.repositoryObject.MetadataTableRepositoryObject;
+import org.talend.core.runtime.services.IGenericDBService;
+import org.talend.cwm.helper.CatalogHelper;
+import org.talend.cwm.helper.ConnectionHelper;
 import org.talend.cwm.helper.PackageHelper;
+import org.talend.cwm.helper.SchemaHelper;
+import org.talend.cwm.relational.RelationalFactory;
 import org.talend.daikon.properties.Properties;
-import org.talend.daikon.properties.PropertiesImpl;
-import org.talend.daikon.serialize.PostDeserializeSetup;
 import org.talend.daikon.serialize.SerializerDeserializer;
 import org.talend.designer.core.generic.model.GenericElementParameter;
 import org.talend.designer.core.generic.model.GenericNodeConnector;
-import org.talend.metadata.managment.ui.wizard.context.MetadataContextPropertyValueEvaluator;
 import org.talend.repository.model.IProxyRepositoryFactory;
 
 import orgomg.cwm.objectmodel.core.CoreFactory;
+import orgomg.cwm.objectmodel.core.ModelElement;
 import orgomg.cwm.objectmodel.core.TaggedValue;
+import orgomg.cwm.resource.relational.Catalog;
+import orgomg.cwm.resource.relational.impl.SchemaImpl;
 
 public class SchemaUtils {
+    
+    public static MetadataTable createCatalog(String tableName, String tableType, ComponentProperties properties, Connection connection,
+            String schemaPropertyName, String catalogName, String schemaName) {
+        if (tableName == null || properties == null || schemaPropertyName == null) {
+            return null;
+        }
+        
+        boolean hasSchemaInCatalog = false;
+        boolean exist = false;
+        List<Catalog> catalogList = new ArrayList<Catalog>();
+        Catalog catalog = (Catalog) ConnectionHelper.getPackage(catalogName, connection, Catalog.class);
+        orgomg.cwm.resource.relational.Schema schema = (orgomg.cwm.resource.relational.Schema)
+                ConnectionHelper.getPackage(schemaName, connection, orgomg.cwm.resource.relational.Schema.class);
+        List<orgomg.cwm.resource.relational.Schema> subschemas = new ArrayList<orgomg.cwm.resource.relational.Schema>();
+        
+        if(catalog != null){
+            subschemas = CatalogHelper.getSchemas(catalog);
+            hasSchemaInCatalog = subschemas.size() > 0;
+            exist = true;
+        }else{
+            catalog = CatalogHelper.createCatalog(catalogName);
+            catalogList.add(catalog);
+        }
+        
+        MetadataTable metadataTable = createTable(tableName, tableType, properties, connection, schemaPropertyName);
+        
+        if (catalog != null && !hasSchemaInCatalog) { // only catalog
+            PackageHelper.addMetadataTable(metadataTable, catalog);
+        } else if (catalog != null && hasSchemaInCatalog) { // both schema and catalog
 
+            for (orgomg.cwm.resource.relational.Schema current : subschemas) {
+                if (current.getName().equals(schemaName)) {
+                    schema = current;
+                    break;
+                }
+            }
+
+            if (schema != null) {
+                if (schema instanceof SchemaImpl) {
+                    SchemaImpl schemaElement = (SchemaImpl) schema;
+                    EList<ModelElement> ownedElement = schemaElement.getOwnedElement();
+                    ownedElement.add(metadataTable);
+
+                }
+            } else{
+                for (int i = 0; i < subschemas.size(); i++) {
+                    SchemaImpl schemaElement = (SchemaImpl) subschemas.get(i);
+                    EList<ModelElement> ownedElement = schemaElement.getOwnedElement();
+                    ownedElement.add(metadataTable);
+                }
+            }
+        } 
+        if(!exist){
+            ConnectionHelper.addCatalogs(catalogList, connection);
+        }
+        return metadataTable;
+    }
+    
+    public static MetadataTable createTable(String tableName, String tableType, ComponentProperties properties, Connection connection, String schemaPropertyName){
+        IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
+        MetadataTable metadataTable = null;
+        if(tableType.equals(MetadataManager.TYPE_TABLE)){
+            metadataTable = RelationalFactory.eINSTANCE.createTdTable();
+        }else if(tableType.equals(MetadataManager.TYPE_VIEW)){
+            metadataTable = RelationalFactory.eINSTANCE.createTdView();
+        }
+        metadataTable.setId(factory.getNextId());
+        metadataTable.setName(tableName);
+        metadataTable.setSourceName(tableName);
+        metadataTable.setLabel(tableName);
+        metadataTable.setTableType(tableType);
+        
+        Object schemaObj = ComponentsUtils.getGenericPropertyValue(properties, schemaPropertyName);
+        if (schemaObj instanceof String) {
+            Schema avroSchema = new Schema.Parser().parse((String) schemaObj);
+            convertComponentSchemaIntoTalendSchema(avroSchema, metadataTable);
+        } else if (schemaObj instanceof Schema) {
+            convertComponentSchemaIntoTalendSchema((Schema) schemaObj, metadataTable);
+        }
+        
+        IMetadataTable iMetadataTable = MetadataToolHelper.convert(metadataTable);
+        updateComponentSchema(properties, schemaPropertyName, iMetadataTable);
+        metadataTable = ConvertionHelper.convert(iMetadataTable, tableType);
+        properties.setValue(schemaPropertyName, convertTalendSchemaIntoComponentSchema(metadataTable));
+        TaggedValue serializedPropsTV = CoreFactory.eINSTANCE.createTaggedValue();
+        serializedPropsTV.setTag(IComponentConstants.COMPONENT_PROPERTIES_TAG);
+        serializedPropsTV.setValue(properties.toSerialized());
+        metadataTable.getTaggedValue().add(serializedPropsTV);
+        TaggedValue schemaPropertyTV = CoreFactory.eINSTANCE.createTaggedValue();
+        schemaPropertyTV.setTag(IComponentConstants.COMPONENT_SCHEMA_TAG);
+        schemaPropertyTV.setValue(schemaPropertyName);
+        metadataTable.getTaggedValue().add(schemaPropertyTV);
+        
+        return metadataTable;
+    }
+
+    public static MetadataTable createSchema(String tableName, String tableType, ComponentProperties properties, Connection connection,
+            String schemaPropertyName, String schemaName) {
+        if (tableName == null || properties == null || schemaPropertyName == null) {
+            return null;
+        }
+        List<orgomg.cwm.resource.relational.Schema> schemaList = new ArrayList<orgomg.cwm.resource.relational.Schema>();
+        orgomg.cwm.resource.relational.Schema schema = (orgomg.cwm.resource.relational.Schema)
+                ConnectionHelper.getPackage(schemaName, connection, orgomg.cwm.resource.relational.Schema.class);
+        if(schema == null){
+            schema = SchemaHelper.createSchema(schemaName);
+            schemaList.add(schema);
+        }
+        
+        MetadataTable metadataTable = createTable(tableName, tableType, properties, connection, schemaPropertyName);
+        
+        PackageHelper.addMetadataTable(metadataTable, schema);
+        ConnectionHelper.addSchemas(schemaList, connection);
+        return metadataTable;
+    }
+    
     public static MetadataTable createSchema(String name, ComponentProperties properties, String schemaPropertyName) {
         if (name == null || properties == null || schemaPropertyName == null) {
             return null;
@@ -87,7 +211,7 @@ public class SchemaUtils {
             return;
         }
         for (Schema.Field field : schema.getFields()) {
-            MetadataColumn metadataColumn = MetadataToolAvroHelper.convertFromAvro(field);
+            MetadataColumn metadataColumn = MetadataToolAvroHelper.convertFromAvroToTdColumn(field);
             metadataTable.getColumns().add(metadataColumn);
         }
     }
@@ -232,5 +356,94 @@ public class SchemaUtils {
         }
         return null;
     }
-
+    
+    public static MetadataTable getMetadataTable(Connection connection, MetadataTable mtable, IRepositoryViewObject object) {
+        List<MetadataTable> tables = new ArrayList<MetadataTable>();
+        ERepositoryObjectType type = object.getRepositoryObjectType();
+        if(object instanceof MetadataTableRepositoryObject){
+            IRepositoryViewObject viewObject = ((MetadataTableRepositoryObject)object).getViewObject();
+            if(viewObject != null){
+                type = viewObject.getRepositoryObjectType();   
+            }
+        }
+        if(isExtraDBType(type)){
+            tables.addAll(ConnectionHelper.getTables(connection));
+        }else{
+            tables.addAll(getMetadataTables(connection, mtable.eContainer().getClass()));
+        }
+        for (MetadataTable table : tables) {
+            if (mtable.getLabel() != null && mtable.getLabel().equals(table.getLabel())) {
+                return table;
+            }
+        }
+        return null;
+    }
+    
+    public static boolean isExtraDBType(ERepositoryObjectType type){
+        if(type == null){
+            return false;
+        }
+        IGenericDBService dbService = null;
+        if (GlobalServiceRegister.getDefault().isServiceRegistered(IGenericDBService.class)) {
+            dbService = (IGenericDBService) GlobalServiceRegister.getDefault().getService(
+                    IGenericDBService.class);
+        }
+        if(dbService != null){
+            return dbService.getExtraTypes().contains(type);
+        }
+        return false;
+    }
+    
+    private static List<SchemaBean> getSchemaBean(){
+        List<SchemaBean> schemaList = new ArrayList<SchemaBean>();
+        SchemaBean schema = new SchemaBean();
+        schema.setType("CATALOG");
+        schema.setName("test");
+        
+        List<TableBean> tableList = new ArrayList<TableBean>();
+        TableBean bean1 = new TableBean();
+        bean1.setName("table1");
+        bean1.setType("TABLE");
+        
+        TableBean bean2 = new TableBean();
+        bean2.setName("table2");
+        bean2.setType("TABLE");
+        
+        TableBean bean3 = new TableBean();
+        bean3.setName("table3");
+        bean3.setType("TABLE");
+        
+        TableBean bean4 = new TableBean();
+        bean4.setName("table_view");
+        bean4.setType("VIEW");
+        
+        tableList.add(bean1);
+        tableList.add(bean2);
+        tableList.add(bean3);
+        tableList.add(bean4);
+        
+        schema.setTables(tableList);
+        schemaList.add(schema);
+        return schemaList;
+    }
+    
+    public static void createTTT(String name, ComponentProperties properties, Connection connection, String schemaPropertyName){
+        List<SchemaBean> schemaList = getSchemaBean();
+        for(SchemaBean schema:schemaList){
+            String schemaName = schema.getName();
+            String schemaType = schema.getType();
+            List<TableBean> tables = schema.getTables();
+            for(TableBean tale : tables){
+                if(schemaType.equals("CATALOG")){
+                    createCatalog(tale.getName(), tale.getType(), properties, connection,
+                            schemaPropertyName, schemaName, "");
+                }else if(schemaType.equals("SCHEMA")){
+                    createSchema(tale.getName(), tale.getType(), properties, connection,
+                            schemaPropertyName, schemaName);
+                }
+                
+            }
+        }
+    }
+    
 }
