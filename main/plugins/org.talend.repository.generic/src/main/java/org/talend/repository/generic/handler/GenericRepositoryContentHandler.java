@@ -26,12 +26,10 @@ import org.talend.core.repository.model.ProxyRepositoryFactory;
 import org.talend.core.repository.model.repositoryObject.MetadataTableRepositoryObject;
 import org.talend.core.repository.utils.RepositoryNodeManager;
 import org.talend.core.repository.utils.XmiResourceManager;
-import org.talend.core.runtime.services.IGenericDBService;
 import org.talend.cwm.helper.ConnectionHelper;
 import org.talend.cwm.helper.PackageHelper;
 import org.talend.cwm.helper.SubItemHelper;
 import org.talend.designer.core.generic.utils.SchemaUtils;
-import org.talend.repository.generic.model.genericMetadata.GenericConnection;
 import org.talend.repository.generic.model.genericMetadata.GenericConnectionItem;
 import org.talend.repository.generic.model.genericMetadata.GenericMetadataFactory;
 import org.talend.repository.generic.model.genericMetadata.GenericMetadataPackage;
@@ -153,9 +151,9 @@ public class GenericRepositoryContentHandler extends AbstractRepositoryContentHa
             RepositoryNode node) {
         if (isRepObjType(type) || isRepObjType(repositoryObject.getRepositoryObjectType())) {
             Item item = repositoryObject.getProperty().getItem();
-            if (item instanceof GenericConnectionItem) {
-                GenericConnectionItem connItem = (GenericConnectionItem) item;
-                GenericConnection connection = (GenericConnection) connItem.getConnection();
+            if (item instanceof ConnectionItem) {
+                ConnectionItem connItem = (ConnectionItem) item;
+                Connection connection = (Connection) connItem.getConnection();
                 if(SchemaUtils.isExtraDBType(repositoryObject.getRepositoryObjectType())){
                     createTables(node, repositoryObject, connection);
                 }else{

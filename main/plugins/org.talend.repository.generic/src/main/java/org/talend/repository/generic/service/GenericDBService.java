@@ -57,9 +57,6 @@ import org.talend.designer.core.model.FakeElement;
 import org.talend.designer.core.model.components.ElementParameter;
 import org.talend.repository.generic.internal.IGenericWizardInternalService;
 import org.talend.repository.generic.internal.service.GenericWizardInternalService;
-import org.talend.repository.generic.model.genericMetadata.GenericConnection;
-import org.talend.repository.generic.model.genericMetadata.GenericConnectionItem;
-import org.talend.repository.generic.model.genericMetadata.GenericMetadataFactory;
 import org.talend.repository.generic.persistence.GenericRepository;
 import org.talend.repository.generic.ui.DBDynamicComposite;
 import org.talend.repository.generic.ui.DynamicComposite;
@@ -84,9 +81,9 @@ public class GenericDBService implements IGenericDBService{
         Item item = property.getItem();
         
         ComponentWizard componentWizard = internalService.getComponentWizard(typeName, property.getId());;
-        if(!isCreation && (item instanceof GenericConnectionItem)){
-            GenericConnectionItem gitem = (GenericConnectionItem) item;
-            GenericConnection connection = (GenericConnection) gitem.getConnection();
+        if(!isCreation && (item instanceof ConnectionItem)){
+            ConnectionItem gitem = (ConnectionItem) item;
+            Connection connection = (Connection) gitem.getConnection();
             ComponentProperties componentProperties = ComponentsUtils
                     .getComponentPropertiesFromSerialized(connection.getCompProperties(), connection);
             List<ComponentWizard> wizards = GenericWizardServiceFactory.getGenericWizardInternalService()
@@ -168,31 +165,6 @@ public class GenericDBService implements IGenericDBService{
         data.bottom = new FormAttachment(100, 0);
         return data;
     }
-    
-    @Override
-    public Connection createGenericConnection() {
-        return GenericMetadataFactory.eINSTANCE.createGenericConnection();
-    }
-
-    @Override
-    public ConnectionItem createGenericConnectionItem() {
-        return GenericMetadataFactory.eINSTANCE.createGenericConnectionItem();
-    }
-
-    @Override
-    public String getGenericConnectionType(Item item) {
-        if(item instanceof GenericConnectionItem){
-            return ((GenericConnectionItem)item).getTypeName();
-        }
-        return null;
-    }
-
-    @Override
-    public void setGenericConnectionType(String type, Item item) {
-        if(item instanceof GenericConnectionItem){
-            ((GenericConnectionItem)item).setTypeName(type);
-        }
-    }
 
     @Override
     public void dbWizardPerformFinish(ConnectionItem item, Form form, boolean creation, IPath pathToSave, List<IMetadataTable> oldMetadataTable) throws CoreException {
@@ -213,7 +185,7 @@ public class GenericDBService implements IGenericDBService{
                     }
                     factory.save(item);
                 } catch (Throwable e) {
-                    //e.printStackTrace();
+                    e.printStackTrace();
                     throw new CoreException(new Status(IStatus.ERROR, IGenericConstants.REPOSITORY_PLUGIN_ID,
                             "Error when saving the connection", e));
                 }

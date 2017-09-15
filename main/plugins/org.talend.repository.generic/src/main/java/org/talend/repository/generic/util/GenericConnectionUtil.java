@@ -19,8 +19,10 @@ import org.apache.commons.lang.StringUtils;
 import org.talend.components.api.properties.ComponentProperties;
 import org.talend.components.api.properties.ComponentReferenceProperties;
 import org.talend.components.api.wizard.ComponentWizard;
+import org.talend.core.model.metadata.builder.connection.Connection;
 import org.talend.core.model.process.INode;
 import org.talend.core.model.process.IProcess;
+import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.model.properties.Item;
 import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.daikon.properties.Properties;
@@ -109,11 +111,14 @@ public class GenericConnectionUtil {
             return Collections.EMPTY_LIST;
         }
         Item item = repObj.getProperty().getItem();
-        if(!(item instanceof GenericConnectionItem)){
+        if(!(item instanceof ConnectionItem)){
             return Collections.EMPTY_LIST;
         }
-        GenericConnectionItem gitem = (GenericConnectionItem) item;
-        GenericConnection connection = (GenericConnection) gitem.getConnection();
+        ConnectionItem gitem = (ConnectionItem) item;
+        Connection connection = (Connection) gitem.getConnection();
+        if(connection.getCompProperties() == null){
+            return Collections.EMPTY_LIST;
+        }
         ComponentProperties componentProperties = ComponentsUtils
                 .getComponentPropertiesFromSerialized(connection.getCompProperties(), connection);
         List<ComponentWizard> wizards = GenericWizardServiceFactory.getGenericWizardInternalService()
