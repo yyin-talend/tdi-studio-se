@@ -59,6 +59,12 @@ import orgomg.cwm.resource.relational.impl.SchemaImpl;
 
 public class SchemaUtils {
     
+    private static String CATALOG = "TABLE_CAT";
+    
+    private static String SCHEMA = "TABLE_SCHEMA";
+    
+    private static String TABLE_TYPE = "TABLE_TYPE";
+    
     public static MetadataTable createCatalog(String tableName, String tableType, ComponentProperties properties, Connection connection,
             String schemaPropertyName, String catalogName, String schemaName) {
         if (tableName == null || properties == null || schemaPropertyName == null) {
@@ -394,55 +400,24 @@ public class SchemaUtils {
         return false;
     }
     
-    private static List<SchemaBean> getSchemaBean(){
-        List<SchemaBean> schemaList = new ArrayList<SchemaBean>();
-        SchemaBean schema = new SchemaBean();
-        schema.setType("CATALOG");
-        schema.setName("test");
+    public static void createCatalog(String name, ComponentProperties properties, Connection connection, String schemaPropertyName){
+        Schema avroSchema = null;
+        Object schemaObj = ComponentsUtils.getGenericPropertyValue(properties, schemaPropertyName);
+        if (schemaObj instanceof String) {
+            avroSchema = new Schema.Parser().parse((String) schemaObj);
+        } else if (schemaObj instanceof Schema) {
+            avroSchema = (Schema) schemaObj;
+        }
+        String catalogName = avroSchema.getProp(CATALOG);
+        String schemaName = avroSchema.getProp(SCHEMA);
+        String tableType = avroSchema.getProp(TABLE_TYPE);
         
-        List<TableBean> tableList = new ArrayList<TableBean>();
-        TableBean bean1 = new TableBean();
-        bean1.setName("table1");
-        bean1.setType("TABLE");
-        
-        TableBean bean2 = new TableBean();
-        bean2.setName("table2");
-        bean2.setType("TABLE");
-        
-        TableBean bean3 = new TableBean();
-        bean3.setName("table3");
-        bean3.setType("TABLE");
-        
-        TableBean bean4 = new TableBean();
-        bean4.setName("table_view");
-        bean4.setType("VIEW");
-        
-        tableList.add(bean1);
-        tableList.add(bean2);
-        tableList.add(bean3);
-        tableList.add(bean4);
-        
-        schema.setTables(tableList);
-        schemaList.add(schema);
-        return schemaList;
-    }
-    
-    public static void createTTT(String name, ComponentProperties properties, Connection connection, String schemaPropertyName){
-        List<SchemaBean> schemaList = getSchemaBean();
-        for(SchemaBean schema:schemaList){
-            String schemaName = schema.getName();
-            String schemaType = schema.getType();
-            List<TableBean> tables = schema.getTables();
-            for(TableBean tale : tables){
-                if(schemaType.equals("CATALOG")){
-                    createCatalog(tale.getName(), tale.getType(), properties, connection,
-                            schemaPropertyName, schemaName, "");
-                }else if(schemaType.equals("SCHEMA")){
-                    createSchema(tale.getName(), tale.getType(), properties, connection,
-                            schemaPropertyName, schemaName);
-                }
-                
-            }
+        if(catalogName != null){
+            createCatalog(name, tableType, properties, connection,
+                    schemaPropertyName, catalogName, schemaName);
+        }else if(schemaName != null){
+            createSchema(name, tableType, properties, connection,
+                    schemaPropertyName, schemaName);
         }
     }
     
