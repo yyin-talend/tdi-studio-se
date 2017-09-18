@@ -67,7 +67,6 @@ import org.talend.metadata.managment.ui.wizard.context.MetadataContextPropertyVa
 import org.talend.repository.generic.i18n.Messages;
 import org.talend.repository.generic.internal.IGenericWizardInternalService;
 import org.talend.repository.generic.internal.service.GenericWizardInternalService;
-import org.talend.repository.generic.model.genericMetadata.GenericConnection;
 import org.talend.repository.generic.model.genericMetadata.SubContainer;
 import org.talend.repository.generic.util.GenericConnectionUtil;
 
@@ -114,10 +113,7 @@ public class DynamicComposite extends MissingSettingsMultiThreadDynamicComposite
     private void resetComponentProperties() {
         if (connectionItem != null) {
             Connection connection = connectionItem.getConnection();
-            if (connection instanceof GenericConnection) {
-                GenericConnection genericConnection = (GenericConnection) connection;
-                genericConnection.setCompProperties(form.getProperties().toSerialized());
-            }
+            connection.setCompProperties(form.getProperties().toSerialized());
         }
     }
 

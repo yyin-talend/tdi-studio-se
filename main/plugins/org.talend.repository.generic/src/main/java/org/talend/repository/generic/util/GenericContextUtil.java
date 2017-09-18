@@ -40,7 +40,6 @@ import org.talend.designer.core.model.utils.emf.talendfile.ContextType;
 import org.talend.metadata.managment.ui.model.IConnParamName;
 import org.talend.metadata.managment.ui.utils.ConnectionContextHelper;
 import org.talend.metadata.managment.ui.utils.GenericConnParamName;
-import org.talend.repository.generic.model.genericMetadata.GenericConnection;
 
 /**
  * created by ycbai on 2015年11月27日 Detailled comment
@@ -51,38 +50,37 @@ public class GenericContextUtil {
     public static List<IContextParameter> createContextParameters(String prefixName, Connection connection,
             Set<IConnParamName> paramSet) {
         List<IContextParameter> varList = new ArrayList<>();
-        if (connection instanceof GenericConnection) {
-            GenericConnection conn = (GenericConnection) connection;
-            if (conn == null || prefixName == null || paramSet == null || paramSet.isEmpty()) {
-                return Collections.emptyList();
-            }
-            String paramPrefix = prefixName + ConnectionContextHelper.LINE;
-            String paramName = null;
-            for (IConnParamName param : paramSet) {
-                if (param instanceof GenericConnParamName) {
-                    GenericConnParamName connParamName = (GenericConnParamName) param;
-                    String name = connParamName.getName();
-                    ComponentProperties componentProperties = getComponentProperties((GenericConnection) connection);
-                    Property<?> property = componentProperties.getValuedProperty(name);
-                    paramName = paramPrefix + connParamName.getContextVar();
 
-                    JavaType type = JavaTypesManager.STRING;
-                    if (property.isFlag(Property.Flags.ENCRYPT)) {
-                        type = JavaTypesManager.PASSWORD;
-                    }
-                    if (GenericTypeUtils.isIntegerType(property)) {
-                        type = JavaTypesManager.INTEGER;
-                    }
-                    String value = property == null || property.getValue() == null ? null
-                            : StringEscapeUtils.escapeJava(String.valueOf(property.getValue()));
-                    ConnectionContextHelper.createParameters(varList, paramName, value, type);
+        if (connection == null || prefixName == null || paramSet == null || paramSet.isEmpty()) {
+            return Collections.emptyList();
+        }
+        String paramPrefix = prefixName + ConnectionContextHelper.LINE;
+        String paramName = null;
+        for (IConnParamName param : paramSet) {
+            if (param instanceof GenericConnParamName) {
+                GenericConnParamName connParamName = (GenericConnParamName) param;
+                String name = connParamName.getName();
+                ComponentProperties componentProperties = getComponentProperties(connection);
+                Property<?> property = componentProperties.getValuedProperty(name);
+                paramName = paramPrefix + connParamName.getContextVar();
+
+                JavaType type = JavaTypesManager.STRING;
+                if (property.isFlag(Property.Flags.ENCRYPT)) {
+                    type = JavaTypesManager.PASSWORD;
                 }
+                if (GenericTypeUtils.isIntegerType(property)) {
+                    type = JavaTypesManager.INTEGER;
+                }
+                String value = property == null || property.getValue() == null ? null
+                        : StringEscapeUtils.escapeJava(String.valueOf(property.getValue()));
+                ConnectionContextHelper.createParameters(varList, paramName, value, type);
             }
         }
+    
         return varList;
     }
 
-    private static ComponentProperties getComponentProperties(GenericConnection connection) {
+    private static ComponentProperties getComponentProperties(Connection connection) {
         String compPropertiesStr = connection.getCompProperties();
         if (compPropertiesStr != null) {
             return ComponentsUtils.getComponentPropertiesFromSerialized(compPropertiesStr, connection);
@@ -94,21 +92,19 @@ public class GenericContextUtil {
         if (connection == null) {
             return;
         }
-        if (connection instanceof GenericConnection) {
-            GenericConnection genericConn = (GenericConnection) connection;
-            ComponentProperties componentProperties = getComponentProperties(genericConn);
-            String originalVariableName = prefixName + ConnectionContextHelper.LINE;
-            String genericVariableName = null;
-            for (IConnParamName param : paramSet) {
-                if (param instanceof GenericConnParamName) {
-                    GenericConnParamName genericParam = (GenericConnParamName) param;
-                    String paramVarName = genericParam.getContextVar();
-                    genericVariableName = originalVariableName + paramVarName;
-                    matchContextForAttribues(componentProperties, genericParam, genericVariableName);
-                }
+        ComponentProperties componentProperties = getComponentProperties(connection);
+        String originalVariableName = prefixName + ConnectionContextHelper.LINE;
+        String genericVariableName = null;
+        for (IConnParamName param : paramSet) {
+            if (param instanceof GenericConnParamName) {
+                GenericConnParamName genericParam = (GenericConnParamName) param;
+                String paramVarName = genericParam.getContextVar();
+                genericVariableName = originalVariableName + paramVarName;
+                matchContextForAttribues(componentProperties, genericParam, genericVariableName);
             }
-            updateComponentProperties(genericConn, componentProperties);
         }
+        updateComponentProperties(connection, componentProperties);
+    
     }
 
     public static void setPropertiesForExistContextMode(Connection connection, Set<IConnParamName> paramSet,
@@ -116,35 +112,33 @@ public class GenericContextUtil {
         if (connection == null) {
             return;
         }
-        if (connection instanceof GenericConnection) {
-            GenericConnection genericConn = (GenericConnection) connection;
-            ComponentProperties componentProperties = getComponentProperties(genericConn);
-            ContextItem currentContext = null;
-            for (IConnParamName param : paramSet) {
-                if (param instanceof GenericConnParamName) {
-                    String genericVariableName = null;
-                    GenericConnParamName genericParam = (GenericConnParamName) param;
-                    if (adaptMap != null && adaptMap.size() > 0) {
-                        for (Map.Entry<ContextItem, List<ConectionAdaptContextVariableModel>> entry : adaptMap.entrySet()) {
-                            currentContext = entry.getKey();
-                            List<ConectionAdaptContextVariableModel> modelList = entry.getValue();
-                            for (ConectionAdaptContextVariableModel model : modelList) {
-                                if (model.getValue().equals(genericParam.getName())) {
-                                    genericVariableName = model.getName();
-                                    break;
-                                }
+        ComponentProperties componentProperties = getComponentProperties(connection);
+        ContextItem currentContext = null;
+        for (IConnParamName param : paramSet) {
+            if (param instanceof GenericConnParamName) {
+                String genericVariableName = null;
+                GenericConnParamName genericParam = (GenericConnParamName) param;
+                if (adaptMap != null && adaptMap.size() > 0) {
+                    for (Map.Entry<ContextItem, List<ConectionAdaptContextVariableModel>> entry : adaptMap.entrySet()) {
+                        currentContext = entry.getKey();
+                        List<ConectionAdaptContextVariableModel> modelList = entry.getValue();
+                        for (ConectionAdaptContextVariableModel model : modelList) {
+                            if (model.getValue().equals(genericParam.getName())) {
+                                genericVariableName = model.getName();
+                                break;
                             }
                         }
                     }
-                    if (genericVariableName != null) {
-                        genericVariableName = getCorrectVariableName(currentContext, genericVariableName, genericParam);
-                        matchContextForAttribues(componentProperties, genericParam, genericVariableName);
-                    }
                 }
-
+                if (genericVariableName != null) {
+                    genericVariableName = getCorrectVariableName(currentContext, genericVariableName, genericParam);
+                    matchContextForAttribues(componentProperties, genericParam, genericVariableName);
+                }
             }
-            updateComponentProperties(genericConn, componentProperties);
+
         }
+        updateComponentProperties(connection, componentProperties);
+    
     }
 
     private static String getCorrectVariableName(ContextItem contextItem, String originalVariableName,
@@ -168,18 +162,15 @@ public class GenericContextUtil {
         setPropertyValue(componentProperties, paramName, paramValue, true);
     }
 
-    private static void updateComponentProperties(GenericConnection conn, ComponentProperties componentProperties) {
+    private static void updateComponentProperties(Connection conn, ComponentProperties componentProperties) {
         String serializedProperties = componentProperties.toSerialized();
         conn.setCompProperties(serializedProperties);
     }
 
     public static void revertPropertiesForContextMode(Connection connection, ContextType contextType) {
-        if (connection instanceof GenericConnection) {
-            GenericConnection conn = (GenericConnection) connection;
-            ComponentProperties componentProperties = getComponentProperties(conn);
-            revertPropertiesValues(componentProperties, contextType);
-            updateComponentProperties(conn, componentProperties);
-        }
+        ComponentProperties componentProperties = getComponentProperties(connection);
+        revertPropertiesValues(componentProperties, contextType);
+        updateComponentProperties(connection, componentProperties);
     }
 
     public static void revertPropertiesValues(Properties componentProperties, ContextType contextType) {

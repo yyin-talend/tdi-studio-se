@@ -34,5 +34,14 @@ public class GenericConnectionImpl extends ConnectionImpl implements GenericConn
     protected EClass eStaticClass() {
         return GenericMetadataPackage.Literals.GENERIC_CONNECTION;
     }
+    
+    /**
+     * <!-- begin-user-doc --> <!-- end-user-doc -->
+     * 
+     * @generated NOT
+     */
+    public boolean isGeneric() {
+        return true;
+    }
 
 } //GenericConnectionImpl

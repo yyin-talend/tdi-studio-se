@@ -35,6 +35,7 @@ import org.talend.core.model.metadata.builder.connection.MetadataTable;
 import org.talend.core.model.process.EComponentCategory;
 import org.talend.core.model.process.Element;
 import org.talend.core.model.process.INode;
+import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.model.properties.Item;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.runtime.services.IGenericDBService;
@@ -48,7 +49,6 @@ import org.talend.designer.core.model.components.ElementParameter;
 import org.talend.repository.generic.action.GenericAction;
 import org.talend.repository.generic.internal.IGenericWizardInternalService;
 import org.talend.repository.generic.internal.service.GenericWizardInternalService;
-import org.talend.repository.generic.model.genericMetadata.GenericConnection;
 import org.talend.repository.generic.model.genericMetadata.GenericMetadataPackage;
 import org.talend.repository.generic.model.genericMetadata.SubContainer;
 import org.talend.repository.generic.ui.DynamicComposite;
@@ -147,12 +147,15 @@ public class GenericWizardService implements IGenericWizardService {
 
     @Override
     public boolean isGenericItem(Item item) {
-        return item != null && item.eClass() == GenericMetadataPackage.Literals.GENERIC_CONNECTION_ITEM;
+        if(item !=null && item instanceof ConnectionItem){
+            return ((ConnectionItem)item).getConnection().isGeneric();
+        }
+        return false;
     }
 
     @Override
     public boolean isGenericConnection(Connection connection) {
-        return connection != null && connection.eClass() == GenericMetadataPackage.Literals.GENERIC_CONNECTION;
+        return connection != null && connection.isGeneric();
     }
 
     @Override
@@ -162,7 +165,7 @@ public class GenericWizardService implements IGenericWizardService {
         if (imageStream == null) {
             return null;
         }
-        // node image
+        // node image   ImageProvider.getImageDesc(ECoreImage.METADATA_TABLE_ICON)
         ImageData id = new ImageData(imageStream);
         Image image = new Image(null, id);
         return image;
@@ -232,17 +235,16 @@ public class GenericWizardService implements IGenericWizardService {
     public List<ComponentProperties> getAllComponentProperties(Connection connection, String tableLabel) {
         List<ComponentProperties> componentProperties = new ArrayList<>();
         if (isGenericConnection(connection)) {
-            GenericConnection genericConnection = (GenericConnection) connection;
-            String compProperties = genericConnection.getCompProperties();
+            String compProperties = connection.getCompProperties();
             ComponentProperties cp = ComponentsUtils.getComponentPropertiesFromSerialized(compProperties, connection, false);
             if (cp != null) {
                 componentProperties.add(cp);
             }
             List<MetadataTable> metadataTables;
             if (tableLabel == null) {
-                metadataTables = SchemaUtils.getMetadataTables(genericConnection, SubContainer.class);
+                metadataTables = SchemaUtils.getMetadataTables(connection, SubContainer.class);
             } else {
-                metadataTables = Arrays.asList(SchemaUtils.getMetadataTable(genericConnection, tableLabel, SubContainer.class));
+                metadataTables = Arrays.asList(SchemaUtils.getMetadataTable(connection, tableLabel, SubContainer.class));
             }
             for (MetadataTable metadataTable : metadataTables) {
                 if (metadataTable == null) {
@@ -271,8 +273,7 @@ public class GenericWizardService implements IGenericWizardService {
     @Override
     public String getConnectionProperties(Connection connection) {
         if (isGenericConnection(connection)) {
-            GenericConnection genericConnection = (GenericConnection) connection;
-            String compProperties = genericConnection.getCompProperties();
+            String compProperties = connection.getCompProperties();
             return compProperties;
         }
         return null;

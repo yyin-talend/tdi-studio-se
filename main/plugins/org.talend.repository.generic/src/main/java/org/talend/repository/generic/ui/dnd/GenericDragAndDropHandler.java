@@ -57,8 +57,6 @@ import org.talend.designer.core.generic.utils.ComponentsUtils;
 import org.talend.designer.core.generic.utils.SchemaUtils;
 import org.talend.repository.generic.internal.IGenericWizardInternalService;
 import org.talend.repository.generic.internal.service.GenericWizardInternalService;
-import org.talend.repository.generic.model.genericMetadata.GenericConnection;
-import org.talend.repository.generic.model.genericMetadata.GenericConnectionItem;
 import org.talend.repository.model.RepositoryNode;
 
 import orgomg.cwm.objectmodel.core.ModelElement;
@@ -78,7 +76,7 @@ public class GenericDragAndDropHandler extends AbstractDragAndDropServiceHandler
 
     @Override
     public boolean canHandle(Connection connection) {
-        return connection instanceof GenericConnection;
+        return true;
     }
 
     @Override
@@ -88,7 +86,7 @@ public class GenericDragAndDropHandler extends AbstractDragAndDropServiceHandler
                 IGenericWizardService wizardService = (IGenericWizardService) GlobalServiceRegister.getDefault().getService(
                         IGenericWizardService.class);
                 if (wizardService != null && wizardService.isGenericConnection(connection)) {
-                    return getGenericRepositoryValue((GenericConnection) connection,
+                    return getGenericRepositoryValue(connection,
                             wizardService.getAllComponentProperties(connection, getSeletetedMetadataTableName(table)), value,
                             table);
                 }
@@ -97,7 +95,7 @@ public class GenericDragAndDropHandler extends AbstractDragAndDropServiceHandler
         return null;
     }
 
-    private Object getGenericRepositoryValue(GenericConnection connection, List<ComponentProperties> componentProperties,
+    private Object getGenericRepositoryValue(Connection connection, List<ComponentProperties> componentProperties,
             String value, IMetadataTable table) {
         if (componentProperties != null && value != null) {
             for (ComponentProperties compPro : componentProperties) {
@@ -131,7 +129,7 @@ public class GenericDragAndDropHandler extends AbstractDragAndDropServiceHandler
         return null;
     }
     
-    private Object getPropertiesValue(GenericConnection connection, Properties properties,String value){
+    private Object getPropertiesValue(Connection connection, Properties properties,String value){
         List<Map> lines = new ArrayList<Map>();
         for(NamedThing nameThing : properties.getProperties()){
             if(nameThing != null && nameThing instanceof Property){
@@ -222,7 +220,7 @@ public class GenericDragAndDropHandler extends AbstractDragAndDropServiceHandler
     public List<IComponent> filterNeededComponents(Item item, RepositoryNode seletetedNode, ERepositoryObjectType type) {
         // TUP-4151
         List<IComponent> neededComponents = new ArrayList<>();
-        if (!(item instanceof GenericConnectionItem)) {
+        if (!(item instanceof ConnectionItem)) {
             return neededComponents;
         }
         IComponentsService service = (IComponentsService) GlobalServiceRegister.getDefault().getService(IComponentsService.class);
@@ -248,9 +246,8 @@ public class GenericDragAndDropHandler extends AbstractDragAndDropServiceHandler
             RepositoryViewObject repositoryViewObj = (RepositoryViewObject) object;
             Connection connection = ((ConnectionItem) repositoryViewObj.getProperty().getItem()).getConnection();
             if (canHandle(connection)) {
-                GenericConnection genericConnection = (GenericConnection) connection;
                 currentComponentProperties = ComponentsUtils.getComponentPropertiesFromSerialized(
-                        genericConnection.getCompProperties(), connection);
+                        connection.getCompProperties(), connection);
             }
         } else if (object instanceof MetadataTableRepositoryObject) {
             MetadataTableRepositoryObject metaTableRepObj = (MetadataTableRepositoryObject) object;
@@ -283,8 +280,8 @@ public class GenericDragAndDropHandler extends AbstractDragAndDropServiceHandler
     public IComponentName getCorrespondingComponentName(Item item, ERepositoryObjectType type) {
         RepositoryComponentSetting setting = null;
         List<Class<Item>> list = new ArrayList<Class<Item>>();
-        if (item instanceof GenericConnectionItem) {
-            GenericConnection connection = (GenericConnection) ((GenericConnectionItem) item).getConnection();
+        if (item instanceof ConnectionItem) {
+            Connection connection = ((ConnectionItem) item).getConnection();
             setting = new RepositoryComponentSetting();
             setting.setWithSchema(true);
             String componentMainName = getComponentMainName(connection);
@@ -292,7 +289,7 @@ public class GenericDragAndDropHandler extends AbstractDragAndDropServiceHandler
             setting.setOutputComponent(getOutputComponentName(componentMainName));
             Class clazz = null;
             try {
-                clazz = Class.forName(GenericConnectionItem.class.getName());
+                clazz = Class.forName(ConnectionItem.class.getName());
             } catch (ClassNotFoundException e) {
                 ExceptionHandler.process(e);
             }
@@ -302,7 +299,7 @@ public class GenericDragAndDropHandler extends AbstractDragAndDropServiceHandler
         return setting;
     }
 
-    private String getComponentMainName(GenericConnection connection) {
+    private String getComponentMainName(Connection connection) {
         IGenericWizardInternalService internalService = new GenericWizardInternalService();
         ComponentWizard componentWizard = null;
         String compPropertiesStr = connection.getCompProperties();
@@ -333,7 +330,7 @@ public class GenericDragAndDropHandler extends AbstractDragAndDropServiceHandler
         return COMPONENT_PREFIX.concat(componentMainName).concat(OUTPUT);
     }
 
-    private void setGenericRepositoryValue(GenericConnection connection, INode node, IElementParameter param) {
+    private void setGenericRepositoryValue(Connection connection, INode node, IElementParameter param) {
         if (connection != null && param != null && param instanceof GenericElementParameter) {
             if (connection.getCompProperties() == null) {
                 GenericElementParameter genericParam = (GenericElementParameter) param;
@@ -350,7 +347,7 @@ public class GenericDragAndDropHandler extends AbstractDragAndDropServiceHandler
     @Override
     public void setComponentValue(Connection connection, INode node, IElementParameter param) {
         if (node != null && canHandle(connection)) {
-            setGenericRepositoryValue((GenericConnection) connection, node, param);
+            setGenericRepositoryValue(connection, node, param);
         }
     }
 

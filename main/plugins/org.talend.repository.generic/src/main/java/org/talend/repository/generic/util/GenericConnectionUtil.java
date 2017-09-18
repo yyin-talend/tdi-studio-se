@@ -30,8 +30,6 @@ import org.talend.daikon.properties.PropertiesVisitor;
 import org.talend.daikon.properties.property.Property;
 import org.talend.designer.core.generic.constants.IGenericConstants;
 import org.talend.designer.core.generic.utils.ComponentsUtils;
-import org.talend.repository.generic.model.genericMetadata.GenericConnection;
-import org.talend.repository.generic.model.genericMetadata.GenericConnectionItem;
 import org.talend.repository.model.IRepositoryNode;
 
 /**
@@ -46,8 +44,8 @@ public class GenericConnectionUtil {
      * @param item the item which name property belong to.
      * @return return true if property is updated, otherwise return false;
      */
-    public static boolean synNamePropertyWithItem(GenericConnectionItem item) {
-        GenericConnection connection = (GenericConnection) item.getConnection();
+    public static boolean synNamePropertyWithItem(ConnectionItem item) {
+        Connection connection = item.getConnection();
         String compPropertiesStr = connection.getCompProperties();
         if (compPropertiesStr == null) {
             return false;
