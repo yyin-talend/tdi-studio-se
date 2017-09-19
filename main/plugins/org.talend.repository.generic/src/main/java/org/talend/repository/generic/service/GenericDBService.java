@@ -185,7 +185,7 @@ public class GenericDBService implements IGenericDBService{
                     }
                     factory.save(item);
                 } catch (Throwable e) {
-                    e.printStackTrace();
+                    //e.printStackTrace();
                     throw new CoreException(new Status(IStatus.ERROR, IGenericConstants.REPOSITORY_PLUGIN_ID,
                             "Error when saving the connection", e));
                 }

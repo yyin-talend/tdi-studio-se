@@ -95,7 +95,6 @@ public class GenericWizardService implements IGenericWizardService {
                     if (dbService != null) {
                         dbService.getExtraTypes().add(repositoryType);
                     }
-
                 }
             }
             if (curParentNode != null && !needHide(repositoryType)) {
