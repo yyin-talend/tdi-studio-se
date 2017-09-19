@@ -53,6 +53,7 @@ import org.talend.repository.model.IProxyRepositoryFactory;
 
 import orgomg.cwm.objectmodel.core.CoreFactory;
 import orgomg.cwm.objectmodel.core.ModelElement;
+import orgomg.cwm.objectmodel.core.Package;
 import orgomg.cwm.objectmodel.core.TaggedValue;
 import orgomg.cwm.resource.relational.Catalog;
 import orgomg.cwm.resource.relational.impl.SchemaImpl;
@@ -88,10 +89,14 @@ public class SchemaUtils {
             catalogList.add(catalog);
         }
         
-        MetadataTable metadataTable = createTable(tableName, tableType, properties, connection, schemaPropertyName);
+        MetadataTable metadataTable = null;
         
         if (catalog != null && !hasSchemaInCatalog) { // only catalog
-            PackageHelper.addMetadataTable(metadataTable, catalog);
+            metadataTable = getExistMetadataTable(catalog, tableName, tableType);
+            if(metadataTable == null){
+                metadataTable = createTable(tableName, tableType, properties, connection, schemaPropertyName);
+                PackageHelper.addMetadataTable(metadataTable, catalog);
+            }
         } else if (catalog != null && hasSchemaInCatalog) { // both schema and catalog
 
             for (orgomg.cwm.resource.relational.Schema current : subschemas) {
@@ -105,14 +110,21 @@ public class SchemaUtils {
                 if (schema instanceof SchemaImpl) {
                     SchemaImpl schemaElement = (SchemaImpl) schema;
                     EList<ModelElement> ownedElement = schemaElement.getOwnedElement();
-                    ownedElement.add(metadataTable);
-
+                    metadataTable = getExistMetadataTable(schemaElement, tableName, tableType);
+                    if(metadataTable == null){
+                        metadataTable = createTable(tableName, tableType, properties, connection, schemaPropertyName);
+                        ownedElement.add(metadataTable);
+                    }
                 }
             } else{
                 for (int i = 0; i < subschemas.size(); i++) {
                     SchemaImpl schemaElement = (SchemaImpl) subschemas.get(i);
                     EList<ModelElement> ownedElement = schemaElement.getOwnedElement();
-                    ownedElement.add(metadataTable);
+                    metadataTable = getExistMetadataTable(schemaElement, tableName, tableType);
+                    if(metadataTable == null){
+                        metadataTable = createTable(tableName, tableType, properties, connection, schemaPropertyName);
+                        ownedElement.add(metadataTable);
+                    }
                 }
             }
         } 
@@ -120,6 +132,17 @@ public class SchemaUtils {
             ConnectionHelper.addCatalogs(catalogList, connection);
         }
         return metadataTable;
+    }
+    
+    private static MetadataTable getExistMetadataTable(Package pack, String tableName, String tableType){
+        ArrayList<MetadataTable> result = new ArrayList<MetadataTable>();
+        PackageHelper.getAllTablesWithOrders(pack, result);
+        for(MetadataTable table : result){
+            if(table.getName().equals(tableName) && table.getTableType().equals(tableType)){
+                return table;
+            }
+        }
+        return null;
     }
     
     public static MetadataTable createTable(String tableName, String tableType, ComponentProperties properties, Connection connection, String schemaPropertyName){
@@ -165,18 +188,25 @@ public class SchemaUtils {
         if (tableName == null || properties == null || schemaPropertyName == null) {
             return null;
         }
+        boolean exist = false;
         List<orgomg.cwm.resource.relational.Schema> schemaList = new ArrayList<orgomg.cwm.resource.relational.Schema>();
         orgomg.cwm.resource.relational.Schema schema = (orgomg.cwm.resource.relational.Schema)
                 ConnectionHelper.getPackage(schemaName, connection, orgomg.cwm.resource.relational.Schema.class);
         if(schema == null){
             schema = SchemaHelper.createSchema(schemaName);
             schemaList.add(schema);
+        }else{
+            exist = true;
         }
         
-        MetadataTable metadataTable = createTable(tableName, tableType, properties, connection, schemaPropertyName);
-        
-        PackageHelper.addMetadataTable(metadataTable, schema);
-        ConnectionHelper.addSchemas(schemaList, connection);
+        MetadataTable metadataTable = getExistMetadataTable(schema, tableName, tableType);
+        if(metadataTable == null){
+            metadataTable = createTable(tableName, tableType, properties, connection, schemaPropertyName);
+            PackageHelper.addMetadataTable(metadataTable, schema);
+        }
+        if(!exist){
+            ConnectionHelper.addSchemas(schemaList, connection);
+        }
         return metadataTable;
     }
     

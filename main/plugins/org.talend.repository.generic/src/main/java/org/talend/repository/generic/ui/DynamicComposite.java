@@ -42,8 +42,10 @@ import org.talend.core.model.process.Element;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.INode;
 import org.talend.core.model.properties.ConnectionItem;
+import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.ui.check.Checker;
 import org.talend.core.ui.check.IChecker;
+import org.talend.cwm.helper.ConnectionHelper;
 import org.talend.daikon.NamedThing;
 import org.talend.daikon.properties.Properties;
 import org.talend.daikon.properties.ValidationResult;
@@ -184,7 +186,12 @@ public class DynamicComposite extends MissingSettingsMultiThreadDynamicComposite
                 } else if (EParameterFieldType.NAME_SELECTION_AREA.equals(genericElementParameter.getFieldType())
                         && theConnection != null) {
                     List<NamedThing> values = new ArrayList<>();
-                    List<MetadataTable> metadataTables = SchemaUtils.getMetadataTables(theConnection, SubContainer.class);
+                    List<MetadataTable> metadataTables = null;
+                    if(connectionItem.getTypeName() != null && SchemaUtils.isExtraDBType(ERepositoryObjectType.valueOf(connectionItem.getTypeName()))){
+                        metadataTables = ConnectionHelper.getTablesWithOrders(theConnection);
+                    }else{
+                        metadataTables = SchemaUtils.getMetadataTables(theConnection, SubContainer.class);
+                    }
                     List<String> tableLabels = new ArrayList<>();
                     for (MetadataTable metaTable : metadataTables) {
                         tableLabels.add(metaTable.getLabel());

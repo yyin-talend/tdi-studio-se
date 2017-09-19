@@ -79,9 +79,11 @@ public class GenericDBService implements IGenericDBService{
         Map<String, Composite> map = new HashMap<String, Composite>();
         IGenericWizardInternalService internalService = new GenericWizardInternalService();
         Item item = property.getItem();
-        
+        if(!(item instanceof ConnectionItem)){
+            return map;
+        }
         ComponentWizard componentWizard = internalService.getComponentWizard(typeName, property.getId());;
-        if(!isCreation && (item instanceof ConnectionItem)){
+        if(!isCreation && ((ConnectionItem)item).getConnection().isGeneric()){
             ConnectionItem gitem = (ConnectionItem) item;
             Connection connection = (Connection) gitem.getConnection();
             ComponentProperties componentProperties = ComponentsUtils
