@@ -341,7 +341,7 @@ public class InstallModuleDialog extends TitleAreaDialog {
         String jarName = nameTxt.getText().trim();
         String mvnURI = uriTxt.getText().trim();
         ModuleNeeded needed = new ModuleNeeded(jarName, null, true, mvnURI);
-        ELibraryInstallStatus installStatus = needed.getStatus();
+        ELibraryInstallStatus installStatus = needed.getDeployStatus();
         final boolean[] status = new boolean[1];
         status[0] = false;
         if (installStatus == ELibraryInstallStatus.INSTALLED) {
