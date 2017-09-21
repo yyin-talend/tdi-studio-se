@@ -383,7 +383,7 @@ public class ComponentsUtils {
                 List<ElementParameter> parameters = getParametersFromForm(new FakeElement("table"), mainForm); //$NON-NLS-1$
 
                 // table is always empty by default
-                param.setSupportContext(false);
+                param.setSupportContext(true);
 
                 List<String> codeNames = new ArrayList<>();
                 List<String> possValsDisplay = new ArrayList<>();

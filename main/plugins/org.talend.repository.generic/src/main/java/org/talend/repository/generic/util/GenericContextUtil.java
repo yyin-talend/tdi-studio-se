@@ -14,6 +14,7 @@ package org.talend.repository.generic.util;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -21,6 +22,7 @@ import java.util.Set;
 import org.apache.commons.lang3.StringEscapeUtils;
 import org.talend.components.api.properties.ComponentProperties;
 import org.talend.core.language.ECodeLanguage;
+import org.talend.core.language.LanguageManager;
 import org.talend.core.model.context.ContextUtils;
 import org.talend.core.model.metadata.builder.connection.Connection;
 import org.talend.core.model.metadata.types.JavaType;
@@ -63,17 +65,33 @@ public class GenericContextUtil {
                 ComponentProperties componentProperties = getComponentProperties(connection);
                 Property<?> property = componentProperties.getValuedProperty(name);
                 paramName = paramPrefix + connParamName.getContextVar();
-
-                JavaType type = JavaTypesManager.STRING;
-                if (property.isFlag(Property.Flags.ENCRYPT)) {
-                    type = JavaTypesManager.PASSWORD;
+                if(property != null){
+                    JavaType type = JavaTypesManager.STRING;
+                    if (property.isFlag(Property.Flags.ENCRYPT)) {
+                        type = JavaTypesManager.PASSWORD;
+                    }
+                    if (GenericTypeUtils.isIntegerType(property)) {
+                        type = JavaTypesManager.INTEGER;
+                    }
+                    String value = property == null || property.getValue() == null ? null
+                            : StringEscapeUtils.escapeJava(String.valueOf(property.getValue()));
+                    ConnectionContextHelper.createParameters(varList, paramName, value, type);
+                }else{
+                    Properties properties = componentProperties.getProperties(name);
+                    if(properties != null){
+                        List<Map<String, Object>> valueMap = getPropertiesValue(connection, properties, name);
+                        for(Map<String, Object> map : valueMap){
+                            for(String key : map.keySet()){
+                                Object propertyValue = map.get(key);
+                                String keyWithPrefix = prefixName + ConnectionContextHelper.LINE + ContextParameterUtils.getValidParameterName(key);
+                                if(propertyValue instanceof List){
+                                    ConnectionContextHelper.createParameters(varList, keyWithPrefix, propertyValue, JavaTypesManager.VALUE_LIST);
+                                }
+                            }
+                        }
+                    }
                 }
-                if (GenericTypeUtils.isIntegerType(property)) {
-                    type = JavaTypesManager.INTEGER;
-                }
-                String value = property == null || property.getValue() == null ? null
-                        : StringEscapeUtils.escapeJava(String.valueOf(property.getValue()));
-                ConnectionContextHelper.createParameters(varList, paramName, value, type);
+                
             }
         }
     
@@ -86,6 +104,23 @@ public class GenericContextUtil {
             return ComponentsUtils.getComponentPropertiesFromSerialized(compPropertiesStr, connection);
         }
         return null;
+    }
+    
+    private static List<Map<String, Object>> getPropertiesValue(Connection connection, Properties properties,String value){
+        List<Map<String, Object>> lines = new ArrayList<Map<String, Object>>();
+        for(NamedThing nameThing : properties.getProperties()){
+            if(nameThing != null && nameThing instanceof Property){
+                Property property = (Property) nameThing;
+                Object paramValue = property.getStoredValue();
+                if(GenericTypeUtils.isListStringType(property) && paramValue != null){
+                    List<String> listString = (List<String>) paramValue;
+                    Map<String, Object> line = new LinkedHashMap<String, Object>();
+                    line.put(property.getName(),listString);
+                    lines.add(line);
+                }
+            }
+        }
+        return lines;
     }
 
     public static void setPropertiesForContextMode(String prefixName, Connection connection, Set<IConnParamName> paramSet) {
@@ -158,8 +193,51 @@ public class GenericContextUtil {
             String genericVariableName) {
         GenericConnParamName genericParam = (GenericConnParamName) param;
         String paramName = genericParam.getName();
-        String paramValue = ContextParameterUtils.getNewScriptCode(genericVariableName, ECodeLanguage.JAVA);
-        setPropertyValue(componentProperties, paramName, paramValue, true);
+        Properties properties = componentProperties.getProperties(paramName);
+        if(properties == null){
+            String paramValue = ContextParameterUtils.getNewScriptCode(genericVariableName, ECodeLanguage.JAVA);
+            setPropertyValue(componentProperties, paramName, paramValue, true);
+        }else{
+            matchContextForPrperties(properties, param, genericVariableName);
+        }
+    }
+    
+    private static void matchContextForPrperties(Properties properties,IConnParamName param,
+            String genericVariableName){
+        String paramName = ((GenericConnParamName) param).getName();
+        String tempName = ConnectionContextHelper.LINE + ((GenericConnParamName) param).getContextVar();
+        String prefixName = genericVariableName.substring(0, genericVariableName.indexOf(tempName));
+        
+        for(NamedThing nameThing : properties.getProperties()){
+            if(nameThing != null && nameThing instanceof Property){
+                Property property = (Property) nameThing;
+                Object paramValue = property.getStoredValue();
+                if(GenericTypeUtils.isListStringType(property) && paramValue != null){
+                    List<String> listString = (List<String>) paramValue;
+                    
+                    String propertyValue = ContextParameterUtils.getNewScriptCode(prefixName + ConnectionContextHelper.LINE
+                            + ContextParameterUtils.getValidParameterName(property.getName()), LanguageManager.getCurrentLanguage());
+                    
+                    property.setTaggedValue(IGenericConstants.IS_CONTEXT_MODE, true);
+                    property.setValue(propertyValue);
+//                    Map<String, Object> line = new LinkedHashMap<String, Object>();
+//                    line.put(property.getName(),listString);
+//                    lines.add(line);
+                }
+            }
+        }
+        
+        
+        List<Map<String, Object>> valueMap = getPropertiesValue(null, properties, paramName);
+        for (Map<String, Object> propertyMap : valueMap) {
+            for(String key : propertyMap.keySet()){
+                if(propertyMap.get(key) instanceof String){
+                    String propertyValue = ContextParameterUtils.getNewScriptCode(prefixName + ConnectionContextHelper.LINE
+                            + ContextParameterUtils.getValidParameterName(key), LanguageManager.getCurrentLanguage());
+                    propertyMap.put(key, propertyValue);
+                }
+            }
+        }
     }
 
     private static void updateComponentProperties(Connection conn, ComponentProperties componentProperties) {
