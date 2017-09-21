@@ -58,6 +58,7 @@ import org.talend.core.nexus.TalendLibsServerManager;
 import org.talend.core.runtime.maven.MavenUrlHelper;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.librariesmanager.model.ModulesNeededProvider;
+import org.talend.librariesmanager.model.service.LibrariesIndexManager;
 import org.talend.librariesmanager.ui.LibManagerUiPlugin;
 
 /**
@@ -87,6 +88,8 @@ public class InstallModuleDialog extends TitleAreaDialog {
     private String moduleName;
 
     private String initValue;
+
+    private final String MVN_DATA_KEY = "MVN_DATA_KEY";
 
     /**
      * DOC wchen InstallModuleDialog constructor comment.
@@ -251,8 +254,14 @@ public class InstallModuleDialog extends TitleAreaDialog {
                 String jarName = nameTxt.getText().trim();
                 if (jarName.contains(".")) {
                     detectButton.setEnabled(true);
-                    String generatedMavenURI = MavenUrlHelper.generateMvnUrlForJarName(jarName, true, true);
-                    uriTxt.setText(generatedMavenURI);
+                    String mvnUriFromIndex = LibrariesIndexManager.getInstance().getMvnUriFromIndex(jarName);
+                    if (mvnUriFromIndex != null) {
+                        final String[] mvnUris = mvnUriFromIndex.split(MavenUrlHelper.MVN_INDEX_SPLITER);
+                        uriTxt.setText(mvnUris[0]);
+                    } else {
+                        String generatedMavenURI = MavenUrlHelper.generateMvnUrlForJarName(jarName, true, true);
+                        uriTxt.setText(generatedMavenURI);
+                    }
                     setMessage(Messages.getString("InstallModuleDialog.repository.message"), IMessageProvider.ERROR);
                     getButton(IDialogConstants.OK_ID).setEnabled(false);
                 } else {
@@ -340,46 +349,35 @@ public class InstallModuleDialog extends TitleAreaDialog {
     private void checkMavenRepository() {
         String jarName = nameTxt.getText().trim();
         String mvnURI = uriTxt.getText().trim();
-        ModuleNeeded needed = new ModuleNeeded(jarName, null, true, mvnURI);
-        ELibraryInstallStatus installStatus = needed.getDeployStatus();
         final boolean[] status = new boolean[1];
         status[0] = false;
-        if (installStatus == ELibraryInstallStatus.INSTALLED) {
-            status[0] = true;
-        } else {
-            final IRunnableWithProgress acceptOursProgress = new IRunnableWithProgress() {
+        final IRunnableWithProgress acceptOursProgress = new IRunnableWithProgress() {
 
-                @Override
-                public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
-                    NexusServerBean customNexusServer = TalendLibsServerManager.getInstance().getCustomNexusServer();
-                    if (customNexusServer != null) {
-                        try {
-                            ILibraryManagerService libManagerService = (ILibraryManagerService) GlobalServiceRegister
-                                    .getDefault().getService(ILibraryManagerService.class);
-                            File resolveJar = libManagerService.resolveJar(TalendLibsServerManager.getInstance(),
-                                    customNexusServer, mvnURI);
-                            if (resolveJar != null) {
-                                status[0] = true;
-                                LibManagerUiPlugin.getDefault().getLibrariesService().checkLibraries();
-                            }
-                        } catch (Exception e) {
-                            status[0] = false;
-                        }
+            @Override
+            public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
+                String mvnUriFromIndex = LibrariesIndexManager.getInstance().getMvnUriFromIndex(jarName);
+                NexusServerBean customNexusServer = TalendLibsServerManager.getInstance().getCustomNexusServer();
+                if (mvnUriFromIndex != null && mvnUriFromIndex.split(MavenUrlHelper.MVN_INDEX_SPLITER).length > 1) {
+                    String[] mvnURIs = mvnUriFromIndex.split(MavenUrlHelper.MVN_INDEX_SPLITER);
+                    for (String mvnURI : mvnURIs) {
+                        checkModuleStatus(customNexusServer, jarName, mvnURI, status);
                     }
+                } else {
+                    checkModuleStatus(customNexusServer, jarName, mvnURI, status);
                 }
-            };
 
-            ProgressMonitorDialog dialog = new ProgressMonitorDialog(PlatformUI.getWorkbench().getActiveWorkbenchWindow()
-                    .getShell());
-            try {
-                dialog.run(true, true, acceptOursProgress);
-            } catch (Throwable e) {
-                if (!(e instanceof TimeoutException)) {
-                    ExceptionHandler.process(e);
-                }
             }
+        };
 
+        ProgressMonitorDialog dialog = new ProgressMonitorDialog(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell());
+        try {
+            dialog.run(true, true, acceptOursProgress);
+        } catch (Throwable e) {
+            if (!(e instanceof TimeoutException)) {
+                ExceptionHandler.process(e);
+            }
         }
+
         if (!status[0]) {
             setMessage(Messages.getString("InstallModuleDialog.repository.error"), IMessageProvider.ERROR);
             getButton(IDialogConstants.OK_ID).setEnabled(false);
@@ -390,6 +388,29 @@ public class InstallModuleDialog extends TitleAreaDialog {
             }
             setMessage(Messages.getString("InstallModuleDialog.message"), IMessageProvider.INFORMATION);
             getButton(IDialogConstants.OK_ID).setEnabled(true);
+        }
+    }
+
+    private void checkModuleStatus(NexusServerBean customNexusServer, String jarName, String mvnURI, boolean[] status) {
+        ModuleNeeded needed = new ModuleNeeded(jarName, null, true, mvnURI);
+        ELibraryInstallStatus installStatus = needed.getDeployStatus();
+        if (installStatus == ELibraryInstallStatus.DEPLOYED) {
+            status[0] |= true;
+        } else {
+            if (customNexusServer != null) {
+                try {
+                    ILibraryManagerService libManagerService = (ILibraryManagerService) GlobalServiceRegister.getDefault()
+                            .getService(ILibraryManagerService.class);
+                    File resolveJar = libManagerService.resolveJar(TalendLibsServerManager.getInstance(), customNexusServer,
+                            mvnURI);
+                    if (resolveJar != null) {
+                        status[0] |= true;
+                        LibManagerUiPlugin.getDefault().getLibrariesService().checkLibraries();
+                    }
+                } catch (Exception e) {
+                    status[0] |= false;
+                }
+            }
         }
     }
 
