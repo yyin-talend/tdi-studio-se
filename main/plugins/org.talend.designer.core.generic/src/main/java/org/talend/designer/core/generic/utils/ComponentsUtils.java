@@ -495,8 +495,12 @@ public class ComponentsUtils {
 
     public static Object getParameterValue(IElement element, Property property, EParameterFieldType fieldType, String parameterName) {
         Object paramValue = property.getStoredValue();
-        if (paramValue instanceof List) {
-            return null;
+        if (paramValue instanceof List ) {
+            if(ContextParameterUtils.isContainContextParam(String.valueOf(paramValue))){
+                return ((List)paramValue).get(0);
+            }else{
+                return null;
+            }
         }
         if (fieldType == EParameterFieldType.CLOSED_LIST) {
             if (paramValue == null) {// TUP-4145

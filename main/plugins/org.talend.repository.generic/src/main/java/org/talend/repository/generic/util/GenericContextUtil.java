@@ -135,7 +135,7 @@ public class GenericContextUtil {
                 GenericConnParamName genericParam = (GenericConnParamName) param;
                 String paramVarName = genericParam.getContextVar();
                 genericVariableName = originalVariableName + paramVarName;
-                matchContextForAttribues(componentProperties, genericParam, genericVariableName);
+                matchContextForAttribues(componentProperties, genericParam, genericVariableName, prefixName);
             }
         }
         updateComponentProperties(connection, componentProperties);
@@ -167,7 +167,7 @@ public class GenericContextUtil {
                 }
                 if (genericVariableName != null) {
                     genericVariableName = getCorrectVariableName(currentContext, genericVariableName, genericParam);
-                    matchContextForAttribues(componentProperties, genericParam, genericVariableName);
+                    matchContextForAttribues(componentProperties, genericParam, genericVariableName, currentContext.getProperty().getLabel());
                 }
             }
 
@@ -190,7 +190,7 @@ public class GenericContextUtil {
     }
 
     private static void matchContextForAttribues(ComponentProperties componentProperties, IConnParamName param,
-            String genericVariableName) {
+            String genericVariableName, String prefixName) {
         GenericConnParamName genericParam = (GenericConnParamName) param;
         String paramName = genericParam.getName();
         Properties properties = componentProperties.getProperties(paramName);
@@ -198,43 +198,23 @@ public class GenericContextUtil {
             String paramValue = ContextParameterUtils.getNewScriptCode(genericVariableName, ECodeLanguage.JAVA);
             setPropertyValue(componentProperties, paramName, paramValue, true);
         }else{
-            matchContextForPrperties(properties, param, genericVariableName);
+            matchContextForPrperties(properties, param, genericVariableName, prefixName);
         }
     }
     
     private static void matchContextForPrperties(Properties properties,IConnParamName param,
-            String genericVariableName){
-        String paramName = ((GenericConnParamName) param).getName();
-        String tempName = ConnectionContextHelper.LINE + ((GenericConnParamName) param).getContextVar();
-        String prefixName = genericVariableName.substring(0, genericVariableName.indexOf(tempName));
-        
+            String genericVariableName, String prefixName){
         for(NamedThing nameThing : properties.getProperties()){
             if(nameThing != null && nameThing instanceof Property){
                 Property property = (Property) nameThing;
                 Object paramValue = property.getStoredValue();
                 if(GenericTypeUtils.isListStringType(property) && paramValue != null){
-                    List<String> listString = (List<String>) paramValue;
-                    
                     String propertyValue = ContextParameterUtils.getNewScriptCode(prefixName + ConnectionContextHelper.LINE
                             + ContextParameterUtils.getValidParameterName(property.getName()), LanguageManager.getCurrentLanguage());
-                    
                     property.setTaggedValue(IGenericConstants.IS_CONTEXT_MODE, true);
-                    property.setValue(propertyValue);
-//                    Map<String, Object> line = new LinkedHashMap<String, Object>();
-//                    line.put(property.getName(),listString);
-//                    lines.add(line);
-                }
-            }
-        }
-        
-        
-        List<Map<String, Object>> valueMap = getPropertiesValue(null, properties, paramName);
-        for (Map<String, Object> propertyMap : valueMap) {
-            for(String key : propertyMap.keySet()){
-                if(propertyMap.get(key) instanceof String){
-                    String propertyValue = ContextParameterUtils.getNewScriptCode(prefixName + ConnectionContextHelper.LINE
-                            + ContextParameterUtils.getValidParameterName(key), LanguageManager.getCurrentLanguage());
-                    propertyMap.put(key, propertyValue);
+                    List<String> driverList = new ArrayList<String>();
+                    driverList.add(propertyValue);
+                    property.setValue(driverList);
                 }
             }
         }
@@ -260,24 +240,31 @@ public class GenericContextUtil {
                 Property property = (Property) namedThing;
                 if (ComponentsUtils.isSupportContext(property)) {
                     String value = String.valueOf(property.getStoredValue());
+                    Object storedValue =  property.getStoredValue();
                     if (value != null && ContextParameterUtils.isContainContextParam(value)) {
-                        String valueFromContext = ContextParameterUtils.getOriginalValue(contextType, value);
-                        property.setTaggedValue(IGenericConstants.IS_CONTEXT_MODE, false);
-                        if (GenericTypeUtils.isBooleanType(property)) {
-                            property.setValue(new Boolean(valueFromContext));
-                        } else if (GenericTypeUtils.isIntegerType(property) && !valueFromContext.isEmpty()) {
-                            property.setValue(Integer.valueOf(valueFromContext));
-                        } else if (GenericTypeUtils.isEnumType(property)) {
-                            List<?> propertyPossibleValues = ((Property<?>) property).getPossibleValues();
-                            if (propertyPossibleValues != null) {
-                                for (Object possibleValue : propertyPossibleValues) {
-                                    if (possibleValue.toString().equals(valueFromContext)) {
-                                        property.setValue(possibleValue);
+                        if(storedValue instanceof List){
+                            List<String> valueList = ContextParameterUtils.getOriginalList(contextType, value);
+                            property.setTaggedValue(IGenericConstants.IS_CONTEXT_MODE, false);
+                            property.setValue(valueList);
+                        }else{
+                            String valueFromContext = ContextParameterUtils.getOriginalValue(contextType, value);
+                            property.setTaggedValue(IGenericConstants.IS_CONTEXT_MODE, false);
+                            if (GenericTypeUtils.isBooleanType(property)) {
+                                property.setValue(new Boolean(valueFromContext));
+                            } else if (GenericTypeUtils.isIntegerType(property) && !valueFromContext.isEmpty()) {
+                                property.setValue(Integer.valueOf(valueFromContext));
+                            } else if (GenericTypeUtils.isEnumType(property)) {
+                                List<?> propertyPossibleValues = ((Property<?>) property).getPossibleValues();
+                                if (propertyPossibleValues != null) {
+                                    for (Object possibleValue : propertyPossibleValues) {
+                                        if (possibleValue.toString().equals(valueFromContext)) {
+                                            property.setValue(possibleValue);
+                                        }
                                     }
                                 }
+                            } else {
+                                property.setValue(TalendQuoteUtils.removeQuotes(valueFromContext));
                             }
-                        } else {
-                            property.setValue(TalendQuoteUtils.removeQuotes(valueFromContext));
                         }
                     }
                 }

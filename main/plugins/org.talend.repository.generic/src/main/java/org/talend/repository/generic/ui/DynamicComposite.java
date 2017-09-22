@@ -111,6 +111,21 @@ public class DynamicComposite extends MissingSettingsMultiThreadDynamicComposite
         }
         resetParameters();
     }
+    
+    public DynamicComposite(Composite parentComposite, int styles, EComponentCategory section, Element element,
+            ConnectionItem connectionItem, boolean isCompactView, Color backgroundColor, Form form, boolean drivedByForm) {
+        super(parentComposite, styles, section, element, isCompactView, backgroundColor);
+        this.element = element;
+        this.form = form;
+        this.drivedByForm = drivedByForm;
+        this.connectionItem = connectionItem;
+        checker = new Checker();
+        internalService = new GenericWizardInternalService();
+        if (drivedByForm) {
+            internalService.getComponentService().makeFormCancelable(form.getProperties(), form.getName());
+        }
+        resetParameters();
+    }
 
     private void resetComponentProperties() {
         if (connectionItem != null) {
