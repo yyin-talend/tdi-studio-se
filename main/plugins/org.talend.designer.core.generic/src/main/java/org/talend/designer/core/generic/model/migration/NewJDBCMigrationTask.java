@@ -18,6 +18,10 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.Properties;
 
+import org.talend.designer.core.generic.utils.ParameterUtilTool;
+import org.talend.designer.core.model.utils.emf.talendfile.ElementParameterType;
+import org.talend.designer.core.model.utils.emf.talendfile.NodeType;
+
 public class NewJDBCMigrationTask extends NewComponentFrameworkMigrationTask {
 
     @Override
@@ -37,6 +41,23 @@ public class NewJDBCMigrationTask extends NewComponentFrameworkMigrationTask {
         }
 
         return props;
+    }
+    
+    @Override
+    protected ElementParameterType getParameterType(NodeType node, String paramName) {
+        ElementParameterType paramType = ParameterUtilTool.findParameterType(node, paramName);
+        if(node != null && paramType != null){
+            Object value = ParameterUtilTool.convertParameterValue(paramType);
+            if("CONNECTION".equals(paramName) && value!=null && !"".equals(value)){
+                ElementParameterType useConnection = ParameterUtilTool.findParameterType(node, "USE_EXISTING_CONNECTION");
+                if(useConnection!=null && !Boolean.valueOf(String.valueOf(ParameterUtilTool.convertParameterValue(useConnection)))){
+                    return null;
+                }else{
+                    return paramType;
+                }
+            }
+        }
+        return paramType;
     }
 
 }
