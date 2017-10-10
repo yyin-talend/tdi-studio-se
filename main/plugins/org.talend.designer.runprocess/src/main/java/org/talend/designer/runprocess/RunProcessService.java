@@ -367,4 +367,9 @@ public class RunProcessService implements IRunProcessService {
         return delegateService.getLibJarsForBD(process);
     }
 
+    @Override
+    public void updateProjectPomWithTemplate() {
+        delegateService.updateProjectPomWithTemplate();
+    }
+
 }

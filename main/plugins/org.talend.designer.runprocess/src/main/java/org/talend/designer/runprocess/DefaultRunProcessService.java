@@ -54,6 +54,7 @@ import org.talend.core.repository.utils.Log4jUtil;
 import org.talend.core.runtime.process.ITalendProcessJavaProject;
 import org.talend.core.runtime.projectsetting.ProjectPreferenceManager;
 import org.talend.core.ui.ITestContainerProviderService;
+import org.talend.designer.maven.tools.ProjectPomManager;
 import org.talend.designer.runprocess.i18n.Messages;
 import org.talend.designer.runprocess.java.JavaProcessorUtilities;
 import org.talend.designer.runprocess.language.SyntaxCheckerFactory;
@@ -524,6 +525,17 @@ public class DefaultRunProcessService implements IRunProcessService {
     @Override
     public Set<String> getLibJarsForBD(IProcess process) {
         return JavaProcessorUtilities.extractLibNamesOnlyForMapperAndReducer(process);
+    }
+
+    @Override
+    public void updateProjectPomWithTemplate() {
+        try {
+            ProjectPomManager manager = new ProjectPomManager(getTalendProcessJavaProject().getProject());
+            manager.updateFromTemplate(null);
+        } catch (Exception e) {
+            ExceptionHandler.process(e);
+        }
+
     }
 
 }
