@@ -43,6 +43,14 @@ public class NewMarketoMigrationTask extends NewComponentFrameworkMigrationTask 
             ParameterUtilTool.addParameterType(node, "RADIO", "USE_SOAP_API", "true");
             paramType = ParameterUtilTool.findParameterType(node, paramName);
         }
+        // Parameter is unassigned, so "LEAD_SELECTOR" parameter isn't processed yet.
+        if ("LEAD_SELECTOR_REST".equals(paramName) && paramType == null) {
+            ElementParameterType leadSelector = ParameterUtilTool.findParameterType(node, "LEAD_SELECTOR");
+            Object selValue = ParameterUtilTool.convertParameterValue(leadSelector);
+            ParameterUtilTool.addParameterType(node, "CLOSED_LIST", "LEAD_SELECTOR_REST", String.valueOf(selValue));
+            paramType = ParameterUtilTool.findParameterType(node, paramName);
+        }
+        //
         if (node != null && paramType != null) {
             String componentName = node.getComponentName();
             Object value = ParameterUtilTool.convertParameterValue(paramType);
@@ -59,7 +67,7 @@ public class NewMarketoMigrationTask extends NewComponentFrameworkMigrationTask 
             }
             // Correct ListOperation value
             if ("OPERATION".equals(paramName) && "tMarketoListOperation".equals(componentName)) {
-                switch(String.valueOf(value)){
+                switch (String.valueOf(value)) {
                 case "ADDTOLIST":
                     paramType.setValue("addTo");
                     break;
@@ -97,6 +105,21 @@ public class NewMarketoMigrationTask extends NewComponentFrameworkMigrationTask 
 
             if ("LEAD_KEYVALUES".equals(paramName)) {
                 paramType.setValue(TalendQuoteUtils.addQuotesIfNotExist(String.valueOf(value)));
+            }
+            // creates a parameter for REST LeadSelector based on original value
+            if ("LEAD_SELECTOR".equals(paramName)) {
+                ParameterUtilTool.addParameterType(node, "CLOSED_LIST", "LEAD_SELECTOR_REST", String.valueOf(value));
+            }
+            // Manage include/exclude REST types
+            if ("INCLUDE_TYPES".equals(paramName) || "EXCLUDE_TYPES".equals(paramName)) {
+                ElementParameterType isSOAP = ParameterUtilTool.findParameterType(node, "USE_SOAP_API");
+                Object isSOAPValue = ParameterUtilTool.convertParameterValue(isSOAP);
+                if ("true".equals(String.valueOf(isSOAPValue))) {
+                    return paramType;
+                }
+                String k = "INCLUDE_TYPES".equals(paramName) ? "INCLUDE_TYPES_REST" : "EXCLUDE_TYPES_REST";
+                ElementParameterType rest = ParameterUtilTool.findParameterType(node, k);
+                return rest;
             }
         }
         return paramType;
