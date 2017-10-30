@@ -799,4 +799,12 @@ public class DesignerCoreService implements IDesignerCoreService {
         return timeOut;
     }
 
+    @Override
+    public void setTACConnectionTimeout(int timeout) {
+        final IPreferenceStore preferenceStore = DesignerPlugin.getDefault().getPreferenceStore();
+        if (preferenceStore != null) {
+            preferenceStore.setValue(ITalendCorePrefConstants.PERFORMANCE_TAC_CONNECTION_TIMEOUT, timeout);
+        }
+    }
+
 }
