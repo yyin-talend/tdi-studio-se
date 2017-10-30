@@ -27,6 +27,7 @@ import org.talend.core.prefs.ITalendCorePrefConstants;
 import org.talend.core.ui.branding.IBrandingService;
 import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.i18n.Messages;
+import org.talend.repository.ui.login.connections.network.NetworkConfiguration;
 
 public class PerformancePreferencePage extends FieldEditorPreferencePage implements IWorkbenchPreferencePage {
 
@@ -181,7 +182,10 @@ public class PerformancePreferencePage extends FieldEditorPreferencePage impleme
                     Messages.getString("PerformancePreferencePage.tacTimeout"), //$NON-NLS-1$
                     getFieldEditorParent());
             autoCheckTime.setValidRange(0, 3600);
+            tacConnectionTimeout.setValidRange(NetworkConfiguration.CONNECTION_TIMEOUT_MIN,
+                    NetworkConfiguration.CONNECTION_TIMEOUT_MAX);
             addField(tacConnectionTimeout);
+
         }
 
     }
