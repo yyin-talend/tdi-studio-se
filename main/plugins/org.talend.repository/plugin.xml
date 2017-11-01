@@ -2938,6 +2938,14 @@
               name="UpdateToJava8VersionMigrationTask"
               version="6.5.1">
         </projecttask>
+       <projecttask
+              beforeLogon="false"
+              breaks="6.5.1"
+              class="org.talend.repository.model.migration.ItemSaveTriggerProjectMigrationTask"
+              id="org.talend.repository.model.migration.ItemSaveTriggerProjectMigrationTask"
+              name="Item Save Trigger"
+              version="7.0.1">
+        </projecttask>
    </extension>
 
    <extension
