@@ -57,6 +57,8 @@ import org.eclipse.ui.internal.wizards.datatransfer.TarFile;
 import org.eclipse.ui.internal.wizards.datatransfer.WizardFileSystemResourceExportPage1;
 import org.osgi.framework.Bundle;
 import org.talend.commons.exception.ExceptionHandler;
+import org.talend.commons.runtime.model.emf.provider.EOptionProvider;
+import org.talend.commons.runtime.model.emf.provider.EmfResourcesFactoryReader;
 import org.talend.commons.ui.runtime.exception.MessageBoxExceptionHandler;
 import org.talend.commons.ui.swt.dialogs.EventLoopProgressMonitor;
 import org.talend.commons.ui.swt.dialogs.ProgressDialog;
@@ -86,6 +88,19 @@ public class ImportDemoProjectItemsPage extends WizardFileSystemResourceExportPa
     private final static String DEFAUTL_DEMO_ICON = "icons/java.png";
 
     private final ImportExportHandlersManager importManager = new ImportExportHandlersManager();
+
+    private EOptionProvider demoOption = new EOptionProvider() {
+
+        @Override
+        public String getName() {
+            return "RESOURCE_DEMO";
+        }
+
+        @Override
+        public Object getValue() {
+            return Boolean.TRUE;
+        }
+    };
 
     /**
      * ImportDemoProjectPage constructor.
@@ -332,6 +347,7 @@ public class ImportDemoProjectItemsPage extends WizardFileSystemResourceExportPa
             public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
                 monitorWrap = new EventLoopProgressMonitor(monitor);
                 try {
+                    EmfResourcesFactoryReader.INSTANCE.getLoadOptionsProviders().put(demoOption.getName(), demoOption);
                     for (ResourcesManager resManager : finalCheckManagers) {
                         List<ImportItem> projectRecords = importManager.populateImportingItems(resManager, true, monitorWrap);
                         // clearOverWriteErrorMessages(projectRecords, overwrite);
@@ -340,6 +356,8 @@ public class ImportDemoProjectItemsPage extends WizardFileSystemResourceExportPa
                     }
                 } catch (Exception e) {
                     ExceptionHandler.process(e);
+                } finally {
+                    EmfResourcesFactoryReader.INSTANCE.getLoadOptionsProviders().remove(demoOption.getName());
                 }
                 monitorWrap.done();
                 if (monitor.isCanceled()) {
