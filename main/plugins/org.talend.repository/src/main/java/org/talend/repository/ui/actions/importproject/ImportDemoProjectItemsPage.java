@@ -57,6 +57,7 @@ import org.eclipse.ui.internal.wizards.datatransfer.TarFile;
 import org.eclipse.ui.internal.wizards.datatransfer.WizardFileSystemResourceExportPage1;
 import org.osgi.framework.Bundle;
 import org.talend.commons.exception.ExceptionHandler;
+import org.talend.commons.runtime.model.emf.provider.OptionProvider;
 import org.talend.commons.runtime.model.emf.provider.EOptionProvider;
 import org.talend.commons.runtime.model.emf.provider.EmfResourcesFactoryReader;
 import org.talend.commons.ui.runtime.exception.MessageBoxExceptionHandler;
@@ -89,7 +90,7 @@ public class ImportDemoProjectItemsPage extends WizardFileSystemResourceExportPa
 
     private final ImportExportHandlersManager importManager = new ImportExportHandlersManager();
 
-    private EOptionProvider demoOption = new EOptionProvider() {
+    private EOptionProvider demoOption = new OptionProvider() {
 
         @Override
         public String getName() {
