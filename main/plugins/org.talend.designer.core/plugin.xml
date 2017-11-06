@@ -849,4 +849,11 @@
             class="org.talend.designer.core.ui.viewer.proposal.TalendCompletionProposalComputer">
       </javaCompletionProposalComputer>
    </extension>
+  <extension
+             point="org.talend.core.repository.login.task">
+          <loginTask
+                class="org.talend.designer.core.ui.preferences.PreferencePreInitailizeTask"
+                priority="normal">
+          </loginTask>
+   </extension>
 </plugin>
