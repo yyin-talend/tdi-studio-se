@@ -54,7 +54,13 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 
 		String mode = ElementParameterParser.getValue(node,"__GENERATION_MODE__");
 		final boolean eventMode = "EVENT_MODE".equals(mode);
-
+		
+		boolean set_min_inflation_ratio = ("true").equals(ElementParameterParser.getValue(node,"__SET_MIN_INFLATION_RATIO__"));
+		String min_inflation_ratio = "0.001";
+		if(set_min_inflation_ratio) {
+			min_inflation_ratio = ElementParameterParser.getValue(node, "__MIN_INFLATION_RATIO__");
+		}
+		
 		boolean isLog4jEnabled = ("true").equals(ElementParameterParser.getValue(node.getProcess(), "__LOG4J_ACTIVATE__"));
 		
 		int dynamic_index = -1;
@@ -691,7 +697,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 		Object source_<%=cid %> = <%=fileName%>;
 		org.apache.poi.xssf.usermodel.XSSFWorkbook workbook_<%=cid%> = null;
 
-		org.apache.poi.openxml4j.util.ZipSecureFile.setMinInflateRatio(0d);
+		org.apache.poi.openxml4j.util.ZipSecureFile.setMinInflateRatio(<%=min_inflation_ratio%>);
 		
 		if(source_<%=cid %> instanceof String){
 			workbook_<%=cid%> = new org.apache.poi.xssf.usermodel.XSSFWorkbook((String)source_<%=cid %>);
@@ -1207,7 +1213,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 		Object source_<%=cid %> = <%=fileName%>;
 		com.talend.excel.xssf.event.ExcelReader excelReader_<%=cid%> = null;
 
-		org.apache.poi.openxml4j.util.ZipSecureFile.setMinInflateRatio(0d);
+		org.apache.poi.openxml4j.util.ZipSecureFile.setMinInflateRatio(<%=min_inflation_ratio%>);
 		
 		if(source_<%=cid %> instanceof java.io.InputStream || source_<%=cid %> instanceof String){
 			excelReader_<%=cid%> = new com.talend.excel.xssf.event.ExcelReader();
