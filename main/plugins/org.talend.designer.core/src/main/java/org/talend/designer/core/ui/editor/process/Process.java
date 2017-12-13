@@ -1531,7 +1531,11 @@ public class Process extends Element implements IProcess2, IGEFProcess, ILastVer
                     }
                 }
 
-                if (generic) {
+                Object sourceName = null;
+                if (param instanceof ElementParameter) {
+                    sourceName = ((ElementParameter) param).getTaggedValue("org.talend.sdk.component.source");
+                }
+                if (generic && !"tacokit".equalsIgnoreCase(String.valueOf(sourceName))) {
                     param.setValue(value);
                 } else {
                     param.setValue(pType.getRawValue());
