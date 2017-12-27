@@ -27,19 +27,20 @@ imports="
 	%>
 	<%@ include file="../tS3Connection/S3Client.javajet" %>
 	boolean multiUpload_<%=cid%> = false;
+	String key_<%=cid%> = <%=key%>;
 	long partSizeInBytes_<%=cid%> = <%=partSizeMb%> * 1024 * 1024;
 	try{
 		<%
 		if(isLog4jEnabled){
 		%>	
-			log.info("<%=cid%> - Uploading an object with key:" + <%=key%>);
+			log.info("<%=cid%> - Uploading an object with key:" + key_<%=cid%>);
 		<%
 		}
 		%>
 		java.io.File inputFile_<%=cid%> = new java.io.File(<%=file%>);
 		multiUpload_<%=cid%> = (inputFile_<%=cid%>.length() > partSizeInBytes_<%=cid%>) && (partSizeInBytes_<%=cid%> >= 5 * 1024 * 1024);
 		if(!multiUpload_<%=cid%>) {
-		com.amazonaws.services.s3.model.PutObjectRequest putRequest_<%=cid%> = new com.amazonaws.services.s3.model.PutObjectRequest(<%=bucket%>, <%=key%>, inputFile_<%=cid%>);
+		com.amazonaws.services.s3.model.PutObjectRequest putRequest_<%=cid%> = new com.amazonaws.services.s3.model.PutObjectRequest(<%=bucket%>, key_<%=cid%>, inputFile_<%=cid%>);
 		
 		<%
 		if(enableServerSideEncryption){
@@ -55,7 +56,7 @@ imports="
 		} else {
 			long filePosition_<%=cid%> = 0;
 			java.util.List<com.amazonaws.services.s3.model.PartETag> partTags_<%=cid%> = new java.util.ArrayList<com.amazonaws.services.s3.model.PartETag>();
-			com.amazonaws.services.s3.model.InitiateMultipartUploadRequest initRequest_<%=cid%> = new com.amazonaws.services.s3.model.InitiateMultipartUploadRequest(<%=bucket%>, <%=key%>);
+			com.amazonaws.services.s3.model.InitiateMultipartUploadRequest initRequest_<%=cid%> = new com.amazonaws.services.s3.model.InitiateMultipartUploadRequest(<%=bucket%>, key_<%=cid%>);
 			<%
 			if(enableServerSideEncryption){
 			%>
@@ -73,7 +74,7 @@ imports="
             		long curPartSize_<%=cid%> = Math.min(partSizeInBytes_<%=cid%>, inputFile_<%=cid%>.length() - filePosition_<%=cid%>);
             		com.amazonaws.services.s3.model.UploadPartRequest uploadRequest = new com.amazonaws.services.s3.model.UploadPartRequest()
                     	.withBucketName(<%=bucket%>)
-                    	.withKey(<%=key%>).withUploadId(uploadId_<%=cid%>)
+                    	.withKey(key_<%=cid%>).withUploadId(uploadId_<%=cid%>)
                     	.withPartNumber(partNumber_<%=cid%>).withFileOffset(filePosition_<%=cid%>).withFile(inputFile_<%=cid%>).withPartSize(curPartSize_<%=cid%>);
 
             		// Upload part and add response to our list.
@@ -82,11 +83,11 @@ imports="
 
             		filePosition_<%=cid%> += curPartSize_<%=cid%>;
         		}
-        		com.amazonaws.services.s3.model.CompleteMultipartUploadRequest compRequest_<%=cid%> = new com.amazonaws.services.s3.model.CompleteMultipartUploadRequest(<%=bucket%>, <%=key%>,
+        		com.amazonaws.services.s3.model.CompleteMultipartUploadRequest compRequest_<%=cid%> = new com.amazonaws.services.s3.model.CompleteMultipartUploadRequest(<%=bucket%>, key_<%=cid%>,
                     uploadId_<%=cid%>, partTags_<%=cid%>);
             	conn_<%=cid%>.completeMultipartUpload(compRequest_<%=cid%>);
             } catch(java.lang.Exception uploadException_<%=cid%>) {
-				conn_<%=cid%>.abortMultipartUpload(new com.amazonaws.services.s3.model.AbortMultipartUploadRequest(<%=bucket%>, <%=key%>, uploadId_<%=cid%>));
+				conn_<%=cid%>.abortMultipartUpload(new com.amazonaws.services.s3.model.AbortMultipartUploadRequest(<%=bucket%>, key_<%=cid%>, uploadId_<%=cid%>));
 				throw uploadException_<%=cid%>;
             }
 		}
