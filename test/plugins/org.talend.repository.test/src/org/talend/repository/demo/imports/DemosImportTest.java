@@ -32,6 +32,8 @@ import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.talend.commons.exception.LoginException;
 import org.talend.commons.exception.PersistenceException;
+import org.talend.commons.runtime.model.emf.provider.EmfResourcesFactoryReader;
+import org.talend.commons.runtime.model.emf.provider.ResourceOption;
 import org.talend.core.GlobalServiceRegister;
 import org.talend.core.ITDQItemService;
 import org.talend.core.context.Context;
@@ -83,6 +85,8 @@ public abstract class DemosImportTest {
         Context ctx = CoreRuntimePlugin.getInstance().getContext();
         RepositoryContext repositoryContext = (RepositoryContext) ctx.getProperty(Context.REPOSITORY_CONTEXT_KEY);
         originalProject = repositoryContext.getProject();
+        EmfResourcesFactoryReader.INSTANCE.getSaveOptionsProviders().put(ResourceOption.DEMO_IMPORTATION.getName(),
+                ResourceOption.DEMO_IMPORTATION.getProvider());
     }
 
     @AfterClass
@@ -91,6 +95,7 @@ public abstract class DemosImportTest {
             ProxyRepositoryFactory.getInstance().logOnProject(originalProject, new NullProgressMonitor());
         }
         originalProject = null;
+        EmfResourcesFactoryReader.INSTANCE.getSaveOptionsProviders().remove(ResourceOption.DEMO_IMPORTATION.getName());
     }
 
     @After
