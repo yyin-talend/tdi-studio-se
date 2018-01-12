@@ -299,7 +299,7 @@ public class ComponentsFactory implements IComponentsFactory {
                 if (componentFile != null && componentFile.exists()) {
                     loadComponentsFromFolder(componentsProvider.getComponentsLocation(), componentsProvider);
                 }
-            } catch (IOException e) {
+            } catch (Exception e) {
                 ExceptionHandler.process(e);
             }
         }
