@@ -668,6 +668,15 @@ public class Node extends Element implements IGraphicalNode {
             // }
         }
 
+        size = new Dimension();
+        if (getIcon32() != null) {
+            ImageData data = getIcon32().getImageData();
+            size.height = data.height;
+            size.width = data.width;
+        } else {
+            size.height = DEFAULT_SIZE;
+            size.width = DEFAULT_SIZE;
+        }
         if (!getProcess().isDuplicate() || CommonsPlugin.isHeadless() || this.process.getEditor() == null) { // only for
                                                                                                              // graphical
                                                                                                              // process
@@ -1120,7 +1129,7 @@ public class Node extends Element implements IGraphicalNode {
     public void updateVisibleData() {
         // if it's a duplicate process, it's a process used only for code generation, so no need to update any graphical
         // data.
-        if (this.process.isDuplicate() || CommonsPlugin.isHeadless() || this.process.getEditor() == null) {
+        if (this.process.isDuplicate() || CommonsPlugin.isHeadless()) {
             return;
         }
         String newLabel = label;
@@ -4579,17 +4588,6 @@ public class Node extends Element implements IGraphicalNode {
      */
     @Override
     public Dimension getSize() {
-        if (size == null) {
-            size = new Dimension();
-            if (getIcon32() != null) {
-                ImageData data = getIcon32().getImageData();
-                size.height = data.height;
-                size.width = data.width;
-            } else {
-                size.height = DEFAULT_SIZE;
-                size.width = DEFAULT_SIZE;
-            }
-        }
         return size;
     }
 
