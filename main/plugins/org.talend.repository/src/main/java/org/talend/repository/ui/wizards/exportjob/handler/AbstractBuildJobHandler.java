@@ -182,10 +182,6 @@ public abstract class AbstractBuildJobHandler implements IBuildJobHandler {
 
     protected StringBuffer getProfileArgs() {
         StringBuffer profileBuffer = new StringBuffer();
-        profileBuffer.append(TalendMavenConstants.PREFIX_THREAD);
-        profileBuffer.append(SPACE);
-        profileBuffer.append(TalendMavenConstants.PREFIX_THREAD_VALUE);
-        profileBuffer.append(SPACE);
         profileBuffer.append(TalendMavenConstants.PREFIX_PROFILE);
         profileBuffer.append(SPACE);
 
