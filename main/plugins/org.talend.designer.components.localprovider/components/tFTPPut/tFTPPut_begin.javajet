@@ -337,6 +337,7 @@ int nb_file_<%=cid%> = 0;
 					throw new RuntimeException("Login failed");
 				}
 
+				ftp_<%=cid %>.setFileType(org.apache.commons.net.ftp.FTP.BINARY_FILE_TYPE);
 				ftp_<%=cid %>.execPROT(<%=protectionLevel %>);
 				ftp_<%=cid %>.execPBSZ(<%=protectionBufferSize %>);
 			} catch (Exception e) {
