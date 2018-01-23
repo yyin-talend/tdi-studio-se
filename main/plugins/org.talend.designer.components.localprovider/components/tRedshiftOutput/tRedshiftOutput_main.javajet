@@ -145,42 +145,43 @@ skeleton="../templates/db_output_bulk.skeleton"
 <%
 				} else {
 %>
-	                StringBuilder extendInsertValueStmt_<%=cid%> = new StringBuilder();
-	                for(int i_<%=cid%>=0;i_<%=cid%> < <%=numPerInsert%>;i_<%=cid%>++){
+						StringBuilder extendInsertValueStmt_<%=cid%> = new StringBuilder();
 <%
-	                List< ? extends IConnection> conns_dynamic = node.getIncomingConnections();
-	                if(conns_dynamic!=null && conns_dynamic.size()>0){
-                    	IConnection conn = conns_dynamic.get(0);
-                    	if(!("".equals(insertColName.toString()))) {
+						List< ? extends IConnection> conns_dynamic = node.getIncomingConnections();
+						if(conns_dynamic!=null && conns_dynamic.size()>0){
+							IConnection conn = conns_dynamic.get(0);
+              if(!("".equals(insertColName.toString()))) {
 %>
-                		extendInsertValueStmt_<%=cid%>.append("(<%=insertValueStmt.toString()%>,"+DynamicUtils.getInsertIntoStmtValuesList(<%=conn.getName()%>.<%=getDynamicColumn()%>)+")");
+							String valueList_<%=cid%> = "(<%=insertValueStmt.toString()%>,"+DynamicUtils.getInsertIntoStmtValuesList(<%=conn.getName()%>.<%=getDynamicColumn()%>)+")";
 <%
-						} else {
+              } else {
 %>
-                		extendInsertValueStmt_<%=cid%>.append("("+DynamicUtils.getInsertIntoStmtValuesList(<%=conn.getName()%>.<%=getDynamicColumn()%>)+")");
+							String valueList_<%=cid%> = "("+DynamicUtils.getInsertIntoStmtValuesList(<%=conn.getName()%>.<%=getDynamicColumn()%>)+")";
 <%
-						}
-   		 			}
+            	}
 %>
-                		if (i_<%=cid%>!=<%=numPerInsert%>-1) extendInsertValueStmt_<%=cid%>.append(",");
-                	}
+							numPerInsert_<%=cid%> = util_<%=cid%>.correctNumPerInsert(valueList_<%=cid%>, numPerInsert_<%=cid%>);
+										
+              for(int i_<%=cid%>=0;i_<%=cid%> < numPerInsert_<%=cid%>;i_<%=cid%>++){
+            		extendInsertValueStmt_<%=cid%>.append(valueList_<%=cid%>);
+            		if (i_<%=cid%>!=numPerInsert_<%=cid%>-1) extendInsertValueStmt_<%=cid%>.append(",");
+            	}
 <%
-	                if(conns_dynamic!=null && conns_dynamic.size()>0){
-	                    IConnection conn = conns_dynamic.get(0);
-	                    if(!("".equals(insertColName.toString()))) {
+              if(!("".equals(insertColName.toString()))) {
 %>
-                        insert_<%=cid%> = "INSERT INTO \"" + tableName_<%=cid%> + "\" (<%=insertColName.toString()%>, "+DynamicUtils.getInsertIntoStmtColumnsList(<%=conn.getName()%>.<%=getDynamicColumn()%>, "<%=dbmsId %>")+") VALUES " + extendInsertValueStmt_<%=cid%>.toString();
-<%                 		} else {
-%>
-                        insert_<%=cid%> = "INSERT INTO \"" + tableName_<%=cid%> + "\" ("+DynamicUtils.getInsertIntoStmtColumnsList(<%=conn.getName()%>.<%=getDynamicColumn()%>, "<%=dbmsId %>")+") VALUES " + extendInsertValueStmt_<%=cid%>.toString();
+              	insert_<%=cid%> = "INSERT INTO \"" + tableName_<%=cid%> + "\" (<%=insertColName.toString()%>, "+DynamicUtils.getInsertIntoStmtColumnsList(<%=conn.getName()%>.<%=getDynamicColumn()%>, "<%=dbmsId %>")+") VALUES " + extendInsertValueStmt_<%=cid%>.toString();
 <%
-                    	}
+							} else {
 %>
-                    	pstmt_<%=cid %> =  conn_<%=cid%>.prepareStatement(insert_<%=cid%>);
+            		insert_<%=cid%> = "INSERT INTO \"" + tableName_<%=cid%> + "\" ("+DynamicUtils.getInsertIntoStmtColumnsList(<%=conn.getName()%>.<%=getDynamicColumn()%>, "<%=dbmsId %>")+") VALUES " + extendInsertValueStmt_<%=cid%>.toString();
 <%
-                	}
+              }
 %>
-                	rowCount<%=cid%> = 0;
+              	pstmt_<%=cid %> =  conn_<%=cid%>.prepareStatement(insert_<%=cid%>);
+<%
+            	}
+%>
+            	rowCount<%=cid%> = 0;
 <%
 				}
 			} else if (("UPDATE").equals(dataAction)) {
@@ -593,7 +594,7 @@ skeleton="../templates/db_output_bulk.skeleton"
 
                 nb_line_<%=cid%>++;
 
-				if(rowCount<%=cid%> == <%=numPerInsert%>){
+				if(rowCount<%=cid%> == numPerInsert_<%=cid%>){
 	                insertedCount_<%=cid%> = insertedCount_<%=cid%> + pstmt_<%=cid %>.executeUpdate();
 	                exInsertColValueList<%=cid%>.clear();
 	                rowCount<%=cid%> = 0;
@@ -1109,52 +1110,8 @@ skeleton="../templates/db_output_bulk.skeleton"
         if (useBatch) {
             %>
                 if ((batchSize_<%=cid%> > 0) && (batchSize_<%=cid%> <= batchSizeCounter_<%=cid%>)) {
-                    int[] status_<%=cid%> = null;
-                    int countSum_<%=cid%> = 0;
-                    try {
-                        batchSizeCounter_<%=cid%> = 0;
-                        <%dbLog.batch().executeTry(dbLog.str(dataAction));%>
-                        status_<%=cid%> = pstmt_<%=cid %>.executeBatch();
-                        <%dbLog.batch().executeDone(dbLog.str(dataAction));%>
-                        for(int countEach_<%=cid%>: status_<%=cid%>) {
-                            countSum_<%=cid%> += (countEach_<%=cid%> < 0 ? 0 : countEach_<%=cid%>);
-                        }
-                    }catch (java.sql.BatchUpdateException e){
-                        <%if(("true").equals(dieOnError)) {
-                        %>
-                            throw(e);
-                        <%
-                        }else {
-                        %>
-                        for(int countEach_<%=cid%>: e.getUpdateCounts()) {
-                            countSum_<%=cid%> += (countEach_<%=cid%> < 0 ? 0 : countEach_<%=cid%>);
-                        }
-                        <%dbLog.logPrintedException("e.getMessage()");%>
-                        System.err.println(e.getMessage());
-                        <%
-                        }%>
-                    }
-                    try {
-                        tmp_batchUpdateCount_<%=cid%> = pstmt_<%=cid %>.getUpdateCount();
-                    }catch (java.sql.SQLException e){
-                        <%dbLog.logPrintedException("e.getMessage()");%>
-                        System.err.println(e.getMessage());
-                    }
-                    tmp_batchUpdateCount_<%=cid%> = tmp_batchUpdateCount_<%=cid%> > countSum_<%=cid%> ? tmp_batchUpdateCount_<%=cid%> : countSum_<%=cid%>;
-                    <%if (("INSERT").equals(dataAction)) {
-                    %>
-                        insertedCount_<%=cid%> += tmp_batchUpdateCount_<%=cid%>;
-                    <%
-                    }else if (("UPDATE").equals(dataAction)) {
-                    %>
-                        updatedCount_<%=cid%> += tmp_batchUpdateCount_<%=cid%>;
-                    <%
-                    }else if (("DELETE").equals(dataAction)) {
-                    %>
-                        deletedCount_<%=cid%> += tmp_batchUpdateCount_<%=cid%>;
-                    <%
-                    }%>
-               }
+            		<%@ include file="./batchExecute.javajet"%>
+                }
             <%
             }
 
@@ -1166,25 +1123,19 @@ skeleton="../templates/db_output_bulk.skeleton"
                 commitCounter_<%=cid%>++;
 
                 if(commitEvery_<%=cid%><=commitCounter_<%=cid%>) {
-                    <%
-                      if(useBatch){
-                           %>
-                                if(batchSize_<%=cid%> > 0){
-                                      <%dbLog.commit().commitTry(null, dbLog.var("commitCounter"));%>
-                                      conn_<%=cid%>.commit();
-                                      <%dbLog.commit().commitDone(null);%>
-                                      commitCounter_<%=cid%>=0;
-                                }
-                           <%
-                      }else{
-                            %>
-                                <%dbLog.commit().commitTry(null, dbLog.var("commitCounter"));%>
-                                   conn_<%=cid%>.commit();
-                                <%dbLog.commit().commitDone(null);%>
-                                   commitCounter_<%=cid%>=0;
-                            <%
-                      }
-                     %>
+                <%
+              	if(useBatch){//execute the batch before commit, if not that, the batch may not be executed at last and make the data lost
+                %>
+                    if((batchSize_<%=cid%> > 0) && (batchSizeCounter_<%=cid%> > 0)){
+                    	<%@ include file="./batchExecute.javajet"%>
+                    }
+                <%
+                }
+                %>
+                    <%dbLog.commit().commitTry(null, dbLog.var("commitCounter"));%>
+                    conn_<%=cid%>.commit();
+                    <%dbLog.commit().commitDone(null);%>
+                   	commitCounter_<%=cid%>=0;
                 }
             <%
             }

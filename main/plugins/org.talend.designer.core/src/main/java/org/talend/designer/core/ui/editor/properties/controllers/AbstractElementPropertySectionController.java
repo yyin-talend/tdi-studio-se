@@ -1492,7 +1492,8 @@ public abstract class AbstractElementPropertySectionController implements Proper
         if (EDatabaseVersion4Drivers.VERTICA_5_1.getVersionValue().equals(dbVersionName)
                 || EDatabaseVersion4Drivers.VERTICA_6.getVersionValue().equals(dbVersionName)
                 || EDatabaseVersion4Drivers.VERTICA_6_1_X.getVersionValue().equals(dbVersionName)
-                || EDatabaseVersion4Drivers.VERTICA_7.getVersionValue().equals(dbVersionName)) {
+                || EDatabaseVersion4Drivers.VERTICA_7.getVersionValue().equals(dbVersionName)
+                || EDatabaseVersion4Drivers.VERTICA_9.getVersionValue().equals(dbVersionName)) {
             driverClass = EDatabase4DriverClassName.VERTICA2.getDriverClass();
         }
 
@@ -1660,7 +1661,8 @@ public abstract class AbstractElementPropertySectionController implements Proper
             if (EDatabaseVersion4Drivers.VERTICA_6.getVersionValue().equals(dbVersion)
                     || EDatabaseVersion4Drivers.VERTICA_5_1.getVersionValue().equals(dbVersion)
                     || EDatabaseVersion4Drivers.VERTICA_6_1_X.getVersionValue().equals(dbVersion)
-                    || EDatabaseVersion4Drivers.VERTICA_7.getVersionValue().equals(dbVersion)) {
+                    || EDatabaseVersion4Drivers.VERTICA_7.getVersionValue().equals(dbVersion)
+                    || EDatabaseVersion4Drivers.VERTICA_9.getVersionValue().equals(dbVersion)) {
                 driverClass = EDatabase4DriverClassName.VERTICA2.getDriverClass();
             }
         }
@@ -1882,6 +1884,9 @@ public abstract class AbstractElementPropertySectionController implements Proper
         connParameters.setDbType(type);
 
         String driverName = getValueFromRepositoryName(elem, "DB_VERSION", basePropertyParameter); //$NON-NLS-1$
+        if (StringUtils.isBlank(driverName) && EDatabaseTypeName.MSSQL.getDisplayName().equals(connParameters.getDbType())) {
+            driverName = getValueFromRepositoryName(elem, "DRIVER", basePropertyParameter); //$NON-NLS-1$
+        }
         String dbVersionName = EDatabaseVersion4Drivers.getDbVersionName(type, driverName);
         if (EDatabaseTypeName.HIVE.getProduct().equalsIgnoreCase(type)) {
             if (EDatabaseVersion4Drivers.HIVE_EMBEDDED.getVersionValue().equals(

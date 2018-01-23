@@ -36,6 +36,7 @@ public class CLASS {
     public static final String POSTGREPLUS = "postgresplus_id";
     public static final String SQLITE = "sqlite_id";
     public static final String SYBASE = "sybase_id";
+    public static final String SNOWFLAKE = "snowflake_id";
     public static final String TERADATA = "teradata_id";
     public static final String VERTICA = "vertica_id";
     public static final String ODBC = "MSODBC";
@@ -387,6 +388,13 @@ public class CLASS {
                                 && (column.getColumn().getLength() == null || 0 == column.getColumn().getLength())
                                 && (column.getColumn().getPrecision() == null || 0 == column.getColumn().getPrecision())
                         ) {}
+                        else if ((SNOWFLAKE.equalsIgnoreCase(getDBMSId()))
+                                && (("DECIMAL".equalsIgnoreCase(dataType)) || ("NUMERIC".equalsIgnoreCase(dataType))||(("NUMBER".equalsIgnoreCase(dataType)))||("VARCHAR".equalsIgnoreCase(dataType))
+                                    || ("CHAR".equalsIgnoreCase(dataType))||(("CHARACTER".equalsIgnoreCase(dataType)))||("STRING".equalsIgnoreCase(dataType))|| ("TEXT".equalsIgnoreCase(dataType))
+                                    ||(("BINARY".equalsIgnoreCase(dataType)))||("VARBINARY".equalsIgnoreCase(dataType)))
+                                && (column.getColumn().getLength() == null || 0 == column.getColumn().getLength())
+                                && (column.getColumn().getPrecision() == null || 0 == column.getColumn().getPrecision())
+                        ) {}
                         else {
                             if (mappingType.isPreBeforeLength(getDBMSId(), dataType)) {
                                 if (!precisionIgnored) {
@@ -474,6 +482,11 @@ public class CLASS {
             }
             return createSQL.toString();
         }
+        
+        protected String getLengthStringRepresentation(String dataType, Integer length) {
+        	return String.valueOf(length);
+    	}
+    
         protected String getAutoIncrement(int startValue, int step) {
             if("sybase_id".equalsIgnoreCase(getDBMSId()) || "Exasol_id".equalsIgnoreCase(getDBMSId())){
                 return " IDENTITY NOT NULL";
@@ -2101,7 +2114,7 @@ public class CLASS {
                                     } else {
                                         comma = ",";
                                     }
-                                    createSQL.append(comma + length);
+                                    createSQL.append(comma + getLengthStringRepresentation(dataType, length));
                                 }
                                 createSQL.append(suffix);
                             } else {
@@ -2110,7 +2123,7 @@ public class CLASS {
                                     } else { 
                                         prefix = "(";
                                         suffix = ") ";
-                                        createSQL.append(prefix + length);                                    
+                                        createSQL.append(prefix + getLengthStringRepresentation(dataType, length));
                                     }
                                 }
                                 if (!precisionIgnored) {
@@ -2161,6 +2174,14 @@ public class CLASS {
             }
             return createSQL.toString();
         }
+        
+        protected String getLengthStringRepresentation(String dataType, Integer length) {
+	        if (("VARCHAR".equalsIgnoreCase(dataType) && length > 8000) || ("NVARCHAR".equalsIgnoreCase(dataType) && length > 4000)
+	                || ("VARBINARY".equalsIgnoreCase(dataType) && length > 8000)) {
+	            return "MAX";
+	        }
+	        return String.valueOf(length);
+	    }
     }
     
     public class MysqlManager extends Manager {
@@ -2188,6 +2209,7 @@ public class CLASS {
                 prefix = "pstmtUpdate_";
             }
             StringBuilder setStmt = new StringBuilder();
+
             if(typeToGenerate.equals("Character")) {
                 isObject = true;
                 setStmt.append("if(" + incomingConnName + "." + column.getName() + " == null) {\r\n");
@@ -2242,16 +2264,33 @@ public class CLASS {
                 setStmt.append(prefix + cid + ".setString(" + index + ", String.valueOf(" + incomingConnName + "." + column.getName() + "));\r\n");
                 setStmt.append("}");
             } else if(typeToGenerate.equals("Date")) {
+                //also check if DBType is year
+                boolean isDBTypeEqualsYear = column.getColumn().getType().equalsIgnoreCase("year");
                 setStmt.append("if(" + incomingConnName + "." + column.getName() + " != null) {\r\n");
                 setStmt.append("date_" + cid + " = " + incomingConnName + "." + column.getName() + ".getTime();\r\n");
-                setStmt.append("if(date_" + cid + " < year1_" + cid + " || date_" + cid + " >= year10000_" + cid + ") {\r\n");
-                setStmt.append(prefix + cid + ".setString(" + index + ", \"0000-00-00 00:00:00\");\r\n");
+                if (isDBTypeEqualsYear) {
+                    setStmt.append("java.util.Calendar yearCalendar_" + cid + " = new java.util.GregorianCalendar();\r\n");
+                    setStmt.append("yearCalendar_" + cid + ".setTimeInMillis(date_" + cid + ");\r\n");
+                    setStmt.append("\r\n");
+                    setStmt.append("int yearValue_" + cid + " = yearCalendar_" + cid + ".get(java.util.Calendar.YEAR);\r\n");
+                    setStmt.append("if (yearValue_" + cid + " > 2155 || yearValue_" + cid + " < 1901) { \r\n");
+                    setStmt.append("\t" + prefix + cid + ".setInt(" + index + ", 0);\r\n");
+                } else {
+                    setStmt.append("if(date_" + cid + " < year1_" + cid + " || date_" + cid + " >= year10000_" + cid + ") {\r\n");
+                    setStmt.append(prefix + cid + ".setString(" + index + ", \"0000-00-00 00:00:00\");\r\n");
+                }
                 setStmt.append("} else {");
-                setStmt.append(prefix + cid + ".setTimestamp(" + index + ", new java.sql.Timestamp(date_" + cid + "));\r\n");
+
+                if (isDBTypeEqualsYear) {
+                    setStmt.append("\t" + prefix + cid + ".setInt(" + index + ", yearValue_" + cid + ");\r\n");
+                } else {
+                    setStmt.append(prefix + cid + ".setTimestamp(" + index + ", new java.sql.Timestamp(date_" + cid + "));\r\n");
+                }
                 setStmt.append("}\r\n");
                 setStmt.append("} else {\r\n");
                 setStmt.append(prefix + cid + ".setNull(" + index + ", java.sql.Types.DATE);\r\n");
                 setStmt.append("}\r\n");
+
             } else {
                 setStmt.append(prefix + cid + ".set" + typeToGenerate + "(" + index + ", " + incomingConnName + "." + column.getName() + ");\r\n");
             }
@@ -3809,7 +3848,134 @@ public class CLASS {
                 setStmt.append("}\r\n");
             }
             return setStmt.toString();
-        }        
+        }  
+        public String getCreateTableSQL(List<Column> columnList){
+
+            MappingTypeRetriever mappingType = MetadataTalendType.getMappingTypeRetriever(getDBMSId());
+            StringBuilder createSQL = new StringBuilder();
+            createSQL.append("CREATE TABLE " + getLProtectedChar() + "\" + tableName_" + cid + " + \"" + getRProtectedChar() + "(");
+            List<String> pkList = new ArrayList<String>();
+            int count = 0;
+            String ending = ",";
+            
+            for (Column column : columnList) {
+                if (column.isReplaced()) {
+                    List<Column> replacedColumns = column.getReplacement();
+                    if (column.isKey()) {
+                        for (Column replacedColumn : replacedColumns) {
+                            pkList.add(getLProtectedChar(replacedColumn.getColumnName()) + replacedColumn.getColumnName() + getRProtectedChar(replacedColumn.getColumnName()));
+                        }
+                    }
+                    int replacedCount = 0;
+                    for (Column replacedColumn : replacedColumns) {
+                        if (count == columnList.size() - 1 && replacedCount == replacedColumns.size() - 1) {
+                            ending = "";
+                        }
+                        createSQL.append(getLProtectedChar(replacedColumn.getColumnName()) + replacedColumn.getColumnName() + getRProtectedChar(replacedColumn.getColumnName()) + " ");
+                        createSQL.append(replacedColumn.getDataType() + ending);
+                        replacedCount++;
+                    }
+                } else {
+                    if (count == columnList.size() - 1) {
+                        ending = "";
+                    }
+                    
+                    if (column.isAddCol()) {
+                        createSQL.append(getLProtectedChar( column.getColumnName() ) + column.getColumnName() + getRProtectedChar( column.getColumnName() ) + " ");
+                        createSQL.append(column.getDataType() + ending);
+                    } else if(column.isDynamic()) {
+                        createSQL.append(" {TALEND_DYNAMIC_COLUMN} ").append(ending);
+                    } else {
+                        if (column.isKey()) {
+                            pkList.add(getLProtectedChar( column.getColumnName() ) + column.getColumnName() + getRProtectedChar( column.getColumnName() ));
+                        }
+                        createSQL.append(getLProtectedChar( column.getColumnName() ) + column.getColumnName() + getRProtectedChar( column.getColumnName() ) + " ");
+                        if(column.isAutoIncrement()) {
+                            createSQL.append(getAutoIncrement(column.getStartValue(), column.getStep()));
+                        } else {
+                        String dataType = null;
+                        if (column.getColumn().getType() == null || column.getColumn().getType().trim().equals("")) {
+                            dataType = mappingType.getDefaultSelectedDbType(column.getColumn().getTalendType());
+                        } else {
+                            dataType = column.getColumn().getType();
+                        }
+                        Integer length = column.getColumn().getLength() == null ? 0 : column.getColumn().getLength();
+                        createSQL.append(dataType);
+                        Integer precision = column.getColumn().getPrecision() == null ? 0 : column.getColumn().getPrecision();
+                        boolean lengthIgnored = mappingType.isLengthIgnored(getDBMSId(), dataType);
+                        boolean precisionIgnored = mappingType.isPrecisionIgnored(getDBMSId(), dataType);
+                        String prefix = "";
+                        String suffix = "";
+                        String comma = "";
+
+                            if (mappingType.isPreBeforeLength(getDBMSId(), dataType)) {
+                                if (!precisionIgnored) {
+                                    prefix = "(";
+                                    suffix = ") ";
+                                    createSQL.append(prefix + precision);
+                                }
+                                if (!lengthIgnored) {
+                                    prefix = (prefix.equals("") ? "(" : prefix);
+                                    suffix = (suffix.equals("") ? ") " : suffix);
+                                    if (precisionIgnored) {
+                                        createSQL.append(prefix);
+                                        comma = "";
+                                    } else {
+                                        comma = ",";
+                                    }
+                                    createSQL.append(comma + length);
+                                }
+                                createSQL.append(suffix);
+                            } else {
+                                if (!lengthIgnored) {
+                                        prefix = "(";
+                                        suffix = ") ";
+                                        createSQL.append(prefix + length);                                    
+                                }
+                                if (!precisionIgnored) {
+                                    prefix = (prefix.equals("") ? "(" : prefix);
+                                    suffix = (suffix.equals("") ? ") " : suffix);
+                                    if (lengthIgnored) {
+                                        createSQL.append(prefix);
+                                        comma = "";
+                                    } else {
+                                        comma = ",";
+                                    }
+                                    createSQL.append(comma + precision);
+                                }
+                                    createSQL.append(suffix);
+                                if(MYSQL.equalsIgnoreCase(getDBMSId()) && dataType.endsWith("UNSIGNED")) {
+                                    createSQL.append("UNSIGNED");
+                                }
+                            }                            
+                            
+                        
+                            createSQL.append(setDefaultValue(column.getColumn().getDefault(), dataType));
+                            createSQL.append(setNullable(column.getColumn().isNullable()));
+                        }
+
+                        createSQL.append(ending);
+                    }
+                }
+                count++;
+            }
+            
+            if (pkList.size() > 0) {
+                createSQL.append(",primary key(");
+                int i = 0;
+                for (String pk : pkList) {
+                    createSQL.append(pk);
+                    if (i != pkList.size() - 1) {
+                        createSQL.append(",");
+                    }
+                    i++;
+                }
+                createSQL.append(")");
+            }
+            return createSQL.toString();
+        
+        }
+        
     }
     
     public class ODBCManager extends Manager {

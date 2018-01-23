@@ -19,6 +19,7 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.apache.commons.lang3.StringUtils;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.draw2d.CheckBox;
 import org.eclipse.jface.operation.IRunnableWithProgress;
@@ -46,6 +47,7 @@ import org.talend.core.repository.utils.DatabaseConnectionParameterUtil;
 import org.talend.core.sqlbuilder.util.TextUtil;
 import org.talend.core.utils.KeywordsValidator;
 import org.talend.cwm.helper.ConnectionHelper;
+import org.talend.cwm.helper.TaggedValueHelper;
 import org.talend.repository.model.IRepositoryNode;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.sqlbuilder.erdiagram.ui.editor.ErdiagramDiagramEditor;
@@ -61,6 +63,7 @@ import org.talend.sqlbuilder.repository.utility.SQLBuilderRepositoryNodeManager;
 import org.talend.sqlbuilder.ui.ISQLBuilderDialog;
 import org.talend.sqlbuilder.util.UIUtils;
 import org.talend.utils.sql.ConnectionUtils;
+import org.talend.utils.sql.metadata.constants.GetTable;
 
 import orgomg.cwm.objectmodel.core.ModelElement;
 import orgomg.cwm.resource.relational.Catalog;
@@ -98,7 +101,7 @@ public class ErDiagramComposite extends SashForm {
     /**
      * admin Comment method "addErDiagramEditor".
      */
-    @SuppressWarnings("unchecked")//$NON-NLS-1$
+    @SuppressWarnings("unchecked")
     private void addErDiagramEditor(boolean isShowDesignerPage) {
         GridData gridData = new GridData(GridData.FILL_BOTH);
         this.setLayoutData(gridData);
@@ -200,8 +203,8 @@ public class ErDiagramComposite extends SashForm {
                     monitor.beginTask("", IProgressMonitor.UNKNOWN); //$NON-NLS-1$
                     try {
                         List<MetadataColumn> selectedColumns = new ArrayList<MetadataColumn>();
-                        List<MetadataTable> tables = EMFRepositoryNodeManager.getInstance()
-                                .getTables(getNodes(), selectedColumns);
+                        List<MetadataTable> tables = EMFRepositoryNodeManager.getInstance().getTables(getNodes(),
+                                selectedColumns);
 
                         erDiagram.setMetadataTables(tables);
                         List<String[]> fks = EMFRepositoryNodeManager.getInstance().getPKFromTables(tables,
@@ -250,6 +253,16 @@ public class ErDiagramComposite extends SashForm {
         String schema = "";
         if (ConnectionUtils.isTeradata(connection.getURL())) {
             schema = connection.getSID();
+        } else if (EDatabaseTypeName.SAPHana.getDisplayName().equals(getCurrentDbType())) {
+            if (erDiagram != null) {
+                List<MetadataTable> tables = erDiagram.getMetadataTables();
+                for (MetadataTable table : tables) {
+                    schema = TaggedValueHelper.getValueString(GetTable.TABLE_SCHEM.name(), table);
+                    if (StringUtils.isEmpty(schema)) {
+                        schema = connection.getUiSchema();
+                    }
+                }
+            }
         } else {
             schema = connection.getUiSchema();
         }
@@ -260,7 +273,7 @@ public class ErDiagramComposite extends SashForm {
 
     }
 
-    @SuppressWarnings("unchecked")//$NON-NLS-1$
+    @SuppressWarnings("unchecked")
     private String getSqlStatement() {
         String sql = ""; //$NON-NLS-1$
         List<String> tables = new ArrayList<String>();
@@ -275,7 +288,7 @@ public class ErDiagramComposite extends SashForm {
                     if (object instanceof TablePart) {
                         TablePart tablePart = (TablePart) object;
                         Table table = (Table) tablePart.getModel();
-                        if (TextUtil.isDoubleQuotesNeededDbType(getCurrentDbType())) { //$NON-NLS-1$
+                        if (TextUtil.isDoubleQuotesNeededDbType(getCurrentDbType())) {
                             tables.add(schemaPrefixWithDoubleQuotes + "\"" + table.getElementName() + "\"");
                         } else {
                             tables.add(schemaPrefix
@@ -289,9 +302,9 @@ public class ErDiagramComposite extends SashForm {
                                 Column column = (Column) columnPart.getModel();
                                 CheckBox isSelected = columnPart.getPrimativeFigure().getFigureCustomColumnIsSelectedFigure();
                                 if (isSelected != null && isSelected.isSelected() && !column.getElementName().equals("*")) { //$NON-NLS-1$
-                                    if (TextUtil.isDoubleQuotesNeededDbType(getCurrentDbType())) { //$NON-NLS-1$
-                                        columns.add(schemaPrefixWithDoubleQuotes
-                                                + "\"" + table.getElementName() + "\".\"" + column.getElementName() + "\""); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                                    if (TextUtil.isDoubleQuotesNeededDbType(getCurrentDbType())) {
+                                        columns.add(schemaPrefixWithDoubleQuotes + "\"" + table.getElementName() + "\".\"" //$NON-NLS-1$ //$NON-NLS-2$
+                                                + column.getElementName() + "\""); //$NON-NLS-1$
                                     } else {
                                         // added by hyWang
                                         String leftQuote = TalendTextUtils.getQuoteByDBType(getCurrentDbType(), true);
@@ -306,11 +319,12 @@ public class ErDiagramComposite extends SashForm {
 
                                         if (!matcher.matches() || (sqlKeyword && oracleDbType)) {
                                             columns.add(schemaPrefix
-                                                    + TalendTextUtils.addQuotesWithSpaceField(table.getElementName(),
-                                                            getCurrentDbType())
+                                                    + TalendTextUtils
+                                                            .addQuotesWithSpaceField(table.getElementName(), getCurrentDbType())
                                                     + "." //$NON-NLS-1$
-                                                    + TalendTextUtils.addQuotesWithSpaceField(leftQuote + column.getElementName()
-                                                            + rightQuote, getCurrentDbType()));
+                                                    + TalendTextUtils.addQuotesWithSpaceField(
+                                                            leftQuote + column.getElementName() + rightQuote,
+                                                            getCurrentDbType()));
                                         } else {
                                             columns.add(schemaPrefix
                                                     + TalendTextUtils.addQuotesWithSpaceField(table.getElementName(),
@@ -321,22 +335,20 @@ public class ErDiagramComposite extends SashForm {
                                         }
                                     }
                                 }
-                                for (Relation rel : (List<Relation>) column.getOutputs()) {
+                                for (Relation rel : column.getOutputs()) {
                                     Column source = rel.getSource();
                                     Column target = rel.getTarget();
                                     if (TextUtil.isDoubleQuotesNeededDbType(getCurrentDbType())) {
-                                        String where1 = schemaPrefixWithDoubleQuotes
-                                                + "\"" + source.getTable().getElementName() + "\".\"" //$NON-NLS-1$ //$NON-NLS-2$
-                                                + source.getElementName()
-                                                + "\"= " + schemaPrefixWithDoubleQuotes + "\"" + target.getTable().getElementName() //$NON-NLS-1$
-                                                + "\".\"" + target.getElementName() + "\""; //$NON-NLS-1$ //$NON-NLS-2$
+                                        String where1 = schemaPrefixWithDoubleQuotes + "\"" + source.getTable().getElementName() //$NON-NLS-1$
+                                                + "\".\"" //$NON-NLS-1$
+                                                + source.getElementName() + "\"= " + schemaPrefixWithDoubleQuotes + "\"" //$NON-NLS-1$
+                                                + target.getTable().getElementName() + "\".\"" + target.getElementName() + "\""; //$NON-NLS-1$ //$NON-NLS-2$
                                         if (!wheres.contains(where1)) {
                                             wheres.add(where1);
                                         }
                                     } else {
-                                        String where1 = schemaPrefix
-                                                + TalendTextUtils.addQuotesWithSpaceField(source.getTable().getElementName(),
-                                                        getCurrentDbType())
+                                        String where1 = schemaPrefix + TalendTextUtils
+                                                .addQuotesWithSpaceField(source.getTable().getElementName(), getCurrentDbType())
                                                 + "." //$NON-NLS-1$
                                                 + TalendTextUtils.addQuotesWithSpaceField(source.getElementName(),
                                                         getCurrentDbType())
@@ -366,9 +378,8 @@ public class ErDiagramComposite extends SashForm {
                 conn = ((ConnectionItem) connectionItem).getConnection();
             }
         }
-        if (getCurrentDbType() != null
-                && (getCurrentDbType().equals(EDatabaseTypeName.MSSQL.getDisplayName()) || getCurrentDbType().equals(
-                        EDatabaseTypeName.MSSQL.name())) && conn != null) {
+        if (getCurrentDbType() != null && (getCurrentDbType().equals(EDatabaseTypeName.MSSQL.getDisplayName())
+                || getCurrentDbType().equals(EDatabaseTypeName.MSSQL.name())) && conn != null) {
             List<String> newTables = new ArrayList<String>();
             for (String str : tables) {
                 newTables.add(getMssqlCatalog(str, conn));

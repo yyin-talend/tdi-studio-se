@@ -2,7 +2,7 @@
 <feature
       id="org.talend.tos.feature"
       label="Tos feature"
-      version="6.5.1.qualifier"
+      version="6.5.2.qualifier"
       provider-name=".Talend SA.">
 
    <description url="http://www.example.com/description">
@@ -171,36 +171,6 @@
 
    <plugin
          id="javax.transaction"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         fragment="true"
-         unpack="false"/>
-
-   <plugin
-         id="org.talend.presentation.onboarding"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.talend.presentation.onboarding.nl"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         fragment="true"
-         unpack="false"/>
-
-   <plugin
-         id="org.talend.presentation.onboarding.resource"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.talend.presentation.onboarding.resource.nl"
          download-size="0"
          install-size="0"
          version="0.0.0"

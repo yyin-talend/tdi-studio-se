@@ -2,7 +2,7 @@
 <feature
       id="org.talend.rcp.branding.tos.feature"
       label="Tos branding feature"
-      version="6.5.1.qualifier"
+      version="6.5.2.qualifier"
       provider-name=".Talend SA."
       plugin="org.talend.rcp.branding.tos">
 
@@ -37,6 +37,36 @@
          download-size="0"
          install-size="0"
          version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.talend.presentation.onboarding"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.talend.presentation.onboarding.nl"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         fragment="true"
+         unpack="false"/>
+
+   <plugin
+         id="org.talend.presentation.onboarding.resource"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.talend.presentation.onboarding.resource.nl"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         fragment="true"
          unpack="false"/>
 
    <plugin
