@@ -10,6 +10,11 @@ public class CLASS {
     public static final String FIRST_DELETE_KEY = "firstDeleteKeyColumn";
     public static final String FIRST_INSERT_COLUMN = "firstInsertColumn";
     public static final String FIRST_UPDATE_COLUMN = "firstUpdateColumn";
+    
+    public static final String FIRST_BULK_UPDATE_COLUMN = "first_batch_update_column";
+    public static final String INSERT_COLUMN_NAME_BULK_UPDATE = "insert_column_name_batch_update";
+    public static final String INSERT_VALUE_STMT_BULK_UPDATE = "insert_value_stmt_batch_update";
+    
     public static final int NORMAL_TYPE = 0;
     public static final int INSERT_TYPE = 1;
     public static final int UPDATE_TYPE = 2;
@@ -558,6 +563,10 @@ public class CLASS {
             return updateBulkSQL.toString() + updateSetStmt.toString() + updateWhereStmt.toString();
         }
 
+		public String getUpdateBulkSQL4Output(List<Column> columnList) {
+            return null;
+        }
+        
         public List<Column> createColumnList(List<IMetadataColumn> columnList, boolean useFieldOptions, List<Map<String, String>> fieldOptions, List<Map<String, String>> addCols, boolean isSpecifyIdentityKey, String identityKey, int startValue, int step) {
             List<Column> stmtStructure = createColumnList(columnList, useFieldOptions, fieldOptions, addCols);
             if(isSpecifyIdentityKey) {
@@ -661,6 +670,10 @@ public class CLASS {
                 actionSQLMap.put(FIRST_DELETE_KEY, new StringBuilder());
                 actionSQLMap.put(FIRST_INSERT_COLUMN, new StringBuilder());
                 actionSQLMap.put(FIRST_UPDATE_COLUMN, new StringBuilder());
+                
+                actionSQLMap.put(FIRST_BULK_UPDATE_COLUMN, new StringBuilder());
+                actionSQLMap.put(INSERT_COLUMN_NAME_BULK_UPDATE, new StringBuilder());
+                actionSQLMap.put(INSERT_VALUE_STMT_BULK_UPDATE, new StringBuilder());
             } else {
                 for(Column column : stmtStructure) {
                     if(column.isReplaced()) {
@@ -719,8 +732,23 @@ public class CLASS {
             if(firstUpdateColumn == null) {
                 firstUpdateColumn = new StringBuilder("true");
             }
+            
+            StringBuilder firstBatchUpdateColumn = actionSQLMap.get(FIRST_BULK_UPDATE_COLUMN);
+            if(firstBatchUpdateColumn == null) {
+                firstBatchUpdateColumn = new StringBuilder("true");
+            }
+            StringBuilder insertColNameBatchUpdate = actionSQLMap.get(INSERT_COLUMN_NAME_BULK_UPDATE);
+            if(insertColNameBatchUpdate == null) {
+                insertColNameBatchUpdate = new StringBuilder();
+            }
+            StringBuilder insertValueStmtBatchUpdate = actionSQLMap.get(INSERT_VALUE_STMT_BULK_UPDATE);
+            if(insertValueStmtBatchUpdate == null) {
+                insertValueStmtBatchUpdate = new StringBuilder();
+            }
+            
             String suffix = null;
             String separate = null;
+            
             String identityKey = ElementParameterParser.getValue(node, "__IDENTITY_FIELD__");
             if(!(isSpecifyIdentityKey && (column.getName().equals(identityKey))) && column.isInsertable() && !column.isDynamic()) {
                 if(firstInsertColumn.toString().equals("true")) {
@@ -734,6 +762,20 @@ public class CLASS {
                 insertValueStmt.append(suffix);
                 insertValueStmt.append(column.getSqlStmt());
             }
+            
+            if((column.isUpdateKey() || column.isUpdatable()) && !column.isDynamic()) {
+                if(firstBatchUpdateColumn.toString().equals("true")) {
+                    suffix = "";
+                    firstBatchUpdateColumn = new StringBuilder("false");
+                } else {
+                    suffix = ",";
+                }
+                insertColNameBatchUpdate.append(suffix);
+                insertColNameBatchUpdate.append(getLProtectedChar(column.getColumnName()) + column.getColumnName() + getRProtectedChar(column.getColumnName()));
+                insertValueStmtBatchUpdate.append(suffix);
+                insertValueStmtBatchUpdate.append(column.getSqlStmt());
+            }
+            
             if(column.isUpdatable() && !column.isDynamic()) {
                 if(firstUpdateColumn.toString().equals("true")) {
                     suffix = "";
@@ -778,6 +820,11 @@ public class CLASS {
             actionSQLMap.put(FIRST_DELETE_KEY, firstDeleteKeyColumn);
             actionSQLMap.put(FIRST_INSERT_COLUMN, firstInsertColumn);
             actionSQLMap.put(FIRST_UPDATE_COLUMN, firstUpdateColumn);
+            
+            actionSQLMap.put(FIRST_BULK_UPDATE_COLUMN, firstBatchUpdateColumn);
+            actionSQLMap.put(INSERT_COLUMN_NAME_BULK_UPDATE, insertColNameBatchUpdate);
+            actionSQLMap.put(INSERT_VALUE_STMT_BULK_UPDATE, insertValueStmtBatchUpdate);
+            
             return actionSQLMap;
         }
         public String getGenerateType(String typeToGenerate) {
@@ -3028,6 +3075,77 @@ public class CLASS {
                 createSQL.append(")");
             }
             return createSQL.toString();
+        }
+        
+        public String getUpdateBulkSQL4Output(List<Column> columnList) {
+        	StringBuilder updateBulkSQL = new StringBuilder();
+            StringBuilder updateSetStmt = new StringBuilder();
+            StringBuilder updateWhereStmt = new StringBuilder();
+            updateBulkSQL.append("UPDATE " + getLProtectedChar() + "\" +  tableName_" + cid + " + \"" + getRProtectedChar());
+            boolean firstKeyColumn = true;
+            boolean firstUpdateColumn = true;
+            String keySeparator = null;
+            String updateSeparator = null;
+            
+            List<Column> fullColumnList = new java.util.ArrayList<Column>();
+            for(Column column : columnList) {
+        		if(column.isReplaced()) {
+                    List<Column> replacedColumns = column.getReplacement();
+                    for(Column replacedColumn : replacedColumns) {
+                        fullColumnList.add(replacedColumn);
+                    }
+                } else {
+                	fullColumnList.add(column);
+                }
+            }
+            
+            for(Column column : fullColumnList) {
+            	if(column.isDynamic()) {
+            		continue;
+            	}
+            	
+                if(column.isUpdateKey()) {
+                    if(firstKeyColumn) {
+                        keySeparator = "";
+                        firstKeyColumn = false;
+                        updateWhereStmt.append(" FROM " + getLProtectedChar() + "\" + tmpTableName_" + cid + " + \"" + getRProtectedChar() + " WHERE \" + \"");
+                    } else {
+                        keySeparator = " AND ";
+                    }
+                    updateWhereStmt.append(keySeparator);                    
+                    updateWhereStmt.append(getLProtectedChar() + "\" + tableName_" + cid + " + \"" + getRProtectedChar() + "." + getLProtectedChar() + "\" + \"" + column.getColumnName()  + "\" + \"" + getRProtectedChar() + " = " + getLProtectedChar() + "\" + tmpTableName_" + cid + " + \"" + getRProtectedChar() + "." + getLProtectedChar() + "\" + \"" + column.getColumnName()  + "\" + \"" + getRProtectedChar());
+                } else if(column.isUpdatable()) {
+                    if(firstUpdateColumn) {
+                        updateSeparator = "";
+                        firstUpdateColumn = false;
+                        updateSetStmt.append(" SET \" + \"");
+                    } else {
+                        updateSeparator = ", ";
+                    }
+                    updateSetStmt.append(updateSeparator);
+                    updateSetStmt.append(getLProtectedChar() + "\" + \"" + column.getColumnName()  + "\" + \"" + getRProtectedChar() + " = " + getLProtectedChar() + "\" + tmpTableName_" + cid + " + \"" + getRProtectedChar() + "." + getLProtectedChar() + "\" + \"" + column.getColumnName()  + "\" + \"" + getRProtectedChar());
+                }
+            }
+            
+            if(!firstUpdateColumn) {
+            	updateWhereStmt.append(" AND (");
+            	boolean first = true;
+            	for(Column column : fullColumnList) {
+	            	if(!column.isUpdatable() || column.isDynamic()) {
+	            		continue;
+	            	}
+	            	
+	            	if(!first) {
+	            		updateWhereStmt.append(" OR ");
+	            	} else {
+	            		first = false;
+	            	}
+	            	updateWhereStmt.append(getLProtectedChar() + "\" + tableName_" + cid + " + \"" + getRProtectedChar() + "." + getLProtectedChar() + "\" + \"" + column.getColumnName()  + "\" + \"" + getRProtectedChar() + " != " + getLProtectedChar() + "\" + tmpTableName_" + cid + " + \"" + getRProtectedChar() + "." + getLProtectedChar() + "\" + \"" + column.getColumnName()  + "\" + \"" + getRProtectedChar());
+	            }
+	            updateWhereStmt.append(")");
+            }
+            
+            return updateBulkSQL.toString() + updateSetStmt.toString() + updateWhereStmt.toString();
         }
     }
     

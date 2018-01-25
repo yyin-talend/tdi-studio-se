@@ -94,12 +94,14 @@ skeleton="../templates/db_output_bulk.skeleton"
     StringBuilder updateSetStmt = actionSQLMap.get(UPDATE_SET_STMT);
     StringBuilder updateWhereStmt = actionSQLMap.get(UPDATE_WHERE_STMT);
     StringBuilder deleteWhereStmt = actionSQLMap.get(DELETE_WHERE_STMT);
-
-
-
+    
+    StringBuilder insert_column_name_batch_update = actionSQLMap.get(INSERT_COLUMN_NAME_BULK_UPDATE);
+    StringBuilder insert_value_stmt_batch_update = actionSQLMap.get(INSERT_VALUE_STMT_BULK_UPDATE);
+    
 	String numPerInsert = ElementParameterParser.getValue(node, "__NB_ROWS_PER_INSERT__");
 
-	if(extendedInsert){
+	boolean batch_update = "BULK_UPDATE".equals(dataAction);
+	if(extendedInsert || batch_update){
 		class ExtendInsertOperation{
 			public String generateType(String typeToGenerate){
 				if(("byte[]").equals(typeToGenerate)){
@@ -243,10 +245,20 @@ skeleton="../templates/db_output_bulk.skeleton"
 		if(!("true").equals(useExistingConn)) {
         	if(!("").equals(commitEvery) && !("0").equals(commitEvery)) {
     	    %>
-            commitCounter_<%=cid%> = rowCount<%=cid%>;//correct the commit counter as commit can happen before executing the sql for extend insert
+            commitCounter_<%=cid%> += rowCount<%=cid%>;//correct the commit counter as commit can happen before executing the sql for extend insert
             <%
         	}
         }
+        
+    StringBuilder column_list_in_sql = null;
+		StringBuilder value_list_in_sql = null;
+		if(batch_update){
+			column_list_in_sql = insert_column_name_batch_update;
+			value_list_in_sql = insert_value_stmt_batch_update;
+		} else {
+			column_list_in_sql = insertColName;
+			value_list_in_sql = insertValueStmt;
+		}
 	%>
 
 	    if(rowCount<%=cid%>!=0){
@@ -269,8 +281,9 @@ skeleton="../templates/db_output_bulk.skeleton"
 					}
 				}
 			} else {
+				
 %>
-				extendInsertValue_<%=cid%>.append("(<%=insertValueStmt.toString()%>)");
+				extendInsertValue_<%=cid%>.append("(<%=value_list_in_sql.toString()%>)");
 <%
 			}
 %>
@@ -293,7 +306,7 @@ skeleton="../templates/db_output_bulk.skeleton"
         		}
         	} else {
 %>
-				insert_<%=cid%> = "INSERT INTO \"" + tableName_<%=cid%> + "\" (<%=insertColName.toString()%>) VALUES "+extendInsertValue_<%=cid%>.toString();
+				insert_<%=cid%> = "INSERT INTO \"" + tableName_<%=cid%> + "\" (<%=column_list_in_sql.toString()%>) VALUES "+extendInsertValue_<%=cid%>.toString();
 <%
         	}
 %>
@@ -301,7 +314,8 @@ skeleton="../templates/db_output_bulk.skeleton"
 <%
 			int insertableCount = 0;
 			for(Column column : colStruct) {
-				if(column.isInsertable()) {
+				boolean insertable = (batch_update ? (column.isUpdateKey() || column.isUpdatable()) : column.isInsertable());
+				if(insertable) {
 					insertableCount++;
 				}
 			}
@@ -322,7 +336,8 @@ skeleton="../templates/db_output_bulk.skeleton"
 				+ 1;
 <%
 	            for(Column column : colStruct) {
-	                if(column.isInsertable()) {
+	            		boolean insertable = (batch_update ? (column.isUpdateKey() || column.isUpdatable()) : column.isInsertable());
+	                if(insertable) {
 	                    String typeToGenerate = JavaTypesManager.getTypeToGenerate(column.getColumn().getTalendType(), column.getColumn().isNullable());
 	                    eiOperation.generateSetStmt(typeToGenerate, column, cid);
 	                    %>
@@ -348,6 +363,25 @@ skeleton="../templates/db_output_bulk.skeleton"
 	    }
 	<%
 	} // end extended insert case
+	
+	if(batch_update) {
+	%>
+	//make it back
+	tableName_<%=cid%> = realTableName_<%=cid%>;
+	
+	java.sql.Statement stmtUpdateBulk_<%=cid%> = conn_<%=cid%>.createStatement();
+	updatedCount_<%=cid%> = stmtUpdateBulk_<%=cid%>.executeUpdate("<%=getManager(dbmsId, cid).getUpdateBulkSQL4Output(stmtStructure)%>");
+	stmtUpdateBulk_<%=cid%>.close();
+	
+	if(!conn_<%=cid%>.getAutoCommit()) {
+		conn_<%=cid%>.commit();
+	}
+	
+	java.sql.Statement stmtTmpDrop_<%=cid%> = conn_<%=cid%>.createStatement();
+	stmtTmpDrop_<%=cid%>.execute("DROP TABLE \"" + tmpTableName_<%=cid%> + "\"");
+	stmtTmpDrop_<%=cid%>.close();
+	<%
+	}
 
 
     if(("INSERT_OR_UPDATE").equals(dataAction)) {

@@ -96,6 +96,26 @@ if(columnList != null && columnList.size() > 0) {
     stmtStructure = getManager(dbmsId, cid).createColumnList(columnList, useFieldOptions, fieldOptions, addCols);
     isDynamic = isDynamic && !getManager(dbmsId, cid).isDynamicColumnReplaced();
 }
+
+boolean batch_update = "BULK_UPDATE".equals(dataAction);
+if(batch_update) {
+%>
+
+  <%if(isDynamic) {%>
+  boolean flag_<%=cid%> = true;
+  if(flag_<%=cid%>) {
+  	throw new java.lang.RuntimeException("batch update can't work with dynamic together, please change it");
+  }
+<%
+	} else if(rejectConnName!=null) {%>
+    boolean flag_<%=cid%> = true;
+    if(flag_<%=cid%>) {
+    	throw new java.lang.RuntimeException("batch update can't work with reject line together, please change it");
+    }
+<%
+  }
+  
+}
 %>
 
 String dbschema_<%=cid%> = null;
@@ -140,7 +160,7 @@ if(tableNameWithSchema){
 %>
 
 <%
-if(("UPDATE").equals(dataAction) || ("INSERT_OR_UPDATE").equals(dataAction) || ("UPDATE_OR_INSERT").equals(dataAction)) {
+if(("UPDATE").equals(dataAction) || ("INSERT_OR_UPDATE").equals(dataAction) || ("UPDATE_OR_INSERT").equals(dataAction) || batch_update) {
     int updateKeyCount = 0;
     if(stmtStructure != null) {
         for(Column column : stmtStructure) {
@@ -255,7 +275,7 @@ if(!("true").equals(useExistingConn)) {
 	}
 }
 
-if("INSERT".equals(dataAction) && extendedInsert) {
+if(("INSERT".equals(dataAction) && extendedInsert) || batch_update) {
 %>
 	class Util_<%=cid%> {
 		
@@ -310,20 +330,39 @@ if(columnList != null && columnList.size()>0) {
     StringBuilder updateSetStmt = actionSQLMap.get(UPDATE_SET_STMT);
     StringBuilder updateWhereStmt = actionSQLMap.get(UPDATE_WHERE_STMT);
     StringBuilder deleteWhereStmt = actionSQLMap.get(DELETE_WHERE_STMT);
-
-	if(("INSERT").equals(dataAction)) {
-		if(!extendedInsert) {
+    
+    StringBuilder insert_column_name_batch_update = actionSQLMap.get(INSERT_COLUMN_NAME_BULK_UPDATE);
+    StringBuilder insert_value_stmt_batch_update = actionSQLMap.get(INSERT_VALUE_STMT_BULK_UPDATE);
+    
+	if(("INSERT").equals(dataAction) || batch_update) {
+		if(!extendedInsert && !batch_update) {
 %>
 			java.sql.PreparedStatement pstmt_<%=cid %> = conn_<%=cid%>.prepareStatement("INSERT INTO \"" + tableName_<%=cid%> + "\" (<%=insertColName.toString()%>) VALUES (<%=insertValueStmt.toString()%>)");
 <%
-		} else { //entended insert
+		} else { //entended insert or batch update
+			if(batch_update) {
+%>
+			String tmpTableName_<%=cid%> = "tmp_<%=cid%>_" + pid + Thread.currentThread().getId();
+			java.sql.Statement stat_<%=cid%> = conn_<%=cid%>.createStatement();
+			//redshift primary key allow duplicated, so ok now
+			stat_<%=cid%>.execute("CREATE TEMP TABLE \"" + tmpTableName_<%=cid%> + "\" (like \"" + tableName_<%=cid%> + "\")");
+			stat_<%=cid%>.close();
+			
+			final String realTableName_<%=cid%> = tableName_<%=cid%>;
+			tableName_<%=cid%> = tmpTableName_<%=cid%>;
+<%
+			}
 %>
 			int rowCount<%=cid%> = 0;
 			class BufferLine_<%=cid%> {
 <%
                 int count = 0;
                 for(Column column : stmtStructure) {
-                    if(!column.isReplaced() && !column.isAddCol() && column.isInsertable()) {
+                		boolean insertable = column.isInsertable();
+                		if(batch_update) {
+                			insertable = column.isUpdateKey() || column.isUpdatable();
+                		}
+                    if(!column.isReplaced() && !column.isAddCol() && insertable) {
                     	String typeToGenerate = JavaTypesManager.getTypeToGenerate(column.getColumn().getTalendType(), column.getColumn().isNullable());
 %>				
 						<%=typeToGenerate%> <%=column.getName()%>;
@@ -342,7 +381,18 @@ if(columnList != null && columnList.size()>0) {
 			java.util.List<BufferLine_<%=cid%>> exInsertColValueList<%=cid%> = new java.util.ArrayList();
 			BufferLine_<%=cid%> exInsertColValue<%=cid%> = null;
 
-			String valueList_<%=cid%> = "(<%=insertValueStmt.toString()%>)";
+			<%
+			StringBuilder column_list_in_sql = null;
+			StringBuilder value_list_in_sql = null;
+			if(batch_update){
+				column_list_in_sql = insert_column_name_batch_update;
+				value_list_in_sql = insert_value_stmt_batch_update;
+			} else {
+				column_list_in_sql = insertColName;
+				value_list_in_sql = insertValueStmt;
+			}
+			%>
+			String valueList_<%=cid%> = "(<%=value_list_in_sql.toString()%>)";
 			numPerInsert_<%=cid%> = util_<%=cid%>.correctNumPerInsert(valueList_<%=cid%>, numPerInsert_<%=cid%>);
 			
 			StringBuilder extendInsertValueStmt_<%=cid%> = new StringBuilder();
@@ -351,7 +401,7 @@ if(columnList != null && columnList.size()>0) {
 				 if (i_<%=cid%>!=numPerInsert_<%=cid%>-1) extendInsertValueStmt_<%=cid%>.append(",");
 			}
 
-			String insert_<%=cid%> = "INSERT INTO \"" + tableName_<%=cid%> + "\" (<%=insertColName.toString()%>) VALUES " + extendInsertValueStmt_<%=cid%>.toString();
+			String insert_<%=cid%> = "INSERT INTO \"" + tableName_<%=cid%> + "\" (<%=column_list_in_sql.toString()%>) VALUES " + extendInsertValueStmt_<%=cid%>.toString();
 			java.sql.PreparedStatement pstmt_<%=cid %> =  conn_<%=cid%>.prepareStatement(insert_<%=cid%>);
 <%
 		}

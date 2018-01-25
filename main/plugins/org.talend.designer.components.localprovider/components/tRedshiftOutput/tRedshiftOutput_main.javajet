@@ -297,8 +297,9 @@ skeleton="../templates/db_output_bulk.skeleton"
 %>
         whetherReject_<%=cid%> = false;
 <%
-        if(("INSERT").equals(dataAction)) {
-			if(!extendedInsert) {
+				boolean batch_update = "BULK_UPDATE".equals(dataAction);
+        if("INSERT".equals(dataAction) || batch_update) {
+			if(!extendedInsert && !batch_update) {
 				int counter = 1;
 				for(Column column : colStruct) {
 					if(column.isInsertable()) {
@@ -369,7 +370,7 @@ skeleton="../templates/db_output_bulk.skeleton"
                     }
                  %>
 <%
-			} else { //extended insert
+			} else { //extended insert or batch update
 			    class ExtendInsertOperation{
 					public String generateType(String typeToGenerate){
 						if(("byte[]").equals(typeToGenerate)){
@@ -511,9 +512,10 @@ skeleton="../templates/db_output_bulk.skeleton"
 				ExtendInsertOperation eiOperation = new ExtendInsertOperation();
 				int insertableCount = 0;
 				for(Column column : colStruct) {
-					if(column.isInsertable()) {
-						insertableCount++;
-					}
+					boolean insertable = (batch_update ? (column.isUpdateKey() || column.isUpdatable()) : column.isInsertable());
+  				if(insertable) {
+  					insertableCount++;
+  				}
 				}
 %>
 				int counter<%=cid%> = rowCount<%=cid%> *
@@ -530,7 +532,8 @@ skeleton="../templates/db_output_bulk.skeleton"
 				+ 1;
 <%
 				for(Column column : colStruct) {
-					if(column.isInsertable()) {
+					boolean insertable = (batch_update ? (column.isUpdateKey() || column.isUpdatable()) : column.isInsertable());
+					if(insertable) {
 						String typeToGenerate = JavaTypesManager.getTypeToGenerate(column.getColumn().getTalendType(), column.getColumn().isNullable());
 						eiOperation.generateSetStmt(typeToGenerate,column,incomingConnName,cid);
 						%>
@@ -553,7 +556,8 @@ skeleton="../templates/db_output_bulk.skeleton"
 <%
                 int count = 0;
                 for(Column column : colStruct) {
-                    if(column.isInsertable()) {
+                		boolean insertable = (batch_update ? (column.isUpdateKey() || column.isUpdatable()) : column.isInsertable());
+                    if(insertable) {
                     	if(count==0) {
                     	%>
                     	exInsertColValue<%=cid%>

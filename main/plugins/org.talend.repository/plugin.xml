@@ -2987,6 +2987,14 @@
               name="RepositoryProjectDate"
               version="7.0.0">
         </projecttask>
+        <projecttask
+              beforeLogon="false"
+              breaks="7.0.0"
+              class="org.talend.repository.model.migration.ChangeUpdate2BulkUpdate4tRedshiftOutput"
+              id="org.talend.repository.model.migration.ChangeUpdate2BulkUpdate4tRedshiftOutput"
+              name="Change the update mode to bulk update mode"
+              version="7.0.0">
+        </projecttask>
    </extension>
 
    <extension
