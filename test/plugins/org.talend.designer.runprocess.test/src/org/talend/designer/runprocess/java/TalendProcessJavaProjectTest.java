@@ -44,7 +44,7 @@ public class TalendProcessJavaProjectTest {
      */
     @Before
     public void setUp() throws Exception {
-        talendJavaProject = JavaProcessorUtilities.getTalendJavaProject();
+        talendJavaProject = TalendJavaProjectManager.getTempJavaProject();
         Assert.assertNotNull(talendJavaProject);
     }
 
@@ -107,11 +107,11 @@ public class TalendProcessJavaProjectTest {
     }
 
     /**
-     * Test method for {@link org.talend.designer.runprocess.java.TalendProcessJavaProject#getResourcesFolder()}.
+     * Test method for {@link org.talend.designer.runprocess.java.TalendProcessJavaProject#getExternalResourcesFolder()}.
      */
     @Test
     public void testGetResourcesFolder() {
-        IFolder resFolder = talendJavaProject.getResourcesFolder();
+        IFolder resFolder = talendJavaProject.getExternalResourcesFolder();
         Assert.assertNotNull(resFolder);
         Assert.assertTrue(resFolder.exists());
         IPath projectRelativePath = resFolder.getProjectRelativePath();

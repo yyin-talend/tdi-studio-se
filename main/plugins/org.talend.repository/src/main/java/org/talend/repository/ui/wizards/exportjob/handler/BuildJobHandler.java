@@ -56,6 +56,7 @@ import org.talend.core.runtime.repository.build.BuildExportManager;
 import org.talend.core.service.ITransformService;
 import org.talend.core.ui.ITestContainerProviderService;
 import org.talend.designer.maven.model.TalendMavenConstants;
+import org.talend.designer.maven.tools.BuildCacheManager;
 import org.talend.designer.runprocess.IProcessor;
 import org.talend.designer.runprocess.ProcessorUtilities;
 import org.talend.model.bridge.ReponsitoryContextBridge;
@@ -149,15 +150,15 @@ public class BuildJobHandler extends AbstractBuildJobHandler {
         }
         argumentsMap.put(TalendProcessArgumentConstant.ARG_GENERATE_OPTION, generationOption);
 
-        // deployVersion for ci builder
-        String deployVersion = (String) exportChoice.get(ExportChoice.deployVersion);
-        if (deployVersion != null) {
-            argumentsMap.put(TalendProcessArgumentConstant.ARG_DEPLOY_VERSION, deployVersion);
+        BuildCacheManager.getInstance().clearCurrentCache();
+
+        try {
+            IProcessor processor = ProcessorUtilities.generateCode(processItem, contextName, version, argumentsMap, monitor);
+            return processor;
+        } catch (Exception e) {
+            BuildCacheManager.getInstance().performBuildFailure();
+            throw e;
         }
-
-        IProcessor processor = ProcessorUtilities.generateCode(processItem, contextName, version, argumentsMap, monitor);
-        return processor;
-
     }
 
     @Override
@@ -385,5 +386,7 @@ public class BuildJobHandler extends AbstractBuildJobHandler {
         argumentsMap.put(TalendProcessArgumentConstant.ARG_PROGRAM_ARGUMENTS, getProgramArgs());
 
         talendProcessJavaProject.buildModules(monitor, null, argumentsMap);
+
+        BuildCacheManager.getInstance().performBuildSuccess();
     }
 }
