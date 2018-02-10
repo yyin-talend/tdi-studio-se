@@ -21,7 +21,9 @@ import java.util.Set;
 import org.apache.commons.lang.ArrayUtils;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
+import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -56,6 +58,7 @@ import org.talend.designer.maven.utils.PomUtil;
 import org.talend.designer.runprocess.ProcessorException;
 import org.talend.designer.runprocess.ProcessorUtilities;
 import org.talend.designer.runprocess.java.JavaProcessor;
+import org.talend.designer.runprocess.java.TalendJavaProjectManager;
 import org.talend.repository.i18n.Messages;
 
 /**
@@ -354,6 +357,28 @@ public class MavenJavaProcessor extends JavaProcessor {
                 // 3. automatically download and install jars in commandline.
                 if (buildCacheManager.needTempAggregator() || !CommonUIPlugin.isFullyHeadless()) {
                     MavenProjectUtils.updateMavenProject(monitor, talendJavaProject.getProject());
+                }
+            }
+            JobInfo mainJobInfo = LastGenerationInfo.getInstance().getLastMainJob();
+            Set<JobInfo> allJobs = LastGenerationInfo.getInstance().getLastGeneratedjobs();
+            for (JobInfo jobInfo : allJobs) {
+                if (mainJobInfo != jobInfo) {
+                    ITalendProcessJavaProject subJobProject = TalendJavaProjectManager
+                            .getExistingTalendJobProject(jobInfo.getProcessor().getProperty());
+                    if (subJobProject != null) {
+                        IProject subProject = subJobProject.getProject();
+                        if (MavenProjectUtils.hasMavenNature(subProject) && subProject.isOpen()) {
+                            try {
+                                if (!subProject.isSynchronized(IResource.DEPTH_INFINITE)) {
+                                    subProject.refreshLocal(IResource.DEPTH_INFINITE, monitor);
+                                }
+                                subProject.build(IncrementalProjectBuilder.FULL_BUILD, monitor);
+                                subProject.build(IncrementalProjectBuilder.INCREMENTAL_BUILD, monitor);
+                            } catch (CoreException e) {
+                                ExceptionHandler.process(e);
+                            }
+                        }
+                    }
                 }
             }
         }
