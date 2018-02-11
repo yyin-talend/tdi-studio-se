@@ -157,6 +157,8 @@ public class JobLaunchShortcut implements ILaunchShortcut {
         if (item instanceof ProcessItem) {
             ILaunchConfiguration config = findLaunchConfiguration((ProcessItem) item, mode);
             if (config != null) {
+                IPreferenceStore debugUiStore = DebugUITools.getPreferenceStore();
+                debugUiStore.setValue(IDebugUIConstants.PREF_BUILD_BEFORE_LAUNCH, Boolean.FALSE);
                 DebugUITools.launch(config, mode);
             }
         }

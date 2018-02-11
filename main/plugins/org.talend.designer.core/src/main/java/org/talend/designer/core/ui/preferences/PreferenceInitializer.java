@@ -176,9 +176,6 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer {
         store.setDefault(ITalendCorePrefConstants.NEXUS_REFRESH_FREQUENCY, 0);
 
         if (!CommonUIPlugin.isFullyHeadless()) {
-            IPreferenceStore debugUiStore = DebugUITools.getPreferenceStore();
-            debugUiStore.setValue(IDebugUIConstants.PREF_BUILD_BEFORE_LAUNCH, Boolean.FALSE);
-
             Display display = Display.getDefault();
             if (display == null) {
                 display = Display.getCurrent();

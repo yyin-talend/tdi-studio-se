@@ -25,6 +25,7 @@ import org.eclipse.debug.ui.actions.AbstractLaunchToolbarAction;
 import org.eclipse.debug.ui.actions.LaunchAction;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.widgets.Menu;
@@ -231,6 +232,8 @@ public class TalendLaunchToolbarAction extends AbstractLaunchToolbarAction {
             // DebugUITools.openLaunchConfigurationDialogOnGroup(DebugUIPlugin.getShell(), new StructuredSelection(),
             // getLaunchGroupIdentifier());
         } else {
+            IPreferenceStore debugUiStore = DebugUITools.getPreferenceStore();
+            debugUiStore.setValue(IDebugUIConstants.PREF_BUILD_BEFORE_LAUNCH, Boolean.FALSE);
             DebugUITools.launch(configuration, getMode());
         }
     }
