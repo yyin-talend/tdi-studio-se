@@ -1123,11 +1123,18 @@ public class ProcessComposite extends ScrolledComposite implements IDynamicPrope
      * @param runnable
      */
     private void setExecBtn(final boolean runnable) {
-        if (runnable == oldRunning) {
-            return;
-        }
-        oldRunning = runnable;
-        
+        /*
+         * if (traceBtn.getSelection()) { boolean b = processContext != null; if (!runnable && b) {
+         * itemDropDown.setText(" " + Messages.getString("ProcessComposite.pause")); //$NON-NLS-1$//$NON-NLS-2$
+         * itemDropDown.setToolTipText(Messages.getString("ProcessComposite.pauseJob")); //$NON-NLS-1$
+         * itemDropDown.setImage(ImageProvider.getImage(ERunprocessImages.PAUSE_PROCESS_ACTION));
+         * itemDropDown.setData(ProcessView.PAUSE_ID); toolBar.getParent().layout(); } else { itemDropDown.setText(" " +
+         * Messages.getString("ProcessComposite.exec") + "  "); //$NON-NLS-1$//$NON-NLS-2$//$NON-NLS-3$
+         * itemDropDown.setData(ProcessView.EXEC_ID);
+         * itemDropDown.setToolTipText(Messages.getString("ProcessComposite.execHint")); //$NON-NLS-1$
+         * itemDropDown.setImage(ImageProvider.getImage(ERunprocessImages.RUN_PROCESS_ACTION)); } toolBar.setEnabled(b);
+         * } else {
+         */
         // qli modified to fix the bug 7354.
         if (run != null && !run.isDisposed()) {
             run.setEnabled(runnable);
@@ -1800,7 +1807,7 @@ public class ProcessComposite extends ScrolledComposite implements IDynamicPrope
                     ExceptionHandler.process(e);
                 }
             }
-            if (running == oldRunning) {
+            if (running != oldRunning) {
                 getDisplay().asyncExec(new Runnable() {
 
                     @Override
@@ -1816,6 +1823,7 @@ public class ProcessComposite extends ScrolledComposite implements IDynamicPrope
                     appendToConsoleQueue(messagesToDisplay);
                 }
             }
+            oldRunning = running;
         }
     }
 
