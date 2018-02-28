@@ -945,7 +945,7 @@ public class JobSettingsManager {
                     .getValue();
             String fileSparator = (String) process.getElementParameter(EParameterName.FIELDSEPARATOR.getName()).getValue();
             tContextLoadNode.getElementParameter(EParameterName.IMPLICIT_TCONTEXTLOAD_FILE.getName()).setValue(inputFile);
-            String regex = FileSeparator.getSeparatorsRegexp(TalendQuoteUtils.removeQuotes(fileSparator));
+            String regex = FileSeparator.getSeparatorsRegexp(fileSparator);
             tContextLoadNode.getElementParameter(JobSettingsConstants.IMPLICIT_TCONTEXTLOAD_REGEX).setValue(regex);
         } else {
             // is db
@@ -1204,7 +1204,7 @@ public class JobSettingsManager {
             realDbTypeForJDBC = ExtractMetaDataUtils.getInstance().getDbTypeByClassName(driverClassValue);
         }
         return realDbTypeForJDBC;
-    }
+    }    
 
     private static List<String> getMetadataChars() {
         String[] metaChars = new String[] { "\\", "^", "$", ".", "?", "|", "[", "+", "*", "{", "(", ")", "}", "]" };
@@ -1213,24 +1213,35 @@ public class JobSettingsManager {
 
     public static class FileSeparator {
 
+        private static List<String> METADATA_CHAR = getMetadataChars();
+
         static String doRegexpQuote(String separators) {
             if (StringUtils.isEmpty(separators)) {
-                return separators;
-            } else if (separators.length() == 1) {
-                if (separators.equals("\\")) { // special \ //$NON-NLS-1$ 
-                    return "\\\\\\" + separators;//$NON-NLS-1$ 
-                } else if (getMetadataChars().contains(separators)) {
-                    return "\\\\" + separators;//$NON-NLS-1$ 
+                return TalendQuoteUtils.addQuotes("");
+            }
+            String filedSeparator = TalendQuoteUtils.removeQuotes(separators);
+            if (filedSeparator.length() == 1) {
+                if (filedSeparator.equals("\\")) { // special \ //$NON-NLS-1$
+                    return TalendQuoteUtils.addQuotes("\\\\\\" + filedSeparator);//$NON-NLS-1$
+                } else if (METADATA_CHAR.contains(filedSeparator)) {
+                    return TalendQuoteUtils.addQuotes("\\\\" + filedSeparator);//$NON-NLS-1$
                 }
-            } else {
-                return doRegexpQuote(separators.substring(0, 1)) + doRegexpQuote(separators.substring(1));
+            } else if (filedSeparator.equals("||")) {// TUP-17232
+                return TalendQuoteUtils.addQuotes("\\\\" + "|" + "\\\\" + "|");//$NON-NLS-1$
             }
             return separators;
         }
 
         static String getSeparatorsRegexp(String fileSeparator) {
-            fileSeparator = TalendQuoteUtils.addQuotes(doRegexpQuote(fileSeparator));
+            fileSeparator = doRegexpQuote(fileSeparator);
             return "\"^([^\"+" + fileSeparator + "+\"]*)\"+" + fileSeparator + "+\"(.*)$\""; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+        }
+
+        private static List<String> getMetadataChars() {
+            String[] metaChars = new String[] { "\\", "^", "$", ".", "?", "|", "[", "+", "*", "{", "(", ")", "}", "]", "\"" };
+            return Arrays.asList(metaChars);
         }
     }
 }
+
+
