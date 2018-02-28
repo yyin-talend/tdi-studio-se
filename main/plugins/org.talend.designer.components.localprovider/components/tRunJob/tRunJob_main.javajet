@@ -382,8 +382,19 @@ String inputConnName = null;
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////  
 	if (!useIndependentProcess){//AAAAAAAAAAAA
+	    boolean cacheChildJob = "true".equals(ElementParameterParser.getValue(node, "__CACHE_CHILD_JOB__"));
+		if(cacheChildJob){
 	%>
-		<%=childJob %> childJob_<%=cid %> = new <%=childJob %>();
+		<%=childJob %> childJob_<%=cid %> = null; 
+		if (globalMap.get("childJob_<%=cid %>_SOPRASTERIA") != null) { 
+			childJob_<%=cid %> = (<%=childJob %>) globalMap.get("childJob_<%=cid %>_SOPRASTERIA"); 
+		} else { 
+			childJob_<%=cid %> = new <%=childJob %>(); 
+			globalMap.put("childJob_<%=cid %>_SOPRASTERIA", childJob_<%=cid %>); 
+		}
+		<%} else {%>
+		    <%=childJob %> childJob_<%=cid %> = new <%=childJob %>(); 
+		<%}%>
 	    // pass DataSources
 	    java.util.Map<String, routines.system.TalendDataSource> talendDataSources_<%=cid%> = (java.util.Map<String, routines.system.TalendDataSource>) globalMap
 	            .get(KEY_DB_DATASOURCES);
