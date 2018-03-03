@@ -487,6 +487,11 @@ public class TestProcessor implements IProcessor {
         return null;
     }
 
+    public Set<ModuleNeeded> getNeededModules(boolean withChildrenJobs) {
+
+        return null;
+    }
+
     /*
      * (non-Javadoc)
      * 

@@ -71,6 +71,8 @@ import org.talend.designer.core.model.utils.emf.talendfile.ProcessType;
 import org.talend.designer.core.ui.editor.process.Process;
 import org.talend.designer.core.utils.JavaProcessUtil;
 import org.talend.designer.maven.utils.PomUtil;
+import org.talend.designer.runprocess.ClasspathAdjusterProvider;
+import org.talend.designer.runprocess.IClasspathAdjuster;
 import org.talend.designer.runprocess.IRunProcessService;
 import org.talend.designer.runprocess.ProcessorException;
 import org.talend.designer.runprocess.ProcessorUtilities;
@@ -140,8 +142,12 @@ public class JavaProcessorUtilities {
         libNames.addAll(PomUtil.getCodesExportJars(process));
         return libNames;
     }
-
+    
     public static Set<ModuleNeeded> getNeededModulesForProcess(IProcess process) {
+        return getNeededModulesForProcess(process, true);
+    }
+
+    public static Set<ModuleNeeded> getNeededModulesForProcess(IProcess process, boolean withChildrens) {
         Set<ModuleNeeded> neededLibraries = new TreeSet<ModuleNeeded>(new Comparator<ModuleNeeded>() {
 
             @Override
@@ -150,13 +156,29 @@ public class JavaProcessorUtilities {
             }
         });
 
-        Set<ModuleNeeded> neededModules = LastGenerationInfo.getInstance().getModulesNeededWithSubjobPerJob(process.getId(),
+        Set<ModuleNeeded> neededModules;
+        if (withChildrens) {
+            neededModules = LastGenerationInfo.getInstance().getModulesNeededWithSubjobPerJob(process.getId(),
                 process.getVersion());
+        } else {
+            neededModules = LastGenerationInfo.getInstance().getModulesNeededPerJob(process.getId(),
+                    process.getVersion());
+            Set<ModuleNeeded> neededModulesWithSubjobs = LastGenerationInfo.getInstance().getModulesNeededWithSubjobPerJob(process.getId(),
+                    process.getVersion());
+            Iterator<ModuleNeeded> it = neededModules.iterator();
+            while(it.hasNext()) {
+                ModuleNeeded module = it.next();
+                if (!neededModulesWithSubjobs.contains(module)) {
+                    // in case the classpath adjuster removed dependencies (cf use in ProcessorUtilities)
+                    it.remove();
+                }
+            }
+        }
         neededLibraries.addAll(neededModules);
 
         if (process == null || !(process instanceof IProcess2)) {
             if (neededLibraries.isEmpty() && process != null) {
-                neededLibraries = process.getNeededModules(true);
+                neededLibraries = process.getNeededModules(withChildrens);
                 if (neededLibraries == null) {
                     neededLibraries = new HashSet<ModuleNeeded>();
                     // for (ModuleNeeded moduleNeeded : ModulesNeededProvider.getModulesNeeded()) {
@@ -172,7 +194,16 @@ public class JavaProcessorUtilities {
         }
         Property property = ((IProcess2) process).getProperty();
         if (neededLibraries.isEmpty()) {
-            neededLibraries = process.getNeededModules(true);
+            neededLibraries = process.getNeededModules(withChildrens);
+            
+            // not generating, so will run classpath adjuster only on this job
+            List<IClasspathAdjuster> classPathAdjusters = ClasspathAdjusterProvider.getClasspathAdjuster();
+            for (IClasspathAdjuster adjuster : classPathAdjusters) {
+                adjuster.initialize();
+                adjuster.collectInfo(process, neededLibraries);
+                neededLibraries = adjuster.adjustClassPath(process, neededLibraries);
+            }
+
             if (neededLibraries == null) {
                 neededLibraries = new HashSet<ModuleNeeded>();
                 for (ModuleNeeded moduleNeeded : ModulesNeededProvider.getModulesNeeded()) {
