@@ -18,6 +18,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.URL;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Scanner;
 import java.util.Set;
 
@@ -30,6 +31,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.jdt.core.IJavaProject;
@@ -53,6 +55,7 @@ import org.talend.core.model.process.IProcess;
 import org.talend.core.model.process.IProcess2;
 import org.talend.core.model.process.ProcessUtils;
 import org.talend.core.model.properties.ProcessItem;
+import org.talend.core.model.properties.ProjectReference;
 import org.talend.core.model.properties.Property;
 import org.talend.core.model.properties.RoutineItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
@@ -79,6 +82,7 @@ import org.talend.designer.runprocess.spark.SparkJavaProcessor;
 import org.talend.designer.runprocess.storm.StormJavaProcessor;
 import org.talend.designer.runprocess.ui.views.ProcessView;
 import org.talend.librariesmanager.model.ModulesNeededProvider;
+import org.talend.repository.ProjectManager;
 import org.talend.repository.RepositoryWorkUnit;
 import org.talend.repository.constants.Log4jPrefsConstants;
 import org.talend.repository.ui.utils.Log4jPrefsSettingManager;
@@ -168,7 +172,8 @@ public class DefaultRunProcessService implements IRunProcessService {
      * boolean)
      */
     @Override
-    public IProcessor createCodeProcessor(IProcess process, Property property, ECodeLanguage language, boolean filenameFromLabel) {
+    public IProcessor createCodeProcessor(IProcess process, Property property, ECodeLanguage language,
+            boolean filenameFromLabel) {
         switch (language) {
         case JAVA:
             return createJavaProcessor(process, property, filenameFromLabel);
@@ -247,8 +252,9 @@ public class DefaultRunProcessService implements IRunProcessService {
                     }
                 }
             } else {
-            	boolean isImportedRoute = RepositorySeekerManager.getInstance().searchRepoViewNode(property.getId(), false) == null;
-                if (routeService != null && !isImportedRoute ) {
+                boolean isImportedRoute = RepositorySeekerManager.getInstance().searchRepoViewNode(property.getId(),
+                        false) == null;
+                if (routeService != null && !isImportedRoute) {
                     return routeService.createJavaProcessor(process, property, filenameFromLabel, false);
                 }
             }
@@ -689,6 +695,29 @@ public class DefaultRunProcessService implements IRunProcessService {
     @Override
     public void generateJobPom(ProcessItem processItem) {
         TalendJavaProjectManager.generatePom(processItem);
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.designer.runprocess.IRunProcessService#initializeRootPoms()
+     */
+    @Override
+    public void initializeRootPoms() {
+        try {
+            AggregatorPomsHelper helper = new AggregatorPomsHelper();
+            helper.installRootPom(true);
+
+            List<ProjectReference> references = ProjectManager.getInstance().getCurrentProject().getProjectReferenceList(true);
+            for (ProjectReference ref : references) {
+                AggregatorPomsHelper refHelper = new AggregatorPomsHelper(ref.getReferencedProject().getTechnicalLabel());
+                refHelper.installRootPom(true);
+            }
+            AggregatorPomsHelper.updateRefProjectModules(references);
+            AggregatorPomsHelper.updateCodeProjects(new NullProgressMonitor());
+        } catch (Exception e) {
+            ExceptionHandler.process(e);
+        }
     }
 
 }
