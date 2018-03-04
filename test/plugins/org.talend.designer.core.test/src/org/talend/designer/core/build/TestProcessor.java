@@ -487,11 +487,6 @@ public class TestProcessor implements IProcessor {
         return null;
     }
 
-    public Set<ModuleNeeded> getNeededModules(boolean withChildrenJobs) {
-
-        return null;
-    }
-
     /*
      * (non-Javadoc)
      * 
@@ -562,6 +557,15 @@ public class TestProcessor implements IProcessor {
     @Override
     public boolean isSkipClasspathJar() {
         return false;
+    }
+
+    /* (non-Javadoc)
+     * @see org.talend.designer.runprocess.IProcessor#getNeededModules(boolean)
+     */
+    @Override
+    public Set<ModuleNeeded> getNeededModules(boolean withChildrenJobs) {
+        // TODO Auto-generated method stub
+        return null;
     }
 
 }
