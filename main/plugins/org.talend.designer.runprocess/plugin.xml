@@ -136,16 +136,6 @@
     </provider>
  </extension>
  <extension
-       point="org.talend.core.repository.login.task">
-    <loginTask
-          class="org.talend.designer.runprocess.maven.CleanMavenFilesLoginTask">
-    </loginTask>
-    <loginTask
-          class="org.talend.designer.runprocess.maven.MavenPomInstallLoginTask"
-          priority="lowest">
-    </loginTask>
- </extension>
- <extension
        point="org.talend.repository.projectsetting_page">
     <page
           category="projectsetting.Build"

@@ -444,4 +444,12 @@ public class RunProcessService implements IRunProcessService {
         delegateService.generateJobPom(processItem);
     }
 
+    /* (non-Javadoc)
+     * @see org.talend.designer.runprocess.IRunProcessService#initializeRootPoms()
+     */
+    @Override
+    public void initializeRootPoms() {
+        delegateService.initializeRootPoms();
+    }
+
 }
