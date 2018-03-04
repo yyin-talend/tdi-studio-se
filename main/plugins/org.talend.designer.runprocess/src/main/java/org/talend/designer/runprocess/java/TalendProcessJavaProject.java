@@ -31,8 +31,11 @@ import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jdt.core.IJavaProject;
 import org.talend.commons.exception.ExceptionHandler;
+import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.utils.generation.JavaUtils;
 import org.talend.core.model.properties.Property;
+import org.talend.core.model.repository.IRepositoryViewObject;
+import org.talend.core.repository.model.ProxyRepositoryFactory;
 import org.talend.core.runtime.process.ITalendProcessJavaProject;
 import org.talend.core.runtime.process.TalendProcessArgumentConstant;
 import org.talend.designer.maven.launch.MavenPomCommandLauncher;
@@ -50,11 +53,13 @@ public class TalendProcessJavaProject implements ITalendProcessJavaProject {
 
     private IJavaProject javaProject;
     
-    private Property property;
-
     private final MavenPomSynchronizer synchronizer;
 
     private boolean useTempPom;
+    
+    private String id;
+    
+    private String version;
 
     public TalendProcessJavaProject(IJavaProject javaProject) {
         super();
@@ -65,12 +70,21 @@ public class TalendProcessJavaProject implements ITalendProcessJavaProject {
     
     public TalendProcessJavaProject(IJavaProject javaProject, Property property) {
         this(javaProject);
-        this.property = property;
+        this.id = property.getId();
+        this.version = property.getVersion();
     }
 
     @Override
     public Property getPropery() {
-        return property;
+        ProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
+        IRepositoryViewObject object;
+        try {
+            object = factory.getSpecificVersion(id, version, true);
+        } catch (PersistenceException e) {
+            ExceptionHandler.process(e);
+            return null;
+        }
+        return object.getProperty();
     }
 
     @Override
