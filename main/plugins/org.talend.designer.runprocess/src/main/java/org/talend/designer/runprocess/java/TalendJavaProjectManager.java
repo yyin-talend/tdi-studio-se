@@ -111,14 +111,14 @@ public class TalendJavaProjectManager {
                     // create poms folder.
                     IFolder poms = createFolderIfNotExist(helper.getProjectPomsFolder(), monitor);
 
-                    // deployments
-                    if (PluginChecker.isTIS()) {
-                        IFolder aggregators = createFolderIfNotExist(poms.getFolder(DIR_AGGREGATORS), monitor);
-                        IFile ciPomFile = aggregators.getFile(TalendJavaProjectConstants.FILE_POM_CI_BUILDER);
-                        if (!ciPomFile.exists()) {
-                            helper.createCIPom(ciPomFile, monitor);
-                        }
-                    }
+                    // // deployments
+                    // if (PluginChecker.isTIS()) {
+                    // IFolder aggregators = createFolderIfNotExist(poms.getFolder(DIR_AGGREGATORS), monitor);
+                    // IFile ciPomFile = aggregators.getFile(TalendJavaProjectConstants.FILE_POM_CI_BUILDER);
+                    // if (!ciPomFile.exists()) {
+                    // helper.createCIPom(ciPomFile, monitor);
+                    // }
+                    // }
 
                     // codes
                     IFolder code = createFolderIfNotExist(poms.getFolder(DIR_CODES), monitor);
@@ -306,10 +306,13 @@ public class TalendJavaProjectManager {
             while (iterator.hasNext()) {
                 String key = iterator.next();
                 ITalendProcessJavaProject project = talendJobJavaProjects.get(key);
-                IPath jobPath = ItemResourceUtil.getItemRelativePath(project.getPropery());
-                if (folderPath.isPrefixOf(jobPath)) {
-                    project.getProject().delete(deleteContent, true, null);
-                    iterator.remove();
+                Property property = project.getPropery();
+                if (property != null) {
+                    IPath jobPath = ItemResourceUtil.getItemRelativePath(property);
+                    if (folderPath.isPrefixOf(jobPath)) {
+                        project.getProject().delete(deleteContent, true, null);
+                        iterator.remove();
+                    }
                 }
             }
             if (deleteContent) {
@@ -335,7 +338,8 @@ public class TalendJavaProjectManager {
                         String realVersion = object.getVersion();
                         Property property = object.getProperty();
                         IPath jobPath = DeploymentConfsUtils.getJobEclipseProjectPath(property, realVersion);
-                        IFile file = ResourcesPlugin.getWorkspace().getRoot().getFile(jobPath.append(TalendMavenConstants.POM_FILE_NAME));
+                        IFile file = ResourcesPlugin.getWorkspace().getRoot()
+                                .getFile(jobPath.append(TalendMavenConstants.POM_FILE_NAME));
                         AggregatorPomsHelper.removeFromParentModules(file);
                     }
                     Set<String> removedVersions = new HashSet<>();
