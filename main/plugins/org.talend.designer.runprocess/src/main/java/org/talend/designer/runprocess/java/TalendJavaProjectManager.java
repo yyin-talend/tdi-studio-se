@@ -12,19 +12,7 @@
 // ============================================================================
 package org.talend.designer.runprocess.java;
 
-import static org.talend.designer.maven.model.TalendJavaProjectConstants.CLASSPATH_FILE_NAME;
-import static org.talend.designer.maven.model.TalendJavaProjectConstants.DIR_AGGREGATORS;
-import static org.talend.designer.maven.model.TalendJavaProjectConstants.DIR_BEANS;
-import static org.talend.designer.maven.model.TalendJavaProjectConstants.DIR_CODES;
-import static org.talend.designer.maven.model.TalendJavaProjectConstants.DIR_JOBS;
-import static org.talend.designer.maven.model.TalendJavaProjectConstants.DIR_PIGUDFS;
-import static org.talend.designer.maven.model.TalendJavaProjectConstants.DIR_PROCESS;
-import static org.talend.designer.maven.model.TalendJavaProjectConstants.DIR_PROCESS_MR;
-import static org.talend.designer.maven.model.TalendJavaProjectConstants.DIR_PROCESS_ROUTES;
-import static org.talend.designer.maven.model.TalendJavaProjectConstants.DIR_PROCESS_SERVICES;
-import static org.talend.designer.maven.model.TalendJavaProjectConstants.DIR_PROCESS_STORM;
-import static org.talend.designer.maven.model.TalendJavaProjectConstants.DIR_ROUTINES;
-import static org.talend.designer.maven.model.TalendJavaProjectConstants.PROJECT_FILE_NAME;
+import static org.talend.designer.maven.model.TalendJavaProjectConstants.*;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -73,9 +61,9 @@ import org.talend.core.runtime.process.ITalendProcessJavaProject;
 import org.talend.core.runtime.process.LastGenerationInfo;
 import org.talend.core.ui.ITestContainerProviderService;
 import org.talend.designer.core.IDesignerCoreService;
-import org.talend.designer.maven.model.TalendJavaProjectConstants;
 import org.talend.designer.maven.model.TalendMavenConstants;
 import org.talend.designer.maven.tools.AggregatorPomsHelper;
+import org.talend.designer.maven.tools.BuildCacheManager;
 import org.talend.designer.maven.tools.MavenPomSynchronizer;
 import org.talend.designer.maven.tools.creator.CreateMavenCodeProject;
 import org.talend.designer.maven.utils.MavenProjectUtils;
@@ -185,6 +173,7 @@ public class TalendJavaProjectManager {
                 AggregatorPomsHelper.updateCodeProjectPom(monitor, type, codeProject.getFile(TalendMavenConstants.POM_FILE_NAME));
                 talendCodeJavaProject = new TalendProcessJavaProject(javaProject);
                 talendCodeJavaProject.cleanMavenFiles(monitor);
+                BuildCacheManager.getInstance().clearCache(type);
                 talendCodeJavaProjects.put(type, talendCodeJavaProject);
             } catch (Exception e) {
                 ExceptionHandler.process(e);
