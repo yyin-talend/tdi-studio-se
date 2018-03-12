@@ -466,7 +466,7 @@ public class JavaProcessorUtilities {
 
                     });
                 }
-            } else {
+            } else if (!Boolean.getBoolean("skip_missing_jars")) {
                 throw new ProcessorException(missingJars);
             }
 
