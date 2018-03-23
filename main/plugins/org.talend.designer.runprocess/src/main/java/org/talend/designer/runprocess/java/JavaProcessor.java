@@ -1019,7 +1019,7 @@ public class JavaProcessor extends AbstractJavaProcessor implements IJavaBreakpo
         String javaInterpreter = prefStore.getString(ITalendCorePrefConstants.JAVA_INTERPRETER);
 
         if (javaInterpreter == null || javaInterpreter.length() == 0) {
-            throw new ProcessorException(Messages.getString("Processor.configureJava")); //$NON-NLS-1$
+            javaInterpreter = "java"; //$NON-NLS-1$
         }
         Path path = new Path(javaInterpreter);
         javaInterpreter = path.toPortableString();
