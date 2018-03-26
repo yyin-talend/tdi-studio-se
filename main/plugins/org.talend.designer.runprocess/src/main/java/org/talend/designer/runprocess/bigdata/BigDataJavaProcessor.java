@@ -365,7 +365,7 @@ public abstract class BigDataJavaProcessor extends MavenJavaProcessor implements
         return checkExecutingCommandsForRootPath(path, checkedcmds, ProcessorConstants.CMD_KEY_WORD_LIBJAR);
     }
     
-    private Boolean needsShade = false;
+    private Boolean needsShade;
 
     /* (non-Javadoc)
      * @see org.talend.designer.runprocess.IBigDataProcessor#needsShade()
