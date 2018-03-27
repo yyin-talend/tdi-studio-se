@@ -183,8 +183,7 @@ int nb_line_rejected_<%=cid %> = 0;
                 context_<%=cid %>.put(org.apache.cxf.headers.Header.HEADER_LIST, soapHeaders_<%=cid %>);
 
                 java.util.Map<String, java.util.List<String>> httpHeaders_<%=cid %> = new java.util.HashMap<String, java.util.List<String>>();
-                String cookie_<%=cid %> = com.talend.mdm.transaction.client.MDMTransaction.getStickySession() + "=" + mdmTransaction_<%=cid%>.getSessionId();
-                httpHeaders_<%=cid %>.put("Cookie", java.util.Arrays.asList(cookie_<%=cid %>));
+                httpHeaders_<%=cid %>.put("Cookie", mdmTransaction_<%=cid %>.getCookies());
                 context_<%=cid %>.put(org.apache.cxf.message.Message.PROTOCOL_HEADERS, httpHeaders_<%=cid %>);
 
                 globalMap.put(transKey_<%=cid %>, mdmTransaction_<%=cid %>);
