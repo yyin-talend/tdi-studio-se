@@ -14,7 +14,6 @@ package org.talend.designer.runprocess.maven;
 
 import java.util.Date;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
@@ -33,7 +32,6 @@ import org.talend.commons.utils.resource.FileExtensions;
 import org.talend.core.model.process.IProcess;
 import org.talend.core.model.process.JobInfo;
 import org.talend.core.model.process.ProcessUtils;
-import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.model.properties.Property;
 import org.talend.core.model.utils.JavaResourcesHelper;
 import org.talend.core.repository.utils.ItemResourceUtil;
@@ -56,7 +54,6 @@ import org.talend.designer.maven.utils.PomUtil;
 import org.talend.designer.runprocess.ProcessorException;
 import org.talend.designer.runprocess.ProcessorUtilities;
 import org.talend.designer.runprocess.java.JavaProcessor;
-import org.talend.designer.runprocess.java.TalendJavaProjectManager;
 import org.talend.repository.i18n.Messages;
 import org.talend.designer.core.model.process.IGeneratingProcess;
 import org.talend.designer.core.ui.editor.process.Process;
@@ -110,25 +107,6 @@ public class MavenJavaProcessor extends JavaProcessor {
                 throw new ProcessorException(e);
             }
         }
-    }
-
-    @Override
-    public Set<JobInfo> getBuildChildrenJobs() {
-        if (buildChildrenJobs == null || buildChildrenJobs.isEmpty()) {
-            buildChildrenJobs = new HashSet<>();
-
-            if (property != null && property.getItem() != null) {
-                Set<JobInfo> infos = ProcessorUtilities.getChildrenJobInfo((ProcessItem) property.getItem());
-                for (JobInfo jobInfo : infos) {
-                    if (jobInfo.isTestContainer() && !ProcessUtils.isOptionChecked(getArguments(),
-                            TalendProcessArgumentConstant.ARG_GENERATE_OPTION, TalendProcessOptionConstants.GENERATE_TESTS)) {
-                        continue;
-                    }
-                    buildChildrenJobs.add(jobInfo);
-                }
-            }
-        }
-        return this.buildChildrenJobs;
     }
 
     public void initJobClasspath() {
@@ -246,7 +224,7 @@ public class MavenJavaProcessor extends JavaProcessor {
             String pomFileName = TalendMavenConstants.POM_FILE_NAME;
             if (this.getTalendJavaProject() == null) {
                 try {
-                    return TalendJavaProjectManager.getItemPomFolder(property).getFile(pomFileName);
+                    return AggregatorPomsHelper.getItemPomFolder(property).getFile(pomFileName);
                 } catch (Exception e) {
                     ExceptionHandler.process(e);
                     return null;
@@ -362,7 +340,7 @@ public class MavenJavaProcessor extends JavaProcessor {
         if (!isMainJob && isGoalInstall) {
             if (!buildCacheManager.isJobBuild(getProperty())) {
                 deleteExistedJobJarFile(talendJavaProject);
-                buildCacheManager.putCache(getProperty());
+                buildCacheManager.putJobCache(getProperty());
             } else {
                 // for already installed sub jobs, can restore pom here directly
                 PomUtil.restorePomFile(getTalendJavaProject());
