@@ -3,8 +3,18 @@ imports="
     org.talend.core.model.process.INode 
     org.talend.core.model.process.ElementParameterParser
     org.talend.designer.codegen.config.CodeGeneratorArgument
+    org.talend.core.model.process.IElementParameter
+    org.talend.core.model.process.IConnection
+    org.talend.core.model.process.EComponentCategory
+    org.talend.core.model.process.EParameterFieldType
+    org.talend.designer.core.ui.editor.nodes.Node
+    org.talend.designer.core.model.components.ElementParameter
+    org.talend.core.model.utils.ContextParameterUtils
+    
     java.util.List
+    java.util.ArrayList
     java.util.Map
+    java.util.Iterator
 "
 %>
 
@@ -24,4 +34,60 @@ for (Map<String, String> variable : variables) {
 globalMap.put(<%=variable.get("KEY")%>, <%=variable.get("VALUE")%>);
 <%
 }
+%>
+
+
+<%
+boolean flag = false;
+List<String> parallelizationConnections = new ArrayList();
+List< ? extends INode> nodes = node.getProcess().getGeneratingNodes();
+for (int i = 0; i<nodes.size(); i++){
+
+    if (nodes.get(i).getUniqueName().startsWith("tRecollector")){
+        flag = false;
+    }
+    if (nodes.get(i).getUniqueName().startsWith("tPartitioner") || flag) {
+        flag = true;
+        List< ? extends IConnection> nodeConnections = nodes.get(i).getOutgoingConnections();
+        for (IConnection con : nodeConnections){
+            //remove technical connection names
+            if (con.getName().equals("Starts")) continue;
+            parallelizationConnections.add(con.getName());
+        }
+    }
+}
+
+List< ? extends IElementParameter> elements = node.getElementParametersWithChildrens();
+Iterator< ? extends IElementParameter> iterator = elements.iterator();
+
+while (iterator.hasNext()){
+    IElementParameter elementParameter = iterator.next();
+    if (elementParameter.getCategory() != EComponentCategory.ADVANCED && elementParameter.getCategory() != EComponentCategory.BASIC){
+        iterator.remove();
+    }
+}
+
+List<String> componentVariables = new ArrayList();
+
+for (IElementParameter ielement : elements){
+    if (ielement.getListItemsValue()!= null && ielement.getFieldType() == EParameterFieldType.TABLE) {
+        java.util.List<java.util.Map<String, String>> tableValues = ElementParameterParser.createTableValues((java.util.List<java.util.Map<String, Object>>) ielement.getValue(), ielement);
+        for(java.util.Map<String, String> map : tableValues) {
+            componentVariables.add(map.get("KEY"));
+            componentVariables.add(map.get("VALUE"));
+        }
+    }
+}
+
+boolean hasVariablesRefToParallel = false;
+
+for (String var : componentVariables){
+    for (String connectionName : parallelizationConnections){
+        var = var.replaceAll("\"","");
+        connectionName = connectionName.replaceAll("\"","") + ".";
+        hasVariablesRefToParallel = ContextParameterUtils.containCodeVariable(var, connectionName);
+    }
+}
+
+if (hasVariablesRefToParallel) throw new Exception("Components variables refers to connections from parallelization");
 %>
