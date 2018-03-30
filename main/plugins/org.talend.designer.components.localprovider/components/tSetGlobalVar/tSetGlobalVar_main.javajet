@@ -23,32 +23,17 @@ CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 INode node = (INode)codeGenArgument.getArgument();
 String cid = node.getUniqueName();
 
-List<Map<String, String>> variables =
-    (List<Map<String,String>>)ElementParameterParser.getObjectValue(
-        node,
-        "__VARIABLES__"
-    );
-
-for (Map<String, String> variable : variables) {
-%>
-globalMap.put(<%=variable.get("KEY")%>, <%=variable.get("VALUE")%>);
-<%
-}
-%>
-
-
-<%
 boolean flag = false;
 List<String> parallelizationConnections = new ArrayList();
 List< ? extends INode> nodes = node.getProcess().getGeneratingNodes();
-for (int i = 0; i<nodes.size(); i++){
+for (INode generatedNode : nodes){
 
-    if (nodes.get(i).getUniqueName().startsWith("tRecollector")){
+    if (generatedNode.getUniqueName().startsWith("tRecollector")){
         flag = false;
     }
-    if (nodes.get(i).getUniqueName().startsWith("tPartitioner") || flag) {
+    if (generatedNode.getUniqueName().startsWith("tPartitioner") || flag) {
         flag = true;
-        List< ? extends IConnection> nodeConnections = nodes.get(i).getOutgoingConnections();
+        List< ? extends IConnection> nodeConnections = generatedNode.getOutgoingConnections();
         for (IConnection con : nodeConnections){
             //remove technical connection names
             if (con.getName().equals("Starts")) continue;
@@ -71,23 +56,46 @@ List<String> componentVariables = new ArrayList();
 
 for (IElementParameter ielement : elements){
     if (ielement.getListItemsValue()!= null && ielement.getFieldType() == EParameterFieldType.TABLE) {
-        java.util.List<java.util.Map<String, String>> tableValues = ElementParameterParser.createTableValues((java.util.List<java.util.Map<String, Object>>) ielement.getValue(), ielement);
-        for(java.util.Map<String, String> map : tableValues) {
+        List<java.util.Map<String, String>> tableValues = ElementParameterParser.createTableValues((List<Map<String, Object>>) ielement.getValue(), ielement);
+        for(Map<String, String> map : tableValues) {
             componentVariables.add(map.get("KEY"));
             componentVariables.add(map.get("VALUE"));
         }
     }
 }
 
-boolean hasVariablesRefToParallel = false;
+
+List<String> componentsVarsThatRefersToParallel = new ArrayList();
 
 for (String var : componentVariables){
     for (String connectionName : parallelizationConnections){
-        var = var.replaceAll("\"","");
+        String shortVar = var.replaceAll("\"","");
         connectionName = connectionName.replaceAll("\"","") + ".";
-        hasVariablesRefToParallel = ContextParameterUtils.containCodeVariable(var, connectionName);
+        if (ContextParameterUtils.containCodeVariable(shortVar, connectionName)) {
+            componentsVarsThatRefersToParallel.add(var);
+        }
     }
 }
 
-if (hasVariablesRefToParallel) throw new Exception("Components variables refers to connections from parallelization");
+boolean hasVariablesRefToParallel = !componentsVarsThatRefersToParallel.isEmpty();
+String exceptionMessage = "Variables " + componentsVarsThatRefersToParallel + " of " + node.getUniqueName() + " refers to connections from parallelization";
+
+%>
+
+if (<%=hasVariablesRefToParallel%>) throw new IllegalArgumentException("<%=exceptionMessage%>");
+
+<%
+if (!hasVariablesRefToParallel) {
+    List<Map<String, String>> variables =
+        (List<Map<String,String>>)ElementParameterParser.getObjectValue(
+            node,
+            "__VARIABLES__"
+        );
+
+    for (Map<String, String> variable : variables) {
+%>
+    globalMap.put(<%=variable.get("KEY")%>, <%=variable.get("VALUE")%>);
+<%
+    }
+}
 %>
