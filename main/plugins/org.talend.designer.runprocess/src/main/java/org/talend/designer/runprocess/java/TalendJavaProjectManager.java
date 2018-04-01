@@ -439,8 +439,8 @@ public class TalendJavaProjectManager {
         ProxyRepositoryFactory.getInstance().executeRepositoryWorkUnit(workUnit);
     }
 
-    private static void createMavenJavaProject(IProgressMonitor monitor, IProject jobProject, Property property, IFolder projectFolder,
-            boolean enbleMavenNature) throws CoreException, Exception {
+    private static void createMavenJavaProject(IProgressMonitor monitor, IProject jobProject, Property property,
+            IFolder projectFolder, boolean enbleMavenNature) throws CoreException, Exception {
         if (jobProject.exists()) {
             if (jobProject.isOpen()) {
                 jobProject.close(monitor);
@@ -528,15 +528,19 @@ public class TalendJavaProjectManager {
         try {
             IDesignerCoreService service = CorePlugin.getDefault().getDesignerCoreService();
             IProcess process = service.getProcessFromItem(item);
-            IContext context = process.getContextManager().getDefaultContext();
-            IProcessor processor = ProcessorUtilities.getProcessor(process, item.getProperty(), context);
-            if (processor instanceof MavenJavaProcessor) {
-                LastGenerationInfo.getInstance().clearModulesNeededWithSubjobPerJob();
-                ((MavenJavaProcessor) processor).generatePom(option);
+            if (process != null) {
+                // avoid non-process item
+                // for now services can't handle yet the pom generation only
+                IContext context = process.getContextManager().getDefaultContext();
+                IProcessor processor = ProcessorUtilities.getProcessor(process, item.getProperty(), context);
+                if (processor instanceof MavenJavaProcessor) {
+                    LastGenerationInfo.getInstance().clearModulesNeededWithSubjobPerJob();
+                    ((MavenJavaProcessor) processor).generatePom(option);
+                }
+                AggregatorPomsHelper.addToParentModules(
+                        AggregatorPomsHelper.getItemPomFolder(item.getProperty()).getFile(TalendMavenConstants.POM_FILE_NAME),
+                        item.getProperty());
             }
-            AggregatorPomsHelper.addToParentModules(AggregatorPomsHelper
-                    .getItemPomFolder(item.getProperty())
-                    .getFile(TalendMavenConstants.POM_FILE_NAME), item.getProperty());
         } catch (Exception e) {
             String errorMsg = "Job [" + item.getProperty().getLabel() + "_" + item.getProperty().getVersion() //$NON-NLS-1$ //$NON-NLS-2$
                     + "] encountered problems while generating pom :"; //$NON-NLS-1$
