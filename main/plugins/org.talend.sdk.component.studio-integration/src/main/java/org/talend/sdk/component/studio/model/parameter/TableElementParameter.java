@@ -15,8 +15,11 @@
  */
 package org.talend.sdk.component.studio.model.parameter;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import org.talend.core.model.process.IElement;
 
@@ -63,12 +66,61 @@ public class TableElementParameter extends ValueChangedParameter {
     @Override
     public void setValue(final Object newValue) {
         if (newValue == null || newValue instanceof String) {
-            super.setValue(ValueConverter.toTable((String) newValue));
+            final List<Map<String, Object>> tableValue = ValueConverter.toTable((String) newValue);
+            super.setValue(fromRepository(tableValue));
         } else if (newValue instanceof List) {
             super.setValue(newValue);
         } else {
             throw new IllegalArgumentException("wrong type on new value: " + newValue.getClass().getName());
         }
+    }
+    
+    /**
+     * Checks whether incoming {@code table} retrieved from repository and converts
+     * it to correct parameter value by replacing repository key with this
+     * parameter's name. Note this method doesn't validate incoming {@code value}
+     * correctness
+     * 
+     * @param table table value from repository
+     * @return converted table value, if incoming value retrieved from repository;
+     *         If it is not from repository, then returns incoming value unchanged
+     */
+    private List<Map<String, Object>> fromRepository(List<Map<String, Object>> table) {
+        final Optional<String> repositoryKey = getRepositoryKey(table);
+        if (!repositoryKey.isPresent()) {
+            return table;
+        }
+        final List<Map<String, Object>> converted = new ArrayList<>(table.size());
+        for (final Map<String, Object> row : table) {
+            final Map<String, Object> convertedRow = new HashMap<>();
+            for (final Map.Entry<String, Object> cell : row.entrySet()) {
+                final String newKey = cell.getKey().replace(repositoryKey.get(), getName());
+                convertedRow.put(newKey, cell.getValue());
+            }
+            converted.add(convertedRow);
+        }
+        return converted;
+    }
+    
+    /**
+     * Returns repository key, if it was used in table value, or Optional.empty() if it was not user
+     * 
+     * @param tableValue table value
+     * @return repository key
+     */
+    private Optional<String> getRepositoryKey(List<Map<String, Object>> tableValue) {
+        if (tableValue.isEmpty()) {
+            return Optional.empty();
+        }
+        final Map<String, Object> row = tableValue.get(0);
+        for (final String repositoryKey : getRepositoryValue().split("\\|")) {
+            for (final String cellKey : row.keySet()) {
+                if (cellKey.startsWith(repositoryKey)) {
+                    return Optional.of(repositoryKey);
+                }
+            }
+        }
+        return Optional.empty();
     }
 
 }
