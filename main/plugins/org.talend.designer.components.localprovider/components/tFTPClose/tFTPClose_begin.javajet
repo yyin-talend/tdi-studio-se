@@ -11,6 +11,8 @@
    String cid = node.getUniqueName();
    String connection = ElementParameterParser.getValue(node, "__CONNECTION__");
    boolean sftp = "true".equals(ElementParameterParser.getValue(node.getProcess(), connection, "__SFTP__"));
+   boolean ssh2PrivateKey = "true".equals(ElementParameterParser.getValue(node.getProcess(), connection, "__SSH2_PRKEY__"));
+   String privateKey = ElementParameterParser.getValue(node.getProcess(), connection, "__PRIVATEKEY__");
    boolean ftps = "true".equals(ElementParameterParser.getValue(node.getProcess(), connection, "__FTPS__"));
 %>
 	 Object connObj = globalMap.get("conn_<%=connection%>");
@@ -24,8 +26,14 @@
               com.jcraft.jsch.ChannelSftp channel = (com.jcraft.jsch.ChannelSftp) connObj; 
               com.jcraft.jsch.Session session = channel.getSession();
 			  channel.disconnect();
-              session.disconnect();
-<%        } else if (ftps) { %>
+			  session.disconnect();
+<%
+				if (ssh2PrivateKey) {
+%>
+					java.nio.file.Files.deleteIfExists(java.nio.file.Paths.get("convertedKey_<%=connection %>"));
+<%
+				}
+} else if (ftps) { %>
               org.apache.commons.net.ftp.FTPSClient conn = (org.apache.commons.net.ftp.FTPSClient) connObj;
               conn.disconnect();
 <%        } else { %>

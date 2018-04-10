@@ -26,6 +26,7 @@ String proxyUser = ElementParameterParser.getValue(node, "__PROXY_USERNAME__");
 boolean sftp = ("true").equals(ElementParameterParser.getValue(node, "__SFTP__"));
 String authMethod = ElementParameterParser.getValue(node, "__AUTH_METHOD__");
 String privateKey = ElementParameterParser.getValue(node, "__PRIVATEKEY__");
+boolean ssh2PrivateKey = "true".equals(ElementParameterParser.getValue(node, "__SSH2_PRKEY__"));
 boolean ftps = ("true").equals(ElementParameterParser.getValue(node, "__FTPS__"));
 String keystoreFile = ElementParameterParser.getValue(node, "__KEYSTORE_FILE__");
 String sEncoding = ElementParameterParser.getValue(node, "__ENCODING__");
@@ -134,7 +135,37 @@ if (!sftp && !ftps) { // *** ftp *** //
 			log.info("<%=cid%> - SFTP authentication using a public key.");
 			log.debug("<%=cid%> - Private key: '" + <%=privateKey%> + "'.");
 		<%}%>
-		jsch_<%=cid%>.addIdentity(<%=privateKey %>, defaultUserInfo_<%=cid%>.getPassphrase());
+		String privateKeyPath_<%=cid %> = <%=privateKey %>;
+<%
+		if (ssh2PrivateKey) {
+			if (isLog4jEnabled) {
+%>
+				log.warn("Converting privateKey to OpenSSH format using ssh-keygen");
+<%
+			}
+%>
+			Process convertKeyToRSA_<%=cid %> = Runtime.getRuntime().exec("ssh-keygen -i -f \"" + privateKeyPath_<%=cid %> + "\"");
+			convertKeyToRSA_<%=cid %>.waitFor();
+
+			privateKeyPath_<%=cid %> = "convertedKey_<%=cid %>";
+			java.io.File convertedPrivateKey_<%=cid %> = new java.io.File(privateKeyPath_<%=cid %>);
+			try(java.io.InputStream keyReader_<%=cid %> = convertKeyToRSA_<%=cid %>.getInputStream();
+			java.io.FileOutputStream tempKeyWriter_<%=cid %> = new java.io.FileOutputStream(convertedPrivateKey_<%=cid %>);) {
+				while (keyReader_<%=cid %>.available() > 0) {
+					tempKeyWriter_<%=cid %>.write(keyReader_<%=cid %>.read());
+				}
+				tempKeyWriter_<%=cid %>.flush();
+			}
+			//print error log in case of error
+			try(java.io.InputStream errorStream_<%=cid %> = convertKeyToRSA_<%=cid %>.getErrorStream()) {
+				while (errorStream_<%=cid %>.available() > 0) {
+					System.err.print((char) errorStream_<%=cid %>.read());
+				}
+			}
+<%
+		}
+%>
+		jsch_<%=cid%>.addIdentity(privateKeyPath_<%=cid %>, defaultUserInfo_<%=cid%>.getPassphrase());
 	<%}%>
 	
 	com.jcraft.jsch.Session session_<%=cid%> = jsch_<%=cid%>.getSession(<%=user%>, <%=host%>, <%=port%>);
