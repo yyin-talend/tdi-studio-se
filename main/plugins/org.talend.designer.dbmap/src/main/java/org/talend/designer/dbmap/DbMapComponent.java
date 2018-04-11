@@ -110,7 +110,7 @@ public class DbMapComponent extends AbstractMapComponent {
      * @see org.talend.designer.core.model.components.IExternalComponent#getPersistentData()
      */
     @Override
-    public IExternalData getExternalData() {
+    public ExternalDbMapData getExternalData() {
         if (this.externalData == null) {
             this.externalData = new ExternalDbMapData();
         }
@@ -349,7 +349,7 @@ public class DbMapComponent extends AbstractMapComponent {
     }
 
     @Override
-    public AbstractExternalData getExternalEmfData() {
+    public DBMapData getExternalEmfData() {
         final DBMapData emfMapperData = DbmapFactory.eINSTANCE.createDBMapData();
         if (mapperMain == null) {
             initMapperMain(false);
@@ -373,7 +373,7 @@ public class DbMapComponent extends AbstractMapComponent {
     @Override
     public void removeInput(IConnection connection) {
         Connection conn = null;
-        DBMapData externalEmfData = (DBMapData) getExternalEmfData();
+        DBMapData externalEmfData = getExternalEmfData();
         InputTable toRemove = null;
         for (InputTable inputTable : externalEmfData.getInputTables()) {
             if (inputTable.getTableName() != null && inputTable.getTableName().equals(connection.getName())) {
