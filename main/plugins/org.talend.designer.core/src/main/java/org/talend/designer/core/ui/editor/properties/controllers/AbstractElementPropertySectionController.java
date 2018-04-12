@@ -1817,12 +1817,17 @@ public abstract class AbstractElementPropertySectionController implements Proper
         }
         connParameters = new ConnectionParameters();
         String type = getValueFromRepositoryName(elem, "TYPE", basePropertyParameter); //$NON-NLS-1$
+        Object isUseExistingConnection = elem.getPropertyValue("USE_EXISTING_CONNECTION"); //$NON-NLS-1$
+        boolean isUserExistionConnectionType = false;
         if (type.equals("Oracle") || type.contains("OCLE")) {
             IElementParameter ele = elem.getElementParameter("CONNECTION_TYPE");
             if (ele != null) {
                 type = (String) ele.getValue();
             } else {
                 type = "ORACLE_SID"; //$NON-NLS-1$
+            }
+            if ((isUseExistingConnection instanceof Boolean) && ((Boolean) isUseExistingConnection)) {
+                isUserExistionConnectionType = true;
             }
         } else if (EDatabaseTypeName.HIVE.getProduct().equalsIgnoreCase(type)) {
             // if (EDatabaseVersion4Drivers.HIVE_EMBEDDED.getVersionValue().equals(
@@ -1875,10 +1880,9 @@ public abstract class AbstractElementPropertySectionController implements Proper
 
         }
 
-        Object value = elem.getPropertyValue("USE_EXISTING_CONNECTION"); //$NON-NLS-1$
-
         IElementParameter compList = elem.getElementParameterFromField(EParameterFieldType.COMPONENT_LIST);
-        if (value != null && (value instanceof Boolean) && ((Boolean) value) && compList != null && !isConnectionExist()) {
+
+        if (isUseExistingConnection != null && (isUseExistingConnection instanceof Boolean) && ((Boolean) isUseExistingConnection) && compList != null && !isConnectionExist()) {
             Object compValue = compList.getValue();
 
             if (compValue != null && !compValue.equals("")) { //$NON-NLS-1$
@@ -1890,6 +1894,12 @@ public abstract class AbstractElementPropertySectionController implements Proper
                     }
                 }
                 if (connectionNode != null) {
+                    if (isUserExistionConnectionType) {
+                        IElementParameter ele = connectionNode.getElementParameter("CONNECTION_TYPE");
+                        if (ele != null) {
+                            type = (String) ele.getValue();
+                        }
+                    }
                     setAllConnectionParameters(type, connectionNode);
                 }
             }
