@@ -75,6 +75,8 @@ public abstract class DbGenerationManager {
     
     protected List<String> querySegments = new ArrayList<String>();
 
+    private boolean useDelimitedIdentifiers = false;
+
     /**
      * DOC amaumont GenerationManager constructor comment.
      *
@@ -1000,7 +1002,11 @@ public abstract class DbGenerationManager {
                                     if (iconn.getLineStyle() == EConnectionType.TABLE_REF) {
                                         continue;
                                     }
-                                    oriName = oriName.replaceAll("\\$", "\\\\\\$"); //$NON-NLS-1$ //$NON-NLS-2$
+                                    if (isUseDelimitedIdentifiers()) {
+                                        oriName = getSchemaName(oriName);
+                                    } else {
+                                        oriName = oriName.replaceAll("\\$", "\\\\\\$"); //$NON-NLS-1$ //$NON-NLS-2$
+                                    }
                                     expression = expression.replaceFirst("\\." + co.getLabel(), //$NON-NLS-1$
                                             "\\." + oriName); //$NON-NLS-1$
                                     expression = expression.replace("\"", "\\\"");
@@ -1079,8 +1085,45 @@ public abstract class DbGenerationManager {
         return name;
     }
 
+    protected String getSchemaName(String name) {
+        if (isUseDelimitedIdentifiers()) {
+            return getNameWithDelimitedIdentifier(name);
+        } else {
+            return name;
+        }
+    }
+
+    protected String getNameWithDelimitedIdentifier(String name) {
+        final String delimitedIdentifier = getDelimitedIdentifiers();
+        String newName = name;
+        newName = newName.replaceAll("\"", "\"\"");
+        newName = delimitedIdentifier + newName + delimitedIdentifier;
+        return newName;
+    }
+
+    protected String getDelimitedIdentifiers() {
+        return "\""; //$NON-NLS-1$
+    }
+
     protected String getHandledField(String field) {
-        return field;
+        String name = null;
+        if (field != null) {
+            name = getSchemaName(field);
+        }
+        if (name != null) {
+            name = name.replace("\"", "\\\"");
+        } else {
+            name = field;
+        }
+        return name;
+    }
+
+    public boolean isUseDelimitedIdentifiers() {
+        return this.useDelimitedIdentifiers;
+    }
+
+    public void setUseDelimitedIdentifiers(boolean useDelimitedIdentifiers) {
+        this.useDelimitedIdentifiers = useDelimitedIdentifiers;
     }
 
 }
