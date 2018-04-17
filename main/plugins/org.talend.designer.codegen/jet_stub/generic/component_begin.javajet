@@ -68,6 +68,8 @@ List<Component.CodegenPropInfo> propsToProcess = component.getCodegenPropInfos(c
 
 final Set<String> referenceProperties = new HashSet<String>();
 
+int schemaIndex = 0;
+
 for (Component.CodegenPropInfo propInfo : propsToProcess) { // propInfo
     List<NamedThing> properties = propInfo.props.getProperties();
     for (NamedThing prop : properties) { // property
@@ -120,9 +122,59 @@ for (Component.CodegenPropInfo propInfo : propsToProcess) { // propInfo
                         <%=property.getType().replaceAll("<.*>", "")%>.<%=property.getValue()%>);
                     <%
                 } else if (property instanceof org.talend.daikon.properties.property.SchemaProperty) {
+		    String schemaValue = component.getCodegenValue(property, property.getStringValue());
+	            String[] splits = schemaValue.split("(?=\\\\\"name\\\\\":)");
                     %>
+
+		    class SchemaSettingTool_<%=cid%>_<%=++schemaIndex%> {
+ 		                    		
+				String getSchemaValue() {
+					<%
+					if((splits == null) || (splits.length < 2)) {
+					%>
+					return <%=schemaValue%>;
+					<%
+					} else {
+					%>
+					StringBuilder s = new StringBuilder();
+					<%
+					for(int i=0; i<splits.length; i++) {
+						String currentSplit = splits[i];
+						if(i == 0) {
+						%>
+						a(<%=currentSplit%>",s);
+						<%
+							continue;
+						}
+						
+						if(i == (splits.length - 1)) {
+						%>
+						a("<%=currentSplit%>,s);
+						<%
+							continue;
+						}
+						
+						%>
+						a("<%=currentSplit%>",s);
+						<%
+					}
+					%>
+					return s.toString();
+					<%
+					}
+					%>
+				}
+				
+				void a(String part, StringBuilder strB) {
+					strB.append(part);
+				}
+				
+		    }
+		    
+		    SchemaSettingTool_<%=cid%>_<%=schemaIndex%> sst_<%=cid%>_<%=schemaIndex%> = new SchemaSettingTool_<%=cid%>_<%=schemaIndex%>();
+
                     props_<%=cid %><%=propInfo.fieldName%>.setValue("<%=property.getName()%>",
-                        new org.apache.avro.Schema.Parser().parse(<%=component.getCodegenValue(property, property.getStringValue())%>));
+                        new org.apache.avro.Schema.Parser().parse(sst_<%=cid%>_<%=schemaIndex%>.getSchemaValue()));
                     <%
                 } else if (!(value instanceof String) || !((String)value).equals("")) {
                     %>
