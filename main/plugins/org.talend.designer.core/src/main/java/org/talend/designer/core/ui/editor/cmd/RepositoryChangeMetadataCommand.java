@@ -253,8 +253,8 @@ public class RepositoryChangeMetadataCommand extends ChangeMetadataCommand {
                                     getConnection(), componentProperties, module.getName()));
                         }
                         if (repositoryValue != null) {
-                            Object objectValue = RepositoryToComponentProperty.getValue(getConnection(), repositoryValue,
-                                    newOutputMetadata, node.getComponent().getName());
+                            Object objectValue = RepositoryToComponentProperty.getValue(getConnection(),
+                                    repositoryValue, newOutputMetadata, node.getComponent().getName(), null);
                             if (objectValue != null) {
                                 module.setValue(objectValue);
                             }

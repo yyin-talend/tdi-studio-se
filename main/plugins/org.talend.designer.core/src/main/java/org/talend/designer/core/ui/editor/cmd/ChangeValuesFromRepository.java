@@ -305,6 +305,7 @@ public class ChangeValuesFromRepository extends ChangeMetadataCommand {
             }
             IElementParameter propertyParam = elem.getElementParameter(propertyName);
             List<IElementParameter> elementParameters = new ArrayList<>(elem.getElementParameters());
+            Map<Object, Object> contextMap = new HashMap<Object, Object>();
             for (IElementParameter param : elementParameters) {
                 String repositoryValue = param.getRepositoryValue();
                 if (param.getFieldType() == EParameterFieldType.PROPERTY_TYPE) {
@@ -377,7 +378,7 @@ public class ChangeValuesFromRepository extends ChangeMetadataCommand {
                             }
                         }
                         objectValue = RepositoryToComponentProperty.getValue(connection, repositoryValue, metaTable,
-                                componentName);
+                                componentName, contextMap);
                     }
 
                     if (GlobalServiceRegister.getDefault().isServiceRegistered(IJsonFileService.class)) {

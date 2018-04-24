@@ -15,6 +15,7 @@ package org.talend.repository.generic.service;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -194,6 +195,7 @@ public class GenericWizardService implements IGenericWizardService {
     @Override
     public List<ComponentProperties> getAllComponentProperties(Connection connection, String tableLabel) {
         List<ComponentProperties> componentProperties = new ArrayList<>();
+        Set<ComponentProperties> componentPropertiesSet = new HashSet<>();
         if (isGenericConnection(connection)) {
             GenericConnection genericConnection = (GenericConnection) connection;
             String compProperties = genericConnection.getCompProperties();
@@ -213,11 +215,12 @@ public class GenericWizardService implements IGenericWizardService {
             	}
                 for (TaggedValue taggedValue : metadataTable.getTaggedValue()) {
                     if (IComponentConstants.COMPONENT_PROPERTIES_TAG.equals(taggedValue.getTag())) {
-                        ComponentProperties compPros = ComponentsUtils.getComponentPropertiesFromSerialized(
-                                taggedValue.getValue(), connection, false);
-                        if (compPros != null && !componentProperties.contains(compPros)) {
+                        ComponentProperties compPros = ComponentsUtils
+                                .getComponentPropertiesFromSerialized(taggedValue.getValue(), connection, false);
+                        if (compPros != null && !componentPropertiesSet.contains(compPros)) {
                             compPros.updateNestedProperties(cp);
                             componentProperties.add(compPros);
+                            componentPropertiesSet.add(compPros);
                         }
                     }
                 }
