@@ -34,9 +34,13 @@ import org.talend.core.model.process.EConnectionType;
 import org.talend.core.model.process.IConnection;
 import org.talend.core.model.process.IContext;
 import org.talend.core.model.process.IContextParameter;
+import org.talend.core.model.process.IElementParameter;
+import org.talend.core.model.process.IExternalNode;
 import org.talend.core.model.process.INode;
 import org.talend.core.model.process.IProcess;
 import org.talend.core.model.utils.ContextParameterUtils;
+import org.talend.core.model.utils.TalendTextUtils;
+import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.dbmap.DbMapComponent;
 import org.talend.designer.dbmap.external.data.ExternalDbMapData;
 import org.talend.designer.dbmap.external.data.ExternalDbMapEntry;
@@ -75,7 +79,7 @@ public abstract class DbGenerationManager {
     
     protected List<String> querySegments = new ArrayList<String>();
 
-    private boolean useDelimitedIdentifiers = false;
+    private Boolean useDelimitedIdentifiers;
 
     /**
      * DOC amaumont GenerationManager constructor comment.
@@ -255,13 +259,14 @@ public abstract class DbGenerationManager {
      * @param tabSpaceString
      * @return
      */
-    public String buildSqlSelect(DbMapComponent component, String outputTableName, String tabString) {
+    public String buildSqlSelect(DbMapComponent dbMapComponent, String outputTableName, String tabString) {
         queryColumnsName = "\""; //$NON-NLS-1$
         aliasAlreadyDeclared.clear();
         queryColumnsSegments.clear();
         querySegments.clear();
         
         this.tabSpaceString = tabString;
+        DbMapComponent component = getDbMapComponent(dbMapComponent);
 
         List<IConnection> outputConnections = (List<IConnection>) component.getOutgoingConnections();
 
@@ -554,7 +559,43 @@ public abstract class DbGenerationManager {
 
         return sqlQuery;
     }
-    
+
+    protected DbMapComponent getDbMapComponent(DbMapComponent dbMapComponent) {
+        DbMapComponent component = dbMapComponent;
+        INode realGraphicalNode = dbMapComponent.getRealGraphicalNode();
+        if (realGraphicalNode != null) {
+            IExternalNode externalNode = realGraphicalNode.getExternalNode();
+            if (externalNode instanceof DbMapComponent) {
+                component = (DbMapComponent) externalNode;
+            }
+        }
+        checkParameters(component);
+        return component;
+    }
+
+    protected void checkParameters(DbMapComponent component) {
+        checkUseDelimitedIdentifiers(component);
+    }
+
+    protected void checkUseDelimitedIdentifiers(DbMapComponent component) {
+        /**
+         * in elt related component javajets(like tELTMSSqlMap_main.javajet), they don't get DbGenerationManager by
+         * DbMapComponent#getGenerationManager() while they construct a new manager manually, so some parameters may not
+         * be initialised, then need to check these parameters here manually to make sure they are initialised.
+         */
+        if (this.useDelimitedIdentifiers == null) {
+            this.useDelimitedIdentifiers = false;
+            IElementParameter activeDelimitedIdentifiersEP = component
+                    .getElementParameter(EParameterName.ACTIVE_DATABASE_DELIMITED_IDENTIFIERS.getName());
+            if (activeDelimitedIdentifiersEP != null) {
+                Object value = activeDelimitedIdentifiersEP.getValue();
+                if (value != null) {
+                    setUseDelimitedIdentifiers(Boolean.valueOf(value.toString()));
+                }
+            }
+        }
+    }
+
     protected void replaceQueryContext(List<String> querySegments, String context) {
         if (querySegments == null || querySegments.size() == 0) {
             return;
@@ -698,6 +739,7 @@ public abstract class DbGenerationManager {
             } else {
                 tableName = getHandledField(table.getAlias());
             }
+            entryName = getColumnName(null, entryName);
             String locationInputEntry = language.getLocation(tableName, getHandledField(entryName));
             sbWhere.append(DbMapSqlConstants.SPACE);
             sbWhere.append(locationInputEntry);
@@ -993,17 +1035,21 @@ public abstract class DbGenerationManager {
                                         continue;
                                     }
                                     if (expression.trim().equals(tableValue + "." + oriName)) {
+                                        expression = tableValue + "." + getColumnName(iconn, oriName);
+                                        expression = expression.replace("\"", "\\\"");
                                         continue;
                                     }
                                     if (expression.trim().equals(originaltableName + "." + oriName)) {
+                                        expression = originaltableName + "." + getColumnName(iconn, oriName);
+                                        expression = expression.replace("\"", "\\\"");
                                         continue;
                                     }
                                     // if it is temp delived table, use label to generate sql
                                     if (iconn.getLineStyle() == EConnectionType.TABLE_REF) {
                                         continue;
                                     }
-                                    if (isUseDelimitedIdentifiers()) {
-                                        oriName = getSchemaName(oriName);
+                                    if (!isRefTableConnection(iconn) && isUseDelimitedIdentifiers()) {
+                                        oriName = getColumnName(iconn, oriName);
                                     } else {
                                         oriName = oriName.replaceAll("\\$", "\\\\\\$"); //$NON-NLS-1$ //$NON-NLS-2$
                                     }
@@ -1085,12 +1131,16 @@ public abstract class DbGenerationManager {
         return name;
     }
 
-    protected String getSchemaName(String name) {
-        if (isUseDelimitedIdentifiers()) {
+    protected String getColumnName(IConnection conn, String name) {
+        if (!isRefTableConnection(conn) && isUseDelimitedIdentifiers()) {
             return getNameWithDelimitedIdentifier(name);
         } else {
             return name;
         }
+    }
+
+    protected boolean isRefTableConnection(IConnection conn) {
+        return conn != null && conn.getLineStyle() == EConnectionType.TABLE_REF;
     }
 
     protected String getNameWithDelimitedIdentifier(String name) {
@@ -1106,19 +1156,13 @@ public abstract class DbGenerationManager {
     }
 
     protected String getHandledField(String field) {
-        String name = null;
         if (field != null) {
-            name = getSchemaName(field);
+            field = field.replace("\"", "\\\"");
         }
-        if (name != null) {
-            name = name.replace("\"", "\\\"");
-        } else {
-            name = field;
-        }
-        return name;
+        return field;
     }
 
-    public boolean isUseDelimitedIdentifiers() {
+    public Boolean isUseDelimitedIdentifiers() {
         return this.useDelimitedIdentifiers;
     }
 
