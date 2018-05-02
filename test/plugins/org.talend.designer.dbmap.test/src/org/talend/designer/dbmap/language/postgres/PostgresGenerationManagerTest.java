@@ -6,6 +6,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.junit.Before;
@@ -30,10 +31,14 @@ import org.talend.designer.dbmap.external.data.ExternalDbMapTable;
 
 public class PostgresGenerationManagerTest {
 
-    DbMapComponent component = new DbMapComponent();
+    DbMapComponent component;
 
     @Before
     public void setUp() throws Exception {
+        component = new DbMapComponent();
+        if (component.getElementParameters() == null) {
+            component.setElementParameters(Collections.EMPTY_LIST);
+        }
     }
 
     private void init(String schema, String main_table, String lookup_table) {
