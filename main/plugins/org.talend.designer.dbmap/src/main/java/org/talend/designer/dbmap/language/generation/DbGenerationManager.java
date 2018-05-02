@@ -1162,8 +1162,8 @@ public abstract class DbGenerationManager {
         return field;
     }
 
-    public Boolean isUseDelimitedIdentifiers() {
-        return this.useDelimitedIdentifiers;
+    public boolean isUseDelimitedIdentifiers() {
+        return Boolean.TRUE.equals(this.useDelimitedIdentifiers);
     }
 
     public void setUseDelimitedIdentifiers(boolean useDelimitedIdentifiers) {
