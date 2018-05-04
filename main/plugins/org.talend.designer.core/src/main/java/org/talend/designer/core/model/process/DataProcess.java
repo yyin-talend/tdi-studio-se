@@ -3171,8 +3171,6 @@ public class DataProcess implements IGeneratingProcess {
         }
         buildGraphicalMap.put(graphicalNode, newGraphicalNode);
 
-        buildGraphicalNodeForInputConnections(process, graphicalNode, newGraphicalNode, new HashSet<INode>());
-
         for (IConnection connection : (List<IConnection>) graphicalNode.getOutgoingConnections()) {
             if (!connection.isActivate()) {
                 continue;
@@ -3284,6 +3282,13 @@ public class DataProcess implements IGeneratingProcess {
             if (node.isSubProcessStart() && node.isActivate()) {
                 buildNodeFromNode(node, duplicatedProcess);
             }
+        }
+        Set<INode> visitedNodes = new HashSet<INode>();
+        Set<Map.Entry> entrySet = buildGraphicalMap.entrySet();
+        for (Map.Entry entry : entrySet) {
+            INode node = (INode) entry.getKey();
+            INode newNode = (INode) entry.getValue();
+            buildGraphicalNodeForInputConnections(duplicatedProcess, node, newNode, visitedNodes);
         }
 
         // make sure the new tUnite incomingConnections order is the same as the old one. @see
