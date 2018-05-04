@@ -3280,7 +3280,7 @@ public class DataProcess implements IGeneratingProcess {
             if (newSourceNode == null) {
                 // if it not exists in the essential nodes, create a new one, and don't put it into the Map!
                 newSourceNode = cloneGraphicalNode(process, sourceNode);
-                NodeContainer nc = ((Process) process).loadNodeContainer((Node) newGraphicalNode, false);
+                NodeContainer nc = ((Process) process).loadNodeContainer((Node) newSourceNode, false);
                 ((Process) process).addNodeContainer(nc);
                 IConnection dataConnec = new Connection(newSourceNode, newGraphicalNode, connection.getLineStyle(),
                         connection.getConnectorName(), connection.getMetaName(), connection.getName(), connection.getUniqueName(),
@@ -3290,7 +3290,6 @@ public class DataProcess implements IGeneratingProcess {
                 }
                 copyElementParametersValue(connection, dataConnec);
                 dataConnec.setTraceConnection(connection.isTraceConnection());
-                buildGraphicalMap.put(sourceNode, newSourceNode);
                 buildGraphicalNodeForInputConnections(process, sourceNode, newSourceNode, visitedNodes);
             }
         }
