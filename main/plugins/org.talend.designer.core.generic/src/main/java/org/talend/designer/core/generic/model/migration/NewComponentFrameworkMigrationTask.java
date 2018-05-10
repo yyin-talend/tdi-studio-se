@@ -136,12 +136,7 @@ public abstract class NewComponentFrameworkMigrationTask extends AbstractJobMigr
                                 }
                             }
                         } else {
-                            if (currNamedThing instanceof Property) {
-                                if (((Property<?>) currNamedThing).isRequired()
-                                        && GenericTypeUtils.isStringType(((Property<?>) currNamedThing).getType())) {
-                                    ((Property<?>) currNamedThing).setStoredValue("\"\""); //$NON-NLS-1$
-                                }
-                            }
+							processUnmappedElementParameter(props, nodeType, (GenericElementParameter) param, currNamedThing);
                         }
                     } else {
                         if (EParameterFieldType.SCHEMA_REFERENCE.equals(param.getFieldType())) {
@@ -282,6 +277,27 @@ public abstract class NewComponentFrameworkMigrationTask extends AbstractJobMigr
             lineValues.put(columnName, elementValue.getValue());
         }
         return tableValues;
+    }
+
+    /**
+     * Process element parameter which has no mapping from old parameter to component property.
+     *
+     * <p>Subclasses can override this method to customize migration of element parameters.
+     *
+     * @param props migration task properties
+     * @param nodeType component node
+     * @param param new parameter object
+     * @param currNamedThing component property object
+     */
+    protected void processUnmappedElementParameter(Properties props, NodeType nodeType,
+            GenericElementParameter param, NamedThing currNamedThing) {
+
+        if (currNamedThing instanceof Property) {
+            if (((Property<?>) currNamedThing).isRequired()
+                    && GenericTypeUtils.isStringType(((Property<?>) currNamedThing).getType())) {
+                ((Property<?>) currNamedThing).setStoredValue("\"\""); //$NON-NLS-1$
+            }
+        }
     }
 
     public static class FakeNode extends AbstractNode {
