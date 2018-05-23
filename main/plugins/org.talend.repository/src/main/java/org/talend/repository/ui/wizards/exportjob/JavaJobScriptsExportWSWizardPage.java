@@ -441,24 +441,6 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
 
             @Override
             public void widgetSelected(SelectionEvent e) {
-                
-//                destinationNameFieldInnerComposite.dispose();
-//                
-//                destinationNameFieldInnerComposite = new Composite(destinationNameFieldComposite, SWT.NONE);
-//                GridDataFactory.fillDefaults().grab(true, false).applyTo(destinationNameFieldInnerComposite);
-//
-//                GridLayout gdlDestinationNameFieldInnerComposite = new GridLayout();
-//                gdlDestinationNameFieldInnerComposite.marginWidth = 0;
-//                gdlDestinationNameFieldInnerComposite.marginHeight = 0;
-//                gdlDestinationNameFieldInnerComposite.verticalSpacing = 0;
-//                gdlDestinationNameFieldInnerComposite.horizontalSpacing = 0;
-//                destinationNameFieldInnerComposite.setLayout(gdlDestinationNameFieldInnerComposite);
-//
-//                destinationNameFieldInnerComposite.setBackground(Display.getDefault().getSystemColor(SWT.COLOR_RED));
-//                
-//                createDestinationGroup(destinationNameFieldInnerComposite);
-//                destinationNameFieldComposite.layout();
-
                 optionsGroupComposite.dispose();
                 createOptionsGroupButtons(pageComposite);
                 pageComposite.setSize(pageComposite.computeSize(SWT.DEFAULT, SWT.DEFAULT));
