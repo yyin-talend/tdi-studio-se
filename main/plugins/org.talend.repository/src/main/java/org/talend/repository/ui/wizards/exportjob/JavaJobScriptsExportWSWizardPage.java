@@ -298,8 +298,6 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
         
         initializeDialogUnits(parent);
         SashForm sash = createExportTree(parent);
-        
-        GridLayout layout = new GridLayout();
 
         
         // Added a scrolled composite by Marvin Wang on Feb. 27, 2012 for bug TDI-19198.
@@ -309,9 +307,10 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
         GridDataFactory.fillDefaults().grab(true, true).applyTo(scrolledComposite);
         
         pageComposite = new Composite(scrolledComposite, SWT.BORDER);
-        pageComposite.setLayout(layout);
-        
         GridDataFactory.fillDefaults().grab(true, true).applyTo(pageComposite);
+        
+        GridLayout gdlPageComposite = new GridLayout();
+        pageComposite.setLayout(gdlPageComposite);
         pageComposite.setFont(parent.getFont());
         
         createDestinationGroup(pageComposite);
@@ -428,6 +427,7 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
             chkButton.setVisible(true);
             zipOption = String.valueOf(chkButton.getSelection());
         }
+        
         chkButton.addSelectionListener(new SelectionAdapter() {
 
             @Override
@@ -436,23 +436,28 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
                 zipOption = String.valueOf(chkButton.getSelection());
             }
         });
-        exportTypeCombo.addSelectionListener(new SelectionListener() {
-
-            @Override
-            public void widgetDefaultSelected(SelectionEvent e) {
-
-            }
+        
+        exportTypeCombo.addSelectionListener(new SelectionAdapter() {
 
             @Override
             public void widgetSelected(SelectionEvent e) {
-                destinationNameFieldInnerComposite.dispose();
-                destinationNameFieldInnerComposite = new Composite(destinationNameFieldComposite, SWT.NONE);
-                GridData gridData = new GridData(GridData.HORIZONTAL_ALIGN_FILL | GridData.GRAB_HORIZONTAL);
-                destinationNameFieldInnerComposite.setLayoutData(gridData);
-                destinationNameFieldInnerComposite.setLayout(new GridLayout());
-                createDestinationGroup(destinationNameFieldInnerComposite);
-
-                destinationNameFieldComposite.layout();
+                
+//                destinationNameFieldInnerComposite.dispose();
+//                
+//                destinationNameFieldInnerComposite = new Composite(destinationNameFieldComposite, SWT.NONE);
+//                GridDataFactory.fillDefaults().grab(true, false).applyTo(destinationNameFieldInnerComposite);
+//
+//                GridLayout gdlDestinationNameFieldInnerComposite = new GridLayout();
+//                gdlDestinationNameFieldInnerComposite.marginWidth = 0;
+//                gdlDestinationNameFieldInnerComposite.marginHeight = 0;
+//                gdlDestinationNameFieldInnerComposite.verticalSpacing = 0;
+//                gdlDestinationNameFieldInnerComposite.horizontalSpacing = 0;
+//                destinationNameFieldInnerComposite.setLayout(gdlDestinationNameFieldInnerComposite);
+//
+//                destinationNameFieldInnerComposite.setBackground(Display.getDefault().getSystemColor(SWT.COLOR_RED));
+//                
+//                createDestinationGroup(destinationNameFieldInnerComposite);
+//                destinationNameFieldComposite.layout();
 
                 optionsGroupComposite.dispose();
                 createOptionsGroupButtons(pageComposite);
