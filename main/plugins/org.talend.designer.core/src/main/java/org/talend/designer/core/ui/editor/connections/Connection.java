@@ -1574,6 +1574,9 @@ public class Connection extends Element implements IConnection, IPerformance {
                 break;
             default:
                 List<Connection> connList = (List<Connection>) source.getOutgoingConnections(lineStyle);
+                if (connList.size() <= 1) {
+                    return -1;
+                }
                 List<Connection> activeList = new ArrayList<>();
                 List<Connection> deactiveList = new ArrayList<>();
                 int displayIndex = -1;
