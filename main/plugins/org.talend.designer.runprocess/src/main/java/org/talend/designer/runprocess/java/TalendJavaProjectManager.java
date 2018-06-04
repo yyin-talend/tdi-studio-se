@@ -158,7 +158,7 @@ public class TalendJavaProjectManager {
                     if (PluginChecker.isRouteletLoaded()) {
                         createFolderIfNotExist(jobs.getFolder(DIR_ROUTELETS), monitor);
                     }
-                    helper.createRootPom(poms, monitor);
+                    helper.createRootPom(monitor);
                 } catch (Exception e) {
                     ExceptionHandler.process(e);
                 }
