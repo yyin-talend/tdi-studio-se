@@ -1643,7 +1643,7 @@ if(columnList != null && columnList.size() > 0) {
             }
             if(isDynamic) {
 %>
-                int count_<%=cid%> = DynamicUtils.writeColumnsToDatabse(<%=incomingConnName%>.<%=getDynamicColumn()%>, pstmt_<%=cid%>, <%=counter-1%>, "<%=dbmsId%>", true);
+                int count_<%=cid%> = DynamicUtils.writeColumnsToDatabse(<%=incomingConnName%>.<%=getDynamicColumn()%>, pstmt_<%=cid%>, <%=counter-1%>, "<%=dbmsId%>");
 <%
             }
             for(Column column : colStruct) {
@@ -1667,7 +1667,7 @@ if(columnList != null && columnList.size() > 0) {
             }
             if(isDynamic) {
 %>
-                DynamicUtils.writeColumnsToDatabse(<%=incomingConnName%>.<%=getDynamicColumn()%>, pstmt_<%=cid%>, (count_<%=cid%> + <%=counter-1%>), "<%=dbmsId%>");
+                DynamicUtils.writeColumnsToDatabse(<%=incomingConnName%>.<%=getDynamicColumn()%>, pstmt_<%=cid%>, (count_<%=cid%> + <%=counter-1%>), "<%=dbmsId%>", true);
 <%
             }
             %>
