@@ -1881,6 +1881,7 @@ public class Node extends Element implements IGraphicalNode {
 
         if (id.equals(EParameterName.CONNECTION_FORMAT.getName())) {
             connectionToParse = (String) value;
+            setConnectionName(ElementParameterParser.parse(this, connectionToParse));
             // to check
             // String newValue = ElementParameterParser.parse(this, connectionToParse);
             // setConnectionName(newValue);
