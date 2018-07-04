@@ -3316,6 +3316,7 @@ public class Process extends Element implements IProcess2, IGEFProcess, ILastVer
         }
     }
 
+
     @SuppressWarnings("unchecked")
     private void setActivateSubjob(INode node, boolean active, INode activateNode, boolean oneComponent, List chekedNodes) {
         INode mainSubProcess = node.getSubProcessStartNode(false);
