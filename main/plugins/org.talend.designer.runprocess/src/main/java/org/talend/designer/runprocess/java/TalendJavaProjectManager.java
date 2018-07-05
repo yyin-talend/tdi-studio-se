@@ -496,6 +496,9 @@ public class TalendJavaProjectManager {
                         project.delete(false, true, monitor);
                     }
                 }
+                talendCodeJavaProjects.clear();
+                talendJobJavaProjects.clear();
+                tempJavaProject = null;
             };
 
         };
@@ -535,6 +538,7 @@ public class TalendJavaProjectManager {
                 IProcessor processor = ProcessorUtilities.getProcessor(process, item.getProperty(), context);
                 if (processor instanceof MavenJavaProcessor) {
                     LastGenerationInfo.getInstance().clearModulesNeededWithSubjobPerJob();
+                    LastGenerationInfo.getInstance().getHighPriorityModuleNeeded().clear();
                     ((MavenJavaProcessor) processor).generatePom(option);
                 }
                 AggregatorPomsHelper.addToParentModules(
