@@ -66,7 +66,6 @@ import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.model.runprocess.data.PerformanceData;
 import org.talend.core.repository.model.ProxyRepositoryFactory;
-import org.talend.core.repository.seeker.RepositorySeekerManager;
 import org.talend.core.repository.utils.Log4jUtil;
 import org.talend.core.runtime.maven.MavenUrlHelper;
 import org.talend.core.runtime.process.ITalendProcessJavaProject;
@@ -76,7 +75,6 @@ import org.talend.core.runtime.projectsetting.ProjectPreferenceManager;
 import org.talend.core.service.IESBMicroService;
 import org.talend.core.service.IESBRouteService;
 import org.talend.core.ui.ITestContainerProviderService;
-import org.talend.designer.maven.launch.MavenPomCommandLauncher;
 import org.talend.designer.maven.model.TalendMavenConstants;
 import org.talend.designer.maven.tools.AggregatorPomsHelper;
 import org.talend.designer.maven.tools.MavenPomSynchronizer;
@@ -665,8 +663,8 @@ public class DefaultRunProcessService implements IRunProcessService {
     }
 
     @Override
-    public ITalendProcessJavaProject getTalendCodeJavaProject(ERepositoryObjectType type, Project project) {
-        return TalendJavaProjectManager.getTalendCodeJavaProject(type, project);
+    public ITalendProcessJavaProject getTalendCodeJavaProject(ERepositoryObjectType type, String projectTechName) {
+        return TalendJavaProjectManager.getTalendCodeJavaProject(type, projectTechName);
     }
 
     @Override
@@ -722,16 +720,16 @@ public class DefaultRunProcessService implements IRunProcessService {
      */
     @Override
     public void initializeRootPoms() {
-        IProgressMonitor monitor = new NullProgressMonitor();
         try {
+            IProgressMonitor monitor = new NullProgressMonitor();
             AggregatorPomsHelper helper = new AggregatorPomsHelper();
-            helper.installRootPom(true);
+            helper.installRootPom(false);
             AggregatorPomsHelper.updateAllCodesProjectNeededModules(monitor);
             List<ProjectReference> references = ProjectManager.getInstance().getCurrentProject().getProjectReferenceList(true);
             for (ProjectReference ref : references) {
                 initRefPoms(new Project(ref.getReferencedProject()));
             }
-            AggregatorPomsHelper.updateRefProjectModules(references);
+            helper.updateRefProjectModules(references);
             helper.updateCodeProjects(monitor, true);
         } catch (Exception e) {
             ExceptionHandler.process(e);
@@ -748,35 +746,33 @@ public class DefaultRunProcessService implements IRunProcessService {
         refHelper.installRootPom(true);
 
         // install ref codes project.
-        Map<String, Object> argumentsMap = new HashMap<>();
-        argumentsMap.put(TalendProcessArgumentConstant.ARG_GOAL, TalendMavenConstants.GOAL_INSTALL);
         IProgressMonitor monitor = new NullProgressMonitor();
-        installRefCodeProject(ERepositoryObjectType.ROUTINES, refHelper, argumentsMap, monitor);
+        installRefCodeProject(ERepositoryObjectType.ROUTINES, refHelper, monitor);
 
         if (ProcessUtils.isRequiredPigUDFs(null, refProject)) {
-            installRefCodeProject(ERepositoryObjectType.PIG_UDF, refHelper, argumentsMap, monitor);
+            installRefCodeProject(ERepositoryObjectType.PIG_UDF, refHelper, monitor);
         }
 
         if (ProcessUtils.isRequiredBeans(null, refProject)) {
-            installRefCodeProject(ERepositoryObjectType.valueOf("BEANS"), refHelper, argumentsMap, monitor); //$NON-NLS-1$
+            installRefCodeProject(ERepositoryObjectType.valueOf("BEANS"), refHelper, monitor); //$NON-NLS-1$
         }
     }
 
-    private void installRefCodeProject(ERepositoryObjectType codeType, AggregatorPomsHelper refHelper,
-            Map<String, Object> argumentsMap, IProgressMonitor monitor) throws Exception, CoreException {
-        if (!refHelper.getProjectPomsFolder().getFile(TalendMavenConstants.POM_FILE_NAME).exists()) {
+    private void installRefCodeProject(ERepositoryObjectType codeType, AggregatorPomsHelper refHelper, IProgressMonitor monitor)
+            throws Exception, CoreException {
+        if (!refHelper.getProjectRootPom().exists()) {
             return;
         }
         String projectTechName = refHelper.getProjectTechName();
         ITalendProcessJavaProject codeProject = TalendJavaProjectManager.getExistingTalendCodeProject(codeType, projectTechName);
         if (codeProject != null) {
+            codeProject.buildWholeCodeProject();
+            Map<String, Object> argumentsMap = new HashMap<>();
+            argumentsMap.put(TalendProcessArgumentConstant.ARG_GOAL, TalendMavenConstants.GOAL_INSTALL);
+            argumentsMap.put(TalendProcessArgumentConstant.ARG_PROGRAM_ARGUMENTS, TalendMavenConstants.ARG_MAIN_SKIP);
             codeProject.buildModules(monitor, null, argumentsMap);
             codeProject.getProject().delete(false, true, monitor);
             TalendJavaProjectManager.removeFromCodeJavaProjects(codeType, projectTechName);
-        } else {
-            IFile pomFile = refHelper.getCodeFolder(codeType).getFile(TalendMavenConstants.POM_FILE_NAME);
-            MavenPomCommandLauncher launcher = new MavenPomCommandLauncher(pomFile, TalendMavenConstants.GOAL_INSTALL);
-            launcher.execute(monitor);
         }
     }
 
