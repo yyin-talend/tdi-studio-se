@@ -108,7 +108,9 @@ public class UnifyPasswordEncryption4ParametersInJobMigrationTask extends UnifyP
                 if (paramTypes != null) {
                     for (ContextParameterType param : paramTypes) {
                         String value = param.getValue();
-                        if (value != null && PasswordEncryptUtil.isPasswordType(param.getType())) {
+                        if (value != null && (PasswordEncryptUtil.isPasswordType(param.getType())
+                                || PasswordEncryptUtil.isPasswordField(param.getName()))) {
+                            value = cleanPassword(value);
                             try {
                                 String rawPassword = PasswordEncryptUtil.decryptPassword(value);
                                 param.setRawValue(rawPassword);
@@ -182,6 +184,7 @@ public class UnifyPasswordEncryption4ParametersInJobMigrationTask extends UnifyP
     @SuppressWarnings("deprecation")
     private boolean reencryptValueIfNeeded(ElementParameterType param) throws Exception {
         String value = param.getValue();
+        value = cleanPassword(value);
         int index = value.lastIndexOf(PasswordEncryptUtil.ENCRYPT_KEY);
         if (index != -1) {
             value = new StringBuilder(value).replace(index, index + PasswordEncryptUtil.ENCRYPT_KEY.length(), "").toString(); //$NON-NLS-1$
