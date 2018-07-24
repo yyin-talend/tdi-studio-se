@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.talend.sdk.component.studio.model.parameter;
+package org.talend.sdk.component.studio.model.parameter.resolver;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -26,26 +26,30 @@ import org.talend.sdk.component.server.front.model.ActionReference;
 import org.talend.sdk.component.server.front.model.SimplePropertyDefinition;
 import org.talend.sdk.component.studio.model.action.Action;
 import org.talend.sdk.component.studio.model.action.ActionParameter;
+import org.talend.sdk.component.studio.model.parameter.PropertyNode;
+import org.talend.sdk.component.studio.model.parameter.TaCoKitElementParameter;
 import org.talend.sdk.component.studio.model.parameter.listener.ValidationListener;
 
-class ValidationResolver extends AbstractParameterResolver {
-
-    private final ActionReference action;
+public class ValidationResolver extends AbstractParameterResolver {
 
     private final ValidationListener listener;
 
     private final ElementParameter redrawParameter;
 
-    ValidationResolver(final PropertyNode actionOwner, final Collection<ActionReference> actions,
+    public ValidationResolver(final PropertyNode actionOwner, final Collection<ActionReference> actions,
             final ValidationListener listener, final ElementParameter redrawParameter) {
-        super(actionOwner);
+        super(actionOwner, getActionRef(actionOwner, actions));
         if (!actionOwner.getProperty().hasValidation()) {
             throw new IllegalArgumentException("property has no validation");
         }
         this.listener = listener;
         this.redrawParameter = redrawParameter;
+        
+    }
+    
+    private static ActionReference getActionRef(final PropertyNode actionOwner, final Collection<ActionReference> actions) {
         final String actionName = actionOwner.getProperty().getValidationName();
-        this.action = actions
+        return actions
                 .stream()
                 .filter(a -> Action.Type.VALIDATION.toString().equals(a.getType()))
                 .filter(a -> a.getName().equals(actionName))
@@ -54,7 +58,7 @@ class ValidationResolver extends AbstractParameterResolver {
     }
 
     public void resolveParameters(final Map<String, IElementParameter> settings) {
-        final List<SimplePropertyDefinition> callbackParameters = new ArrayList<>(action.getProperties());
+        final List<SimplePropertyDefinition> callbackParameters = new ArrayList<>(actionRef.getProperties());
         final List<String> relativePaths = actionOwner.getProperty().getValidationParameters();
 
         for (int i = 0; i < relativePaths.size(); i++) {

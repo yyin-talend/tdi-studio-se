@@ -61,7 +61,7 @@ public class PropertyDefinitionDecorator extends SimplePropertyDefinition {
     /**
      * Denotes that some property has no parent property
      */
-    private static final String NO_PARENT_ID = "";
+    static final String NO_PARENT_ID = "";
 
     /**
      * Suffix used in id ({@link SimplePropertyDefinition#getPath()}), which denotes Array typed property
@@ -423,19 +423,19 @@ public class PropertyDefinitionDecorator extends SimplePropertyDefinition {
      *
      * @return true, it it has action::validation metadata; false otherwise
      */
-    boolean hasValidation() {
+    public boolean hasValidation() {
         return delegate.getMetadata().containsKey(ACTION_VALIDATION_NAME)
                 && delegate.getMetadata().containsKey(ACTION_VALIDATION_PARAMETERS);
     }
 
-    String getValidationName() {
+    public String getValidationName() {
         if (!hasValidation()) {
             throw new IllegalStateException("Property has no validation");
         }
         return delegate.getMetadata().get(ACTION_VALIDATION_NAME);
     }
 
-    List<String> getValidationParameters() {
+    public List<String> getValidationParameters() {
         if (!hasValidation()) {
             throw new IllegalStateException("Property has no validation");
         }
@@ -447,7 +447,7 @@ public class PropertyDefinitionDecorator extends SimplePropertyDefinition {
         return delegate.getMetadata().containsKey(ACTION_HEALTHCHECK);
     }
 
-    String getHealthCheckName() {
+    public String getHealthCheckName() {
         if (!isCheckable()) {
             throw new IllegalArgumentException("It is not checkable");
         }
@@ -558,7 +558,7 @@ public class PropertyDefinitionDecorator extends SimplePropertyDefinition {
                 && delegate.getMetadata().containsKey(ACTION_SUGGESTIONS_PARAMETERS);
     }
     
-    Suggestions getSuggestions() {
+    public Suggestions getSuggestions() {
         if (!hasSuggestions()) {
             throw new IllegalStateException("Property has no suggestions");
         }
