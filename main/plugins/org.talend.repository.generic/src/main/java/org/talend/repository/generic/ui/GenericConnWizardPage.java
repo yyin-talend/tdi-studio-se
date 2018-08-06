@@ -91,10 +91,9 @@ public class GenericConnWizardPage extends GenericWizardPage implements Property
         baseElement = new FakeElement(form.getName());
         baseElement.setReadOnly(!isRepositoryObjectEditable);
         dynamicComposite = new DynamicComposite(container, SWT.H_SCROLL | SWT.V_SCROLL | SWT.NO_FOCUS, EComponentCategory.BASIC,
-                baseElement, true, container.getBackground(), form, false);
+                baseElement, connectionItem, true, container.getBackground(), form, false);
         dynamicComposite.setLayoutData(createMainFormData(addContextFields));
         dynamicComposite.setWizardPropertyChangeListener(this);
-        dynamicComposite.setConnectionItem(connectionItem);
         addCheckListener(dynamicComposite.getChecker());
 
         if (addContextFields) {

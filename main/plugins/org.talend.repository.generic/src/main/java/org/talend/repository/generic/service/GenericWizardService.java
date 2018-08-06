@@ -15,6 +15,7 @@ package org.talend.repository.generic.service;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -49,7 +50,6 @@ import org.talend.designer.core.model.components.ElementParameter;
 import org.talend.repository.generic.action.GenericAction;
 import org.talend.repository.generic.internal.IGenericWizardInternalService;
 import org.talend.repository.generic.internal.service.GenericWizardInternalService;
-import org.talend.repository.generic.model.genericMetadata.GenericMetadataPackage;
 import org.talend.repository.generic.model.genericMetadata.SubContainer;
 import org.talend.repository.generic.ui.DynamicComposite;
 import org.talend.repository.generic.util.GenericConnectionUtil;
@@ -231,11 +231,12 @@ public class GenericWizardService implements IGenericWizardService {
     }
 
     @Override
-    public List<ComponentProperties> getAllComponentProperties(Connection connection, String tableLabel) {
+    public List<ComponentProperties> getAllComponentProperties(Connection connection, String tableLabel, boolean withEvaluator) {
         List<ComponentProperties> componentProperties = new ArrayList<>();
         if (isGenericConnection(connection)) {
             String compProperties = connection.getCompProperties();
-            ComponentProperties cp = ComponentsUtils.getComponentPropertiesFromSerialized(compProperties, connection, false);
+            ComponentProperties cp = ComponentsUtils.getComponentPropertiesFromSerialized(compProperties, connection,
+                    withEvaluator);
             if (cp != null) {
                 componentProperties.add(cp);
             }
@@ -252,7 +253,7 @@ public class GenericWizardService implements IGenericWizardService {
                 for (TaggedValue taggedValue : metadataTable.getTaggedValue()) {
                     if (IComponentConstants.COMPONENT_PROPERTIES_TAG.equals(taggedValue.getTag())) {
                         ComponentProperties compPros = ComponentsUtils
-                                .getComponentPropertiesFromSerialized(taggedValue.getValue(), connection, false);
+                                .getComponentPropertiesFromSerialized(taggedValue.getValue(), connection, withEvaluator);
                         if (compPros != null && !componentProperties.contains(compPros)) {
                             compPros.updateNestedProperties(cp);
                             componentProperties.add(compPros);
@@ -262,6 +263,18 @@ public class GenericWizardService implements IGenericWizardService {
             }
         }
         return componentProperties;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * org.talend.core.runtime.services.IGenericWizardService#getAllComponentProperties(org.talend.core.model.metadata.
+     * builder.connection.Connection, java.lang.String, boolean)
+     */
+    @Override
+    public List<ComponentProperties> getAllComponentProperties(Connection connection, String tableLabel) {
+        return getAllComponentProperties(connection, tableLabel, false);
     }
 
     @Override

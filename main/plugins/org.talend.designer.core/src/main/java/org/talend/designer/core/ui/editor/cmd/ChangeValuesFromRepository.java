@@ -25,7 +25,6 @@ import org.talend.core.GlobalServiceRegister;
 import org.talend.core.ITDQPatternService;
 import org.talend.core.hadoop.HadoopConstants;
 import org.talend.core.model.components.ComponentCategory;
-import org.talend.core.model.components.IComponent;
 import org.talend.core.model.components.IODataComponent;
 import org.talend.core.model.context.ContextUtils;
 import org.talend.core.model.metadata.IMetadataTable;
@@ -304,7 +303,7 @@ public class ChangeValuesFromRepository extends ChangeMetadataCommand {
                         .getService(IGenericWizardService.class);
             }
             if (wizardService != null && wizardService.isGenericConnection(connection)) {
-                componentProperties = wizardService.getAllComponentProperties(connection, null);
+                componentProperties = wizardService.getAllComponentProperties(connection, null, true);
             }
             IElementParameter propertyParam = elem.getElementParameter(propertyName);
             List<IElementParameter> elementParameters = new ArrayList<>(elem.getElementParameters());

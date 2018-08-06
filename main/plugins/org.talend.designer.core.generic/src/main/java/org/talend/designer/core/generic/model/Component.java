@@ -1665,7 +1665,7 @@ public class Component extends AbstractBasicComponent {
         if (wizardService != null) {
             propertiesStr = wizardService.getConnectionProperties(connection);
         }
-        ComponentProperties properties = ComponentsUtils.getComponentPropertiesFromSerialized(propertiesStr, connection, false);
+        ComponentProperties properties = ComponentsUtils.getComponentPropertiesFromSerialized(propertiesStr, connection, true);
         if (properties != null) {
             ComponentWizardDefinition wizardDefinition = getWizardDefinition(properties);
             if (wizardDefinition != null) {

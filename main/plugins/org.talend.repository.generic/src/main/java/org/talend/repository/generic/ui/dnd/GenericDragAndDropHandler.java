@@ -94,8 +94,8 @@ public class GenericDragAndDropHandler extends AbstractDragAndDropServiceHandler
                         IGenericWizardService.class);
                 if (wizardService != null && wizardService.isGenericConnection(connection)) {
                     return getGenericRepositoryValue(connection,
-                            wizardService.getAllComponentProperties(connection, getSeletetedMetadataTableName(table)), value,
-                            table);
+                            wizardService.getAllComponentProperties(connection, getSeletetedMetadataTableName(table), true),
+                            value, table);
                 }
             }
         }

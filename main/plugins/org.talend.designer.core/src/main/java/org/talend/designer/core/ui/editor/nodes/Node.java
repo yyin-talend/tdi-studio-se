@@ -94,6 +94,7 @@ import org.talend.core.model.properties.JobletProcessItem;
 import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.model.repository.ExternalNodesFactory;
 import org.talend.core.model.repository.IRepositoryViewObject;
+import org.talend.core.model.utils.ContextParameterUtils;
 import org.talend.core.model.utils.NodeUtil;
 import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.core.prefs.ITalendCorePrefConstants;
@@ -2895,7 +2896,9 @@ public class Node extends Element implements IGraphicalNode {
                                     found = true;
                                 }
                             }
-                            if (!found) {
+                            boolean isContextValue = ContextParameterUtils
+                                    .isContainContextParam(String.valueOf(param.getValue()));
+                            if (!found && !isContextValue) {
                                 String errorMessage = Messages.getString("Node.parameterNotExist", param.getDisplayName(), value); //$NON-NLS-1$
                                 Problems.add(ProblemStatus.ERROR, this, errorMessage);
                             }
