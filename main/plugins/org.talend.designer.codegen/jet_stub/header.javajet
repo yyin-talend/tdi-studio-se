@@ -137,8 +137,8 @@ for (INode node : process.getNodesOfType("tRESTClient")) {
     }
 }
 
-boolean talendEsbJob = actAsProvider || actAsConsumer || !process.getNodesOfType("tRouteInput").isEmpty();
 boolean talendEsbJobFactory = actAsProvider || !process.getNodesOfType("tRouteInput").isEmpty();
+boolean talendEsbJob = talendEsbJobFactory || actAsConsumer;
 
 boolean talendStepTemplate = !process.getNodesOfType("tActionInput").isEmpty() || !process.getNodesOfType("tActionOutput").isEmpty() || !process.getNodesOfType("tJobReject").isEmpty();
 
