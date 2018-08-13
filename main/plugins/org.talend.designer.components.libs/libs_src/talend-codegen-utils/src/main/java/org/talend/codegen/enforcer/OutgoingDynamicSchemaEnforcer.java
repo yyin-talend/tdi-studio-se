@@ -129,6 +129,8 @@ public class OutgoingDynamicSchemaEnforcer extends OutgoingSchemaEnforcer {
             this.runtimeFields = runtimeSchema.getFields();
             this.dynamicFieldsIndexes = ((DynamicIndexMapper) indexMapper).computeDynamicFieldsIndexes(runtimeSchema);
             createDynamicFieldsSchema();
+
+            firstRecordProcessed = true;
         }
     }
 

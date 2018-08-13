@@ -7,7 +7,7 @@
 	<groupId>org.talend.libraries</groupId>
 	<artifactId>talend-codegen-utils</artifactId>
 	<!-- release for revert version of library -->
-	<version>0.20.4</version>
+	<version>0.20.5</version>
 	<packaging>jar</packaging>
 	
 	<properties>
@@ -148,6 +148,7 @@
 				<version>${formatter.plugin.version}</version>
 				<configuration>
 					<configFile>talend_java_eclipse_formatter.xml</configFile>
+					<lineEnding>LF</lineEnding>
 				</configuration>
 				<dependencies>
 					<dependency>
