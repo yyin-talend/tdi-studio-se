@@ -151,6 +151,83 @@ class GenerateToolByDom4j{
     boolean istWriteJSONField = false;
     boolean isQuoteAllValues = false;
 	XMLTool tool = null;
+	
+	public void generateOptimalCode(XMLNode node, String currEleName, String parentName, String dataType, boolean searchForSubRoot) {
+	%>
+	class OptimalNestedXmlTool_<%=dataType%>_<%=cid%> {
+	
+		org.dom4j.Element subTreeRootParent_<%=cid%> = null;
+		
+		public org.dom4j.Element getSubTreeRootParent_<%=cid%>() {
+			return this.subTreeRootParent_<%=cid%>;
+		}
+		
+		public void setSubTreeRootParent_<%=cid%>(org.dom4j.Element subTreeRootParent_<%=cid%>) {
+			this.subTreeRootParent_<%=cid%> = subTreeRootParent_<%=cid%>;
+		}
+	<%
+	generateCodeFromEnd(node, currEleName, parentName);
+	%>
+		public org.dom4j.Element generateCode() {
+			<%
+			generateOptimalElement(node,currEleName,parentName);
+			%>
+			addChildrenTo<%=currEleName%>_<%=cid%>(<%=currEleName%>_<%=cid%>);
+			return <%=currEleName%>_<%=cid%>;
+		}
+		
+	}
+	<%
+	}
+	
+	public void generateCodeFromEnd(XMLNode node, String currEleName, String parentName) {
+		int index = 0;
+		for(XMLNode child:node.elements){
+			if(0==(child.special & 1)){
+				generateCodeFromEnd(child,currEleName+"_"+index++,currEleName);
+			}
+		}
+		if(node.elements.isEmpty()) {
+			return;
+		}
+		%>
+		public void addChildrenTo<%=currEleName%>_<%=cid%>(org.dom4j.Element <%=currEleName%>_<%=cid%>) {
+		<%
+		index = 0;
+		for(XMLNode child:node.elements){
+			if(0==(child.special & 1)){
+				String childName = currEleName+"_"+index++;
+				generateOptimalElement(child,childName,currEleName);
+				if(!child.elements.isEmpty()) {
+				%>
+				addChildrenTo<%=childName%>_<%=cid%>(<%=childName%>_<%=cid%>);
+				<%
+				}
+			}
+		}
+		%>
+		}
+		<%
+	}
+	
+	public void generateOptimalElement(XMLNode node, String currEleName, String parentName) {
+		if(("ELEMENT").equals(node.type)){
+			createElement(currEleName,node,parentName);
+			setText(currEleName,node);
+			for(XMLNode ns:node.namespaces){
+				addNameSpace(currEleName,ns);
+			}
+			for(XMLNode attri:node.attributes){
+				addAttribute(currEleName,attri);
+			}
+			if(node.name.indexOf(":")>0){
+%>
+			<%=currEleName%>_<%=cid%>.setName("<%=node.name%>");
+<%
+			}
+		}
+	}
+	
 	public void generateCode(XMLNode node, String currEleName, String parentName){
 		if(("ELEMENT").equals(node.type)){
 			createElement(currEleName,node,parentName);
@@ -822,7 +899,18 @@ if(("Dom4j").equals(mode)){
 	if (needRoot_<%=cid %>) {
 		needRoot_<%=cid %>=false;
 <%
-	generateToolByDom4j.generateCode(root,"root","doc");
+	boolean shouldOptimize = allElementsNumber > 100;
+	if(!shouldOptimize) {
+		generateToolByDom4j.generateCode(root,"root","doc");
+	} else {//optimal start
+		String dataType = "xmlTree";
+		generateToolByDom4j.generateOptimalCode(root,"root","doc",dataType,true);
+%>
+		OptimalNestedXmlTool_<%=dataType%>_<%=cid%> optimalToolXmlTree_<%=dataType%>_<%=cid%> = new OptimalNestedXmlTool_<%=dataType%>_<%=cid%>();
+		optimalToolXmlTree_<%=dataType%>_<%=cid%>.generateCode();
+		subTreeRootParent_<%=cid%> = optimalToolXmlTree_<%=dataType%>_<%=cid%>.getSubTreeRootParent_<%=cid%>();
+<%
+	}//optimal end
 %>
 		root4Group_<%=cid%> = subTreeRootParent_<%=cid%>;
 	}else{
@@ -883,7 +971,18 @@ if(("Dom4j").equals(mode)){
 %>
 	// build loop xml tree
 <%
-	generateToolByDom4j.generateCode(loop,"loop","subTreeRootParent");
+	if(!shouldOptimize) {
+		generateToolByDom4j.generateCode(loop,"loop","subTreeRootParent");
+	} else {//optimal start
+		String dataType = "loop";
+		generateToolByDom4j.generateOptimalCode(loop,"loop","subTreeRootParent",dataType,false);
+	
+%>
+	OptimalNestedXmlTool_<%=dataType%>_<%=cid%> optimalToolXmlTree_<%=dataType%>_<%=cid%> = new OptimalNestedXmlTool_<%=dataType%>_<%=cid%>();
+	optimalToolXmlTree_<%=dataType%>_<%=cid%>.setSubTreeRootParent_<%=cid%>(subTreeRootParent_<%=cid%>);
+	optimalToolXmlTree_<%=dataType%>_<%=cid%>.generateCode();
+<%
+	}//optimal end
 }
 // ------------------- *** Dom4j generation mode end *** ------------------- //
 

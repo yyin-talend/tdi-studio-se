@@ -91,6 +91,7 @@ public class CLASS {
         }
     }
 
+	private int allElementsNumber = 0;
     
     // return [0] is root(XMLNode), [1] is groups(List<XMLNode>), [2] loop(XMLNode)
     public Object[] getTree(List<Map<String, String>> rootTable, List<Map<String, String>> groupTable,
@@ -166,6 +167,7 @@ public class CLASS {
                 setDefaultValues(tmpNew);//add by wliu
             }
         }
+        allElementsNumber = index;
         return new Object[] { mains, groups, loop };
     }
     
