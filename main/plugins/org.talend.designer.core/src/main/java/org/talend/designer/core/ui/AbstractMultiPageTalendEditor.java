@@ -110,6 +110,7 @@ import org.talend.core.language.ECodeLanguage;
 import org.talend.core.model.components.IComponent;
 import org.talend.core.model.components.IMultipleComponentManager;
 import org.talend.core.model.context.JobContextManager;
+import org.talend.core.model.general.ModuleNeeded;
 import org.talend.core.model.metadata.builder.connection.Properties;
 import org.talend.core.model.process.IContextManager;
 import org.talend.core.model.process.IContextParameter;
@@ -970,6 +971,16 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
 
         if (DesignerPlugin.getDefault().getPreferenceStore().getBoolean(TalendDesignerPrefConstants.GENERATE_CODE_WHEN_OPEN_JOB)) {
             generateCode();
+        }else {
+            Set<ModuleNeeded> neededLibraries = CorePlugin.getDefault().getDesignerCoreService()
+                .getNeededLibrariesForProcess(process, false);
+            if (neededLibraries != null) {
+                try {
+            	    CorePlugin.getDefault().getRunProcessService()
+     			        .updateLibraries(neededLibraries, process, new HashSet<ModuleNeeded>());
+     			} catch (Exception e) {
+     		    }
+            }
         }
     }
 
