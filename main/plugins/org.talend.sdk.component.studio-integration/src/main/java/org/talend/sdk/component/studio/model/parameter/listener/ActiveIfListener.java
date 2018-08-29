@@ -17,15 +17,17 @@ package org.talend.sdk.component.studio.model.parameter.listener;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Stream;
 
 import org.talend.core.model.process.IElementParameter;
 import org.talend.sdk.component.studio.model.parameter.PropertyDefinitionDecorator;
 import org.talend.sdk.component.studio.model.parameter.TaCoKitElementParameter;
 import org.talend.sdk.component.studio.model.parameter.TableElementParameter;
 import org.talend.sdk.component.studio.model.parameter.TextElementParameter;
+import org.talend.sdk.component.studio.model.parameter.condition.ConditionGroup;
 
 /**
  * {@link PropertyChangeListener}, which activates/deactivates {@link IElementParameter} according target
@@ -36,14 +38,17 @@ import org.talend.sdk.component.studio.model.parameter.TextElementParameter;
  */
 public class ActiveIfListener implements PropertyChangeListener {
 
-    private final Map<Integer, List<PropertyDefinitionDecorator.Condition>> conditions;
+    private final Collection<ConditionGroup> conditions;
 
     private final Map<String, TaCoKitElementParameter> targetParams;
 
+    /**
+     * Parameter which visibility is controlled by ActiveIfs annotations
+     */
     private final TaCoKitElementParameter sourceParameter;
 
     public ActiveIfListener(
-            final Map<Integer, List<PropertyDefinitionDecorator.Condition>> conditions,
+            final Collection<ConditionGroup> conditions,
             final TaCoKitElementParameter sourceParam,
             final Map<String, TaCoKitElementParameter> targetParams) {
         this.conditions = conditions;
@@ -56,39 +61,35 @@ public class ActiveIfListener implements PropertyChangeListener {
         if(!"value".equals(event.getPropertyName())){
             return;
         }
-        final boolean show = conditions.entrySet().stream()
-                .flatMap(e -> e.getValue().stream())
-                .allMatch(condition -> {
-                    final boolean negate = condition.isNegation();
-                    return negate != Arrays.stream(condition.getValues())
-                            .anyMatch(conditionValue -> evaluate(condition, conditionValue));
+        final boolean show = conditions.stream()
+              .allMatch(group -> group.getAggregator().apply(group.getConditions().stream().map(this::evaluateCondition)));
 
-                });
         sourceParameter.setShow(show);
-        sourceParameter.redraw();//request source parameter redraw
+        sourceParameter.redraw(); // request source parameter redraw
         sourceParameter.firePropertyChange("show", null, show);
     }
 
-    private boolean evaluate(final PropertyDefinitionDecorator.Condition condition, final String value) {
-        final String evaluationStrategy = condition.getEvaluationStrategy();
-        String targetValue = null;
-        switch (evaluationStrategy) {
+    private boolean evaluateCondition(final PropertyDefinitionDecorator.Condition cond) {
+        return cond.isNegation() != Stream.of(cond.getValues()).anyMatch(val -> val.equals(evaluateValue(cond)));
+    }
+
+    private String evaluateValue(final PropertyDefinitionDecorator.Condition condition) {
+        switch (condition.getEvaluationStrategy()) {
         case "DEFAULT":
-            targetValue = String.valueOf(targetParams.get(condition.getTargetPath()).getValue());
+            return targetParams.get(condition.getTargetPath()).getStringValue();
         case "LENGTH":
             final TaCoKitElementParameter targetParam = targetParams.get(condition.getTargetPath());
             if (targetParam.getValue() == null) {
-                return "0".equals(value);
+                return "0";
             }
             if (TextElementParameter.class.isInstance(targetParam)) {
-                targetValue = String.valueOf(String.valueOf(targetParam.getValue()).length());
+                return String.valueOf(targetParam.getStringValue().length());
             } else if (TableElementParameter.class.isInstance(targetParam)) {
-                targetValue = String.valueOf(((List) (targetParam.getValue())).size());
+                return String.valueOf(((List) (targetParam.getValue())).size());
             }
-            break;
+            return null;
         default:
-            throw new IllegalArgumentException("Not supported operation '" + evaluationStrategy + "'");
+            throw new IllegalArgumentException("Not supported operation '" + condition.getEvaluationStrategy() + "'");
         }
-        return value.equals(targetValue);
     }
 }
