@@ -35,7 +35,7 @@ import org.talend.sdk.component.studio.Lookups;
 import org.talend.sdk.component.studio.i18n.Messages;
 import org.talend.sdk.component.studio.model.action.Action;
 import org.talend.sdk.component.studio.model.action.SuggestionsAction;
-import org.talend.sdk.component.studio.model.action.UpdateAction;
+import org.talend.sdk.component.studio.model.action.update.UpdateAction;
 import org.talend.sdk.component.studio.model.parameter.condition.ConditionGroup;
 import org.talend.sdk.component.studio.model.parameter.listener.ActiveIfListener;
 import org.talend.sdk.component.studio.model.parameter.listener.ValidationListener;
@@ -43,7 +43,7 @@ import org.talend.sdk.component.studio.model.parameter.listener.ValidatorFactory
 import org.talend.sdk.component.studio.model.parameter.resolver.HealthCheckResolver;
 import org.talend.sdk.component.studio.model.parameter.resolver.ParameterResolver;
 import org.talend.sdk.component.studio.model.parameter.resolver.SuggestionsResolver;
-import org.talend.sdk.component.studio.model.parameter.resolver.UpdateResolver;
+import org.talend.sdk.component.studio.model.action.update.UpdateResolver;
 import org.talend.sdk.component.studio.model.parameter.resolver.ValidationResolver;
 import org.talend.sdk.component.studio.util.TaCoKitConst;
 import org.talend.sdk.component.studio.util.TaCoKitUtil;
@@ -293,7 +293,7 @@ public class SettingVisitor implements PropertyVisitor {
             final Optional<Layout> buttonLayout = formLayout.getChildLayout(formLayout.getPath() + PropertyNode.UPDATE_BUTTON);
             if (buttonLayout.isPresent()) {
                 final int buttonPosition = buttonLayout.get().getPosition();
-                final UpdateAction action = new UpdateAction(updatable.getActionName(), family, Action.Type.UPDATE);
+                final UpdateAction action = new UpdateAction(updatable.getActionName(), family);
                 UpdateResolver resolver = new UpdateResolver(element, category, buttonPosition, action, node,
                         actions, redrawParameter, settings);
                 parameterResolvers.add(resolver);
