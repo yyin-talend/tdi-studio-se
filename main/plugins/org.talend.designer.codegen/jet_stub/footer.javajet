@@ -1126,7 +1126,7 @@ if (execStat) {
 		        if ((hConnection_<%=hbaseComponent.getUniqueName() %> != null) && (!hConnection_<%=hbaseComponent.getUniqueName() %>.isClosed())) {
 				    hConnection_<%=hbaseComponent.getUniqueName() %>.close();
 			}
-			<%} else {%>
+			<%} else if (!hbaseDistrib.doSupportHBase2x()) {%>
 				org.apache.hadoop.hbase.client.HConnectionManager.deleteConnection(conn_<%=hbaseComponent.getUniqueName() %>,true);
 			<%}%>
 			}
