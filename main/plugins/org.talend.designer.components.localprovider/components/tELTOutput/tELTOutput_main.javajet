@@ -130,10 +130,15 @@ skeleton="../templates/db_output_bulk.skeleton"
     	}
     }
     
+    String dbmsId = ElementParameterParser.getValue(node,"__MAPPING__");
+    
+    boolean isRedshift = "redshift_id".equals(dbmsId);
     if(columnList != null && columnList.size()>0){
         StringBuilder insertColName = new StringBuilder();
         
         StringBuilder updateSetStmt = new StringBuilder();
+        
+        StringBuilder updateSetStmt4RedshiftPattern = new StringBuilder();
         
         int counterOuter = 0;
         for(IMetadataColumn column : columnList){
@@ -144,13 +149,14 @@ skeleton="../templates/db_output_bulk.skeleton"
         	}
         	
         	String columnName = column.getOriginalDbColumnName();
-    		if(columnName==null || columnName.trim().isEmpty()){
-				columnName = column.getLabel();
-    		}
+      		if(columnName==null || columnName.trim().isEmpty()){
+  					columnName = column.getLabel();
+      		}
         	
         	insertColName.append(columnName).append(suffix);
         	
-        	updateSetStmt.append(columnName+"=(\"+select_query_"+ cid +".replaceFirst(java.util.regex.Pattern.quote(selectQueryColumnsName_"+ cid +"),routines.system.StringUtils.splitSQLColumns(selectQueryColumnsName_"+ cid +")[ "+ counterOuter + "])+\")" + suffix);
+      		updateSetStmt.append(columnName+"=(\"+select_query_"+ cid +".replaceFirst(java.util.regex.Pattern.quote(selectQueryColumnsName_"+ cid +"),routines.system.StringUtils.splitSQLColumns(selectQueryColumnsName_"+ cid +")[ "+ counterOuter + "])+\")" + suffix);
+        	updateSetStmt4RedshiftPattern.append(columnName).append("=subquery.talend_elt_c").append(counterOuter + 1).append(suffix);
         	
         	counterOuter++;
         }
@@ -160,9 +166,33 @@ skeleton="../templates/db_output_bulk.skeleton"
         	String insertQuery_<%=cid %> = "INSERT INTO "+tableName_<%=cid%>+"(<%=insertColName.toString()%>)  ("+select_query_<%=cid %>+")";
         <%
     	} else if (("UPDATE").equals(dataAction)){
-        %>
-        	String updateQuery_<%=cid %> = "UPDATE "+tableName_<%=cid%>+" SET <%=updateSetStmt.toString()%> "
+    		if(isRedshift) {
+      		//if more than one columns for update, use this pattern as the common pattern don't work for redshift
+      		//if only one column for update, it works for redshift too, so use the common pattern like other all databases, we keep this for not break the old job
+          %>
+        	String updateQuery_<%=cid %> = null;
+        	String[] cs_<%=cid%> = routines.system.StringUtils.splitSQLColumns(selectQueryColumnsName_<%=cid%>);
+      		if(cs_<%=cid%>!=null && cs_<%=cid%>.length > 1) {
+      				StringBuilder new_query_columns_<%=cid%> = new StringBuilder();
+      				int i_<%=cid%> = 0;
+      				for(String c_<%=cid%> : cs_<%=cid%>) {
+      						new_query_columns_<%=cid%>.append(c_<%=cid%>).append(" AS talend_elt_c").append(i_<%=cid%>++);
+      						if(i_<%=cid%> < (cs_<%=cid%>.size - 1)) {
+      								new_query_columns_<%=cid%>.append(suffix_<%=cid%>);
+      						}
+      				}
+      				select_query_<%=cid%> = select_query_<%=cid%>.replaceFirst(java.util.regex.Pattern.quote(selectQueryColumnsName_<%=cid%>), new_query_columns_<%=cid%>.toString());
+      				updateQuery_<%=cid %> = "UPDATE "+tableName_<%=cid%>+" SET <%=updateSetStmt4RedshiftPattern.toString()%> FROM (" + select_query_<%=cid %> + ") AS subquery "
+      		} else {
+  						updateQuery_<%=cid %> = "UPDATE "+tableName_<%=cid%>+" SET <%=updateSetStmt.toString()%> "
+      		}
         <%
+      	} else {//common pattern for other all databases
+      	%>
+      		String updateQuery_<%=cid %> = "UPDATE "+tableName_<%=cid%>+" SET <%=updateSetStmt.toString()%> "
+      	<%
+      	}
+      	
     		if(CodeGenerationUtils.hasAlphaNumericCharacter(whereClause)) {
         %>
         		+"  WHERE " + <%=CodeGenerationUtils.replaceAllCrBySpace(whereClause)%>
@@ -192,11 +222,10 @@ skeleton="../templates/db_output_bulk.skeleton"
         int nb_line_deleted_<%=cid%> = 0;
         <%
     }
-
+    
 	if(dbtable != null && columnList != null){
 		{//use the block to limit the code scope for table action
     		Manager manager = null;
-    		String dbmsId = ElementParameterParser.getValue(node,"__MAPPING__");
     		String tableAction = ElementParameterParser.getValue(node,"__TABLE_ACTION__");
     		
     		List<Column> stmtStructure = getELTManager(dbmsId, cid, node).createColumnList(columnList, false, null, null);
