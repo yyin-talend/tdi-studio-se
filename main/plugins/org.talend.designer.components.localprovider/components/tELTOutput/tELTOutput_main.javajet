@@ -176,8 +176,8 @@ skeleton="../templates/db_output_bulk.skeleton"
       				StringBuilder new_query_columns_<%=cid%> = new StringBuilder();
       				int i_<%=cid%> = 0;
       				for(String c_<%=cid%> : cs_<%=cid%>) {
-      						new_query_columns_<%=cid%>.append(c_<%=cid%>).append(" AS talend_elt_c").append(i_<%=cid%>++);
-      						if(i_<%=cid%> < (cs_<%=cid%>.size - 1)) {
+      						new_query_columns_<%=cid%>.append(c_<%=cid%>).append(" AS talend_elt_c").append(++i_<%=cid%>);
+      						if(i_<%=cid%> < cs_<%=cid%>.size) {
       								new_query_columns_<%=cid%>.append(suffix_<%=cid%>);
       						}
       				}
