@@ -156,7 +156,6 @@ skeleton="../templates/db_output_bulk.skeleton"
         	insertColName.append(columnName).append(suffix);
         	
       		updateSetStmt.append(columnName+"=(\"+select_query_"+ cid +".replaceFirst(java.util.regex.Pattern.quote(selectQueryColumnsName_"+ cid +"),routines.system.StringUtils.splitSQLColumns(selectQueryColumnsName_"+ cid +")[ "+ counterOuter + "])+\")" + suffix);
-        	updateSetStmt4RedshiftPattern.append(columnName).append("=subquery.talend_elt_c").append(counterOuter + 1).append(suffix);
         	
         	counterOuter++;
         }
@@ -172,35 +171,88 @@ skeleton="../templates/db_output_bulk.skeleton"
           %>
         	String updateQuery_<%=cid %> = null;
         	String[] cs_<%=cid%> = routines.system.StringUtils.splitSQLColumns(selectQueryColumnsName_<%=cid%>);
+        	java.util.List<String> alias_<%=cid%> = new java.util.ArrayList<String>();
       		if(cs_<%=cid%>!=null && cs_<%=cid%>.length > 1) {
+      				//the simple column name pattern like "table1.id", only consider the basic case, TODO consider more
+        			java.util.regex.Pattern simple_column_regex_<%=cid%> = java.util.regex.Pattern.compile("[.a-zA-Z0-9-_]+");
+        	
       				StringBuilder new_query_columns_<%=cid%> = new StringBuilder();
       				int i_<%=cid%> = 0;
       				for(String c_<%=cid%> : cs_<%=cid%>) {
-      						new_query_columns_<%=cid%>.append(c_<%=cid%>).append(" AS talend_elt_c").append(++i_<%=cid%>);
-      						if(i_<%=cid%> < cs_<%=cid%>.size) {
-      								new_query_columns_<%=cid%>.append(suffix_<%=cid%>);
+      						++i_<%=cid%>;
+      						
+      						if(c_<%=cid%>!=null && !c_<%=cid%>.isEmpty()) {
+      								new_query_columns_<%=cid%>.append(c_<%=cid%>);
+      								
+      								if(simple_column_regex_<%=cid%>.matcher(c_<%=cid%>.trim()).matches()) {
+  												String ali_<%=cid%> = c_<%=cid%>;
+      										int index_<%=cid%> = c_<%=cid%>.lastIndexOf(".");
+      										if(index_<%=cid%> > 0) {
+      												ali_<%=cid%> = c_<%=cid%>.substring(index_<%=cid%> + 1);
+      										}
+      										
+      										if(alias_<%=cid%>.contains(ali_<%=cid%>)) {
+      												alias_<%=cid%>.add("talend_elt_c" + i_<%=cid%>);
+      										} else {
+      												alias_<%=cid%>.add(ali_<%=cid%>);
+      										}
+      								} else {
+      										//TODO customer may write expression like this : "table1.name + '_aaa' AS name1"? need to consider it, will do it later
+      										String ali_<%=cid%> = "talend_elt_c" + i_<%=cid%>;
+  												new_query_columns_<%=cid%>.append(" AS ").append(ali_<%=cid%>);
+  												alias_<%=cid%>.add(ali_<%=cid%>);
+      								}
+      						}
+      						
+      						if(i_<%=cid%> < cs_<%=cid%>.length) {
+      								new_query_columns_<%=cid%>.append(',');
       						}
       				}
       				select_query_<%=cid%> = select_query_<%=cid%>.replaceFirst(java.util.regex.Pattern.quote(selectQueryColumnsName_<%=cid%>), new_query_columns_<%=cid%>.toString());
-      				updateQuery_<%=cid %> = "UPDATE "+tableName_<%=cid%>+" SET <%=updateSetStmt4RedshiftPattern.toString()%> FROM (" + select_query_<%=cid %> + ") AS subquery "
+      				
+      				StringBuilder update_query_<%=cid%> = new StringBuilder();
+      				
+      				update_query_<%=cid%>.append("UPDATE ").append(tableName_<%=cid%>).append(" SET ");
+      				
+      				java.util.List<String> columns_<%=cid%> = new java.util.ArrayList<String>();
+      				<%
+      				for(IMetadataColumn column : columnList){
+                	String columnName = column.getOriginalDbColumnName();
+              		if(columnName==null || columnName.trim().isEmpty()){
+          						columnName = column.getLabel();
+              		}
+                	%>
+                	columns_<%=cid%>.add("<%=columnName%>");
+                	<%
+              }
+      				%>
+      				
+      				int j_<%=cid%> = 0;
+      				for(String column_<%=cid%> : columns_<%=cid%>) {
+      						update_query_<%=cid%>.append(column_<%=cid%>).append("=subquery.").append(alias_<%=cid%>.get(j_<%=cid%>++));
+      						
+      						if(j_<%=cid%> < columns_<%=cid%>.size()) {
+      								update_query_<%=cid%>.append(',');
+      						}
+      				}
+      				
+      				update_query_<%=cid%>.append(" FROM (" + select_query_<%=cid %> + ") AS subquery ");
+      				updateQuery_<%=cid %> = update_query_<%=cid%>.toString();
       		} else {
-  						updateQuery_<%=cid %> = "UPDATE "+tableName_<%=cid%>+" SET <%=updateSetStmt.toString()%> "
+  						updateQuery_<%=cid %> = "UPDATE "+tableName_<%=cid%>+" SET <%=updateSetStmt.toString()%> ";
       		}
         <%
       	} else {//common pattern for other all databases
       	%>
-      		String updateQuery_<%=cid %> = "UPDATE "+tableName_<%=cid%>+" SET <%=updateSetStmt.toString()%> "
+      		String updateQuery_<%=cid %> = "UPDATE "+tableName_<%=cid%>+" SET <%=updateSetStmt.toString()%> ";
       	<%
       	}
       	
     		if(CodeGenerationUtils.hasAlphaNumericCharacter(whereClause)) {
         %>
-        		+"  WHERE " + <%=CodeGenerationUtils.replaceAllCrBySpace(whereClause)%>
+        		updateQuery_<%=cid %> += "  WHERE " + <%=CodeGenerationUtils.replaceAllCrBySpace(whereClause)%>;
         <%
     		}
-        %>
-        	;
-        <%
     	} else if (("DELETE").equals(dataAction)){
     	%>
         	String deleteQuery_<%=cid %> = "DELETE  FROM "+ tableName_<%=cid%>+" WHERE EXISTS ("+select_query_<%=cid %>+") " 
