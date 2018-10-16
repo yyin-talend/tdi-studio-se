@@ -52,7 +52,7 @@ public class JobScriptsManagerFactory {
                 return new JobJavaScriptOSGIForESBManager(exportChoiceMap, null, launcher, statisticPort, tracePort);
             }
         case MSESB:
-            ProcessorUtilities.setExportJobAsMicroSerivce(true);
+            ProcessorUtilities.setExportJobAsMicroService(true);
             return new JobJavaScriptMicroServiceForESBManager(exportChoiceMap, contextName, launcher, statisticPort, tracePort);
         default:
             //
