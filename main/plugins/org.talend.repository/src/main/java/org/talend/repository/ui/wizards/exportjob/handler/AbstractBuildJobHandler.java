@@ -141,28 +141,30 @@ public abstract class AbstractBuildJobHandler implements IBuildJobHandler, IBuil
     protected boolean needXmlMappings() {
         // based on the generate codes(ProcessorUtilities.generateCode)
         if (this.version == null) {
-            return LastGenerationInfo.getInstance().isUseDynamic(processItem.getProperty().getId(),
-                    processItem.getProperty().getVersion());
+            return LastGenerationInfo
+                    .getInstance()
+                    .isUseDynamic(processItem.getProperty().getId(), processItem.getProperty().getVersion());
         }
         return LastGenerationInfo.getInstance().isUseDynamic(processItem.getProperty().getId(), this.version);
     }
 
     protected boolean needRules() {
         if (this.version == null) {
-            return LastGenerationInfo.getInstance().isUseRules(processItem.getProperty().getId(),
-                    processItem.getProperty().getVersion());
+            return LastGenerationInfo
+                    .getInstance()
+                    .isUseRules(processItem.getProperty().getId(), processItem.getProperty().getVersion());
         }
         return LastGenerationInfo.getInstance().isUseRules(processItem.getProperty().getId(), this.version);
     }
 
     protected boolean needPigUDFs() {
         if (this.version == null) {
-            return LastGenerationInfo.getInstance().isUsePigUDFs(processItem.getProperty().getId(),
-                    processItem.getProperty().getVersion());
+            return LastGenerationInfo
+                    .getInstance()
+                    .isUsePigUDFs(processItem.getProperty().getId(), processItem.getProperty().getVersion());
         }
         return LastGenerationInfo.getInstance().isUsePigUDFs(processItem.getProperty().getId(), this.version);
     }
-
 
     protected String getProgramArgs() {
         StringBuffer programArgs = new StringBuffer();
@@ -193,7 +195,8 @@ public abstract class AbstractBuildJobHandler implements IBuildJobHandler, IBuil
         // should add the default settings always.
         addArg(profileBuffer, true, true, TalendMavenConstants.PROFILE_DEFAULT_SETTING);
 
-        addArg(profileBuffer, isOptionChoosed(ExportChoice.needSourceCode), TalendMavenConstants.PROFILE_INCLUDE_JAVA_SOURCES);
+        addArg(profileBuffer, isOptionChoosed(ExportChoice.needSourceCode),
+                TalendMavenConstants.PROFILE_INCLUDE_JAVA_SOURCES);
         // if not binaries, need add maven resources
         boolean isBinaries = isOptionChoosed(ExportChoice.binaries);
         addArg(profileBuffer, !isBinaries, TalendMavenConstants.PROFILE_INCLUDE_MAVEN_RESOURCES);
@@ -214,16 +217,20 @@ public abstract class AbstractBuildJobHandler implements IBuildJobHandler, IBuil
                 TalendMavenConstants.PROFILE_INCLUDE_CONTEXTS);
 
         // for test
-        addArg(profileBuffer, isOptionChoosed(ExportChoice.includeTestSource), TalendMavenConstants.PROFILE_INCLUDE_TEST_SOURCES);
-        addArg(profileBuffer, isOptionChoosed(ExportChoice.executeTests), TalendMavenConstants.PROFILE_INCLUDE_TEST_REPORTS);
+        addArg(profileBuffer, isOptionChoosed(ExportChoice.includeTestSource),
+                TalendMavenConstants.PROFILE_INCLUDE_TEST_SOURCES);
+        addArg(profileBuffer, isOptionChoosed(ExportChoice.executeTests),
+                TalendMavenConstants.PROFILE_INCLUDE_TEST_REPORTS);
 
         // xmlMappings folders
         addArg(profileBuffer, needXmlMappings(), TalendMavenConstants.PROFILE_INCLUDE_XMLMAPPINGS);
-        addArg(profileBuffer, needXmlMappings() && isBinaries, TalendMavenConstants.PROFILE_INCLUDE_RUNNING_XMLMAPPINGS);
+        addArg(profileBuffer, needXmlMappings() && isBinaries,
+                TalendMavenConstants.PROFILE_INCLUDE_RUNNING_XMLMAPPINGS);
 
         // If the map doesn't contain the assembly key, then take the default value activation from the POM.
-        boolean isAssemblyNeeded = (exportChoice.get(ExportChoice.needAssembly) == null
-                || isOptionChoosed(ExportChoice.needAssembly)) && !isOptionChoosed(ExportChoice.buildImage);
+        boolean isAssemblyNeeded =
+                (exportChoice.get(ExportChoice.needAssembly) == null || isOptionChoosed(ExportChoice.needAssembly))
+                        && !isOptionChoosed(ExportChoice.buildImage);
         addArg(profileBuffer, isAssemblyNeeded, TalendMavenConstants.PROFILE_PACKAGING_AND_ASSEMBLY);
 
         // rules
@@ -289,7 +296,8 @@ public abstract class AbstractBuildJobHandler implements IBuildJobHandler, IBuil
             otherArgsBuffer.append(TalendMavenConstants.ARG_TEST_FAILURE_IGNORE);
         }
         if (canSignJob()) {
-            otherArgsBuffer.append(" " + TalendMavenConstants.ARG_LICENSE_PATH + "=" + getLicenseFile().getAbsolutePath());
+            otherArgsBuffer
+                    .append(" " + TalendMavenConstants.ARG_LICENSE_PATH + "=" + getLicenseFile().getAbsolutePath());
             otherArgsBuffer.append(" " + TalendMavenConstants.ARG_SESSION_ID + "=" + getSessionId());
         }
         otherArgsBuffer.append(" -Dmaven.main.skip=true"); //$NON-NLS-1$
@@ -314,7 +322,7 @@ public abstract class AbstractBuildJobHandler implements IBuildJobHandler, IBuil
     protected void addArg(StringBuffer commandBuffer, boolean include, String arg) {
         addArg(commandBuffer, false, include, arg);
     }
-    
+
     public boolean canSignJob() {
         if (PluginChecker.isTIS() && getLicenseFile() != null && !isOptionChoosed(ExportChoice.buildImage)) {
             return true;
@@ -324,8 +332,8 @@ public abstract class AbstractBuildJobHandler implements IBuildJobHandler, IBuil
 
     protected File getLicenseFile() {
         if (GlobalServiceRegister.getDefault().isServiceRegistered(ICoreTisService.class)) {
-            ICoreTisService coreTisService = (ICoreTisService) GlobalServiceRegister.getDefault()
-                    .getService(ICoreTisService.class);
+            ICoreTisService coreTisService =
+                    (ICoreTisService) GlobalServiceRegister.getDefault().getService(ICoreTisService.class);
             File licenseFile = coreTisService.getLicenseFile();
             if (licenseFile.exists() && !coreTisService.isLicenseExpired()) {
                 return licenseFile;
@@ -336,8 +344,8 @@ public abstract class AbstractBuildJobHandler implements IBuildJobHandler, IBuil
 
     private String getSessionId() {
         if (GlobalServiceRegister.getDefault().isServiceRegistered(ICoreTisService.class)) {
-            ICoreTisService coreTisService = (ICoreTisService) GlobalServiceRegister.getDefault()
-                    .getService(ICoreTisService.class);
+            ICoreTisService coreTisService =
+                    (ICoreTisService) GlobalServiceRegister.getDefault().getService(ICoreTisService.class);
             return coreTisService.generateSignerSessionId();
         }
         return null;
@@ -361,7 +369,7 @@ public abstract class AbstractBuildJobHandler implements IBuildJobHandler, IBuil
             for (IResource resource : targetFolder.members()) {
                 if (resource instanceof IFile) {
                     IFile file = (IFile) resource;
-                    if (ProcessorUtilities.isExportJobAsMicroService()) {
+                    if (ProcessorUtilities.isExportESBAsMicroService()) {
                         if ("jar".equals(file.getFileExtension())) {
                             jobFile = file;
                             break;
@@ -391,8 +399,8 @@ public abstract class AbstractBuildJobHandler implements IBuildJobHandler, IBuil
 
         //
         List<Item> dependenciesItems = new ArrayList<Item>();
-        Collection<IRepositoryViewObject> allProcessDependencies = ProcessUtils
-                .getAllProcessDependencies(Arrays.asList(processItem));
+        Collection<IRepositoryViewObject> allProcessDependencies =
+                ProcessUtils.getAllProcessDependencies(Arrays.asList(processItem));
         if (!allProcessDependencies.isEmpty()) {
             for (IRepositoryViewObject repositoryObject : allProcessDependencies) {
                 dependenciesItems.add(repositoryObject.getProperty().getItem());

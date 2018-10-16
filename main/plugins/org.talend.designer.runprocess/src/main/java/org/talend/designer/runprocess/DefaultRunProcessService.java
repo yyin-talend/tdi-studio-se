@@ -208,7 +208,8 @@ public class DefaultRunProcessService implements IRunProcessService {
         boolean isTestContainer = false;
         if (GlobalServiceRegister.getDefault().isServiceRegistered(ITestContainerProviderService.class)) {
             ITestContainerProviderService testContainerService = (ITestContainerProviderService) GlobalServiceRegister
-                    .getDefault().getService(ITestContainerProviderService.class);
+                    .getDefault()
+                    .getService(ITestContainerProviderService.class);
             if (testContainerService != null && property != null && property.getItem() != null) {
                 isTestContainer = testContainerService.isTestContainerItem(property.getItem());
             }
@@ -218,7 +219,8 @@ public class DefaultRunProcessService implements IRunProcessService {
         }
         // check for ESB Runtime
         if (GlobalServiceRegister.getDefault().isServiceRegistered(IESBRunContainerService.class)) {
-            IESBRunContainerService runContainerService = (IESBRunContainerService) GlobalServiceRegister.getDefault()
+            IESBRunContainerService runContainerService = (IESBRunContainerService) GlobalServiceRegister
+                    .getDefault()
                     .getService(IESBRunContainerService.class);
             if (runContainerService != null) {
                 IProcessor processor = runContainerService.createJavaProcessor(process, property, filenameFromLabel);
@@ -237,23 +239,26 @@ public class DefaultRunProcessService implements IRunProcessService {
         if (GlobalServiceRegister.getDefault().isServiceRegistered(IESBMicroService.class)) {
             microService = (IESBMicroService) GlobalServiceRegister.getDefault().getService(IESBMicroService.class);
 
-            if (ProcessorUtilities.isExportJobAsMicroService()) {
+            if (ProcessorUtilities.isExportESBAsMicroService()) {
                 if (microService != null) {
-                    IProcessor processor = microService.createJavaProcessor(process, property, filenameFromLabel, false);
+                    IProcessor processor =
+                            microService.createJavaProcessor(process, property, filenameFromLabel, false);
                     if (processor != null) {
                         return processor;
                     }
                 }
             }
-            if (property != null && property.getAdditionalProperties() != null
-                    && "REST_MS".equals(property.getAdditionalProperties().get(TalendProcessArgumentConstant.ARG_BUILD_TYPE))) {
+
+            if (property != null && property.getAdditionalProperties() != null && "REST_MS"
+                    .equals(property.getAdditionalProperties().get(TalendProcessArgumentConstant.ARG_BUILD_TYPE))) {
                 if (microService != null) {
-                    IProcessor processor = microService.createJavaProcessor(process, property, filenameFromLabel, false);
-                    if (processor != null) {
-                        return processor;
+                    if (GlobalServiceRegister.getDefault().isServiceRegistered(IESBService.class)) {
+                        soapService = (IESBService) GlobalServiceRegister.getDefault().getService(IESBService.class);
+                        return soapService.createOSGIJavaProcessor(process, property, filenameFromLabel);
                     }
                 }
             }
+
         }
 
         if (GlobalServiceRegister.getDefault().isServiceRegistered(IESBRouteService.class)) {
@@ -263,7 +268,8 @@ public class DefaultRunProcessService implements IRunProcessService {
         // Create maven processer for SOAP service, @see org.talend.designer.runprocess.java.TalendJavaProjectManager
         if (process == null && GlobalServiceRegister.getDefault().isServiceRegistered(IESBService.class)) {
             soapService = (IESBService) GlobalServiceRegister.getDefault().getService(IESBService.class);
-            if (property.getItem() != null && soapService.isServiceItem(property.getItem().eClass().getClassifierID())) {
+            if (property.getItem() != null
+                    && soapService.isServiceItem(property.getItem().eClass().getClassifierID())) {
                 return (IProcessor) soapService.createJavaProcessor(process, property, filenameFromLabel);
             }
         }
@@ -297,8 +303,10 @@ public class DefaultRunProcessService implements IRunProcessService {
 
             if (property != null) {
                 boolean servicePart = false;
-                List<Relation> relations = RelationshipItemBuilder.getInstance().getItemsRelatedTo(property.getId(),
-                        property.getVersion(), RelationshipItemBuilder.JOB_RELATION);
+                List<Relation> relations = RelationshipItemBuilder
+                        .getInstance()
+                        .getItemsRelatedTo(property.getId(), property.getVersion(),
+                                RelationshipItemBuilder.JOB_RELATION);
 
                 for (Relation relation : relations) {
                     if (RelationshipItemBuilder.SERVICES_RELATION.equals(relation.getType())) {
@@ -393,9 +401,10 @@ public class DefaultRunProcessService implements IRunProcessService {
      * org.talend.core.model.process.IProcess, java.util.Set)
      */
     @Override
-    public void updateLibraries(Set<ModuleNeeded> jobModuleList, IProcess process, Set<ModuleNeeded> alreadyRetrievedModules)
-            throws ProcessorException {
-        JavaProcessorUtilities.computeLibrariesPath(new HashSet<ModuleNeeded>(jobModuleList), process, alreadyRetrievedModules);
+    public void updateLibraries(Set<ModuleNeeded> jobModuleList, IProcess process,
+            Set<ModuleNeeded> alreadyRetrievedModules) throws ProcessorException {
+        JavaProcessorUtilities
+                .computeLibrariesPath(new HashSet<ModuleNeeded>(jobModuleList), process, alreadyRetrievedModules);
     }
 
     @Override
@@ -551,12 +560,18 @@ public class DefaultRunProcessService implements IRunProcessService {
     public void updateLogFiles(ITalendProcessJavaProject talendJavaProject, boolean isLogForJob) {
         // create the .prefs file and save log4j.xml and common-logging.properties's content into it
         if (!Log4jPrefsSettingManager.getInstance().isLog4jPrefsExist()) {
-            Log4jPrefsSettingManager.getInstance().createTalendLog4jPrefs(Log4jPrefsConstants.LOG4J_ENABLE_NODE,
-                    Log4jUtil.isEnable() ? Boolean.TRUE.toString() : Boolean.FALSE.toString());
-            Log4jPrefsSettingManager.getInstance().createTalendLog4jPrefs(Log4jPrefsConstants.LOG4J_CONTENT_NODE,
-                    getLogTemplate(RESOURCE_LOG_FILE_PATH));
-            Log4jPrefsSettingManager.getInstance().createTalendLog4jPrefs(Log4jPrefsConstants.COMMON_LOGGING_NODE,
-                    getLogTemplate(RESOURCE_COMMONLOG_FILE_PATH));
+            Log4jPrefsSettingManager
+                    .getInstance()
+                    .createTalendLog4jPrefs(Log4jPrefsConstants.LOG4J_ENABLE_NODE,
+                            Log4jUtil.isEnable() ? Boolean.TRUE.toString() : Boolean.FALSE.toString());
+            Log4jPrefsSettingManager
+                    .getInstance()
+                    .createTalendLog4jPrefs(Log4jPrefsConstants.LOG4J_CONTENT_NODE,
+                            getLogTemplate(RESOURCE_LOG_FILE_PATH));
+            Log4jPrefsSettingManager
+                    .getInstance()
+                    .createTalendLog4jPrefs(Log4jPrefsConstants.COMMON_LOGGING_NODE,
+                            getLogTemplate(RESOURCE_COMMONLOG_FILE_PATH));
         }
         // if directly init or modify log4j,need handle with the log4j under .setting/,if not,means execute or export
         // job,need to copy the latest log4j from .setting/ to /java/src
@@ -624,7 +639,8 @@ public class DefaultRunProcessService implements IRunProcessService {
 
     @Override
     public boolean isJobRunning() {
-        final RunProcessContext activeContext = RunProcessPlugin.getDefault().getRunProcessContextManager().getActiveContext();
+        final RunProcessContext activeContext =
+                RunProcessPlugin.getDefault().getRunProcessContextManager().getActiveContext();
 
         if (activeContext == null) {
             return false;
@@ -778,7 +794,8 @@ public class DefaultRunProcessService implements IRunProcessService {
             AggregatorPomsHelper helper = new AggregatorPomsHelper();
             helper.installRootPom(false);
             AggregatorPomsHelper.updateAllCodesProjectNeededModules(monitor);
-            List<ProjectReference> references = ProjectManager.getInstance().getCurrentProject().getProjectReferenceList(true);
+            List<ProjectReference> references =
+                    ProjectManager.getInstance().getCurrentProject().getProjectReferenceList(true);
             for (ProjectReference ref : references) {
                 initRefPoms(new Project(ref.getReferencedProject()));
             }
@@ -811,13 +828,14 @@ public class DefaultRunProcessService implements IRunProcessService {
         }
     }
 
-    private void installRefCodeProject(ERepositoryObjectType codeType, AggregatorPomsHelper refHelper, IProgressMonitor monitor)
-            throws Exception, CoreException {
+    private void installRefCodeProject(ERepositoryObjectType codeType, AggregatorPomsHelper refHelper,
+            IProgressMonitor monitor) throws Exception, CoreException {
         if (!refHelper.getProjectRootPom().exists()) {
             return;
         }
         String projectTechName = refHelper.getProjectTechName();
-        ITalendProcessJavaProject codeProject = TalendJavaProjectManager.getExistingTalendCodeProject(codeType, projectTechName);
+        ITalendProcessJavaProject codeProject =
+                TalendJavaProjectManager.getExistingTalendCodeProject(codeType, projectTechName);
         if (codeProject != null) {
             codeProject.buildWholeCodeProject();
             Map<String, Object> argumentsMap = new HashMap<>();
@@ -850,7 +868,8 @@ public class DefaultRunProcessService implements IRunProcessService {
         Set<String> childJobDependencies = new HashSet<String>();
         List<IFile> childPoms = new ArrayList<IFile>();
         for (JobInfo info : listJobs) {
-            IRepositoryViewObject specificVersion = factory.getSpecificVersion(info.getJobId(), info.getJobVersion(), true);
+            IRepositoryViewObject specificVersion =
+                    factory.getSpecificVersion(info.getJobId(), info.getJobVersion(), true);
             Property property = specificVersion.getProperty();
             String groupId = PomIdsHelper.getJobGroupId(property);
             String artifactId = PomIdsHelper.getJobArtifactId(property);
@@ -869,8 +888,9 @@ public class DefaultRunProcessService implements IRunProcessService {
             if (!targetFolder.exists()) {
                 targetFolder.create(true, false, progressMonitor);
             }
-            FilesUtils.copyDirectory(new File(codeFile.getLocation().toPortableString()),
-                    new File(targetFolder.getLocation().toPortableString()));
+            FilesUtils
+                    .copyDirectory(new File(codeFile.getLocation().toPortableString()),
+                            new File(targetFolder.getLocation().toPortableString()));
         }
 
         PomUtil.updateMainJobDependencies(mainJobInfo.getPomFile(), childPoms, childJobDependencies, progressMonitor);

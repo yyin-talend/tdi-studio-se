@@ -37,23 +37,28 @@ public class JobScriptsManagerFactory {
             if (jobType != null && jobType instanceof ERepositoryObjectType) {
                 ERepositoryObjectType type = (ERepositoryObjectType) jobType;
                 if (type.equals(ERepositoryObjectType.PROCESS_MR)) {
-                    return new MapReduceJobJavaScriptsManager(exportChoiceMap, contextName, launcher, statisticPort, tracePort);
+                    return new MapReduceJobJavaScriptsManager(exportChoiceMap, contextName, launcher, statisticPort,
+                            tracePort);
                 } else if (type.equals(ERepositoryObjectType.valueOf("PROCESS_STORM"))) { //$NON-NLS-1$
-                    return new StormJobJavaScriptsManager(exportChoiceMap, contextName, launcher, statisticPort, tracePort);
+                    return new StormJobJavaScriptsManager(exportChoiceMap, contextName, launcher, statisticPort,
+                            tracePort);
                 }
             }
             return new JobJavaScriptsManager(exportChoiceMap, contextName, launcher, statisticPort, tracePort);
         case OSGI:
+            ProcessorUtilities.setExportESBAsMicroService(false);
             if (exportChoiceMap.containsKey(ExportChoice.needMavenScript)
                     && exportChoiceMap.get(ExportChoice.needMavenScript) == Boolean.TRUE) {
-                return new OSGIJavaScriptForESBWithMavenManager(exportChoiceMap, contextName, launcher, statisticPort, tracePort);
+                return new OSGIJavaScriptForESBWithMavenManager(exportChoiceMap, contextName, launcher, statisticPort,
+                        tracePort);
             } else {
                 // TESB-16721 [Export Job] On export job context always "Default"
                 return new JobJavaScriptOSGIForESBManager(exportChoiceMap, null, launcher, statisticPort, tracePort);
             }
         case MSESB:
-            ProcessorUtilities.setExportJobAsMicroService(true);
-            return new JobJavaScriptMicroServiceForESBManager(exportChoiceMap, contextName, launcher, statisticPort, tracePort);
+            ProcessorUtilities.setExportESBAsMicroService(true);
+            return new JobJavaScriptMicroServiceForESBManager(exportChoiceMap, contextName, launcher, statisticPort,
+                    tracePort);
         default:
             //
         }
