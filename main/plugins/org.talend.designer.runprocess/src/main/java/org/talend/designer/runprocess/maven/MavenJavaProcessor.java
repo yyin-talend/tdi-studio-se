@@ -45,8 +45,6 @@ import org.talend.core.runtime.repository.build.IBuildParametes;
 import org.talend.core.runtime.repository.build.IBuildPomCreatorParameters;
 import org.talend.core.runtime.repository.build.IMavenPomCreator;
 import org.talend.core.utils.BitwiseOptionUtils;
-import org.talend.designer.core.model.process.IGeneratingProcess;
-import org.talend.designer.core.ui.editor.process.Process;
 import org.talend.designer.maven.model.TalendMavenConstants;
 import org.talend.designer.maven.tools.AggregatorPomsHelper;
 import org.talend.designer.maven.tools.BuildCacheManager;
@@ -57,6 +55,8 @@ import org.talend.designer.runprocess.ProcessorException;
 import org.talend.designer.runprocess.ProcessorUtilities;
 import org.talend.designer.runprocess.java.JavaProcessor;
 import org.talend.repository.i18n.Messages;
+import org.talend.designer.core.model.process.IGeneratingProcess;
+import org.talend.designer.core.ui.editor.process.Process;
 
 /**
  * created by ggu on 2 Feb 2015 Detailled comment
@@ -340,6 +340,14 @@ public class MavenJavaProcessor extends JavaProcessor {
         if (!isMainJob && isGoalInstall) {
             if (!buildCacheManager.isJobBuild(getProperty())) {
                 deleteExistedJobJarFile(talendJavaProject);
+                
+                final Map<String, Object> argumentsMap = new HashMap<>();
+                argumentsMap.put(TalendProcessArgumentConstant.ARG_GOAL, TalendMavenConstants.GOAL_COMPILE);
+                if (!MavenProjectUtils.hasMavenNature(project)) {
+                    MavenProjectUtils.enableMavenNature(monitor, project);
+                }                 
+                talendJavaProject.buildModules(monitor, null, argumentsMap);
+                
                 buildCacheManager.putJobCache(getProperty());
             } else {
                 // for already installed sub jobs, can restore pom here directly
