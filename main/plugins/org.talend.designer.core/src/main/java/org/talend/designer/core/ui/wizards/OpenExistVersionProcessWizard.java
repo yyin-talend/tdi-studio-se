@@ -348,7 +348,7 @@ public class OpenExistVersionProcessWizard extends Wizard {
             ProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
             String lastVersion = factory.getLastVersion(routineItem.getProperty().getId()).getVersion();
             String curVersion = routineItem.getProperty().getVersion();
-            routineSynchronizer.syncRoutine(routineItem, true, true);
+            // routineSynchronizer.syncRoutine(routineItem, true, true);
             final IFile file;
             if (curVersion != null && curVersion.equals(lastVersion)) {
                 file = routineSynchronizer.getFile(routineItem);
