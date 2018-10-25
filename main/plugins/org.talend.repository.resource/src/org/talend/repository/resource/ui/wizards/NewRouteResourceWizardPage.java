@@ -151,11 +151,14 @@ public class NewRouteResourceWizardPage extends PropertiesWizardPage {
 		
 		String trimName = nameText.getText().trim();
 		//Check name is a valid file name
-		nameStatus = ResourcesPlugin.getWorkspace().validateName(trimName, IResource.FILE);
-		if(!nameStatus.isOK()){
+		IStatus status = ResourcesPlugin.getWorkspace().validateName(trimName, IResource.FILE);
+
+		if (!status.isOK()) {
+			nameStatus = status;
 			updatePageStatus();
 			return;
 		}
+
 		//Check name is existing or not
 		else if(!isValidResourceName(trimName)){
 			nameStatus = createStatus(IStatus.ERROR, Messages.getString("NewRouteResourceWizardPage.itemAlreadyExist")); //$NON-NLS-1$
