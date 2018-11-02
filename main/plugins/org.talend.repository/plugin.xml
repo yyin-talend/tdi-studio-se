@@ -2972,6 +2972,13 @@
               version="6.4.1">
         </projecttask>
         <projecttask
+              beforeLogon="false"
+              class="org.talend.repository.model.migration.ChangeDefaultDateCheckStrategyInSchemaComplianceCheck"
+              id="org.talend.repository.model.migration.ChangeDefaultDateCheckStrategyInSchemaComplianceCheck"
+              name="ChangeDefaultDateCheckStrategyInSchemaComplianceCheck"
+              version="7.0.1">
+        </projecttask>
+        <projecttask
               beforeLogon="true"
               class="org.talend.repository.model.migration.UpdateGitIgnoreMigrationTask"
               id="org.talend.repository.model.migration.UpdateGitIgnoreMigrationTask"
