@@ -53,6 +53,7 @@ import org.talend.designer.core.model.components.EmfComponent;
 import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.utils.JavaProcessUtil;
 import org.talend.utils.sql.metadata.constants.GetTable;
+
 import orgomg.cwm.objectmodel.core.ModelElement;
 import orgomg.cwm.resource.relational.Catalog;
 import orgomg.cwm.resource.relational.Schema;
@@ -443,20 +444,28 @@ public class QueryGuessCommand extends Command {
         String newQuery = null;
         // Need update schema if table type as calculation view for SAP Hana Database
         updateSchema(dbType, newOutputMetadataTable);
+        if (node != null && node instanceof INode) {
+            process = ((INode) node).getProcess();
+            boolean isContextMode = ContextParameterUtils.containContextVariables(schema);
+            if (isContextMode) {
+                schema = JavaProcessUtil.getContextOriginalValue(process, schema);
+            }
+        }
         realTableName = QueryUtil.getTableName(node, newOutputMetadataTable, schema, dbType, realTableName);
 
         if (realTableName.startsWith(TalendTextUtils.QUOTATION_MARK) && realTableName.endsWith(TalendTextUtils.QUOTATION_MARK)
                 && realTableName.length() > 2) {
             realTableName = realTableName.substring(1, realTableName.length() - 1);
         }
-        if (conn != null
-                && (isJdbc || dbType.equals(EDatabaseTypeName.JAVADB_EMBEDED.getDisplayName()) || (StringUtils.isEmpty(schema) && (EDatabaseTypeName.ORACLE_CUSTOM
-                        .equals(EDatabaseTypeName.getTypeFromDbType(dbType))
-                        || EDatabaseTypeName.ORACLEFORSID.equals(EDatabaseTypeName.getTypeFromDbType(dbType))
-                        || EDatabaseTypeName.ORACLESN.equals(EDatabaseTypeName.getTypeFromDbType(dbType)) || EDatabaseTypeName.ORACLE_OCI
-                            .equals(EDatabaseTypeName.getTypeFromDbType(dbType)))))) {
-            schema = getDefaultSchema(realTableName);
-        }
+           
+        if (conn != null && isJdbc || dbType.equals(EDatabaseTypeName.JAVADB_EMBEDED.getDisplayName())
+                    || StringUtils.isEmpty(schema)
+                            && (EDatabaseTypeName.ORACLE_CUSTOM.equals(EDatabaseTypeName.getTypeFromDbType(dbType))
+                                    || EDatabaseTypeName.ORACLEFORSID.equals(EDatabaseTypeName.getTypeFromDbType(dbType))
+                                    || EDatabaseTypeName.ORACLESN.equals(EDatabaseTypeName.getTypeFromDbType(dbType))
+                                || EDatabaseTypeName.ORACLE_OCI.equals(EDatabaseTypeName.getTypeFromDbType(dbType)))) {
+                schema = getDefaultSchema(realTableName);
+            }
 
         newQuery = QueryUtil.generateNewQuery(node, newOutputMetadataTable, isJdbc, dbType, schema, realTableName);
 
