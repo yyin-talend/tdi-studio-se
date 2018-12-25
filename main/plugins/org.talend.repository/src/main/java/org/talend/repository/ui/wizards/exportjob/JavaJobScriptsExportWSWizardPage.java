@@ -91,6 +91,7 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
         POJO(Messages.getString("JavaJobScriptsExportWSWizardPage.POJO"), false), //$NON-NLS-1$
         OSGI(Messages.getString("JavaJobScriptsExportWSWizardPage.OSGI"), false), //$NON-NLS-1$
         MSESB(Messages.getString("JavaJobScriptsExportWSWizardPage.MSESB"), false), //$NON-NLS-1$
+        MSESB_IMAGE(Messages.getString("JavaJobScriptsExportWSWizardPage.MSESB_IMAGE"), false), //$NON-NLS-1$
         IMAGE(Messages.getString("JavaJobScriptsExportWSWizardPage.IMAGE"), false); //$NON-NLS-1$
 
         public final String label;
@@ -515,7 +516,7 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
                     chkButton.setVisible(true);
                     zipOption = String.valueOf(chkButton.getSelection());
                 }
-                updateDestinationGroup(comboType == JobExportType.IMAGE);
+                updateDestinationGroup(comboType == JobExportType.IMAGE || comboType == JobExportType.MSESB_IMAGE);
                 checkExport();
             }
         });
@@ -935,9 +936,11 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
             }
             updateDestinationGroup(true);
             contextButton.setSelection(settings.getBoolean(STORE_CONTEXT_ID));
-            applyToChildrenButton.setSelection(settings.getBoolean(APPLY_TO_CHILDREN_ID));
+            if (getCurrentExportType1() == JobExportType.IMAGE) {
+                applyToChildrenButton.setSelection(settings.getBoolean(APPLY_TO_CHILDREN_ID));
+            }
         }
-        if (getProcessItem() != null && contextCombo != null) {
+        if (getProcessItem() != null && contextCombo != null && !contextCombo.isDisposed()) {
             ProcessItem item = getProcessItem();
             try {
                 String id = item.getProperty().getId();
@@ -952,7 +955,7 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
                 contextCombo.select(0);
             }
         }
-        if (log4jLevelCombo != null) {
+        if (log4jLevelCombo != null && !log4jLevelCombo.isDisposed()) {
             log4jLevelCombo.setItems(Log4jPrefsSettingManager.getLevel());
             if (Log4jPrefsSettingManager.getLevel().length > 0) {
                 log4jLevelCombo.select(2);
@@ -994,13 +997,14 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
             if (getCurrentExportType1().equals(JobExportType.MSESB)) {
                 return;
             }
-            if (getCurrentExportType1().equals(JobExportType.IMAGE)) {
+            if (getCurrentExportType1().equals(JobExportType.MSESB_IMAGE) || getCurrentExportType1().equals(JobExportType.IMAGE)) {
                 settings.put(STORE_DOCKER_IS_REMOTE_HOST, remoteRadio.getSelection());
                 if (remoteRadio.getSelection() && StringUtils.isNotBlank(hostText.getText())) {
                     settings.put(STORE_DOCKER_REMOTE_HOST, hostText.getText());
                 }
                 return;
             }
+            
             if (contextButton != null) {
                 settings.put(STORE_CONTEXT_ID, contextButton.getSelection());
             }
@@ -1064,6 +1068,10 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
             return exportChoiceMap;
         }
 
+        if (comboType.equals(JobExportType.MSESB_IMAGE)) {
+            return getExportChoiceMapForMSESBImage();
+        }
+
         if (comboType.equals(JobExportType.IMAGE)) {
             return getExportChoiceMapForImage();
         }
@@ -1081,6 +1089,48 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
         exportChoiceMap.put(ExportChoice.needContext, contextButton.getSelection());
         exportChoiceMap.put(ExportChoice.applyToChildren, applyToChildrenButton.getSelection());
         exportChoiceMap.put(ExportChoice.needMetaInfo, false);
+        return exportChoiceMap;
+    }
+
+    private Map<ExportChoice, Object> getExportChoiceMapForMSESBImage() {
+        Map<ExportChoice, Object> exportChoiceMap = new EnumMap<ExportChoice, Object>(ExportChoice.class);
+        exportChoiceMap.put(ExportChoice.buildImage, Boolean.TRUE);
+        exportChoiceMap.put(ExportChoice.needLauncher, Boolean.TRUE);
+        exportChoiceMap.put(ExportChoice.launcherName, JobScriptsManager.UNIX_ENVIRONMENT);
+        exportChoiceMap.put(ExportChoice.needSystemRoutine, Boolean.TRUE);
+        exportChoiceMap.put(ExportChoice.needUserRoutine, Boolean.TRUE);
+        exportChoiceMap.put(ExportChoice.needTalendLibraries, Boolean.TRUE);
+        exportChoiceMap.put(ExportChoice.needMetaInfo, true);
+        exportChoiceMap.put(ExportChoice.binaries, !isAddMavenScript());
+        // TDQ-15391: when have tDqReportRun, must always export items.
+        if (EmfModelUtils.getComponentByName(getProcessItem(), "tDqReportRun") != null) { //$NON-NLS-1$
+            exportChoiceMap.put(ExportChoice.needJobItem, Boolean.TRUE);
+        } else {
+            exportChoiceMap.put(ExportChoice.needJobItem, Boolean.FALSE);
+        }
+        // TDQ-15391~
+        exportChoiceMap.put(ExportChoice.needSourceCode, Boolean.FALSE);
+        exportChoiceMap.put(ExportChoice.needDependencies, Boolean.TRUE);
+        exportChoiceMap.put(ExportChoice.needJobScript, Boolean.FALSE);
+        exportChoiceMap.put(ExportChoice.needAssembly, Boolean.TRUE);
+        exportChoiceMap.put(ExportChoice.needContext, true);
+        exportChoiceMap.put(ExportChoice.contextName, getContextName());
+
+        if (remoteRadio.getSelection()) {
+            String host = hostText.getText();
+            if (!StringUtils.isBlank(host)) {
+                exportChoiceMap.put(ExportChoice.dockerHost, host);
+            }
+        }
+        String imageName = imageText.getText();
+        if (!StringUtils.isBlank(imageName)) {
+            exportChoiceMap.put(ExportChoice.imageName, imageName);
+        }
+        String imageTag = tagText.getText();
+        if (!StringUtils.isBlank(imageTag)) {
+            exportChoiceMap.put(ExportChoice.imageTag, imageTag);
+        }
+
         return exportChoiceMap;
     }
 
@@ -1184,6 +1234,13 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
             createOptionsForMSESB(left, font);
             restoreWidgetValuesForOSGI();
             break;
+        case MSESB_IMAGE:
+            createOptionsForMSESB(left, font);
+            createDockerOptions();
+            restoreWidgetValuesForImage();
+            addDockerOptionsListener();
+            contextButton.setSelection(false);
+            break;
         case IMAGE:
             createOptionForDockerImage(left, font);
             createDockerOptions();
@@ -1238,31 +1295,33 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
         if (!PluginChecker.isTIS()) {
             return;
         }
+        
+        if (getCurrentExportType1() != JobExportType.MSESB_IMAGE) {
+            addBSButton = new Button(optionsComposite, SWT.CHECK | SWT.LEFT);
+            addBSButton.setText("Add maven script"); //$NON-NLS-1$
+            addBSButton.setFont(font);
 
-        addBSButton = new Button(optionsComposite, SWT.CHECK | SWT.LEFT);
-        addBSButton.setText("Add maven script"); //$NON-NLS-1$
-        addBSButton.setFont(font);
+            addBSButton.addSelectionListener(new SelectionAdapter() {
 
-        addBSButton.addSelectionListener(new SelectionAdapter() {
-
-            @Override
-            public void widgetSelected(SelectionEvent e) {
-                boolean show = addBSButton.getSelection();
-                String destinationValue = getDestinationValue();
-                if (destinationValue.endsWith(getOutputSuffix())) {
-                    if (show) {
-                        destinationValue = destinationValue.substring(0, destinationValue.indexOf(getOutputSuffix()))
-                                + OUTPUT_FILE_SUFFIX;
+                @Override
+                public void widgetSelected(SelectionEvent e) {
+                    boolean show = addBSButton.getSelection();
+                    String destinationValue = getDestinationValue();
+                    if (destinationValue.endsWith(getOutputSuffix())) {
+                        if (show) {
+                            destinationValue = destinationValue.substring(0, destinationValue.indexOf(getOutputSuffix()))
+                                    + OUTPUT_FILE_SUFFIX;
+                        }
+                    } else if (destinationValue.endsWith(OUTPUT_FILE_SUFFIX)) {
+                        if (!show) {
+                            destinationValue = destinationValue.substring(0, destinationValue.indexOf(OUTPUT_FILE_SUFFIX))
+                                    + getOutputSuffix();
+                        }
                     }
-                } else if (destinationValue.endsWith(OUTPUT_FILE_SUFFIX)) {
-                    if (!show) {
-                        destinationValue = destinationValue.substring(0, destinationValue.indexOf(OUTPUT_FILE_SUFFIX))
-                                + getOutputSuffix();
-                    }
+                    setDestinationValue(destinationValue);
                 }
-                setDestinationValue(destinationValue);
-            }
-        });
+            });
+        }
 
         contextButton = new Button(optionsComposite, SWT.CHECK | SWT.LEFT);
         contextButton.setText("Only export the default context"); //$NON-NLS-1$
@@ -1276,36 +1335,37 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
                 // onlyExportDefaultContext = contextButton.getSelection();
             }
         });
+        
+        if (getCurrentExportType1() != JobExportType.MSESB_IMAGE) {
+            exportMSAsZipButton = new Button(optionsComposite, SWT.CHECK | SWT.LEFT);
+            exportMSAsZipButton.setText("Export as ZIP"); //$NON-NLS-1$
+            exportMSAsZipButton.setFont(getFont());
+            // exportAsZipButton.setEnabled(false);
+            exportMSAsZipButton.setVisible(PluginChecker.isTIS());
+            exportMSAsZipButton.addSelectionListener(new SelectionAdapter() {
 
-        exportMSAsZipButton = new Button(optionsComposite, SWT.CHECK | SWT.LEFT);
-        exportMSAsZipButton.setText("Export as ZIP"); //$NON-NLS-1$
-        exportMSAsZipButton.setFont(getFont());
-        // exportAsZipButton.setEnabled(false);
-        exportMSAsZipButton.setVisible(PluginChecker.isTIS());
-        exportMSAsZipButton.addSelectionListener(new SelectionAdapter() {
+                @Override
+                public void widgetSelected(SelectionEvent e) {
+                    boolean selectContext = exportMSAsZipButton.getSelection();
+                    // exportAsZip = selectContext;
 
-            @Override
-            public void widgetSelected(SelectionEvent e) {
-                boolean selectContext = exportMSAsZipButton.getSelection();
-                // exportAsZip = selectContext;
-
-                String destinationValue = getDestinationValue();
-                if (destinationValue.endsWith(getOutputSuffix())) {
-                    if (selectContext) {
-                        destinationValue = destinationValue.substring(0, destinationValue.indexOf(getOutputSuffix()))
-                                + OUTPUT_FILE_SUFFIX;
+                    String destinationValue = getDestinationValue();
+                    if (destinationValue.endsWith(getOutputSuffix())) {
+                        if (selectContext) {
+                            destinationValue = destinationValue.substring(0, destinationValue.indexOf(getOutputSuffix()))
+                                    + OUTPUT_FILE_SUFFIX;
+                        }
+                    } else if (destinationValue.endsWith(OUTPUT_FILE_SUFFIX)) {
+                        if (!selectContext) {
+                            destinationValue = destinationValue.substring(0, destinationValue.indexOf(OUTPUT_FILE_SUFFIX))
+                                    + getOutputSuffix();
+                        }
                     }
-                } else if (destinationValue.endsWith(OUTPUT_FILE_SUFFIX)) {
-                    if (!selectContext) {
-                        destinationValue = destinationValue.substring(0, destinationValue.indexOf(OUTPUT_FILE_SUFFIX))
-                                + getOutputSuffix();
-                    }
+                    setDestinationValue(destinationValue);
+
                 }
-                setDestinationValue(destinationValue);
-
-            }
-        });
-
+            });           
+        }
     }
 
     private void createOptionsForOSGIESB(Composite optionsComposite, Font font) {
