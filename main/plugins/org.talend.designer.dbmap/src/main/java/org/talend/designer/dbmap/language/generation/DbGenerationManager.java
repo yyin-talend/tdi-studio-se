@@ -369,15 +369,6 @@ public abstract class DbGenerationManager {
 
             }
 
-            StringBuilder sbWhere = new StringBuilder();
-            boolean isFirstClause = true;
-            for (int i = 0; i < lstSizeInputTables; i++) {
-                ExternalDbMapTable inputTable = inputTables.get(i);
-                if (buildConditions(component, sbWhere, inputTable, false, isFirstClause)) {
-                    isFirstClause = false;
-                }
-            }
-
             appendSqlQuery(sb, DbMapSqlConstants.NEW_LINE);
             appendSqlQuery(sb, tabSpaceString);
             IJoinType previousJoinType = null;
@@ -441,6 +432,16 @@ public abstract class DbGenerationManager {
 
                 }
             }
+
+            StringBuilder sbWhere = new StringBuilder();
+            this.tabSpaceString = DEFAULT_TAB_SPACE_STRING;
+            boolean isFirstClause = true;
+            for (int i = 0; i < lstSizeInputTables; i++) {
+                ExternalDbMapTable inputTable = inputTables.get(i);
+                if (buildConditions(component, sbWhere, inputTable, false, isFirstClause, false)) {
+                    isFirstClause = false;
+                }
+            }
             /*
              * for addition conditions
              */
@@ -478,16 +479,19 @@ public abstract class DbGenerationManager {
                         }
                     }
                 }
+                
                 List<ExternalDbMapEntry> customOtherConditionsEntries = outputTable.getCustomOtherConditionsEntries();
                 if (customOtherConditionsEntries != null) {
                     for (ExternalDbMapEntry entry : customOtherConditionsEntries) {
                         String exp = initExpression(component, entry);
                         if (exp != null && !DbMapSqlConstants.EMPTY.equals(exp.trim())) {
+                            exp = replaceVariablesForExpression(component, exp);
                             otherAddition.add(exp);
                         }
                     }
                 }
             }
+            this.tabSpaceString = tabString;
 
             String whereClauses = sbWhere.toString();
 
