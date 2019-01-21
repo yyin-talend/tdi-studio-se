@@ -22,8 +22,7 @@ import org.talend.webservice.exception.IllegalPropertyAccessException;
 import org.talend.webservice.exception.InvocationTargetPropertyAccessor;
 import org.talend.webservice.exception.LocalizedException;
 import org.w3c.dom.Document;
-
-import com.sun.org.apache.xerces.internal.dom.ElementNSImpl;
+import org.w3c.dom.Element;
 
 public class AnyPropertyMapper implements PropertyMapper {
 
@@ -89,8 +88,8 @@ public class AnyPropertyMapper implements PropertyMapper {
             Method method = propertyDescriptor.getReadMethod();
             String value = "";
             if (method.getReturnType().equals(java.util.List.class)) {
-                List<ElementNSImpl> anyList = (List<ElementNSImpl>) propertyDescriptor.getReadMethod().invoke(source);
-                for (ElementNSImpl child : anyList) {
+                List<Element> anyList = (List<Element>) propertyDescriptor.getReadMethod().invoke(source);
+                for (Element child : anyList) {
                     Document doc = child.getOwnerDocument();
                     DOMSource domSource = new DOMSource(doc);
                     StringWriter writer = new StringWriter();
