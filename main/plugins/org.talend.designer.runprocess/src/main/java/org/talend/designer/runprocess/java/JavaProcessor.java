@@ -1366,12 +1366,7 @@ public class JavaProcessor extends AbstractJavaProcessor implements IJavaBreakpo
         final String classPathSeparator = extractClassPathSeparator();
         final String libPrefixPath = getRootWorkingDir(true);
 
-        int option = TalendProcessOptionConstants.MODULES_WITH_CHILDREN;
-
-        if (isExportConfig() || isSkipClasspathJar()) {
-            option = option | TalendProcessOptionConstants.MODULES_EXCLUDE_SHADED;
-        }
-        Set<ModuleNeeded> neededModules = getNeededModules(option);
+        Set<ModuleNeeded> neededModules = getNeededModules(TalendProcessOptionConstants.MODULES_WITH_CHILDREN);
         JavaProcessorUtilities.checkJavaProjectLib(neededModules);
 
         // Ignore hadoop confs jars in lib path.
