@@ -285,7 +285,7 @@ public class PostgresGenerationManagerTest extends DbGenerationManagerTestHelper
         String[] dbColumns = new String[] { "String", "void", "age" };
         String[] expressions = new String[] { schema + "." + tableName + "._String", schema + "." + tableName + "._void" };
         initForExpression(schema, tableName, columns, dbColumns, "grade", columns, dbColumns, expressions);
-        ExternalDbMapTable externalData = dbMapComponent.getExternalData().getOutputTables().get(0);
+        ExternalDbMapTable externalData = (ExternalDbMapTable) dbMapComponent.getExternalData().getOutputTables().get(0);
         ExternalDbMapEntry whereEntity = new ExternalDbMapEntry();
         whereEntity.setName("where_entity");
         whereEntity.setExpression("\\\"eltinput\\\".\\\"String\\\">10");
@@ -323,7 +323,7 @@ public class PostgresGenerationManagerTest extends DbGenerationManagerTestHelper
         String[] expressions = new String[] { "context.schema.bugtdi32594_src.name",
                 "UPPER(context.schema.bugtdi32594_src.name)", "to_date(context.schema.bugtdi32594_src.register, 'yyyy-MM-dd')" };
         initForExpression(schema, tableName, inputColumns, inputColumns, outputTable, outputColumns, outputColumns, expressions);
-        ExternalDbMapTable externalData = dbMapComponent.getExternalData().getOutputTables().get(0);
+        ExternalDbMapTable externalData = (ExternalDbMapTable) dbMapComponent.getExternalData().getOutputTables().get(0);
         ExternalDbMapEntry whereEntity = new ExternalDbMapEntry();
         whereEntity.setName("where_entity");
         whereEntity.setExpression("bugtdi32594_src.id=bugtdi32594_dest.id");
