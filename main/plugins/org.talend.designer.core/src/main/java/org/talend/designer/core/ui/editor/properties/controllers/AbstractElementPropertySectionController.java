@@ -2359,7 +2359,7 @@ public abstract class AbstractElementPropertySectionController implements Proper
      */
     protected String openSQLBuilder(String repositoryType, String propertyName, String query) {
         if (repositoryType.equals(EmfComponent.BUILTIN)) {
-            connParameters.setQuery(query);
+            connParameters.setQuery(query, true);
             if (connParameters.isShowConfigParamDialog()) {
                 if (!isUseExistingConnection()) {
                     initConnectionParametersWithContext(elem, part.getProcess().getContextManager().getDefaultContext());
