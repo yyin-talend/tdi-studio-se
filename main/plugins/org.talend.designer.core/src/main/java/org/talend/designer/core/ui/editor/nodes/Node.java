@@ -2771,6 +2771,13 @@ public class Node extends Element implements IGraphicalNode {
                             param.getDisplayName());
                     Problems.add(ProblemStatus.WARNING, this, warnMessage);
                 }
+                // add a warning message on the component if the source key is empty
+                if (param.getName().equals("SOURCE_KEYS")) { //$NON-NLS-1$
+                    if (tableValues == null || tableValues.isEmpty()) {
+                        String warnMessage = Messages.getString("Node.hasMoreThenOneSourceKey"); //$NON-NLS-1$
+                        Problems.add(ProblemStatus.WARNING, this, warnMessage);
+                    }
+                }
             }
 
             if (param.getName().equals(EParameterName.COMMENT.getName())) {
@@ -4919,7 +4926,13 @@ public class Node extends Element implements IGraphicalNode {
                     if (targetParam != null) {
                         if (sourceParam.getName().equals(EParameterName.LABEL.getName())
                                 && (sourceParam.getValue() == null || "".equals(sourceParam.getValue()))) { //$NON-NLS-1$
-                            setPropertyValue(sourceParam.getName(), component.getProcess().getName());
+                            String name = null;
+                            if (EComponentType.JOBLET.equals(component.getComponentType())) {
+                                name = component.getName();
+                            } else {
+                                name = component.getProcess().getName();
+                            }
+                            setPropertyValue(sourceParam.getName(), name);
                         } else {
                             setPropertyValue(sourceParam.getName(), sourceParam.getValue());
                         }

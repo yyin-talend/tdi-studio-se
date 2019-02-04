@@ -1153,7 +1153,7 @@ public class Process extends Element implements IProcess2, IGEFProcess, ILastVer
             pType.setContextMode(param.isContextMode());
         }
         Object value = param.getValue();
-        if (param.getFieldType().equals(EParameterFieldType.TABLE) && value != null) {
+        if (isTable(param) && value != null) {
             List<Map<String, Object>> tableValues = (List<Map<String, Object>>) value;
             for (Map<String, Object> currentLine : tableValues) {
                 for (int i = 0; i < param.getListItemsDisplayCodeName().length; i++) {
@@ -1239,6 +1239,11 @@ public class Process extends Element implements IProcess2, IGEFProcess, ILastVer
         }
         pType.setShow(param.isShow(paramList));
         listParamType.add(pType);
+    }
+
+    private boolean isTable(final IElementParameter parameter) {
+        return parameter.getFieldType().equals(EParameterFieldType.TABLE) ||
+                parameter.getFieldType().equals(EParameterFieldType.TACOKIT_SUGGESTABLE_TABLE);
     }
 
     protected boolean isNeedConvertToHex(String value) {
@@ -1457,7 +1462,7 @@ public class Process extends Element implements IProcess2, IGEFProcess, ILastVer
                             .getExtraParameterName(EParameterName.SCHEMA_DB.getName()));
                     DesignerUtilities.setSchemaDB(elementParameter2, param.getValue());
                 }
-            } else if (param.getFieldType().equals(EParameterFieldType.TABLE)) {
+            } else if (isTable(param)) {
                 List<Map<String, Object>> tableValues = new ArrayList<Map<String, Object>>();
                 String[] codeList = param.getListItemsDisplayCodeName();
                 Map<String, Object> lineValues = null;
@@ -2281,8 +2286,16 @@ public class Process extends Element implements IProcess2, IGEFProcess, ILastVer
                                     IJobletProviderService service = (IJobletProviderService) GlobalServiceRegister.getDefault()
                                             .getService(IJobletProviderService.class);
                                     if (service != null) {
-                                        String componentProcessId = service.getJobletComponentItem(component).getId();
-                                        component = service.setPropertyForJobletComponent(componentProcessId, jobletVersion);
+                                        Property jobletProperty = service.getJobletComponentItem(component);
+                                        org.talend.core.model.properties.Project project = ProjectManager.getInstance()
+                                                .getProject(jobletProperty);
+                                        String projTechLabel = null;
+                                        if (project != null) {
+                                            projTechLabel = project.getTechnicalLabel();
+                                        }
+                                        String componentProcessId = jobletProperty.getId();
+                                        component = service.setPropertyForJobletComponent(projTechLabel, componentProcessId,
+                                                jobletVersion);
                                     }
                                 }
                                 break;
