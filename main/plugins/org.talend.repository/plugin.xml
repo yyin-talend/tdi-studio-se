@@ -3084,7 +3084,7 @@
               description="If Redshift in 6.5.1 or 7.0.1 using log file, check the useLogFile option"
               id="org.talend.repository.model.migration.RedshiftLogFileMigrationTask"
               name="RedshiftLogFileMigrationTask"
-              version="6.5.2">
+              version="7.0.2">
         </projecttask>
    </extension>
 
