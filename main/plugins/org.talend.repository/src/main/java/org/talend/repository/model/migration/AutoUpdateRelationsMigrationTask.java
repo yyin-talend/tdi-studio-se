@@ -72,7 +72,7 @@ public class AutoUpdateRelationsMigrationTask extends AbstractJobMigrationTask {
     }
 
     public Date getOrder() {
-        GregorianCalendar gc = new GregorianCalendar(2050, 02, 12, 12, 0, 0);
+        GregorianCalendar gc = new GregorianCalendar(3050, 02, 12, 12, 0, 0);
         return gc.getTime();
     }
 

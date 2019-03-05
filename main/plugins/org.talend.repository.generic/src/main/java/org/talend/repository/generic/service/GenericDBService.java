@@ -40,6 +40,9 @@ import org.talend.components.api.wizard.ComponentWizard;
 import org.talend.components.api.wizard.ComponentWizardDefinition;
 import org.talend.core.GlobalServiceRegister;
 import org.talend.core.ITDQRepositoryService;
+import org.talend.core.hadoop.HadoopConstants;
+import org.talend.core.model.components.ComponentCategory;
+import org.talend.core.model.components.IComponent;
 import org.talend.core.model.general.ModuleNeeded;
 import org.talend.core.model.metadata.IMetadataConnection;
 import org.talend.core.model.metadata.IMetadataTable;
@@ -59,21 +62,25 @@ import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.model.utils.ContextParameterUtils;
 import org.talend.core.repository.model.ProxyRepositoryFactory;
+import org.talend.core.repository.utils.ConvertJobsUtil.JobType;
 import org.talend.core.runtime.maven.MavenUrlHelper;
 import org.talend.core.runtime.services.IGenericDBService;
 import org.talend.core.runtime.util.GenericTypeUtils;
 import org.talend.core.ui.check.IChecker;
+import org.talend.core.ui.component.ComponentsFactoryProvider;
 import org.talend.core.utils.TalendQuoteUtils;
 import org.talend.daikon.NamedThing;
 import org.talend.daikon.properties.Properties;
 import org.talend.daikon.properties.PropertiesImpl;
 import org.talend.daikon.properties.presentation.Form;
 import org.talend.designer.core.generic.constants.IGenericConstants;
+import org.talend.designer.core.generic.model.Component;
 import org.talend.designer.core.generic.model.GenericElementParameter;
 import org.talend.designer.core.generic.model.GenericTableUtils;
 import org.talend.designer.core.generic.utils.ComponentsUtils;
 import org.talend.designer.core.model.FakeElement;
 import org.talend.designer.core.model.components.ElementParameter;
+import org.talend.designer.core.model.utils.emf.talendfile.ProcessType;
 import org.talend.metadata.managment.utils.MetadataConnectionUtils;
 import org.talend.repository.generic.internal.IGenericWizardInternalService;
 import org.talend.repository.generic.internal.service.GenericWizardInternalService;
@@ -454,6 +461,17 @@ public class GenericDBService implements IGenericDBService{
             return ERepositoryObjectType.METADATA_CONNECTIONS;
         }
         return type;
+    }
+
+    @Override
+    public String getNewSerializedProperties(String comName, ComponentCategory category) {
+        IComponent component = ComponentsFactoryProvider.getInstance().get(comName, category.getName());
+        if(component instanceof Component){
+//            ComponentProperties componentProperties = ComponentsUtils.getComponentProperties(getName());//tSalesforceConnection
+            ComponentProperties componentProperties = ComponentsUtils.getComponentProperties(comName);
+            return componentProperties.toSerialized();
+        }
+        return null;
     }
     
 }
