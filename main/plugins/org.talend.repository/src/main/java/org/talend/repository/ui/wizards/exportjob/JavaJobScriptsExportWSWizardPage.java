@@ -1469,14 +1469,17 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
 
     private boolean isOptionValid(Text text, String label) {
         boolean isValid = false;
-        if (StringUtils.isBlank(text.getText())) {
-            setErrorMessage(Messages.getString("JavaJobScriptsExportWSWizardPage.DOCKER.errorMsg", label)); //$NON-NLS-1$
-            setPageComplete(false);
-            isValid = false;
-        } else {
-            setErrorMessage(null);
-            setPageComplete(true);
-            isValid = true;
+        // If no error message is already displayed
+        if (StringUtils.isBlank(getErrorMessage())) {
+            if (StringUtils.isBlank(text.getText())) {
+                setErrorMessage(Messages.getString("JavaJobScriptsExportWSWizardPage.DOCKER.errorMsg", label)); //$NON-NLS-1$
+                setPageComplete(false);
+                isValid = false;
+            } else {
+                setErrorMessage(null);
+                setPageComplete(true);
+                isValid = true;
+            }
         }
         return isValid;
     }
