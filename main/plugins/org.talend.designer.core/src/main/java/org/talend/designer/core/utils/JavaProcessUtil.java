@@ -121,6 +121,14 @@ public class JavaProcessUtil {
         return libsNeeded;
     }
 
+    public static Map<String, ModuleNeeded> getNeededLibrariesMap(List<ModuleNeeded> modulesNeeded) {
+        Map<String, ModuleNeeded> libsNeeded = new HashMap<String, ModuleNeeded>();
+        for (ModuleNeeded module : modulesNeeded) {
+            libsNeeded.put(module.getModuleName(), module);
+        }
+        return libsNeeded;
+    }
+
     @SuppressWarnings("unchecked")
     private static void getNeededModules(final IProcess process, Set<ProcessItem> searchItems,
             List<ModuleNeeded> modulesNeeded, int options) {
@@ -186,11 +194,19 @@ public class JavaProcessUtil {
 
             Set<ModuleNeeded> nodeNeededModules = getNeededModules(node, searchItems, options);
             if (nodeNeededModules != null) {
+                Map<String, ModuleNeeded> libsNeededMap = getNeededLibrariesMap(modulesNeeded);
                 modulesNeeded.addAll(nodeNeededModules);
-                if (node.getComponent().getName().equals("tLibraryLoad")) { //$NON-NLS-1$
-                    if (!isTestcaseProcess) {
-                        LastGenerationInfo.getInstance().getHighPriorityModuleNeeded().addAll(nodeNeededModules);
+                if (node.getComponent().getName().equals("tLibraryLoad") && !isTestcaseProcess) { //$NON-NLS-1$
+                    Set<ModuleNeeded> highPriorityModuleNeeded = new HashSet<ModuleNeeded>();
+                    for (ModuleNeeded moduleNeeded : nodeNeededModules) {
+                        ModuleNeeded existModuleNeeded = libsNeededMap.get(moduleNeeded.getModuleName());
+                        if (existModuleNeeded != null) {
+                            highPriorityModuleNeeded.add(existModuleNeeded);
+                        } else {
+                            highPriorityModuleNeeded.add(moduleNeeded);
+                        }
                     }
+                    LastGenerationInfo.getInstance().getHighPriorityModuleNeeded().addAll(highPriorityModuleNeeded);
                 }
             }
         }
