@@ -1155,7 +1155,6 @@ public abstract class DbGenerationManager {
         if(!expression.contains("'")){
             return expression.replaceAll(quoParser,"\\\\" +quote); //$NON-NLS-1$
         }
-        
         List<Integer> indexs = new ArrayList<>();
         for(int i=0;i<expression.length();i++){
             if("'".equals(String.valueOf(expression.charAt(i)))){
