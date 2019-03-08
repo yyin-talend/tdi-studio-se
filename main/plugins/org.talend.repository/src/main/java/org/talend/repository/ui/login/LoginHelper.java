@@ -373,6 +373,7 @@ public class LoginHelper {
         if (connBean != null) {
             repositoryContext.setFields(connBean.getDynamicFields());
             password = connBean.getPassword();
+            repositoryContext.setToken(connBean.isToken());
         }
         repositoryContext.setClearPassword(password);
         if (project != null) {

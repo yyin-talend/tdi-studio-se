@@ -422,6 +422,7 @@ public class RepositoryService implements IRepositoryService, IRepositoryContext
                 repositoryContext.setUser(userInfo);
                 repositoryContext.setClearPassword(password);
                 repositoryContext.setFields(bean.getDynamicFields());
+                repositoryContext.setToken(bean.isToken());
 
                 repositoryFactory.setRepositoryFactoryFromProvider(RepositoryFactoryProvider.getRepositoriyById(bean
                         .getRepositoryId()));
