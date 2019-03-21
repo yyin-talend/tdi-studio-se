@@ -1069,6 +1069,4 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
         public void setProperties(Map<String, String> map) throws Exception {
         }
     }
-}    
-
 }
