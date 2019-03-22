@@ -462,15 +462,5 @@ public class GenericDBService implements IGenericDBService{
         }
         return type;
     }
-
-    @Override
-    public String getNewSerializedProperties(String comName, ComponentCategory category, String serialized) {
-        IComponent component = ComponentsFactoryProvider.getInstance().get(comName, category.getName());
-        if(component instanceof Component){
-            ComponentProperties componentProperties = ComponentsUtils.getComponentProperties(comName);
-            return componentProperties.toSerialized();
-        }
-        return null;
-    }
     
 }
