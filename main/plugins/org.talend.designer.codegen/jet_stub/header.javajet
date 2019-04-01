@@ -403,6 +403,13 @@ private RunTrace runTrace = new RunTrace();
 	StatCatcherUtils <%=statCatcher.getUniqueName() %> = new StatCatcherUtils("<%=process.getId() %>", "<%=process.getVersion() %>");
 <%
 	}
+	
+	for (INode jobStructureCatcher : process.getNodesOfType("tJobStructureCatcher")) {
+%>
+	JobStructureCatcherUtils <%=jobStructureCatcher.getUniqueName() %> = new JobStructureCatcherUtils(jobName, "<%=process.getId() %>", "<%=process.getVersion() %>");
+	org.talend.logging.audit.AuditLogger auditLogger_<%=jobStructureCatcher.getUniqueName()%> = null;
+<%
+	}
 
 	for (INode metterCatcher : process.getNodesOfType("tFlowMeterCatcher")) {
 %>

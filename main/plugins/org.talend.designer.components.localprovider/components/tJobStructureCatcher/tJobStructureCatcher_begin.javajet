@@ -1,0 +1,41 @@
+<%@ jet 
+	imports="
+		org.talend.core.model.process.INode 
+		org.talend.designer.codegen.config.CodeGeneratorArgument
+		org.talend.core.model.process.IConnection
+		org.talend.core.model.process.IConnectionCategory
+	"
+%>
+
+<%
+	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+	INode node = (INode)codeGenArgument.getArgument();
+	String cid = node.getUniqueName();
+
+%>
+	//org.talend.logging.audit.AuditLogger auditLogger = org.talend.logging.audit.AuditLoggerFactory.getAuditLogger();
+	for (JobStructureCatcherUtils.JobStructureCatcherMessage jcm : <%=cid %>.getMessages()) {
+<%
+	for (IConnection conn : node.getOutgoingConnections()) {
+		if (conn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {
+%>
+		/*
+		<%=conn.getName() %>.component_parameters = jcm.getComponent_parameters();
+		<%=conn.getName() %>.component_schema = jcm.getComponent_schema();	
+    	<%=conn.getName() %>.input_connectors = jcm.getInput_connectors();
+    	<%=conn.getName() %>.output_connectors = jcm.getOutput_connectors();
+    	<%=conn.getName() %>.connector_name_2_connector_schema = jcm.getConnector_name_2_connector_schema();
+		<%=conn.getName() %>.job_name = jcm.getJobName();
+		<%=conn.getName() %>.job_id = scm.getJobId();
+		<%=conn.getName() %>.job_version = scm.getJobVersion();
+		<%=conn.getName() %>.system_pid = scm.getSystemPid();
+		*/
+<%
+		}
+	}
+%>
+		
+		auditLogger_<%=cid%>.info("jobstruct", "schema : " + jcm.getComponent_schema());
+		auditLogger_<%=cid%>.info("jobstruct", "parameters : " + jcm.getComponent_parameters());
+		
+	}

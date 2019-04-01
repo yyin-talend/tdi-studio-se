@@ -4,7 +4,8 @@
 		org.talend.core.model.process.INode
 		org.talend.core.model.temp.ECodePart		
 		org.talend.core.model.process.IConnection 
-		org.talend.core.model.metadata.IMetadataTable 
+		org.talend.core.model.metadata.IMetadataTable
+		org.talend.core.model.metadata.IMetadataColumn 
 		org.talend.core.model.process.EConnectionType 
         org.talend.core.model.process.ElementParameterParser
 		org.talend.designer.codegen.config.CodeGeneratorArgument
@@ -202,6 +203,134 @@
 		<%
 		log.startWork();
 		log.logCompSetting();
+		
+		String cid = node.getUniqueName();
+		
+        if(cid.matches("^.*?tAmazonAuroraOutput_\\d+_out$") || cid.matches("^.*?tDBOutput_\\d+_out$")){
+             cid = cid.substring(0,cid.length()-4);// 4 ==> "_out".length();
+        }
+		if (!cid.startsWith("tJobStructureCatcher") && node.getProcess().getNodesOfType("tJobStructureCatcher").size() > 0) {
+			for (INode jobStructureCatcher : node.getProcess().getNodesOfType("tJobStructureCatcher")) {
+			%>
+				class JobParametersUtil_<%=cid%>{
+					private java.util.List<java.util.Map<String, String>> schema_<%=cid%>;
+					
+					private java.util.Map<String, String> component_parameters_<%=cid%>;
+					
+					public java.util.List<java.util.Map<String, String>> getComponentSchema() throws Exception {
+						return this.schema_<%=cid%>;
+					}
+				
+                    public java.util.Map<String, String> getParametersMap() throws Exception {
+                    	return this.component_parameters_<%=cid%>;
+                    }
+                    
+                    public JobParametersUtil_<%=cid%>() throws Exception {
+                    component_parameters_<%=cid%> = new java.util.HashMap<>();
+                    <%
+                    java.util.Set<org.talend.core.model.process.EParameterFieldType> ignoredParamsTypes = new java.util.HashSet<org.talend.core.model.process.EParameterFieldType>(); 
+                    ignoredParamsTypes.addAll(
+                        java.util.Arrays.asList(
+                            org.talend.core.model.process.EParameterFieldType.SCHEMA_TYPE,
+                            org.talend.core.model.process.EParameterFieldType.LABEL,
+                            org.talend.core.model.process.EParameterFieldType.EXTERNAL,
+                            org.talend.core.model.process.EParameterFieldType.MAPPING_TYPE,
+                            org.talend.core.model.process.EParameterFieldType.IMAGE,
+                            org.talend.core.model.process.EParameterFieldType.TNS_EDITOR,
+                            org.talend.core.model.process.EParameterFieldType.WSDL2JAVA,
+                            org.talend.core.model.process.EParameterFieldType.GENERATEGRAMMARCONTROLLER,
+                            org.talend.core.model.process.EParameterFieldType.GENERATE_SURVIVORSHIP_RULES_CONTROLLER,
+                            org.talend.core.model.process.EParameterFieldType.REFRESH_REPORTS,
+                            org.talend.core.model.process.EParameterFieldType.BROWSE_REPORTS,
+                            org.talend.core.model.process.EParameterFieldType.PALO_DIM_SELECTION,
+                            org.talend.core.model.process.EParameterFieldType.GUESS_SCHEMA,
+                            org.talend.core.model.process.EParameterFieldType.MATCH_RULE_IMEX_CONTROLLER,
+                            org.talend.core.model.process.EParameterFieldType.MEMO_PERL,
+                            org.talend.core.model.process.EParameterFieldType.DBTYPE_LIST,
+                            org.talend.core.model.process.EParameterFieldType.VERSION,
+                            org.talend.core.model.process.EParameterFieldType.TECHNICAL,
+                            org.talend.core.model.process.EParameterFieldType.ICON_SELECTION,
+                            org.talend.core.model.process.EParameterFieldType.JAVA_COMMAND,
+                            org.talend.core.model.process.EParameterFieldType.TREE_TABLE,
+                            org.talend.core.model.process.EParameterFieldType.VALIDATION_RULE_TYPE,
+                            org.talend.core.model.process.EParameterFieldType.DCSCHEMA,
+                            org.talend.core.model.process.EParameterFieldType.SURVIVOR_RELATION,
+                            org.talend.core.model.process.EParameterFieldType.REST_RESPONSE_SCHEMA_TYPE
+                            )
+                    );
+                    for(org.talend.core.model.process.IElementParameter ep : org.talend.core.model.utils.NodeUtil.getDisplayedParameters(node)){
+                        if(ignoredParamsTypes.contains(ep.getFieldType())){
+                            continue;
+                        }
+                        String name = ep.getName();
+                        if(org.talend.core.model.process.EParameterFieldType.PASSWORD.equals(ep.getFieldType())){
+                            String epName = "__" + name + "__";
+                            String password = "";
+                            if(org.talend.core.model.process.ElementParameterParser.canEncrypt(node, epName)){
+                                password = org.talend.core.model.process.ElementParameterParser.getEncryptedValue(node, epName);
+                            }else{
+                                String passwordValue = org.talend.core.model.process.ElementParameterParser.getValue(node, epName);
+                                if (passwordValue == null || "".equals(passwordValue.trim())) {// for the value which empty
+                                    passwordValue = "\"\"";
+                                } 
+                                password = "routines.system.PasswordEncryptUtil.encryptPassword(" + passwordValue + ")";
+                            } 
+                            %>
+                            component_parameters_<%=cid%>.put("<%=name%>", String.valueOf(<%=password%>).substring(0, 4) + "...");
+                        <%
+                        }else{
+                            String value = org.talend.core.model.utils.NodeUtil.getNormalizeParameterValue(node, ep);
+                            if(value.length()>10000){
+                            value = org.talend.core.model.utils.NodeUtil.replaceCRLFInMEMO_SQL(value);
+                            }
+                            %>
+                            component_parameters_<%=cid%>.put("<%=name%>", String.valueOf(<%=value%>));
+                        <%
+                        }   
+                        %>
+                    <%
+                    }
+                    
+                	List<IMetadataTable> metadatas = node.getMetadataList();
+					IMetadataTable metadata = null;
+					if ((metadatas!=null)&&(metadatas.size()>0)) {
+						metadata = metadatas.get(0);
+						%>
+						schema_<%=cid%> = new java.util.ArrayList<java.util.Map<String, String>>();
+						<%
+						int i = 0;
+						for(IMetadataColumn column: metadata.getListColumns()){
+							%>
+							java.util.Map<String, String> column_<%=cid%>_<%=(++i)%> = new java.util.HashMap<>();
+							column_<%=cid%>_<%=(i)%>.put("label", "<%=column.getLabel()%>");
+							column_<%=cid%>_<%=(i)%>.put("talend_type", "<%=column.getTalendType()%>");
+							column_<%=cid%>_<%=(i)%>.put("pattern", "<%=column.getPattern()%>");
+							column_<%=cid%>_<%=(i)%>.put("length", "<%=column.getLength()%>");
+							column_<%=cid%>_<%=(i)%>.put("precision", "<%=column.getPrecision()%>");
+							column_<%=cid%>_<%=(i)%>.put("origin_source_column_name", "<%=column.getOriginalDbColumnName()%>");
+							schema_<%=cid%>.add(column_<%=cid%>_<%=(i)%>);
+							<%
+						}
+					}
+                    %>
+                    } 
+                }
+                
+                JobParametersUtil_<%=cid%> jpu_<%=cid%> = new JobParametersUtil_<%=cid%>();
+                
+				<%=jobStructureCatcher.getUniqueName() %>.addMessage(
+				    "<%=node.getUniqueName()%>", 
+				    "<%=node.getComponent().getName()%>", 
+				    jpu_<%=cid%>.getParametersMap(), 
+				    jpu_<%=cid%>.getComponentSchema(), 
+				    null,//String input_connectors, TODO
+				    null,//String output_connectors, TODO 
+				    null//Map<String, String> connector_name_2_connector_schema TODO
+				);
+				<%=jobStructureCatcher.getDesignSubjobStartNode().getUniqueName() %>Process(globalMap);
+			<%
+			}
+		}
 	}
 	if(stat){
 		boolean iterateInVFComp = (node.getVirtualLinkTo() != null && node.getVirtualLinkTo() == EConnectionType.ITERATE);

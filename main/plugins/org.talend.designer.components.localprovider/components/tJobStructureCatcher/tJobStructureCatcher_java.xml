@@ -1,0 +1,78 @@
+<COMPONENT>
+  <HEADER
+    PLATEFORM="ALL"
+    SERIAL=""
+    VERSION="0.1"
+    STATUS="BETA"
+    
+    COMPATIBILITY="ALL"
+    AUTHOR="Talend"
+    RELEASE_DATE="20061215A"
+    STARTABLE="true"
+    LOG4J_ENABLED="true"
+  >
+    <SIGNATURE></SIGNATURE>
+  </HEADER>
+
+  <FAMILIES>
+    <FAMILY>Logs_Errors</FAMILY>
+  </FAMILIES>
+
+  <DOCUMENTATION>
+    <URL/>
+  </DOCUMENTATION>
+
+  <CONNECTORS>
+    <CONNECTOR CTYPE="FLOW" MAX_INPUT="0" MAX_OUTPUT="1"/>
+    <CONNECTOR CTYPE="ITERATE" MAX_OUTPUT="1" MAX_INPUT="0"/>
+    <CONNECTOR CTYPE="SUBJOB_OK" MAX_INPUT="1" />
+    <CONNECTOR CTYPE="SUBJOB_ERROR" MAX_INPUT="1" />
+    <CONNECTOR CTYPE="COMPONENT_OK"/>
+    <CONNECTOR CTYPE="COMPONENT_ERROR"/>
+    <CONNECTOR CTYPE="RUN_IF"/>
+  </CONNECTORS>
+
+  <PARAMETERS>
+    <PARAMETER
+      NAME="SCHEMA"
+      FIELD="SCHEMA_TYPE"
+      READONLY="true" 
+      REQUIRED="true"
+      NUM_ROW="1"
+    >
+      <TABLE READONLY="true">
+        <COLUMN NAME="component_parameters" TYPE="id_String"/>
+        <COLUMN NAME="component_schema" TYPE="id_String"/>
+        <COLUMN NAME="input_connectors" TYPE="id_String"/>
+        <COLUMN NAME="output_connectors" TYPE="id_String"/>
+        <COLUMN NAME="connector_name_2_connector_schema" TYPE="id_String"/>
+        <COLUMN NAME="job_name" TYPE="id_String"/>
+        <COLUMN NAME="job_id" TYPE="id_String"/>
+        <COLUMN NAME="job_version" TYPE="id_String"/>
+        <COLUMN NAME="system_pid" TYPE="id_String"/>
+      </TABLE>
+    </PARAMETER>
+   </PARAMETERS>
+
+   <CODEGENERATION>
+		<IMPORTS>
+			<IMPORT NAME="audit-common" MODULE="audit-common-0.31.4-SNAPSHOT.jar" MVN="mvn:org.talend.daikon/audit-common/0.31.4-SNAPSHOT" REQUIRED="true" />
+			<!--<IMPORT NAME="audit-log4j1" MODULE="audit-log4j1-0.31.4-SNAPSHOT.jar" MVN="mvn:org.talend.daikon/audit-log4j1/0.31.4-SNAPSHOT" REQUIRED="true" /> -->
+			<IMPORT NAME="slf4j-api.jar" MODULE="slf4j-api-1.7.16.jar" MVN="mvn:org.slf4j/slf4j-api/1.7.16" REQUIRED="true" />
+      		<IMPORT NAME="slf4j-log4j12" MODULE="slf4j-log4j12-1.7.16.jar" MVN="mvn:org.slf4j/slf4j-log4j12/1.7.16" REQUIRED="true" />
+      		<IMPORT NAME="logging-event-layout" MODULE="logging-event-layout-0.31.4-SNAPSHOT.jar" MVN="mvn:org.talend.daikon/logging-event-layout/0.31.4-SNAPSHOT" REQUIRED="true" />
+      		<!--<IMPORT NAME="log4j" MODULE="log4j-1.2.17.jar" MVN="mvn:log4j/log4j/1.2.17"  UrlPath="platform:/plugin/org.talend.libraries.apache/lib/log4j-1.2.17.jar" REQUIRED="true"/>-->
+      		<IMPORT NAME="json-smart" MODULE="json-smart-2.2.1.jar" MVN="mvn:org.talend.libraries/json-smart-2.2.1/6.0.0" REQUIRED="true" /><!-- change the mvn path -->
+      		<IMPORT NAME="commons-lang" MODULE="commons-lang-2.6.jar" MVN="mvn:commons-lang/commons-lang/2.6" UrlPath="platform:/plugin/org.talend.libraries.apache.common/lib/commons-lang-2.6.jar" REQUIRED="true"/>
+      		<IMPORT NAME="asm" MODULE="asm-5.0.3.jar" MVN="mvn:org.ow2.asm/asm/5.0.3" REQUIRED="true" />
+      		<IMPORT NAME="accessors-smart" MODULE="accessors-smart-1.1.jar" MVN="mvn:net.minidev/accessors-smart/1.1" REQUIRED="true" />
+      		
+      		<IMPORT NAME="logback-classic" MODULE="logback-classic-1.2.3.jar" MVN="mvn:ch.qos.logback/logback-classic/1.2.3" REQUIRED="true" />
+      		<IMPORT NAME="logback-core" MODULE="logback-core-1.2.3.jar" MVN="mvn:ch.qos.logback/logback-core/1.2.3" REQUIRED="true" />
+      		<IMPORT NAME="audit-logback" MODULE="audit-logback-0.31.4-SNAPSHOT.jar" MVN="mvn:org.talend.daikon/audit-logback/0.31.4-SNAPSHOT" REQUIRED="true" />
+		</IMPORTS>
+	</CODEGENERATION>
+
+   <RETURNS/>
+
+</COMPONENT>

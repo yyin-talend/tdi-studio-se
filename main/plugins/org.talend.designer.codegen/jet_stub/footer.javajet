@@ -220,6 +220,8 @@
     public long startTime = 0;
     public boolean isChildJob = false;
     public String log4jLevel = "";
+    
+    private String logstashConfigFileLocation;
 
     private boolean execStat = true;
 
@@ -465,6 +467,20 @@
     	    }
         	log.info("TalendJob: '<%=codeGenArgument.getJobName()%>' - Start.");
     	<%}%>
+    	
+    	<%
+    	for (INode jobStructureCatcher : process.getNodesOfType("tJobStructureCatcher")) {
+		%>
+			if(logstashConfigFileLocation!=null) {
+				System.setProperty("talend.logging.audit.config", logstashConfigFileLocation);
+			} else {
+				//TODO remove it, only for test here
+				System.setProperty("talend.logging.audit.config", "/Users/wangwei/studio_logstash");
+			}
+			auditLogger_<%=jobStructureCatcher.getUniqueName()%> = org.talend.logging.audit.AuditLoggerFactory.getAuditLogger();
+		<%
+			}
+    	%>
 
         if(clientHost == null) {
             clientHost = defaultClientHost;
@@ -917,7 +933,7 @@ this.globalResumeTicket = false;//to run others jobs
             if("tHadoopConfManager".equals(componentName)) continue;
             if(implicit_Context!=null && implicit_Context.getUniqueName().equals(uniqueName)) continue;
 
-            if (!componentName.equals("tLogCatcher") && !componentName.equals("tFlowMeterCatcher") && !componentName.equals("tAssertCatcher") && !componentName.equals("tStatCatcher") && !componentName.equals("tAsyncIn")) {
+            if (!componentName.equals("tJobStructureCatcher") && !componentName.equals("tLogCatcher") && !componentName.equals("tFlowMeterCatcher") && !componentName.equals("tAssertCatcher") && !componentName.equals("tStatCatcher") && !componentName.equals("tAsyncIn")) {
 %>
 <%=createCallProcess(rootNode, className, false) %>
 <%    }
@@ -1442,6 +1458,8 @@ if (execStat) {
             }
         }else if (arg.startsWith("--log4jLevel=")) {
             log4jLevel = arg.substring(13);
+		} else if(arg.startsWith("--logstash=")) {
+			logstashConfigFileLocation = arg.substring(11);
 		}
 
     }
