@@ -103,16 +103,11 @@ public class ServerManager extends AbstractUIPlugin {
     }
 
     private void extractFiles() throws IOException {
-        final TemplatesExtractor stubExtractor = new TemplatesExtractor("jet_stub/generic",
-                Platform
-                        .asLocalURL(Platform.getPlugin("org.talend.designer.codegen").getDescriptor().getInstallURL())
-                        .getFile(),
-                "tacokit/jet_stub");
+        final String codegenUrl = Platform
+                .asLocalURL(Platform.getPlugin("org.talend.designer.codegen").getDescriptor().getInstallURL()).getFile();
+        final TemplatesExtractor stubExtractor = new TemplatesExtractor("jet_stub/generic", codegenUrl, "tacokit/jet_stub");
         stubExtractor.extract();
-        final TemplatesExtractor guessSchemaExtractor = new TemplatesExtractor("components/tTaCoKitGuessSchema",
-                Platform
-                        .asLocalURL(Platform.getPlugin("org.talend.designer.codegen").getDescriptor().getInstallURL())
-                        .getFile(),
+        final TemplatesExtractor guessSchemaExtractor = new TemplatesExtractor("components/tTaCoKitGuessSchema", codegenUrl,
                 "tacokit/components");
         guessSchemaExtractor.extract();
     }
