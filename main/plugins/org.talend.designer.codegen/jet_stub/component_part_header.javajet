@@ -210,7 +210,7 @@
              cid = cid.substring(0,cid.length()-4);// 4 ==> "_out".length();
         }
         //filter talendStat_xxx and so on 
-		if (!cid.startsWith("tJobStructureCatcher") && !cid.startsWith("talend") && !cid.startsWith("talend") && node.getProcess().getNodesOfType("tJobStructureCatcher").size() > 0) {
+		if (!cid.startsWith("tJobStructureCatcher") && !cid.startsWith("talend") && node.getProcess().getNodesOfType("tJobStructureCatcher").size() > 0) {
 			for (INode jobStructureCatcher : node.getProcess().getNodesOfType("tJobStructureCatcher")) {
 			%>
 				class JobParametersUtil_<%=cid%>{
