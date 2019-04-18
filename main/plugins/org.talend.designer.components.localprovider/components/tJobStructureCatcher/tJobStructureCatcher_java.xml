@@ -70,6 +70,8 @@
       		<IMPORT NAME="logback-classic" MODULE="logback-classic-1.2.3.jar" MVN="mvn:ch.qos.logback/logback-classic/1.2.3" REQUIRED="true" />
       		<IMPORT NAME="logback-core" MODULE="logback-core-1.2.3.jar" MVN="mvn:ch.qos.logback/logback-core/1.2.3" REQUIRED="true" />
       		<IMPORT NAME="audit-logback" MODULE="audit-logback-0.31.4-SNAPSHOT.jar" MVN="mvn:org.talend.daikon/audit-logback/0.31.4-SNAPSHOT" REQUIRED="true" />
+      		
+      		<IMPORT NAME="job-audit" MODULE="job-audit-0.1-SNAPSHOT.jar" MVN="mvn:org.talend.job/job-audit/0.1-SNAPSHOT" REQUIRED="true" />
 		</IMPORTS>
 	</CODEGENERATION>
 

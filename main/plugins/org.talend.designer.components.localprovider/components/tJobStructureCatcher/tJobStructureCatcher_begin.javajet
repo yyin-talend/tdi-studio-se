@@ -26,16 +26,24 @@
     	<%=conn.getName() %>.output_connectors = jcm.getOutput_connectors();
     	<%=conn.getName() %>.connector_name_2_connector_schema = jcm.getConnector_name_2_connector_schema();
 		<%=conn.getName() %>.job_name = jcm.getJobName();
-		<%=conn.getName() %>.job_id = scm.getJobId();
-		<%=conn.getName() %>.job_version = scm.getJobVersion();
-		<%=conn.getName() %>.system_pid = scm.getSystemPid();
+		<%=conn.getName() %>.job_id = jcm.getJobId();
+		<%=conn.getName() %>.job_version = jcm.getJobVersion();
+		<%=conn.getName() %>.system_pid = jcm.getSystemPid();
 		*/
 <%
 		}
 	}
 %>
-		
-		auditLogger_<%=cid%>.info("jobstruct", "schema : " + jcm.getComponent_schema());
-		auditLogger_<%=cid%>.info("jobstruct", "parameters : " + jcm.getComponent_parameters());
+		org.talend.logging.audit.Context log_context_<%=cid%> = null;
+		if(jcm.getComponent_name() == null) {//job level log
+			log_context_<%=cid%> = org.talend.job.audit.JobContextBuilder.create().jobName(jcm.getJobName()).jobId(jcm.getJobId())
+				.jobVersion(jcm.getJobVersion()).build();
+			auditLogger_<%=cid%>.runjob(log_context_<%=cid%>);
+		} else {//component level lop
+			log_context_<%=cid%> = org.talend.job.audit.JobContextBuilder.create().jobName(jcm.getJobName()).jobId(jcm.getJobId())
+				.jobVersion(jcm.getJobVersion()).connectorType(jcm.getComponent_name()).connectorId(jcm.getComponent_id()).parameters(jcm.getComponent_parameters().toString()).build();
+			auditLogger_<%=cid%>.runcomponent(log_context_<%=cid%>);
+		}
+
 		
 	}

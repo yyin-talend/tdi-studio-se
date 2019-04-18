@@ -209,7 +209,8 @@
         if(cid.matches("^.*?tAmazonAuroraOutput_\\d+_out$") || cid.matches("^.*?tDBOutput_\\d+_out$")){
              cid = cid.substring(0,cid.length()-4);// 4 ==> "_out".length();
         }
-		if (!cid.startsWith("tJobStructureCatcher") && node.getProcess().getNodesOfType("tJobStructureCatcher").size() > 0) {
+        //filter talendStat_xxx and so on 
+		if (!cid.startsWith("tJobStructureCatcher") && !cid.startsWith("talend") && !cid.startsWith("talend") && node.getProcess().getNodesOfType("tJobStructureCatcher").size() > 0) {
 			for (INode jobStructureCatcher : node.getProcess().getNodesOfType("tJobStructureCatcher")) {
 			%>
 				class JobParametersUtil_<%=cid%>{
@@ -304,7 +305,8 @@
 							java.util.Map<String, String> column_<%=cid%>_<%=(++i)%> = new java.util.HashMap<>();
 							column_<%=cid%>_<%=(i)%>.put("label", "<%=column.getLabel()%>");
 							column_<%=cid%>_<%=(i)%>.put("talend_type", "<%=column.getTalendType()%>");
-							column_<%=cid%>_<%=(i)%>.put("pattern", "<%=column.getPattern()%>");
+							//do it later
+							//column_<%=cid%>_<%=(i)%>.put("pattern", <%=column.getPattern()%>);
 							column_<%=cid%>_<%=(i)%>.put("length", "<%=column.getLength()%>");
 							column_<%=cid%>_<%=(i)%>.put("precision", "<%=column.getPrecision()%>");
 							column_<%=cid%>_<%=(i)%>.put("origin_source_column_name", "<%=column.getOriginalDbColumnName()%>");

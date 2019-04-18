@@ -477,7 +477,7 @@
 				//TODO remove it, only for test here
 				System.setProperty("talend.logging.audit.config", "/Users/wangwei/studio_logstash");
 			}
-			auditLogger_<%=jobStructureCatcher.getUniqueName()%> = org.talend.logging.audit.AuditLoggerFactory.getAuditLogger();
+			auditLogger_<%=jobStructureCatcher.getUniqueName()%> = org.talend.logging.audit.AuditLoggerFactory.getEventAuditLogger(org.talend.job.audit.JobAuditLogger.class);
 		<%
 			}
     	%>
@@ -754,7 +754,7 @@ if(execStat) {
         <%=statCatcherNode.getUniqueName() %>.addMessage("begin");
 <%
         }
-
+        
         List<INode> prejobNodes = new ArrayList<INode>();
 
         List<INode> postjobNodes = new ArrayList<INode>();
@@ -845,6 +845,25 @@ this.globalResumeTicket = true;//to run tPreJob
         }
 <%
         }
+        
+        for (INode jobCatcherNode : process.getNodesOfType("tJobStructureCatcher")) {
+%>
+        <%=jobCatcherNode.getUniqueName() %>.addMessage(
+		    null, 
+		    null, 
+		    null, 
+		    null,
+		    null,
+		    null,
+		    null
+		);
+        try {
+            <%=jobCatcherNode.getDesignSubjobStartNode().getUniqueName() %>Process(globalMap);
+        } catch (java.lang.Exception e) {
+            e.printStackTrace();
+        }
+<%
+        }
 %>
 
 this.globalResumeTicket = false;//to run others jobs
@@ -869,7 +888,7 @@ this.globalResumeTicket = false;//to run others jobs
 
             if(implicit_Context!=null && implicit_Context.getUniqueName().equals(uniqueName)) continue;
 
-            if (!componentName.equals("tLogCatcher") && !componentName.equals("tFlowMeterCatcher") && !componentName.equals("tAssertCatcher") && !componentName.equals("tStatCatcher")) {
+            if (!componentName.equals("tJobStructureCatcher") && !componentName.equals("tLogCatcher") && !componentName.equals("tFlowMeterCatcher") && !componentName.equals("tAssertCatcher") && !componentName.equals("tStatCatcher")) {
 %>
         runningThreadCount.add(1);
         new Thread(){
