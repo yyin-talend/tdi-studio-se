@@ -452,5 +452,16 @@ public class GenericDBService implements IGenericDBService{
         }
         return type;
     }
+
+	@Override
+	public boolean isJDBC(Properties pro) {
+		if(pro == null) {
+			return false;
+		}
+		if("org.talend.components.jdbc.module.DriverTable".equals(pro.getClass().getName())) {
+			return true;
+		}
+		return false;
+	}
     
 }
