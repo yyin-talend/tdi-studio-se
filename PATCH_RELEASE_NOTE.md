@@ -9,8 +9,8 @@ product:
 
 | Info             | Value |
 | ---------------- | ---------------- |
-| Patch Name       | Patch_20190505_TPS-3029_v1-7.0.1 |
-| Release Date     | 2019-05-05 |
+| Patch Name       | Patch_20190506_TPS-3029_v1-7.0.1 |
+| Release Date     | 2019-05-06 |
 | Target Version   | 20180411_1414-V7.0.1 |
 | Product affected | Talend Studio |
 
