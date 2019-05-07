@@ -9,8 +9,8 @@ product:
 
 | Info             | Value |
 | ---------------- | ---------------- |
-| Patch Name       | Patch_20190506_TPS-3029_v1-7.0.1 |
-| Release Date     | 2019-05-06 |
+| Patch Name       | Patch_20190507_TPS-3029_v1-7.0.1 |
+| Release Date     | 2019-05-07 |
 | Target Version   | 20180411_1414-V7.0.1 |
 | Product affected | Talend Studio |
 
@@ -35,6 +35,8 @@ Consider the following requirements for your system:
 ## Installation
 
 ### Installing the patch using Software update
+
+**NOTE**: If the customer has not yet installed any patch before with Nexus3, a TUP patch named Patch_20180510_TPS-2482_v1-7.0.1.zip must be deployed first in the appoarch "Installing the patch using Talend Studio".
 
 1) Logon TAC and switch to Configuration->Software Update, then enter the correct values and save referring to the documentation: https://help.talend.com/reader/f7Em9WV_cPm2RRywucSN0Q/j9x5iXV~vyxMlUafnDejaQ
 
