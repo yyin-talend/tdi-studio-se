@@ -26,7 +26,7 @@ This is a self-contained patch.
 
 This patch contains the following fixes:
 
-- TPS-3083> resolves NoSuchMethodError when Having tGSConnection and tS3Connection Components Within one Job (TBD-8343)
+- TPS-3083 resolves NoSuchMethodError when Having tGSConnection and tS3Connection Components Within one Job (TBD-8343)
 
 
 
