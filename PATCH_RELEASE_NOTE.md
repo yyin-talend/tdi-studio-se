@@ -37,6 +37,7 @@ This patch contains the following fixes:
 Consider the following requirements for your system:
 
 - Talend Studio 7.1.1 must be installed.
+- The current patch should be installed with Patch\_20190516\_TPS-3108\_v1-7.1.1
 
 
 ## Installation <!-- mandatory -->
