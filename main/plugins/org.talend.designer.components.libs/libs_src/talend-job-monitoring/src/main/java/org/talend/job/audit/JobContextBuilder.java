@@ -59,6 +59,30 @@ public class JobContextBuilder {
         builder.with("rows", String.valueOf(rowCount));
         return this;
     }
+    
+    //output or reject
+    public JobContextBuilder connectionType(String connectionType) {
+        builder.with("connectionType", connectionType);
+        return this;
+    }
+    
+    //like "row1"
+    public JobContextBuilder connectionName(String connectionName) {
+        builder.with("connectionName", connectionName);
+        return this;
+    }
+    
+    //100s
+    public JobContextBuilder time(String time) {
+        builder.with("time", time);
+        return this;
+    }
+    
+    //500rows/s
+    public JobContextBuilder speed(String speed) {
+        builder.with("speed", speed);
+        return this;
+    }
 
     public Context build() {
         return builder.build();

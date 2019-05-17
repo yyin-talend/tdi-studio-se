@@ -47,6 +47,8 @@ iterateConnSet.addAll(node.getOutgoingConnections(EConnectionType.ITERATE));
 
 List<IConnection> allSubProcessConnection = codeGenArgument.getAllMainSubTreeConnections();
 
+String cid = node.getUniqueName();
+
 if((codePart.equals(ECodePart.END))&&(stat)){
 	boolean iterateInVFComp = (node.getVirtualLinkTo() != null && node.getVirtualLinkTo() == EConnectionType.ITERATE);
 	if(iterateInVFComp){
@@ -74,6 +76,71 @@ if((codePart.equals(ECodePart.END))&&(stat)){
 			 	}
 			}
 		<%
+	  	}
+	}
+}
+
+if(codePart.equals(ECodePart.END)) {
+	if(connSet.size()>0){
+	  	for(IConnection con:connSet){
+			INode source = con.getSource();
+			String sourceNodeId = null;
+			String sourceNodeComponent = null;
+			sourceNodeId = source.getUniqueName();
+			sourceNodeComponent = source.getComponent().getName();
+			
+	        //filter talendStat_xxx and so on 
+			if (!cid.startsWith("tJobStructureCatcher") && !cid.startsWith("talend") && node.getProcess().getNodesOfType("tJobStructureCatcher").size() > 0) {
+				for (INode jobStructureCatcher : node.getProcess().getNodesOfType("tJobStructureCatcher")) {
+				%>
+					if(resourceMap.get("inIterateVComp") == null || !((Boolean)resourceMap.get("inIterateVComp"))){
+				 		RunStat.StatBean talend_statebean = runStat.logStatOnConnection("<%=con.getUniqueName()%>"+iterateId,2, 0);
+				 		
+				 		//work for output/reject connector from source component
+				 		<%=jobStructureCatcher.getUniqueName() %>.addMessage(
+						    "<%=sourceNodeId%>", 
+						    "<%=sourceNodeComponent%>", 
+						    null, 
+						    null,
+						    null,
+						    null,
+						    null,
+						    false,
+						    "<%="REJECT".equals(con.getConnectorName()) ? "reject" : "output"%>",
+						    "<%=con.getUniqueName()%>",
+						    null,
+						    0,
+						    talend_statebean.getNbLine(),
+						    talend_statebean.getStartTime(),
+						    talend_statebean.getEndTime()
+						);
+						
+						//work for input connector to target component
+				 		<%=jobStructureCatcher.getUniqueName() %>.addMessage(
+						    "<%=node.getUniqueName()%>", 
+						    "<%=node.getComponent().getName()%>", 
+						    null, 
+						    null,
+						    null,
+						    null,
+						    null,
+						    true,
+						    "input",
+						    "<%=con.getUniqueName()%>",
+						    null,
+						    0,
+						    talend_statebean.getNbLine(),
+						    talend_statebean.getStartTime(),
+						    talend_statebean.getEndTime()
+						);
+						<%=jobStructureCatcher.getDesignSubjobStartNode().getUniqueName() %>Process(globalMap);
+				 		
+				 		talend_statebean = null;
+				 	}
+				<%
+					break;
+				}
+			}
 	  	}
 	}
 }

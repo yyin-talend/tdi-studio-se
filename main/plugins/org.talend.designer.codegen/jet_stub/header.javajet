@@ -363,7 +363,9 @@ public <%=JavaTypesManager.getTypeToGenerate(ctxParam.getType(),true)%> get<%=Ch
 	%>
 
 <%
-	if (stats) {
+	List<? extends INode> jobCatcherNodes = process.getNodesOfType("tJobStructureCatcher");
+	boolean enableLogStash = jobCatcherNodes != null || !jobCatcherNodes.isEmpty();
+	if (stats || enableLogStash) {
 %>
 private RunStat runStat = new RunStat();
 <%
@@ -404,7 +406,8 @@ private RunTrace runTrace = new RunTrace();
 <%
 	}
 	
-	for (INode jobStructureCatcher : process.getNodesOfType("tJobStructureCatcher")) {
+	for (INode jobStructureCatcher : jobCatcherNodes) {
+		enableLogStash = true;
 %>
 	JobStructureCatcherUtils <%=jobStructureCatcher.getUniqueName() %> = new JobStructureCatcherUtils(jobName, "<%=process.getId() %>", "<%=process.getVersion() %>");
 	org.talend.job.audit.JobAuditLogger auditLogger_<%=jobStructureCatcher.getUniqueName()%> = null;

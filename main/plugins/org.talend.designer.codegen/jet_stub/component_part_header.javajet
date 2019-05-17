@@ -160,6 +160,24 @@
 		}
 	}
 	
+	String cid = node.getUniqueName();
+	
+	if(codePart.equals(ECodePart.BEGIN)&&connSet.size()>0) {
+	  	for(IConnection con:connSet){
+	        //filter talendStat_xxx and so on 
+			if (!cid.startsWith("tJobStructureCatcher") && !cid.startsWith("talend") && node.getProcess().getNodesOfType("tJobStructureCatcher").size() > 0) {
+				for (INode jobStructureCatcher : node.getProcess().getNodesOfType("tJobStructureCatcher")) {
+				%>
+					if(resourceMap.get("inIterateVComp") == null){
+				 		runStat.logStatOnConnection("<%=con.getUniqueName()%>"+iterateId,0, 0);
+				 	}
+				<%
+					break;
+				}
+			}
+	  	}
+	}
+	
 	if((codePart.equals(ECodePart.MAIN))&&(stat)&&connSet.size()>0){
 		for(IConnection con:connSet){
 		%>
@@ -183,6 +201,29 @@
 		<%
 		}
 	}
+	
+	if((codePart.equals(ECodePart.MAIN))&&connSet.size()>0){
+		for(IConnection con:connSet){
+			//filter talendStat_xxx and so on 
+			if (!cid.startsWith("tJobStructureCatcher") && !cid.startsWith("talend") && node.getProcess().getNodesOfType("tJobStructureCatcher").size() > 0) {
+				for (INode jobStructureCatcher : node.getProcess().getNodesOfType("tJobStructureCatcher")) {
+				%>
+					
+					<%if (!node.getComponent().useMerge()) {%>
+						runStat.logStatOnConnection("<%=con.getUniqueName() %>"+iterateId,1, 1);
+					<%
+					} else if(con.getUniqueName().equals((String)codeGenArgument.getIncomingName())){
+					%>
+						runStat.logStatOnConnection("<%=con.getUniqueName() %>"+iterateId,1, 1);
+					<%}%>
+			
+				<%
+					break;
+				}
+			}
+		}
+	}
+	
 	Set<IConnection> connSetForLog =  new HashSet<IConnection>();
 	connSetForLog.addAll(node.getIncomingConnections(EConnectionType.FLOW_MAIN));
 	connSetForLog.addAll(node.getIncomingConnections(EConnectionType.FLOW_MERGE));
@@ -203,8 +244,6 @@
 		<%
 		log.startWork();
 		log.logCompSetting();
-		
-		String cid = node.getUniqueName();
 		
         if(cid.matches("^.*?tAmazonAuroraOutput_\\d+_out$") || cid.matches("^.*?tDBOutput_\\d+_out$")){
              cid = cid.substring(0,cid.length()-4);// 4 ==> "_out".length();
@@ -301,12 +340,13 @@
 						<%
 						int i = 0;
 						for(IMetadataColumn column: metadata.getListColumns()){
+							String pattern = column.getPattern();
+							pattern = (pattern == null || pattern.trim().isEmpty()) ? null : pattern;
 							%>
 							java.util.Map<String, String> column_<%=cid%>_<%=(++i)%> = new java.util.HashMap<>();
 							column_<%=cid%>_<%=(i)%>.put("label", "<%=column.getLabel()%>");
 							column_<%=cid%>_<%=(i)%>.put("talend_type", "<%=column.getTalendType()%>");
-							//do it later
-							//column_<%=cid%>_<%=(i)%>.put("pattern", <%=column.getPattern()%>);
+							column_<%=cid%>_<%=(i)%>.put("pattern", <%=pattern%>);
 							column_<%=cid%>_<%=(i)%>.put("length", "<%=column.getLength()%>");
 							column_<%=cid%>_<%=(i)%>.put("precision", "<%=column.getPrecision()%>");
 							column_<%=cid%>_<%=(i)%>.put("origin_source_column_name", "<%=column.getOriginalDbColumnName()%>");
@@ -327,7 +367,15 @@
 				    jpu_<%=cid%>.getComponentSchema(), 
 				    null,//String input_connectors, TODO
 				    null,//String output_connectors, TODO 
-				    null//Map<String, String> connector_name_2_connector_schema TODO
+				    null,//Map<String, String> connector_name_2_connector_schema TODO
+				    false,
+				    null,
+				    null,
+				    null,
+				    0,
+				    0,
+				    0,
+				    0
 				);
 				<%=jobStructureCatcher.getDesignSubjobStartNode().getUniqueName() %>Process(globalMap);
 			<%
