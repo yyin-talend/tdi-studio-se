@@ -9,8 +9,8 @@ product:
 
 | Info             | Value |
 | ---------------- | ----------------  |
-| Patch Name       | Patch_20190515_TPS-3001_v1-6.4.1 |
-| Release Date     | 2019-05-15                       |
+| Patch Name       | Patch_20190517_TPS-3001_v1-6.4.1 |
+| Release Date     | 2019-05-17                       |
 | Target Version   | Talend-Studio-20170623_1246-V6.4.1 |
 | Product affected | Talend Studio |
 
@@ -36,8 +36,6 @@ Consider the following requirements for your system:
 
 ### Installing the patch using Software update
 
-**NOTE**: If the customer has not yet installed any patch before with Nexus3, a TUP patch named Patch_20180510_TPS-2482_v1-7.0.1.zip must be deployed first in the approach "Installing the patch using Talend Studio".
-
 1) Logon TAC and switch to Configuration->Software Update, then enter the correct values and save referring to the documentation: https://help.talend.com/reader/f7Em9WV_cPm2RRywucSN0Q/j9x5iXV~vyxMlUafnDejaQ
 
 2) Switch to Software update page, where the new patch will be listed. The patch can be downloaded from here into the nexus repository.
@@ -57,16 +55,6 @@ Execute the following commands:
 1. Talend-Studio-win-x86_64.exe -nosplash -application org.talend.commandline.CommandLine -consoleLog -data commandline-workspace startServer -p 8002 --talendDebug
 2. initRemote {tac_url} -ul {TAC login username} -up {TAC login password}
 3. checkAndUpdate -tu {TAC login username} -tup {TAC login password}
-
-## Uninstallation <!-- if applicable -->
-
-<!--
-Detailed instructions to uninstall the patch
-
-In case this patch cannot be uninstalled, it is your responsability to define the backup procedures for your organization before installing.
-
--->
-Backup the Affected files list below. Uninstall the patch by restore the backup files.
 
 ## Affected files for this patch <!-- if applicable -->
 
