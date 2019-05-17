@@ -221,7 +221,7 @@
     public boolean isChildJob = false;
     public String log4jLevel = "";
     
-    private String logstashConfigFileLocation;
+    private String logstash;
 
     private boolean execStat = true;
 
@@ -470,14 +470,18 @@
     	
     	<%
     	for (INode jobStructureCatcher : process.getNodesOfType("tJobStructureCatcher")) {
+    		String url = ElementParameterParser.getValue(jobStructureCatcher, "__HTTP_URL__");
 		%>
-			if(logstashConfigFileLocation!=null) {
-				System.setProperty("talend.logging.audit.config", logstashConfigFileLocation);
-			} else {
-				//TODO remove it, only for test here
-				System.setProperty("talend.logging.audit.config", "/Users/wangwei/studio_logstash");
-			}
-			auditLogger_<%=jobStructureCatcher.getUniqueName()%> = org.talend.logging.audit.AuditLoggerFactory.getEventAuditLogger(org.talend.job.audit.JobAuditLogger.class);
+			java.util.Properties properties_<%=jobStructureCatcher.getUniqueName()%> = new java.util.Properties();
+			properties_<%=jobStructureCatcher.getUniqueName()%>.setProperty("root.logger", "audit");
+			properties_<%=jobStructureCatcher.getUniqueName()%>.setProperty("encoding", "UTF-8");
+			properties_<%=jobStructureCatcher.getUniqueName()%>.setProperty("application.name", "Talend Studio");
+			properties_<%=jobStructureCatcher.getUniqueName()%>.setProperty("service.name", "Talend Studio Job");
+			properties_<%=jobStructureCatcher.getUniqueName()%>.setProperty("instance.name", "Talend Studio Job Instance");
+			properties_<%=jobStructureCatcher.getUniqueName()%>.setProperty("propagate.appender.exceptions", "none");
+			properties_<%=jobStructureCatcher.getUniqueName()%>.setProperty("log.appender", "http");
+			properties_<%=jobStructureCatcher.getUniqueName()%>.setProperty("appender.http.url", <%=url%>);
+			auditLogger_<%=jobStructureCatcher.getUniqueName()%> = org.talend.job.audit.JobEventAuditLoggerFactory.createJobAuditLogger(properties_<%=jobStructureCatcher.getUniqueName()%>);
 		<%
 			}
     	%>
@@ -1493,7 +1497,7 @@ if (execStat) {
         }else if (arg.startsWith("--log4jLevel=")) {
             log4jLevel = arg.substring(13);
 		} else if(arg.startsWith("--logstash=")) {
-			logstashConfigFileLocation = arg.substring(11);
+			logstash = arg.substring(11);
 		}
 
     }

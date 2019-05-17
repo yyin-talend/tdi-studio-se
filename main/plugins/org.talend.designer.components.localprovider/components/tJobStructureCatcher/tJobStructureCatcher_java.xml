@@ -52,7 +52,11 @@
         <COLUMN NAME="system_pid" TYPE="id_String"/>
       </TABLE>
     </PARAMETER>
-   </PARAMETERS>
+    
+    <PARAMETER NAME="HTTP_URL" FIELD="TEXT" NUM_ROW="10">
+	  <DEFAULT>"http://localhost:8057/"</DEFAULT>
+	</PARAMETER>
+  </PARAMETERS>
 
    <CODEGENERATION>
 		<IMPORTS>

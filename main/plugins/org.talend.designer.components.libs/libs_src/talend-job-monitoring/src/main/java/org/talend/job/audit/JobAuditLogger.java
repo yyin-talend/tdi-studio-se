@@ -13,10 +13,10 @@ public interface JobAuditLogger extends EventAuditLogger {
 	@AuditEvent(category = "connector", message = "Component run : job_name:{jobName}, job_version:{jobVersion}, job_id:{jobId}, connector_type:{connectorType}, connector_id:{connectorId}, parameters:{parameters}", level = LogLevel.INFO)
     void runcomponent(Context context);
 
-    @AuditEvent(category = "connector", message = "Component {connectorType} {connectionType} {rows} rows in {time} and speed is {speed} with {connectionName} line", level = LogLevel.INFO)
+    @AuditEvent(category = "connection", message = "Component {connectorType} {connectionType} {rows} rows in {time} and speed is {speed} with {connectionName} line", level = LogLevel.INFO)
     void flowOutput(Context context);
     
-    @AuditEvent(category = "connector", message = "Component {connectorType} received {rows} rows in {time} and speed is {speed} with {connectionName} line", level = LogLevel.INFO)
+    @AuditEvent(category = "connection", message = "Component {connectorType} received {rows} rows in {time} and speed is {speed} with {connectionName} line", level = LogLevel.INFO)
     void flowInput(Context context);
 
 }
