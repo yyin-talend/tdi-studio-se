@@ -53,8 +53,8 @@
       </TABLE>
     </PARAMETER>
     
-    <PARAMETER NAME="HTTP_URL" FIELD="TEXT" NUM_ROW="10">
-	  <DEFAULT>"http://localhost:8057/"</DEFAULT>
+    <PARAMETER NAME="LOCATION" FIELD="TEXT" NUM_ROW="10">
+	  <DEFAULT>"audit.json"</DEFAULT>
 	</PARAMETER>
 	
 	<PARAMETER NAME="LOG_LEVEL" FIELD="CLOSED_LIST" NUM_ROW="25">
@@ -68,7 +68,7 @@
 
    <CODEGENERATION>
 		<IMPORTS>
-			<IMPORT NAME="audit-common" MODULE="audit-common-0.31.4-SNAPSHOT.jar" MVN="mvn:org.talend.daikon/audit-common/0.31.4-SNAPSHOT" REQUIRED="true" />
+			<IMPORT NAME="audit-common" MODULE="audit-common-0.31.5-SNAPSHOT.jar" MVN="mvn:org.talend.daikon/audit-common/0.31.5-SNAPSHOT" REQUIRED="true" />
 			<!--<IMPORT NAME="audit-log4j1" MODULE="audit-log4j1-0.31.4-SNAPSHOT.jar" MVN="mvn:org.talend.daikon/audit-log4j1/0.31.4-SNAPSHOT" REQUIRED="true" /> -->
 			<IMPORT NAME="slf4j-api.jar" MODULE="slf4j-api-1.7.16.jar" MVN="mvn:org.slf4j/slf4j-api/1.7.16" REQUIRED="true" />
       		<IMPORT NAME="slf4j-log4j12" MODULE="slf4j-log4j12-1.7.16.jar" MVN="mvn:org.slf4j/slf4j-log4j12/1.7.16" REQUIRED="true" />
@@ -81,7 +81,7 @@
       		
       		<IMPORT NAME="logback-classic" MODULE="logback-classic-1.2.3.jar" MVN="mvn:ch.qos.logback/logback-classic/1.2.3" REQUIRED="true" />
       		<IMPORT NAME="logback-core" MODULE="logback-core-1.2.3.jar" MVN="mvn:ch.qos.logback/logback-core/1.2.3" REQUIRED="true" />
-      		<IMPORT NAME="audit-logback" MODULE="audit-logback-0.31.4-SNAPSHOT.jar" MVN="mvn:org.talend.daikon/audit-logback/0.31.4-SNAPSHOT" REQUIRED="true" />
+      		<IMPORT NAME="audit-logback" MODULE="audit-logback-0.31.5-SNAPSHOT.jar" MVN="mvn:org.talend.daikon/audit-logback/0.31.5-SNAPSHOT" REQUIRED="true" />
       		
       		<IMPORT NAME="job-audit" MODULE="job-audit-0.1-SNAPSHOT.jar" MVN="mvn:org.talend.job/job-audit/0.1-SNAPSHOT" REQUIRED="true" />
 		</IMPORTS>

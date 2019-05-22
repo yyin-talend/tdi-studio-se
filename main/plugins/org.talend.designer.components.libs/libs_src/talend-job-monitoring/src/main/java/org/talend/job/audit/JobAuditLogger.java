@@ -7,8 +7,11 @@ import org.talend.logging.audit.LogLevel;
 
 public interface JobAuditLogger extends EventAuditLogger {
 	
-	@AuditEvent(category = "job", message = "Run job : job_name:{jobName}, job_version:{jobVersion}, job_id:{jobId}", level = LogLevel.INFO)
-    void runjob(Context context);
+	@AuditEvent(category = "job", message = "Job start : job_name:{jobName}, job_version:{jobVersion}, job_id:{jobId}, timestamp:{timestamp}", level = LogLevel.INFO)
+    void jobstart(Context context);
+	
+	@AuditEvent(category = "job", message = "Job stop : job_name:{jobName}, job_version:{jobVersion}, job_id:{jobId}, timestamp:{timestamp}, status:{status}, time:{time}", level = LogLevel.INFO)
+    void jobstop(Context context);
 	
 	@AuditEvent(category = "connector", message = "Component run : job_name:{jobName}, job_version:{jobVersion}, job_id:{jobId}, connector_type:{connectorType}, connector_id:{connectorId}, parameters:{parameters}", level = LogLevel.INFO)
     void runcomponent(Context context);

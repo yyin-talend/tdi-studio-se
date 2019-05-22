@@ -221,7 +221,7 @@
     public boolean isChildJob = false;
     public String log4jLevel = "";
     
-    private String logstash;
+    private boolean enableLogStash;
 
     private boolean execStat = true;
 
@@ -433,7 +433,7 @@
     public int runJobInTOS(String[] args) {
 	   	// reset status
 	   	status = "";
-
+	   	
         String lastStr = "";
         for (String arg : args) {
             if (arg.equalsIgnoreCase("--context_param")) {
@@ -470,20 +470,28 @@
     	
     	<%
     	for (INode jobStructureCatcher : process.getNodesOfType("tJobStructureCatcher")) {
-    		String url = ElementParameterParser.getValue(jobStructureCatcher, "__HTTP_URL__");
+    		String location = ElementParameterParser.getValue(jobStructureCatcher, "__LOCATION__");
 		%>
-			java.util.Properties properties_<%=jobStructureCatcher.getUniqueName()%> = new java.util.Properties();
-			properties_<%=jobStructureCatcher.getUniqueName()%>.setProperty("root.logger", "audit");
-			properties_<%=jobStructureCatcher.getUniqueName()%>.setProperty("encoding", "UTF-8");
-			properties_<%=jobStructureCatcher.getUniqueName()%>.setProperty("application.name", "Talend Studio");
-			properties_<%=jobStructureCatcher.getUniqueName()%>.setProperty("service.name", "Talend Studio Job");
-			properties_<%=jobStructureCatcher.getUniqueName()%>.setProperty("instance.name", "Talend Studio Job Instance");
-			properties_<%=jobStructureCatcher.getUniqueName()%>.setProperty("propagate.appender.exceptions", "none");
-			properties_<%=jobStructureCatcher.getUniqueName()%>.setProperty("log.appender", "http");
-			properties_<%=jobStructureCatcher.getUniqueName()%>.setProperty("appender.http.url", <%=url%>);
-			auditLogger_<%=jobStructureCatcher.getUniqueName()%> = org.talend.job.audit.JobEventAuditLoggerFactory.createJobAuditLogger(properties_<%=jobStructureCatcher.getUniqueName()%>);
-		<%
+			if(enableLogStash) {
+				java.util.Properties properties_<%=jobStructureCatcher.getUniqueName()%> = new java.util.Properties();
+				properties_<%=jobStructureCatcher.getUniqueName()%>.setProperty("root.logger", "audit");
+				properties_<%=jobStructureCatcher.getUniqueName()%>.setProperty("encoding", "UTF-8");
+				properties_<%=jobStructureCatcher.getUniqueName()%>.setProperty("application.name", "Talend Studio");
+				properties_<%=jobStructureCatcher.getUniqueName()%>.setProperty("service.name", "Talend Studio Job");
+				properties_<%=jobStructureCatcher.getUniqueName()%>.setProperty("instance.name", "Talend Studio Job Instance");
+				properties_<%=jobStructureCatcher.getUniqueName()%>.setProperty("propagate.appender.exceptions", "none");
+				//properties_<%=jobStructureCatcher.getUniqueName()%>.setProperty("log.appender", "http");
+				//properties_<%=jobStructureCatcher.getUniqueName()%>.setProperty("appender.http.url", <%=location%>);
+				properties_<%=jobStructureCatcher.getUniqueName()%>.setProperty("log.appender", "file");
+				properties_<%=jobStructureCatcher.getUniqueName()%>.setProperty("appender.file.path", <%=location%>);
+				properties_<%=jobStructureCatcher.getUniqueName()%>.setProperty("appender.file.maxsize", "52428800");
+				properties_<%=jobStructureCatcher.getUniqueName()%>.setProperty("appender.file.maxbackup", "20");
+				
+				auditLogger_<%=jobStructureCatcher.getUniqueName()%> = org.talend.job.audit.JobEventAuditLoggerFactory.createJobAuditLogger(properties_<%=jobStructureCatcher.getUniqueName()%>);
 			}
+		<%
+			break;
+		}
     	%>
 
         if(clientHost == null) {
@@ -855,29 +863,33 @@ this.globalResumeTicket = true;//to run tPreJob
         
         for (INode jobCatcherNode : process.getNodesOfType("tJobStructureCatcher")) {
 %>
-        <%=jobCatcherNode.getUniqueName() %>.addMessage(
-		    null, 
-		    null, 
-		    null, 
-		    null,
-		    null,
-		    null,
-		    null,
-		    false,
-		    null,
-		    null,
-		    null,
-		    0,
-		    0,
-		    0,
-		    0
-		);
-        try {
-            <%=jobCatcherNode.getDesignSubjobStartNode().getUniqueName() %>Process(globalMap);
-        } catch (java.lang.Exception e) {
-            e.printStackTrace();
+		if(enableLogStash) {
+	        <%=jobCatcherNode.getUniqueName() %>.addMessage(
+			    null, 
+			    null, 
+			    null, 
+			    null,
+			    null,
+			    null,
+			    null,
+			    false,
+			    null,
+			    null,
+			    null,
+			    0,
+			    0,
+			    0,
+			    0,
+			    null
+			);
+	        try {
+	            <%=jobCatcherNode.getDesignSubjobStartNode().getUniqueName() %>Process(globalMap);
+	        } catch (java.lang.Exception e) {
+	            e.printStackTrace();
+	        }
         }
 <%
+			break;
         }
 %>
 
@@ -1012,6 +1024,37 @@ this.globalResumeTicket = true;//to run tPostJob
         }
 <%
     }
+    
+    for (INode jobCatcherNode : process.getNodesOfType("tJobStructureCatcher")) {
+%>
+		if(enableLogStash) {
+	        <%=jobCatcherNode.getUniqueName() %>.addMessage(
+			    null, 
+			    null, 
+			    null, 
+			    null,
+			    null,
+			    null,
+			    null,
+			    false,
+			    null,
+			    null,
+			    null,
+			    0,
+			    0,
+			    startTime,
+			    end,
+			    status==""?"end":status
+			);
+	        try {
+	            <%=jobCatcherNode.getDesignSubjobStartNode().getUniqueName() %>Process(globalMap);
+	        } catch (java.lang.Exception e) {
+	            e.printStackTrace();
+	        }
+        }
+<%
+			break;
+        }
 %>
 
 <% if (exist_tMOM) { %>
@@ -1494,12 +1537,15 @@ if (execStat) {
                     context_param.put(keyValue.substring(0, index), keyValue.substring(index + 1) );
                 }
             }
-        }else if (arg.startsWith("--log4jLevel=")) {
+        } else if (arg.startsWith("--log4jLevel=")) {
             log4jLevel = arg.substring(13);
-		} else if(arg.startsWith("--logstash=")) {
-			logstash = arg.substring(11);
+		} else if (arg.startsWith("--monitoring=")) {//for trunjob call
+			enableLogStash = "true".equalsIgnoreCase(arg.substring(13));
 		}
-
+		
+		if(!enableLogStash) {
+			enableLogStash = "true".equalsIgnoreCase(System.getProperty("monitoring"));
+		}
     }
     
     private static final String NULL_VALUE_EXPRESSION_IN_COMMAND_STRING_FOR_CHILD_JOB_ONLY = "<TALEND_NULL>";

@@ -12,9 +12,21 @@
         <dependency>
             <groupId>org.talend.daikon</groupId>
             <artifactId>daikon-audit</artifactId>
-            <version>0.31.4-SNAPSHOT</version>
+            <version>0.31.5-SNAPSHOT</version>
         </dependency>
 
+		<dependency>
+		    <groupId>org.talend.daikon</groupId>
+		    <artifactId>audit-logback</artifactId>
+		    <version>0.31.5-SNAPSHOT</version>
+		</dependency>
+		
+		<dependency>
+		    <groupId>ch.qos.logback</groupId>
+		    <artifactId>logback-classic</artifactId>
+		    <version>1.2.3</version>
+		</dependency>
+        
         <dependency>
             <groupId>log4j</groupId>
             <artifactId>log4j</artifactId>

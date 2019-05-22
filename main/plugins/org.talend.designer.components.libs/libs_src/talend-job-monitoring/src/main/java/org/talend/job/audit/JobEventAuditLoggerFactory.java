@@ -26,7 +26,6 @@ public class JobEventAuditLoggerFactory {
             throw new RuntimeException("Unable to load backend " + loggerClass, e);
         }
 
-
 		final DefaultAuditLoggerBase loggerBase = new DefaultAuditLoggerBase(logger, config);
 
 		JobAuditLogger result = getEventAuditLogger(JobAuditLogger.class, loggerBase);

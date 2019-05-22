@@ -93,7 +93,7 @@ if(codePart.equals(ECodePart.END)) {
 			if (!cid.startsWith("tJobStructureCatcher") && !cid.startsWith("talend") && node.getProcess().getNodesOfType("tJobStructureCatcher").size() > 0) {
 				for (INode jobStructureCatcher : node.getProcess().getNodesOfType("tJobStructureCatcher")) {
 				%>
-					if(resourceMap.get("inIterateVComp") == null || !((Boolean)resourceMap.get("inIterateVComp"))){
+					if(enableLogStash && (resourceMap.get("inIterateVComp") == null || !((Boolean)resourceMap.get("inIterateVComp")))){
 				 		RunStat.StatBean talend_statebean = runStat.logStatOnConnection("<%=con.getUniqueName()%>"+iterateId,2, 0);
 				 		
 				 		//work for output/reject connector from source component
@@ -112,7 +112,8 @@ if(codePart.equals(ECodePart.END)) {
 						    0,
 						    talend_statebean.getNbLine(),
 						    talend_statebean.getStartTime(),
-						    talend_statebean.getEndTime()
+						    talend_statebean.getEndTime(),
+						    null
 						);
 						
 						//work for input connector to target component
@@ -131,7 +132,8 @@ if(codePart.equals(ECodePart.END)) {
 						    0,
 						    talend_statebean.getNbLine(),
 						    talend_statebean.getStartTime(),
-						    talend_statebean.getEndTime()
+						    talend_statebean.getEndTime(),
+						    null
 						);
 						<%=jobStructureCatcher.getDesignSubjobStartNode().getUniqueName() %>Process(globalMap);
 				 		

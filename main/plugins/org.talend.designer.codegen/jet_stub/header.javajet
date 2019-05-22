@@ -412,6 +412,7 @@ private RunTrace runTrace = new RunTrace();
 	JobStructureCatcherUtils <%=jobStructureCatcher.getUniqueName() %> = new JobStructureCatcherUtils(jobName, "<%=process.getId() %>", "<%=process.getVersion() %>");
 	org.talend.job.audit.JobAuditLogger auditLogger_<%=jobStructureCatcher.getUniqueName()%> = null;
 <%
+		break;
 	}
 
 	for (INode metterCatcher : process.getNodesOfType("tFlowMeterCatcher")) {

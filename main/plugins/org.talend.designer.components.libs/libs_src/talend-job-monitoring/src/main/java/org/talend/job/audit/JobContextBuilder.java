@@ -83,6 +83,16 @@ public class JobContextBuilder {
         builder.with("speed", speed);
         return this;
     }
+    
+    public JobContextBuilder timestamp(String timestamp) {
+        builder.with("timestamp", timestamp);
+        return this;
+    }
+    
+    public JobContextBuilder status(String status) {
+        builder.with("status", status);
+        return this;
+    }
 
     public Context build() {
         return builder.build();
