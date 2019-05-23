@@ -566,11 +566,7 @@
 			<%
 			}
 			%>
-			
-		com.google.api.services.bigquery.model.TableReference destinationTable_<%=cid%> = new com.google.api.services.bigquery.model.TableReference();
-		destinationTable_<%=cid%>.setProjectId(<%=projectId%>);
-		destinationTable_<%=cid%>.setDatasetId(<%=dataset%>);
-		destinationTable_<%=cid%>.setTableId(<%=table%>);
+		
 		loadJobBuilder_<%=cid%>.setDestinationTable(tableId_<%=cid%>);
 																				
 		<%if("true".equals(ElementParameterParser.getValue(node, "__SET_FIELD_DELIMITER__"))) {
