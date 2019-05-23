@@ -10,7 +10,7 @@ product:
 | Info             | Value |
 | ---------------- | ---------------- |
 | Patch Name       | Patch_20190520_TPS-3090_v1-6.4.1 |
-| Release Date     | 2019-05-13 |
+| Release Date     | 2019-05-20 |
 | Target Version   | Talend-Studio-20170623_1246-V6.4.1 |
 | Product affected | Talend Studio |
 
