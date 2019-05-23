@@ -17,7 +17,7 @@
 		org.talend.logging.audit.Context log_context_<%=cid%> = null;
 		if(jcm.component_name == null) {//job level log
 			if(jcm.status == null) {//job start
-				log_context_<%=cid%> = org.talend.job.audit.JobContextBuilder.create().jobName(jcm.job_name).jobId(jcm.job_id).jobVersion(jcm.job_version).build();
+				log_context_<%=cid%> = org.talend.job.audit.JobContextBuilder.create().jobName(jcm.job_name).jobId(jcm.job_id).jobVersion(jcm.job_version).timestamp(jcm.moment).build();
 				auditLogger_<%=cid%>.jobstart(log_context_<%=cid%>);
 			} else {//job end
 				long timeMS = jcm.end_time - jcm.start_time;
@@ -25,10 +25,9 @@
 				String time = timeMS < 1000 ? (timeMS + "ms") : (timeMS/1000) + "s";
 			
 				log_context_<%=cid%> = org.talend.job.audit.JobContextBuilder.create().jobName(jcm.job_name).jobId(jcm.job_id).jobVersion(jcm.job_version)
-					.time(time).status(jcm.status).build();
+					.timestamp(jcm.moment).time(time).status(jcm.status).build();
 				auditLogger_<%=cid%>.jobstop(log_context_<%=cid%>);
 			}
-			
 		} else if(jcm.current_connector == null) {//component parameters log
 			log_context_<%=cid%> = org.talend.job.audit.JobContextBuilder.create().jobName(jcm.job_name).jobId(jcm.job_id).jobVersion(jcm.job_version)
 				.connectorType(jcm.component_name).connectorId(jcm.component_id).parameters(jcm.component_parameters.toString()).build();
