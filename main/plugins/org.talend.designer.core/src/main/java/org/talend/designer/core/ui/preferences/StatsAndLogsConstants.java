@@ -121,7 +121,7 @@ public class StatsAndLogsConstants {
     public static final String[] MSSQL_VERSION_CODE = new String[] { "JTDS", "MSSQL_PROP" }; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ 
 
     public static final String[] MSSQL_VERSION_DRIVER = new String[] {
-            "jtds-1.3.1-patch.jar", "mssql-jdbc.jar"};//$NON-NLS-1$  //$NON-NLS-2$
+            "jtds-1.3.1-patch-20190523.jar", "mssql-jdbc.jar"};//$NON-NLS-1$  //$NON-NLS-2$
 
     public static final String[] DB_VERSION_DISPLAY = new String[] { "Oracle 12", "Oracle 11", "Oracle 10", "Oracle 9",
             "Oracle 8", "MySQL 5", "MySQL 4", "MariaDB","Open source JTDS", "Microsoft", "Access 2003", "Access 2007", "Prior to v9", "v9 +" };
