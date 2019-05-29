@@ -121,7 +121,7 @@ public class StatsAndLogsConstants {
     public static final String[] MSSQL_VERSION_CODE = new String[] { "JTDS", "MSSQL_PROP" }; //$NON-NLS-1$ //$NON-NLS-2$ 
 
     public static final String[] MSSQL_VERSION_DRIVER = new String[] {
-            "jtds-1.3.1-patch.jar", "mssql-jdbc.jar"};//$NON-NLS-1$  //$NON-NLS-2$
+            "jtds-1.3.1-patch-20190523.jar", "mssql-jdbc.jar"};//$NON-NLS-1$  //$NON-NLS-2$
 
 
     public static final String[] DB_VERSION_DISPLAY = new String[] {"Oracle 18", "Oracle 12", "Oracle 11", "Oracle 10", "Oracle 9",
@@ -143,11 +143,11 @@ public class StatsAndLogsConstants {
 
     public static final String[] ACCESS_VERSION_DRIVER = new String[] { "ACCESS_2003", "ACCESS_2007" }; //$NON-NLS-1$ 
 
-    public static final String[] AS400_VERSION_DISPLAY = new String[] { "V6R1 to V7R2", "V5R3 to V6R1", "V5R2 to V5R4" }; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+    public static final String[] AS400_VERSION_DISPLAY = new String[] { "V7R1 to V7R3", "V6R1 to V7R2", "V5R3 to V6R1", "V5R2 to V5R4" }; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 
-    public static final String[] AS400_VERSION_CODE = new String[] { "AS400_V6R1_V7R2", "AS400_V5R3_V6R1", "AS400_V5R2_V5R4" }; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ 
+    public static final String[] AS400_VERSION_CODE = new String[] { "AS400_V7R1_V7R3", "AS400_V6R1_V7R2", "AS400_V5R3_V6R1", "AS400_V5R2_V5R4" }; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ 
 
-    public static final String[] AS400_VERSION_DRIVER = new String[] { "jt400_V6R1.jar", "jt400_V5R3.jar", "jt400_V5R2.jar" }; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+    public static final String[] AS400_VERSION_DRIVER = new String[] { "jt400_V7R3.jar", "jt400_V6R1.jar", "jt400_V5R3.jar", "jt400_V5R2.jar" }; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
 
     public static final String[] PSQL_VERSION_DISPLAY = new String[] {"v9 and later","Prior to v9" }; //$NON-NLS-1$ //$NON-NLS-2$
     
