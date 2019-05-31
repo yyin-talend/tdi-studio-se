@@ -1,16 +1,14 @@
 ---
 version: 7.1.1
 module: https://talend.poolparty.biz/coretaxonomy/42
-product:
-- https://talend.poolparty.biz/coretaxonomy/22
-- https://talend.poolparty.biz/coretaxonomy/26
+product: https://talend.poolparty.biz/coretaxonomy/22
 ---
 
-# TPS-3142
+# TPS-3137
 
 | Info             | Value |
 | ---------------- | ---------------- |
-| Patch Name       | Patch\_20190530\_TPS-3142\_v1-7.1.1|
+| Patch Name       | Patch\_20190531\_TPS-3137\_v1-7.1.1|
 | Release Date     | 2019-06-07 |
 | Target Version   | 20181026\_1147-v7.1.1 |
 | Product affected | Talend Studio |
@@ -27,7 +25,7 @@ This is a self-contained patch.
 
 This patch contains the following fixes:
 
-- TPS-3142 resolves  java.lang.ClassCastException: java.lang.Integer cannot be cast to java.math.BigDecimal (TBD-8626)
+- TPS-3137 resolves  tBigQueryInput component doesn't contain field Result Size when the authentication type is Service account(TBD-8649)
 
 
 
@@ -38,6 +36,8 @@ This patch contains the following fixes:
 Consider the following requirements for your system:
 
 - Talend Studio 7.1.1 must be installed.
+- Patch_20190218_TPS-2912_v1 must be installed.
+- Patch_20190326_TPS-2958_v1 must be installed.
 
 ## Installation <!-- mandatory -->
 
@@ -69,6 +69,6 @@ Execute the following commands:
 
 The following files are installed by this patch:
 
-- tMysqlInput_sparkcode.javajet  
-- tOracleInput_sparkcode.javajet  
-- avro_types_util.javajet
+- tBigQueryInput_begin.javajet
+- tBigQueryInput_end.javajet
+- tBigQueryInput_java.xml
