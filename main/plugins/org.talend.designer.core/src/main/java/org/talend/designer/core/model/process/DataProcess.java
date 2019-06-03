@@ -1959,20 +1959,20 @@ public class DataProcess implements IGeneratingProcess {
 	        	jobStructure.setSubProcessStart(true);
 	        	jobStructure.setProcess(duplicatedProcess);
 	        	addDataNode(jobStructure);
+	        	
+	        	//TODO consider to remove it as may not necessary
+	            shortUniqueNameList.clear();
+	            for (INode node : dataNodeList) {
+	                if (node.getComponent().getName().equals(talendJobLogComponent)
+	                        && node.getUniqueName().equals(uid4TalendJobLogComponent)) {
+	    	            ((AbstractNode) node).setUniqueShortName(UniqueNodeNameGenerator
+	    	                    .generateUniqueNodeName(((AbstractNode) node).getComponent().getShortName(), shortUniqueNameList));
+	    	            shortUniqueNameList.add(node.getUniqueShortName());
+	                }
+	            }
         	}
         }
         
-        //TODO consider to remove it as may not necessary
-        shortUniqueNameList.clear();
-        for (INode node : dataNodeList) {
-            if (node.getComponent().getName().equals(talendJobLogComponent)
-                    && node.getUniqueName().equals(uid4TalendJobLogComponent)) {
-	            ((AbstractNode) node).setUniqueShortName(UniqueNodeNameGenerator
-	                    .generateUniqueNodeName(((AbstractNode) node).getComponent().getShortName(), shortUniqueNameList));
-	            shortUniqueNameList.add(node.getUniqueShortName());
-            }
-        }
-
         // IGenericDBService dbService = null;
         // if (GlobalServiceRegister.getDefault().isServiceRegistered(IGenericDBService.class)) {
         // dbService = (IGenericDBService) GlobalServiceRegister.getDefault().getService(
