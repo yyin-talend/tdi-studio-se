@@ -7,7 +7,34 @@
     <groupId>org.talend.libraries</groupId>
     <artifactId>job-audit</artifactId>
     <version>1.0</version>
-
+	
+	<properties>
+		<talend.nexus.url>https://artifacts-oss.talend.com</talend.nexus.url>
+	</properties>
+	
+	<distributionManagement>
+		<snapshotRepository>
+			<id>talend_nexus_deployment</id>
+			<url>${talend.nexus.url}/nexus/content/repositories/TalendOpenSourceSnapshot/</url>
+			<snapshots>
+				<enabled>true</enabled>
+			</snapshots>
+			<releases>
+				<enabled>false</enabled>
+			</releases>
+		</snapshotRepository>
+		<repository>
+			<id>talend_nexus_deployment</id>
+			<url>${talend.nexus.url}/nexus/content/repositories/TalendOpenSourceRelease/</url>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+			<releases>
+				<enabled>true</enabled>
+			</releases>
+		</repository>
+	</distributionManagement>
+	
     <dependencies>
         <dependency>
             <groupId>org.talend.daikon</groupId>
