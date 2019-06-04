@@ -364,7 +364,7 @@ public <%=JavaTypesManager.getTypeToGenerate(ctxParam.getType(),true)%> get<%=Ch
 
 <%
 	List<? extends INode> jobCatcherNodes = process.getNodesOfType("tJobStructureCatcher");
-	boolean enableLogStash = jobCatcherNodes != null || !jobCatcherNodes.isEmpty();
+	boolean enableLogStash = jobCatcherNodes != null && !jobCatcherNodes.isEmpty();
 	if (stats || enableLogStash) {
 %>
 private RunStat runStat = new RunStat();

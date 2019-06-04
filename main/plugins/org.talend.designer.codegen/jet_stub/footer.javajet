@@ -469,7 +469,8 @@
     	<%}%>
     	
     	<%
-    	for (INode jobStructureCatcher : process.getNodesOfType("tJobStructureCatcher")) {
+    	List<? extends INode> jobCatcherNodes = process.getNodesOfType("tJobStructureCatcher");
+    	for (INode jobStructureCatcher : jobCatcherNodes) {
     		String location = ElementParameterParser.getValue(jobStructureCatcher, "__LOCATION__");
 		%>
 			if(enableLogStash) {
@@ -859,7 +860,7 @@ this.globalResumeTicket = true;//to run tPreJob
 <%
         }
         
-        for (INode jobCatcherNode : process.getNodesOfType("tJobStructureCatcher")) {
+        for (INode jobCatcherNode : jobCatcherNodes) {
 %>
 		if(enableLogStash) {
 	        <%=jobCatcherNode.getUniqueName() %>.addJobStartMessage();
@@ -1006,7 +1007,7 @@ this.globalResumeTicket = true;//to run tPostJob
 <%
     }
     
-    for (INode jobCatcherNode : process.getNodesOfType("tJobStructureCatcher")) {
+    for (INode jobCatcherNode : jobCatcherNodes) {
 %>
 		if(enableLogStash) {
 	        <%=jobCatcherNode.getUniqueName() %>.addJobEndMessage(startTime, end, status);

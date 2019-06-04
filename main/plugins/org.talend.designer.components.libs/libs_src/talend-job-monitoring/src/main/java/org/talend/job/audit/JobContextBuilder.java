@@ -50,11 +50,6 @@ public class JobContextBuilder {
         return this;
     }
     
-    public JobContextBuilder parameters(String parameters) {
-        builder.with("parameters", parameters);
-        return this;
-    }
-
     public JobContextBuilder rows(long rowCount) {
         builder.with("rows", String.valueOf(rowCount));
         return this;

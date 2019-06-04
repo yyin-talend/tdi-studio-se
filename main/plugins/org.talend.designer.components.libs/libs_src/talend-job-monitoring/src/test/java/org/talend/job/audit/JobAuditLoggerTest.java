@@ -9,7 +9,7 @@ public class JobAuditLoggerTest {
 		final JobAuditLogger logger = AuditLoggerFactory.getEventAuditLogger(JobAuditLogger.class);
 		Context context = JobContextBuilder.create().jobName("fetch_from_s3_every_day").jobId("jobid_123")
 				.jobVersion("0.1").connectorType("tXMLMAP").connectorId("tXMLMap_1")
-				.parameters("{header : 1, file : a}").connectionName("row1").connectionType("reject").duration("20s")
+				.connectionName("row1").connectionType("reject").duration("20s")
 				.rows(10).timestamp("2019-12-12 23:23:23.111+08:00").status("end").build();
 
 		logger.jobstart(context);
