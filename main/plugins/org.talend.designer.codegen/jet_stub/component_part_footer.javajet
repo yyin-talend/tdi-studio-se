@@ -96,48 +96,28 @@ if(codePart.equals(ECodePart.END)) {
 					if(enableLogStash && (resourceMap.get("inIterateVComp") == null || !((Boolean)resourceMap.get("inIterateVComp")))){
 				 		RunStat.StatBean talend_statebean = runStat.logStatOnConnection("<%=con.getUniqueName()%>"+iterateId,2, 0);
 				 		
-				 		//work for output/reject connector from source component
-				 		<%=jobStructureCatcher.getUniqueName() %>.addMessage(
+				 		<%=jobStructureCatcher.getUniqueName() %>.addConnectionMessage(
 						    "<%=sourceNodeId%>", 
 						    "<%=sourceNodeComponent%>", 
-						    null, 
-						    null,
-						    null,
-						    null,
-						    null,
 						    false,
 						    "<%="REJECT".equals(con.getConnectorName()) ? "reject" : "output"%>",
 						    "<%=con.getUniqueName()%>",
-						    null,
-						    0,
 						    talend_statebean.getNbLine(),
 						    talend_statebean.getStartTime(),
-						    talend_statebean.getEndTime(),
-						    null
+						    talend_statebean.getEndTime()
 						);
 						
-						//work for input connector to target component
-				 		<%=jobStructureCatcher.getUniqueName() %>.addMessage(
+				 		<%=jobStructureCatcher.getUniqueName() %>.addConnectionMessage(
 						    "<%=node.getUniqueName()%>", 
 						    "<%=node.getComponent().getName()%>", 
-						    null, 
-						    null,
-						    null,
-						    null,
-						    null,
 						    true,
 						    "input",
 						    "<%=con.getUniqueName()%>",
-						    null,
-						    0,
 						    talend_statebean.getNbLine(),
 						    talend_statebean.getStartTime(),
-						    talend_statebean.getEndTime(),
-						    null
+						    talend_statebean.getEndTime()
 						);
 						<%=jobStructureCatcher.getDesignSubjobStartNode().getUniqueName() %>Process(globalMap);
-				 		
-				 		talend_statebean = null;
 				 	}
 				<%
 					break;

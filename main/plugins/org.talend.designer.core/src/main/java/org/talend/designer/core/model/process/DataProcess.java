@@ -1948,9 +1948,9 @@ public class DataProcess implements IGeneratingProcess {
             }
         }
         
-        final String talendJobLogComponent = "tJobStructureCatcher";
-        final String uid4TalendJobLogComponent = "talendJobLog";
-        if (duplicatedProcess.getComponentsType().equals(ComponentCategory.CATEGORY_4_DI.getName()) && PluginChecker.isTIS()) {       
+        if (duplicatedProcess.getComponentsType().equals(ComponentCategory.CATEGORY_4_DI.getName()) && PluginChecker.isTIS()) {
+        	final String talendJobLogComponent = "tJobStructureCatcher";
+            final String uid4TalendJobLogComponent = "talendJobLog";
         	IComponent jobStructComponent = ComponentsFactoryProvider.getInstance().get(talendJobLogComponent, ComponentCategory.CATEGORY_4_DI.getName());
         	if (jobStructComponent != null) {
 	        	DataNode jobStructure = new DataNode(jobStructComponent, uid4TalendJobLogComponent);

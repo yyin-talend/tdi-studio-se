@@ -73,14 +73,8 @@ public class JobContextBuilder {
     }
     
     //100s
-    public JobContextBuilder time(String time) {
-        builder.with("time", time);
-        return this;
-    }
-    
-    //500rows/s
-    public JobContextBuilder speed(String speed) {
-        builder.with("speed", speed);
+    public JobContextBuilder duration(String duration) {
+        builder.with("duration", duration);
         return this;
     }
     

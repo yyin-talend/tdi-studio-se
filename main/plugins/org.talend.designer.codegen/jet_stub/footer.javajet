@@ -480,8 +480,6 @@
 				properties_<%=jobStructureCatcher.getUniqueName()%>.setProperty("service.name", "Talend Studio Job");
 				properties_<%=jobStructureCatcher.getUniqueName()%>.setProperty("instance.name", "Talend Studio Job Instance");
 				properties_<%=jobStructureCatcher.getUniqueName()%>.setProperty("propagate.appender.exceptions", "none");
-				//properties_<%=jobStructureCatcher.getUniqueName()%>.setProperty("log.appender", "http");
-				//properties_<%=jobStructureCatcher.getUniqueName()%>.setProperty("appender.http.url", <%=location%>);
 				properties_<%=jobStructureCatcher.getUniqueName()%>.setProperty("log.appender", "file");
 				properties_<%=jobStructureCatcher.getUniqueName()%>.setProperty("appender.file.path", <%=location%>);
 				properties_<%=jobStructureCatcher.getUniqueName()%>.setProperty("appender.file.maxsize", "52428800");
@@ -864,24 +862,7 @@ this.globalResumeTicket = true;//to run tPreJob
         for (INode jobCatcherNode : process.getNodesOfType("tJobStructureCatcher")) {
 %>
 		if(enableLogStash) {
-	        <%=jobCatcherNode.getUniqueName() %>.addMessage(
-			    null, 
-			    null, 
-			    null, 
-			    null,
-			    null,
-			    null,
-			    null,
-			    false,
-			    null,
-			    null,
-			    null,
-			    0,
-			    0,
-			    0,
-			    0,
-			    null
-			);
+	        <%=jobCatcherNode.getUniqueName() %>.addJobStartMessage();
 	        try {
 	            <%=jobCatcherNode.getDesignSubjobStartNode().getUniqueName() %>Process(globalMap);
 	        } catch (java.lang.Exception e) {
@@ -1028,24 +1009,7 @@ this.globalResumeTicket = true;//to run tPostJob
     for (INode jobCatcherNode : process.getNodesOfType("tJobStructureCatcher")) {
 %>
 		if(enableLogStash) {
-	        <%=jobCatcherNode.getUniqueName() %>.addMessage(
-			    null, 
-			    null, 
-			    null, 
-			    null,
-			    null,
-			    null,
-			    null,
-			    false,
-			    null,
-			    null,
-			    null,
-			    0,
-			    0,
-			    startTime,
-			    end,
-			    status==""?"end":status
-			);
+	        <%=jobCatcherNode.getUniqueName() %>.addJobEndMessage(startTime, end, status);
 	        try {
 	            <%=jobCatcherNode.getDesignSubjobStartNode().getUniqueName() %>Process(globalMap);
 	        } catch (java.lang.Exception e) {
