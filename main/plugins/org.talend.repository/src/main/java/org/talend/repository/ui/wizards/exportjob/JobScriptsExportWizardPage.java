@@ -450,9 +450,9 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
             public void widgetSelected(SelectionEvent e) {
                 selectedJobVersion = versionCombo.getText();
                 if(selectedJobVersion.equals(currentVersion) || selectedJobVersion.equals(RelationshipItemBuilder.LATEST_VERSION)){
-                	executeTestsButton.setEnabled(true);
+                    executeTestsButton.setEnabled(true);
                 }else{
-                	executeTestsButton.setEnabled(false);
+                    executeTestsButton.setEnabled(false);
                     executeTestsButton.setSelection(false);
                 }
             }
@@ -763,10 +763,10 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
     }
 
     protected boolean isAddJavaSources() {
-        if (optionTypeCombo.isVisible()) {
+        if (optionTypeCombo != null && optionTypeCombo.isVisible()) {
             return isBinaries() ? jobScriptButton.getSelection() : true;
         } else {
-            return jobScriptButton.getSelection();
+            return jobScriptButton == null ? false : jobScriptButton.getSelection();
         }
     }
 
@@ -807,11 +807,11 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
     }
     
     protected String getLauncherName() {
-    	if(shellLauncherButton != null && !shellLauncherButton.isDisposed() && shellLauncherButton.getSelection()){
-    		if (launcherCombo != null && !launcherCombo.isDisposed()) {
+        if (shellLauncherButton != null && !shellLauncherButton.isDisposed() && shellLauncherButton.getSelection()) {
+            if (launcherCombo != null && !launcherCombo.isDisposed()) {
                 return launcherCombo.getText();
             }
-    	}
+        }
         return null;
     }
 
@@ -1630,7 +1630,7 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
 
     protected Map<ExportChoice, Object> getExportChoiceMap() {
         Map<ExportChoice, Object> exportChoiceMap = new EnumMap<ExportChoice, Object>(ExportChoice.class);
-        exportChoiceMap.put(ExportChoice.needLauncher, shellLauncherButton.getSelection());
+        exportChoiceMap.put(ExportChoice.needLauncher, shellLauncherButton == null ? false : shellLauncherButton.getSelection());
         exportChoiceMap.put(ExportChoice.launcherName, getLauncherName());
         exportChoiceMap.put(ExportChoice.needSystemRoutine, Boolean.TRUE);
         exportChoiceMap.put(ExportChoice.needUserRoutine, Boolean.TRUE);
