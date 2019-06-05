@@ -148,25 +148,31 @@
 	if ((codePart.equals(ECodePart.BEGIN))&&(stat || logstashCurrent)&&connSet.size()>0) {
 		for(IConnection con:connSet){
 		%>
-			if (execStat<%if(logstashCurrent){%> || enableLogStash<%}%>) {
+			if (<%if(stat){%>execStat<%}%><%if(stat && logstashCurrent){%> || <%}%><%if(logstashCurrent){%>enableLogStash<%}%>) {
 				if(resourceMap.get("inIterateVComp") == null){
 					<%if(containsTPartitioner){%>
 					    java.util.concurrent.ConcurrentHashMap<Object, Object> concurrentHashMap_<%=con.getUniqueName() %> = (java.util.concurrent.ConcurrentHashMap) globalMap.get("concurrentHashMap");
 						concurrentHashMap_<%=con.getUniqueName() %>.putIfAbsent("<%=con.getUniqueName() %>" + iterateLoop,new java.util.concurrent.atomic.AtomicInteger(0));
 						java.util.concurrent.atomic.AtomicInteger stats_<%=con.getUniqueName() %> = (java.util.concurrent.atomic.AtomicInteger) concurrentHashMap_<%=con.getUniqueName() %>.get("<%=con.getUniqueName() %>" + iterateLoop);
 						int step_<%=con.getUniqueName() %> = stats_<%=con.getUniqueName() %>.incrementAndGet()<=1?0:1;
+						<%if(stat) {%>
 						if(execStat) {
 							runStat.updateStatOnConnection("<%=con.getUniqueName() %>"+iterateId, step_<%=con.getUniqueName()%>, 0);
 						}
+						<%}%>
+						
 						<%if(logstashCurrent) {%>
 						if(enableLogStash) {
 							runStat.logStatOnConnection("<%=con.getUniqueName()%>"+iterateId, step_<%=con.getUniqueName()%>, 0);
 						}
 						<%}%>
 					<%}else{%>
+						<%if(stat) {%>
 						if(execStat) {
 							runStat.updateStatOnConnection("<%=con.getUniqueName() %>"+iterateId, 0, 0);
 						}
+						<%}%>
+						
 						<%if(logstashCurrent) {%>
 						if(enableLogStash) {
 							runStat.logStatOnConnection("<%=con.getUniqueName()%>"+iterateId, 0, 0);
@@ -189,9 +195,12 @@
 
 
 			<%if (!node.getComponent().useMerge()) {%>
+				<%if(stat) {%>
 				if(execStat){
 					runStat.updateStatOnConnection("<%=con.getUniqueName() %>"+iterateId,1, 1);
 				}
+				<%}%>
+				
 				<%if(logstashCurrent) {%>
 				if(enableLogStash) {
 					runStat.logStatOnConnection("<%=con.getUniqueName() %>"+iterateId,1, 1);
@@ -200,9 +209,12 @@
 			<%
 			} else if(con.getUniqueName().equals((String)codeGenArgument.getIncomingName())){
 			%>
+				<%if(stat) {%>
 				if(execStat){
 					runStat.updateStatOnConnection("<%=con.getUniqueName() %>"+iterateId,1, 1);
 				}
+				<%}%>
+				
 				<%if(logstashCurrent) {%>
 				if(enableLogStash) {
 					runStat.logStatOnConnection("<%=con.getUniqueName() %>"+iterateId,1, 1);
@@ -255,7 +267,7 @@
 				INode nextNode = node.getOutgoingConnections(EConnectionType.ITERATE).get(0).getTarget();
 				NodeUtil.fillConnectionsForStat(needToStartConnNames, nextNode);
 				%>
-				if(execStat<%if(logstashCurrent){%> || enableLogStash<%}%>){
+				if(<%if(stat){%>execStat<%}%><%if(stat && logstashCurrent){%> || <%}%><%if(logstashCurrent){%>enableLogStash<%}%>){
 					<%
 					for(String connName : needToStartConnNames){
 					%>
@@ -265,18 +277,24 @@
 							java.util.concurrent.atomic.AtomicInteger stats_<%=connName%> = (java.util.concurrent.atomic.AtomicInteger) concurrentHashMap_<%=connName%>.get("<%=connName%>" + iterateLoop);
 							
 							int step_<%=connName %> = stats_<%=connName%>.incrementAndGet()<=1?0:1;
+							<%if(stat) {%>
 							if(execStat) {
 								runStat.updateStatOnConnection("<%=connName%>"+iterateId, step_<%=connName%>, 0);
 							}
+							<%}%>
+							
 							<%if(logstashCurrent) {%>
 							if(enableLogStash) {
 								runStat.logStatOnConnection("<%=connName%>"+iterateId, step_<%=connName%>, 0);
 							}
 							<%}%>
 						<%}else{%>
+							<%if(stat) {%>
 							if(execStat) {
 								runStat.updateStatOnConnection("<%=connName%>"+iterateId, 0, 0);
 							}
+							<%}%>
+							
 							<%if(logstashCurrent) {%>
 							if(enableLogStash) {
 								runStat.logStatOnConnection("<%=connName%>"+iterateId, 0, 0);

@@ -60,22 +60,32 @@ if((codePart.equals(ECodePart.END))&&(stat || logstashCurrent)){
 		INode nextNode = node.getOutgoingConnections(EConnectionType.ITERATE).get(0).getTarget();
 		NodeUtil.fillConnectionsForStat(needToEndConnNames, nextNode);
 		%>
-		if(execStat<%if(logstashCurrent){%> || enableLogStash<%}%>){
+		
+		<%if(stat) {%>
+		if(execStat){
 			<%
 			for(String connName : needToEndConnNames){
 			%>
-				if(execStat) {
-					runStat.updateStatOnConnection("<%=connName%>"+iterateId,2, 0);
-				}
-				<%if(logstashCurrent) {//now only finish the log, not send, TODO%>
-				if(enableLogStash) {
-					runStat.logStatOnConnection("<%=connName%>"+iterateId,2, 0);
-				}
-				<%}%>
-			<%	
+				runStat.updateStatOnConnection("<%=connName%>"+iterateId,2, 0);
+			<%
 			}
 			%>
 		}
+		<%}%>
+		
+		<%if(logstashCurrent) {//now only finish the log, not send, TODO%>
+		if(enableLogStash){
+			<%
+			for(String connName : needToEndConnNames){
+			%>
+				runStat.logStatOnConnection("<%=connName%>"+iterateId,2, 0);
+			<%
+			}
+			%>
+		}
+		<%
+		}
+		%>
 	<%
 	}
 	if(connSet.size()>0){
@@ -84,48 +94,51 @@ if((codePart.equals(ECodePart.END))&&(stat || logstashCurrent)){
 			String sourceNodeId = source.getUniqueName();
 			String sourceNodeComponent = source.getComponent().getName();
 		%>
-			if(execStat<%if(logstashCurrent){%> || enableLogStash<%}%>){
+			<%if(stat) {%>
+			if(execStat){
 				if(resourceMap.get("inIterateVComp") == null || !((Boolean)resourceMap.get("inIterateVComp"))){
-					if(execStat) {
-			 			runStat.updateStatOnConnection("<%=con.getUniqueName()%>"+iterateId,2, 0);
-			 		}
+	 				runStat.updateStatOnConnection("<%=con.getUniqueName()%>"+iterateId,2, 0);
+			 	}
+			}
+			<%}%>
+			
+			<%if(logstashCurrent) {%>
+			if(enableLogStash){
+				if(resourceMap.get("inIterateVComp") == null || !((Boolean)resourceMap.get("inIterateVComp"))){
+			 		<%
+		 			for (INode jobStructureCatcher : jobCatcherNodes) {
+		 			%>
+			 		RunStat.StatBean talend_statebean = runStat.logStatOnConnection("<%=con.getUniqueName()%>"+iterateId,2, 0);
 			 		
-			 		<%if(logstashCurrent) {
-			 			for (INode jobStructureCatcher : jobCatcherNodes) {
-			 			%>
-						if(enableLogStash) {
-					 		RunStat.StatBean talend_statebean = runStat.logStatOnConnection("<%=con.getUniqueName()%>"+iterateId,2, 0);
-					 		
-					 		<%=jobStructureCatcher.getUniqueName() %>.addConnectionMessage(
-							    "<%=sourceNodeId%>", 
-							    "<%=sourceNodeComponent%>", 
-							    false,
-							    "<%="REJECT".equals(con.getConnectorName()) ? "reject" : "output"%>",
-							    "<%=con.getUniqueName()%>",
-							    talend_statebean.getNbLine(),
-							    talend_statebean.getStartTime(),
-							    talend_statebean.getEndTime()
-							);
-							
-					 		<%=jobStructureCatcher.getUniqueName() %>.addConnectionMessage(
-							    "<%=node.getUniqueName()%>", 
-							    "<%=node.getComponent().getName()%>", 
-							    true,
-							    "input",
-							    "<%=con.getUniqueName()%>",
-							    talend_statebean.getNbLine(),
-							    talend_statebean.getStartTime(),
-							    talend_statebean.getEndTime()
-							);
-							<%=jobStructureCatcher.getDesignSubjobStartNode().getUniqueName() %>Process(globalMap);
-					 	}
-						<%
-							break;
-						}
+			 		<%=jobStructureCatcher.getUniqueName() %>.addConnectionMessage(
+					    "<%=sourceNodeId%>", 
+					    "<%=sourceNodeComponent%>", 
+					    false,
+					    "<%="REJECT".equals(con.getConnectorName()) ? "reject" : "output"%>",
+					    "<%=con.getUniqueName()%>",
+					    talend_statebean.getNbLine(),
+					    talend_statebean.getStartTime(),
+					    talend_statebean.getEndTime()
+					);
+					
+			 		<%=jobStructureCatcher.getUniqueName() %>.addConnectionMessage(
+					    "<%=node.getUniqueName()%>", 
+					    "<%=node.getComponent().getName()%>", 
+					    true,
+					    "input",
+					    "<%=con.getUniqueName()%>",
+					    talend_statebean.getNbLine(),
+					    talend_statebean.getStartTime(),
+					    talend_statebean.getEndTime()
+					);
+					<%=jobStructureCatcher.getDesignSubjobStartNode().getUniqueName() %>Process(globalMap);
+					<%
+						break;
 					}
 					%>
 			 	}
 			}
+			<%}%>
 		<%
 	  	}
 	}
