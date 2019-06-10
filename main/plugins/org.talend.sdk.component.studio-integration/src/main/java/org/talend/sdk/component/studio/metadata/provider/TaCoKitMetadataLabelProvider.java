@@ -18,24 +18,9 @@ package org.talend.sdk.component.studio.metadata.provider;
 import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.swt.graphics.Image;
 import org.talend.repository.viewer.label.RepositoryViewLabelProvider;
-import org.talend.sdk.component.server.front.model.ConfigTypeNode;
 import org.talend.sdk.component.studio.metadata.node.ITaCoKitRepositoryNode;
-import org.talend.sdk.component.studio.metadata.node.TaCoKitConfigurationRepositoryNode;
 
 public class TaCoKitMetadataLabelProvider extends RepositoryViewLabelProvider implements ILabelProvider {
-
-    @Override
-    public String getText(final Object element) {
-        String label = super.getText(element);
-
-        if (element instanceof TaCoKitConfigurationRepositoryNode) {
-            ConfigTypeNode configTypeNode = ((TaCoKitConfigurationRepositoryNode) element).getConfigTypeNode();
-            String type = configTypeNode.getConfigurationType();
-            label = label + " (" + type + ")";
-        }
-
-        return label;
-    }
 
     @Override
     public Image getImage(final Object element) {
@@ -44,6 +29,12 @@ public class TaCoKitMetadataLabelProvider extends RepositoryViewLabelProvider im
             image = ((ITaCoKitRepositoryNode) element).getImage();
         }
         if (image != null) {
+            if (element instanceof ITaCoKitRepositoryNode) {
+                ITaCoKitRepositoryNode rnode = ((ITaCoKitRepositoryNode) element);
+                if (rnode.isLeafNode()) {
+                    return super.decorateImageWithStatus(image, rnode.getObject());
+                }
+            }
             return image;
         }
         return super.getImage(element);
