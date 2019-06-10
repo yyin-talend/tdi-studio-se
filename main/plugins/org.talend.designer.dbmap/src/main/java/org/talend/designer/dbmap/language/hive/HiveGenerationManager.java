@@ -1,6 +1,6 @@
 // ============================================================================
 //
-// Copyright (C) 2006-2018 Talend Inc. - www.talend.com
+// Copyright (C) 2006-2019 Talend Inc. - www.talend.com
 //
 // This source code is available under agreement available at
 // %InstallDIR%\features\org.talend.rcp.branding.%PRODUCTNAME%\%PRODUCTNAME%license.txt
@@ -22,13 +22,13 @@ import org.talend.designer.dbmap.language.generation.DbGenerationManager;
 
 /**
  * created by wchen on 2012-8-13 Detailled comment
- * 
+ *
  */
 public class HiveGenerationManager extends DbGenerationManager {
 
     /**
      * DOC talend2 HiveGenerationManager constructor comment.
-     * 
+     *
      * @param language
      */
     public HiveGenerationManager() {
@@ -45,7 +45,7 @@ public class HiveGenerationManager extends DbGenerationManager {
             if (inputTableName != null && inputTableName.contains(".")) {
                 String[] inputTableNames = inputTableName.split("\\.");
                 if (inputTableNames.length > 1) {
-                    query = query.replaceAll(inputTableName + "\\.", inputTableNames[1] + "."); //$NON-NLS-1$ //$NON-NLS-2$ 
+                    query = query.replaceAll(inputTableName + "\\.", inputTableNames[1] + "."); //$NON-NLS-1$ //$NON-NLS-2$
                     for (int i = 0; i < querySegments.size(); i++) {
                         String segment = querySegments.get(i);
                         segment = segment.replaceAll(inputTableName + "\\.", inputTableNames[1] + "."); //$NON-NLS-1$ //$NON-NLS-2$
@@ -56,7 +56,7 @@ public class HiveGenerationManager extends DbGenerationManager {
         }
         return query;
     }
-    
+
     @Override
     protected String replaceVariablesForExpression(DbMapComponent component, String expression) {
         if (expression == null) {
@@ -83,9 +83,9 @@ public class HiveGenerationManager extends DbGenerationManager {
             for (String globalMapStr : globalMapList) {
                 String regex = parser.getGlobalMapExpressionRegex(globalMapStr);
                 String replacement = parser.getGlobalMapReplacement(globalMapStr);
-                expression = expression.replaceAll(regex, "\" +" + replacement + "+ \""); //$NON-NLS-1$ //$NON-NLS-2$ 
+                expression = expression.replaceAll(regex, "\" +" + replacement + "+ \""); //$NON-NLS-1$ //$NON-NLS-2$
             }
-        
+
         return expression;
     }
 }

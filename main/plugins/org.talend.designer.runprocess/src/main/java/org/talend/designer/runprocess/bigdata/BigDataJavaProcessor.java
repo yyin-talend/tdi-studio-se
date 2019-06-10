@@ -1,6 +1,6 @@
 // ============================================================================
 //
-// Copyright (C) 2006-2018 Talend Inc. - www.talend.com
+// Copyright (C) 2006-2019 Talend Inc. - www.talend.com
 //
 // This source code is available under agreement available at
 // %InstallDIR%\features\org.talend.rcp.branding.%PRODUCTNAME%\%PRODUCTNAME%license.txt
@@ -60,7 +60,7 @@ public abstract class BigDataJavaProcessor extends MavenJavaProcessor implements
 
     /**
      * DOC rdubois BigDataJavaProcessor constructor comment.
-     * 
+     *
      * @param process
      * @param property
      * @param filenameFromLabel
@@ -74,7 +74,7 @@ public abstract class BigDataJavaProcessor extends MavenJavaProcessor implements
 
     /**
      * A Big Data job requires the PACKAGE Maven goal to be executed.
-     * 
+     *
      * @return true
      */
     @Override
@@ -114,16 +114,16 @@ public abstract class BigDataJavaProcessor extends MavenJavaProcessor implements
      * <pre>
      * Makes all command segments up, like ahead commands, jvm commands, cp commands, main-class command, and others.
      * This method should be invoked by {@link #getCommandLine()}. The following is about some methods invoked by this
-     * method. 
+     * method.
      * <li>{@link #extractAheadCommandSegments()} to extract ahead command segments like "cd `dirname $0`\n".
-     * <li>{@link #extractJavaCommandSegments()} to extract java command segments like "java -Xms256M ". 
-     * <li>{@link #extractCPCommandSegments()} to extract cp command segments like "cp ../a.jar:../b.jar..". 
-     * <li>{@link #extractMainClassSegments()} to extract the main-class command segment. 
+     * <li>{@link #extractJavaCommandSegments()} to extract java command segments like "java -Xms256M ".
+     * <li>{@link #extractCPCommandSegments()} to extract cp command segments like "cp ../a.jar:../b.jar..".
+     * <li>{@link #extractMainClassSegments()} to extract the main-class command segment.
      * <li>{@link #extractArgumentSegments()} to extract other arguments for commands.
      * </pre>
-     * 
+     *
      * Added by Marvin Wang on Mar 22, 2013.
-     * 
+     *
      * @return
      */
     @Override
@@ -157,7 +157,7 @@ public abstract class BigDataJavaProcessor extends MavenJavaProcessor implements
     /**
      * Extracts all JVM arguments from job or preference store. It invokes by {@link #extractJavaCommandSegments()}.
      * Added by Marvin Wang on Mar 20, 2013.
-     * 
+     *
      * @return
      */
     protected List<String> extractJavaVMArguments() {
@@ -296,7 +296,7 @@ public abstract class BigDataJavaProcessor extends MavenJavaProcessor implements
     /**
      * Returns all libs required by classpath, refer to this method {@link #extractCPCommandSegments()}. Added by Marvin
      * Wang on Mar 20, 2013.
-     * 
+     *
      * @return
      */
     protected Set<String> extractAllLibs() {
@@ -316,7 +316,7 @@ public abstract class BigDataJavaProcessor extends MavenJavaProcessor implements
 
     /**
      * Makes up a job jar name that should be like "Test-0.1.jar" or "Test.jar". Added by Marvin Wang on Mar 21, 2013.
-     * 
+     *
      * @return
      */
     protected String makeupJobJarName() {
@@ -405,7 +405,7 @@ public abstract class BigDataJavaProcessor extends MavenJavaProcessor implements
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.talend.designer.runprocess.IBigDataProcessor#needsShade()
      */
     @Override
@@ -418,7 +418,7 @@ public abstract class BigDataJavaProcessor extends MavenJavaProcessor implements
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.talend.designer.runprocess.IBigDataProcessor#getShadedModules()
      */
     @Override

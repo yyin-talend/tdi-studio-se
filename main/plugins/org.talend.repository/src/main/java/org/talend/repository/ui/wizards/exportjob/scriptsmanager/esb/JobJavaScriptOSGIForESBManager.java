@@ -1,6 +1,6 @@
 // ============================================================================
 //
-// Copyright (C) 2006-2018 Talend Inc. - www.talend.com
+// Copyright (C) 2006-2019 Talend Inc. - www.talend.com
 //
 // This source code is available under agreement available at
 // %InstallDIR%\features\org.talend.rcp.branding.%PRODUCTNAME%\%PRODUCTNAME%license.txt
@@ -131,7 +131,7 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
     private static final String JAVA = "java"; //$NON-NLS-1$
 
     private static final String JAVA_VERSION = "java.version";
-    
+
     private MultiKeyMap requireBundleModules = new MultiKeyMap();
 
 //    private String itemType = null;
@@ -225,17 +225,17 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
 
             ExportFileResource libResource = getCompiledLibExportFileResource(processes);
             list.add(libResource);
-            
-            
+
+
             ExportFileResource libResourceSelected = new ExportFileResource(null, LIBRARY_FOLDER_NAME);
-            
+
             if (GlobalServiceRegister.getDefault().isServiceRegistered(ICamelDesignerCoreService.class)) {
                 ICamelDesignerCoreService camelService = (ICamelDesignerCoreService) GlobalServiceRegister.getDefault().getService(
                         ICamelDesignerCoreService.class);
-                
+
                 Collection<String> unselectList = camelService.getUnselectDependenciesBundle(processItem);
                 List<URL> unselectListURLs = new ArrayList<>();
- 
+
                 for(Set<URL> set:libResource.getAllResources()) {
 
                     for (URL url : set) {
@@ -246,17 +246,17 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
                                exist = true;
                             }
                         }
-                        
+
                         if (!exist) {
                             unselectListURLs.add(url);
                         }
-                        
+
                     }
                 }
-                
+
                 libResourceSelected.addResources(unselectListURLs);
             }
-            
+
             // generate the META-INFO folder
             ExportFileResource metaInfoFolder = genMetaInfoFolder(libResourceSelected, processItem);
             list.add(0, metaInfoFolder);
@@ -732,7 +732,7 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
 
     private Manifest getManifest(ExportFileResource libResource, ProcessItem processItem) throws IOException {
         Analyzer analyzer = createAnalyzer(libResource, processItem);
-        
+
         if (GlobalServiceRegister.getDefault().isServiceRegistered(IRunProcessService.class)) {
             IRunProcessService service = (IRunProcessService) GlobalServiceRegister.getDefault()
                     .getService(IRunProcessService.class);
@@ -762,9 +762,9 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
 
                 importPackage.append("*;resolution:=optional");
                 analyzer.setProperty(Analyzer.IMPORT_PACKAGE, importPackage.toString());
-            }   
+            }
         }
-        
+
         // Calculate the manifest
         Manifest manifest = null;
         try {
@@ -776,7 +776,7 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
         } finally {
             analyzer.close();
         }
-        
+
         // In some cases of Java8, if user compiled some classes with newer(Java 11) JDK versions, the
         // Require-Capability will use the last version(Java 11)
         // https://github.com/bndtools/bnd/blob/master/biz.aQute.bndlib/src/aQute/bnd/osgi/Analyzer.java#L975
@@ -847,7 +847,7 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
             bundleNativeCode.setLength(bundleNativeCode.length() - 1);
             analyzer.setProperty(Analyzer.BUNDLE_NATIVECODE, bundleNativeCode.toString());
         }
-        
+
         // TESB-24730 set specific version for "javax.annotation"
         ImportedPackageRangeReplacer r = new ImportedPackageRangeReplacer();
         r.addRange("javax.annotation", "[1.3,2)");
@@ -1004,7 +1004,7 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
         }
         return providedModulesSet;
     }
-    
+
     @Override
     protected IProcess generateJobFiles(ProcessItem process, String contextName, String version, boolean statistics,
             boolean trace, boolean applyContextToChildren, IProgressMonitor monitor) throws ProcessorException {
@@ -1046,7 +1046,7 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
         }
         return imports;
     }
-    
+
     private class ImportedPackageRangeReplacer implements AnalyzerPlugin, Plugin {
 
         private Set<Range> ranges = new TreeSet<>();
@@ -1054,7 +1054,7 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
         public void addRange(String packageName, String packageVersion) {
             ranges.add(new Range(packageName, packageVersion));
         }
-        
+
         /**
          * Analyzes the jar and update the version range.
          *

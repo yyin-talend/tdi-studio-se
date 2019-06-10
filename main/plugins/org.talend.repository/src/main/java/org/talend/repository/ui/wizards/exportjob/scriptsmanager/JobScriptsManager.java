@@ -1,6 +1,6 @@
 // ============================================================================
 //
-// Copyright (C) 2006-2018 Talend Inc. - www.talend.com
+// Copyright (C) 2006-2019 Talend Inc. - www.talend.com
 //
 // This source code is available under agreement available at
 // %InstallDIR%\features\org.talend.rcp.branding.%PRODUCTNAME%\%PRODUCTNAME%license.txt
@@ -75,9 +75,9 @@ import org.talend.repository.local.ExportItemUtil;
 
 /**
  * Manages the job scripts to be exported. <br/>
- * 
+ *
  * $Id: JobScriptsManager.java 1 2006-12-14 下�?�05:06:49 bqian
- * 
+ *
  */
 public abstract class JobScriptsManager {
 
@@ -173,12 +173,12 @@ public abstract class JobScriptsManager {
     }
 
     /**
-     * 
+     *
      * DOC Represent exportchoice <br/>
      * .
-     * 
+     *
      * $Id: JobScriptsExportWizardPage.java 1 2007-1-31下�?�06:14:19 +0000 ylv $
-     * 
+     *
      */
     public enum ExportChoice {
         needMetaInfo,
@@ -235,7 +235,7 @@ public abstract class JobScriptsManager {
 
     /**
      * qian Gets the export resources.
-     * 
+     *
      * @param process
      * @param needLauncher
      * @param needSystemRoutine
@@ -253,9 +253,9 @@ public abstract class JobScriptsManager {
             throws ProcessorException;
 
     /**
-     * 
+     *
      * DOC wchen Comment method "getExportPigudfResources". only for run job in studio
-     * 
+     *
      * @param process
      * @return
      * @throws ProcessorException
@@ -286,7 +286,7 @@ public abstract class JobScriptsManager {
 
     /**
      * Gets the perl launcher location.
-     * 
+     *
      * @return
      */
     public static String[] getLauncher() {
@@ -295,9 +295,9 @@ public abstract class JobScriptsManager {
     }
 
     /**
-     * 
+     *
      * Create launcher(s) and get url(s).
-     * 
+     *
      * @param needLauncher
      * @param process
      * @param contextName
@@ -467,7 +467,7 @@ public abstract class JobScriptsManager {
 
     /**
      * DOC Administrator Comment method "createLauncherFile".
-     * 
+     *
      * @param process
      * @param list
      * @param cmdPrimary
@@ -549,7 +549,7 @@ public abstract class JobScriptsManager {
 
     /**
      * ftang Comment method "escapeFileNameSpace".
-     * 
+     *
      * @param processItem
      * @return
      */
@@ -560,7 +560,7 @@ public abstract class JobScriptsManager {
 
     /**
      * ftang Comment method "escapeSpace".
-     * 
+     *
      * @param name
      * @return
      */
@@ -570,7 +570,7 @@ public abstract class JobScriptsManager {
 
     /**
      * Generates the perl files.
-     * 
+     *
      * @param needGenerateCode
      * @param contextName
      * @param process
@@ -584,7 +584,7 @@ public abstract class JobScriptsManager {
 
     /**
      * Generates the job files.
-     * 
+     *
      * @param needGenerateCode
      * @param context
      * @param process
@@ -599,7 +599,7 @@ public abstract class JobScriptsManager {
 
     /**
      * Generates the job files.
-     * 
+     *
      * @param needGenerateCode
      * @param contextName
      * @param process
@@ -653,7 +653,7 @@ public abstract class JobScriptsManager {
 
     /**
      * Gets resources' URL.
-     * 
+     *
      * @param resources
      * @param fileNames
      * @return
@@ -685,7 +685,7 @@ public abstract class JobScriptsManager {
 
     /**
      * ftang Comment method "setJobVersion".
-     * 
+     *
      * @param selectedJobVersion
      */
     public void setJobVersion(String selectedJobVersion) {
@@ -694,7 +694,7 @@ public abstract class JobScriptsManager {
 
     /**
      * ftang Comment method "getSelectedJobVersion".
-     * 
+     *
      * @return
      */
     public String getSelectedJobVersion() {
@@ -703,7 +703,7 @@ public abstract class JobScriptsManager {
 
     /**
      * ftang Comment method "setJobVersion".
-     * 
+     *
      * @param selectedJobVersion
      */
     public void setBundleVersion(String bundleVersion) {
@@ -712,7 +712,7 @@ public abstract class JobScriptsManager {
 
     /**
      * ftang Comment method "getSelectedJobVersion".
-     * 
+     *
      * @return
      */
     public String getBundleVersion() {
@@ -721,7 +721,7 @@ public abstract class JobScriptsManager {
 
     /**
      * ftang Comment method "setMultiNodes".
-     * 
+     *
      * @param b
      */
     public void setMultiNodes(boolean isMultiNodes) {
@@ -730,7 +730,7 @@ public abstract class JobScriptsManager {
 
     /**
      * ftang Comment method "setMultiNodes".
-     * 
+     *
      * @param b
      */
     public boolean isMultiNodes() {
@@ -745,7 +745,7 @@ public abstract class JobScriptsManager {
 
     /**
      * ggu Comment method "getCorrespondingProjectRootPath".
-     * 
+     *
      * if item is null, will return currrent probject path.
      */
     protected IPath getCorrespondingProjectRootPath(Item item) throws Exception {
@@ -771,9 +771,9 @@ public abstract class JobScriptsManager {
 
     /**
      * Gets current project name.
-     * 
+     *
      * @param item TODO
-     * 
+     *
      * @return
      */
     protected abstract String getCorrespondingProjectName(Item item);
@@ -945,7 +945,7 @@ public abstract class JobScriptsManager {
 
     /**
      * DOC Administrator Comment method "getJobContextsComboValue".
-     * 
+     *
      * @param item
      * @return
      */
@@ -967,7 +967,7 @@ public abstract class JobScriptsManager {
 
     /**
      * Returns the root folder name.
-     * 
+     *
      * @return
      */
     public String getRootFolderName(String path) {
@@ -999,7 +999,7 @@ public abstract class JobScriptsManager {
 
     /**
      * Getter for topFolderName.
-     * 
+     *
      * @return the topFolderName
      */
     public String getTopFolderName() {
@@ -1008,7 +1008,7 @@ public abstract class JobScriptsManager {
 
     /**
      * Sets the topFolderName.
-     * 
+     *
      * @param topFolderName the topFolderName to set
      */
     public void setTopFolderName(String topFolderName) {

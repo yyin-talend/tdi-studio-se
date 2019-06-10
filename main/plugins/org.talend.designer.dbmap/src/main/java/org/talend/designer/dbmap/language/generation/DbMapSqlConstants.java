@@ -1,6 +1,6 @@
 // ============================================================================
 //
-// Copyright (C) 2006-2018 Talend Inc. - www.talend.com
+// Copyright (C) 2006-2019 Talend Inc. - www.talend.com
 //
 // This source code is available under agreement available at
 // %InstallDIR%\features\org.talend.rcp.branding.%PRODUCTNAME%\%PRODUCTNAME%license.txt
@@ -18,7 +18,7 @@ package org.talend.designer.dbmap.language.generation;
 public interface DbMapSqlConstants {
 
     /*
-     * 
+     *
      */
     public final static String NEW_LINE = "\n"; //$NON-NLS-1$
 
@@ -39,7 +39,7 @@ public interface DbMapSqlConstants {
     public final static String RIGHT_COMMENT = "*/"; //$NON-NLS-1$
 
     /*
-     * 
+     *
      */
     public final static String SELECT = "SELECT"; //$NON-NLS-1$
 

@@ -1,6 +1,6 @@
 // ============================================================================
 //
-// Copyright (C) 2006-2018 Talend Inc. - www.talend.com
+// Copyright (C) 2006-2019 Talend Inc. - www.talend.com
 //
 // This source code is available under agreement available at
 // %InstallDIR%\features\org.talend.rcp.branding.%PRODUCTNAME%\%PRODUCTNAME%license.txt
@@ -117,9 +117,9 @@ import org.talend.repository.utils.JobVersionUtils;
 
 /**
  * Page of the Job Scripts Export Wizard. <br/>
- * 
+ *
  * @referto WizardArchiveFileResourceExportPage1 $Id: JobScriptsExportWizardPage.java 1 2006-12-13 ä¸‹å�ˆ03:09:07 bqian
- * 
+ *
  */
 public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourceExportPage1 {
 
@@ -208,7 +208,7 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
 
     /**
      * Create an instance of this class.
-     * 
+     *
      * @param name java.lang.String
      */
     @SuppressWarnings("unchecked")
@@ -241,7 +241,7 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
 
     /**
      * Create an instance of this class.
-     * 
+     *
      * @param selection the selection
      */
     public JobScriptsExportWizardPage(IStructuredSelection selection) {
@@ -337,15 +337,15 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
         GridLayout layout = new GridLayout();
         layout.marginHeight = 0;
         layout.marginBottom = 0;
-        
+
         Composite composite = new Composite(sash, SWT.BORDER);
         composite.setLayout(layout);
         GridDataFactory.fillDefaults().grab(true, true).applyTo(composite);
-        
+
         composite.setFont(parent.getFont());
 
         createDestinationGroup(composite);
-        
+
         if (!isMultiNodes()) {
             createJobVersionGroup(composite);
         }
@@ -399,10 +399,10 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
     protected SashForm createExportTree(Composite parent) {
         // Using a protected method to provide the tree. LiXiaopeng 2011-9-21
         treeViewer = getExportTree();
-        
+
         SashForm sashForm = treeViewer.createContents(parent);
         treeViewer.addCheckStateListener(checkStateListener);
-        
+
         return sashForm;
     }
 
@@ -415,17 +415,17 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
 
     /**
      * ftang Comment method "createJobVersionGroup".
-     * 
+     *
      * @param composite
      */
     protected void createJobVersionGroup(Composite parent) {
-        
+
         Group versionGroup = new Group(parent, SWT.NONE);
         GridDataFactory.fillDefaults().grab(true, false).applyTo(versionGroup);
-        
+
         GridLayout layout = new GridLayout(2, false);
         versionGroup.setLayout(layout);
-        
+
         versionGroup.setText(Messages.getString("JobScriptsExportWSWizardPage.newJobVersion", getProcessType())); //$NON-NLS-1$
         versionGroup.setFont(parent.getFont());
 
@@ -433,7 +433,7 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
         label.setText(Messages.getString("JobScriptsExportWSWizardPage.newJobVersion.Label", getProcessType())); //$NON-NLS-1$
 
         final Combo versionCombo = new Combo(versionGroup, SWT.PUSH);
-        
+
 
         String[] allVersions = JobVersionUtils.getAllVersions(nodes[0]);
         Arrays.sort(allVersions);
@@ -470,7 +470,7 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
         Group optionsGroup = new Group(parent, SWT.NONE);
         GridDataFactory.fillDefaults().grab(true, false).applyTo(optionsGroup);
         optionsGroup.setLayout(new GridLayout());
-        
+
         optionsGroup.setText("Extract zip file"); //$NON-NLS-1$
         optionsGroup.setFont(parent.getFont());
 
@@ -490,7 +490,7 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
     /*
      * It's not a good method to resovle the problem of null pointer, which is led by commenting the //
      * createResourcesGroup(composite); and createButtonsGroup(composite); (non-Javadoc)
-     * 
+     *
      * @see org.eclipse.ui.internal.wizards.datatransfer.WizardFileSystemResourceExportPage1#validateSourceGroup()
      */
     @Override
@@ -500,7 +500,7 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
 
     /**
      * Create the export options specification widgets.
-     * 
+     *
      */
     @Override
     public void createOptionsGroupButtons(Group optionsGroup) {
@@ -509,7 +509,7 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
 
         Composite left = new Composite(optionsGroup, SWT.NONE);
         GridDataFactory.fillDefaults().grab(true, false).applyTo(left);
-        
+
         GridLayout gdlLeft = new GridLayout();
         gdlLeft.marginHeight = 0;
         gdlLeft.marginWidth = 0;
@@ -520,21 +520,21 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
 
     /**
      * Create the buttons for the group that determine if the entire or selected directory structure should be created.
-     * 
+     *
      * @param optionsGroup
      * @param font
      */
     /**
      * DOC Administrator Comment method "createOptions".
-     * 
+     *
      * @param optionsGroup
      * @param font
      */
     public void createOptions(final Composite optionsGroup, Font font) {
-        
+
         Composite optionsComposite = new Composite(optionsGroup, SWT.NONE);
         GridDataFactory.fillDefaults().grab(true, false).span(3, 1).applyTo(optionsComposite);
-        
+
         GridLayout gdlOptionsComposite = new GridLayout(3, false);
         gdlOptionsComposite.marginHeight = 0;
         gdlOptionsComposite.marginWidth = 0;
@@ -542,7 +542,7 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
 
         optionTypeCombo = new Combo(optionsComposite, SWT.PUSH);
         GridDataFactory.swtDefaults().span(3, 1).applyTo(optionTypeCombo);
-        
+
         optionTypeCombo.setItems(OPTION_TYPES);
         optionTypeCombo.select(0);
         optionTypeCombo.addSelectionListener(new SelectionAdapter() {
@@ -805,7 +805,7 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
         return null;
 
     }
-    
+
     protected String getLauncherName() {
         if (shellLauncherButton != null && !shellLauncherButton.isDisposed() && shellLauncherButton.getSelection()) {
             if (launcherCombo != null && !launcherCombo.isDisposed()) {
@@ -882,7 +882,7 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
 
         /**
          * DOC zli ParametersValuesDialog constructor comment.
-         * 
+         *
          * @param parentShell
          */
         protected ParametersValuesDialog(Shell parentShell) {
@@ -1250,7 +1250,7 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
 
         /*
          * (non-Javadoc)
-         * 
+         *
          * @see org.eclipse.jface.viewers.ITreeContentProvider#getChildren(java.lang.Object)
          */
         public Object[] getChildren(Object parentElement) {
@@ -1259,7 +1259,7 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
 
         /*
          * (non-Javadoc)
-         * 
+         *
          * @see org.eclipse.jface.viewers.ITreeContentProvider#getParent(java.lang.Object)
          */
         public Object getParent(Object element) {
@@ -1268,7 +1268,7 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
 
         /*
          * (non-Javadoc)
-         * 
+         *
          * @see org.eclipse.jface.viewers.ITreeContentProvider#hasChildren(java.lang.Object)
          */
         public boolean hasChildren(Object element) {
@@ -1408,7 +1408,7 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
     /**
      * The Finish button was pressed. Try to do the required work now and answer a boolean indicating success. If false
      * is returned then the wizard will not close.
-     * 
+     *
      * @returns boolean
      */
     @Override
@@ -1586,7 +1586,7 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
 
     /**
      * Get the export operation.
-     * 
+     *
      * @param resourcesToExport
      * @return
      */
@@ -1606,7 +1606,7 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
 
     /**
      * Comment method "setTopFolder".
-     * 
+     *
      * @param resourcesToExport
      * @param topFolder
      */
@@ -1619,7 +1619,7 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
 
     /**
      * Answer the string to display in self as the destination type.
-     * 
+     *
      * @return java.lang.String
      */
     @Override
@@ -1710,7 +1710,7 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
     /**
      * Answer the suffix that files exported from this wizard should have. If this suffix is a file extension (which is
      * typically the case) then it must include the leading period character.
-     * 
+     *
      */
     protected String getOutputSuffix() {
         return OUTPUT_FILE_SUFFIX;
@@ -1775,7 +1775,7 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.eclipse.ui.wizards.datatransfer.WizardFileSystemResourceExportPage1#destinationEmptyMessage()
      */
     @Override
@@ -1785,7 +1785,7 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
 
     /**
      * ftang Comment method "isMultiNodes".
-     * 
+     *
      * @return
      */
     public boolean isMultiNodes() {
@@ -1797,7 +1797,7 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
 
     /**
      * ftang Comment method "getSelectedJobVersion".
-     * 
+     *
      * @return
      */
     public String getSelectedJobVersion() {
@@ -1825,7 +1825,7 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
 
     /**
      * GLIU add for fixing TESB-4975 default is "Job"
-     * 
+     *
      * @return
      */
     protected String getProcessType() {

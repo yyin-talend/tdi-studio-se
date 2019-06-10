@@ -1,6 +1,6 @@
 // ============================================================================
 //
-// Copyright (C) 2006-2018 Talend Inc. - www.talend.com
+// Copyright (C) 2006-2019 Talend Inc. - www.talend.com
 //
 // This source code is available under agreement available at
 // %InstallDIR%\features\org.talend.rcp.branding.%PRODUCTNAME%\%PRODUCTNAME%license.txt
@@ -136,7 +136,7 @@ public class MavenJavaProcessor extends JavaProcessor {
     }
 
     /**
-     * 
+     *
      * copied from JobScriptsManager.getCommandByTalendJob
      */
     protected void setPlatformValues(String tp, String contextName) {
@@ -360,7 +360,7 @@ public class MavenJavaProcessor extends JavaProcessor {
                 if ("ROUTE".equalsIgnoreCase(getBuildType(getProperty())) && project != null &&
                 		ERepositoryObjectType.PROCESS.equals(ERepositoryObjectType.getType(getProperty()))) {
                     // TESB-23870
-                    // child routes job project must be compiled explicitly for 
+                    // child routes job project must be compiled explicitly for
                     // correct child job manifest generation during OSGi packaging
                     if (!MavenProjectUtils.hasMavenNature(project)) {
                         MavenProjectUtils.enableMavenNature(monitor, project);
@@ -455,7 +455,7 @@ public class MavenJavaProcessor extends JavaProcessor {
         // Else, a simple compilation is needed.
         return TalendMavenConstants.GOAL_COMPILE;
     }
-    
+
     private String getBuildType(Property property) {
         if (property != null && property.getAdditionalProperties() != null) {
             return (String) property.getAdditionalProperties().get(TalendProcessArgumentConstant.ARG_BUILD_TYPE);

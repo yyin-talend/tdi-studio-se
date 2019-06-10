@@ -1,6 +1,6 @@
 // ============================================================================
 //
-// Copyright (C) 2006-2018 Talend Inc. - www.talend.com
+// Copyright (C) 2006-2019 Talend Inc. - www.talend.com
 //
 // This source code is available under agreement available at
 // %InstallDIR%\features\org.talend.rcp.branding.%PRODUCTNAME%\%PRODUCTNAME%license.txt
@@ -24,9 +24,9 @@ public class XMLNodes {
     private Map<String, XMLNode> nodes = new HashMap<String, XMLNode>();
 
     private String loopPath = null;
-    
+
     private String originLoopPath = null;
-    
+
     public void addNode(XMLNode node) {
         if (node != null) {
             nodes.put(node.originPath, node);

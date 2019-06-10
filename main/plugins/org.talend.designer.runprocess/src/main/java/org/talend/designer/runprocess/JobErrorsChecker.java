@@ -1,6 +1,6 @@
 // ============================================================================
 //
-// Copyright (C) 2006-2018 Talend Inc. - www.talend.com
+// Copyright (C) 2006-2019 Talend Inc. - www.talend.com
 //
 // This source code is available under agreement available at
 // %InstallDIR%\features\org.talend.rcp.branding.%PRODUCTNAME%\%PRODUCTNAME%license.txt
@@ -61,7 +61,7 @@ public class JobErrorsChecker {
 
     public static List<IContainerEntry> getErrors() {
         List<IContainerEntry> input = new ArrayList<IContainerEntry>();
-        if(LastGenerationInfo.getInstance() == null  || 
+        if(LastGenerationInfo.getInstance() == null  ||
         		LastGenerationInfo.getInstance().getLastMainJob() == null) {
         	return input;
         }
@@ -351,7 +351,7 @@ public class JobErrorsChecker {
 
         // if no error for job, check codes.
         checkRoutinesCompilationError();
-        
+
         checkSubJobMultipleVersionsError();
     }
 
@@ -362,7 +362,7 @@ public class JobErrorsChecker {
         Set<String> dependentRoutines = LastGenerationInfo.getInstance().getRoutinesNeededWithSubjobPerJob(
                 LastGenerationInfo.getInstance().getLastMainJob().getJobId(),
                 LastGenerationInfo.getInstance().getLastMainJob().getJobVersion());
-    	
+
         // from Problems
         List<Problem> errors = Problems.getProblemList().getProblemsBySeverity(ProblemStatus.ERROR);
         for (Problem p : errors) {

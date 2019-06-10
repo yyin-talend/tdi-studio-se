@@ -1,6 +1,6 @@
 // ============================================================================
 //
-// Copyright (C) 2006-2018 Talend Inc. - www.talend.com
+// Copyright (C) 2006-2019 Talend Inc. - www.talend.com
 //
 // This source code is available under agreement available at
 // %InstallDIR%\features\org.talend.rcp.branding.%PRODUCTNAME%\%PRODUCTNAME%license.txt
@@ -394,7 +394,7 @@ public class BuildJobManager {
             }
         }
     }
-    
+
     private void packageSubJob(String zipLocation, Model pomModel, File rootPom, ProcessItem item,
             final List<ProcessItem> checkedProcesses)
             throws Exception {

@@ -1,6 +1,6 @@
 // ============================================================================
 //
-// Copyright (C) 2006-2018 Talend Inc. - www.talend.com
+// Copyright (C) 2006-2019 Talend Inc. - www.talend.com
 //
 // This source code is available under agreement available at
 // %InstallDIR%\features\org.talend.rcp.branding.%PRODUCTNAME%\%PRODUCTNAME%license.txt
@@ -493,7 +493,7 @@ public abstract class DbGenerationManager {
                         }
                     }
                 }
-                
+
                 List<ExternalDbMapEntry> customOtherConditionsEntries = outputTable.getCustomOtherConditionsEntries();
                 if (customOtherConditionsEntries != null) {
                     for (ExternalDbMapEntry entry : customOtherConditionsEntries) {
@@ -875,9 +875,9 @@ public abstract class DbGenerationManager {
     }
 
     /**
-     * 
+     *
      * DOC wchen Comment method "replaceExpression".
-     * 
+     *
      * @param expression
      * @param component
      */
@@ -906,7 +906,7 @@ public abstract class DbGenerationManager {
             for (String globalMapStr : globalMapList) {
                 String regex = parser.getGlobalMapExpressionRegex(globalMapStr);
                 String replacement = parser.getGlobalMapReplacement(globalMapStr);
-                expression = expression.replaceAll(regex, "\" +" + replacement + "+ \""); //$NON-NLS-1$ //$NON-NLS-2$ 
+                expression = expression.replaceAll(regex, "\" +" + replacement + "+ \""); //$NON-NLS-1$ //$NON-NLS-2$
             }
         }
         return expression;
@@ -929,7 +929,7 @@ public abstract class DbGenerationManager {
         for (int i = 0; i < querySegments.size(); i++) {
             String segment = querySegments.get(i);
             if (segment.contains(globalMapString)) {
-                segment = segment.replaceAll(regex, "\" +" + globalMapString + "+ \""); //$NON-NLS-1$ //$NON-NLS-2$ 
+                segment = segment.replaceAll(regex, "\" +" + globalMapString + "+ \""); //$NON-NLS-1$ //$NON-NLS-2$
                 querySegments.set(i, segment);
             }
         }
@@ -1016,7 +1016,7 @@ public abstract class DbGenerationManager {
             boolean writeForJoin, boolean isFirstClause) {
     	return buildConditions(component, sb, inputTable, writeForJoin, isFirstClause, false);
     }
-    
+
     /**
      * DOC amaumont Comment method "buildConditions".
      *
@@ -1059,7 +1059,7 @@ public abstract class DbGenerationManager {
             boolean isFirstClause, ExternalDbMapEntry dbMapEntry, boolean writeCr) {
         return buildCondition(component, sbWhere, table, isFirstClause, dbMapEntry, writeCr, false);
     }
-    
+
     /**
      * DOC amaumont Comment method "buildCondition".
      *
@@ -1288,7 +1288,7 @@ public abstract class DbGenerationManager {
                         String tableLabel = tableEntry.getKey();
                         String schemaValue = tableEntry.getValue();
                         if (tableLabel.equals(metadataTable.getLabel()) && tableColneName.equals(tableLabel)) {
-                            String name = schemaValue + "." + tableName; //$NON-NLS-1$                            
+                            String name = schemaValue + "." + tableName; //$NON-NLS-1$
                             appendSqlQuery(sb, name);
                             replace = true;
                         }
@@ -1454,12 +1454,12 @@ public abstract class DbGenerationManager {
 
         return expression;
     }
-    
+
     protected String replaceAuotes(String expression, String quoParser, String quote){
         if(!expression.contains("'")){
             return expression.replaceAll(quoParser,"\\\\" +quote); //$NON-NLS-1$
         }
-        
+
         List<Integer> indexs = new ArrayList<>();
         for(int i=0;i<expression.length();i++){
             if("'".equals(String.valueOf(expression.charAt(i)))){
@@ -1471,7 +1471,7 @@ public abstract class DbGenerationManager {
         for(int i=0;i<indexs.size();i++){
             if(i == 0){
                 if(indexs.size() == 1 && indexs.get(i) == 0){
-                    result.append(expression.substring(0, indexs.get(i)+1)); 
+                    result.append(expression.substring(0, indexs.get(i)+1));
                 }else{
                     String exp = expression.substring(start, indexs.get(i));
                     result.append(exp.replaceAll(quoParser,"\\\\" +quote)); //$NON-NLS-1$
@@ -1491,7 +1491,7 @@ public abstract class DbGenerationManager {
         }
         return result.toString();
     }
-    
+
     private String getQuote(DbMapComponent component){
     	String quote = TalendQuoteUtils.QUOTATION_MARK;
     	IElementParameter mappingPara = component.getElementParameter(EParameterName.MAPPING.getName());
@@ -1619,7 +1619,7 @@ public abstract class DbGenerationManager {
             return name;
         }
     }
-    
+
     protected String getColumnName(IConnection conn, String name, String quote) {
         if (!isRefTableConnection(conn) && isUseDelimitedIdentifiers()) {
             return getNameWithDelimitedIdentifier(name, quote);
@@ -1639,7 +1639,7 @@ public abstract class DbGenerationManager {
         newName = delimitedIdentifier + newName + delimitedIdentifier;
         return newName;
     }
-    
+
     protected String getNameWithDelimitedIdentifier(String name, String quote) {
         String newName = name;
         newName = newName.replaceAll("\"", "\"\"");

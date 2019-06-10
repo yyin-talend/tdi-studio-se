@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2006-2018 Talend Inc. - www.talend.com
+ * Copyright (C) 2006-2019 Talend Inc. - www.talend.com
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with
  * the License. You may obtain a copy of the License at
@@ -44,7 +44,7 @@ public class TaCoKitUtil {
 
     /**
      * Get ConnectionItem from specified project
-     * 
+     *
      * @param project {@link Project} only search from the given project
      * @param itemId item id
      * @return stored item of the given parameters, or null
@@ -62,7 +62,7 @@ public class TaCoKitUtil {
 
     /**
      * Get ConnectionItem from main project or it's reference project
-     * 
+     *
      * @param itemId item id
      * @return stored item of the given parameters, or null
      * @throws Exception unexpected exception occured during searching
@@ -210,7 +210,7 @@ public class TaCoKitUtil {
 
     /**
      * Method to create component name from component's family name and component's name itself.
-     * 
+     *
      * @param familyName component's family name
      * @param componentName component's name
      * @return full component name

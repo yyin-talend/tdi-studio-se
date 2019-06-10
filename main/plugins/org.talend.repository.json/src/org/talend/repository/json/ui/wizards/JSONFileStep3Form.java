@@ -1,6 +1,6 @@
 // ============================================================================
 //
-// Copyright (C) 2006-2018 Talend Inc. - www.talend.com
+// Copyright (C) 2006-2019 Talend Inc. - www.talend.com
 //
 // This source code is available under agreement available at
 // %InstallDIR%\features\org.talend.rcp.branding.%PRODUCTNAME%\%PRODUCTNAME%license.txt
@@ -70,7 +70,7 @@ import org.talend.repository.ui.wizards.metadata.connection.files.json.EJsonRead
 
 /**
  * @author ocarbone
- * 
+ *
  */
 public class JSONFileStep3Form extends AbstractJSONFileStepForm {
 
@@ -100,7 +100,7 @@ public class JSONFileStep3Form extends AbstractJSONFileStepForm {
 
     /**
      * Constructor to use by RCP Wizard.
-     * 
+     *
      * @param Composite
      */
     public JSONFileStep3Form(Composite parent, ConnectionItem connectionItem, MetadataTable metadataTable, JSONWizard wizard,
@@ -113,7 +113,7 @@ public class JSONFileStep3Form extends AbstractJSONFileStepForm {
     }
 
     /**
-     * 
+     *
      * Initialize value, forceFocus first field.
      */
     @Override
@@ -135,7 +135,7 @@ public class JSONFileStep3Form extends AbstractJSONFileStepForm {
 
     /**
      * DOC ocarbone Comment method "adaptFormToReadOnly".
-     * 
+     *
      */
     @Override
     protected void adaptFormToReadOnly() {
@@ -228,7 +228,7 @@ public class JSONFileStep3Form extends AbstractJSONFileStepForm {
 
     /**
      * getContextJSONPath.
-     * 
+     *
      * @return String
      */
     private String getContextJSONPath(JSONFileConnection connection) {
@@ -249,7 +249,7 @@ public class JSONFileStep3Form extends AbstractJSONFileStepForm {
 
     /**
      * addButtonControls.
-     * 
+     *
      * @param cancelButton
      */
     @Override
@@ -311,10 +311,10 @@ public class JSONFileStep3Form extends AbstractJSONFileStepForm {
 
     /**
      * create ProcessDescription and set it.
-     * 
+     *
      * WARNING ::field FieldSeparator, RowSeparator, EscapeChar and TextEnclosure are surround by double quote.
-     * 
-     * 
+     *
+     *
      * @return processDescription
      */
     private ProcessDescription getProcessDescription(boolean defaultContext) {
@@ -383,7 +383,7 @@ public class JSONFileStep3Form extends AbstractJSONFileStepForm {
 
     /**
      * DOC ocarbone Comment method "refreshMetaData".
-     * 
+     *
      * @param csvArray
      */
     public void refreshMetaDataTable(final CsvArray csvArray, List<SchemaTarget> schemaTarget, Boolean flag) {
@@ -555,7 +555,7 @@ public class JSONFileStep3Form extends AbstractJSONFileStepForm {
 
     /**
      * Ensures that fields are set. Update checkEnable / use to checkConnection().
-     * 
+     *
      * @return
      */
     @Override
@@ -586,7 +586,7 @@ public class JSONFileStep3Form extends AbstractJSONFileStepForm {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.eclipse.swt.widgets.Control#setVisible(boolean)
      */
     @Override

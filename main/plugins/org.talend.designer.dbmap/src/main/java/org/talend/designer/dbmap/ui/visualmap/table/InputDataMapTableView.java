@@ -1,6 +1,6 @@
 // ============================================================================
 //
-// Copyright (C) 2006-2018 Talend Inc. - www.talend.com
+// Copyright (C) 2006-2019 Talend Inc. - www.talend.com
 //
 // This source code is available under agreement available at
 // %InstallDIR%\features\org.talend.rcp.branding.%PRODUCTNAME%\%PRODUCTNAME%license.txt
@@ -61,9 +61,9 @@ import org.talend.designer.dbmap.ui.visualmap.zone.Zone;
 
 /**
  * DOC amaumont class global comment. Detailled comment <br/>
- * 
+ *
  * $Id: InputDataMapTableView.java 1782 2007-02-03 07:57:38Z bqian $
- * 
+ *
  */
 public class InputDataMapTableView extends DataMapTableView {
 
@@ -259,7 +259,7 @@ public class InputDataMapTableView extends DataMapTableView {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.talend.designer.dbmap.ui.visualmap.table.DataMapTableView#initTableConstraints()
      */
     @Override
@@ -269,7 +269,7 @@ public class InputDataMapTableView extends DataMapTableView {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.talend.designer.dbmap.ui.visualmap.table.DataMapTableView#addEntriesActionsComponents()
      */
     @Override
@@ -287,7 +287,7 @@ public class InputDataMapTableView extends DataMapTableView {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.talend.designer.dbmap.ui.visualmap.table.DataMapTableView#getZone()
      */
     @Override
@@ -301,7 +301,7 @@ public class InputDataMapTableView extends DataMapTableView {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.talend.designer.dbmap.ui.visualmap.table.DataMapTableView#toolbarNeededToBeRightStyle()
      */
     @Override
@@ -417,7 +417,7 @@ public class InputDataMapTableView extends DataMapTableView {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.talend.designer.dbmap.ui.visualmap.table.DataMapTableView#hasDropDownToolBarItem()
      */
     @Override
@@ -442,7 +442,7 @@ public class InputDataMapTableView extends DataMapTableView {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.talend.designer.dbmap.ui.visualmap.table.DataMapTableView#getTitle()
      */
     @Override
@@ -457,15 +457,15 @@ public class InputDataMapTableView extends DataMapTableView {
 
     /**
      * . <br/>
-     * 
+     *
      * $Id: MetadataTableEditorView.java 2016 2007-02-12 15:36:11Z amaumont $
-     * 
+     *
      */
     class InputTableCellModifier extends DefaultCellModifier {
 
         /**
          * DOC amaumont MetadataTableCellModifier constructor comment.
-         * 
+         *
          * @param tableViewerCreator
          */
         public InputTableCellModifier(TableViewerCreator tableViewerCreator) {
@@ -474,7 +474,7 @@ public class InputDataMapTableView extends DataMapTableView {
 
         /*
          * (non-Javadoc)
-         * 
+         *
          * @see org.talend.commons.ui.swt.tableviewer.behavior.DefaultCellModifier#canModify(java.lang.Object,
          * java.lang.String)
          */
@@ -495,7 +495,7 @@ public class InputDataMapTableView extends DataMapTableView {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see
      * org.talend.designer.dbmap.ui.visualmap.table.DataMapTableView#getBackgroundCellColor(org.talend.commons.ui.swt
      * .tableviewer.TableViewerCreator, java.lang.Object, int)
@@ -507,7 +507,7 @@ public class InputDataMapTableView extends DataMapTableView {
 
     /**
      * DOC amaumont Comment method "getCellColor".
-     * 
+     *
      * @param tableViewerCreator
      * @param element
      * @param columnIndex

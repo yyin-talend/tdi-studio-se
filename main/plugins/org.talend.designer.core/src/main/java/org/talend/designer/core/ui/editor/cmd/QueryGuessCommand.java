@@ -1,6 +1,6 @@
 // ============================================================================
 //
-// Copyright (C) 2006-2018 Talend Inc. - www.talend.com
+// Copyright (C) 2006-2019 Talend Inc. - www.talend.com
 //
 // This source code is available under agreement available at
 // %InstallDIR%\features\org.talend.rcp.branding.%PRODUCTNAME%\%PRODUCTNAME%license.txt
@@ -60,7 +60,7 @@ import orgomg.cwm.resource.relational.Schema;
 
 /**
  * This class is used for generating new query when "Guess Query" button is selected. <br/>
- * 
+ *
  */
 public class QueryGuessCommand extends Command {
 
@@ -95,7 +95,7 @@ public class QueryGuessCommand extends Command {
 
     /**
      * The property is defined in an element, which can be either a node or a connection.
-     * 
+     *
      * @param node
      * @param propName
      * @param newOutputMetadataTable
@@ -112,7 +112,7 @@ public class QueryGuessCommand extends Command {
 
     /**
      * DOC qzhang QueryGuessCommand constructor comment.
-     * 
+     *
      * @param node2
      * @param metadataTable
      * @param schema
@@ -524,7 +524,7 @@ public class QueryGuessCommand extends Command {
 
     /**
      * Sets a set of maps what used for generating new Query.
-     * 
+     *
      * @param dbNameAndDbTypeMap
      * @param dbNameAndSchemaMap
      * @param getRepositoryTableMap
@@ -537,7 +537,7 @@ public class QueryGuessCommand extends Command {
 
     /**
      * Sets the real table id and table name.
-     * 
+     *
      * @param realTableId
      * @param realTableName
      * @param type
@@ -549,7 +549,7 @@ public class QueryGuessCommand extends Command {
     }
 
     /*
-     * 
+     *
      * hyWang Method formatQuery
      */
     private String fomatQuery(String query) {

@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2006-2018 Talend Inc. - www.talend.com
+ * Copyright (C) 2006-2019 Talend Inc. - www.talend.com
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -42,11 +42,11 @@ public class TaCoKitValueSelectionController extends AbstractValueSelectionContr
 
     @Override
     protected SelectionListener createOnButtonClickedListener(final IElementParameter parameter) {
-        final ValueSelectionParameter valueSelectionParameter = (ValueSelectionParameter) parameter; 
+        final ValueSelectionParameter valueSelectionParameter = (ValueSelectionParameter) parameter;
         return new SelectionAdapter() {
-            
+
             private final Job job;
-            
+
             {
                 job = new Job(Messages.getString("suggestion.job.title")) {
 
@@ -73,11 +73,11 @@ public class TaCoKitValueSelectionController extends AbstractValueSelectionContr
                         monitor.done();
                         return Status.OK_STATUS;
                     }
-                    
+
                 };
                 job.setUser(true);
             }
-            
+
             @Override
             public void widgetSelected(final SelectionEvent e) {
                 job.schedule();

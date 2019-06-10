@@ -1,6 +1,6 @@
 // ============================================================================
 //
-// Copyright (C) 2006-2018 Talend Inc. - www.talend.com
+// Copyright (C) 2006-2019 Talend Inc. - www.talend.com
 //
 // This source code is available under agreement available at
 // %InstallDIR%\features\org.talend.rcp.branding.%PRODUCTNAME%\%PRODUCTNAME%license.txt
@@ -34,7 +34,7 @@ public class SimpleSAXLoopHandler extends DefaultHandler2 {
     private String currentPath = "";
 
     private DataBufferCache bufferCache = null;
-    
+
     private boolean stop = false;
 
     private DataBufferCache2 multiCache;
@@ -53,7 +53,7 @@ public class SimpleSAXLoopHandler extends DefaultHandler2 {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.xml.sax.helpers.DefaultHandler#startDocument()
      */
     public void startDocument() throws SAXException {
@@ -62,7 +62,7 @@ public class SimpleSAXLoopHandler extends DefaultHandler2 {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.xml.sax.helpers.DefaultHandler#endDocument()
      */
     public void endDocument() throws SAXException {
@@ -75,7 +75,7 @@ public class SimpleSAXLoopHandler extends DefaultHandler2 {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.xml.sax.helpers.DefaultHandler#startElement(java.lang.String, java.lang.String, java.lang.String,
      * org.xml.sax.Attributes)
      */
@@ -142,7 +142,7 @@ public class SimpleSAXLoopHandler extends DefaultHandler2 {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.xml.sax.helpers.DefaultHandler#characters(char[], int, int)
      */
     public void characters(char ch[], int start, int length) throws SAXException {
@@ -163,7 +163,7 @@ public class SimpleSAXLoopHandler extends DefaultHandler2 {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.xml.sax.helpers.DefaultHandler#endElement(java.lang.String, java.lang.String, java.lang.String)
      */
     public void endElement(String uri, String localName, String qName) throws SAXException {
@@ -181,7 +181,7 @@ public class SimpleSAXLoopHandler extends DefaultHandler2 {
                         node.addTextValue("</");
                         node.addTextValue(qName);
                         node.addTextValue(">");
-                        
+
                     }
                     if (this.currentPath.equals(node.nodePath)) {
                         node.hasValue = true;
@@ -204,7 +204,7 @@ public class SimpleSAXLoopHandler extends DefaultHandler2 {
                 } else {
                     bufferCache.writeData(map);
                 }
-                
+
                 if (stop) {
                     throw new EnoughDataException("Get enough data,now stop the xml parse action");
                 }
@@ -227,9 +227,9 @@ public class SimpleSAXLoopHandler extends DefaultHandler2 {
 
     /** Flag used to indicate that we are inside a CDATA section */
     private boolean inCDATA;
-    
+
     private EscapeEntityHelper escapeEntityHelper = new EscapeEntityHelper();
-    
+
 	public void startCDATA() throws SAXException {
 		inCDATA = true;
 		for (XMLNode node : nodes.getNodesCollection()) {

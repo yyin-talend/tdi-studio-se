@@ -1,6 +1,6 @@
 // ============================================================================
 //
-// Copyright (C) 2006-2018 Talend Inc. - www.talend.com
+// Copyright (C) 2006-2019 Talend Inc. - www.talend.com
 //
 // This source code is available under agreement available at
 // %InstallDIR%\features\org.talend.rcp.branding.%PRODUCTNAME%\%PRODUCTNAME%license.txt
@@ -201,9 +201,9 @@ import org.talend.repository.ui.utils.Log4jPrefsSettingManager;
 /**
  * The diagram will contain all elements (nodes, connections) The xml that describes the diagram will be saved from the
  * information of this class. <br/>
- * 
+ *
  * $Id$
- * 
+ *
  */
 public class Process extends Element implements IProcess2, IGEFProcess, ILastVersionChecker {
 
@@ -329,7 +329,7 @@ public class Process extends Element implements IProcess2, IGEFProcess, ILastVer
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see java.lang.Object#hashCode()
      */
     @Override
@@ -342,7 +342,7 @@ public class Process extends Element implements IProcess2, IGEFProcess, ILastVer
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see java.lang.Object#equals(java.lang.Object)
      */
     @Override
@@ -696,7 +696,7 @@ public class Process extends Element implements IProcess2, IGEFProcess, ILastVer
 
     /**
      * Add a new node to the diagram.
-     * 
+     *
      * @param node
      */
     public void addNodeContainer(final NodeContainer nodeContainer) {
@@ -708,7 +708,7 @@ public class Process extends Element implements IProcess2, IGEFProcess, ILastVer
 
     /**
      * Remove a node to the diagram.
-     * 
+     *
      * @param node
      */
     public void removeNodeContainer(final NodeContainer nodeContainer) {
@@ -765,7 +765,7 @@ public class Process extends Element implements IProcess2, IGEFProcess, ILastVer
 
     /**
      * DOC ycbai Comment method "removeNode".
-     * 
+     *
      * @param nodeUniqueName
      */
     private void removeNode(String nodeUniqueName) {
@@ -783,7 +783,7 @@ public class Process extends Element implements IProcess2, IGEFProcess, ILastVer
 
     /**
      * Get the list of all elements, Node and Connection.
-     * 
+     *
      * @return
      */
     @Override
@@ -802,7 +802,7 @@ public class Process extends Element implements IProcess2, IGEFProcess, ILastVer
 
     /**
      * Getter for isBuilding.
-     * 
+     *
      * @return the isBuilding
      */
     public synchronized boolean isBuilding() {
@@ -811,7 +811,7 @@ public class Process extends Element implements IProcess2, IGEFProcess, ILastVer
 
     /**
      * Sets the isBuilding.
-     * 
+     *
      * @param isBuilding the isBuilding to set
      */
     public synchronized void setBuilding(boolean isBuilding) {
@@ -848,9 +848,9 @@ public class Process extends Element implements IProcess2, IGEFProcess, ILastVer
     }
 
     /**
-     * 
+     *
      * DOC yexiaowei Comment method "sortNodes".
-     * 
+     *
      * @param nodes
      * @return
      */
@@ -974,7 +974,7 @@ public class Process extends Element implements IProcess2, IGEFProcess, ILastVer
 
     /**
      * Returns true if the grid is enabled.
-     * 
+     *
      * @return
      */
     @Override
@@ -992,7 +992,7 @@ public class Process extends Element implements IProcess2, IGEFProcess, ILastVer
 
     /**
      * Returns true if the SnapToGeometry is enabled.
-     * 
+     *
      * @return
      */
     public boolean isSnapToGeometryEnabled() {
@@ -1602,7 +1602,7 @@ public class Process extends Element implements IProcess2, IGEFProcess, ILastVer
 
     /**
      * Save the diagram in a Xml File.
-     * 
+     *
      * @param file
      * @return
      * @throws IOException
@@ -2024,7 +2024,7 @@ public class Process extends Element implements IProcess2, IGEFProcess, ILastVer
 
     /**
      * DOC qzhang Comment method "createNodeType".
-     * 
+     *
      * @param fileFact
      * @param process
      * @param nList
@@ -2054,7 +2054,7 @@ public class Process extends Element implements IProcess2, IGEFProcess, ILastVer
 
     /**
      * DOC mhelleboid Comment method "loadXmlFile".
-     * 
+     *
      * @param process
      */
     @Override
@@ -2167,7 +2167,7 @@ public class Process extends Element implements IProcess2, IGEFProcess, ILastVer
 
     /**
      * DOC nrousseau Comment method "loadSubjobs".
-     * 
+     *
      * @param processType
      */
     private void loadSubjobs(ProcessType processType) {
@@ -2378,7 +2378,7 @@ public class Process extends Element implements IProcess2, IGEFProcess, ILastVer
 
     /**
      * DOC qzhang Comment method "loadNode".
-     * 
+     *
      * @param nType
      * @param component
      * @return
@@ -2389,7 +2389,7 @@ public class Process extends Element implements IProcess2, IGEFProcess, ILastVer
 
     /**
      * DOC qzhang Comment method "loadNode".
-     * 
+     *
      * @param nType
      * @param component
      * @return
@@ -2587,7 +2587,7 @@ public class Process extends Element implements IProcess2, IGEFProcess, ILastVer
 
     /**
      * Checks if there are unloaded nodes.If there are some nodes unloaded, throws PersistenceException.
-     * 
+     *
      * @throws PersistenceException PersistenceException
      */
     @Override
@@ -2695,9 +2695,9 @@ public class Process extends Element implements IProcess2, IGEFProcess, ILastVer
     }
 
     /**
-     * 
+     *
      * DOC nrousseau Comment method "checkDifferenceWithRepository".
-     * 
+     *
      * @return true if a difference has been detected
      */
     public boolean checkDifferenceWithRepository() {
@@ -2714,7 +2714,7 @@ public class Process extends Element implements IProcess2, IGEFProcess, ILastVer
 
                 /*
                  * (non-Javadoc)
-                 * 
+                 *
                  * @see org.eclipse.gef.commands.CommandStack#execute(org.eclipse.gef.commands.Command)
                  */
                 @Override
@@ -2919,9 +2919,9 @@ public class Process extends Element implements IProcess2, IGEFProcess, ILastVer
     }
 
     /**
-     * 
+     *
      * DOC YeXiaowei Comment method "getConnectionMonitorProperty".
-     * 
+     *
      * @param type
      * @return
      */
@@ -2964,9 +2964,9 @@ public class Process extends Element implements IProcess2, IGEFProcess, ILastVer
     }
 
     /**
-     * 
+     *
      * this method work for the repositoryId existed in process before v2.2.
-     * 
+     *
      */
     private void updateContextBefore(IContextManager contextManager) {
         if (repositoryId != null && !"".equals(repositoryId)) { //$NON-NLS-1$
@@ -3018,7 +3018,7 @@ public class Process extends Element implements IProcess2, IGEFProcess, ILastVer
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.talend.designer.core.ui.editor.Element#getElementName()
      */
     @Override
@@ -3033,7 +3033,7 @@ public class Process extends Element implements IProcess2, IGEFProcess, ILastVer
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.talend.core.model.process.IRepositoryProcess#getAuthor()
      */
     @Override
@@ -3043,7 +3043,7 @@ public class Process extends Element implements IProcess2, IGEFProcess, ILastVer
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.talend.core.model.process.IRepositoryProcess#getId()
      */
     @Override
@@ -3053,7 +3053,7 @@ public class Process extends Element implements IProcess2, IGEFProcess, ILastVer
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.talend.core.model.process.IRepositoryProcess#getLabel()
      */
     @Override
@@ -3063,7 +3063,7 @@ public class Process extends Element implements IProcess2, IGEFProcess, ILastVer
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.talend.core.model.process.IRepositoryProcess#getStatus()
      */
     @Override
@@ -3073,7 +3073,7 @@ public class Process extends Element implements IProcess2, IGEFProcess, ILastVer
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.talend.core.model.process.IRepositoryProcess#getVersion()
      */
     @Override
@@ -3083,7 +3083,7 @@ public class Process extends Element implements IProcess2, IGEFProcess, ILastVer
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.talend.core.model.process.IRepositoryProcess#setAuthor(org.talend.core.model.temp.User)
      */
     @Override
@@ -3099,7 +3099,7 @@ public class Process extends Element implements IProcess2, IGEFProcess, ILastVer
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.talend.core.model.process.IRepositoryProcess#setId(int)
      */
     @Override
@@ -3111,7 +3111,7 @@ public class Process extends Element implements IProcess2, IGEFProcess, ILastVer
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.talend.core.model.process.IRepositoryProcess#setLabel(java.lang.String)
      */
     @Override
@@ -3125,7 +3125,7 @@ public class Process extends Element implements IProcess2, IGEFProcess, ILastVer
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.talend.core.model.process.IRepositoryProcess#setStatus(org.talend.core.model.process.EProcessStatus)
      */
     @Override
@@ -3139,7 +3139,7 @@ public class Process extends Element implements IProcess2, IGEFProcess, ILastVer
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.talend.core.model.process.IRepositoryProcess#setVersion(int)
      */
     @Override
@@ -3158,7 +3158,7 @@ public class Process extends Element implements IProcess2, IGEFProcess, ILastVer
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.talend.core.model.temp.IXmlSerializable#getXmlStream()
      */
     public InputStream getXmlStream() {
@@ -3167,7 +3167,7 @@ public class Process extends Element implements IProcess2, IGEFProcess, ILastVer
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.talend.core.model.temp.IXmlSerializable#setXmlStream(java.io.InputStream)
      */
     @Override
@@ -3205,7 +3205,7 @@ public class Process extends Element implements IProcess2, IGEFProcess, ILastVer
     /**
      * Check if the given name will be unique in the process. If another link already exists with that name, false will
      * be returned.
-     * 
+     *
      * @param uniqueName
      * @param checkEsists
      * @return true if the name is unique
@@ -3245,7 +3245,7 @@ public class Process extends Element implements IProcess2, IGEFProcess, ILastVer
     /**
      * Check if the given name will be unique in the process. If another link already exists with that name, false will
      * be returned.
-     * 
+     *
      * @param uniqueName
      * @return true if the name is unique
      */
@@ -3256,7 +3256,7 @@ public class Process extends Element implements IProcess2, IGEFProcess, ILastVer
 
     /**
      * Manage to find a unique name with the given name.
-     * 
+     *
      * @param titleName
      */
     @Override
@@ -3329,7 +3329,7 @@ public class Process extends Element implements IProcess2, IGEFProcess, ILastVer
     /**
      * This function will take a unique name and update the list with the given name. This function should be private
      * only and should be called only when the xml file is loaded.
-     * 
+     *
      * @param uniqueName
      */
     @Override
@@ -3444,7 +3444,7 @@ public class Process extends Element implements IProcess2, IGEFProcess, ILastVer
     /**
      * If the node link with the merge node, it will return the merge link order, or it will return -1 Purpose: only in
      * the branch of the first merge link can be as a start node.
-     * 
+     *
      * @param node
      * @return
      */
@@ -3478,7 +3478,7 @@ public class Process extends Element implements IProcess2, IGEFProcess, ILastVer
      * This function check if in this subprocess there should be a start or not depends on the ref links. If in this
      * subprocess there is only one main flow and one ref then this function will return true. If there is several flow
      * in the output of one component in this subprocess,it'll return false.
-     * 
+     *
      * @param node
      * @return
      */
@@ -3514,7 +3514,7 @@ public class Process extends Element implements IProcess2, IGEFProcess, ILastVer
 
     /**
      * DOC nrousseau Comment method "checkProcess".
-     * 
+     *
      * @param propagate
      */
     @Override
@@ -3667,7 +3667,7 @@ public class Process extends Element implements IProcess2, IGEFProcess, ILastVer
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.talend.core.model.repository.IRepositoryObject#getChildren()
      */
     @Override
@@ -3758,7 +3758,7 @@ public class Process extends Element implements IProcess2, IGEFProcess, ILastVer
 
     /**
      * Comment method "getAllConnections".
-     * 
+     *
      * @param filter only return the filter matched connections
      * @return
      */
@@ -3852,7 +3852,7 @@ public class Process extends Element implements IProcess2, IGEFProcess, ILastVer
 
     /**
      * Getter for notes.
-     * 
+     *
      * @return the notes
      */
     public List<Note> getNotes() {
@@ -3861,7 +3861,7 @@ public class Process extends Element implements IProcess2, IGEFProcess, ILastVer
 
     /**
      * Getter for editor.
-     * 
+     *
      * @return the editor
      */
     @Override
@@ -3906,7 +3906,7 @@ public class Process extends Element implements IProcess2, IGEFProcess, ILastVer
 
     /**
      * Sets the editor.
-     * 
+     *
      * @param editor the editor to set
      */
     public void setEditor(AbstractMultiPageTalendEditor editor) {
@@ -3956,7 +3956,7 @@ public class Process extends Element implements IProcess2, IGEFProcess, ILastVer
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.talend.core.model.process.IProcess2#disableRunJobView()
      */
     @Override
@@ -3966,7 +3966,7 @@ public class Process extends Element implements IProcess2, IGEFProcess, ILastVer
 
     /**
      * Sets the processModified.
-     * 
+     *
      * @param processModified the processModified to set
      */
     @Override
@@ -3976,7 +3976,7 @@ public class Process extends Element implements IProcess2, IGEFProcess, ILastVer
 
     /**
      * Sets the contextManager.
-     * 
+     *
      * @param contextManager the contextManager to set
      */
     @Override
@@ -3986,7 +3986,7 @@ public class Process extends Element implements IProcess2, IGEFProcess, ILastVer
 
     /**
      * Sets the generatingProcess.
-     * 
+     *
      * @param generatingProcess the generatingProcess to set
      */
     public void setGeneratingProcess(IGeneratingProcess generatingProcess) {
@@ -3995,7 +3995,7 @@ public class Process extends Element implements IProcess2, IGEFProcess, ILastVer
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.talend.core.model.process.IProcess#getNodesWithImport()
      */
     @Override
@@ -4102,7 +4102,7 @@ public class Process extends Element implements IProcess2, IGEFProcess, ILastVer
 
     /**
      * DOC bqian Comment method "fillSubjobTitle".
-     * 
+     *
      * @param node
      * @param sjc
      */
@@ -4137,7 +4137,7 @@ public class Process extends Element implements IProcess2, IGEFProcess, ILastVer
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.talend.core.model.process.IProcess#getLastRunContext()
      */
     @Override
@@ -4147,7 +4147,7 @@ public class Process extends Element implements IProcess2, IGEFProcess, ILastVer
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.talend.core.model.process.IProcess#setLastRunContext(org.talend.core.model.process.IContext)
      */
     @Override
@@ -4158,7 +4158,7 @@ public class Process extends Element implements IProcess2, IGEFProcess, ILastVer
 
     /**
      * Getter for duplicate.
-     * 
+     *
      * @return the duplicate
      */
     @Override
@@ -4168,7 +4168,7 @@ public class Process extends Element implements IProcess2, IGEFProcess, ILastVer
 
     /**
      * Sets the duplicate.
-     * 
+     *
      * @param duplicate the duplicate to set
      */
     @Override
@@ -4178,7 +4178,7 @@ public class Process extends Element implements IProcess2, IGEFProcess, ILastVer
 
     /**
      * Getter for subjobContainers.
-     * 
+     *
      * @return the subjobContainers
      */
     @Override
@@ -4188,7 +4188,7 @@ public class Process extends Element implements IProcess2, IGEFProcess, ILastVer
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.talend.core.model.process.IProcess2#getUpdateManager()
      */
     @Override
@@ -4198,7 +4198,7 @@ public class Process extends Element implements IProcess2, IGEFProcess, ILastVer
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.talend.core.model.process.IProcess2#isNeedRegenerateCode()
      */
     @Override
@@ -4212,7 +4212,7 @@ public class Process extends Element implements IProcess2, IGEFProcess, ILastVer
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.talend.core.model.process.IProcess2#setNeedRegenerateCode(boolean)
      */
     @Override
@@ -4222,7 +4222,7 @@ public class Process extends Element implements IProcess2, IGEFProcess, ILastVer
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.talend.core.model.repository.IRepositoryObject#getRepositoryNode()
      */
     @Override
@@ -4233,7 +4233,7 @@ public class Process extends Element implements IProcess2, IGEFProcess, ILastVer
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see
      * org.talend.core.model.repository.IRepositoryObject#setRepositoryNode(org.talend.repository.model.RepositoryNode)
      */
@@ -4246,7 +4246,7 @@ public class Process extends Element implements IProcess2, IGEFProcess, ILastVer
     /**
      * <br>
      * see bug 0004882: Subjob title is not copied when copying/pasting subjobs from one job to another
-     * 
+     *
      * @param mapping
      */
     public void setCopyPasteSubjobMappings(Map<INode, SubjobContainer> mapping) {
@@ -4255,7 +4255,7 @@ public class Process extends Element implements IProcess2, IGEFProcess, ILastVer
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.talend.core.model.process.IProcess#getOutputMetadataTable()
      */
 
@@ -4280,7 +4280,7 @@ public class Process extends Element implements IProcess2, IGEFProcess, ILastVer
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.talend.core.ui.ILastVersionChecker#isLastVersion(org.talend.core.model.properties.Item)
      */
     @Override
@@ -4340,7 +4340,7 @@ public class Process extends Element implements IProcess2, IGEFProcess, ILastVer
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.talend.core.ui.ILastVersionChecker#setLastVersion(java.lang.Boolean)
      */
     @Override
@@ -4350,7 +4350,7 @@ public class Process extends Element implements IProcess2, IGEFProcess, ILastVer
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.talend.core.model.repository.IRepositoryViewObject#getInformationStatus()
      */
     @Override
@@ -4361,7 +4361,7 @@ public class Process extends Element implements IProcess2, IGEFProcess, ILastVer
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.talend.core.model.repository.IRepositoryViewObject#getPath()
      */
     @Override
@@ -4372,7 +4372,7 @@ public class Process extends Element implements IProcess2, IGEFProcess, ILastVer
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.talend.core.model.repository.IRepositoryViewObject#getProjectLabel()
      */
     @Override
@@ -4383,7 +4383,7 @@ public class Process extends Element implements IProcess2, IGEFProcess, ILastVer
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.talend.core.model.repository.IRepositoryViewObject#getRepositoryStatus()
      */
     @Override
@@ -4394,7 +4394,7 @@ public class Process extends Element implements IProcess2, IGEFProcess, ILastVer
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.talend.core.model.repository.IRepositoryViewObject#isDeleted()
      */
     @Override
@@ -4404,7 +4404,7 @@ public class Process extends Element implements IProcess2, IGEFProcess, ILastVer
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.talend.core.model.process.IProcess2#checkTableParameters()
      */
     @Override
@@ -4515,7 +4515,7 @@ public class Process extends Element implements IProcess2, IGEFProcess, ILastVer
 
     /**
      * DOC Administrator Comment method "updateProcess".
-     * 
+     *
      * @param processType
      */
     public void updateProcess(ProcessType processType) {
@@ -4735,7 +4735,7 @@ public class Process extends Element implements IProcess2, IGEFProcess, ILastVer
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.talend.core.model.repository.IRepositoryViewObject#isModified()
      */
     @Override
@@ -4745,7 +4745,7 @@ public class Process extends Element implements IProcess2, IGEFProcess, ILastVer
 
     /**
      * Getter for componentsType.
-     * 
+     *
      * @return the componentsType
      */
     @Override
@@ -4755,7 +4755,7 @@ public class Process extends Element implements IProcess2, IGEFProcess, ILastVer
 
     /**
      * Sets the componentsType.
-     * 
+     *
      * @param componentsType the componentsType to set
      */
     public void setComponentsType(String componentsType) {
@@ -4764,7 +4764,7 @@ public class Process extends Element implements IProcess2, IGEFProcess, ILastVer
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.talend.core.model.process.IProcess2#getAdditionalProperties()
      */
     @Override
@@ -4777,7 +4777,7 @@ public class Process extends Element implements IProcess2, IGEFProcess, ILastVer
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.talend.core.model.process.IProcess#getNeededModules(boolean)
      */
     @Override
@@ -4787,7 +4787,7 @@ public class Process extends Element implements IProcess2, IGEFProcess, ILastVer
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.talend.core.model.process.IProcess2#setMRData()
      */
     @Override
@@ -4797,7 +4797,7 @@ public class Process extends Element implements IProcess2, IGEFProcess, ILastVer
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.talend.core.model.process.IProcess2#isNeedLoadmodules()
      */
     @Override
@@ -4807,7 +4807,7 @@ public class Process extends Element implements IProcess2, IGEFProcess, ILastVer
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.talend.core.model.process.IProcess2#setNeedLoadmodules()
      */
     @Override
@@ -4815,7 +4815,7 @@ public class Process extends Element implements IProcess2, IGEFProcess, ILastVer
         this.isNeedLoadmodules = isNeedLoadmodules;
     }
 
-    
+
     /**
      * Getter for generatingProcess.
      * @return the generatingProcess

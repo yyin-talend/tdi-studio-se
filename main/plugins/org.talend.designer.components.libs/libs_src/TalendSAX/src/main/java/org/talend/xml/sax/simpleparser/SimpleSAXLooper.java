@@ -1,6 +1,6 @@
 // ============================================================================
 //
-// Copyright (C) 2006-2018 Talend Inc. - www.talend.com
+// Copyright (C) 2006-2019 Talend Inc. - www.talend.com
 //
 // This source code is available under agreement available at
 // %InstallDIR%\features\org.talend.rcp.branding.%PRODUCTNAME%\%PRODUCTNAME%license.txt
@@ -128,7 +128,7 @@ public class SimpleSAXLooper implements ISAXLooper, Callable {
      * handle the exception in task.
      * FutureTask.get() is a block method waiting for the Task over and it can throw the exception in
      * Task(Callable,Thread,Runnable)
-     * 
+     *
      * @throws Exception
      */
     public void handleException() throws Exception {
@@ -187,7 +187,7 @@ public class SimpleSAXLooper implements ISAXLooper, Callable {
 
     /**
      * Parse the XML file. Buffer the result in LoopEntry.
-     * 
+     *
      * @param fileURL file URL
      * @throws SAXException
      * @throws ParserConfigurationException
@@ -305,7 +305,7 @@ public class SimpleSAXLooper implements ISAXLooper, Callable {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.talend.xml.sax.commons.ISAXLooper#iterator()
      */
     public Iterator<Map<String, String>> iterator() {
@@ -315,7 +315,7 @@ public class SimpleSAXLooper implements ISAXLooper, Callable {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.talend.xml.sax.commons.ISAXLooper#multiIterator()
      */
     public Iterator<Map<String, Map<String, String>>> multiIterator() {

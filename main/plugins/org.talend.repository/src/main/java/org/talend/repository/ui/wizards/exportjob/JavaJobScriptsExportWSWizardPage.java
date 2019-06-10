@@ -1,6 +1,6 @@
 // ============================================================================
 //
-// Copyright (C) 2006-2018 Talend Inc. - www.talend.com
+// Copyright (C) 2006-2019 Talend Inc. - www.talend.com
 //
 // This source code is available under agreement available at
 // %InstallDIR%\features\org.talend.rcp.branding.%PRODUCTNAME%\%PRODUCTNAME%license.txt
@@ -80,7 +80,7 @@ import org.talend.repository.utils.EmfModelUtils;
 
 /**
  * DOC x class global comment. Detailled comment <br/>
- * 
+ *
  */
 public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizardPage {
 
@@ -221,7 +221,7 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.eclipse.jface.wizard.WizardPage#setWizard(org.eclipse.jface.wizard.IWizard)
      */
     @Override
@@ -286,7 +286,7 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
      * Extracts all types of job for exporting, about the exporting job type, please refer to {@link JobExportType}.
      * Subclasses can override this method to return the types that job requires for exporting. Added by Marvin Wang on
      * Mar 6, 2013.
-     * 
+     *
      * @return
      */
     protected List<JobExportType> extractExportJobTypes() {
@@ -331,7 +331,7 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
 
             /*
              * (non-Javadoc)
-             * 
+             *
              * @see org.talend.repository.ui.wizards.exportjob.ExportTreeViewer#checkSelection()
              */
             @Override
@@ -577,7 +577,7 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.talend.repository.ui.wizards.exportjob.JavaJobScriptsExportWizardPage#createJobScriptsManager()
      */
     @Override
@@ -1684,7 +1684,7 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.talend.repository.ui.wizards.exportjob.JobScriptsExportWizardPage#checkExport()
      */
     @Override

@@ -1,6 +1,6 @@
 // ============================================================================
 //
-// Copyright (C) 2006-2018 Talend Inc. - www.talend.com
+// Copyright (C) 2006-2019 Talend Inc. - www.talend.com
 //
 // This source code is available under agreement available at
 // %InstallDIR%\features\org.talend.rcp.branding.%PRODUCTNAME%\%PRODUCTNAME%license.txt
@@ -87,7 +87,7 @@ import org.talend.repository.ui.wizards.metadata.connection.files.xml.TreePopula
 
 /**
  * @author ocarbone
- * 
+ *
  */
 public class JSONFileStep1Form extends AbstractJSONFileStepForm {
 
@@ -148,14 +148,14 @@ public class JSONFileStep1Form extends AbstractJSONFileStepForm {
     private int limit;
 
     private Text commonNodesLimitation;
-    
+
     private Label labelLimitation;
 
     /**
      * Constructor to use by RCP Wizard.
-     * 
+     *
      * @param existingNames
-     * 
+     *
      * @param Composite
      * @param Wizard
      * @param Style
@@ -169,7 +169,7 @@ public class JSONFileStep1Form extends AbstractJSONFileStepForm {
     }
 
     /**
-     * 
+     *
      * Initialize value, forceFocus first field.
      */
     @Override
@@ -277,7 +277,7 @@ public class JSONFileStep1Form extends AbstractJSONFileStepForm {
 
     /**
      * DOC ocarbone Comment method "adaptFormToReadOnly".
-     * 
+     *
      */
     @Override
     protected void adaptFormToReadOnly() {
@@ -297,7 +297,7 @@ public class JSONFileStep1Form extends AbstractJSONFileStepForm {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.talend.repository.ui.swt.utils.AbstractForm#addFields()
      */
     @Override
@@ -328,7 +328,7 @@ public class JSONFileStep1Form extends AbstractJSONFileStepForm {
         List<String> readbyModeValues = EJsonReadbyMode.getUsableReadbyModeValues();
         readbyCombo = new LabelledCombo(compositeFileLocation, "Read By", "Read By",
                 readbyModeValues.toArray(new String[readbyModeValues.size()]), 2, true, SWT.READ_ONLY);
-        String[] JSONExtensions = { "*.JSON", "*.*", "*" }; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ 
+        String[] JSONExtensions = { "*.JSON", "*.*", "*" }; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
         fileFieldJSON = new LabelledFileField(compositeFileLocation, "Json", //$NON-NLS-1$
                 JSONExtensions);
 
@@ -525,7 +525,7 @@ public class JSONFileStep1Form extends AbstractJSONFileStepForm {
                             connectionItem.getConnection(), connectionItem.getConnection().getContextName());
                     jsonPath = TalendQuoteUtils.removeQuotes(ConnectionContextHelper.getOriginalValue(contextType,
                             jsonPath));
-                
+
                 }
                 String text = validateJsonFilePath(jsonPath);
                 if (text == null || text.isEmpty()) {
@@ -570,7 +570,7 @@ public class JSONFileStep1Form extends AbstractJSONFileStepForm {
                 } else {
                     xsdPathChanged = false;
                 }
-                
+
                 if (isContextMode()) {
                     jsonPath = _jsonPath;
                 }
@@ -733,7 +733,7 @@ public class JSONFileStep1Form extends AbstractJSONFileStepForm {
 
     /**
      * Ensures that fields are set.
-     * 
+     *
      * @return
      */
     @Override
@@ -766,7 +766,7 @@ public class JSONFileStep1Form extends AbstractJSONFileStepForm {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.eclipse.swt.widgets.Control#setVisible(boolean)
      */
     @Override

@@ -1,6 +1,6 @@
 // ============================================================================
 //
-// Copyright (C) 2006-2018 Talend Inc. - www.talend.com
+// Copyright (C) 2006-2019 Talend Inc. - www.talend.com
 //
 // This source code is available under agreement available at
 // %InstallDIR%\features\org.talend.rcp.branding.%PRODUCTNAME%\%PRODUCTNAME%license.txt
@@ -264,7 +264,7 @@ public abstract class AbstractTalendEditor extends GraphicalEditorWithFlyoutPale
     public void createPartControl(Composite parent) {
         /**
          * FIXME ggu
-         * 
+         *
          * Because the field splitter and page are private, and need override this method, so do it by reflection.
          */
 
@@ -302,7 +302,7 @@ public abstract class AbstractTalendEditor extends GraphicalEditorWithFlyoutPale
 
     /**
      * log the exception and throw a Runtime exception cause this is serious.
-     * 
+     *
      * @param e
      */
     private static void handleReflectionFailure(Exception e) {
@@ -339,7 +339,7 @@ public abstract class AbstractTalendEditor extends GraphicalEditorWithFlyoutPale
 
     /**
      * DOC hcw Comment method "collapsePalette".
-     * 
+     *
      * @param children
      */
     private void collapsePalette(List children) {
@@ -387,7 +387,7 @@ public abstract class AbstractTalendEditor extends GraphicalEditorWithFlyoutPale
 
     /**
      * DOC hcw Comment method "expandPaletteDrawer".
-     * 
+     *
      * @param paletteViewer
      * @param paletteEntry
      */
@@ -421,7 +421,7 @@ public abstract class AbstractTalendEditor extends GraphicalEditorWithFlyoutPale
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.eclipse.gef.ui.parts.GraphicalEditorWithFlyoutPalette#getPaletteRoot()
      */
     @Override
@@ -510,14 +510,14 @@ public abstract class AbstractTalendEditor extends GraphicalEditorWithFlyoutPale
 
     /**
      * Added by Marvin Wang on Jan. 11, 2012 for creating a new component handler for editor with palette.
-     * 
+     *
      * @return
      */
     protected abstract IComponentsHandler initComponentsHandler();
 
     /**
      * Getter for componenentsHandler.
-     * 
+     *
      * @return the componenentsHandler
      */
     public IComponentsHandler getComponenentsHandler() {
@@ -526,7 +526,7 @@ public abstract class AbstractTalendEditor extends GraphicalEditorWithFlyoutPale
 
     /**
      * Sets the componenentsHandler.
-     * 
+     *
      * @param componenentsHandler the componenentsHandler to set
      */
     public void setComponenentsHandler(IComponentsHandler componenentsHandler) {
@@ -627,7 +627,7 @@ public abstract class AbstractTalendEditor extends GraphicalEditorWithFlyoutPale
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.eclipse.gef.ui.parts.GraphicalEditor#setFocus()
      */
     @Override
@@ -679,7 +679,7 @@ public abstract class AbstractTalendEditor extends GraphicalEditorWithFlyoutPale
 
     /**
      * Sets the key binding scopes for this editor.
-     * 
+     *
      * @param scopes a non-empty array of key binding scope identifiers
      * @since 2.1
      */
@@ -749,7 +749,7 @@ public abstract class AbstractTalendEditor extends GraphicalEditorWithFlyoutPale
 
         /**
          * The key binding service to use.
-         * 
+         *
          * @since 2.0
          */
         private IKeyBindingService fKeyBindingService;
@@ -790,7 +790,7 @@ public abstract class AbstractTalendEditor extends GraphicalEditorWithFlyoutPale
 
         /**
          * Installs this trigger on the editor's text widget.
-         * 
+         *
          * @since 2.0
          */
         public void install() {
@@ -811,7 +811,7 @@ public abstract class AbstractTalendEditor extends GraphicalEditorWithFlyoutPale
 
         /**
          * Uninstalls this trigger from the editor's text widget.
-         * 
+         *
          * @since 2.0
          */
         public void uninstall() {
@@ -833,7 +833,7 @@ public abstract class AbstractTalendEditor extends GraphicalEditorWithFlyoutPale
 
         /**
          * Registers the given action for key activation.
-         * 
+         *
          * @param action the action to be registered
          * @since 2.0
          */
@@ -845,7 +845,7 @@ public abstract class AbstractTalendEditor extends GraphicalEditorWithFlyoutPale
 
         /**
          * The given action is no longer available for key activation
-         * 
+         *
          * @param action the action to be unregistered
          * @since 2.0
          */
@@ -857,7 +857,7 @@ public abstract class AbstractTalendEditor extends GraphicalEditorWithFlyoutPale
 
         /**
          * Sets the key binding scopes for this editor.
-         * 
+         *
          * @param keyBindingScopes the key binding scopes
          * @since 2.1
          */
@@ -887,7 +887,7 @@ public abstract class AbstractTalendEditor extends GraphicalEditorWithFlyoutPale
 
         /**
          * Creates a new action activation code for the given action id.
-         * 
+         *
          * @param actionId the action id
          */
         public ActionActivationCode(String actionId) {
@@ -896,7 +896,7 @@ public abstract class AbstractTalendEditor extends GraphicalEditorWithFlyoutPale
 
         /**
          * Returns <code>true</code> if this activation code matches the given verify event.
-         * 
+         *
          * @param event the event to test for matching
          * @return whether this activation code matches <code>event</code>
          */
@@ -1079,7 +1079,7 @@ public abstract class AbstractTalendEditor extends GraphicalEditorWithFlyoutPale
 
     /**
      * Initializes the activation code trigger.
-     * 
+     *
      * @since 2.1
      */
     public void initializeActivationCodeTrigger() {
@@ -1112,7 +1112,7 @@ public abstract class AbstractTalendEditor extends GraphicalEditorWithFlyoutPale
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.eclipse.gef.ui.parts.GraphicalEditor#getActionRegistry()
      */
     @Override
@@ -1122,7 +1122,7 @@ public abstract class AbstractTalendEditor extends GraphicalEditorWithFlyoutPale
 
     /**
      * Save the outline picture for this editor.
-     * 
+     *
      * @param viewer
      */
     protected void saveOutlinePicture(ScrollingGraphicalViewer viewer) {
@@ -1158,7 +1158,7 @@ public abstract class AbstractTalendEditor extends GraphicalEditorWithFlyoutPale
 
     /**
      * DOC qzhang Comment method "getOutlinePicturePath".
-     * 
+     *
      * @return
      */
     protected String getOutlinePicturePath() {
@@ -1224,8 +1224,8 @@ public abstract class AbstractTalendEditor extends GraphicalEditorWithFlyoutPale
                         node.setErrorFlag(false);
                         node.setCompareFlag(false);
                         node.setErrorInfo(null);
-                        node.getNodeError().updateState("UPDATE_STATUS", false); //$NON-NLS-1$     
-                        node.setErrorInfoChange("ERRORINFO", false); //$NON-NLS-1$     
+                        node.getNodeError().updateState("UPDATE_STATUS", false); //$NON-NLS-1$
+                        node.setErrorInfoChange("ERRORINFO", false); //$NON-NLS-1$
                     }
                 }
                 Problems.refreshProblemTreeView();
@@ -1235,7 +1235,7 @@ public abstract class AbstractTalendEditor extends GraphicalEditorWithFlyoutPale
 
     /**
      * This function is used only for the TabbedPropertySheetPage.
-     * 
+     *
      * @return contributorId String
      */
     @Override
@@ -1451,9 +1451,9 @@ public abstract class AbstractTalendEditor extends GraphicalEditorWithFlyoutPale
 
     /**
      * Outline view page. <br/>
-     * 
+     *
      * $Id: TalendEditor.java 7516 2007-12-11 05:23:18Z ftang $
-     * 
+     *
      */
 
     /**
@@ -1469,7 +1469,7 @@ public abstract class AbstractTalendEditor extends GraphicalEditorWithFlyoutPale
 
     /**
      * Get the viewer in the editor.
-     * 
+     *
      * @return
      */
     public GraphicalViewer getViewer() {
@@ -1482,7 +1482,7 @@ public abstract class AbstractTalendEditor extends GraphicalEditorWithFlyoutPale
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.talend.repository.job.deletion.IResourceProtection#getProtectedIds()
      */
     @Override
@@ -1495,7 +1495,7 @@ public abstract class AbstractTalendEditor extends GraphicalEditorWithFlyoutPale
         // Set<JobInfo> subJobs = ProcessorUtilities.getChildrenJobInfo((ProcessItem) process.getProperty().getItem());
 
         // for (JobInfo jobInfo : subJobs) {
-        //            String protectedJob = "subjob_of_" + process.getLabel() + "_" + //$NON-NLS-1$ //$NON-NLS-2$ 
+        //            String protectedJob = "subjob_of_" + process.getLabel() + "_" + //$NON-NLS-1$ //$NON-NLS-2$
         //                    projectName + "_" + jobInfo.getJobName() + "_" + jobInfo.getJobVersion(); //$NON-NLS-1$ //$NON-NLS-2$
         // protectedJobs.put(protectedJob, new JobResource(projectName, jobInfo));
         // }
@@ -1510,7 +1510,7 @@ public abstract class AbstractTalendEditor extends GraphicalEditorWithFlyoutPale
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.talend.repository.job.deletion.IResourceProtection#getProjectedIds()
      */
     @Override
@@ -1521,7 +1521,7 @@ public abstract class AbstractTalendEditor extends GraphicalEditorWithFlyoutPale
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.talend.repository.job.deletion.IResourceProtection#getJobResource()
      */
     @Override
@@ -1531,7 +1531,7 @@ public abstract class AbstractTalendEditor extends GraphicalEditorWithFlyoutPale
 
     /**
      * Remove all the protected resources.
-     * 
+     *
      * yzhang Comment method "resetJobResources".
      */
     public void resetJobResources() {
@@ -1543,7 +1543,7 @@ public abstract class AbstractTalendEditor extends GraphicalEditorWithFlyoutPale
 
     /**
      * Getter for currentJobResource.
-     * 
+     *
      * @return the currentJobResource
      */
     public JobResource getCurrentJobResource() {
@@ -1552,17 +1552,17 @@ public abstract class AbstractTalendEditor extends GraphicalEditorWithFlyoutPale
 
     /**
      * bqian class global comment. Detailled comment <br/>
-     * 
+     *
      * $Id: TalendEditor.java 7860 2008-01-02 06:56:40Z qzhang $
-     * 
+     *
      */
     class TalendEditDomain extends DefaultEditDomain {
 
         /**
          * DOC bqian TalendEditor.TalendEditDomain class global comment. Detailled comment <br/>
-         * 
+         *
          * $Id: TalendEditor.java 7860 2008-01-02 06:56:40Z qzhang $
-         * 
+         *
          */
         class DragProcessor {
 
@@ -1584,7 +1584,7 @@ public abstract class AbstractTalendEditor extends GraphicalEditorWithFlyoutPale
 
         /**
          * bqian TalendEditDomain constructor comment.
-         * 
+         *
          * @param editorPart
          */
         public TalendEditDomain(IEditorPart editorPart) {
@@ -1593,7 +1593,7 @@ public abstract class AbstractTalendEditor extends GraphicalEditorWithFlyoutPale
 
         /*
          * (non-Javadoc)
-         * 
+         *
          * @see org.eclipse.gef.EditDomain#mouseDown(org.eclipse.swt.events.MouseEvent, org.eclipse.gef.EditPartViewer)
          */
         @Override
@@ -1847,7 +1847,7 @@ public abstract class AbstractTalendEditor extends GraphicalEditorWithFlyoutPale
 
         /*
          * (non-Javadoc)
-         * 
+         *
          * @see org.eclipse.gef.EditDomain#mouseDrag(org.eclipse.swt.events.MouseEvent, org.eclipse.gef.EditPartViewer)
          */
         @Override
@@ -1867,7 +1867,7 @@ public abstract class AbstractTalendEditor extends GraphicalEditorWithFlyoutPale
 
         /*
          * (non-Javadoc)
-         * 
+         *
          * @see org.eclipse.gef.EditDomain#mouseUp(org.eclipse.swt.events.MouseEvent, org.eclipse.gef.EditPartViewer)
          */
         @Override
@@ -1913,7 +1913,7 @@ public abstract class AbstractTalendEditor extends GraphicalEditorWithFlyoutPale
 
         /*
          * (non-Javadoc)
-         * 
+         *
          * @see org.eclipse.gef.EditDomain#keyUp(org.eclipse.swt.events.KeyEvent, org.eclipse.gef.EditPartViewer)
          */
         @Override
@@ -1926,7 +1926,7 @@ public abstract class AbstractTalendEditor extends GraphicalEditorWithFlyoutPale
 
         /**
          * DOC bqian Comment method "moveShape".
-         * 
+         *
          * @param keyCode
          * @param shape
          */
@@ -2123,7 +2123,7 @@ public abstract class AbstractTalendEditor extends GraphicalEditorWithFlyoutPale
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.eclipse.gef.ui.parts.GraphicalEditor#getCommandStack()
      */
     @Override
@@ -2133,7 +2133,7 @@ public abstract class AbstractTalendEditor extends GraphicalEditorWithFlyoutPale
 
     /**
      * Comment method "getAction".
-     * 
+     *
      * @param actionID
      * @return
      */
@@ -2145,7 +2145,7 @@ public abstract class AbstractTalendEditor extends GraphicalEditorWithFlyoutPale
 
     /**
      * Sets the parent.
-     * 
+     *
      * @param parent the parent to set
      */
     public void setParent(AbstractMultiPageTalendEditor parent) {
@@ -2154,7 +2154,7 @@ public abstract class AbstractTalendEditor extends GraphicalEditorWithFlyoutPale
 
     /**
      * DOC qzhang Comment method "getCommonKeyHandler".
-     * 
+     *
      * @return
      */
     public KeyHandler getCommonKeyHandler() {
@@ -2225,7 +2225,7 @@ public abstract class AbstractTalendEditor extends GraphicalEditorWithFlyoutPale
 
             /*
              * (non-Javadoc)
-             * 
+             *
              * @see org.eclipse.swt.events.MouseAdapter#mouseUp(org.eclipse.swt.events.MouseEvent)
              */
             @Override
@@ -2242,9 +2242,9 @@ public abstract class AbstractTalendEditor extends GraphicalEditorWithFlyoutPale
 
     /**
      * Outline view page. <br/>
-     * 
+     *
      * $Id: TalendEditor.java 7860 2008-01-02 06:56:40Z qzhang $
-     * 
+     *
      */
     class OutlinePage extends ContentOutlinePage implements IAdaptable {
 
@@ -2453,7 +2453,7 @@ public abstract class AbstractTalendEditor extends GraphicalEditorWithFlyoutPale
                 overviewItem.dispose();
             }
             getSite().getActionBars().updateActionBars();
-            
+
             if (outlineElement != null && OpaqueElementUtil.isOpaqueToolItem(outlineElement)) {
                 OpaqueElementUtil.clearOpaqueItem(outlineElement);
             }
@@ -2472,7 +2472,7 @@ public abstract class AbstractTalendEditor extends GraphicalEditorWithFlyoutPale
 
     /**
      * Getter for readOnly.
-     * 
+     *
      * @return the readOnly
      */
     public boolean isReadOnly() {

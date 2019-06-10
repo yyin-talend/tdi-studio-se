@@ -1,6 +1,6 @@
 // ============================================================================
 //
-// Copyright (C) 2006-2018 Talend Inc. - www.talend.com
+// Copyright (C) 2006-2019 Talend Inc. - www.talend.com
 //
 // This source code is available under agreement available at
 // %InstallDIR%\features\org.talend.rcp.branding.%PRODUCTNAME%\%PRODUCTNAME%license.txt
@@ -1451,7 +1451,7 @@ public abstract class AbstractElementPropertySectionController implements Proper
         String schema = getValueFromRepositoryName(element, EConnectionParameterName.SCHEMA.getName(), basePropertyParameter);
         connParameters.setSchema(schema);
 
-        if ((elem instanceof Node) && (((Node)elem).getComponent().getComponentType().equals(EComponentType.GENERIC) 
+        if ((elem instanceof Node) && (((Node)elem).getComponent().getComponentType().equals(EComponentType.GENERIC)
                 || (element instanceof INode
                         && ((INode) element).getComponent().getComponentType().equals(EComponentType.GENERIC)))) {
             String userName = getValueFromRepositoryName(element, EConnectionParameterName.GENERIC_USERNAME.getDisplayName(), basePropertyParameter);
@@ -1473,10 +1473,10 @@ public abstract class AbstractElementPropertySectionController implements Proper
         }else{
             String userName = getValueFromRepositoryName(element, EConnectionParameterName.USERNAME.getName(), basePropertyParameter);
             connParameters.setUserName(userName);
-            
+
             String password = getValueFromRepositoryName(element, EConnectionParameterName.PASSWORD.getName(), basePropertyParameter);
             connParameters.setPassword(password);
-            
+
          // General jdbc
             String url = getValueFromRepositoryName(element, EConnectionParameterName.URL.getName(), basePropertyParameter);
             if (StringUtils.isEmpty(url)) {
@@ -1493,7 +1493,7 @@ public abstract class AbstractElementPropertySectionController implements Proper
             String driverJar = getValueFromRepositoryName(element, EConnectionParameterName.DRIVER_JAR.getName(),
                     basePropertyParameter);
             connParameters.setDriverJar(TalendTextUtils.removeQuotes(driverJar));
-            
+
             String driverClass = getValueFromRepositoryName(element, EConnectionParameterName.DRIVER_CLASS.getName(),
                     basePropertyParameter);
             String driverName = getValueFromRepositoryName(element, "DB_VERSION", basePropertyParameter); //$NON-NLS-1$
@@ -1679,7 +1679,7 @@ public abstract class AbstractElementPropertySectionController implements Proper
             dbName = ""; //$NON-NLS-1$
         }
         connParameters.setDbName(dbName);
-        
+
         if ((elem instanceof Node) && (((Node)elem).getComponent().getComponentType().equals(EComponentType.GENERIC)
                 || (element instanceof INode
                         && ((INode) element).getComponent().getComponentType().equals(EComponentType.GENERIC)))) {
@@ -1734,14 +1734,14 @@ public abstract class AbstractElementPropertySectionController implements Proper
             connParameters.setDriverJar(TalendTextUtils.removeQuotesIfExist(getParameterValueWithContext(element,
                     EConnectionParameterName.DRIVER_JAR.getName(), context, basePropertyParameter)));
         }
-        
+
         connParameters.setPort(getParameterValueWithContext(element, EConnectionParameterName.PORT.getName(), context,
                 basePropertyParameter));
         connParameters.setSchema(getParameterValueWithContext(element, EConnectionParameterName.SCHEMA.getName(), context,
                 basePropertyParameter));
         connParameters.setHost(getParameterValueWithContext(element, EConnectionParameterName.SERVER_NAME.getName(), context,
                 basePropertyParameter));
-        
+
         String dir = getParameterValueWithContext(element, EConnectionParameterName.DIRECTORY.getName(), context,
                 basePropertyParameter);
         if (dbType.equals(EDatabaseTypeName.HSQLDB_IN_PROGRESS.getDisplayName())) {
@@ -1938,10 +1938,10 @@ public abstract class AbstractElementPropertySectionController implements Proper
         connParameters.getParameters().put(ConnParameterKeys.CONN_PARA_KEY_HIVE_THRIFTPORT, hiveThriftPort);
 
     }
-    
+
     /**
      * DOC nrousseau Comment method "getGuessQueryCommand".
-     * 
+     *
      * @return
      */
     protected QueryGuessCommand getGuessQueryCommand() {

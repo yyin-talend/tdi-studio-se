@@ -1,6 +1,6 @@
 // ============================================================================
 //
-// Copyright (C) 2006-2018 Talend Inc. - www.talend.com
+// Copyright (C) 2006-2019 Talend Inc. - www.talend.com
 //
 // This source code is available under agreement available at
 // %InstallDIR%\features\org.talend.rcp.branding.%PRODUCTNAME%\%PRODUCTNAME%license.txt
@@ -165,7 +165,7 @@ public class ImportProjectSettings {
 
     /**
      * wchen Comment method "updateParameters".
-     * 
+     *
      * @param node
      * @param attrMap
      * @param statAndLogs
@@ -190,9 +190,9 @@ public class ImportProjectSettings {
         }
         /*
          * FIXME, TDI-31303
-         * 
+         *
          * After 5.6.0, because have encrypted, so try to decrypt first, then encrypt again.
-         * 
+         *
          * If the value is raw (before 5.6.0), the decrypted value will be null.
          */
         if (PasswordEncryptUtil.isPasswordField(foundType.getField())) {
@@ -206,7 +206,7 @@ public class ImportProjectSettings {
 
     /**
      * wchen Comment method "updateStatus".
-     * 
+     *
      * @param node
      * @param attrMap
      * @param status

@@ -1,6 +1,6 @@
 // ============================================================================
 //
-// Copyright (C) 2006-2018 Talend Inc. - www.talend.com
+// Copyright (C) 2006-2019 Talend Inc. - www.talend.com
 //
 // This source code is available under agreement available at
 // %InstallDIR%\features\org.talend.rcp.branding.%PRODUCTNAME%\%PRODUCTNAME%license.txt
@@ -191,7 +191,7 @@ public class ProcessChangeListener implements PropertyChangeListener {
     }
 
     /**
-     * 
+     *
      * DOC jding Comment method "checkRoutinesAfterDeleteForever". After delete routines forever, need to check if
      * ref-project exist same routines, need to rebuild routines when next job build.
      */
@@ -233,7 +233,7 @@ public class ProcessChangeListener implements PropertyChangeListener {
     /**
      * DOC nrousseau Comment method "updatePomsInNewFolder". update all jobs' relative path and groupId add job to
      * parent modules
-     * 
+     *
      * @param newFolder
      * @throws CoreException
      */
@@ -258,7 +258,7 @@ public class ProcessChangeListener implements PropertyChangeListener {
 
     /**
      * DOC nrousseau Comment method "removeFromParentSourceFolder".
-     * 
+     *
      * @param sourceFolder
      * @throws CoreException
      */

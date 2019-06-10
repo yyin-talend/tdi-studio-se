@@ -1,6 +1,6 @@
 // ============================================================================
 //
-// Copyright (C) 2006-2018 Talend Inc. - www.talend.com
+// Copyright (C) 2006-2019 Talend Inc. - www.talend.com
 //
 // This source code is available under agreement available at
 // %InstallDIR%\features\org.talend.rcp.branding.%PRODUCTNAME%\%PRODUCTNAME%license.txt
@@ -84,9 +84,9 @@ import org.talend.repository.model.IProxyRepositoryFactory;
 
 /**
  * DOC yzhang class global comment. Detailled comment <br/>
- * 
+ *
  * $Id: SQLEditorController.java 1 2006-12-12 上午11:24:40 +0000 (上午11:24:40) yzhang $
- * 
+ *
  */
 public class SqlMemoController extends AbstractElementPropertySectionController {
 
@@ -94,7 +94,7 @@ public class SqlMemoController extends AbstractElementPropertySectionController 
 
     /**
      * DOC yzhang SqlMemoController constructor comment.
-     * 
+     *
      * @param dtp
      */
     public SqlMemoController(IDynamicProperty dp) {
@@ -105,7 +105,7 @@ public class SqlMemoController extends AbstractElementPropertySectionController 
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see java.beans.PropertyChangeListener#propertyChange(java.beans.PropertyChangeEvent)
      */
     @Override
@@ -186,7 +186,7 @@ public class SqlMemoController extends AbstractElementPropertySectionController 
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see
      * org.talend.designer.core.ui.editor.properties2.editors.AbstractElementPropertySectionController#createControl
      * (org.eclipse.swt.widgets.Composite, org.talend.core.model.process.IElementParameter, int, int, int,
@@ -347,7 +347,7 @@ public class SqlMemoController extends AbstractElementPropertySectionController 
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see
      * org.talend.designer.core.ui.editor.properties.controllers.AbstractElementPropertySectionController#estimateRowSize
      * (org.eclipse.swt.widgets.Composite, org.talend.core.model.process.IElementParameter)
@@ -381,7 +381,7 @@ public class SqlMemoController extends AbstractElementPropertySectionController 
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see
      * org.talend.designer.core.ui.editor.properties.controllers.AbstractElementPropertySectionController#hasDynamicRowSize
      * ()
@@ -474,7 +474,7 @@ public class SqlMemoController extends AbstractElementPropertySectionController 
 
     /**
      * Find the label of DatabaseConnectionItem that contains current query.
-     * 
+     *
      * @param queryId
      * @return
      */
@@ -494,7 +494,7 @@ public class SqlMemoController extends AbstractElementPropertySectionController 
     /**
      * Display a dialog to ask the user to update the query in the repository directly or change the query to built-in
      * mode.
-     * 
+     *
      * @param shell
      */
     private void promptForChangingMode(Shell shell) {
@@ -529,7 +529,7 @@ public class SqlMemoController extends AbstractElementPropertySectionController 
     }
 
     /**
-     * 
+     *
      * ggu ShowQueryDialog class global comment. Detailled comment
      */
     class ShowQueryDialog extends Dialog {

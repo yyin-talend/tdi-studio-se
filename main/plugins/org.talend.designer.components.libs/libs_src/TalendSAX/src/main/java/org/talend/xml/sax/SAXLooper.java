@@ -1,6 +1,6 @@
 // ============================================================================
 //
-// Copyright (C) 2006-2018 Talend Inc. - www.talend.com
+// Copyright (C) 2006-2019 Talend Inc. - www.talend.com
 //
 // This source code is available under agreement available at
 // %InstallDIR%\features\org.talend.rcp.branding.%PRODUCTNAME%\%PRODUCTNAME%license.txt
@@ -72,14 +72,14 @@ public class SAXLooper {
 
     private void judgeIsSimple() {
         isSimpleParse = isSimplePath(loopPath);
-        
+
         for(String path : nodePaths) {
             if(!isSimpleParse) {
                 break;
             }
             isSimpleParse = isSimplePath(path);
         }
-        
+
         if (this.isSimpleParse) {
             looper = new SimpleSAXLooper(loopPath, nodePaths, asXMLs);
         } else {
@@ -89,14 +89,14 @@ public class SAXLooper {
 
     private void judegeMultiIsSimple() {
         isSimpleParse = isSimplePath(rootPath);
-        
+
         for(String path : arrOrigLoopPath) {
             if(!isSimpleParse) {
                 break;
             }
             isSimpleParse = isSimplePath(path);
         }
-        
+
         for(String[] arrNodePath : arrNodePaths) {
             for(String path : arrNodePath) {
                 if(!isSimpleParse) {
@@ -108,14 +108,14 @@ public class SAXLooper {
                 break;
             }
         }
-        
+
         if (this.isSimpleParse) {
             looper = new SimpleSAXLooper(rootPath, arrOrigLoopPath, arrNodePaths);
         } else {
             looper = new ComplexSAXLooper(rootPath, arrOrigLoopPath, arrNodePaths);
         }
     }
-    
+
     /**
      * ../../../@attr also can read like a stream(now only consider the case)
      * @param path
@@ -125,31 +125,31 @@ public class SAXLooper {
         if(path == null || !path.contains("..") && !path.contains("*")) {
             return true;
         }
-        
+
         boolean isSimplePath = true;
-        
+
         String[] nodes = path.split("/");
-        
+
         for(int i = 0;i<nodes.length;i++) {
             String node = nodes[i];
-            
+
             if(i < (nodes.length - 1)) {
                 isSimplePath = isSimplePath && "..".equals(node);
             } else {
                 isSimplePath = isSimplePath && node.startsWith("@");
             }
         }
-        
+
         return isSimplePath;
-        
+
     }
 
     private String charset = "UTF-8";
 
     /**
-     * 
+     *
      * DOC WLIU set the encoding of the parser, it doesn't work if the source is a character stream
-     * 
+     *
      * @param charset
      */
     public void setEncoding(String charset) {
@@ -171,9 +171,9 @@ public class SAXLooper {
     public java.util.Iterator<java.util.Map<String, java.util.Map<String, String>>> multiIterator() {
         return looper.multiIterator();
     }
-    
+
 	public void setIgnoreDTD(boolean ignoreDTD) {
-		this.looper.setIgnoreDTD(ignoreDTD);		
+		this.looper.setIgnoreDTD(ignoreDTD);
 	}
 
     /**
@@ -184,12 +184,12 @@ public class SAXLooper {
     	if(this.isSimpleParse) {
     		SimpleSAXLooper ssl = (SimpleSAXLooper)this.looper;
     		ssl.handleException();
-    	} 
+    	}
     }
-    
+
     /**
      * stop the read action asap
-     * 
+     *
      */
     public void stopRead() {
         if(this.isSimpleParse) {
@@ -197,7 +197,7 @@ public class SAXLooper {
             ssl.stopRead();
         }
     }
-    
+
     public static void main(String args[]) {
 
         try {

@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2006-2018 Talend Inc. - www.talend.com
+ * Copyright (C) 2006-2019 Talend Inc. - www.talend.com
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -151,7 +151,7 @@ public class ComponentModel extends AbstractBasicComponent implements IAdditiona
      * Component may have several entries in palette (each entry is in different category)
      * Entries in palette value are separated with "|"
      * "/" separates categories, subcategories and family
-     * 
+     *
      * @return palette value
      */
     private String computePaletteValue() {

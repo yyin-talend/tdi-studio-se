@@ -20,7 +20,7 @@ import org.xml.sax.helpers.DefaultHandler;
 
 // ============================================================================
 //
-// Copyright (C) 2006-2018 Talend Inc. - www.talend.com
+// Copyright (C) 2006-2019 Talend Inc. - www.talend.com
 //
 // This source code is available under agreement available at
 // %InstallDIR%\features\org.talend.rcp.branding.%PRODUCTNAME%\%PRODUCTNAME%license.txt
@@ -32,7 +32,7 @@ import org.xml.sax.helpers.DefaultHandler;
 // ============================================================================
 /**
  * This class is the interface for tFileInputXML component. DOC s class global comment. Detailled comment
- * 
+ *
  * $Id: SAXLooper.java,v 1.1 2008/03/21 07:20:39 xzhang Exp $
  */
 public class ComplexSAXLooper implements ISAXLooper {
@@ -60,7 +60,7 @@ public class ComplexSAXLooper implements ISAXLooper {
 
     /**
      * DOC xzhang SAXLooper constructor comment.
-     * 
+     *
      * @param loopPath :loop path in the tFileInputXML component.
      * @param nodePaths :node paths special which tab will be read as the row value
      */
@@ -72,9 +72,9 @@ public class ComplexSAXLooper implements ISAXLooper {
     }
 
     /**
-     * 
+     *
      * DOC wliu SAXLooper constructor comment.
-     * 
+     *
      * @param rootPath:root loop path in the tFileInputMSXML component
      * @param mapping:LOOP_PATH=sub loop path, MAPPING=query columns
      */
@@ -138,7 +138,7 @@ public class ComplexSAXLooper implements ISAXLooper {
 
     /**
      * Parse the XML file. Buffer the result in LoopEntry.
-     * 
+     *
      * @param fileURL file URL
      */
     public void parse(String fileURL, String charset) {
@@ -176,7 +176,7 @@ public class ComplexSAXLooper implements ISAXLooper {
 
     /**
      * Parse the XML file. Buffer the result in LoopEntry.
-     * 
+     *
      * @param is InputStream
      */
     public void parse(java.io.InputStream is, String charset) {
@@ -215,7 +215,7 @@ public class ComplexSAXLooper implements ISAXLooper {
 
     /**
      * Create Sax parser and set required security features to it
-     * 
+     *
      * @return sax parser with required security features set
      * @throws ParserConfigurationException
      * @throws SAXException
@@ -233,7 +233,7 @@ public class ComplexSAXLooper implements ISAXLooper {
 
     /**
      * Get result iterator. This must be call after the parse method.
-     * 
+     *
      * @return Iterator
      */
     public Iterator<Map<String, String>> iterator() {
@@ -246,7 +246,7 @@ public class ComplexSAXLooper implements ISAXLooper {
 
     /**
      * create a handler
-     * 
+     *
      * @return
      */
     private DefaultHandler newHandler() {
@@ -261,7 +261,7 @@ public class ComplexSAXLooper implements ISAXLooper {
 
     /**
      * create a handler
-     * 
+     *
      * @return
      */
     private DefaultHandler newHandler2() {
@@ -284,7 +284,7 @@ public class ComplexSAXLooper implements ISAXLooper {
 
     /**
      * init the LoopEntry according by "nodePaths" and "loopPath".
-     * 
+     *
      * @return
      */
     private void initLoopEntry() {
@@ -490,7 +490,7 @@ public class ComplexSAXLooper implements ISAXLooper {
     // =================end================================
     /**
      * Testing code
-     * 
+     *
      * @param args
      */
     public static void main(String[] args) {

@@ -1,6 +1,6 @@
 // ============================================================================
 //
-// Copyright (C) 2006-2018 Talend Inc. - www.talend.com
+// Copyright (C) 2006-2019 Talend Inc. - www.talend.com
 //
 // This source code is available under agreement available at
 // %InstallDIR%\features\org.talend.rcp.branding.%PRODUCTNAME%\%PRODUCTNAME%license.txt
@@ -23,7 +23,7 @@ import org.xml.sax.ext.DefaultHandler2;
 
 /**
  * DOC s class global comment. Detailled comment
- * 
+ *
  * $Id: SAXLoopHandler.java,v 1.1 2008/03/21 07:20:39 xzhang Exp $
  */
 public class SAXLoopHandler extends DefaultHandler2 {
@@ -36,11 +36,11 @@ public class SAXLoopHandler extends DefaultHandler2 {
     private int subLoopCount = 0;
 
     private List<String> loopCols = new ArrayList<String>();
-    
+
     private List<String> selectColumns = new ArrayList<String>();
 
     private List<Boolean> asXMLs = null;
-    
+
     private List<Boolean> isDots = null;
 
     private String currentPath = "";
@@ -70,11 +70,11 @@ public class SAXLoopHandler extends DefaultHandler2 {
         this.loopPath = entry.getLoop();
         this.loopCols = entry.getPaths();
         this.asXMLs = entry.getAsXMLs();
-        
+
         this.isDots = entry.getIsDots();
-        
+
         outputTexts = new boolean[loopCols.size()];
-        
+
         if (entry.getSubLoop() != null) {
             this.subLoopPath = entry.getSubLoop().getLoop();
         } else {
@@ -88,8 +88,8 @@ public class SAXLoopHandler extends DefaultHandler2 {
     }
 
     /**
-     * 
-     * 
+     *
+     *
      * @param loopPath
      * @param loopCols
      * @param subLoopPath
@@ -150,7 +150,7 @@ public class SAXLoopHandler extends DefaultHandler2 {
                 boolean asXML = this.asXMLs.get(i);
                 boolean isDot = this.isDots.get(i);
                 outputTexts[i] = false;
-                
+
                 if (asXML && (currentPath.equals(column) || currentPath.startsWith(column + "/"))) {
                     currentRow.addTextValue(i, "<");
                     currentRow.addTextValue(i, qName);
@@ -205,11 +205,11 @@ public class SAXLoopHandler extends DefaultHandler2 {
     /**
      * Deal with the bug 4402: the content <quotes_encoded>&quot;hello world&quot;</quotes_encoded>. In this case,
      * "characters" will be called three time.
-     * 
+     *
      * first: "
-     * 
+     *
      * second: hello world
-     * 
+     *
      * third: "
      */
     public void characters(char ch[], int start, int length) throws SAXException {
@@ -266,13 +266,13 @@ public class SAXLoopHandler extends DefaultHandler2 {
         				currentRow.addTextValue(i, "</");
         				currentRow.addTextValue(i, qName);
         				currentRow.addTextValue(i, ">");
-        				
+
         			}
         			if(this.currentPath.equals(column)) {
         				currentRowHaveValue[i] = true;
         			}
         		}
-        		
+
         		outputTexts[i] = false;
         	}
         }
@@ -315,18 +315,18 @@ public class SAXLoopHandler extends DefaultHandler2 {
         }
         currentPath = currentPath.substring(0, currentPath.lastIndexOf("/"));
     }
-    
+
     private void reset() {
     	for(int i=0;i<outputTexts.length;i++) {
     		outputTexts[i] = false;
     	}
     }
-    
+
     /** Flag used to indicate that we are inside a CDATA section */
     private boolean inCDATA;
-    
+
     private EscapeEntityHelper escapeEntityHelper = new EscapeEntityHelper();
-    
+
 	public void startCDATA() throws SAXException {
 		inCDATA = true;
 		if(isLooping) {
@@ -352,36 +352,36 @@ public class SAXLoopHandler extends DefaultHandler2 {
 	        }
 		}
 	}
-    
+
 	class Row {
-		
+
 		String[] values = null;
 		StringBuffer[] stringBuffers = null;
 		boolean[] isNullValue = null;
-		
+
 		Row(int columnCount) {
 			values = new String[columnCount+1];
-			
+
 			stringBuffers = new StringBuffer[columnCount];
 			for(int i=0;i<stringBuffers.length;i++) {
 				stringBuffers[i] = new StringBuffer();
 			}
-			
+
 			isNullValue = new boolean[columnCount];
 			for(int i=0;i<isNullValue.length;i++) {
 				isNullValue[i] = true;
 			}
-			
+
 		}
-		
+
 		void addTextValue(int columnIndex,String appendValue) {
 			isNullValue[columnIndex] = false;
-			
+
 			if(appendValue!=null) {
 				stringBuffers[columnIndex].append(appendValue);
 			}
 		}
-		
+
 		String[] getStringResult() {
 			for(int i=0;i<isNullValue.length;i++) {
 				if(!isNullValue[i]) {
@@ -390,7 +390,7 @@ public class SAXLoopHandler extends DefaultHandler2 {
 			}
 			return values;
 		}
-		
-		
+
+
 	}
 }

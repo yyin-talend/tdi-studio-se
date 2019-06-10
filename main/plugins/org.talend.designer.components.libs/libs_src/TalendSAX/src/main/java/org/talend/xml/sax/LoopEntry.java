@@ -1,6 +1,6 @@
 // ============================================================================
 //
-// Copyright (C) 2006-2018 Talend Inc. - www.talend.com
+// Copyright (C) 2006-2019 Talend Inc. - www.talend.com
 //
 // This source code is available under agreement available at
 // %InstallDIR%\features\org.talend.rcp.branding.%PRODUCTNAME%\%PRODUCTNAME%license.txt
@@ -21,9 +21,9 @@ import org.talend.xml.sax.function.inter.Function;
 
 /**
  * This is the result class.
- * 
+ *
  * $Id: LoopEntry.java,v 1.1 2008/03/21 07:20:39 xzhang Exp $
- * 
+ *
  */
 public class LoopEntry {
 
@@ -39,7 +39,7 @@ public class LoopEntry {
     // ==========================end========================================
 
     private List<Boolean> isDots = new ArrayList<Boolean>();
-    
+
     // node original path
     private List<String> originalPaths = new ArrayList<String>();
 
@@ -68,7 +68,7 @@ public class LoopEntry {
 
     /**
      * This use in init LoopEntry object. DOC s Comment method "addPath".
-     * 
+     *
      * @param path
      * @param originalPath
      */
@@ -85,7 +85,7 @@ public class LoopEntry {
         // ===============end=================================
         isDots.add(isDot);
     }
-    
+
     public List<Boolean> getIsDots() {
     	 if (this.isDots.size() > 0) {
              return this.isDots;
@@ -116,7 +116,7 @@ public class LoopEntry {
 
     /**
      * Getter for loop.
-     * 
+     *
      * @return the loop
      */
     public String getLoop() {
@@ -125,7 +125,7 @@ public class LoopEntry {
 
     /**
      * Getter for subLoop.
-     * 
+     *
      * @return the subLoop
      */
     public LoopEntry getSubLoop() {
@@ -134,7 +134,7 @@ public class LoopEntry {
 
     /**
      * Sets the subLoop.
-     * 
+     *
      * @param subLoop the subLoop to set
      */
     public void setSubLoop(LoopEntry subLoop) {
@@ -143,7 +143,7 @@ public class LoopEntry {
 
     /**
      * Getter for paths.
-     * 
+     *
      * @return the paths
      */
     public List<String> getPaths() {
@@ -152,7 +152,7 @@ public class LoopEntry {
 
     /**
      * Getter for originalPaths.
-     * 
+     *
      * @return the originalPaths
      */
     public List<String> getOriginalPaths() {
@@ -161,7 +161,7 @@ public class LoopEntry {
 
     /**
      * Getter for rows.
-     * 
+     *
      * @return the rows
      */
     public List<String[]> getRows() {
@@ -186,7 +186,7 @@ public class LoopEntry {
 
     /**
      * run all the exist functions in the loop
-     * 
+     *
      * @author wliu
      * @param args
      */

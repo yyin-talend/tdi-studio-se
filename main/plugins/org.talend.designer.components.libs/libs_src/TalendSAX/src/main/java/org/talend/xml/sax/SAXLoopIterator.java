@@ -1,6 +1,6 @@
 // ============================================================================
 //
-// Copyright (C) 2006-2018 Talend Inc. - www.talend.com
+// Copyright (C) 2006-2019 Talend Inc. - www.talend.com
 //
 // This source code is available under agreement available at
 // %InstallDIR%\features\org.talend.rcp.branding.%PRODUCTNAME%\%PRODUCTNAME%license.txt
@@ -21,7 +21,7 @@ import java.util.NoSuchElementException;
 
 /**
  * DOC s class global comment. Detailled comment
- * 
+ *
  * $Id: SAXLoopIterator.java,v 1.1 2008/03/21 07:20:39 xzhang Exp $
  */
 public class SAXLoopIterator implements Iterator<Map<String, String>> {
@@ -36,7 +36,7 @@ public class SAXLoopIterator implements Iterator<Map<String, String>> {
 
     /**
      * DOC s SAXLoopIterator constructor comment.
-     * 
+     *
      * @param entry
      */
     public SAXLoopIterator(LoopEntry entry) {
@@ -50,7 +50,7 @@ public class SAXLoopIterator implements Iterator<Map<String, String>> {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see java.util.Iterator#hasNext()
      */
     public boolean hasNext() {
@@ -59,7 +59,7 @@ public class SAXLoopIterator implements Iterator<Map<String, String>> {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see java.util.Iterator#next()
      */
     public Map<String, String> next() {
@@ -77,7 +77,7 @@ public class SAXLoopIterator implements Iterator<Map<String, String>> {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see java.util.Iterator#remove()
      */
     public void remove() {
@@ -86,8 +86,8 @@ public class SAXLoopIterator implements Iterator<Map<String, String>> {
 
     /**
      * DOC s SAXLoopIterator class global comment. Detailled comment
-     * 
-     * 
+     *
+     *
      */
     private static class EntryResult {
 
@@ -110,9 +110,9 @@ public class SAXLoopIterator implements Iterator<Map<String, String>> {
         }
 
         /**
-         * 
+         *
          * DOC s Comment method "addRowTo".
-         * 
+         *
          * @param result
          * @param subIndex
          * @return

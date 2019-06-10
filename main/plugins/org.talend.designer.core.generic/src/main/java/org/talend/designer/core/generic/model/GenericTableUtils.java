@@ -1,6 +1,6 @@
 // ============================================================================
 //
-// Copyright (C) 2006-2018 Talend Inc. - www.talend.com
+// Copyright (C) 2006-2019 Talend Inc. - www.talend.com
 //
 // This source code is available under agreement available at
 // %InstallDIR%\features\org.talend.rcp.branding.%PRODUCTNAME%\%PRODUCTNAME%license.txt
@@ -124,7 +124,7 @@ public class GenericTableUtils {
 
     /**
      * DOC nrousseau Comment method "getTypeFromColumnName".
-     * 
+     *
      * @param param
      * @param columnName
      * @return
@@ -140,7 +140,7 @@ public class GenericTableUtils {
         }
         return EParameterFieldType.TEXT;
     }
-    
+
     public static String getDriverJarPaths(List<String> listString){
         StringBuffer jars = null;
         for(String str : listString){
@@ -163,7 +163,7 @@ public class GenericTableUtils {
             for(String key : CustomUriManager.getInstance().keySet()){
                 String value = CustomUriManager.getInstance().get(key);
                 if(mvnUrl.equals(value)){
-                    mvnUrl = key; 
+                    mvnUrl = key;
                     break;
                 }
             }

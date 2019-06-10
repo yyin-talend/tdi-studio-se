@@ -1,6 +1,6 @@
 // ============================================================================
 //
-// Copyright (C) 2006-2018 Talend Inc. - www.talend.com
+// Copyright (C) 2006-2019 Talend Inc. - www.talend.com
 //
 // This source code is available under agreement available at
 // %InstallDIR%\features\org.talend.rcp.branding.%PRODUCTNAME%\%PRODUCTNAME%license.txt
@@ -96,7 +96,7 @@ public class SharedActiveMQConnection {
 
     /**
      * If there don't exist the connection or it is closed, create and store it.
-     * 
+     *
      * @param url
      * @param mqConnectionName
      * @return

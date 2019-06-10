@@ -1,6 +1,6 @@
 // ============================================================================
 //
-// Copyright (C) 2006-2018 Talend Inc. - www.talend.com
+// Copyright (C) 2006-2019 Talend Inc. - www.talend.com
 //
 // This source code is available under agreement available at
 // %InstallDIR%\features\org.talend.rcp.branding.%PRODUCTNAME%\%PRODUCTNAME%license.txt
@@ -51,18 +51,18 @@ import org.talend.repository.ProjectManager;
 
 /**
  * Routine synchronizer of java project.
- * 
+ *
  * yzhang class global comment. Detailled comment <br/>
- * 
+ *
  * $Id: JavaRoutineSynchronizer.java JavaRoutineSynchronizer 2007-2-2 下午03:29:12 +0000 (下午03:29:12, 2007-2-2 2007)
  * yzhang $
- * 
+ *
  */
 public class JavaRoutineSynchronizer extends AbstractRoutineSynchronizer {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.talend.designer.codegen.IRoutineSynchronizer#syncAllRoutines()
      */
     @Override
@@ -77,7 +77,7 @@ public class JavaRoutineSynchronizer extends AbstractRoutineSynchronizer {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.talend.designer.codegen.AbstractRoutineSynchronizer#syncAllPigudf()
      */
     @Override
@@ -142,7 +142,7 @@ public class JavaRoutineSynchronizer extends AbstractRoutineSynchronizer {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.talend.designer.codegen.IRoutineSynchronizer#syncRoutine(org.talend .core.model.properties.RoutineItem)
      */
     private static void syncModule(Project project, File[] modules) throws SystemException {
@@ -188,7 +188,7 @@ public class JavaRoutineSynchronizer extends AbstractRoutineSynchronizer {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.talend.designer.codegen.ITalendSynchronizer#getFile(org.talend.core .model.properties.Item)
      */
     @Override
@@ -209,9 +209,9 @@ public class JavaRoutineSynchronizer extends AbstractRoutineSynchronizer {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * qli modified to fix the bug 5400 and 6185.
-     * 
+     *
      * @seeorg.talend.designer.codegen.AbstractRoutineSynchronizer#renameRoutineClass(org.talend.core.model.properties.
      * RoutineItem, java.lang.String)
      */
@@ -227,7 +227,7 @@ public class JavaRoutineSynchronizer extends AbstractRoutineSynchronizer {
         routineContent = routineContent.replaceFirst(regexp, "public class " + label + " {");//$NON-NLS-1$//$NON-NLS-2$
         // constructor
         Matcher matcher = Pattern.compile("(.*public\\s+)(\\w+)(\\s*\\(.*)", Pattern.DOTALL).matcher(routineContent); //$NON-NLS-1$
-        if (matcher.find()) { 
+        if (matcher.find()) {
             routineContent = matcher.group(1) + label + matcher.group(3);
         }
         routineItem.getContent().setInnerContent(routineContent.getBytes());
@@ -235,7 +235,7 @@ public class JavaRoutineSynchronizer extends AbstractRoutineSynchronizer {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.talend.designer.codegen.AbstractRoutineSynchronizer#renamePigudfClass(org.talend.core.model.properties.
      * RoutineItem)
      */

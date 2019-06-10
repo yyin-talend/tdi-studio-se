@@ -1,6 +1,6 @@
 // ============================================================================
 //
-// Copyright (C) 2006-2018 Talend Inc. - www.talend.com
+// Copyright (C) 2006-2019 Talend Inc. - www.talend.com
 //
 // This source code is available under agreement available at
 // %InstallDIR%\features\org.talend.rcp.branding.%PRODUCTNAME%\%PRODUCTNAME%license.txt
@@ -101,10 +101,10 @@ import routines.system.TraceStatusBean;
 
 /**
  * Context of a running process. <br/>
- * 
+ *
  * $Id$
- * 
- * 
+ *
+ *
  */
 public class RunProcessContext {
 
@@ -206,7 +206,7 @@ public class RunProcessContext {
 
     /**
      * Constrcuts a new RunProcessContext.
-     * 
+     *
      * @param process The process.
      */
     public RunProcessContext(IProcess2 process) {
@@ -285,7 +285,7 @@ public class RunProcessContext {
 
     /**
      * Getter for monitorPerf.
-     * 
+     *
      * @return the monitorPerf
      */
     public boolean isMonitorPerf() {
@@ -294,7 +294,7 @@ public class RunProcessContext {
 
     /**
      * Sets the monitorPerf.
-     * 
+     *
      * @param monitorPerf the monitorPerf to set
      */
     public void setMonitorPerf(boolean monitorPerf) {
@@ -309,7 +309,7 @@ public class RunProcessContext {
 
     /**
      * Getter for monitorTrace.
-     * 
+     *
      * @return the monitorTrace
      */
     public boolean isMonitorTrace() {
@@ -318,7 +318,7 @@ public class RunProcessContext {
 
     /**
      * Sets the monitorTrace.
-     * 
+     *
      * @param monitorTrace the monitorTraceto set
      */
     public void setMonitorTrace(boolean monitorTrace) {
@@ -331,9 +331,9 @@ public class RunProcessContext {
     }
 
     /**
-     * 
+     *
      * ggu Comment method "hasConnectionTrace".
-     * 
+     *
      * bug 11227
      */
     protected boolean hasConnectionTrace() {
@@ -363,7 +363,7 @@ public class RunProcessContext {
 
     /**
      * Getter for running.
-     * 
+     *
      * @return the running
      */
     public boolean isRunning() {
@@ -372,7 +372,7 @@ public class RunProcessContext {
 
     /**
      * Sets the running.
-     * 
+     *
      * @param running the running to set
      */
     public void setRunning(boolean running) {
@@ -384,7 +384,7 @@ public class RunProcessContext {
 
     /**
      * Getter for monitoring.
-     * 
+     *
      * @return the monitoring
      */
     public boolean isMonitoring() {
@@ -393,7 +393,7 @@ public class RunProcessContext {
 
     /**
      * Sets the monitoring.
-     * 
+     *
      * @param monitoring the monitoring to set
      */
     public void setMonitoring(boolean monitoring) {
@@ -460,11 +460,11 @@ public class RunProcessContext {
     }
 
     /**
-     * 
+     *
      * cLi Comment method "allowMonitorTrace".
-     * 
+     *
      * feature 6355, enable trace.
-     * 
+     *
      * about the variable "monitorTrace", It used for a global trace.
      */
     public boolean allowMonitorTrace() {
@@ -472,9 +472,9 @@ public class RunProcessContext {
     }
 
     /**
-     * 
+     *
      * cLi Comment method "checkTraces".
-     * 
+     *
      * feature 6355
      */
     private void checkTraces() {
@@ -762,7 +762,7 @@ public class RunProcessContext {
 
     /**
      * DOC amaumont Comment method "getProcessor".
-     * 
+     *
      * @return
      */
     protected IProcessor getProcessor(IProcess process, Property property) {
@@ -775,7 +775,7 @@ public class RunProcessContext {
 
     /**
      * Kill the process.
-     * 
+     *
      * @return Exit code of the process.
      */
     public synchronized int kill(Integer returnExitValue) {
@@ -805,7 +805,7 @@ public class RunProcessContext {
 
     /**
      * DOC yexiaowei Comment method "displayJobEndMessage".
-     * 
+     *
      * @param exitCode
      */
     private void displayJobEndMessage(int exitCode) {
@@ -890,9 +890,9 @@ public class RunProcessContext {
 
     /**
      * Process activity monitor. <br/>
-     * 
+     *
      * $Id$
-     * 
+     *
      */
     protected class ProcessMonitor implements IProcessMonitor {
 
@@ -1007,7 +1007,7 @@ public class RunProcessContext {
 
         /**
          * Extract a message from a stream.
-         * 
+         *
          * @param is Input stream to be read.
          * @param type Type of message read.
          * @param flush
@@ -1045,7 +1045,7 @@ public class RunProcessContext {
 
     /**
      * DOC ycbai Comment method "isLastData".
-     * 
+     *
      * @param reader
      * @param previousData
      * @return
@@ -1065,9 +1065,9 @@ public class RunProcessContext {
 
     /**
      * Performance monitor. <br/>
-     * 
+     *
      * $Id$
-     * 
+     *
      */
     public class PerformanceMonitor implements Runnable {
 
@@ -1279,9 +1279,9 @@ public class RunProcessContext {
 
     /**
      * Trace monitor. <br/>
-     * 
+     *
      * $Id$
-     * 
+     *
      */
     private class TraceMonitor implements Runnable {
 
@@ -1604,7 +1604,7 @@ public class RunProcessContext {
 
     /**
      * Getter for watchAllowed.
-     * 
+     *
      * @return the watchAllowed
      */
     public boolean isWatchAllowed() {
@@ -1613,7 +1613,7 @@ public class RunProcessContext {
 
     /**
      * Sets the watchAllowed.
-     * 
+     *
      * @param watchAllowed the watchAllowed to set
      */
     public void setWatchAllowed(boolean watchAllowed) {
@@ -1649,7 +1649,7 @@ public class RunProcessContext {
 
     /**
      * DOC amaumont Comment method "createProcessMonitor".
-     * 
+     *
      * @param process
      * @return
      */
@@ -1676,7 +1676,7 @@ public class RunProcessContext {
 
     /**
      * Getter for saveBeforeRun.
-     * 
+     *
      * @return the saveBeforeRun
      */
     public boolean isSaveBeforeRun() {
@@ -1693,7 +1693,7 @@ public class RunProcessContext {
 
     /**
      * Getter for isTracPause.
-     * 
+     *
      * @return the isTracPause
      */
     public boolean isTracPause() {
@@ -1702,7 +1702,7 @@ public class RunProcessContext {
 
     /**
      * Sets the isTracPause.
-     * 
+     *
      * @param isTracPause the isTracPause to set
      */
     public void setTracPause(boolean isTracPause) {
@@ -1749,7 +1749,7 @@ public class RunProcessContext {
 
     /**
      * DOC Administrator Comment method "isNextPoint".
-     * 
+     *
      * @return
      */
     private boolean isNextPoint() {
@@ -1759,7 +1759,7 @@ public class RunProcessContext {
 
     /**
      * DOC Administrator Comment method "setNextRow".
-     * 
+     *
      * @param b
      */
     public void setNextRow(boolean b) {
@@ -1772,7 +1772,7 @@ public class RunProcessContext {
 
     /**
      * DOC Administrator Comment method "setPreviousRow".
-     * 
+     *
      * @param b
      */
     public void setPreviousRow(boolean b) {

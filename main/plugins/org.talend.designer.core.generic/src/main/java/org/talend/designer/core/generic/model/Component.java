@@ -1,6 +1,6 @@
 // ============================================================================
 //
-// Copyright (C) 2006-2018 Talend Inc. - www.talend.com
+// Copyright (C) 2006-2019 Talend Inc. - www.talend.com
 //
 // This source code is available under agreement available at
 // %InstallDIR%\features\org.talend.rcp.branding.%PRODUCTNAME%\%PRODUCTNAME%license.txt
@@ -1189,7 +1189,7 @@ public class Component extends AbstractBasicComponent {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.talend.core.model.components.IComponent#getModulesNeeded()
      */
     @Override
@@ -1470,9 +1470,9 @@ public class Component extends AbstractBasicComponent {
         if (GenericTypeUtils.isStringType(property)
                 && property.getTaggedValue(IGenericConstants.LINE_SEPARATOR_REPLACED_TO) != null) {
             //process for the sql field for jdbc, snowflake, salesforce, LINE_SEPARATOR_REPLACED_TO key can tell us which a sql type field,
-            //as sql type value may have newline and return characters, which make compiler issue in java code, 
+            //as sql type value may have newline and return characters, which make compiler issue in java code,
             //so have to convert the newline characters to visible "\r", "\n" for pass the compiler issue and can't only convert them to white space as TDI-41898
-            //jdbc drivers, salesforce driver can work like that sql : select * \nfrom Account, so it is ok 
+            //jdbc drivers, salesforce driver can work like that sql : select * \nfrom Account, so it is ok
             return NodeUtil.replaceCRLFInMEMO_SQL(value);
         }
         if (GenericTypeUtils.isSchemaType(property)) {
@@ -1496,8 +1496,8 @@ public class Component extends AbstractBasicComponent {
         }
         return value;
     }
-    
-    
+
+
 
     @Override
     public int hashCode() {
@@ -1510,7 +1510,7 @@ public class Component extends AbstractBasicComponent {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see java.lang.Object#equals(java.lang.Object)
      */
     @Override
@@ -1692,7 +1692,7 @@ public class Component extends AbstractBasicComponent {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.talend.core.model.components.IComponent#isVisible()
      */
     @Override
@@ -1724,7 +1724,7 @@ public class Component extends AbstractBasicComponent {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.talend.core.model.components.IComponent#isTechnical()
      */
     @Override

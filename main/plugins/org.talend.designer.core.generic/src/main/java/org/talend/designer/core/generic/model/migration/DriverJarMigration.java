@@ -1,6 +1,6 @@
 // ============================================================================
 //
-// Copyright (C) 2006-2018 Talend Inc. - www.talend.com
+// Copyright (C) 2006-2019 Talend Inc. - www.talend.com
 //
 // This source code is available under agreement available at
 // %InstallDIR%\features\org.talend.rcp.branding.%PRODUCTNAME%\%PRODUCTNAME%license.txt
@@ -35,12 +35,12 @@ import org.talend.migration.IMigrationTask.ExecutionResult;
  * DOC hwang  class global comment. Detailled comment
  */
 public class DriverJarMigration extends AbstractJobMigrationTask {
-    
+
     @Override
     public Date getOrder() {
         return new GregorianCalendar(2017, 12, 19, 15, 0, 0).getTime();
     }
-    
+
     @Override
     public List<ERepositoryObjectType> getTypes() {
         List<ERepositoryObjectType> toReturn = new ArrayList<ERepositoryObjectType>();
@@ -56,7 +56,7 @@ public class DriverJarMigration extends AbstractJobMigrationTask {
         }
         boolean modified = false;
         if(processType.getParameters() != null){
-            List elementParameter = processType.getParameters().getElementParameter(); 
+            List elementParameter = processType.getParameters().getElementParameter();
             for (Object object : elementParameter) {
                 if (object instanceof ElementParameterType) {
                     ElementParameterType parameterType = (ElementParameterType) object;
@@ -78,9 +78,9 @@ public class DriverJarMigration extends AbstractJobMigrationTask {
 //                            parameterType.setValue(TalendQuoteUtils.addQuotesIfNotExist(encryptValue));
 //                            modified = true;
 //                        }
-//                        
+//
 //                    }
-                        
+
                 }
             }
         }

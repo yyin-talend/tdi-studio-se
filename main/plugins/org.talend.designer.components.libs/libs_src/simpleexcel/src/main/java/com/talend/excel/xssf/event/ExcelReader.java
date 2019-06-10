@@ -1,6 +1,6 @@
 // ============================================================================
 //
-// Copyright (C) 2006-2018 Talend Inc. - www.talend.com
+// Copyright (C) 2006-2019 Talend Inc. - www.talend.com
 //
 // This source code is available under agreement available at
 // %InstallDIR%\features\org.talend.rcp.branding.%PRODUCTNAME%\%PRODUCTNAME%license.txt
@@ -32,7 +32,7 @@ import java.util.concurrent.FutureTask;
 
 /**
  * created by wwang on 2012-9-27 Detailled comment
- * 
+ *
  */
 public class ExcelReader implements Callable {
 
@@ -111,7 +111,7 @@ public class ExcelReader implements Callable {
     /**
      * handle the exception in task. FutureTask.get() is a block method waiting for the Task over and it can throw the
      * exception in Task(Callable,Thread,Runnable)
-     * 
+     *
      * @throws Exception
      */
     public void handleException() throws Exception {

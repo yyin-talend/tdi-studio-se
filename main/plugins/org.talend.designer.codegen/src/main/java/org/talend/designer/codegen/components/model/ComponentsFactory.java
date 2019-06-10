@@ -1,6 +1,6 @@
 // ============================================================================
 //
-// Copyright (C) 2006-2018 Talend Inc. - www.talend.com
+// Copyright (C) 2006-2019 Talend Inc. - www.talend.com
 //
 // This source code is available under agreement available at
 // %InstallDIR%\features\org.talend.rcp.branding.%PRODUCTNAME%\%PRODUCTNAME%license.txt
@@ -95,13 +95,13 @@ import org.talend.designer.core.ui.editor.jobletcontainer.JobletUtil;
 
 /**
  * Component factory that look for each component and load their information. <br/>
- * 
+ *
  * $Id: ComponentsFactory.java 52892 2010-12-20 05:52:17Z nrousseau $
  */
 public class ComponentsFactory implements IComponentsFactory {
 
     /**
-     * 
+     *
      */
     private static final String TALEND_COMPONENT_CACHE = "ComponentsCache.";
 
@@ -144,9 +144,9 @@ public class ComponentsFactory implements IComponentsFactory {
     private static boolean cleanDone = false;
 
     protected static Map<String, Map<String, Set<IComponent>>> componentNameMap;
-    
+
     private AtomicBoolean isInitialising;
-    
+
     private volatile Lock initialiseLock;
 
     public ComponentsFactory() {
@@ -300,7 +300,7 @@ public class ComponentsFactory implements IComponentsFactory {
 
     /**
      * DOC guanglong.du Comment method "loadComponentResource".
-     * 
+     *
      * @param eclipseProject
      * @return
      * @throws IOException
@@ -325,7 +325,7 @@ public class ComponentsFactory implements IComponentsFactory {
 
     /**
      * DOC guanglong.du Comment method "hasComponentFile".
-     * 
+     *
      * @param eclipseProject
      * @return
      */
@@ -669,7 +669,7 @@ public class ComponentsFactory implements IComponentsFactory {
 
     /**
      * DOC smallet Comment method "checkComponentFolder".
-     * 
+     *
      * @param currentFolder
      * @return
      * @throws BusinessException
@@ -813,7 +813,7 @@ public class ComponentsFactory implements IComponentsFactory {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.talend.core.model.components.IComponentsFactory#get(java.lang.String, java.lang.String)
      */
     @Override
@@ -882,7 +882,7 @@ public class ComponentsFactory implements IComponentsFactory {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.talend.core.model.components.IComponentsFactory#getComponents()
      */
     @Override
@@ -893,7 +893,7 @@ public class ComponentsFactory implements IComponentsFactory {
         }
         return componentList;
     }
-    
+
     @Override
     public boolean isInitialising() {
         return isInitialising.get();
@@ -929,7 +929,7 @@ public class ComponentsFactory implements IComponentsFactory {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.talend.core.model.components.IComponentsFactory#getSkeletons()
      */
     @Override
@@ -986,7 +986,7 @@ public class ComponentsFactory implements IComponentsFactory {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.talend.core.model.components.IComponentsFactory#getFamilyTranslation(IComponent component,
      * java.lang.String)
      */
@@ -1018,7 +1018,7 @@ public class ComponentsFactory implements IComponentsFactory {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.talend.core.model.components.IComponentsFactory#resetSpecificComponents()
      */
     @Override
@@ -1067,7 +1067,7 @@ public class ComponentsFactory implements IComponentsFactory {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.talend.core.model.components.IComponentsFactory#getComponentsHandler()
      */
     @Override
@@ -1077,7 +1077,7 @@ public class ComponentsFactory implements IComponentsFactory {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.talend.core.model.components.IComponentsFactory#setComponentsHandler(org.talend.core.model.components.
      * TComponentsHandler)
      */

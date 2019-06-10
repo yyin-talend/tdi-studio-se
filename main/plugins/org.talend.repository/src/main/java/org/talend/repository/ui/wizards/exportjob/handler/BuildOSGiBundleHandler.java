@@ -2,7 +2,7 @@
 //
 // Talend Community Edition
 //
-// Copyright (C) 2006-2018 Talend – www.talend.com
+// Copyright (C) 2006-2019 Talend – www.talend.com
 //
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public
@@ -48,7 +48,7 @@ import org.talend.repository.ui.wizards.exportjob.scriptsmanager.esb.OSGIJavaScr
 
 /**
  * DOC yyan class global comment. 2018-1-15
- * 
+ *
  * For OSGi data service - REST
  */
 public class BuildOSGiBundleHandler extends BuildJobHandler {
@@ -68,7 +68,7 @@ public class BuildOSGiBundleHandler extends BuildJobHandler {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see
      * org.talend.repository.ui.wizards.exportjob.handler.BuildJobHandler#generateJobFiles(org.eclipse.core.runtime.
      * IProgressMonitor)
@@ -108,7 +108,7 @@ public class BuildOSGiBundleHandler extends BuildJobHandler {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.talend.repository.ui.wizards.exportjob.handler.BuildJobHandler#build(org.eclipse.core.runtime.
      * IProgressMonitor)
      */
@@ -135,7 +135,7 @@ public class BuildOSGiBundleHandler extends BuildJobHandler {
 
     /*
      * Bundle extention is jar
-     * 
+     *
      * @see org.talend.repository.ui.wizards.exportjob.handler.AbstractBuildJobHandler#getJobTargetFile()
      */
     @Override

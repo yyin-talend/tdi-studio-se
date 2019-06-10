@@ -1,6 +1,6 @@
 // ============================================================================
 //
-// Copyright (C) 2006-2018 Talend Inc. - www.talend.com
+// Copyright (C) 2006-2019 Talend Inc. - www.talend.com
 //
 // This source code is available under agreement available at
 // %InstallDIR%\features\org.talend.rcp.branding.%PRODUCTNAME%\%PRODUCTNAME%license.txt
@@ -33,7 +33,7 @@ public class SAXLoopCompositeHandler extends DefaultHandler2 {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.xml.sax.helpers.DefaultHandler#startDocument()
      */
     public void startDocument() throws SAXException {
@@ -44,7 +44,7 @@ public class SAXLoopCompositeHandler extends DefaultHandler2 {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.xml.sax.helpers.DefaultHandler#endDocument()
      */
     public void endDocument() throws SAXException {
@@ -55,7 +55,7 @@ public class SAXLoopCompositeHandler extends DefaultHandler2 {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.xml.sax.helpers.DefaultHandler#startElement(java.lang.String, java.lang.String, java.lang.String,
      * org.xml.sax.Attributes)
      */
@@ -67,7 +67,7 @@ public class SAXLoopCompositeHandler extends DefaultHandler2 {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.xml.sax.helpers.DefaultHandler#characters(char[], int, int)
      */
     public void characters(char ch[], int start, int length) throws SAXException {
@@ -78,7 +78,7 @@ public class SAXLoopCompositeHandler extends DefaultHandler2 {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.xml.sax.helpers.DefaultHandler#endElement(java.lang.String, java.lang.String, java.lang.String)
      */
     public void endElement(String uri, String localName, String qName) throws SAXException {
@@ -86,13 +86,13 @@ public class SAXLoopCompositeHandler extends DefaultHandler2 {
             handler.endElement(uri, localName, qName);
         }
     }
-    
+
     public void startCDATA() throws SAXException {
         for (DefaultHandler2 handler : handlerList) {
             handler.startCDATA();
         }
     }
-    
+
     public void endCDATA() throws SAXException {
         for (DefaultHandler2 handler : handlerList) {
             handler.endCDATA();

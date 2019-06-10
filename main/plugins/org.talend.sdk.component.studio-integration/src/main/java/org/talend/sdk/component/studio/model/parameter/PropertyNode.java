@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2006-2018 Talend Inc. - www.talend.com
+ * Copyright (C) 2006-2019 Talend Inc. - www.talend.com
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -50,7 +50,7 @@ public class PropertyNode {
     private final PropertyDefinitionDecorator property;
 
     private final EParameterFieldType fieldType;
-    
+
     /**
      * Denotes whether this node is root in current tree
      */
@@ -115,7 +115,7 @@ public class PropertyNode {
 
     /**
      * Traverses all nodes
-     * 
+     *
      * @param visitor the property visitor to use to traverse the nodes.
      */
     public <T extends PropertyVisitor> T accept(final T visitor) {
@@ -151,10 +151,10 @@ public class PropertyNode {
         final Set<String> childrenNames = new HashSet<>(getChildrenNames(form));
         return children.stream().filter(node -> childrenNames.contains(node.property.getName())).collect(Collectors.toList());
     }
-    
+
     /**
      * Checks whether subtree rooted by this node has leaves, which belongs to specified {@code form}
-     * 
+     *
      * @param form Name of form
      * @return true, if it has leaves
      */

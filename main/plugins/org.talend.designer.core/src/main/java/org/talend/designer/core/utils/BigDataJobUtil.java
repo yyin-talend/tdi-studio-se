@@ -1,6 +1,6 @@
 // ============================================================================
 //
-// Copyright (C) 2006-2014 Talend Inc. - www.talend.com
+// Copyright (C) 2006-2019 Talend Inc. - www.talend.com
 //
 // This source code is available under agreement available at
 // %InstallDIR%\features\org.talend.rcp.branding.%PRODUCTNAME%\%PRODUCTNAME%license.txt
@@ -48,7 +48,7 @@ public class BigDataJobUtil {
 
     /**
      * DOC nrousseau Comment method "needsShade".
-     * 
+     *
      * @param item
      */
     public boolean needsShade() {
@@ -63,7 +63,7 @@ public class BigDataJobUtil {
 
     /**
      * DOC nrousseau Comment method "isSparkWithHDInsight".
-     * 
+     *
      * @param isSparkWithHDInsight
      * @return
      */
@@ -184,7 +184,7 @@ public class BigDataJobUtil {
 
     /**
      * DOC nrousseau Comment method "getShadedModulesExclude".
-     * 
+     *
      * @param modulesNeeded
      * @return
      */

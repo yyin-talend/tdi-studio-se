@@ -1,6 +1,6 @@
 // ============================================================================
 //
-// Copyright (C) 2006-2018 Talend Inc. - www.talend.com
+// Copyright (C) 2006-2019 Talend Inc. - www.talend.com
 //
 // This source code is available under agreement available at
 // %InstallDIR%\features\org.talend.rcp.branding.%PRODUCTNAME%\%PRODUCTNAME%license.txt
@@ -186,7 +186,7 @@ public class JavaProcessor extends AbstractJavaProcessor implements IJavaBreakpo
     private ISyntaxCheckableEditor checkableEditor;
 
     private String formatedCode;
-    
+
     private boolean useRelativeClasspath;
 
     /**
@@ -316,7 +316,7 @@ public class JavaProcessor extends AbstractJavaProcessor implements IJavaBreakpo
 
     /*
      * Initialization of the variable codePath and contextPath.
-     * 
+     *
      * @see org.talend.designer.runprocess.IProcessor#initPaths(org.talend.core.model .process.IContext)
      */
     @Override
@@ -569,7 +569,7 @@ public class JavaProcessor extends AbstractJavaProcessor implements IJavaBreakpo
     /*
      * Append the generated java code form context into java file wihtin the project. If the file not existed new one
      * will be created.
-     * 
+     *
      * @see org.talend.designer.runprocess.IProcessor#generateCode(org.talend.core .model.process.IContext, boolean,
      * boolean, boolean)
      */
@@ -874,7 +874,7 @@ public class JavaProcessor extends AbstractJavaProcessor implements IJavaBreakpo
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.talend.designer.runprocess.IProcessor#getCodeContext()
      */
     @Override
@@ -888,7 +888,7 @@ public class JavaProcessor extends AbstractJavaProcessor implements IJavaBreakpo
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.talend.designer.runprocess.IProcessor#getCodePath()
      */
     @Override
@@ -898,7 +898,7 @@ public class JavaProcessor extends AbstractJavaProcessor implements IJavaBreakpo
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.talend.designer.runprocess.IProcessor#getContextPath()
      */
     @Override
@@ -908,7 +908,7 @@ public class JavaProcessor extends AbstractJavaProcessor implements IJavaBreakpo
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.talend.designer.runprocess.IProcessor#getDataSetPath()
      */
     @Override
@@ -918,7 +918,7 @@ public class JavaProcessor extends AbstractJavaProcessor implements IJavaBreakpo
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.talend.designer.runprocess.IProcessor#getCodeProject()
      */
     @Override
@@ -1042,7 +1042,7 @@ public class JavaProcessor extends AbstractJavaProcessor implements IJavaBreakpo
 
     /*
      * Get the interpreter of Java.
-     * 
+     *
      * @see org.talend.designer.runprocess.IProcessor#getInterpreter()
      */
     @Override
@@ -1642,7 +1642,7 @@ public class JavaProcessor extends AbstractJavaProcessor implements IJavaBreakpo
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.talend.designer.runprocess.IProcessor#getProcessorType()
      */
     @Override
@@ -1652,7 +1652,7 @@ public class JavaProcessor extends AbstractJavaProcessor implements IJavaBreakpo
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.talend.designer.runprocess.IProcessor#getProcessorStates()
      */
     @Override
@@ -1667,7 +1667,7 @@ public class JavaProcessor extends AbstractJavaProcessor implements IJavaBreakpo
 
     /*
      * Get current class name, and it imported package structure.
-     * 
+     *
      * @see org.talend.designer.runprocess.IProcessor#getTypeName()
      */
     @Override
@@ -1677,7 +1677,7 @@ public class JavaProcessor extends AbstractJavaProcessor implements IJavaBreakpo
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.talend.designer.runprocess.IProcessor#saveLaunchConfiguration()
      */
     @Override
@@ -1733,7 +1733,7 @@ public class JavaProcessor extends AbstractJavaProcessor implements IJavaBreakpo
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.talend.designer.runprocess.Processor#generateContextCode()
      */
     @Override
@@ -1970,7 +1970,7 @@ public class JavaProcessor extends AbstractJavaProcessor implements IJavaBreakpo
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.eclipse.jdt.debug.core.IJavaBreakpointListener#addingBreakpoint(org
      * .eclipse.jdt.debug.core.IJavaDebugTarget, org.eclipse.jdt.debug.core.IJavaBreakpoint)
      */
@@ -1981,7 +1981,7 @@ public class JavaProcessor extends AbstractJavaProcessor implements IJavaBreakpo
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @seeorg.eclipse.jdt.debug.core.IJavaBreakpointListener#
      * breakpointHasCompilationErrors(org.eclipse.jdt.debug.core. IJavaLineBreakpoint,
      * org.eclipse.jdt.core.dom.Message[])
@@ -1994,7 +1994,7 @@ public class JavaProcessor extends AbstractJavaProcessor implements IJavaBreakpo
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @seeorg.eclipse.jdt.debug.core.IJavaBreakpointListener# breakpointHasRuntimeException(org.eclipse.jdt.debug.core.
      * IJavaLineBreakpoint, org.eclipse.debug.core.DebugException)
      */
@@ -2006,7 +2006,7 @@ public class JavaProcessor extends AbstractJavaProcessor implements IJavaBreakpo
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.eclipse.jdt.debug.core.IJavaBreakpointListener#breakpointHit(org. eclipse.jdt.debug.core.IJavaThread,
      * org.eclipse.jdt.debug.core.IJavaBreakpoint)
      */
@@ -2018,7 +2018,7 @@ public class JavaProcessor extends AbstractJavaProcessor implements IJavaBreakpo
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.eclipse.jdt.debug.core.IJavaBreakpointListener#breakpointInstalled
      * (org.eclipse.jdt.debug.core.IJavaDebugTarget , org.eclipse.jdt.debug.core.IJavaBreakpoint)
      */
@@ -2029,7 +2029,7 @@ public class JavaProcessor extends AbstractJavaProcessor implements IJavaBreakpo
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.eclipse.jdt.debug.core.IJavaBreakpointListener#breakpointRemoved(
      * org.eclipse.jdt.debug.core.IJavaDebugTarget, org.eclipse.jdt.debug.core.IJavaBreakpoint)
      */
@@ -2117,7 +2117,7 @@ public class JavaProcessor extends AbstractJavaProcessor implements IJavaBreakpo
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.eclipse.jdt.debug.core.IJavaBreakpointListener#installingBreakpoint
      * (org.eclipse.jdt.debug.core.IJavaDebugTarget , org.eclipse.jdt.debug.core.IJavaBreakpoint,
      * org.eclipse.jdt.debug.core.IJavaType)
@@ -2146,7 +2146,7 @@ public class JavaProcessor extends AbstractJavaProcessor implements IJavaBreakpo
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.talend.designer.runprocess.IProcessor#unloadProcess()
      */
     @Override
@@ -2157,7 +2157,7 @@ public class JavaProcessor extends AbstractJavaProcessor implements IJavaBreakpo
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.talend.designer.runprocess.IProcessor#isUnloaded()
      */
     @Override
@@ -2167,7 +2167,7 @@ public class JavaProcessor extends AbstractJavaProcessor implements IJavaBreakpo
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.talend.designer.runprocess.IProcessor#reloadProcess()
      */
     @Override

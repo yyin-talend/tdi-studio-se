@@ -1,6 +1,6 @@
 // ============================================================================
 //
-// Copyright (C) 2006-2018 Talend Inc. - www.talend.com
+// Copyright (C) 2006-2019 Talend Inc. - www.talend.com
 //
 // This source code is available under agreement available at
 // %InstallDIR%\features\org.talend.rcp.branding.%PRODUCTNAME%\%PRODUCTNAME%license.txt
@@ -24,7 +24,7 @@ public class XMLNode {
     public boolean outputText = false;
 
     public String originLoopPath;
-    
+
     public String loopPath;
 
     public String nodePath;
@@ -34,9 +34,9 @@ public class XMLNode {
     public boolean isAsXML = false;
 
     public boolean isDot = false;
-    
+
     private boolean isAttrOutOfLoop = false;
-    
+
     private String attrValueOutOfLoop = "";
 
     public void setAttrOutOfLoop(boolean isAttrOutOfLoop) {
@@ -61,7 +61,7 @@ public class XMLNode {
     public XMLNode(String loopPath, String originPath, String nodePath) {
         this(loopPath, originPath, nodePath, false, false);
     }
-    
+
     public XMLNode(String originLoopPath,String loopPath, String originPath, String nodePath) {
         this(loopPath, originPath, nodePath, false, false);
         this.originLoopPath = originLoopPath;
@@ -72,9 +72,9 @@ public class XMLNode {
             attrValueOutOfLoop = appendValue;
             return;
         }
-        
+
     	isNullValue = false;
-    	
+
         if (appendValue != null) {
         	value.append(appendValue);
         }
@@ -84,7 +84,7 @@ public class XMLNode {
         if(isAttrOutOfLoop) {
             return attrValueOutOfLoop;
         }
-        
+
     	if(isNullValue) return null;
     	return value.toString();
     }
@@ -93,7 +93,7 @@ public class XMLNode {
         if(isAttrOutOfLoop) {
             return;
         }
-        
+
     	isNullValue = true;
     	value.setLength(0);
     }

@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2006-2018 Talend Inc. - www.talend.com
+ * Copyright (C) 2006-2019 Talend Inc. - www.talend.com
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -59,7 +59,7 @@ public class WidgetTypeMapper {
      * Implementation note: Most possible types are located first.
      * All checks are implemented in separate methods
      * Only one checker method returns {@code true} for particular Property Definition
-     * 
+     *
      * @param property Property, which field type should be defined
      * @return widget type
      */
@@ -174,7 +174,7 @@ public class WidgetTypeMapper {
 
     /**
      * Checks whether widget type is {@link EParameterFieldType#TEXT}
-     * 
+     *
      * @param property SimplePropertyDefinition to test
      * @return check result
      */
@@ -188,7 +188,7 @@ public class WidgetTypeMapper {
 
     /**
      * Checks whether widget type is {@link EParameterFieldType#TEXT_AREA}
-     * 
+     *
      * @param property SimplePropertyDefinition to test
      * @return check result
      */
@@ -202,7 +202,7 @@ public class WidgetTypeMapper {
 
     /**
      * Checks whether widget type is {@link EParameterFieldType#PASSWORD}
-     * 
+     *
      * @param property SimplePropertyDefinition to test
      * @return check result
      */
@@ -216,7 +216,7 @@ public class WidgetTypeMapper {
 
     /**
      * Checks whether widget type is {@link EParameterFieldType#CHECK}
-     * 
+     *
      * @param property SimplePropertyDefinition to test
      * @return check result
      */
@@ -230,7 +230,7 @@ public class WidgetTypeMapper {
 
     /**
      * Checks whether widget type is {@link EParameterFieldType#CLOSED_LIST}
-     * 
+     *
      * @param property SimplePropertyDefinition to test
      * @return check result
      */
@@ -244,7 +244,7 @@ public class WidgetTypeMapper {
 
     /**
      * Checks whether widget type is {@link EParameterFieldType#TABLE}
-     * 
+     *
      * @param property SimplePropertyDefinition to test
      * @return check result
      */

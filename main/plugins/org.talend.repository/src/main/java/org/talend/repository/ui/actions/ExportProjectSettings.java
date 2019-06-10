@@ -1,6 +1,6 @@
 // ============================================================================
 //
-// Copyright (C) 2006-2018 Talend Inc. - www.talend.com
+// Copyright (C) 2006-2019 Talend Inc. - www.talend.com
 //
 // This source code is available under agreement available at
 // %InstallDIR%\features\org.talend.rcp.branding.%PRODUCTNAME%\%PRODUCTNAME%license.txt
@@ -135,7 +135,7 @@ public class ExportProjectSettings {
 
     /**
      * record the version for studio.
-     * 
+     *
      */
     private void createVersionAttr(Document document, Element root) {
         String studioVersion = VersionUtils.getVersion();
@@ -160,7 +160,7 @@ public class ExportProjectSettings {
 
     /**
      * wchen Comment method "saveParameters".
-     * 
+     *
      * @param document
      * @param root
      * @param list
@@ -189,7 +189,7 @@ public class ExportProjectSettings {
 
     /**
      * wchen Comment method "saveParameters".
-     * 
+     *
      * @param document
      * @param root
      * @param list
@@ -213,7 +213,7 @@ public class ExportProjectSettings {
 
     /**
      * wchen Comment method "createStatus".
-     * 
+     *
      * @param technicals
      * @param document
      * @param root
@@ -237,7 +237,7 @@ public class ExportProjectSettings {
 
     /**
      * wchen Comment method "createStatsLogsSettings".
-     * 
+     *
      * @param list
      * @param document
      * @param element

@@ -1,6 +1,6 @@
 // ============================================================================
 //
-// Copyright (C) 2006-2018 Talend Inc. - www.talend.com
+// Copyright (C) 2006-2019 Talend Inc. - www.talend.com
 //
 // This source code is available under agreement available at
 // %InstallDIR%\features\org.talend.rcp.branding.%PRODUCTNAME%\%PRODUCTNAME%license.txt
@@ -35,7 +35,7 @@ import org.talend.repository.resource.editors.input.RouteResourceInput;
 
 /**
  * @author xpli
- * 
+ *
  */
 public class RouteResourceEditor extends TextEditor {
 
@@ -54,7 +54,7 @@ public class RouteResourceEditor extends TextEditor {
 		setTitleToolTip(partName);
 		getSourceViewer().setEditable(!rrInput.isReadOnly());
 	}
-	
+
 	@Override
 	public boolean isEditable() {
 		return !rrInput.isReadOnly();
@@ -81,7 +81,7 @@ public class RouteResourceEditor extends TextEditor {
 
 	/**
 	 * Save the file content to EMF item.
-	 * 
+	 *
 	 * @param rrInput
 	 */
 	public static void saveContentsToItem(RouteResourceInput rrInput) {

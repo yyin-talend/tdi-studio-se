@@ -1,6 +1,6 @@
 // ============================================================================
 //
-// Copyright (C) 2006-2018 Talend Inc. - www.talend.com
+// Copyright (C) 2006-2019 Talend Inc. - www.talend.com
 //
 // This source code is available under agreement available at
 // %InstallDIR%\features\org.talend.rcp.branding.%PRODUCTNAME%\%PRODUCTNAME%license.txt
@@ -99,7 +99,7 @@ import org.talend.repository.ui.wizards.metadata.connection.files.xml.TreePopula
 
 /**
  * @author ocarbone
- * 
+ *
  */
 public class JSONFileStep2Form extends AbstractJSONFileStepForm implements IRefreshable {
 
@@ -174,7 +174,7 @@ public class JSONFileStep2Form extends AbstractJSONFileStepForm implements IRefr
 
     /**
      * Constructor to use by RCP Wizard.
-     * 
+     *
      * @param Composite
      * @param Wizard
      * @param Style
@@ -186,7 +186,7 @@ public class JSONFileStep2Form extends AbstractJSONFileStepForm implements IRefr
     }
 
     /**
-     * 
+     *
      * Initialize value, forceFocus first field.
      */
     @Override
@@ -313,7 +313,7 @@ public class JSONFileStep2Form extends AbstractJSONFileStepForm implements IRefr
 
     /**
      * add Field to Group JSON File Settings.
-     * 
+     *
      * @param mainComposite
      * @param form
      * @param width
@@ -413,7 +413,7 @@ public class JSONFileStep2Form extends AbstractJSONFileStepForm implements IRefr
 
     /**
      * add Field to Group File Viewer.
-     * 
+     *
      * @param parent
      * @param form
      * @param width
@@ -480,7 +480,7 @@ public class JSONFileStep2Form extends AbstractJSONFileStepForm implements IRefr
 
     /**
      * add Field to Group File Viewer.
-     * 
+     *
      * @param parent
      * @param form
      * @param width
@@ -504,11 +504,11 @@ public class JSONFileStep2Form extends AbstractJSONFileStepForm implements IRefr
 
     /**
      * create ProcessDescription and set it.
-     * 
+     *
      * WARNING ::field FieldSeparator, RowSeparator, EscapeChar and TextEnclosure are surround by double quote.
-     * 
+     *
      * @param getConnection()
-     * 
+     *
      * @return processDescription
      */
     private ProcessDescription getProcessDescription(boolean defaultContext) {
@@ -570,7 +570,7 @@ public class JSONFileStep2Form extends AbstractJSONFileStepForm implements IRefr
 
             /*
              * (non-Javadoc)
-             * 
+             *
              * @see
              * org.talend.repository.ui.wizards.metadata.connection.files.JSON.StoppablePreviewLoader#previewEnded(java
              * .lang.Object)
@@ -614,7 +614,7 @@ public class JSONFileStep2Form extends AbstractJSONFileStepForm implements IRefr
 
     /**
      * DOC amaumont Comment method "previewInFileError".
-     * 
+     *
      * @param e
      */
     protected void previewInError(CoreException e) {
@@ -667,7 +667,7 @@ public class JSONFileStep2Form extends AbstractJSONFileStepForm implements IRefr
 
     /**
      * get the standby XPath expression.
-     * 
+     *
      * @return
      */
     protected List getSelectedXPath(TreeItem selected) {
@@ -693,7 +693,7 @@ public class JSONFileStep2Form extends AbstractJSONFileStepForm implements IRefr
 
     /**
      * Ensures that fields are set. Update checkEnable / use to checkConnection().
-     * 
+     *
      * @return
      */
     @Override
@@ -742,7 +742,7 @@ public class JSONFileStep2Form extends AbstractJSONFileStepForm implements IRefr
 
     /**
      * addButtonControls.
-     * 
+     *
      * @param cancelButton
      */
     @Override
@@ -827,7 +827,7 @@ public class JSONFileStep2Form extends AbstractJSONFileStepForm implements IRefr
 
     /**
      * checkFileFieldsValue active fileViewer if file exist.
-     * 
+     *
      * @throws IOException
      */
     private void checkFilePathAndManageIt() {
@@ -916,7 +916,7 @@ public class JSONFileStep2Form extends AbstractJSONFileStepForm implements IRefr
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.eclipse.swt.widgets.Control#setVisible(boolean)
      */
     @Override
@@ -1034,7 +1034,7 @@ public class JSONFileStep2Form extends AbstractJSONFileStepForm implements IRefr
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.talend.repository.ui.swt.utils.IRefreshable#refresh()
      */
     @Override

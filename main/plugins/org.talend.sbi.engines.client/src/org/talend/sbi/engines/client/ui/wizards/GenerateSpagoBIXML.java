@@ -1,6 +1,6 @@
 // ============================================================================
 //
-// Copyright (C) 2006-2018 Talend Inc. - www.talend.com
+// Copyright (C) 2006-2019 Talend Inc. - www.talend.com
 //
 // This source code is available under agreement available at
 // %InstallDIR%\features\org.talend.rcp.branding.%PRODUCTNAME%\%PRODUCTNAME%license.txt
@@ -36,7 +36,7 @@ import org.xml.sax.SAXParseException;
 
 /**
  * qzhang class global comment. Detailled comment <br/>
- * 
+ *
  */
 public class GenerateSpagoBIXML {
 
@@ -118,7 +118,7 @@ public class GenerateSpagoBIXML {
                 attr = document.createAttribute("language"); //$NON-NLS-1$
                 attr.setNodeValue(project.getLanguage().getName());
                 projectElement.setAttributeNode(attr);
-                
+
                 writer = new java.io.FileWriter(file);
                 FileUtils.writeXMLFile(document, writer);
             } catch (Exception e) {

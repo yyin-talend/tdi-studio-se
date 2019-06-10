@@ -1,6 +1,6 @@
 // ============================================================================
 //
-// Copyright (C) 2006-2018 Talend Inc. - www.talend.com
+// Copyright (C) 2006-2019 Talend Inc. - www.talend.com
 //
 // This source code is available under agreement available at
 // %InstallDIR%\features\org.talend.rcp.branding.%PRODUCTNAME%\%PRODUCTNAME%license.txt
@@ -46,9 +46,9 @@ import org.xml.sax.SAXParseException;
 
 /**
  * yzhang class global comment. Detailled comment <br/>
- * 
+ *
  * $Id: ExpressionFileOperation.java 下午02:44:14 2007-8-3 +0000 (2007-8-3) yzhang $
- * 
+ *
  */
 public class ExpressionFileOperation {
 
@@ -62,7 +62,7 @@ public class ExpressionFileOperation {
 
     /**
      * yzhang Comment method "savingExpression".
-     * 
+     *
      * @return
      * @throws IOException
      * @throws ParserConfigurationException
@@ -139,7 +139,7 @@ public class ExpressionFileOperation {
 
     /**
      * yzhang Comment method "getExpressionFromFile".
-     * 
+     *
      * @param file
      * @return
      * @throws IOException

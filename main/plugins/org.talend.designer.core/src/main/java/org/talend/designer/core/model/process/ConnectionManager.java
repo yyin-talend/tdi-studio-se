@@ -1,6 +1,6 @@
 // ============================================================================
 //
-// Copyright (C) 2006-2018 Talend Inc. - www.talend.com
+// Copyright (C) 2006-2019 Talend Inc. - www.talend.com
 //
 // This source code is available under agreement available at
 // %InstallDIR%\features\org.talend.rcp.branding.%PRODUCTNAME%\%PRODUCTNAME%license.txt
@@ -36,16 +36,16 @@ import org.talend.designer.core.ui.editor.process.Process;
 
 /**
  * DOC nrousseau class global comment. Detailled comment <br/>
- * 
+ *
  */
 public class ConnectionManager {
 
     private static EConnectionType newlineStyle;
 
     /**
-     * 
+     *
      * Will return true if the connection can connect or not between source & target.
-     * 
+     *
      * @param source
      * @param target
      * @param connType
@@ -356,7 +356,7 @@ public class ConnectionManager {
 
     /**
      * Will return true if the connection can connect or not between source & target.
-     * 
+     *
      * @param oldSource
      * @param newSource
      * @param target
@@ -422,7 +422,7 @@ public class ConnectionManager {
 
     /**
      * Will return true if the connection can connect or not between source & target.
-     * 
+     *
      * @param source
      * @param oldTarget
      * @param newTarget
@@ -731,7 +731,7 @@ public class ConnectionManager {
 
     /**
      * To call after the canConnect only, this will give the new connection type after connect.
-     * 
+     *
      * @return the newConnectionType
      */
     public static EConnectionType getNewConnectionType() {
@@ -739,9 +739,9 @@ public class ConnectionManager {
     }
 
     /**
-     * 
+     *
      * Not used yet.
-     * 
+     *
      * @param source
      * @param target
      * @param connType
@@ -795,7 +795,7 @@ public class ConnectionManager {
 
     /**
      * DOC bqian Comment method "checkCircle".
-     * 
+     *
      * @param newTarget
      * @param source
      * @return
@@ -816,7 +816,7 @@ public class ConnectionManager {
 
     /**
      * DOC bqian Comment method "getAllSourceNode".
-     * 
+     *
      * @param source
      * @param list
      * @param processedSet

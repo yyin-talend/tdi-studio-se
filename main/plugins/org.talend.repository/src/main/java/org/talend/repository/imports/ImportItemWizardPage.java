@@ -1,6 +1,6 @@
 // ============================================================================
 //
-// Copyright (C) 2006-2018 Talend Inc. - www.talend.com
+// Copyright (C) 2006-2019 Talend Inc. - www.talend.com
 //
 // This source code is available under agreement available at
 // %InstallDIR%\features\org.talend.rcp.branding.%PRODUCTNAME%\%PRODUCTNAME%license.txt
@@ -105,7 +105,7 @@ import org.talend.repository.model.RepositoryNodeUtilities;
 
 /**
  * Initialy copied from org.eclipse.ui.internal.wizards.datatransfer.WizardProjectsImportPage.
- * 
+ *
  * @deprecated have moved to /org.talend.repository.items.importexport, but still need for MDM, so keep it temp.
  */
 @Deprecated
@@ -975,9 +975,9 @@ class ImportItemWizardPage extends WizardPage {
 
     /**
      * DOC ycbai Comment method "getHadoopSubnodes".
-     * 
+     *
      * Get hadoop sub item records.
-     * 
+     *
      * @param itemRecords
      * @return
      */
@@ -1093,7 +1093,7 @@ class ImportItemWizardPage extends WizardPage {
 
     /**
      * Getter for needToRefreshPalette.
-     * 
+     *
      * @return the needToRefreshPalette
      */
     public boolean isNeedToRefreshPalette() {
@@ -1113,7 +1113,7 @@ class ImportItemWizardPage extends WizardPage {
     /**
      * Checks for consistency in selected elements and report an error message. in case of error or null the message
      * error.
-     * 
+     *
      * @param checkedElements element to be checked
      */
     private void updateErrorMessage(List<ItemRecord> checkedElements) {
@@ -1124,7 +1124,7 @@ class ImportItemWizardPage extends WizardPage {
     /**
      * This check that 2 items in the list do not have the same Id and the same version. if that is so the return an
      * error message else return null.
-     * 
+     *
      * @param checkedElementsn the element to be checked
      * @return an error message or null if no error.
      */
@@ -1143,7 +1143,7 @@ class ImportItemWizardPage extends WizardPage {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.eclipse.jface.wizard.WizardPage#isPageComplete()
      */
     @Override

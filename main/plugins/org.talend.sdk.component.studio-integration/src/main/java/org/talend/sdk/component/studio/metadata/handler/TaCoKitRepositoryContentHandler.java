@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2006-2018 Talend Inc. - www.talend.com
+ * Copyright (C) 2006-2019 Talend Inc. - www.talend.com
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with
  * the License. You may obtain a copy of the License at
@@ -165,7 +165,7 @@ public class TaCoKitRepositoryContentHandler extends AbstractRepositoryContentHa
      * Checks whether {@code repositoryType} belongs to TaCoKit and creates RepositoryTypeProcessor if it is true
      * RepositoryTypeProcessor implements repository tree filtering logic, which allows to show only repository nodes,
      * which are related to the component, in repository review dialog.
-     * 
+     *
      * @param repositoryType a String, which represents supported repository nodes types
      * @return RepositoryTypeProcessor or null, it repository type doesn't belong to TaCoKit
      */

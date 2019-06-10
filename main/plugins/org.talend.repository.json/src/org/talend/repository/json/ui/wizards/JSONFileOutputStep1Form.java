@@ -1,6 +1,6 @@
 // ============================================================================
 //
-// Copyright (C) 2006-2018 Talend Inc. - www.talend.com
+// Copyright (C) 2006-2019 Talend Inc. - www.talend.com
 //
 // This source code is available under agreement available at
 // %InstallDIR%\features\org.talend.rcp.branding.%PRODUCTNAME%\%PRODUCTNAME%license.txt
@@ -182,10 +182,10 @@ public class JSONFileOutputStep1Form extends AbstractJSONFileStepForm {
             if (isFromFile) {
                 noFileButton.setEnabled(false);
                 useFileButton.setEnabled(false);
-                
+
                 useFileButton.setSelection(true);
                 noFileButton.setSelection(false);
-                
+
                 jsonFilePath.setEditable(true);
                 encodingCombo.setReadOnly(false);
             } else {
@@ -194,7 +194,7 @@ public class JSONFileOutputStep1Form extends AbstractJSONFileStepForm {
 
                 noFileButton.setSelection(true);
                 useFileButton.setSelection(false);
-                
+
                 jsonFilePath.setEditable(false);
                 encodingCombo.setReadOnly(true);
             }
@@ -203,19 +203,19 @@ public class JSONFileOutputStep1Form extends AbstractJSONFileStepForm {
             if (isFromFile) {
                 noFileButton.setEnabled(true);
                 useFileButton.setEnabled(true);
-                
+
                 noFileButton.setSelection(false);
                 useFileButton.setSelection(true);
-                
+
                 jsonFilePath.setEditable(true);
                 encodingCombo.setReadOnly(false);
             } else {
                 noFileButton.setEnabled(true);
                 useFileButton.setEnabled(true);
-                
+
                 useFileButton.setSelection(false);
                 noFileButton.setSelection(true);
-                
+
                 jsonFilePath.setEditable(false);
                 encodingCombo.setReadOnly(true);
             }
@@ -269,7 +269,7 @@ public class JSONFileOutputStep1Form extends AbstractJSONFileStepForm {
         commonNodesLimitation.setLayoutData(gd);
         commonNodesLimitation.setText(String.valueOf(TreePopulator.getLimit()));
         labelLimitation.setToolTipText(MessageFormat.format(Messages.JSONLimitToolTip, commonNodesLimitation.getText()));
-        
+
         if (!noFileButton.getSelection() && !useFileButton.getSelection()) {
             noFileButton.setSelection(true);
         }

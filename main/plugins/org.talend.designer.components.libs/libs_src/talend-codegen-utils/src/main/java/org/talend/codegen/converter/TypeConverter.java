@@ -1,6 +1,6 @@
 // ============================================================================
 //
-// Copyright (C) 2006-2018 Talend Inc. - www.talend.com
+// Copyright (C) 2006-2019 Talend Inc. - www.talend.com
 //
 // This source code is available under agreement available at
 // %InstallDIR%\features\org.talend.rcp.branding.%PRODUCTNAME%\%PRODUCTNAME%license.txt
@@ -57,7 +57,7 @@ public final class TypeConverter {
 
     /**
      * Converts DI type to Avro field schema
-     * 
+     *
      * @param diType data integration native type
      * @param logicalType avro logical type
      * @return field schema
@@ -106,7 +106,7 @@ public final class TypeConverter {
      * Avro type doesn't uniquely identify DI type. Several DI types may correspond to the same Avro type.
      * Thus, logical type and java-class are checked first as they uniquely identify DI type
      * This is used in DI codegen to simplify codegen code and have tests
-     * 
+     *
      * @param fieldSchema Avro field schema
      * @return corresponding DI type
      */
@@ -128,7 +128,7 @@ public final class TypeConverter {
 
     /**
      * Returns DI metadata type which corresponds to Avro logical type
-     * 
+     *
      * @param logicalType Avro logical type
      * @return DI type
      */
@@ -151,7 +151,7 @@ public final class TypeConverter {
 
     /**
      * Returns DI metadata type which corresponds to java-class property flag
-     * 
+     *
      * @param javaClass java-class property value
      * @return DI type
      */
@@ -174,7 +174,7 @@ public final class TypeConverter {
 
     /**
      * Returns DI metadata type which corresponds to avro type
-     * 
+     *
      * @param type avro schema type
      * @return DI type
      */

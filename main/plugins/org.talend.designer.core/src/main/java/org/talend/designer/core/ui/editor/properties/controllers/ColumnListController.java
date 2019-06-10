@@ -1,6 +1,6 @@
 // ============================================================================
 //
-// Copyright (C) 2006-2018 Talend Inc. - www.talend.com
+// Copyright (C) 2006-2019 Talend Inc. - www.talend.com
 //
 // This source code is available under agreement available at
 // %InstallDIR%\features\org.talend.rcp.branding.%PRODUCTNAME%\%PRODUCTNAME%license.txt
@@ -81,9 +81,9 @@ import orgomg.cwm.objectmodel.core.TaggedValue;
 
 /**
  * DOC yzhang class global comment. Detailled comment <br/>
- * 
+ *
  * $Id: ColumnListController.java 1 2006-12-12 下午02:04:32 +0000 (下午02:04:32) yzhang $
- * 
+ *
  */
 public class ColumnListController extends AbstractElementPropertySectionController {
 
@@ -123,7 +123,7 @@ public class ColumnListController extends AbstractElementPropertySectionControll
 
     /**
      * DOC dev ColumnListController constructor comment.
-     * 
+     *
      * @param parameterBean
      */
     public ColumnListController(IDynamicProperty dp) {
@@ -132,7 +132,7 @@ public class ColumnListController extends AbstractElementPropertySectionControll
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see
      * org.talend.designer.core.ui.editor.properties2.editors.AbstractElementPropertySectionController#createCommand()
      */
@@ -192,7 +192,7 @@ public class ColumnListController extends AbstractElementPropertySectionControll
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see
      * org.talend.designer.core.ui.editor.properties2.editors.AbstractElementPropertySectionController#createControl()
      */
@@ -282,7 +282,7 @@ public class ColumnListController extends AbstractElementPropertySectionControll
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see
      * org.talend.designer.core.ui.editor.properties.controllers.AbstractElementPropertySectionController#estimateRowSize
      * (org.eclipse.swt.widgets.Composite, org.talend.core.model.process.IElementParameter)
@@ -304,7 +304,7 @@ public class ColumnListController extends AbstractElementPropertySectionControll
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see java.beans.PropertyChangeListener#propertyChange(java.beans.PropertyChangeEvent)
      */
     @Override
@@ -734,7 +734,7 @@ public class ColumnListController extends AbstractElementPropertySectionControll
     }
 
     /**
-     * 
+     *
      * <p>
      * You can fill the filter as the format below:
      * </p>
@@ -743,11 +743,11 @@ public class ColumnListController extends AbstractElementPropertySectionControll
      * NONE_CUSTOM_COLUMNS:col1, col2, ...</li> <li>NONE_CUSTOM_COLUMNS:*</li> <li>NONE_CUSTOM_COLUMNS:REGEXP:any
      * regular expressions</li> <li>REGEXP:any regular expressions</li> <li>col1</li> <li>col1,col2, ...</li> <li>*</li>
      * </l>
-     * 
+     *
      * <br>
      * You can refer to {@link ColumnListControllerTest } to know how does this method work. </br> <br>
      * DOC ycbai Comment method "filterColumns".
-     * 
+     *
      * @param param
      * @param curColumnNameList
      * @param curColumnValueList
@@ -843,7 +843,7 @@ public class ColumnListController extends AbstractElementPropertySectionControll
 
     /**
      * bqian Comment method "setSize".
-     * 
+     *
      * @param newLine
      * @param node
      * @param codes
@@ -886,9 +886,9 @@ public class ColumnListController extends AbstractElementPropertySectionControll
 
     /**
      * DOC bqian Comment method "needSynchronizeSize".
-     * 
+     *
      * @param param
-     * 
+     *
      * @return
      */
     public static boolean needSynchronizeSize(IElementParameter param) {
@@ -1023,12 +1023,12 @@ public class ColumnListController extends AbstractElementPropertySectionControll
     }
 
     /**
-     * 
+     *
      * DOC ggu Comment method "syncNodePropertiesTableColumns".<BR/>
-     * 
+     *
      * synchronize COLUMN_LIST, PREV_COLUMN_LIST, LOOKUP_COLUMN_LIST in table. <br/>
      * when modified column name of schema .
-     * 
+     *
      * @param param
      * @param columnsChanged
      * @param columnNameList
@@ -1076,11 +1076,11 @@ public class ColumnListController extends AbstractElementPropertySectionControll
     }
 
     /**
-     * 
+     *
      * DOC ggu Comment method "syncNodePropertiesColumns".<BR/>
-     * 
+     *
      * synchronize COLUMN_LIST, PREV_COLUMN_LIST, LOOKUP_COLUMN_LIST
-     * 
+     *
      * @param param
      * @param columnsChanged
      * @param columnNameList

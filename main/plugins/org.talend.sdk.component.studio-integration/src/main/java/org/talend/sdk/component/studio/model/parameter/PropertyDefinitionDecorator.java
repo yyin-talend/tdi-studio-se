@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2006-2018 Talend Inc. - www.talend.com
+ * Copyright (C) 2006-2019 Talend Inc. - www.talend.com
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -116,10 +116,10 @@ public class PropertyDefinitionDecorator extends SimplePropertyDefinition {
                 .map(PropertyDefinitionDecorator::new)
                 .collect(toList());
     }
-    
+
     /**
      * Wraps {@link SimplePropertyDefinition} in {@link PropertyDefinitionDecorator}
-     * 
+     *
      * @param property original property
      * @return wrapped property
      */
@@ -574,12 +574,12 @@ public class PropertyDefinitionDecorator extends SimplePropertyDefinition {
     public LinkedHashMap<String, String> getProposalDisplayNames() {
         return delegate.getProposalDisplayNames();
     }
-    
+
     boolean hasSuggestions() {
         return delegate.getMetadata().containsKey(ACTION_SUGGESTIONS_NAME)
                 && delegate.getMetadata().containsKey(ACTION_SUGGESTIONS_PARAMETERS);
     }
-    
+
     public Suggestions getSuggestions() {
         if (!hasSuggestions()) {
             throw new IllegalStateException("Property has no suggestions");
@@ -603,7 +603,7 @@ public class PropertyDefinitionDecorator extends SimplePropertyDefinition {
             return Optional.empty();
         }
     }
-    
+
     public Parameter getParameter() {
         return ofNullable(delegate.getMetadata().get(PARAMETER_INDEX))
                 .map(s -> new Parameter(Integer.parseInt(s)))
@@ -766,25 +766,25 @@ public class PropertyDefinitionDecorator extends SimplePropertyDefinition {
             return "Suggestions(name=" + this.getName() + ", parameters=" + this.getParameters() + ")";
         }
     }
-    
+
     public static class Parameter {
-        
+
         private static int UNDEFINED = -1;
-        
+
         private int index = UNDEFINED;
-        
+
         Parameter() {
             // no-op
         }
-        
+
         Parameter(final int index) {
             this.index = index;
         }
-        
+
         public int getIndex() {
             return index;
         }
-        
+
         public boolean isRoot() {
             return index != UNDEFINED;
         }

@@ -1,6 +1,6 @@
 // ============================================================================
 //
-// Copyright (C) 2006-2018 Talend Inc. - www.talend.com
+// Copyright (C) 2006-2019 Talend Inc. - www.talend.com
 //
 // This source code is available under agreement available at
 // %InstallDIR%\features\org.talend.rcp.branding.%PRODUCTNAME%\%PRODUCTNAME%license.txt
@@ -126,7 +126,7 @@ public class BuildJobHandler extends AbstractBuildJobHandler {
                 talendProcessJavaProject.cleanFolder(monitor, resFolder);
             }
         }
-        
+
         // context
         boolean needContext = isOptionChoosed(ExportChoice.needContext);
         if (needContext) {
@@ -157,7 +157,7 @@ public class BuildJobHandler extends AbstractBuildJobHandler {
                 argumentsMap.put(TalendProcessArgumentConstant.ARG_LOG4J_LEVEL, this.exportChoice.get(ExportChoice.log4jLevel));
             }
         }
-        
+
         //launcher
         boolean needLauncher = isOptionChoosed(ExportChoice.needLauncher);
         if(needLauncher){
@@ -253,7 +253,7 @@ public class BuildJobHandler extends AbstractBuildJobHandler {
 
     /**
      * DOC nrousseau Comment method "addTDMDependencies".
-     * 
+     *
      * @param items
      * @param itemsFolder
      */
@@ -373,7 +373,7 @@ public class BuildJobHandler extends AbstractBuildJobHandler {
                     if (imageFolder.exists()) {
                         FilesUtils.copyDirectory(imageFolder, itemsFolderDir);
                     }
-                    File templateFolder = new File(reportingBundlePath + PATH_SEPARATOR + "reports"); //$NON-NLS-1$ 
+                    File templateFolder = new File(reportingBundlePath + PATH_SEPARATOR + "reports"); //$NON-NLS-1$
                     if (templateFolder.exists() && templateFolder.isDirectory()) {
                         FilesUtils.copyDirectory(templateFolder, itemsFolderDir);
                     }
@@ -413,7 +413,7 @@ public class BuildJobHandler extends AbstractBuildJobHandler {
                 } catch (Exception e) {
                     if (!CommonUIPlugin.isFullyHeadless() && isOptionChoosed(ExportChoice.buildImage)) {
                         Display.getDefault().syncExec(new Runnable() {
-                            
+
                             @Override
                             public void run() {
                                 MessageBoxExceptionHandler.process(e, Display.getDefault().getActiveShell());

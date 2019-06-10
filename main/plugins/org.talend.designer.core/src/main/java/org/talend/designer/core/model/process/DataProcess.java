@@ -1,6 +1,6 @@
 // ============================================================================
 //
-// Copyright (C) 2006-2018 Talend Inc. - www.talend.com
+// Copyright (C) 2006-2019 Talend Inc. - www.talend.com
 //
 // This source code is available under agreement available at
 // %InstallDIR%\features\org.talend.rcp.branding.%PRODUCTNAME%\%PRODUCTNAME%license.txt
@@ -770,7 +770,7 @@ public class DataProcess implements IGeneratingProcess {
         		continue;
         	}
             for (IMultipleComponentConnection curConnec : curItem.getOutputConnections()) {
-                
+
                 AbstractNode nodeTarget;
 
                 nodeTarget = itemsMap.get(curConnec.getTarget());
@@ -1275,15 +1275,15 @@ public class DataProcess implements IGeneratingProcess {
                 String uniqueName = null;
                 IComponent component = null;
                 String hashComponent = null;
-                
+
                 //TODO remove the two statements as we can call getTargetNodeConnector directly
                 String baseConnector = connection.getSource().getConnectorFromName(connection.getConnectorName()).getBaseSchema();
                 INodeConnector connector = connection.getTarget().getConnectorFromName(baseConnector);
-                
+
                 if(connector == null) {
                 	connector = connection.getTargetNodeConnector();
                 }
-                
+
                 if (connector != null) {
                     hashComponent = connector.getConnectionProperty(EConnectionType.FLOW_REF).getLinkedComponent();
                 }
@@ -1947,7 +1947,7 @@ public class DataProcess implements IGeneratingProcess {
                 tagSubProcessAfterParallelIterator(node);
             }
         }
-        
+
         if (duplicatedProcess.getComponentsType().equals(ComponentCategory.CATEGORY_4_DI.getName()) && PluginChecker.isTIS()) {
         	final String talendJobLogComponent = "tJobStructureCatcher";
             final String uid4TalendJobLogComponent = "talendJobLog";
@@ -1959,7 +1959,7 @@ public class DataProcess implements IGeneratingProcess {
 	        	jobStructure.setSubProcessStart(true);
 	        	jobStructure.setProcess(duplicatedProcess);
 	        	addDataNode(jobStructure);
-	        	
+
 	        	//TODO consider to remove it as may not necessary
 	            shortUniqueNameList.clear();
 	            for (INode node : dataNodeList) {
@@ -1972,7 +1972,7 @@ public class DataProcess implements IGeneratingProcess {
 	            }
         	}
         }
-        
+
         // IGenericDBService dbService = null;
         // if (GlobalServiceRegister.getDefault().isServiceRegistered(IGenericDBService.class)) {
         // dbService = (IGenericDBService) GlobalServiceRegister.getDefault().getService(
@@ -3236,7 +3236,7 @@ public class DataProcess implements IGeneratingProcess {
 
     /**
      * Creates a hadoop configuration manager component
-     * 
+     *
      * @param hadoopClusterItemId the hadoop cluster metadata id
      * @param componentName the name of the component to instantiate
      * @param componentCategory the {@link ComponentCategory} of the component to instantiate
@@ -3730,7 +3730,7 @@ public class DataProcess implements IGeneratingProcess {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.talend.designer.core.model.process.IGeneratingProcess#generateAdditionalCode()
      */
     @Override

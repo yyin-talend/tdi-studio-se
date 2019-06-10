@@ -1,6 +1,6 @@
 // ============================================================================
 //
-// Copyright (C) 2006-2018 Talend Inc. - www.talend.com
+// Copyright (C) 2006-2019 Talend Inc. - www.talend.com
 //
 // This source code is available under agreement available at
 // %InstallDIR%\features\org.talend.rcp.branding.%PRODUCTNAME%\%PRODUCTNAME%license.txt
@@ -152,7 +152,7 @@ public class JSONWizard extends CheckLastVersionRepositoryWizard implements INew
 
     /**
      * Sets the isToolbar.
-     * 
+     *
      * @param isToolbar the isToolbar to set
      */
     public void setToolbar(boolean isToolbar) {
@@ -161,7 +161,7 @@ public class JSONWizard extends CheckLastVersionRepositoryWizard implements INew
 
     /**
      * Constructor for FileWizard.
-     * 
+     *
      * @param workbench
      * @param selection
      * @param strings
@@ -567,7 +567,7 @@ public class JSONWizard extends CheckLastVersionRepositoryWizard implements INew
 
     /**
      * DOC gldu Comment method "copyMetadata".
-     * 
+     *
      * @param schemaTargets
      */
     private void copyMetadata(EList<SchemaTarget> schemaTargets) {
@@ -594,7 +594,7 @@ public class JSONWizard extends CheckLastVersionRepositoryWizard implements INew
 
     /**
      * We will accept the selection in the workbench to see if we can initialize from it.
-     * 
+     *
      * @see IWorkbenchWizard#init(IWorkbench, IStructuredSelection)
      */
     @Override
@@ -842,7 +842,7 @@ public class JSONWizard extends CheckLastVersionRepositoryWizard implements INew
 
     /**
      * Getter for tempJsonPath.
-     * 
+     *
      * @return the tempJsonPath
      */
     public String getTempJsonPath() {
@@ -855,7 +855,7 @@ public class JSONWizard extends CheckLastVersionRepositoryWizard implements INew
 
     /**
      * Sets the tempJsonPath.
-     * 
+     *
      * @param tempJsonPath the tempJsonPath to set
      */
     public void setTempJsonPath(String tempJsonPath) {
@@ -868,7 +868,7 @@ public class JSONWizard extends CheckLastVersionRepositoryWizard implements INew
 
     /**
      * Getter for readbyMode.
-     * 
+     *
      * @return the readbyMode
      */
     public String getReadbyMode() {
@@ -877,7 +877,7 @@ public class JSONWizard extends CheckLastVersionRepositoryWizard implements INew
 
     /**
      * Sets the readbyMode.
-     * 
+     *
      * @param readbyMode the readbyMode to set
      */
     public void setReadbyMode(String readbyMode) {

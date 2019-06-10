@@ -1,6 +1,6 @@
 // ============================================================================
 //
-// Copyright (C) 2006-2018 Talend Inc. - www.talend.com
+// Copyright (C) 2006-2019 Talend Inc. - www.talend.com
 //
 // This source code is available under agreement available at
 // %InstallDIR%\features\org.talend.rcp.branding.%PRODUCTNAME%\%PRODUCTNAME%license.txt
@@ -1019,7 +1019,7 @@ public class WebServiceUI implements AbstractWebService {
 
     /**
      * DOC gcui Comment method "useSSL".
-     * 
+     *
      * @return
      */
     private void useSSL() {
@@ -1045,7 +1045,7 @@ public class WebServiceUI implements AbstractWebService {
 
     /**
      * Sets the listener.
-     * 
+     *
      * @param listener the listener to set
      */
     public void addListener(WebServiceEventListener listener) {
@@ -1131,7 +1131,7 @@ public class WebServiceUI implements AbstractWebService {
                 if (currentFunction == null) {
                     tabFolder.setSelection(wsdlTabItem);
                     MessageBox box = new MessageBox(Display.getCurrent().getActiveShell(), SWT.ICON_WARNING | SWT.OK);
-                    box.setText("WARNING"); //$NON-NLS-1$ 
+                    box.setText("WARNING"); //$NON-NLS-1$
                     box.setMessage("Please Select a Operation."); //$NON-NLS-1$
                     box.open();
                     return;
@@ -3691,7 +3691,7 @@ public class WebServiceUI implements AbstractWebService {
     /**
      * For Lazyload, table maybe didn't load data completely, use TableModel to judge if is expanded DOC jding Comment
      * method "isExpanded".
-     * 
+     *
      * @param tableBeansList
      * @param para
      * @param childparaList
@@ -3722,7 +3722,7 @@ public class WebServiceUI implements AbstractWebService {
     /**
      * For Lazyload, table maybe didn't load data completely, use TableModel to judge if is expanded DOC jding Comment
      * method "isExpanded4Output".
-     * 
+     *
      * @param tableBeansList
      * @param para
      * @param childparaList

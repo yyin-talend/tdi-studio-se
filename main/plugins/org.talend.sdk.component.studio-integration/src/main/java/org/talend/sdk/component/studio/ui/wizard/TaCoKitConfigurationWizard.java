@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2006-2018 Talend Inc. - www.talend.com
+ * Copyright (C) 2006-2019 Talend Inc. - www.talend.com
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with
  * the License. You may obtain a copy of the License at
@@ -76,17 +76,17 @@ public abstract class TaCoKitConfigurationWizard extends CheckLastVersionReposit
 
     /**
      * Part of constructor
-     * 
+     *
      * Sets {@code pathToSave} if repository node has one of following types:
-     * 
+     *
      * <ul>
-     * 
+     *
      * <li>SIMPLE_FOLDER</li>
-     * 
+     *
      * <li>SYSTEM_FOLDER</li>
-     * 
+     *
      * <li>REPOSITORY_ELEMENT</li>
-     * 
+     *
      * </ul>
      */
     private void setPathToSave() {
@@ -116,9 +116,9 @@ public abstract class TaCoKitConfigurationWizard extends CheckLastVersionReposit
 
     /**
      * Part of constructor
-     * 
+     *
      * Initializes lock strategy if repository node type is REPOSITORY_ELEMENT
-     * 
+     *
      * If needed, locks the repository node
      */
     private void lockNode() {
@@ -155,7 +155,7 @@ public abstract class TaCoKitConfigurationWizard extends CheckLastVersionReposit
             addPage(advancedPage);
         }
     }
-    
+
     @Override
     public boolean performFinish() {
         // if both are null, then nothing to do and "perform finish" operation is always accepted
@@ -170,7 +170,7 @@ public abstract class TaCoKitConfigurationWizard extends CheckLastVersionReposit
             return advancedPage.isPageComplete() && doPerformFinish();
         }
     }
-    
+
     private boolean doPerformFinish() {
         try {
             IWorkspace workspace = ResourcesPlugin.getWorkspace();
@@ -193,11 +193,11 @@ public abstract class TaCoKitConfigurationWizard extends CheckLastVersionReposit
 
     /**
      * Creates operation, which is performed, when Finish button is pushed.
-     * 
+     *
      * Creates different operations depending on whether it is Create or Edit wizard
      *
-     * 
-     * 
+     *
+     *
      * @return operation to perform on finish
      */
     protected abstract IWorkspaceRunnable createFinishOperation();

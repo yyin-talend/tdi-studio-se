@@ -1,6 +1,6 @@
 // ============================================================================
 //
-// Copyright (C) 2006-2018 Talend Inc. - www.talend.com
+// Copyright (C) 2006-2019 Talend Inc. - www.talend.com
 //
 // This source code is available under agreement available at
 // %InstallDIR%\features\org.talend.rcp.branding.%PRODUCTNAME%\%PRODUCTNAME%license.txt
@@ -1842,7 +1842,7 @@ public class Node extends Element implements IGraphicalNode {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.talend.designer.core.ui.editor.Element#getPropertyValue(java.lang.Object)
      */
     @Override
@@ -1856,7 +1856,7 @@ public class Node extends Element implements IGraphicalNode {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.talend.designer.core.ui.editor.Element#setPropertyValue(java.lang.Object, java.lang.Object)
      */
     @Override
@@ -2023,7 +2023,7 @@ public class Node extends Element implements IGraphicalNode {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.talend.designer.core.ui.editor.Element#getElementName()
      */
     @Override
@@ -2275,7 +2275,7 @@ public class Node extends Element implements IGraphicalNode {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.talend.core.model.process.INode#hasConditionnalOutputs()
      */
     @Override
@@ -2519,7 +2519,7 @@ public class Node extends Element implements IGraphicalNode {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.talend.core.model.process.INode#setProcess(org.talend.core.model.process.IProcess)
      */
     @Override
@@ -4479,7 +4479,7 @@ public class Node extends Element implements IGraphicalNode {
     }
 
     /**
-     * 
+     *
      * DOC jding Comment method "checkMultipleTRunjobVersion".For a job,can't exist multiple same subjob with different
      * version
      */
@@ -4646,7 +4646,7 @@ public class Node extends Element implements IGraphicalNode {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.talend.core.model.process.INode#renameMetadataColumnName(java.lang.String, java.lang.String,
      * java.lang.String)
      */
@@ -4689,7 +4689,7 @@ public class Node extends Element implements IGraphicalNode {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.talend.core.model.process.INode#isThereLinkWithHash()
      */
     @Override
@@ -4905,7 +4905,7 @@ public class Node extends Element implements IGraphicalNode {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.talend.core.model.process.INode#reloadComponent(org.talend.core.model.components.IComponent,
      * java.util.Map)
      */
@@ -5099,7 +5099,7 @@ public class Node extends Element implements IGraphicalNode {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.talend.core.model.process.INode#getDesignSubjobStartNode()
      */
     @Override
@@ -5109,7 +5109,7 @@ public class Node extends Element implements IGraphicalNode {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.talend.core.model.process.INode#isDesignSubjobStartNode()
      */
     @Override
@@ -5119,7 +5119,7 @@ public class Node extends Element implements IGraphicalNode {
 
     /*
      * return false is ok, becase all nodes generated from virtual component are DataNode.
-     * 
+     *
      * @see org.talend.core.model.process.INode#isVirtualGenerateNode()
      */
     @Override
@@ -5152,7 +5152,7 @@ public class Node extends Element implements IGraphicalNode {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.talend.core.model.process.INode#isGeneratedAsVirtualComponent()
      */
     @Override
@@ -5203,7 +5203,7 @@ public class Node extends Element implements IGraphicalNode {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.talend.core.model.process.INode#isUseLoopOnConditionalOutput(java.lang.String)
      */
     @Override
@@ -5213,7 +5213,7 @@ public class Node extends Element implements IGraphicalNode {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.talend.core.model.process.INode#getUniqueShortName()
      */
     @Override
@@ -5251,7 +5251,7 @@ public class Node extends Element implements IGraphicalNode {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.talend.core.model.process.INode#isSubProcessContainTraceBreakpoint()
      */
     @Override
@@ -5617,7 +5617,7 @@ public class Node extends Element implements IGraphicalNode {
 
     /**
      * Getter for delegateComponent.
-     * 
+     *
      * @return the delegateComponent
      */
     public IComponent getDelegateComponent() {

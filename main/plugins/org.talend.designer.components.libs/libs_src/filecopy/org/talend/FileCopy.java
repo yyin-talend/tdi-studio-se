@@ -1,6 +1,6 @@
 // ============================================================================
 //
-// Copyright (C) 2006-2018 Talend Inc. - www.talend.com
+// Copyright (C) 2006-2019 Talend Inc. - www.talend.com
 //
 // This source code is available under agreement available at
 // %InstallDIR%\features\org.talend.rcp.branding.%PRODUCTNAME%\%PRODUCTNAME%license.txt
@@ -100,7 +100,7 @@ public class FileCopy {
         try {
             in = srcInputStream.getChannel();
             out = new FileOutputStream(dest).getChannel();
-            
+
             int maxCount = (32 * 1024 * 1024) - (28 * 1024);
             long size = in.size();
             long position = 0;

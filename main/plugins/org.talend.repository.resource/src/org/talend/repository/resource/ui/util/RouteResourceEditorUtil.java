@@ -1,6 +1,6 @@
 // ============================================================================
 //
-// Copyright (C) 2006-2018 Talend Inc. - www.talend.com
+// Copyright (C) 2006-2019 Talend Inc. - www.talend.com
 //
 // This source code is available under agreement available at
 // %InstallDIR%\features\org.talend.rcp.branding.%PRODUCTNAME%\%PRODUCTNAME%license.txt
@@ -52,7 +52,7 @@ public class RouteResourceEditorUtil {
 	/**
 	 * find a prefer editor from all existing editors according to the
 	 * fileExtensions
-	 * 
+	 *
 	 * @param fileExtension
 	 * @return
 	 */
@@ -82,7 +82,7 @@ public class RouteResourceEditorUtil {
 
 	/**
 	 * Open default editor
-	 * 
+	 *
 	 * @param page
 	 * @param node
 	 * @param item
@@ -97,7 +97,7 @@ public class RouteResourceEditorUtil {
 
 	/**
 	 * Open or bind Route resource editor.
-	 * 
+	 *
 	 * @param page
 	 * @param node
 	 * @param item
@@ -116,7 +116,7 @@ public class RouteResourceEditorUtil {
 
 	/**
 	 * Open or bind Route resource editor by specifing editorID
-	 * 
+	 *
 	 * @param page
 	 * @param node
 	 * @param item
@@ -151,23 +151,23 @@ public class RouteResourceEditorUtil {
 			MessageBoxExceptionHandler.process(e);
 		}
 	}
-	
+
 	public static boolean isReadOnly(IRepositoryNode node){
 		IRepositoryService service = DesignerPlugin.getDefault().getRepositoryService();
 		IProxyRepositoryFactory repFactory = service.getProxyRepositoryFactory();
-		
+
 		/*
 		 * if user is readonly , then set enable as false
 		 */
 		if(repFactory.isUserReadOnlyOnCurrentProject()){
 			return true;
 		}
-		
+
 		// if it's not in current project, then it's disable
 		if(!ProjectManager.getInstance().isInCurrentMainProject(node)){
 			return true;
 		}
-		
+
 		// if it's locked by others, then it's disable
 		IRepositoryViewObject object = node.getObject();
 		if(object == null){
@@ -177,7 +177,7 @@ public class RouteResourceEditorUtil {
 		if(property == null){
 			return false;
 		}
-		
+
 		Item item = property.getItem();
 		if(item == null){
 			return false;
@@ -186,11 +186,11 @@ public class RouteResourceEditorUtil {
 		if(ERepositoryStatus.LOCK_BY_OTHER.equals(status) || ERepositoryStatus.DELETED.equals(status)){
 			return true;
 		}
-		
+
 		if(!isLatestVersion(property)){
 			return true;
 		}
-		
+
 		return false;
 	}
 
