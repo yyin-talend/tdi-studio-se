@@ -9,14 +9,14 @@ product:
 
 | Info             | Value |
 | ---------------- | ---------------- |
-| Patch Name       | Patch_20190606_TPS-2855_v1-7.0.1 |
-| Release Date     | 2019-06-06 |
+| Patch Name       | Patch\_20190610\_TPS-2855\_v1-7.0.1 |
+| Release Date     | 2019-06-10 |
 | Target Version   | 20180411_1414-V7.0.1 |
 | Product affected | Talend Studio |
 
 ## Introduction
 
-This is a self-contained patch. This patch need to be installed together with GUI patch for TPS-2855.
+This is a self-contained patch.
 
 **NOTE**: For information on how to obtain this patch, reach out to your Support contact at Talend.
 
@@ -31,7 +31,6 @@ This patch contains the following fixes:
 Consider the following requirements for your system:
 
 - Talend Studio 7.0.1 must be installed.
-- GUI patch for TPS-2855 should be installed
 
 ## Installation
 
