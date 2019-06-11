@@ -81,8 +81,23 @@ public class TaCoKitCreateWizard extends TaCoKitConfigurationWizard {
 
         connectionItem.getProperty().setId(nextId);
         TaCoKitConfigurationModel model = new TaCoKitConfigurationModel(connectionItem.getConnection(), configTypeNode);
-        if (taCoKitRepositoryNode.isLeafNode()) {
-            model.setParentItemId(taCoKitRepositoryNode.getObject().getId());
+        ITaCoKitRepositoryNode parentNode = null;
+        ITaCoKitRepositoryNode tempNode = taCoKitRepositoryNode;
+        while (true) {
+            if (tempNode == null) {
+                break;
+            }
+            if (tempNode.isLeafNode()) {
+                parentNode = tempNode;
+                break;
+            }
+            if (tempNode.isFamilyNode()) {
+                break;
+            }
+            tempNode = tempNode.getParentTaCoKitNode();
+        }
+        if (parentNode != null) {
+            model.setParentItemId(parentNode.getObject().getId());
         }
         factory.create(connectionItem, getWizardPropertiesPage().getDestinationPath());
         RepositoryManager.refreshCreatedNode(TaCoKitConst.METADATA_TACOKIT);
