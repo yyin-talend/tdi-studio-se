@@ -469,28 +469,34 @@
     	<%}%>
     	
     	<%
-    	List<? extends INode> jobCatcherNodes = process.getNodesOfType("tJobStructureCatcher");
-    	for (INode jobStructureCatcher : jobCatcherNodes) {
-    		String location = ElementParameterParser.getValue(jobStructureCatcher, "__LOCATION__");
+    	INode jobCatcherNode = null;
+		for (INode nodeInProcess : process.getGeneratingNodes()) {
+			String componentName = nodeInProcess.getComponent().getName();
+			if("tJobStructureCatcher".equals(componentName)) {
+				jobCatcherNode = nodeInProcess;
+				break;
+			}
+		}
+    	if(jobCatcherNode!=null) {
+    		String location = ElementParameterParser.getValue(jobCatcherNode, "__LOCATION__");
 		%>
 			if(enableLogStash) {
-				java.util.Properties properties_<%=jobStructureCatcher.getUniqueName()%> = new java.util.Properties();
-				properties_<%=jobStructureCatcher.getUniqueName()%>.setProperty("root.logger", "audit");
-				properties_<%=jobStructureCatcher.getUniqueName()%>.setProperty("encoding", "UTF-8");
-				properties_<%=jobStructureCatcher.getUniqueName()%>.setProperty("application.name", "Talend Studio");
-				properties_<%=jobStructureCatcher.getUniqueName()%>.setProperty("service.name", "Talend Studio Job");
-				properties_<%=jobStructureCatcher.getUniqueName()%>.setProperty("instance.name", "Talend Studio Job Instance");
-				properties_<%=jobStructureCatcher.getUniqueName()%>.setProperty("propagate.appender.exceptions", "none");
-				properties_<%=jobStructureCatcher.getUniqueName()%>.setProperty("log.appender", "file");
-				properties_<%=jobStructureCatcher.getUniqueName()%>.setProperty("appender.file.path", <%=location%>);
-				properties_<%=jobStructureCatcher.getUniqueName()%>.setProperty("appender.file.maxsize", "52428800");
-				properties_<%=jobStructureCatcher.getUniqueName()%>.setProperty("appender.file.maxbackup", "20");
-				properties_<%=jobStructureCatcher.getUniqueName()%>.setProperty("host", "false");
+				java.util.Properties properties_<%=jobCatcherNode.getUniqueName()%> = new java.util.Properties();
+				properties_<%=jobCatcherNode.getUniqueName()%>.setProperty("root.logger", "audit");
+				properties_<%=jobCatcherNode.getUniqueName()%>.setProperty("encoding", "UTF-8");
+				properties_<%=jobCatcherNode.getUniqueName()%>.setProperty("application.name", "Talend Studio");
+				properties_<%=jobCatcherNode.getUniqueName()%>.setProperty("service.name", "Talend Studio Job");
+				properties_<%=jobCatcherNode.getUniqueName()%>.setProperty("instance.name", "Talend Studio Job Instance");
+				properties_<%=jobCatcherNode.getUniqueName()%>.setProperty("propagate.appender.exceptions", "none");
+				properties_<%=jobCatcherNode.getUniqueName()%>.setProperty("log.appender", "file");
+				properties_<%=jobCatcherNode.getUniqueName()%>.setProperty("appender.file.path", <%=location%>);
+				properties_<%=jobCatcherNode.getUniqueName()%>.setProperty("appender.file.maxsize", "52428800");
+				properties_<%=jobCatcherNode.getUniqueName()%>.setProperty("appender.file.maxbackup", "20");
+				properties_<%=jobCatcherNode.getUniqueName()%>.setProperty("host", "false");
 				
-				auditLogger_<%=jobStructureCatcher.getUniqueName()%> = org.talend.job.audit.JobEventAuditLoggerFactory.createJobAuditLogger(properties_<%=jobStructureCatcher.getUniqueName()%>);
+				auditLogger_<%=jobCatcherNode.getUniqueName()%> = org.talend.job.audit.JobEventAuditLoggerFactory.createJobAuditLogger(properties_<%=jobCatcherNode.getUniqueName()%>);
 			}
 		<%
-			break;
 		}
     	%>
 
@@ -861,7 +867,7 @@ this.globalResumeTicket = true;//to run tPreJob
 <%
         }
         
-        for (INode jobCatcherNode : jobCatcherNodes) {
+        if(jobCatcherNode!=null) {
 %>
 		if(enableLogStash) {
 	        <%=jobCatcherNode.getUniqueName() %>.addJobStartMessage();
@@ -872,7 +878,6 @@ this.globalResumeTicket = true;//to run tPreJob
 	        }
         }
 <%
-			break;
         }
 %>
 
@@ -1008,7 +1013,7 @@ this.globalResumeTicket = true;//to run tPostJob
 <%
     }
     
-    for (INode jobCatcherNode : jobCatcherNodes) {
+    if(jobCatcherNode!=null) {
 %>
 		if(enableLogStash) {
 	        <%=jobCatcherNode.getUniqueName() %>.addJobEndMessage(startTime, end, status);
@@ -1019,8 +1024,7 @@ this.globalResumeTicket = true;//to run tPostJob
 	        }
         }
 <%
-			break;
-        }
+    }
 %>
 
 <% if (exist_tMOM) { %>
