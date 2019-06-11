@@ -3184,7 +3184,7 @@ public class EmfComponent extends AbstractBasicComponent {
                                     if (msg.startsWith(Messages.KEY_NOT_FOUND_PREFIX)) {
                                         msg = Messages.getString("modules.required"); //$NON-NLS-1$
                                     }
-                                    ModuleNeeded componentImportNeeds = new ModuleNeeded(this.getName(), valueIndex, msg, true,
+                                    ModuleNeeded componentImportNeeds = new ModuleNeeded(this.getName(), valueIndex, msg, false,
                                             new ArrayList(), null, null);
                                     componentImportNeeds.setShow(false);
                                     componentImportNeedsList.add(componentImportNeeds);
