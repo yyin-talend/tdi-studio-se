@@ -27422,7 +27422,7 @@
     </TABLE>
 <!-- End V9.1 -->
 
-    <TABLE IF="((isShow[ENTITYNAME]) AND (ENTITYNAME=='CustomEntity')) OR ((isShow[ENTITYSET]) AND (ENTITYSET=='CustomEntitySet'))">
+    <TABLE IF="((isShow[ENTITYNAME]) AND (ENTITYNAME=='CustomEntity')) OR ((isShow[ENTITYSET]) AND (ENTITYSET=='CustomEntitySet')) OR ((isShow[ENTITYSETV2018]) AND (ENTITYSETV2018=='CustomEntitySet'))">
     </TABLE>
 </PARAMETER>
 

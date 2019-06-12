@@ -38203,7 +38203,7 @@
         <COLUMN KEY="false" LENGTH="0" NAME="_ownerid_value" TYPE="id_String" DBTYPE="Guid"/>
     </TABLE>
 <!-- 2018 v9.1 end update -->
-        <TABLE IF="((isShow[ENTITYNAME]) AND (ENTITYNAME=='CustomEntity')) OR ((isShow[ENTITYSET]) AND (ENTITYSET=='CustomEntitySet'))"/>
+        <TABLE IF="((isShow[ENTITYNAME]) AND (ENTITYNAME=='CustomEntity')) OR ((isShow[ENTITYSET]) AND (ENTITYSET=='CustomEntitySet')) OR ((isShow[ENTITYSETV2018]) AND (ENTITYSETV2018=='CustomEntitySet'))"/>
 
         </PARAMETER>
 
