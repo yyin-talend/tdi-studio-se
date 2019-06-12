@@ -454,9 +454,13 @@
 				throw new RuntimeException("Unable to delete table " + tableId_<%=cid%>);
 			}
 		}
+<<<<<<< HEAD
 		boolean tableNotExist = table_<%=cid%> == null;
 		if (<%=ElementParameterParser.getBooleanValue(node, "__DROP__")%> || tableNotExist) {
 			boolean typeSupported = true;
+=======
+		if (<%=ElementParameterParser.getBooleanValue(node, "__DROP__")%> || <%=ElementParameterParser.getBooleanValue(node, "__CREATE_TABLE_IF_NOT_EXIST__")%>) {
+>>>>>>> 749dbb0056... fix(TBD-8708): code enhancement (#3599)
 			java.util.List<com.google.cloud.bigquery.Field> fields_<%=cid%> = new java.util.ArrayList<>();
 			<%
 			List<IMetadataTable> metadatas = node.getMetadataList();
@@ -503,8 +507,57 @@
 			com.google.cloud.bigquery.Schema schema_<%=cid%> = com.google.cloud.bigquery.Schema.of(fields_<%=cid%>);
 			com.google.cloud.bigquery.TableInfo tableInfo_<%=cid%> = com.google.cloud.bigquery.TableInfo.newBuilder(tableId_<%=cid%>, com.google.cloud.bigquery.StandardTableDefinition.of(schema_<%=cid%>)).build();
 			table_<%=cid%> = bigquery_<%=cid%>.create(tableInfo_<%=cid%>);
+<<<<<<< HEAD
 		}
 		com.google.cloud.bigquery.Job job_<%=cid%> = table_<%=cid%>.load(com.google.cloud.bigquery.FormatOptions.csv(), <%=gsFile%>);
+=======
+			loadJobBuilder_<%=cid%>.setSchema(schema_<%=cid%>);
+		}
+		
+			<%
+				if("true".equals(ElementParameterParser.getValue(node, "__CREATE_TABLE_IF_NOT_EXIST__"))) {
+			%>
+				loadJobBuilder_<%=cid%>.setCreateDisposition(com.google.cloud.bigquery.JobInfo.CreateDisposition.CREATE_IF_NEEDED);
+			<%
+			} else {
+			%>
+				loadJobBuilder_<%=cid%>.setCreateDisposition(com.google.cloud.bigquery.JobInfo.CreateDisposition.CREATE_NEVER);
+			<%
+			}
+			%>
+			
+			<%
+			if("APPEND".equals(actionOnData)) {
+			%>
+				loadJobBuilder_<%=cid%>.setWriteDisposition(com.google.cloud.bigquery.JobInfo.WriteDisposition.WRITE_APPEND);
+			<%
+			} else if("TRUNCATE".equals(actionOnData)) {
+			%>
+				loadJobBuilder_<%=cid%>.setWriteDisposition(com.google.cloud.bigquery.JobInfo.WriteDisposition.WRITE_TRUNCATE);
+				
+			<%
+			}
+		 	else {
+			%>
+				loadJobBuilder_<%=cid%>.setWriteDisposition(com.google.cloud.bigquery.JobInfo.WriteDisposition.WRITE_EMPTY);				
+			<%
+			}
+			%>
+		
+		loadJobBuilder_<%=cid%>.setDestinationTable(tableId_<%=cid%>);
+                com.google.cloud.bigquery.CsvOptions.Builder csvOptions_<%=cid%> = com.google.cloud.bigquery.CsvOptions.newBuilder();
+		csvOptions_<%=cid%>.setAllowQuotedNewLines(true);
+																				
+		<%if("true".equals(ElementParameterParser.getValue(node, "__SET_FIELD_DELIMITER__"))) {
+        %>
+         	loadJobBuilder_<%=cid%>.setFormatOptions(csvOptions_<%=cid%>.setFieldDelimiter(<%=fieldDelimiter%>).build());
+        <%
+        }
+        %>		
+		
+		loadJobBuilder_<%=cid%>.setNullMarker("\\N");																
+		com.google.cloud.bigquery.Job job_<%=cid%> = bigquery_<%=cid%>.create(com.google.cloud.bigquery.JobInfo.of(loadJobBuilder_<%=cid%>.build()));
+>>>>>>> 749dbb0056... fix(TBD-8708): code enhancement (#3599)
 		job_<%=cid%> = job_<%=cid%>.waitFor(com.google.cloud.RetryOption.initialRetryDelay(org.threeten.bp.Duration.ofSeconds(1)), com.google.cloud.RetryOption.totalTimeout(org.threeten.bp.Duration.ofSeconds(30)));
 		if (job_<%=cid%> != null && job_<%=cid%>.getStatus().getError() == null) {
 			<%
