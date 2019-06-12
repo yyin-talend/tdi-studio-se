@@ -178,8 +178,10 @@ public class FileCopy {
                 try {
                     Method getCleanerMethod = buffer.getClass().getMethod("cleaner", new Class[0]);
                     getCleanerMethod.setAccessible(true);
-                    sun.misc.Cleaner cleaner = (sun.misc.Cleaner) getCleanerMethod.invoke(buffer, new Object[0]);
-                    cleaner.clean();
+                    Object cleaner = getCleanerMethod.invoke(buffer, new Object[0]);
+                    Method cleanMethod = cleaner.getClass().getMethod("clean", new Class[0]);
+                    getCleanerMethod.setAccessible(true);
+                    cleanMethod.invoke(cleaner, new Object[0]);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
