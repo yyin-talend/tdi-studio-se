@@ -24,8 +24,8 @@
 		<talendMQConnectionUtil.dir>${project.basedir}/components/tMomConnection</talendMQConnectionUtil.dir>
 		<talendMQConnectionUtil.version>1.0.1-20190215</talendMQConnectionUtil.version>
 		<tldapinput.dir>${project.basedir}/components/tLDAPInput</tldapinput.dir>
-		<filecopy.dir>${project.basedir}/components/tFileCopy</filecopy.dir>
-		<filecopy.version>1.0.1-201906121650</filecopy.version>
+		<tfilecopy.dir>${project.basedir}/components/tFileCopy</tfilecopy.dir>
+		<tfilecopy.version>1.0.1-201906121650</tfilecopy.version>
 	</properties>
 
 	<build>
@@ -79,7 +79,7 @@
 							</includes>
 						</fileset>
 						<fileset>
-							<directory>${filecopy.dir}</directory>
+							<directory>${tfilecopy.dir}</directory>
 							<includes>
 								<include>filecopy*.jar</include>
 							</includes>
@@ -167,10 +167,10 @@
 								<artifactItem>
 									<groupId>org.talend.filecopy</groupId>
 									<artifactId>filecopy</artifactId>
-									<version>${filecopy.version}</version>
+									<version>${tfilecopy.version}</version>
 									<type>jar</type>
 									<overWrite>true</overWrite>
-									<outputDirectory>${tldapinput.dir}</outputDirectory>
+									<outputDirectory>${tfilecopy.dir}</outputDirectory>
 								</artifactItem>
 							</artifactItems>
 						</configuration>
@@ -179,4 +179,12 @@
 			</plugin>
 		</plugins>
 	</build>
+
+	<repositories>
+		<repository>
+			<id>tos-p2-repo</id>
+			<url>${tos-p2-repo.url}</url>
+			<layout>p2</layout>
+		</repository>
+	</repositories>
 </project>
