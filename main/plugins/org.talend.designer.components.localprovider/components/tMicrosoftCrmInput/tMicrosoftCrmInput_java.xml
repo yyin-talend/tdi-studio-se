@@ -51,7 +51,7 @@
                 <ITEM NAME="CRM_2011" VALUE="CRM_2011" />
                 <ITEM NAME="CRM_2015" VALUE="CRM_2015" />
                 <ITEM NAME="CRM_2016_ODATA" VALUE="CRM_2016" />
-                <ITEM NAME="CRM_2018_ODATA" VALUE="CRM_2018" />
+                <!-- ITEM NAME="CRM_2018_ODATA" VALUE="CRM_2018" / -->
             </ITEMS>
         </PARAMETER>
 
