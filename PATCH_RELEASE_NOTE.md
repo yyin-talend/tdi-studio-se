@@ -9,14 +9,16 @@ product:
 
 | Info             | Value |
 | ---------------- | ---------------- |
-| Patch Name       | Patch\_20190610\_TPS-2855\_v1-7.0.1 |
-| Release Date     | 2019-06-10 |
+| Patch Name       | Patch\_20190612\_TPS-2855\_v1-7.0.1 |
+| Release Date     | 2019-06-12 |
 | Target Version   | 20180411_1414-V7.0.1 |
 | Product affected | Talend Studio |
 
 ## Introduction
 
 This is a self-contained patch.
+
+- When work with ESB container, need to make sure that "jtds-1.3.1-patch.jar" or other version JTDS driver have been replaced with "jtds-1.3.1-patch-20190523.jar" in ESB container
 
 **NOTE**: For information on how to obtain this patch, reach out to your Support contact at Talend.
 
