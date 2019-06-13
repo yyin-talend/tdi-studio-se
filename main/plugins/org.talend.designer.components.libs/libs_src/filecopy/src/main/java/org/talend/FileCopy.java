@@ -1,6 +1,6 @@
 // ============================================================================
 //
-// Copyright (C) 2006-2018 Talend Inc. - www.talend.com
+// Copyright (C) 2006-2019 Talend Inc. - www.talend.com
 //
 // This source code is available under agreement available at
 // %InstallDIR%\features\org.talend.rcp.branding.%PRODUCTNAME%\%PRODUCTNAME%license.txt
@@ -16,11 +16,9 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.lang.reflect.Method;
+import java.nio.ByteBuffer;
 import java.nio.MappedByteBuffer;
 import java.nio.channels.FileChannel;
-import java.security.AccessController;
-import java.security.PrivilegedAction;
 
 /**
  * DOC Administrator class global comment. Detailled comment
@@ -100,7 +98,7 @@ public class FileCopy {
         try {
             in = srcInputStream.getChannel();
             out = new FileOutputStream(dest).getChannel();
-            
+
             int maxCount = (32 * 1024 * 1024) - (28 * 1024);
             long size = in.size();
             long position = 0;
@@ -171,22 +169,16 @@ public class FileCopy {
     }
 
     @SuppressWarnings("unchecked")
-    private static void clean(final Object buffer) throws Exception {
-        AccessController.doPrivileged(new PrivilegedAction() {
-
-            public Object run() {
-                try {
-                    Method getCleanerMethod = buffer.getClass().getMethod("cleaner", new Class[0]);
-                    getCleanerMethod.setAccessible(true);
-                    Object cleaner = getCleanerMethod.invoke(buffer, new Object[0]);
-                    Method cleanMethod = cleaner.getClass().getMethod("clean", new Class[0]);
-                    getCleanerMethod.setAccessible(true);
-                    cleanMethod.invoke(cleaner, new Object[0]);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-                return null;
-            }
-        });
+    private static void clean(final ByteBuffer buffer) throws Exception {
+    	if(CleanerUtil.getCleaner() == null) {
+    		//this should never happen, so out like this only
+    		System.out.println("failed to get the cleaner");
+    		return;
+    	}
+    	CleanerUtil.getCleaner().freeBuffer(buffer);
+    }
+    
+    public static void main(String[] args) throws Exception {
+    	FileCopy.copyFile("/Users/wangwei/Documents/log.csv", "/Users/wangwei/Documents/log123.csv", false);
     }
 }
