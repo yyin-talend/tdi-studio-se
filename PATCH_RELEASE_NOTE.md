@@ -9,8 +9,8 @@ product:
 
 | Info             | Value |
 | ---------------- | ---------------- |
-| Patch Name       | Patch\_20190612\_TPS-2855\_v1-7.0.1 |
-| Release Date     | 2019-06-12 |
+| Patch Name       | Patch\_20190613\_TPS-2855\_v1-7.0.1 |
+| Release Date     | 2019-06-13 |
 | Target Version   | 20180411_1414-V7.0.1 |
 | Product affected | Talend Studio |
 
