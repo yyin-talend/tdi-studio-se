@@ -242,7 +242,7 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
 
                         boolean exist = false;
                         for(String name: unselectList) {
-                            if (name.equals(new File(url.toURI()).getName())) {
+                            if (name.equals(new File(new File(url.getFile()).toURI()).getName())) {
                                exist = true;
                             }
                         }
