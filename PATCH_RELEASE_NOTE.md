@@ -55,19 +55,3 @@ Execute the following commands:
 1. Talend-Studio-win-x86_64.exe -nosplash -application org.talend.commandline.CommandLine -consoleLog -data commandline-workspace startServer -p 8002 --talendDebug
 2. initRemote {tac_url} -ul {TAC login username} -up {TAC login password}
 3. checkAndUpdate -tu {TAC login username} -tup {TAC login password}
-
-## Uninstallation <!-- if applicable -->
-
-<!--
-Detailed instructions to uninstall the patch
-
-In case this patch cannot be uninstalled, it is your responsability to define the backup procedures for your organization before installing.
-
--->
-Backup the Affected files list below. Uninstall the patch by restore the backup files.
-
-## Affected files for this patch <!-- if applicable -->
-
-The following files are installed by this patch:
-
-- {Talend/_Studio/_path}/plugins/org.talend.designer.components.localprovider/_6.3.1.20161216/_1026/components/tFileInputExcel/tFileInputExcel/_begin.javajet
