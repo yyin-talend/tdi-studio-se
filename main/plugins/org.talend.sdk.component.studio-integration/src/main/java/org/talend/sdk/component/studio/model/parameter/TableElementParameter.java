@@ -30,6 +30,7 @@ import org.talend.core.model.process.IElement;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.designer.core.model.components.ElementParameter;
 import org.talend.sdk.component.studio.model.action.IActionParameter;
+import org.talend.sdk.component.studio.ui.composite.problemmanager.IProblemManager;
 
 /**
  * Represents Table parameter. Table parameter is ElementParameter, which EParameterFieldType is TABLE
@@ -49,8 +50,9 @@ public class TableElementParameter extends TaCoKitElementParameter {
      *                or Connection instance)
      * @param columns a list of parameters, which represents Table columns
      */
-    public TableElementParameter(final IElement element, final List<IElementParameter> columns) {
-        super(element);
+    public TableElementParameter(final IElement element, final List<IElementParameter> columns,
+            final IProblemManager problemManager) {
+        super(element, problemManager);
         final List<String> columnNames = new ArrayList<>(columns.size());
         final List<String> displayNames = new ArrayList<>(columns.size());
         for (final IElementParameter param : columns) {

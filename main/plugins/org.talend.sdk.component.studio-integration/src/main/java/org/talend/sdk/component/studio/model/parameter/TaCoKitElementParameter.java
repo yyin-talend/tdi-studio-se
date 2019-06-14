@@ -24,6 +24,7 @@ import org.talend.core.runtime.IAdditionalInfo;
 import org.talend.designer.core.model.components.ElementParameter;
 import org.talend.sdk.component.studio.model.action.IActionParameter;
 import org.talend.sdk.component.studio.model.action.SettingsActionParameter;
+import org.talend.sdk.component.studio.ui.composite.problemmanager.IProblemManager;
 
 /**
  * DOC cmeng class global comment. Detailled comment
@@ -43,8 +44,10 @@ public class TaCoKitElementParameter extends ElementParameter implements IAdditi
 
     private Map<String, Object> additionalInfoMap = new HashMap<>();
 
+    private IProblemManager problemManager;
+
     public TaCoKitElementParameter() {
-        this(null);
+        this(null, null);
     }
 
     /**
@@ -52,8 +55,9 @@ public class TaCoKitElementParameter extends ElementParameter implements IAdditi
      *
      * @param element {@link IElement} to which this parameter belongs to
      */
-    public TaCoKitElementParameter(final IElement element) {
+    public TaCoKitElementParameter(final IElement element, final IProblemManager problemManager) {
         super(element);
+        this.problemManager = problemManager;
         setTaggedValue("org.talend.sdk.component.source", "tacokit");
     }
 
@@ -67,6 +71,10 @@ public class TaCoKitElementParameter extends ElementParameter implements IAdditi
      */
     public String getStringValue() {
         return (String) getValue();
+    }
+
+    public IProblemManager getProblemManager() {
+        return this.getProblemManager();
     }
 
     public void registerListener(final String propertyName, final PropertyChangeListener listener) {

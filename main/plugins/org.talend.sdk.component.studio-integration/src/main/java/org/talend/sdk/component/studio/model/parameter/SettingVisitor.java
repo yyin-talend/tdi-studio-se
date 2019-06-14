@@ -15,6 +15,25 @@
  */
 package org.talend.sdk.component.studio.model.parameter;
 
+import static java.util.Collections.emptyMap;
+import static java.util.Collections.unmodifiableList;
+import static java.util.Optional.ofNullable;
+import static java.util.function.Function.identity;
+import static java.util.stream.Collectors.toList;
+import static java.util.stream.Collectors.toMap;
+
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.TreeMap;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.talend.core.model.process.EComponentCategory;
@@ -40,25 +59,7 @@ import org.talend.sdk.component.studio.model.parameter.resolver.HealthCheckResol
 import org.talend.sdk.component.studio.model.parameter.resolver.ParameterResolver;
 import org.talend.sdk.component.studio.model.parameter.resolver.SuggestionsResolver;
 import org.talend.sdk.component.studio.model.parameter.resolver.ValidationResolver;
-
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.TreeMap;
-
-import static java.util.Collections.emptyMap;
-import static java.util.Collections.unmodifiableList;
-import static java.util.Optional.ofNullable;
-import static java.util.function.Function.identity;
-import static java.util.stream.Collectors.toList;
-import static java.util.stream.Collectors.toMap;
+import org.talend.sdk.component.studio.ui.composite.problemmanager.IProblemManager;
 
 /**
  * Creates properties from leafs
@@ -115,19 +116,18 @@ public class SettingVisitor implements PropertyVisitor {
 
     private final List<ParameterResolver> parameterResolvers = new ArrayList<>();
 
-    public SettingVisitor(final IElement iNode,
-            final ElementParameter redrawParameter, final ConfigTypeNode config) {
+
+    public SettingVisitor(final IElement iNode, final ElementParameter redrawParameter, final ConfigTypeNode config) {
         this(iNode, redrawParameter, config.getActions());
         this.rootConfigNode = config;
     }
 
-    public SettingVisitor(final IElement iNode,
-            final ElementParameter redrawParameter, final ComponentDetail detail) {
+    public SettingVisitor(final IElement iNode, final ElementParameter redrawParameter, final ComponentDetail detail) {
         this(iNode, redrawParameter, detail.getActions());
     }
 
-    public SettingVisitor(final IElement iNode,
-            final ElementParameter redrawParameter, final Collection<ActionReference> actions) {
+    public SettingVisitor(final IElement iNode, final ElementParameter redrawParameter,
+            final Collection<ActionReference> actions) {
         this.element = iNode;
         this.redrawParameter = redrawParameter;
         this.actions = ofNullable(actions).orElseGet(Collections::emptyList);
@@ -240,9 +240,9 @@ public class SettingVisitor implements PropertyVisitor {
             default:
                 final IElementParameter text;
                 if (node.getProperty().getPlaceholder() == null) {
-                    text = new TaCoKitElementParameter(element);
+                    text = new TaCoKitElementParameter(element, node.getProblemManager());
                 } else {
-                    final TextElementParameter advancedText = new TextElementParameter(element);
+                    final TextElementParameter advancedText = new TextElementParameter(element, node.getProblemManager());
                     advancedText.setMessage(node.getProperty().getPlaceholder());
                     text = advancedText;
                 }
@@ -342,7 +342,7 @@ public class SettingVisitor implements PropertyVisitor {
      * Converts default value from String to Boolean and sets it
      */
     private CheckElementParameter visitCheck(final PropertyNode node) {
-        final CheckElementParameter parameter = new CheckElementParameter(element);
+        final CheckElementParameter parameter = new CheckElementParameter(element, node.getProblemManager());
         commonSetup(parameter, node);
         return parameter;
     }
@@ -352,7 +352,7 @@ public class SettingVisitor implements PropertyVisitor {
      * Sets Closed List possible values and sets 1st element as default
      */
     private TaCoKitElementParameter visitClosedList(final PropertyNode node) {
-        final TaCoKitElementParameter parameter = new TaCoKitElementParameter(element);
+        final TaCoKitElementParameter parameter = new TaCoKitElementParameter(element, node.getProblemManager());
         commonSetup(parameter, node);
         final PropertyValidation validation = node.getProperty().getValidation();
 
@@ -412,7 +412,7 @@ public class SettingVisitor implements PropertyVisitor {
     }
 
     private TaCoKitElementParameter visitPrevColumnList(final PropertyNode node) {
-        final TaCoKitElementParameter parameter = new TaCoKitElementParameter(element);
+        final TaCoKitElementParameter parameter = new TaCoKitElementParameter(element, node.getProblemManager());
         commonSetup(parameter, node);
         return parameter;
     }
@@ -424,7 +424,8 @@ public class SettingVisitor implements PropertyVisitor {
      * If parameter is based on schema, then toolbox is not shown
      */
     private TaCoKitElementParameter visitTable(final ListPropertyNode tableNode) {
-        final TaCoKitElementParameter parameter = new TableElementParameter(element, createTableParameters(tableNode));
+        final TaCoKitElementParameter parameter = new TableElementParameter(element, createTableParameters(tableNode),
+                tableNode.getProblemManager());
         commonSetup(parameter, tableNode);
         return parameter;
     }
@@ -436,7 +437,8 @@ public class SettingVisitor implements PropertyVisitor {
      * If parameter is based on schema, then toolbox is not shown
      */
     private TaCoKitElementParameter visitSuggestableTable(final ListPropertyNode tableNode) {
-        final TaCoKitElementParameter parameter = new SuggestableTableParameter(element, createTableParameters(tableNode));
+        final TaCoKitElementParameter parameter = new SuggestableTableParameter(element, createTableParameters(tableNode),
+                tableNode.getProblemManager());
         commonSetup(parameter, tableNode);
         return parameter;
     }
@@ -445,11 +447,11 @@ public class SettingVisitor implements PropertyVisitor {
         final String connectionName = getConnectionName(node);
         final String discoverSchemaAction = node.getProperty().getConnection().getDiscoverSchema();
         return new OutputSchemaParameter(getNode(), node.getProperty().getPath(), connectionName, discoverSchemaAction,
-                true);
+                true, node.getProblemManager());
     }
 
     private TaCoKitElementParameter visitInSchema(final PropertyNode node) {
-        return new InputSchemaParameter(getNode(), node.getProperty().getPath(), getConnectionName(node));
+        return new InputSchemaParameter(getNode(), node.getProperty().getPath(), getConnectionName(node), node.getProblemManager());
     }
 
     /**
@@ -469,7 +471,7 @@ public class SettingVisitor implements PropertyVisitor {
 
     private ValueSelectionParameter visitValueSelection(final PropertyNode node) {
         final SuggestionsAction action = createSuggestionsAction(node);
-        final ValueSelectionParameter parameter = new ValueSelectionParameter(element, action);
+        final ValueSelectionParameter parameter = new ValueSelectionParameter(element, action, node.getProblemManager());
         commonSetup(parameter, node);
         return parameter;
     }
@@ -482,9 +484,8 @@ public class SettingVisitor implements PropertyVisitor {
     }
 
     protected TaCoKitElementParameter createSchemaParameter(final String connectionName, final String schemaName,
-            final String discoverSchemaAction,
-            final boolean show) {
-        return new OutputSchemaParameter(getNode(), schemaName, connectionName, discoverSchemaAction, show);
+            final String discoverSchemaAction, final boolean show, final IProblemManager problemManager) {
+        return new OutputSchemaParameter(getNode(), schemaName, connectionName, discoverSchemaAction, show, problemManager);
     }
 
     /**
@@ -536,8 +537,8 @@ public class SettingVisitor implements PropertyVisitor {
             layout.setPosition(tableNode.getLayout(form).getPosition());
             c.addLayout(form, layout);
         });
-        final SettingVisitor creator =
-                new SettingVisitor(new FakeElement("table"), redrawParameter, actions).withCategory(category);
+        final SettingVisitor creator = new SettingVisitor(new FakeElement("table"), redrawParameter, actions)
+                .withCategory(category);
         columns.forEach(creator::visit);
         return unmodifiableList(new ArrayList<>(creator.settings.values()));
     }
@@ -547,13 +548,7 @@ public class SettingVisitor implements PropertyVisitor {
      * It is shown on the next row, but may be shown in the next
      */
     private void createValidationLabel(final PropertyNode node, final TaCoKitElementParameter target) {
-        final ValidationLabel label = new ValidationLabel(element);
-        label.setCategory(category);
-        label.setName(node.getProperty().getPath() + PropertyNode.VALIDATION);
-        label.setRedrawParameter(redrawParameter);
-        // it is shown on the next row by default, but may be changed
-        label.setNumRow(node.getLayout(form).getPosition() + 1);
-        settings.put(label.getName(), label);
+        final ValidationLabel label = new ValidationLabel(target, node.getProblemManager());
 
         processConstraints(node, target, label);
         processValidations(node, target, label);

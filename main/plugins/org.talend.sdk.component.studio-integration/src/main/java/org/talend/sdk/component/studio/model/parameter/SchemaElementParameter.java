@@ -13,6 +13,7 @@ import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.metadata.MetadataColumn;
 import org.talend.core.model.process.IElement;
 import org.talend.sdk.component.studio.model.action.IActionParameter;
+import org.talend.sdk.component.studio.ui.composite.problemmanager.IProblemManager;
 
 /**
  * TacokitElementParameter, which provides a view for Component metadata (schema) if the form of {@code List<String>}
@@ -36,8 +37,8 @@ public abstract class SchemaElementParameter extends TaCoKitElementParameter {
      */
     private static final String STRING = "id_String";
 
-    public SchemaElementParameter(final IElement element) {
-        super(element);
+    public SchemaElementParameter(final IElement element, final IProblemManager problemManager) {
+        super(element, problemManager);
     }
 
     @Override

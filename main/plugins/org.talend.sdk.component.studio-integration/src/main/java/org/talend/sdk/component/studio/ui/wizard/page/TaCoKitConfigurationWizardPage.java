@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.eclipse.core.runtime.IStatus;
+import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.layout.FormData;
@@ -45,7 +46,10 @@ import org.talend.sdk.component.studio.model.parameter.PropertyNode;
 import org.talend.sdk.component.studio.model.parameter.PropertyTreeCreator;
 import org.talend.sdk.component.studio.model.parameter.SettingVisitor;
 import org.talend.sdk.component.studio.model.parameter.VersionParameter;
+import org.talend.sdk.component.studio.ui.composite.TaCoKitComposite;
 import org.talend.sdk.component.studio.ui.composite.TaCoKitWizardComposite;
+import org.talend.sdk.component.studio.ui.composite.problemmanager.WizardProblemManager;
+import org.talend.sdk.component.studio.ui.composite.problemmanager.WizardProblemManager.IWizardHandler;
 import org.talend.sdk.component.studio.ui.wizard.TaCoKitConfigurationRuntimeData;
 
 /**
@@ -57,7 +61,7 @@ public class TaCoKitConfigurationWizardPage extends AbsTaCoKitWizardPage {
 
     private Element element;
 
-    private TaCoKitWizardComposite tacokitComposite;
+    private TaCoKitComposite tacokitComposite;
 
     private TaCoKitConfigurationModel configurationModel;
 
@@ -102,8 +106,10 @@ public class TaCoKitConfigurationWizardPage extends AbsTaCoKitWizardPage {
             final ConfigTypeNode configTypeNode = runtimeData.getConfigTypeNode();
             final DummyComponent component = new DummyComponent(configTypeNode.getDisplayName());
             final DataNode node = new DataNode(component, component.getName());
+            final WizardProblemManager problemManager = runtimeData.getProblemManager();
             final PropertyNode root =
-                    new PropertyTreeCreator(new WizardTypeMapper()).createPropertyTree(configTypeNode);
+                    new PropertyTreeCreator(new WizardTypeMapper(), problemManager)
+                            .createPropertyTree(configTypeNode);
             element = new FakeElement(runtimeData.getTaCoKitRepositoryNode().getConfigTypeNode().getDisplayName());
             element.setReadOnly(runtimeData.isReadonly());
             final ElementParameter updateParameter = createUpdateComponentsParameter(element);
@@ -126,15 +132,33 @@ public class TaCoKitConfigurationWizardPage extends AbsTaCoKitWizardPage {
                                     .filter(n -> p.getMetadata().get("configurationtype::type").equals(n.getConfigurationType()))
                                     .filter(n -> n.getName().equals(p.getMetadata().get("configurationtype::name")))
                                     .findFirst()
-                                    .map(n -> String.valueOf(n.getVersion())).orElse("-1")))
+                                    .map(n -> String.valueOf(n.getVersion())).orElse("-1"),
+                            runtimeData.getProblemManager()))
                     .forEach(p -> configurationModel.setValue(p));
             element.setElementParameters(parameters);
             tacokitComposite = new TaCoKitWizardComposite(container, SWT.H_SCROLL | SWT.V_SCROLL | SWT.NO_FOCUS, category,
-                    element, configurationModel, true, container.getBackground(), isNew);
+                    element, configurationModel, true, container.getBackground(), isNew, null);
             tacokitComposite.setLayoutData(createMainFormData(runtimeData.isAddContextFields()));
-
         } catch (Exception e) {
             throw new IllegalStateException(e);
+        }
+    }
+
+    private void setWizardErrorMessage(String error) {
+        setMessage(error, WizardPage.ERROR);
+    }
+
+    @Override
+    public void setVisible(boolean visible) {
+        super.setVisible(visible);
+        if (visible) {
+            getTaCoKitConfigurationRuntimeData().getProblemManager().setWizardHandler(new IWizardHandler() {
+
+                @Override
+                public void showError(String error) {
+                    setWizardErrorMessage(error);
+                }
+            });
         }
     }
 

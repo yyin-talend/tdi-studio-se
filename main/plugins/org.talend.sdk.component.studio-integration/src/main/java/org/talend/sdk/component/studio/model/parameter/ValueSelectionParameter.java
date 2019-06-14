@@ -19,6 +19,7 @@ import java.util.Map;
 
 import org.talend.core.model.process.IElement;
 import org.talend.sdk.component.studio.model.action.SuggestionsAction;
+import org.talend.sdk.component.studio.ui.composite.problemmanager.IProblemManager;
 
 /**
  * TacokitElementParameter which provides possible values list
@@ -27,8 +28,8 @@ public class ValueSelectionParameter extends TaCoKitElementParameter {
 
     private final SuggestionsAction action;
 
-    public ValueSelectionParameter(IElement element, final SuggestionsAction action) {
-        super(element);
+    public ValueSelectionParameter(IElement element, final SuggestionsAction action, final IProblemManager problemManager) {
+        super(element, problemManager);
         this.action = action;
     }
 

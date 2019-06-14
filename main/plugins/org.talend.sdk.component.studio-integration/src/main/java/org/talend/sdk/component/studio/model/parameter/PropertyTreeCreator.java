@@ -28,6 +28,7 @@ import java.util.stream.Collectors;
 import org.talend.core.model.process.EParameterFieldType;
 import org.talend.sdk.component.server.front.model.ConfigTypeNode;
 import org.talend.sdk.component.server.front.model.SimplePropertyDefinition;
+import org.talend.sdk.component.studio.ui.composite.problemmanager.IProblemManager;
 
 /**
  * Provides methods for handling {@link PropertyNode} tree
@@ -39,8 +40,11 @@ public class PropertyTreeCreator {
      */
     private final WidgetTypeMapper typeMapper;
 
-    public PropertyTreeCreator(final WidgetTypeMapper typeMapper) {
+    private final IProblemManager problemManager;
+
+    public PropertyTreeCreator(final WidgetTypeMapper typeMapper, final IProblemManager problemManager) {
         this.typeMapper = typeMapper;
+        this.problemManager = problemManager;
     }
 
     /**
@@ -138,11 +142,11 @@ public class PropertyTreeCreator {
         case TACOKIT_SUGGESTABLE_TABLE:
         case TACOKIT_INPUT_SCHEMA:
         case SCHEMA_TYPE:
-            node = new ListPropertyNode(property, fieldType, isRoot);
+            node = new ListPropertyNode(property, fieldType, isRoot, problemManager);
             break;
 
         default:
-            node = new PropertyNode(property, fieldType, isRoot);
+            node = new PropertyNode(property, fieldType, isRoot, problemManager);
         }
         return node;
     }

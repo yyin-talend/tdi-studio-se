@@ -26,8 +26,7 @@ import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.model.components.ElementParameter;
 import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.sdk.component.studio.i18n.Messages;
-import org.talend.sdk.component.studio.util.TaCoKitConst;
-import org.talend.sdk.component.studio.util.TaCoKitUtil;
+import org.talend.sdk.component.studio.ui.composite.problemmanager.IProblemManager;
 
 /**
  * SchemaElementParameter for Component output schema.
@@ -38,8 +37,8 @@ public class OutputSchemaParameter extends SchemaElementParameter {
     public static final String ADDITIONAL_PARAM_METADATA_ELEMENT = "TACOKIT_ADDITIONAL_PARAM_METADATA_ELEMENT";
 
     public OutputSchemaParameter(final IElement element, final String name, final String connectionName,
-                                 final String discoverSchema, final boolean show) {
-        super(element);
+            final String discoverSchema, final boolean show, final IProblemManager problemManager) {
+        super(element, problemManager);
 
         setName(name);
         setDisplayName(DISPLAY_NAME);
@@ -95,7 +94,7 @@ public class OutputSchemaParameter extends SchemaElementParameter {
     private void createGuessSchema(final String name, final String connectionName, final String discoverSchemaAction,
                                    final boolean show) {
         if (canAddGuessSchema(connectionName)) {
-            final TaCoKitElementParameter guessSchemaParameter = new TaCoKitElementParameter(getElement());
+            final TaCoKitElementParameter guessSchemaParameter = new TaCoKitElementParameter(getElement(), getProblemManager());
             guessSchemaParameter.setCategory(EComponentCategory.BASIC);
             guessSchemaParameter.setContext(connectionName);
             guessSchemaParameter.updateValueOnly(discoverSchemaAction);
@@ -153,6 +152,7 @@ public class OutputSchemaParameter extends SchemaElementParameter {
      *
      * @return metedata
      */
+    @Override
     protected Optional<IMetadataTable> getMetadata() {
         IElement elem = getElement();
         if (elem == null || !(elem instanceof Node)) {

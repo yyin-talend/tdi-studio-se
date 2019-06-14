@@ -40,6 +40,7 @@ import org.talend.sdk.component.studio.metadata.migration.TaCoKitMigrationManage
 import org.talend.sdk.component.studio.metadata.model.TaCoKitConfigurationItemModel;
 import org.talend.sdk.component.studio.metadata.model.TaCoKitConfigurationModel;
 import org.talend.sdk.component.studio.metadata.node.ITaCoKitRepositoryNode;
+import org.talend.sdk.component.studio.ui.composite.problemmanager.WizardProblemManager;
 import org.talend.sdk.component.studio.ui.wizard.TaCoKitConfigurationRuntimeData;
 import org.talend.sdk.component.studio.ui.wizard.TaCoKitEditWizard;
 
@@ -162,6 +163,7 @@ public class EditTaCoKitConfigurationAction extends TaCoKitMetadataContextualAct
         runtimeData.setConnectionItem((ConnectionItem) repositoryNode.getObject().getProperty().getItem());
         runtimeData.setCreation(false);
         runtimeData.setReadonly(isReadonly());
+        runtimeData.setProblemManager(new WizardProblemManager());
         return runtimeData;
     }
 

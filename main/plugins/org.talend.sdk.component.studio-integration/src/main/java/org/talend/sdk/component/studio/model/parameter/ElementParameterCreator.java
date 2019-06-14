@@ -44,6 +44,7 @@ import org.talend.sdk.component.server.front.model.ConfigTypeNodes;
 import org.talend.sdk.component.studio.ComponentModel;
 import org.talend.sdk.component.studio.Lookups;
 import org.talend.sdk.component.studio.model.connector.ConnectorCreatorFactory;
+import org.talend.sdk.component.studio.ui.composite.problemmanager.IProblemManager;
 import org.talend.sdk.component.studio.util.TaCoKitUtil;
 import org.talend.sdk.studio.process.TaCoKitNode;
 
@@ -76,8 +77,10 @@ public class ElementParameterCreator {
      */
     private ElementParameter updateComponentsParameter;
 
+    private IProblemManager problemManager;
+
     public ElementParameterCreator(final ComponentModel component, final ComponentDetail detail, final INode node,
-            final String reportPath, final boolean isCatcherAvailable) {
+            final String reportPath, final boolean isCatcherAvailable, final IProblemManager problemManager) {
         this.component = component;
         this.detail = detail;
         this.node = node;
@@ -88,6 +91,7 @@ public class ElementParameterCreator {
         } else {
             this.properties = emptyList();
         }
+        this.problemManager = problemManager;
     }
 
     public List<? extends IElementParameter> createParameters() {
@@ -101,7 +105,8 @@ public class ElementParameterCreator {
      */
     private void addSettings() {
         if (!properties.isEmpty()) {
-            final PropertyNode root = new PropertyTreeCreator(new WidgetTypeMapper()).createPropertyTree(properties);
+            final PropertyNode root = new PropertyTreeCreator(new WidgetTypeMapper(), problemManager)
+                    .createPropertyTree(properties);
             final SettingVisitor settingVisitor = new SettingVisitor(node, updateComponentsParameter, detail);
             root.accept(settingVisitor.withCategory(BASIC), Metadatas.MAIN_FORM);
             root.accept(settingVisitor.withCategory(ADVANCED), Metadatas.ADVANCED_FORM);
@@ -111,7 +116,9 @@ public class ElementParameterCreator {
             // create config type version param
             properties.stream().filter(p -> p.getConfigurationType() != null && p.getConfigurationTypeName() != null)
                     .forEach(p -> parameters.add(new VersionParameter(node, p.getPath(),
-                            String.valueOf(getConfigTypeVersion(p, component.getConfigTypeNodes(), component.getId().getFamilyId())))));
+                            String.valueOf(
+                                    getConfigTypeVersion(p, component.getConfigTypeNodes(), component.getId().getFamilyId())),
+                            problemManager)));
         }
 
         checkSchemaProperties(new SettingVisitor(node, updateComponentsParameter, detail).withCategory(BASIC));
@@ -198,7 +205,7 @@ public class ElementParameterCreator {
             parameters.add(mainSettingsCreator.createSchemaParameter(connectorWithoutSchema.getName(),
                     "SCHEMA_" + connectorWithoutSchema.getName(),
                     "default",
-                    showSchema(connectorWithoutSchema)));
+                    showSchema(connectorWithoutSchema), problemManager));
         }
     }
 

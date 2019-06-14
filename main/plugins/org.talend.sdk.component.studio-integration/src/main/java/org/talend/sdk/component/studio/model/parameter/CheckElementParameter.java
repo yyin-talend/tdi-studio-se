@@ -16,6 +16,7 @@
 package org.talend.sdk.component.studio.model.parameter;
 
 import org.talend.core.model.process.IElement;
+import org.talend.sdk.component.studio.ui.composite.problemmanager.IProblemManager;
 
 /**
  * Represents Check parameter. Check parameter is ElementParameter, which EParameterFieldType is CHECK.
@@ -24,8 +25,8 @@ import org.talend.core.model.process.IElement;
  */
 public class CheckElementParameter extends TaCoKitElementParameter {
 
-    public CheckElementParameter(final IElement element) {
-        super(element);
+    public CheckElementParameter(final IElement element, final IProblemManager problemManager) {
+        super(element, problemManager);
     }
 
     /**

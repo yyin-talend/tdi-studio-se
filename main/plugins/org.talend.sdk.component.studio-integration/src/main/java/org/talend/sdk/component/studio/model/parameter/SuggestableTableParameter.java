@@ -26,6 +26,7 @@ import org.talend.core.model.process.IConnection;
 import org.talend.core.model.process.IElement;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.designer.core.ui.editor.nodes.Node;
+import org.talend.sdk.component.studio.ui.composite.problemmanager.IProblemManager;
 
 /**
  * Table Element Parameter with single column, which rows can be chosen from multiple provided suggestions.
@@ -43,12 +44,14 @@ public class SuggestableTableParameter extends TableElementParameter {
     /**
      * Constructor setups Table columns and sets empty list as initial value
      *
-     * @param element represents persisted element, to which this parameter belongs (it can be component Node
-     *                or Connection instance)
+     * @param element represents persisted element, to which this parameter belongs (it can be component Node or
+     * Connection instance)
      * @param columns a list of parameters, which represents Table columns
+     * @param problemManager manage parameter problems
      */
-    public SuggestableTableParameter(final IElement element, final List<IElementParameter> columns) {
-        super(element, columns);
+    public SuggestableTableParameter(final IElement element, final List<IElementParameter> columns,
+            final IProblemManager problemManager) {
+        super(element, columns, problemManager);
         final String[] columnNames = getListItemsDisplayCodeName();
         if (columnNames.length != 1) {
             throw new IllegalArgumentException("SuggestableTableParameter can have only 1 column");

@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.talend.core.model.process.EParameterFieldType;
+import org.talend.sdk.component.studio.ui.composite.problemmanager.IProblemManager;
 
 /**
  * Property node, which contains nested properties. This node is used for Tables and Schema
@@ -37,8 +38,8 @@ public class ListPropertyNode extends PropertyNode {
      * @param root specifies whether this node is root node
      */
     public ListPropertyNode(final PropertyDefinitionDecorator property, final EParameterFieldType fieldType,
-            final boolean root) {
-        super(property, fieldType, root);
+            final boolean root, IProblemManager problemManager) {
+        super(property, fieldType, root, problemManager);
     }
 
     /**

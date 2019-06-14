@@ -32,6 +32,7 @@ import javax.json.bind.annotation.JsonbCreator;
 import javax.json.bind.annotation.JsonbProperty;
 
 import org.talend.core.model.process.EParameterFieldType;
+import org.talend.sdk.component.studio.ui.composite.problemmanager.IProblemManager;
 
 public class PropertyNode {
 
@@ -56,12 +57,14 @@ public class PropertyNode {
      */
     private final boolean root;
 
-    public PropertyNode(final PropertyDefinitionDecorator property,
-                        final EParameterFieldType fieldType,
-                        final boolean root) {
+    private IProblemManager problemManager;
+
+    public PropertyNode(final PropertyDefinitionDecorator property, final EParameterFieldType fieldType, final boolean root,
+            IProblemManager problemManager) {
         this.property = property;
         this.fieldType = fieldType;
         this.root = root;
+        this.problemManager = problemManager;
         this.children = new ArrayList<>();
     }
 
@@ -444,37 +447,54 @@ public class PropertyNode {
         return this.root;
     }
 
+    public IProblemManager getProblemManager() {
+        return problemManager;
+    }
+
+    public void setProblemManager(IProblemManager problemManager) {
+        this.problemManager = problemManager;
+    }
+
     @Override
     public boolean equals(final Object o) {
-        if (o == this)
+        if (o == this) {
             return true;
-        if (!(o instanceof PropertyNode))
+        }
+        if (!(o instanceof PropertyNode)) {
             return false;
+        }
         final PropertyNode other = (PropertyNode) o;
-        if (!other.canEqual(this))
+        if (!other.canEqual(this)) {
             return false;
+        }
         final Object this$parent = this.getParent();
         final Object other$parent = other.getParent();
-        if (this$parent == null ? other$parent != null : !this$parent.equals(other$parent))
+        if (this$parent == null ? other$parent != null : !this$parent.equals(other$parent)) {
             return false;
+        }
         final Object this$children = this.getChildren();
         final Object other$children = other.getChildren();
-        if (this$children == null ? other$children != null : !this$children.equals(other$children))
+        if (this$children == null ? other$children != null : !this$children.equals(other$children)) {
             return false;
+        }
         final Object this$layouts = this.getLayouts();
         final Object other$layouts = other.getLayouts();
-        if (this$layouts == null ? other$layouts != null : !this$layouts.equals(other$layouts))
+        if (this$layouts == null ? other$layouts != null : !this$layouts.equals(other$layouts)) {
             return false;
+        }
         final Object this$property = this.getProperty();
         final Object other$property = other.getProperty();
-        if (this$property == null ? other$property != null : !this$property.equals(other$property))
+        if (this$property == null ? other$property != null : !this$property.equals(other$property)) {
             return false;
+        }
         final Object this$fieldType = this.getFieldType();
         final Object other$fieldType = other.getFieldType();
-        if (this$fieldType == null ? other$fieldType != null : !this$fieldType.equals(other$fieldType))
+        if (this$fieldType == null ? other$fieldType != null : !this$fieldType.equals(other$fieldType)) {
             return false;
-        if (this.isRoot() != other.isRoot())
+        }
+        if (this.isRoot() != other.isRoot()) {
             return false;
+        }
         return true;
     }
 

@@ -21,6 +21,7 @@ import org.talend.core.model.process.IConnection;
 import org.talend.core.model.process.IElement;
 import org.talend.core.model.utils.NodeUtil;
 import org.talend.designer.core.ui.editor.nodes.Node;
+import org.talend.sdk.component.studio.ui.composite.problemmanager.IProblemManager;
 
 /**
  * SchemaElementParameter for Component input schema.
@@ -32,12 +33,14 @@ public class InputSchemaParameter extends SchemaElementParameter {
     /**
      * Constructor
      *
-     * @param element        IElement to which this parameter belongs
-     * @param name           parameter name - unique identifier
+     * @param element IElement to which this parameter belongs
+     * @param name parameter name - unique identifier
      * @param connectionName a name of connections with which this schema associated
+     * @param IProblemManager manage parameter problems
      */
-    public InputSchemaParameter(final IElement element, final String name, final String connectionName) {
-        super(element);
+    public InputSchemaParameter(final IElement element, final String name, final String connectionName,
+            final IProblemManager problemManager) {
+        super(element, problemManager);
         setName(name);
         setDisplayName(DISPLAY_NAME);
         setFieldType(EParameterFieldType.TACOKIT_INPUT_SCHEMA);

@@ -28,7 +28,6 @@ import org.talend.sdk.component.server.front.model.ActionReference;
 import org.talend.sdk.component.studio.i18n.Messages;
 import org.talend.sdk.component.studio.model.action.Action;
 import org.talend.sdk.component.studio.model.action.IActionParameter;
-import org.talend.sdk.component.studio.model.action.SettingsActionParameter;
 import org.talend.sdk.component.studio.model.parameter.ButtonParameter;
 import org.talend.sdk.component.studio.model.parameter.PathCollector;
 import org.talend.sdk.component.studio.model.parameter.PropertyDefinitionDecorator;
@@ -66,7 +65,7 @@ public class HealthCheckResolver {
     }
 
     public void resolveParameters(final Map<String, IElementParameter> settings) {
-        final ButtonParameter button = new ButtonParameter(element);
+        final ButtonParameter button = new ButtonParameter(element, node.getProblemManager());
         button.setCategory(category);
         button.setDisplayName(ofNullable(action.getDisplayName())
                 .filter(it -> !action.getName().equals(it))
@@ -100,7 +99,8 @@ public class HealthCheckResolver {
      */
     private String getParameterAlias() {
         final Collection<PropertyDefinitionDecorator> properties = PropertyDefinitionDecorator.wrap(action.getProperties());
-        final PropertyNode root = new PropertyTreeCreator(new WidgetTypeMapper()).createPropertyTree(properties);
+        final PropertyNode root = new PropertyTreeCreator(new WidgetTypeMapper(), node.getProblemManager())
+                .createPropertyTree(properties);
         return root.getProperty().getPath();
     }
 }

@@ -18,6 +18,7 @@ package org.talend.sdk.component.studio.model.parameter;
 import org.talend.core.model.process.EParameterFieldType;
 import org.talend.core.model.process.IElement;
 import org.talend.sdk.component.studio.model.parameter.command.TacokitCommand;
+import org.talend.sdk.component.studio.ui.composite.problemmanager.IProblemManager;
 
 /**
  * ElementParameter which represents button and stores button command, which is executed on button pushed
@@ -26,8 +27,8 @@ public class ButtonParameter extends TaCoKitElementParameter {
 
     private TacokitCommand command;
 
-    public ButtonParameter(final IElement element) {
-        super(element);
+    public ButtonParameter(final IElement element, final IProblemManager problemManager) {
+        super(element, problemManager);
         setFieldType(EParameterFieldType.TACOKIT_BUTTON);
     }
 
@@ -41,17 +42,21 @@ public class ButtonParameter extends TaCoKitElementParameter {
 
     @Override
     public boolean equals(final Object o) {
-        if (o == this)
+        if (o == this) {
             return true;
-        if (!(o instanceof ButtonParameter))
+        }
+        if (!(o instanceof ButtonParameter)) {
             return false;
+        }
         final ButtonParameter other = (ButtonParameter) o;
-        if (!other.canEqual(this))
+        if (!other.canEqual(this)) {
             return false;
+        }
         final Object this$command = this.getCommand();
         final Object other$command = other.getCommand();
-        if (this$command == null ? other$command != null : !this$command.equals(other$command))
+        if (this$command == null ? other$command != null : !this$command.equals(other$command)) {
             return false;
+        }
         return true;
     }
 

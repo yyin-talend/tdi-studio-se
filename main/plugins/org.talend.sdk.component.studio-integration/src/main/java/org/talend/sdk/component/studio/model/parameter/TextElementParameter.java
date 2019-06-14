@@ -14,8 +14,9 @@ package org.talend.sdk.component.studio.model.parameter;
 
 import org.talend.core.model.process.IAdvancedElementParameter;
 import org.talend.core.model.process.IElement;
+import org.talend.sdk.component.studio.ui.composite.problemmanager.IProblemManager;
 
-public class TextElementParameter extends DebouncedParameter implements IAdvancedElementParameter {
+public class TextElementParameter extends TaCoKitElementParameter implements IAdvancedElementParameter {
 
     private String placeholder;
 
@@ -24,8 +25,8 @@ public class TextElementParameter extends DebouncedParameter implements IAdvance
      *
      * @param element {@link IElement} to which this parameter belongs to
      */
-    public TextElementParameter(final IElement element) {
-        super(element);
+    public TextElementParameter(final IElement element, final IProblemManager problemManager) {
+        super(element, problemManager);
     }
 
     @Override

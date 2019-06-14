@@ -18,6 +18,7 @@ package org.talend.sdk.component.studio.model.parameter;
 import org.talend.core.model.process.IElement;
 import org.talend.sdk.component.studio.Lookups;
 import org.talend.sdk.component.studio.debounce.DebouncedAction;
+import org.talend.sdk.component.studio.ui.composite.problemmanager.IProblemManager;
 
 /**
  * Fires parameter change events only if {@code TIMEOUT} passed from last value changed event
@@ -28,8 +29,8 @@ public class DebouncedParameter extends TaCoKitElementParameter {
 
     private final DebouncedAction debounced = Lookups.debouncer().createAction();
 
-    public DebouncedParameter(final IElement element) {
-        super(element);
+    public DebouncedParameter(final IElement element, final IProblemManager problemManager) {
+        super(element, problemManager);
     }
 
     @Override

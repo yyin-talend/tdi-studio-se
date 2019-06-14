@@ -34,6 +34,7 @@ import org.talend.repository.model.RepositoryNode;
 import org.talend.sdk.component.server.front.model.ConfigTypeNode;
 import org.talend.sdk.component.studio.metadata.model.TaCoKitConfigurationModel;
 import org.talend.sdk.component.studio.metadata.node.ITaCoKitRepositoryNode;
+import org.talend.sdk.component.studio.ui.composite.problemmanager.WizardProblemManager;
 import org.talend.sdk.component.studio.ui.wizard.TaCoKitConfigurationRuntimeData;
 import org.talend.sdk.component.studio.ui.wizard.TaCoKitCreateWizard;
 
@@ -101,6 +102,7 @@ public class CreateTaCoKitConfigurationAction extends TaCoKitMetadataContextualA
         runtimeData.setCreation(true);
         runtimeData.setReadonly(false);
         runtimeData.setConnectionItem(createConnectionItem());
+        runtimeData.setProblemManager(new WizardProblemManager());
         return runtimeData;
     }
 

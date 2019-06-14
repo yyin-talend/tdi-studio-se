@@ -48,7 +48,7 @@ public class UpdateResolver extends AbstractParameterResolver {
                         actionOwner.getProperty().getUpdatable().orElseThrow(IllegalStateException::new).getActionName(),
                         Action.Type.UPDATE));
 
-        this.button = new ButtonParameter(element) {
+        this.button = new ButtonParameter(element, actionOwner.getProblemManager()) {
             @Override
             public boolean isShow(final List<? extends IElementParameter> listParam) {
                 return isShown.getAsBoolean();
