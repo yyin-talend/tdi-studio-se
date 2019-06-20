@@ -1,22 +1,21 @@
 ---
 version: 7.1.1
 module: https://talend.poolparty.biz/coretaxonomy/42
-product:
-- https://talend.poolparty.biz/coretaxonomy/22
+product: https://talend.poolparty.biz/coretaxonomy/22
 ---
 # TPS-3161
 | Info             | Value |
 | ---------------- | ---------------- |
-| Patch Name       | patch_20190620_TPS_v1|
+| Patch Name       | patch\_20190620\_TPS-3161\_v1|
 | Release Date     | 2019-06-20 |
-| Target Version   | 20181026_1147-V7.1.1 |
+| Target Version   | 20181026\_1147-V7.1.1 |
 | Product affected | Talend Studio |
 ## Introduction <!-- mandatory -->
 This is a self-contained patch.
 **NOTE**: For information on how to obtain this patch, reach out to your Support contact at Talend.
 ## Fixed issues <!-- mandatory -->
 This patch contains the following fixes:
-- <TPS-3161> resolves issue on tBigQueryOutput (TBD-8708)
+- TPS-3161 resolves issue on tBigQueryOutput (TBD-8708)
 ## Prerequisites <!-- mandatory -->
 Consider the following requirements for your system:
 - Talend Studio 7.1.1 must be installed.
