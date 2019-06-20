@@ -235,7 +235,7 @@ public class UnifiedComponentService implements IUnifiedComponentService {
                     || newParam.getFieldType() == EParameterFieldType.PROPERTY_TYPE) {
                 continue;
             }
-            if (mappingExelude.contains(newParam.getName()) || "type".equalsIgnoreCase(newParam.getName())) {
+            if (mappingExelude.contains(newParam.getName())) {
                 continue;
             }
 
