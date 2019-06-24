@@ -15,6 +15,7 @@ package org.talend.designer.runprocess;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -93,7 +94,6 @@ public class JobErrorsChecker {
                 }
                 jobIds.add(item.getProperty().getId());
 
-                // Property property = process.getProperty();
                 Problems.addJobRoutineFile(sourceFile, ProblemType.JOB, item, true);
             }
             if (!CommonsPlugin.isHeadless()) {
@@ -158,7 +158,7 @@ public class JobErrorsChecker {
                     CorePlugin.getDefault().getCodeGeneratorService().createRoutineSynchronizer();
             Set<String> jobIds = new HashSet<String>();
 
-            List<RepositoryNode> nodes = selection.toList();
+            List<RepositoryNode> nodes = extractNodes(selection);
             if (nodes.size() > 1) {
                 // in case it's a multiple export, only check the status of the latest job to export
                 for (RepositoryNode node : nodes) {
@@ -318,7 +318,7 @@ public class JobErrorsChecker {
                 // one job
                 final IResource[] members = file.getParent().members();
                 for (IResource member : members) {
-                    if (member instanceof IFile && "java".equals(member.getFileExtension())) {
+                    if (member instanceof IFile && "java".equals(member.getFileExtension())) { //$NON-NLS-1$
                         IMarker[] markers = ((IFile) member).findMarkers(IMarker.PROBLEM, true, IResource.DEPTH_ONE);
                         for (IMarker marker : markers) {
                             Integer lineNr = (Integer) marker.getAttribute(IMarker.LINE_NUMBER);
@@ -355,13 +355,13 @@ public class JobErrorsChecker {
         }
         if (hasError && item != null) {
             if (isJob) {
-                throw new ProcessorException(Messages.getString("JobErrorsChecker_compile_errors") + " " + '\n' + //$NON-NLS-1$
+                throw new ProcessorException(Messages.getString("JobErrorsChecker_compile_errors") + ' ' + '\n' + //$NON-NLS-1$
                         Messages.getString("JobErrorsChecker_compile_error_message", item.getProperty().getLabel()) //$NON-NLS-1$
                         + '\n' + Messages.getString("JobErrorsChecker_compile_error_line") + ':' + ' ' + line + '\n' //$NON-NLS-1$
                         + Messages.getString("JobErrorsChecker_compile_error_detailmessage") + ':' + ' ' + errorMessage //$NON-NLS-1$
                         + '\n' + Messages.getString("JobErrorsChecker_compile_error_jvmmessage")); //$NON-NLS-1$
             } else {
-                throw new ProcessorException(Messages.getString("CamelJobErrorsChecker_compile_errors") + " " + '\n' + //$NON-NLS-1$
+                throw new ProcessorException(Messages.getString("CamelJobErrorsChecker_compile_errors") + ' ' + '\n' + //$NON-NLS-1$
                         Messages.getString("JobErrorsChecker_compile_error_message", item.getProperty().getLabel()) //$NON-NLS-1$
                         + '\n' + Messages.getString("JobErrorsChecker_compile_error_line") + ':' + ' ' + line + '\n' //$NON-NLS-1$
                         + Messages.getString("JobErrorsChecker_compile_error_detailmessage") + ':' + ' ' + errorMessage //$NON-NLS-1$
@@ -467,7 +467,7 @@ public class JobErrorsChecker {
                     switch (severity) {
                     case IMarker.SEVERITY_ERROR:
                         throw new ProcessorException(
-                                Messages.getString("JobErrorsChecker_compile_error_errormessage") + ": " //$NON-NLS-1$
+                                Messages.getString("JobErrorsChecker_compile_error_errormessage") + ": " //$NON-NLS-1$ //$NON-NLS-2$
                                         + message);
                     default:
                         break;
@@ -509,6 +509,16 @@ public class JobErrorsChecker {
                 throw new ProcessorException(errorMsg);
             }
         }
+    }
+
+    private static List<RepositoryNode> extractNodes(IStructuredSelection selection) {
+        List<RepositoryNode> nodes = new ArrayList<>();
+        for (Iterator<?> iterator = selection.iterator(); iterator.hasNext();) {
+            Object o = iterator.next();
+            if (o instanceof RepositoryNode)
+                nodes.add((RepositoryNode) o);
+        }
+        return nodes;
     }
 
 }
