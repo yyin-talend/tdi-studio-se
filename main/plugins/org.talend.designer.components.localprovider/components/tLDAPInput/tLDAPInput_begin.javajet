@@ -58,12 +58,13 @@ if(("false").equals(useExistingConn)){
 	boolean alwaysTrust = ("true").equals(ElementParameterParser.getValue(node, "__ALWAYS_TRUST__"));
 	String referrals=ElementParameterParser.getValue(node, "__REFERRALS__");
 	String aliases=ElementParameterParser.getValue(node, "__ALIASES__");
-	boolean useAuth = "true".equals(ElementParameterParser.getValue(node, "__AUTHENTIFICATION__"));
+	String authen =ElementParameterParser.getValue(node, "__AUTHENTIFICATION__");
 	String user =ElementParameterParser.getValue(node, "__USER__");
 
 %>
 	java.util.Hashtable env_<%=cid%> = new java.util.Hashtable();
 	env_<%=cid%>.put(javax.naming.Context.INITIAL_CONTEXT_FACTORY, "com.sun.jndi.ldap.LdapCtxFactory");
+    env_<%=cid%>.put(javax.naming.Context.SECURITY_AUTHENTICATION, "simple");// "none","simple","strong"
 	env_<%=cid%>.put(javax.naming.Context.REFERRAL, "<%=referrals%>");
 	env_<%=cid%>.put("java.naming.ldap.derefAliases","<%=aliases%>");
 <%	
@@ -76,6 +77,19 @@ if(("false").equals(useExistingConn)){
 	env_<%=cid%>.put(javax.naming.Context.PROVIDER_URL, "ldap://"+<%=host%>+":"+<%=port%>);
 <%
 	}
+    if(("true").equals(authen)){
+%>
+    env_<%=cid%>.put(javax.naming.Context.SECURITY_PRINCIPAL, <%=user%>);
+    
+	<%
+    String passwordFieldName = "__PASS__";
+    %>
+        
+	<%@ include file="@{org.talend.designer.components.localprovider}/components/templates/password.javajet"%>
+    
+    env_<%=cid%>.put(javax.naming.Context.SECURITY_CREDENTIALS, decryptedPassword_<%=cid%>);
+<%
+    }
     if(("LDAPS").equals(protocol)){
 %>
 	env_<%=cid%>.put(javax.naming.Context.SECURITY_PROTOCOL, "ssl");
@@ -121,8 +135,21 @@ if(("false").equals(useExistingConn)){
    
    	javax.naming.ldap.InitialLdapContext ctx_<%=cid%> = null;
 	try{
-		<%@ include file="../tLDAPConnection/ldapconnect.javajet"%>
+	<%if(isLog4jEnabled){%>
+		log.info("<%=cid%> - Connection attempt to '"+ <%=host%> + "'.");
+	<%}%>
+	ctx_<%=cid%> = new javax.naming.ldap.InitialLdapContext(env_<%=cid%>, null);
 <%
+	if(("TLS").equals(protocol)){
+%>
+	javax.naming.ldap.StartTlsRequest tldsReq_<%=cid%> = new javax.naming.ldap.StartTlsRequest();
+    javax.naming.ldap.StartTlsResponse tls_<%=cid%> =(javax.naming.ldap.StartTlsResponse)ctx_<%=cid%>.extendedOperation(tldsReq_<%=cid%>);
+    javax.net.ssl.SSLSession session_<%=cid%> = tls_<%=cid%>.negotiate((javax.net.ssl.SSLSocketFactory)talend.ssl.AdvancedSocketFactory.getDefault());
+<%
+	}
+	if(isLog4jEnabled){%>
+		log.info("<%=cid%> - Connection to '"+<%=host%>+"' has succeeded.");
+	<%}
 }else{
 %>
 	try{
@@ -267,17 +294,6 @@ if(("false").equals(useExistingConn)){
 <%
 	}
 %>
-
-<%
-	if(hasBinaryColumn){
-%>
-		if(binaryColumns_<%=cid%>.length()>0){
-			ctx_<%=cid%>.addToEnvironment("java.naming.ldap.attributes.binary", binaryColumns_<%=cid%>);
-		}
-<%
-	}
-%>
-
 <%if(paging){%>
     // Set the page size and initialize the cookie that we pass back in subsequent pages
     int pageSize_<%=cid%> = <%=pageSize %>;
@@ -288,6 +304,17 @@ if(("false").equals(useExistingConn)){
     
 do {
 <%}%>
+<%
+	if(hasBinaryColumn){
+%>
+		if(binaryColumns_<%=cid%>.length()>0){
+			java.util.Hashtable orignal_env_<%=cid%>= ctx_<%=cid%>.getEnvironment();
+			orignal_env_<%=cid%>.put("java.naming.ldap.attributes.binary",binaryColumns_<%=cid%>);
+			ctx_<%=cid%> = new javax.naming.ldap.InitialLdapContext(orignal_env_<%=cid%>, null);
+		}
+<%
+	}
+%>
 
     javax.naming.NamingEnumeration answer_<%=cid%> = ctx_<%=cid%>.search(<%if(("false").equals(useExistingConn)){%>baseDN_<%=cid%><%}else{%>""<%}%>, <%=filter%>, searchCtls_<%=cid%>);
 	<%if(isLog4jEnabled){%>
