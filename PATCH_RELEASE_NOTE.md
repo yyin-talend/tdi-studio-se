@@ -9,9 +9,9 @@ product:
 
 | Info             | Value |
 | ---------------- | ---------------- |
-| Patch Name       | Patch_20190628_TPS-3162_v1-6.4.1 |
+| Patch Name       | Patch\_20190628_TPS-3162\_v1-6.4.1 |
 | Release Date     | 2019-06-28 |
-| Target Version   | Talend-Studio-20170623_1246-V6.4.1 |
+| Target Version   | Talend-Studio-20170623\_1246-V6.4.1 |
 | Product affected | Talend Studio |
 
 ## Introduction
@@ -64,4 +64,4 @@ Backup the Affected files list below. Uninstall the patch by restore the backup 
 
 The following files are installed by this patch:
 
-- {Talend_Studio_path}/plugins/org.talend.designer.components.localprovider_6.4.1.20170623_1246/components/tLDAPInput/tLDAPInput_begin.javajet
+- {Talend\_Studio\_path}/plugins/org.talend.designer.components.localprovider\_6.4.1.20170623\_1246/components/tLDAPInput/tLDAPInput\_begin.javajet
