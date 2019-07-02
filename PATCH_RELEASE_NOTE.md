@@ -9,7 +9,7 @@ product:
 
 | Info             | Value |
 | ---------------- | ---------------- |
-| Patch Name       | Patch\_20190701_TPS-3162\_v1-6.4.1 |
+| Patch Name       | Patch\_20190702_TPS-3162\_v1-6.4.1 |
 | Release Date     | 2019-06-28 |
 | Target Version   | Talend-Studio-20170623\_1246-V6.4.1 |
 | Product affected | Talend Studio |
