@@ -203,7 +203,7 @@ public class TaCoKitConfigurationModel {
         }
     }
 
-    private Map<String, PropertyDefinitionDecorator> buildPropertyTree() {
+    public Map<String, PropertyDefinitionDecorator> buildPropertyTree() {
         final Map<String, PropertyDefinitionDecorator> tree = new HashMap<>();
         final Collection<PropertyDefinitionDecorator> properties = PropertyDefinitionDecorator
                 .wrap(getConfigTypeNode().getProperties());
