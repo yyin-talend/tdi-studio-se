@@ -6,8 +6,8 @@ product: https://talend.poolparty.biz/coretaxonomy/22
 # TPS-3161
 | Info             | Value |
 | ---------------- | ---------------- |
-| Patch Name       | patch\_20190620\_TPS-3161\_v1|
-| Release Date     | 2019-06-20 |
+| Patch Name       | patch\_20190823\_TPS-3161\_v2|
+| Release Date     | 2019-08-23 |
 | Target Version   | 20181026\_1147-V7.1.1 |
 | Product affected | Talend Studio |
 ## Introduction <!-- mandatory -->
