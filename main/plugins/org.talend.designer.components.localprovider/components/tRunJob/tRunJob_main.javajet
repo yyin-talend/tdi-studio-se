@@ -559,7 +559,9 @@ String inputConnName = null;
 										reader.close();
 									}
 								} catch (java.io.IOException ioe) {
-									log.error("<%=cid %> - " + ioe.getMessage());
+									<%if(isLog4jEnabled){%>
+										log.error("<%=cid %> - " + ioe.getMessage());
+									<%}%>
 									ioe.printStackTrace();
 								}
 							}
@@ -583,7 +585,9 @@ String inputConnName = null;
 										reader.close();
 									}
 								} catch (java.io.IOException ioe) {
-									log.error("<%=cid %> - " + ioe.getMessage());
+									<%if(isLog4jEnabled){%>
+										log.error("<%=cid %> - " + ioe.getMessage());
+									<%}%>
 									ioe.printStackTrace();
 								}
 							}
@@ -617,7 +621,9 @@ String inputConnName = null;
             normal_<%=cid %>.join(10000);
             error_<%=cid %>.join(10000);
         } catch (ThreadDeath tde) {
-            log.error("<%=cid %> - thread was terminated.");
+			<%if(isLog4jEnabled){%>
+				log.error("<%=cid %> - thread was terminated.");
+			<%}%>
             ps_<%=cid %>.destroy();
             throw tde;
         }
