@@ -27,6 +27,7 @@ import net.sf.json.processors.PropertyNameProcessor;
 import net.sf.json.sample.BeanA;
 import net.sf.json.sample.BeanB;
 import net.sf.json.sample.BeanC;
+import net.sf.json.sample.BeanD;
 import net.sf.json.sample.BeanFoo;
 import net.sf.json.sample.BeanWithFunc;
 import net.sf.json.sample.ChildBean;
@@ -1040,6 +1041,17 @@ public class TestJSONObject extends TestCase {
       assertEquals( jsonObject.get( "string" ), bean.getString() );
       Assertions.assertEquals( bean.getIntarray(),
             JSONArray.toArray( jsonObject.getJSONArray( "intarray" ) ) );
+   }
+
+   public void testToBean_BeanD() {
+      String json = "{bool:true,integer:1,string:\"json\",bdarray:[4.2424245783E7, 123456789.2424245783E7, 6.0]}";
+      JSONObject jsonObject = JSONObject.fromObject( json );
+      BeanD bean = (BeanD) JSONObject.toBean( jsonObject, BeanD.class );
+      assertEquals( jsonObject.get( "bool" ), Boolean.valueOf( bean.isBool() ) );
+      assertEquals( jsonObject.get( "integer" ), new Integer( bean.getInteger() ) );
+      assertEquals( jsonObject.get( "string" ), bean.getString() );
+      Assertions.assertEquals( bean.getBdarray(),
+              JSONArray.toArray( jsonObject.getJSONArray( "bdarray" ) ) );
    }
 
    public void testToBean_ClassBean() {
