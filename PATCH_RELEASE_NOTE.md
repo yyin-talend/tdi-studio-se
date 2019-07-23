@@ -9,8 +9,8 @@ product:
 
 | Info             | Value |
 | ---------------- | ---------------- |
-| Patch Name       | Patch\_20190722_TPS-3252\_v1-7.2.1 |
-| Release Date     | 2019-07-22 |
+| Patch Name       | Patch\_20190723_TPS-3252\_v1-7.2.1 |
+| Release Date     | 2019-07-23 |
 | Target Version   | Talend-Studio-20190620\_1446-V7.2.1 |
 | Product affected | Talend Studio |
 
@@ -64,4 +64,4 @@ Backup the Affected files list below. Uninstall the patch by restore the backup 
 
 The following files are installed by this patch:
 
-- {Talend\_Studio\_path}/plugins/org.talend.designer.components.localprovider\_7.2.1.20190620\_1446/components/tFileFetch/tFileFetch\_main.javajet
+- {Talend\_Studio\_path}/plugins/org.talend.designer.components.localprovider\_7.2.1.20190614\_0309/components/tFileFetch/tFileFetch\_main.javajet
