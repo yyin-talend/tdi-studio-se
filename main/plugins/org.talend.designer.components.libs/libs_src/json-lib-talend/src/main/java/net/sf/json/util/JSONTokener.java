@@ -446,7 +446,11 @@ public class JSONTokener {
       boolean isDecimal = s.indexOf('.') != -1;
 
       if(isDecimal){
-         return new BigDecimal(s);
+         Double d = Double.valueOf(s);
+         if(Double.POSITIVE_INFINITY == Math.abs(d)){
+            return new BigDecimal(s);
+         }
+         return d;
       }
 
       return NumberUtils.createNumber(s);

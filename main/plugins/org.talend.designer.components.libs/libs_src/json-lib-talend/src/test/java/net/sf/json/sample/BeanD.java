@@ -25,14 +25,14 @@ import java.math.BigDecimal;
  * @author Andres Almiray <aalmiray@users.sourceforge.net>
  */
 public class BeanD extends BeanA {
-   private BigDecimal[] bdarray = new BigDecimal[3];
+   private Double[] doublearray = new Double[3];
 
-   public BigDecimal[] getBdarray() {
-      return bdarray;
+   public Double[] getDoublearray() {
+      return doublearray;
    }
 
-   public void setBdarray( BigDecimal[] bdarray ) {
-      this.bdarray = bdarray;
+   public void setDoublearray(Double[] doublearray) {
+      this.doublearray = doublearray;
    }
 
    public String toString() {

@@ -186,6 +186,8 @@ public final class JSONUtils {
             return Long.class;
          }else if( isBigInteger( n ) ){
             return BigInteger.class;
+         }else if( isDouble( n ) ){
+            return Double.class;
          }else if( isBigDecimal( n ) ){
             return BigDecimal.class;
          }else{
