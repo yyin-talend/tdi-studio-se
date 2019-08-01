@@ -1,15 +1,24 @@
 package org.talend;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.poi.poifs.crypt.EncryptionInfo;
+import org.apache.poi.poifs.crypt.EncryptionMode;
+import org.apache.poi.poifs.crypt.Encryptor;
+import org.apache.poi.poifs.filesystem.POIFSFileSystem;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.ss.usermodel.Font;
+import org.apache.poi.ss.usermodel.FormulaEvaluator;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -67,6 +76,8 @@ public class ExcelTool {
     private int rowAccessWindowSize = SXSSFWorkbook.DEFAULT_WINDOW_SIZE;// used in auto flush
 
     private boolean isTrackAllColumns = false;
+
+    private String password = null;
 
     public ExcelTool() {
         cellStylesMapping = new HashMap<>();
@@ -327,13 +338,14 @@ public class ExcelTool {
     }
 
     public void writeExcel(OutputStream outputStream) throws Exception {
-    	try {
-    		wb.write(outputStream);
-    	} finally {
-    		if(outputStream != null) {
-    			outputStream.close();
-    		}
-    	}
+        try {
+            wb.write(outputStream);
+            wb.close();
+        } finally {
+            if (outputStream != null) {
+                outputStream.close();
+            }
+        }
     }
 
     public void writeExcel(String fileName, boolean createDir) throws Exception {
@@ -344,14 +356,29 @@ public class ExcelTool {
                 pFile.mkdirs();
             }
         }
-        FileOutputStream fileOutput = new FileOutputStream(fileName);
         if (appendWorkbook && appendSheet && recalculateFormula) {
             evaluateFormulaCell();
         }
+        FileOutputStream fileOutput = new FileOutputStream(fileName);
+        POIFSFileSystem fs = null;
         try {
-        	wb.write(fileOutput);
+            if (password == null) {
+                wb.write(fileOutput);
+            } else {
+                fs = new POIFSFileSystem();
+                Encryptor encryptor = new EncryptionInfo(EncryptionMode.agile).getEncryptor();
+                encryptor.confirmPassword(password);
+                OutputStream encryptedDataStream = encryptor.getDataStream(fs);
+                wb.write(encryptedDataStream);
+                encryptedDataStream.close(); // this is mandatory to do that at that point
+                fs.writeFilesystem(fileOutput);
+            }
         } finally {
-        	fileOutput.close();
+            wb.close();
+            fileOutput.close();
+            if (fs != null) {
+                fs.close();
+            }
         }
     }
 
@@ -374,4 +401,9 @@ public class ExcelTool {
             ((SXSSFSheet) sheet).flushRows();
         }
     }
+
+    public void setPasswordProtection(String password) {
+        this.password = password;
+    }
+
 }
