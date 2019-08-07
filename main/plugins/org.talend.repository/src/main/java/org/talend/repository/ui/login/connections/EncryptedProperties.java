@@ -14,6 +14,9 @@ package org.talend.repository.ui.login.connections;
 
 import java.util.Properties;
 
+import org.talend.commons.ui.runtime.exception.ExceptionHandler;
+import org.talend.daikon.crypto.EncodingUtils;
+import org.talend.daikon.crypto.KeySources;
 import org.talend.daikon.security.CryptoHelper;
 
 /**
@@ -22,9 +25,13 @@ import org.talend.daikon.security.CryptoHelper;
 public class EncryptedProperties extends Properties {
 
     private CryptoHelper crypto;
-
     public EncryptedProperties() {
-        crypto = new CryptoHelper("Il faudrait trouver une passphrase plus originale que celle-ci!");
+        try {
+            byte[] key = KeySources.file("properties.encryption.key").getKey();
+            crypto = new CryptoHelper(new String(key, EncodingUtils.ENCODING));
+        } catch (Exception ex) {
+            ExceptionHandler.process(ex);
+        }
     }
 
     public String getProperty(String key) {
