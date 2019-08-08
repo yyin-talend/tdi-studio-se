@@ -25,6 +25,7 @@ import org.talend.daikon.security.CryptoHelper;
 public class EncryptedProperties extends Properties {
 
     private CryptoHelper crypto;
+
     public EncryptedProperties() {
         try {
             byte[] key = KeySources.file("properties.encryption.key").getKey();
