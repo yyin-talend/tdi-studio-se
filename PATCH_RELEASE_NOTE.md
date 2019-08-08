@@ -9,7 +9,7 @@ product:
 
 | Info             | Value |
 | ---------------- | ---------------- |
-| Patch Name       | Patch\_20190805_TPS-3315\_v1-7.2.1 |
+| Patch Name       | Patch\_20190808_TPS-3315\_v1-7.2.1 |
 | Release Date     | 2019-06-28 |
 | Target Version   | Talend-Studio-20190620\_1446-V7.2.1 |
 | Product affected | Talend Studio |
@@ -64,5 +64,46 @@ Backup the Affected files list below. Uninstall the patch by restore the backup 
 
 The following files are installed by this patch:
 
-- {Talend\_Studio\_path}/plugins/org.talend.designer.components.localprovider\_7.2.1.20190614\_0309/components/templates/Log4j/DBLogUtil.javajet
-- {Talend\_Studio\_path}/plugins/org.talend.designer.components.localprovider\_7.2.1.20190614\_0309/components/templates/Log4j/Log4jDBConnUtil.javajet
+- {Talend\_Studio\_path}/plugins/org.talend.designer.components.localprovider\_7.2.1.20190614\_0309/components/tELTMSSqlMap/tELTMSSqlMap\_main.javajet
+- {Talend\_Studio\_path}/plugins/org.talend.designer.components.localprovider\_7.2.1.20190614\_0309/components/tELTMysqlMap/tELTMysqlMap\_main.javajet
+- {Talend\_Studio\_path}/plugins/org.talend.designer.components.localprovider\_7.2.1.20190614\_0309/components/tELTOracleMap/tELTOracleMap\_main.javajet
+- {Talend\_Studio\_path}/plugins/org.talend.designer.components.localprovider\_7.2.1.20190614\_0309/components/templates/DB/CheckContextPassword.javajet
+- {Talend\_Studio\_path}/plugins/org.talend.designer.components.localprovider\_7.2.1.20190614\_0309/components/tMSSqlBulkExec/tMSSqlBulkExec\_begin.javajet
+- {Talend\_Studio\_path}/plugins/org.talend.designer.components.localprovider\_7.2.1.20190614\_0309/components/tMSSqlConnection/tMSSqlConnection\_begin.javajet
+- {Talend\_Studio\_path}/plugins/org.talend.designer.components.localprovider\_7.2.1.20190614\_0309/components/tMSSqlInput/tMSSqlInput\_begin.javajet
+- {Talend\_Studio\_path}/plugins/org.talend.designer.components.localprovider\_7.2.1.20190614\_0309/components/tMSSqlOutput/tMSSqlOutput\_begin.javajet
+- {Talend\_Studio\_path}/plugins/org.talend.designer.components.localprovider\_7.2.1.20190614\_0309/components/tMSSqlRow/tMSSqlRow\_begin.javajet
+- {Talend\_Studio\_path}/plugins/org.talend.designer.components.localprovider\_7.2.1.20190614\_0309/components/tMSSqlSCD/tMSSqlSCD\_begin.javajet
+- {Talend\_Studio\_path}/plugins/org.talend.designer.components.localprovider\_7.2.1.20190614\_0309/components/tMSSqlSP/tMSSqlSP\_begin.javajet
+- {Talend\_Studio\_path}/plugins/org.talend.designer.components.localprovider\_7.2.1.20190614\_0309/components/tMysqlBulkExec/tMysqlBulkExec\_begin.javajet
+- {Talend\_Studio\_path}/plugins/org.talend.designer.components.localprovider\_7.2.1.20190614\_0309/components/tMysqlConnection/tMysqlConnection\_begin.javajet
+- {Talend\_Studio\_path}/plugins/org.talend.designer.components.localprovider\_7.2.1.20190614\_0309/components/tMysqlInput/tMysqlInput\_begin.javajet
+- {Talend\_Studio\_path}/plugins/org.talend.designer.components.localprovider\_7.2.1.20190614\_0309/components/tMysqlOutput/tMysqlOutput\_begin.javajet
+- {Talend\_Studio\_path}/plugins/org.talend.designer.components.localprovider\_7.2.1.20190614\_0309/components/tMysqlRow/tMysqlRow\_begin.javajet
+- {Talend\_Studio\_path}/plugins/org.talend.designer.components.localprovider\_7.2.1.20190614\_0309/components/tMysqlSCD/tMysqlSCD\_begin.javajet
+- {Talend\_Studio\_path}/plugins/org.talend.designer.components.localprovider\_7.2.1.20190614\_0309/components/tMysqlSCDELT/tMysqlSCDELT\_begin.javajet
+- {Talend\_Studio\_path}/plugins/org.talend.designer.components.localprovider\_7.2.1.20190614\_0309/components/tMysqlSP/tMysqlSP\_begin.javajet
+- {Talend\_Studio\_path}/plugins/org.talend.designer.components.localprovider\_7.2.1.20190614\_0309/components/tOracleBulkExec/tOracleBulkExec\_begin.javajet
+- {Talend\_Studio\_path}/plugins/org.talend.designer.components.localprovider\_7.2.1.20190614\_0309/components/tOracleConnection/tOracleConnection\_begin.javajet
+- {Talend\_Studio\_path}/plugins/org.talend.designer.components.localprovider\_7.2.1.20190614\_0309/components/tOracleInput/tOracleInput\_begin.javajet
+- {Talend\_Studio\_path}/plugins/org.talend.designer.components.localprovider\_7.2.1.20190614\_0309/components/tOracleOutput/tOracleOutput\_begin.javajet
+- {Talend\_Studio\_path}/plugins/org.talend.designer.components.localprovider\_7.2.1.20190614\_0309/components/tOracleRow/tOracleRow\_begin.javajet
+- {Talend\_Studio\_path}/plugins/org.talend.designer.components.localprovider\_7.2.1.20190614\_0309/components/tOracleSCD/tOracleSCD\_begin.javajet
+- {Talend\_Studio\_path}/plugins/org.talend.designer.components.localprovider\_7.2.1.20190614\_0309/components/tOracleSCDELT/tOracleSCDELT\_begin.javajet
+- {Talend\_Studio\_path}/plugins/org.talend.designer.components.localprovider\_7.2.1.20190614\_0309/components/tOracleSP/tOracleSP\_begin.javajet
+- {Talend\_Studio\_path}/plugins/org.talend.designer.components.localprovider\_7.2.1.20190614\_0309/components/tRedshiftBulkExec/tRedshiftBulkExec\_begin.javajet
+- {Talend\_Studio\_path}/plugins/org.talend.designer.components.localprovider\_7.2.1.20190614\_0309/components/tRedshiftConnection/tRedshiftConnection\_begin.javajet
+- {Talend\_Studio\_path}/plugins/org.talend.designer.components.localprovider\_7.2.1.20190614\_0309/components/tRedshiftInput/tRedshiftInput\_begin.javajet
+- {Talend\_Studio\_path}/plugins/org.talend.designer.components.localprovider\_7.2.1.20190614\_0309/components/tRedshiftOutput/tRedshiftOutput\_begin.javajet
+- {Talend\_Studio\_path}/plugins/org.talend.designer.components.localprovider\_7.2.1.20190614\_0309/components/tRedshiftRow/tRedshiftRow\_begin.javajet
+- {Talend\_Studio\_path}/plugins/org.talend.designer.components.localprovider\_7.2.1.20190614\_0309/components/tRedshiftUnload/tRedshiftUnload\_begin.javajet
+- {Talend\_Studio\_path}/plugins/org.talend.designer.components.tdqprovider\_7.2.1.20190614\_0245/components/tMSSqlInvalidRows/tMSSqlInvalidRows\_begin.javajet
+- {Talend\_Studio\_path}/plugins/org.talend.designer.components.tdqprovider\_7.2.1.20190614\_0245/components/tMSSqlValidRows/tMSSqlValidRows\_begin.javajet
+- {Talend\_Studio\_path}/plugins/org.talend.designer.components.tdqprovider\_7.2.1.20190614\_0245/components/tMySQLInvalidRows/tMySQLInvalidRows\_begin.javajet
+- {Talend\_Studio\_path}/plugins/org.talend.designer.components.tdqprovider\_7.2.1.20190614\_0245/components/tMySQLValidRows/tMySQLValidRows\_begin.javajet
+- {Talend\_Studio\_path}/plugins/org.talend.designer.components.tdqprovider\_7.2.1.20190614\_0245/components/tOracleInvalidRows/tOracleInvalidRows\_begin.javajet
+- {Talend\_Studio\_path}/plugins/org.talend.designer.components.tdqprovider\_7.2.1.20190614\_0245/components/tOracleValidRows/tOracleValidRows\_begin.javajet
+- {Talend\_Studio\_path}/plugins/org.talend.designer.components.tisprovider\_7.2.1.20190614\_0242/components/tMSSqlCDC/tMSSqlCDC\_begin.javajet
+- {Talend\_Studio\_path}/plugins/org.talend.designer.components.tisprovider\_7.2.1.20190614\_0242/components/tMysqlCDC/tMysqlCDC\_begin.javajet
+- {Talend\_Studio\_path}/plugins/org.talend.designer.components.tisprovider\_7.2.1.20190614\_0242/components/tOracleCDC/tOracleCDC\_begin.javajet
+- {Talend\_Studio\_path}/plugins/org.talend.designer.components.tisprovider\_7.2.1.20190614\_0242/components/tOracleCDCOutput/tOracleCDCOutput\_begin.javajet
