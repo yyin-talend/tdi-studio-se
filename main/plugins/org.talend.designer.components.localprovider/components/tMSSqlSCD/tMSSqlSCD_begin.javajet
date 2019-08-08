@@ -18,6 +18,7 @@ imports="
 skeleton="../templates/slowly_change_dimension.skeleton"
 %>
 <%@ include file="@{org.talend.designer.components.localprovider}/components/templates/Log4j/DBLogUtil.javajet"%>
+<%@ include file="@{org.talend.designer.components.localprovider}/components/templates/DB/CheckContextPassword.javajet"%>
 <%
 CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 INode node = (INode) codeGenArgument.getArgument();
