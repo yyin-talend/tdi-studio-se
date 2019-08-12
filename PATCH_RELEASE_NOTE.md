@@ -9,8 +9,8 @@ product:
 
 | Info             | Value |
 | ---------------- | ---------------- |
-| Patch Name       | Patch\_20190808_TPS-3315\_v1-7.2.1 |
-| Release Date     | 2019-08-08 |
+| Patch Name       | Patch\_20190812_TPS-3315\_v1-7.2.1 |
+| Release Date     | 2019-08-12 |
 | Target Version   | Talend-Studio-20190620\_1446-V7.2.1 |
 | Product affected | Talend Studio |
 
