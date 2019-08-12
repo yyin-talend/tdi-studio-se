@@ -1,6 +1,6 @@
 <%@ jet 
 	imports="
-	
+	org.talend.core.model.process.ElementParameterParser 
 	org.talend.designer.codegen.config.CodeGeneratorArgument
 	
     java.util.List
