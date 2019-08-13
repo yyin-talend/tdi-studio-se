@@ -37,6 +37,7 @@ import org.talend.core.repository.model.preview.ExcelSchemaBean;
 import org.talend.core.repository.model.preview.IProcessDescription;
 import org.talend.core.repository.model.preview.SalesforceSchemaBean;
 import org.talend.core.utils.CsvArray;
+import org.talend.core.utils.TalendQuoteUtils;
 import org.talend.designer.runprocess.IProcessor;
 import org.talend.designer.runprocess.JobErrorsChecker;
 import org.talend.designer.runprocess.ProcessStreamTrashReader;
@@ -398,6 +399,47 @@ public class ShadowProcess<T extends IProcessDescription> {
         }
     }
 
+    public CsvArray runWithErrorOutputAsException4Delimited(final boolean outputErrorAsException) throws ProcessorException {
+
+        IProcess talendProcess = buildProcess();
+
+        IProcessor processor = ProcessorUtilities.getProcessor(talendProcess, null);
+        processor.setProxyParameters(getProxyParameters());
+
+        File previousFile = outPath.toFile();
+        if (previousFile.exists()) {
+            previousFile.delete();
+        }
+
+        IContext context = talendProcess.getContextManager().getDefaultContext();
+        processor.setContext(context);
+        process = processor.run(IProcessor.NO_STATISTICS, IProcessor.NO_TRACES, null);
+        IPath srcCodePath = processor.getSrcCodePath();
+        IFile shadowFileInputToDelimitedOutputFile = processor.getTalendJavaProject().getProject().getFile(srcCodePath);
+        if (shadowFileInputToDelimitedOutputFile != null && shadowFileInputToDelimitedOutputFile.exists()) {
+            JobErrorsChecker.checkShadowFileError(shadowFileInputToDelimitedOutputFile);
+        }
+        String error = ProcessStreamTrashReader.readErrorStream(process);
+        if (error != null) {
+            log.warn(error, new ProcessorException(error));
+        }
+
+        if (!outPath.toFile().exists()) {
+            if (outputErrorAsException && error != null) {
+                throw new ProcessorException(error);
+            } else {
+                throw new ProcessorException(Messages.getString("ShadowProcess.notGeneratedOutputException")); //$NON-NLS-1$
+            }
+        }
+
+        try {
+            CsvArray array = new CsvArray();
+            array = array.createFrom(new Path(TalendQuoteUtils.removeQuotes(inPath)).toFile(), currentProcessEncoding);
+            return array;
+        } catch (IOException ioe) {
+            throw new ProcessorException(ioe);
+        }
+    }
     /**
      * Destroy the current process if exists.
      *

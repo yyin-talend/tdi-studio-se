@@ -83,7 +83,11 @@ public class ShadowFilePreview implements IPreview {
         shadowProcess = new ShadowProcess<IProcessDescription>(description, typeShadow);
 
         try {
-            res = shadowProcess.runWithErrorOutputAsException(outputErrorAsException);
+            if ("FILE_CSV".equals(type) || "FILE_DELIMITED".equals(type)) {
+                res = shadowProcess.runWithErrorOutputAsException4Delimited(outputErrorAsException);
+            } else {
+                res = shadowProcess.runWithErrorOutputAsException(outputErrorAsException);
+            }
         } catch (ProcessorException e) {
             Status status = new Status(Status.ERROR, RunProcessPlugin.PLUGIN_ID, Status.OK, e.getMessage(), e);
             RunProcessPlugin.getDefault().getLog().log(status);
