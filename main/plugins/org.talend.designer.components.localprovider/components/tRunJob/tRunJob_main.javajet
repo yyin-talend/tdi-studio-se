@@ -385,7 +385,7 @@ String inputConnName = null;
 	%>
 		<%=childJob %> childJob_<%=cid %> = new <%=childJob %>();
         <%
-            if (ProcessorUtilities.isEsbJob(currentProcess)) {
+            if (ProcessorUtilities.isEsbJob(process, version)) {
         %>
         childJob_<%=cid %>.setEndpointRegistry(registry);
         <%
