@@ -11,8 +11,8 @@ product:
 
 | Info             | Value |
 | ---------------- | ---------------- |
-| Patch Name       | Patch\_20190902\_TPS-3342\_v2-7.1.1 |
-| Release Date     | 2019-09-02 |
+| Patch Name       | Patch\_20190903\_TPS-3342\_v1-7.1.1 |
+| Release Date     | 2019-09-03 |
 | Target Version   | 7.1.1 |
 | Product affected | Talend Studio |
 
