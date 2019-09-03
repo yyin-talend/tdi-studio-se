@@ -11,8 +11,8 @@ product:
 
 | Info             | Value |
 | ---------------- | ---------------- |
-| Patch Name       | Patch\_20190821\_TPS-3342\_v1-7.1.1 |
-| Release Date     | 2019-08-21 |
+| Patch Name       | Patch\_20190902\_TPS-3342\_v2-7.1.1 |
+| Release Date     | 2019-09-02 |
 | Target Version   | 7.1.1 |
 | Product affected | Talend Studio |
 
@@ -23,6 +23,8 @@ This is a self-contained patch.
 **NOTE**: For information on how to obtain this patch, reach out to your Support contact at Talend.
 
 ## Fixed issues <!-- mandatory -->
+This patch contains this following fixe:
+
 - TPS-3342 Rounding off of decimal with tmongodboutput (TDI-42689)
 
 ## Prerequisites <!-- mandatory -->
@@ -32,20 +34,6 @@ Consider the following requirements for your system:
 
 
 ## Installation <!-- mandatory -->
--Installation On Studio:
- - Shut down Talend studio if it is opened.
- - Extract the zip.
- - Merge the folder "plugins" and its content to "{studio}/plugins" and overwrite the existing files.
- - remove the folder "{studio}/configuration/org.eclipse.osgi".
- - Start the Talend studio.
- - Rebuild your jobs.
- 
--Installation on Commandline:
- - Shut down Talend Commandline if it is running.
- - Extract the zip.c.Merge the folder "plugins" and its content to "{cmdline}/studio/plugins" and overwrite the existing files.
- - Remove the folder "{cmdline}/studio/configuration/org.eclipse.osgi".
- - Restart Talend Commandlline.
- - Regenerate your jobs by commandline.
 
 ### Installing the patch using Software update <!-- if applicable -->
 
