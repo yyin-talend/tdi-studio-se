@@ -11,9 +11,9 @@ product:
 
 | Info             | Value |
 | ---------------- | ---------------- |
-| Patch Name       | Patch\_20190906\_TPS-3403\_v1-7.2.1 |
-| Release Date     | 2019-09-06 |
-| Target Version   | 7.2.1 |
+| Patch Name       | Patch\_20190907\_TPS-3403\_v1-7.2.1 |
+| Release Date     | 2019-09-07 |
+| Target Version   | 20190620\_1446-V7.2.1 |
 | Product affected | Talend Studio |
 
 ## Introduction
@@ -37,7 +37,7 @@ Consider the following requirements for your system:
 
 ### Installing the patch using Software update
 
-1) Logon TAC and switch to Configuration->Software Update, then enter the correct values and save referring to the documentation: https://help.talend.com/reader/f7Em9WV_cPm2RRywucSN0Q/j9x5iXV~vyxMlUafnDejaQ
+1) Logon TAC and switch to Configuration->Software Update, then enter the correct values and save referring to the documentation: https://help.talend.com/reader/f7Em9WV\_cPm2RRywucSN0Q/j9x5iXV~vyxMlUafnDejaQ
 
 2) Switch to Software update page, where the new patch will be listed. The patch can be downloaded from here into the nexus repository.
 
@@ -53,14 +53,14 @@ Consider the following requirements for your system:
 
 Execute the following commands:
 
-1. Talend-Studio-win-x86_64.exe -nosplash -application org.talend.commandline.CommandLine -consoleLog -data commandline-workspace startServer -p 8002 --talendDebug
-2. initRemote {tac_url} -ul {TAC login username} -up {TAC login password}
+1. Talend-Studio-win-x86\_64.exe -nosplash -application org.talend.commandline.CommandLine -consoleLog -data commandline-workspace startServer -p 8002 --talendDebug
+2. initRemote {tac\_url} -ul {TAC login username} -up {TAC login password}
 3. checkAndUpdate -tu {TAC login username} -tup {TAC login password}
 
 ## Affected files for this patch
 
 The following files are installed by this patch:
 
-- plugins/org.talend.designer.components.localprovider_7.2.1.20190614_0309/components/tFileCopy/tFileCopy_java.xml
-- plugins/org.talend.libraries.custom_7.2.1.20181114_0551/lib/filecopy-2.0.0.jar
+- plugins/org.talend.designer.components.localprovider\_7.2.1.20190614\_0309/components/tFileCopy/tFileCopy\_java.xml
+- plugins/org.talend.libraries.custom\_7.2.1.20181114\_0551/lib/filecopy-2.0.0.jar
 
