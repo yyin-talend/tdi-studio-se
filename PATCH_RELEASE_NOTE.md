@@ -5,11 +5,11 @@ product:
 - https://talend.poolparty.biz/coretaxonomy/23
 ---
 
-# TPS-3235
+# TPS-3348
 
 | Info             | Value |
 | ---------------- | ---------------- |
-| Patch Name       | Patch\_20190920_TPS-3348\_v1-7.2.1 |
+| Patch Name       | Patch\_20190909_TPS-3348\_v1-7.2.1 |
 | Release Date     | 2019-09-20 |
 | Target Version   | Talend-Studio-20190620\_1446-V7.2.1 |
 | Product affected | Talend Studio |
