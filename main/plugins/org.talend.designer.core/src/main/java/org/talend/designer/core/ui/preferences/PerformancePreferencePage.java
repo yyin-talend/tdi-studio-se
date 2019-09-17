@@ -64,6 +64,9 @@ public class PerformancePreferencePage extends FieldEditorPreferencePage impleme
             addField(new BooleanFieldEditor(TalendDesignerPrefConstants.CHECK_ONLY_LAST_VERSION,
                     Messages.getString("PerformancePreferencePage.checkVersion"), //$NON-NLS-1$
                     getFieldEditorParent()));
+            addField(new BooleanFieldEditor(TalendDesignerPrefConstants.PROPAGATE_CONTEXT,
+                    Messages.getString("PerformancePreferencePage.propagateContext"), //$NON-NLS-1$
+                    getFieldEditorParent()));
             addField(new BooleanFieldEditor(TalendDesignerPrefConstants.PROPAGATE_CONTEXT_VARIABLE,
                     Messages.getString("PerformancePreferencePage.addOrDeleteVariable"), //$NON-NLS-1$
                     getFieldEditorParent()));
@@ -99,6 +102,9 @@ public class PerformancePreferencePage extends FieldEditorPreferencePage impleme
                     getFieldEditorParent()));
             addField(new BooleanFieldEditor(TalendDesignerPrefConstants.CHECK_ONLY_LAST_VERSION,
                     Messages.getString("PerformancePreferencePage.checkVersion"), //$NON-NLS-1$
+                    getFieldEditorParent()));
+            addField(new BooleanFieldEditor(TalendDesignerPrefConstants.PROPAGATE_CONTEXT,
+                    Messages.getString("PerformancePreferencePage.propagateContext"), //$NON-NLS-1$
                     getFieldEditorParent()));
             addField(new BooleanFieldEditor(TalendDesignerPrefConstants.PROPAGATE_CONTEXT_VARIABLE,
                     Messages.getString("PerformancePreferencePage.addOrDeleteVariable"), //$NON-NLS-1$
