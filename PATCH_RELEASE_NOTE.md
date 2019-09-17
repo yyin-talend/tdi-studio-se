@@ -9,9 +9,9 @@ product:
 
 | Info             | Value |
 | ---------------- | ---------------- |
-| Patch Name       | Patch\_20190902_TPS-3379\_v1-7.2.1 |
-| Release Date     | 2019-09-02 |
-| Target Version   | Talend-Studio-20190620\_1446-V7.2.1 |
+| Patch Name       | Patch\_20190917_TPS-3379\_v1-7.2.1 |
+| Release Date     | 2019-09-17 |
+| Target Version   | 20190620\_1446-V7.2.1 |
 | Product affected | Talend Studio |
 
 ## Introduction
