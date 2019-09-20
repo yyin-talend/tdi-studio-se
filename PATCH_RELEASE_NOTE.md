@@ -9,9 +9,9 @@ product:
 
 | Info             | Value |
 | ---------------- | ---------------- |
-| Patch Name       | Patch\_20190919\_TPS-3404\_v1-7.0.1 |
+| Patch Name       | Patch\_20190920\_TPS-3404\_v1-7.0.1 |
 | Release Date     | 2019-10-11 |
-| Target Version   | Talend-Studio-7.0.1.20190226\_1146-patch |
+| Target Version   | 7.0.1.20190226\_1146-patch |
 | Product affected | Talend Studio |
 
 ## Introduction
@@ -31,6 +31,8 @@ This patch contains the following fixes:
 Consider the following requirements for your system:
 
 - Talend Studio 7.0.1 must be installed.
+- Patch TPS-2956 must be installed.
+
 
 ## Installation
 
@@ -63,4 +65,4 @@ Backup the Affected files list below. Uninstall the patch by restore the backup 
 
 The following files are installed by this patch:
 
-- {Talend\_Studio\_path}/plugins/org.talend.designer.components.localprovider\_7.0.1.20190226\_1146-patch/components/tFileOutputExcel/tFileOutputExcel\_begin.javajet
+- {Talend\_Studio\_path}/plugins/org.talend.designer.components.localprovider\_7.0.1.20190226\_1146-patch/components/tFileOutputExcel/tFileOutputExcel/_begin.javajet
