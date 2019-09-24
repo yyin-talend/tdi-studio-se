@@ -1,3 +1,10 @@
+---
+version: 7.2.1
+module: https://talend.poolparty.biz/coretaxonomy/42
+product:
+- https://talend.poolparty.biz/coretaxonomy/17
+---
+
 # TPS-3356
 
 | Info             | Value |
