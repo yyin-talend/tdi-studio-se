@@ -21,7 +21,7 @@
 			<url>https://artifacts-oss.talend.com/nexus/content/repositories/TalendOpenSourceRelease/</url>
 		</repository>
 		<repository>
-			<id>talend_open_snapshots</id>
+			<id>talend_nexus_deployment</id>
 			<releases>
 				<enabled>false</enabled>
 			</releases>
