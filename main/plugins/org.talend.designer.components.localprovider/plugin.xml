@@ -213,6 +213,12 @@
          	name="zookeeper-3.4.5-cdh5.4.0.jar" mvn_uri="mvn:org.talend.libraries/zookeeper-3.4.5-cdh5.4.0/6.0.0"
          	uripath="platform:/plugin/org.talend.libraries.zookeeper/lib/zookeeper-3.4.5-cdh5.4.0.jar">
     	</libraryNeeded>
+    	
+    	<libraryNeeded
+	   		context="plugin:org.talend.libraries.pig"
+        	id="pig-withouthadoop-cdh5.4-lastest"
+         	name="pig-0.12.0-cdh5.4.0-withouthadoop.jar" mvn_uri="mvn:org.talend.libraries/pig-0.12.0-cdh5.4.0-withouthadoop/6.0.0">         	
+    	</libraryNeeded>
 
     	<libraryNeeded
 	   		context="plugin:org.talend.libraries.hcatalog"
