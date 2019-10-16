@@ -63,6 +63,7 @@ import org.talend.designer.components.exchange.model.ExchangePackage;
 import org.talend.designer.components.exchange.model.RevisionInfo;
 import org.talend.designer.components.exchange.model.VersionRevision;
 import org.talend.repository.ProjectManager;
+import org.talend.utils.thread.TimeoutManager;
 
 /**
  * DOC hcyi class global comment. Detailled comment
@@ -149,6 +150,16 @@ public class ExchangeUtils {
 
     public static String sendGetRequest(String urlAddress) throws Exception {
         HttpClient httpclient = new HttpClient();
+        
+        if(TimeoutManager.getSocketTimeout() != null) {
+            httpclient.getParams().setIntParameter(TimeoutManager.SOCKET_TIMEOUT, 
+                    TimeoutManager.getSocketTimeout());
+        }
+        if(TimeoutManager.getConnectionTimeout() != null) {
+            httpclient.getParams().setIntParameter(TimeoutManager.CONNECTION_TIMEOUT, 
+                    TimeoutManager.getConnectionTimeout());
+        }
+        
         GetMethod getMethod = new GetMethod(urlAddress);
         TransportClientProperties tcp = TransportClientPropertiesFactory.create("http");
         if (tcp.getProxyHost().length() != 0) {
@@ -169,6 +180,14 @@ public class ExchangeUtils {
 
     public static String sendPostRequest(String urlAddress, Map<String, String> parameters) throws Exception {
         HttpClient httpclient = new HttpClient();
+        if(TimeoutManager.getSocketTimeout() != null) {
+            httpclient.getParams().setIntParameter(TimeoutManager.SOCKET_TIMEOUT, 
+                    TimeoutManager.getSocketTimeout());
+        }
+        if(TimeoutManager.getConnectionTimeout() != null) {
+            httpclient.getParams().setIntParameter(TimeoutManager.CONNECTION_TIMEOUT, 
+                    TimeoutManager.getConnectionTimeout());
+        }
         PostMethod postMethod = new PostMethod(urlAddress);
         if (parameters != null) {
             NameValuePair[] postData = new NameValuePair[parameters.size()];

@@ -18,6 +18,16 @@ public class MDMTransactionClient {
 
     public static MDMTransaction newTransaction(String url, String username, String password) throws IOException {
         HttpClient client = new HttpClient();
+        
+        if(TimeoutManager.getSocketTimeout() != null) {
+            client.getParams().setIntParameter(TimeoutManager.SOCKET_TIMEOUT, 
+                    TimeoutManager.getSocketTimeout());
+        }
+        if(TimeoutManager.getConnectionTimeout() != null) {
+            client.getParams().setIntParameter(TimeoutManager.CONNECTION_TIMEOUT, 
+                    TimeoutManager.getConnectionTimeout());
+        }
+        
         client.getState().setCredentials(AuthScope.ANY, new UsernamePasswordCredentials(username, password));
         client.getParams().setAuthenticationPreemptive(true);
 
@@ -78,6 +88,15 @@ public class MDMTransactionClient {
         HttpClient client = new HttpClient();
         client.getState().setCredentials(AuthScope.ANY, new UsernamePasswordCredentials(username, password));
         client.getParams().setAuthenticationPreemptive(true);
+        
+        if(TimeoutManager.getSocketTimeout() != null) {
+            client.getParams().setIntParameter(TimeoutManager.SOCKET_TIMEOUT, 
+                    TimeoutManager.getSocketTimeout());
+        }
+        if(TimeoutManager.getConnectionTimeout() != null) {
+            client.getParams().setIntParameter(TimeoutManager.CONNECTION_TIMEOUT, 
+                    TimeoutManager.getConnectionTimeout());
+        }
 
         GetMethod get = new GetMethod(url);
         get.setDoAuthentication(true);

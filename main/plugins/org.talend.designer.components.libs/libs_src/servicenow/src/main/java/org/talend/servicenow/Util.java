@@ -37,6 +37,15 @@ public class Util {
 					new org.apache.http.auth.AuthScope(new org.apache.http.HttpHost("sandbox.service-now.com")), new org.apache.http.auth.UsernamePasswordCredentials("talend", "talend")
 				);
 				client = org.apache.http.impl.client.HttpClients.custom().setDefaultCredentialsProvider(credsProvider).build();
+				if(TimeoutManager.getSocketTimeout() != null) {
+		            client.getParams().setIntParameter(TimeoutManager.SOCKET_TIMEOUT, 
+		                    TimeoutManager.getSocketTimeout());
+		        }
+		        if(TimeoutManager.getConnectionTimeout() != null) {
+		            client.getParams().setIntParameter(TimeoutManager.CONNECTION_TIMEOUT, 
+		                    TimeoutManager.getConnectionTimeout());
+		        }
+		            
 				
 				//get metadata
 				Util util = new Util(client,"https://sandbox.service-now.com");

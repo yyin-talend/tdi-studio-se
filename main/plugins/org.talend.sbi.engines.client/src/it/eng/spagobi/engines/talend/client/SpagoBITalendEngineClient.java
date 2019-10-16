@@ -34,6 +34,7 @@ import org.apache.commons.httpclient.NameValuePair;
 import org.apache.commons.httpclient.methods.PostMethod;
 import org.apache.commons.httpclient.params.HttpMethodParams;
 import org.talend.sbi.engines.client.i18n.Messages;
+import org.talend.utils.thread.TimeoutManager;
 
 /**
  * @author Andrea Gioia
@@ -98,6 +99,14 @@ public class SpagoBITalendEngineClient implements ISpagoBITalendEngineClient {
 
         version = null;
         client = new HttpClient();
+        if(TimeoutManager.getSocketTimeout() != null) {
+            client.getParams().setIntParameter(TimeoutManager.SOCKET_TIMEOUT, 
+                    TimeoutManager.getSocketTimeout());
+        }
+        if(TimeoutManager.getConnectionTimeout() != null) {
+            client.getParams().setIntParameter(TimeoutManager.CONNECTION_TIMEOUT, 
+                    TimeoutManager.getConnectionTimeout());
+        }
         method = new PostMethod(url);
 
         // Provide custom retry handler is necessary

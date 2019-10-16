@@ -26,6 +26,16 @@ public class MDMTransaction {
 
     public void commit() throws IOException {
         HttpClient client = new HttpClient();
+        
+        if(TimeoutManager.getSocketTimeout() != null) {
+            client.getParams().setIntParameter(TimeoutManager.SOCKET_TIMEOUT, 
+                    TimeoutManager.getSocketTimeout());
+        }
+        if(TimeoutManager.getConnectionTimeout() != null) {
+            client.getParams().setIntParameter(TimeoutManager.CONNECTION_TIMEOUT, 
+                    TimeoutManager.getConnectionTimeout());
+        }
+        
         client.getState().setCredentials(AuthScope.ANY, new UsernamePasswordCredentials(username, password));
 
         HttpMethod method = new PostMethod(url + "/" + id);
@@ -51,6 +61,16 @@ public class MDMTransaction {
 
     public void rollback() throws IOException {
         HttpClient client = new HttpClient();
+        
+        if(TimeoutManager.getSocketTimeout() != null) {
+            client.getParams().setIntParameter(TimeoutManager.SOCKET_TIMEOUT, 
+                    TimeoutManager.getSocketTimeout());
+        }
+        if(TimeoutManager.getConnectionTimeout() != null) {
+            client.getParams().setIntParameter(TimeoutManager.CONNECTION_TIMEOUT, 
+                    TimeoutManager.getConnectionTimeout());
+        }
+        
         client.getState().setCredentials(AuthScope.ANY, new UsernamePasswordCredentials(username, password));
 
         HttpMethod method = new DeleteMethod(url + "/" + id);

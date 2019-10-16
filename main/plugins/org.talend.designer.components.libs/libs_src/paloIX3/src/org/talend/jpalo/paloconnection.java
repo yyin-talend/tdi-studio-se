@@ -142,6 +142,14 @@ public class paloconnection {
 
         ClientConnectionManager connMgr = new ThreadSafeClientConnManager(params, supportedSchemes);
         paloHttpClient = new DefaultHttpClient(connMgr, params);
+        if(TimeoutManager.getSocketTimeout() != null) {
+            paloHttpClient.getParams().setIntParameter(TimeoutManager.SOCKET_TIMEOUT, 
+                    TimeoutManager.getSocketTimeout());
+        }
+        if(TimeoutManager.getConnectionTimeout() != null) {
+            paloHttpClient.getParams().setIntParameter(TimeoutManager.CONNECTION_TIMEOUT, 
+                    TimeoutManager.getConnectionTimeout());
+        }
     }
 
     private void pingPaloServer() {

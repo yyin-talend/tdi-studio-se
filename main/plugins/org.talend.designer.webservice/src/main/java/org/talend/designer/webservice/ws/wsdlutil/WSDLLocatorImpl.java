@@ -18,6 +18,7 @@ import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.UsernamePasswordCredentials;
 import org.apache.commons.httpclient.auth.AuthScope;
 import org.apache.commons.httpclient.methods.GetMethod;
+import org.talend.utils.thread.TimeoutManager;
 import org.xml.sax.InputSource;
 
 public class WSDLLocatorImpl implements WSDLLocator {
@@ -132,6 +133,14 @@ public class WSDLLocatorImpl implements WSDLLocator {
 
             httpClient.getState().setProxyCredentials(AuthScope.ANY, credentials);
             httpClient.getHostConfiguration().setProxy(configuration.getProxyServer(), configuration.getProxyPort());
+        }
+        if(TimeoutManager.getSocketTimeout() != null) {
+            httpClient.getParams().setIntParameter(TimeoutManager.SOCKET_TIMEOUT, 
+                    TimeoutManager.getSocketTimeout());
+        }
+        if(TimeoutManager.getConnectionTimeout() != null) {
+            httpClient.getParams().setIntParameter(TimeoutManager.CONNECTION_TIMEOUT, 
+                    TimeoutManager.getConnectionTimeout());
         }
         return httpClient;
     }

@@ -71,12 +71,28 @@ public class RestClient {
 	public RestClient() {
 		PoolingClientConnectionManager conMan = getConnectionManager();
 		httpClient = new DefaultHttpClient(conMan);
+		if(TimeoutManager.getSocketTimeout() != null) {
+            httpclient.getParams().setIntParameter(TimeoutManager.SOCKET_TIMEOUT, 
+                    TimeoutManager.getSocketTimeout());
+        }
+        if(TimeoutManager.getConnectionTimeout() != null) {
+            httpclient.getParams().setIntParameter(TimeoutManager.CONNECTION_TIMEOUT, 
+                    TimeoutManager.getConnectionTimeout());
+        }
 		this.bonitaURI = BONITA_URI;
 	}
 	
 	public RestClient(String bonitaURI) {
 		PoolingClientConnectionManager conMan = getConnectionManager();
 		httpClient = new DefaultHttpClient(conMan);
+		if(TimeoutManager.getSocketTimeout() != null) {
+            httpclient.getParams().setIntParameter(TimeoutManager.SOCKET_TIMEOUT, 
+                    TimeoutManager.getSocketTimeout());
+        }
+        if(TimeoutManager.getConnectionTimeout() != null) {
+            httpclient.getParams().setIntParameter(TimeoutManager.CONNECTION_TIMEOUT, 
+                    TimeoutManager.getConnectionTimeout());
+        }
 		this.bonitaURI = bonitaURI;
 	}
 	

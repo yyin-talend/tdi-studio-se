@@ -140,6 +140,15 @@ public class WSDLLocatorImpl implements WSDLLocator {
             httpClient.getState().setProxyCredentials(AuthScope.ANY, credentials);
             httpClient.getHostConfiguration().setProxy(configuration.getProxyServer(), configuration.getProxyPort());
         }
+        
+        if(TimeoutManager.getSocketTimeout() != null) {
+            httpclient.getParams().setIntParameter(TimeoutManager.SOCKET_TIMEOUT, 
+                    TimeoutManager.getSocketTimeout());
+        }
+        if(TimeoutManager.getConnectionTimeout() != null) {
+            httpclient.getParams().setIntParameter(TimeoutManager.CONNECTION_TIMEOUT, 
+                    TimeoutManager.getConnectionTimeout());
+        }
         return httpClient;
     }
 }

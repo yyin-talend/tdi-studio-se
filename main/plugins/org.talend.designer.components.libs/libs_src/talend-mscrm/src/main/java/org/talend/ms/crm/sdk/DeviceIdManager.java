@@ -181,7 +181,14 @@ public final class DeviceIdManager {
             params.setParameter(CoreConnectionPNames.CONNECTION_TIMEOUT, 180000);
 
             HttpClient client = new SystemDefaultHttpClient(params);
-
+            if(TimeoutManager.getSocketTimeout() != null) {
+                client.getParams().setIntParameter(TimeoutManager.SOCKET_TIMEOUT, 
+                        TimeoutManager.getSocketTimeout());
+            }
+            if(TimeoutManager.getConnectionTimeout() != null) {
+                client.getParams().setIntParameter(TimeoutManager.CONNECTION_TIMEOUT, 
+                        TimeoutManager.getConnectionTimeout());
+            }
             // Uncomment following lines to view the traffic in fiddler.
             // HttpHost proxy = new HttpHost("localhost", 8888);
             // client.getParams().setParameter(ConnRoutePNames.DEFAULT_PROXY, proxy);

@@ -37,6 +37,7 @@ import org.apache.commons.httpclient.methods.multipart.MultipartRequestEntity;
 import org.apache.commons.httpclient.methods.multipart.Part;
 import org.apache.commons.httpclient.params.HttpMethodParams;
 import org.talend.sbi.engines.client.i18n.Messages;
+import org.talend.utils.thread.TimeoutManager;
 
 /**
  * @author Andrea Gioia
@@ -108,6 +109,16 @@ class SpagoBITalendEngineClient_0_5_0 implements ISpagoBITalendEngineClient {
 
         version = null;
         client = new HttpClient();
+        
+        if(TimeoutManager.getSocketTimeout() != null) {
+            client.getParams().setIntParameter(TimeoutManager.SOCKET_TIMEOUT, 
+                    TimeoutManager.getSocketTimeout());
+        }
+        if(TimeoutManager.getConnectionTimeout() != null) {
+            client.getParams().setIntParameter(TimeoutManager.CONNECTION_TIMEOUT, 
+                    TimeoutManager.getConnectionTimeout());
+        }
+        
         method = new PostMethod(getServiceUrl(ENGINE_INFO_SERVICE));
 
         // Provide custom retry handler is necessary
@@ -156,6 +167,14 @@ class SpagoBITalendEngineClient_0_5_0 implements ISpagoBITalendEngineClient {
         boolean result = false;
 
         client = new HttpClient();
+        if(TimeoutManager.getSocketTimeout() != null) {
+            client.getParams().setIntParameter(TimeoutManager.SOCKET_TIMEOUT, 
+                    TimeoutManager.getSocketTimeout());
+        }
+        if(TimeoutManager.getConnectionTimeout() != null) {
+            client.getParams().setIntParameter(TimeoutManager.CONNECTION_TIMEOUT, 
+                    TimeoutManager.getConnectionTimeout());
+        }
         method = new PostMethod(getServiceUrl(JOB_UPLOAD_SERVICE));
         deploymentDescriptorFile = null;
 
