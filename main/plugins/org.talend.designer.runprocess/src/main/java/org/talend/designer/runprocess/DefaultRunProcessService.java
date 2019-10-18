@@ -744,6 +744,11 @@ public class DefaultRunProcessService implements IRunProcessService {
     }
 
     @Override
+    public IFolder getCodeSrcFolder(ERepositoryObjectType type, String projectTechName) {
+        return new AggregatorPomsHelper(projectTechName).getCodeSrcFolder(type);
+    }
+
+    @Override
     public ITalendProcessJavaProject getTempJavaProject() {
         return TalendJavaProjectManager.getTempJavaProject();
     }
