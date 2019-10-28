@@ -225,7 +225,6 @@ public class MapperComponent extends AbstractMapComponent implements IHashableIn
         mapperMain.loadModelFromInternalData();
         metadataListOut = mapperMain.getMetadataListOut();
         externalData = mapperMain.buildExternalData();
-        // System.out.println("refreshMapperConnectorData");
         sortOutputsConnectionsLikeVisualOrder();
     }
 
@@ -319,76 +318,6 @@ public class MapperComponent extends AbstractMapComponent implements IHashableIn
     public void setMetadataList(List<IMetadataTable> metadataTablesOut) {
         this.metadataListOut = metadataTablesOut;
     }
-
-    /*
-     * (non-Javadoc)
-     *
-     * @see org.talend.core.model.process.AbstractExternalNode#setExternalXmlData(java.io.InputStream)
-     */
-    // public void loadDataIn(InputStream in, Reader stringReader) throws IOException, ClassNotFoundException {
-    //
-    // if (stringReader != null) {
-    // Unmarshaller unmarshaller = new Unmarshaller(ExternalMapperData.class);
-    // unmarshaller.setWhitespacePreserve(true);
-    // try {
-    // externalData = (ExternalMapperData) unmarshaller.unmarshal(stringReader);
-    // } catch (MarshalException e) {
-    // ExceptionHandler.process(e);
-    // } catch (ValidationException e) {
-    // ExceptionHandler.process(e);
-    // } finally {
-    // if (stringReader != null) {
-    // stringReader.close();
-    // }
-    // }
-    // }
-    //
-    // }
-
-    /*
-     * (non-Javadoc)
-     *
-     * @see org.talend.core.model.process.IExternalNode#loadDataOut(java.io.OutputStream, java.io.Writer)
-     */
-    // public void loadDataOut(final OutputStream out, Writer writer) throws IOException {
-    // // System.out.println("loadDataOut");
-    //
-    // initMapperMain(false);
-    //
-    // mapperMain.createModelFromExternalData(getIncomingConnections(), getOutgoingConnections(), externalData,
-    // getMetadataList(), false);
-    // ExternalMapperData data = mapperMain.buildExternalData();
-    // if (mapperMain != null && data != null) {
-    //
-    // try {
-    // Marshaller marshaller = new Marshaller(writer);
-    // marshaller.marshal(externalData);
-    //
-    // } catch (MarshalException e) {
-    // ExceptionHandler.process(e);
-    // } catch (ValidationException e) {
-    // ExceptionHandler.process(e);
-    // } catch (IOException e) {
-    // ExceptionHandler.process(e);
-    // } finally {
-    // if (writer != null) {
-    // writer.close();
-    // }
-    // }
-    //
-    // // ObjectOutputStream objectOut = null;
-    // // try {
-    // // objectOut = new ObjectOutputStream(out);
-    // // objectOut.writeObject(data);
-    // // } catch (IOException e) {
-    // // ExceptionHandler.process(e);
-    // // } finally {
-    // // if (objectOut != null) {
-    // // objectOut.close();
-    // // }
-    // // }
-    // }
-    // }
 
     @Override
     public void buildExternalData(AbstractExternalData abstractData) {
