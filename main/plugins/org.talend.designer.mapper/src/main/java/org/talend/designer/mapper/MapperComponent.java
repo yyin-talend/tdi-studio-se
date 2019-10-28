@@ -867,7 +867,6 @@ public class MapperComponent extends AbstractMapComponent implements IHashableIn
                 }
             }
         }
-        // TODO Auto-generated method stub
         return super.getIODataComponents();
     }
 
