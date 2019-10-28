@@ -873,27 +873,28 @@ public class MapperComponent extends AbstractMapComponent implements IHashableIn
     }
     
     public boolean isDatasetCompatible(boolean isJobValidForDataset) {
+    	boolean res = true;
     	//spark 2.0 and batch
     	if (!isJobValidForDataset) {
-    		return false;
+    		res = false;
     	}
     	//only two input connections
         if (this.externalData.getInputTables().size() > 2) {
-        	return false;
+        	res = false;
         } // one connection must be all matches and inner
         else if (!isAllMatchInner(this.externalData.getInputTables().get(0)) 
         			&& !isAllMatchInner(this.externalData.getInputTables().get(1))) {
-        		return false;
+        	res = false;
         }      
         //only one output
         if (this.externalData.getOutputTables().size() > 1) {
-        	return false;
+        	res = false;
         } //no rejects
         else if (this.externalData.getOutputTables().get(0).isRejectInnerJoin()
         		|| this.externalData.getOutputTables().get(0).isReject()) {
-        	return false;
+        	res = false;
         }
-        return true;
+        return res;
     }
     
     private boolean isAllMatchInner(ExternalMapperTable table) {
