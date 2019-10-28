@@ -15,6 +15,7 @@ package org.talend.designer.core.ui.editor.nodes;
 import java.util.List;
 
 import org.eclipse.draw2d.ConnectionRouter;
+import org.eclipse.gef.EditPart;
 import org.eclipse.gef.Request;
 import org.eclipse.gef.commands.Command;
 import org.eclipse.gef.editpolicies.GraphicalNodeEditPolicy;
@@ -41,6 +42,7 @@ public class NodeGraphicalEditPolicy extends GraphicalNodeEditPolicy {
     protected Command getConnectionCompleteCommand(CreateConnectionRequest request) {
         ConnectionCreateCommand cmd = (ConnectionCreateCommand) request.getStartCommand();
         cmd.setTarget((Node) getHost().getModel());
+        getHost().setSelected(EditPart.SELECTED_NONE);
         return cmd;
     }
 
