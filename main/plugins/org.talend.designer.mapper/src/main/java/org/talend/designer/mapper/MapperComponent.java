@@ -881,13 +881,15 @@ public class MapperComponent extends AbstractMapComponent implements IHashableIn
     		res = false;
     	}
     	//only two input connections
-        if (this.externalData.getInputTables().size() > 2) {
+
+        if (this.externalData.getInputTables().size() > 2 || this.externalData.getInputTables().size() == 1) {
         	res = false;
         } // one connection must be all matches and inner
         else if (!isAllMatchInner(this.externalData.getInputTables().get(0)) 
         			&& !isAllMatchInner(this.externalData.getInputTables().get(1))) {
         	res = false;
-        }      
+        }              
+
         //only one output
         if (this.externalData.getOutputTables().size() > 1) {
         	res = false;
@@ -899,6 +901,7 @@ public class MapperComponent extends AbstractMapComponent implements IHashableIn
         return res;
     }
     
+
     private boolean isAllMatchInner(ExternalMapperTable table) {
     	return table.getMatchingMode().equals("ALL_MATCHES") && table.isInnerJoin();
     }
