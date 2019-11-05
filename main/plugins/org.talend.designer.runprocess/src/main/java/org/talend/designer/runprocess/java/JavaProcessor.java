@@ -1579,7 +1579,7 @@ public class JavaProcessor extends AbstractJavaProcessor implements IJavaBreakpo
         Set<ModuleNeeded> neededLibraries = JavaProcessorUtilities.getNeededModulesForProcess(process, options);
         boolean isLog4jEnabled = Boolean.parseBoolean(ElementParameterParser.getValue(process, "__LOG4J_ACTIVATE__")); //$NON-NLS-1$
         if (isLog4jEnabled) {
-            JavaProcessorUtilities.addLog4jToModuleList(neededLibraries);
+            JavaProcessorUtilities.addLog4jToModuleList(neededLibraries, process);
         }
         return neededLibraries;
     }
@@ -1588,7 +1588,7 @@ public class JavaProcessor extends AbstractJavaProcessor implements IJavaBreakpo
     public void updateModulesAfterSetLog4j(Collection<ModuleNeeded> modulesNeeded) {
         boolean isLog4jEnabled = Boolean.parseBoolean(ElementParameterParser.getValue(process, "__LOG4J_ACTIVATE__")); //$NON-NLS-1$
         if (isLog4jEnabled) {
-            JavaProcessorUtilities.addLog4jToModuleList(modulesNeeded);
+            JavaProcessorUtilities.addLog4jToModuleList(modulesNeeded, process);
         }
     }
 
