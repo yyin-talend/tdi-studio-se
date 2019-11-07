@@ -210,9 +210,9 @@ if((codePart.equals(ECodePart.END))&&(stat || logstashCurrent)){
       
       class SchemaUtil_<%=cid%> {
           
-          public List<Map<String, String>> getSchema(final <%=NodeUtil.getPrivateConnClassName(conn) %>Struct <%=conn.getName()%>) {
-              List<Map<String, String>> schema = new ArrayList<>();
-              Map<String, String> field = null;
+          public java.util.List<java.util.Map<String, String>> getSchema(final <%=NodeUtil.getPrivateConnClassName(conn) %>Struct <%=conn.getName()%>) {
+              java.util.List<java.util.Map<String, String>> schema = new java.util.ArrayList<>();
+              java.util.Map<String, String> field = null;
           <%
           for(IMetadataColumn column : columns){
               if("id_Dynamic".equals(column.getTalendType())) {
@@ -220,7 +220,7 @@ if((codePart.equals(ECodePart.END))&&(stat || logstashCurrent)){
               routines.system.Dynamic dynamic = <%=conn.getName()%>.<%=column.getLabel()%>;
               if(dynamic != null) {
                   for(routines.system.DynamicMetadata metadata :  dynamic.metadatas) {
-                      field = new HashMap<>();
+                      field = new java.util.HashMap<>();
                       field.put("name", metadata.getName());
                       field.put("origin_name", metadata.getDbName());
                       field.put("iskey", "" + metadata.isKey());
@@ -243,7 +243,7 @@ if((codePart.equals(ECodePart.END))&&(stat || logstashCurrent)){
                   pattern = "";
               }
               %>
-              field = new HashMap<>();
+              field = new java.util.HashMap<>();
               field.put("name", "<%=column.getLabel()%>");
               field.put("origin_name", "<%=column.getOriginalDbColumnName()%>");
               field.put("iskey", "<%=column.isKey()%>");
@@ -262,7 +262,7 @@ if((codePart.equals(ECodePart.END))&&(stat || logstashCurrent)){
           
       }
       
-      List<Map<String, String>> schema_<%=cid%> = new SchemaUtil_<%=cid%>().getSchema(<%=conn.getName()%>);
+      java.util.List<java.util.Map<String, String>> schema_<%=cid%> = new SchemaUtil_<%=cid%>().getSchema(<%=conn.getName()%>);
       <%
       INode target = conn.getTarget();
       String targetNodeId = target.getUniqueName();

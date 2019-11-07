@@ -296,7 +296,7 @@
 	                    }else{
 	                        String value = org.talend.core.model.utils.NodeUtil.getRuntimeParameterValue(node, ep);
 	                        %>
-	                        component_parameters.put("<%=name%>", <%=value%>);
+	                        component_parameters.put("<%=name%>", String.valueOf(<%=value%>));
 	                    <%
 	                    }
 	                }
