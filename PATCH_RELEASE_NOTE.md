@@ -82,3 +82,4 @@ The following files are installed by this patch:
 - {Talend\_Studio\_path}/plugins/org.talend.designer.components.localprovider\_7.2.1.20190614\_0309/components/templates/DB/Row/AbstractDBRowBegin.javajet
 - {Talend\_Studio\_path}/plugins/org.talend.designer.components.localprovider\_7.2.1.20190614\_0309/components/templates/DB/Row/HelpClass.javajet
 - {Talend\_Studio\_path}/plugins/org.talend.designer.components.localprovider\_7.2.1.20190614\_0309/components/templates/Log4j/Log4jDBConnUtil.javajet
+- {Talend\_Studio\_path}/plugins/org.talend.repository.metadata\_7.2.1.20190610_1534.jar
