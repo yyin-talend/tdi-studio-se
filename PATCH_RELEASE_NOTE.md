@@ -9,8 +9,8 @@ product:
 
 | Info             | Value |
 | ---------------- | ---------------- |
-| Patch Name       | Patch\_20191114\_TPS-3517\_v1-7.1.1 |
-| Release Date     | 2019-11-14 |
+| Patch Name       | Patch\_20191120\_TPS-3517\_v1-7.1.1 |
+| Release Date     | 2019-11-20 |
 | Target Version   | 20181026_1147-V7.1.1 |
 | Product affected | Talend Studio |
 
