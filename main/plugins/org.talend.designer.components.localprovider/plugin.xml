@@ -32,6 +32,20 @@
       </jetProvider>
    </extension>
 
+
+    <extension
+         point="org.talend.core.migrationTask">
+      <projecttask
+        beforeLogon="false"
+        breaks="7.0.1"
+        class="org.talend.repository.model.migration.SAPBAPIParameterTypeMigrationTask"
+        description="adjust the tsapbapi ui"
+        id="org.talend.repository.model.migration.SAPBAPIParameterTypeMigrationTask"
+        name="SAPBAPIParameterTypeMigrationTask"
+        version="7.0.1">
+      </projecttask>
+   </extension>
+   
 	<extension point="org.talend.core.runtime.librariesNeeded">
 
 
