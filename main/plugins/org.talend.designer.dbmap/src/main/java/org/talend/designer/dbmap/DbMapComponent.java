@@ -465,9 +465,7 @@ public class DbMapComponent extends AbstractMapComponent {
         }
         if (externalData != null) {
             // rename metadata column name
-            List<ExternalDbMapTable> tables = new ArrayList<ExternalDbMapTable>();
-            List<ExternalDbMapTable> inputTables = new ArrayList<ExternalDbMapTable>(externalData.getInputTables());
-            tables.addAll(inputTables);
+            List<ExternalDbMapTable> tables = new ArrayList<ExternalDbMapTable>(externalData.getInputTables());
             tables.addAll(externalData.getOutputTables());
             ExternalDbMapTable tableFound = null;
             for (ExternalDbMapTable table : tables) {
@@ -483,23 +481,12 @@ public class DbMapComponent extends AbstractMapComponent {
                     break;
                 }
             }
-            List<String> alias = new ArrayList<String>();
-            alias.add(conectionName);
-            for(ExternalDbMapTable table : inputTables) {
-                if (table.getTableName().equals(conectionName)) {
-                    if(table.getAlias() != null) {
-                        alias.add(table.getAlias());
-                    }
-                }
-            }
 
             // it is necessary to update expressions only if renamed column come from input table
-            for(String connName : alias) {
-                if (tableFound != null && externalData.getInputTables().indexOf(tableFound) != -1) {
-                    TableEntryLocation oldLocation = new TableEntryLocation(connName, oldColumnName);
-                    TableEntryLocation newLocation = new TableEntryLocation(connName, newColumnName);
-                    replaceLocationsInAllExpressions(oldLocation, newLocation, false);
-                }
+            if (tableFound != null && externalData.getInputTables().indexOf(tableFound) != -1) {
+                TableEntryLocation oldLocation = new TableEntryLocation(conectionName, oldColumnName);
+                TableEntryLocation newLocation = new TableEntryLocation(conectionName, newColumnName);
+                replaceLocationsInAllExpressions(oldLocation, newLocation, false);
             }
 
         }
@@ -559,6 +546,11 @@ public class DbMapComponent extends AbstractMapComponent {
             
             if (currentLocation.equals(oldLocation)) {
                 currentExpression = dataMapExpressionParser.replaceLocation(currentExpression, currentLocation, newLocation);
+            }else if(entry.getAlias() != null && entry.getTableName() != null) {
+                if(entry.getTableName().equals(oldLocation.tableName) && entry.getAlias().equals(currentLocation.tableName)) {
+                    TableEntryLocation tempLocation = new TableEntryLocation(entry.getAlias(), newLocation.columnName);
+                    currentExpression = dataMapExpressionParser.replaceLocation(currentExpression, currentLocation, tempLocation);
+                }
             }
         } // for (int i = 0; i < tableEntryLocations.length; i++) {
         entry.setExpression(currentExpression);
