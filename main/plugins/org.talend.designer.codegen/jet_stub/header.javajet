@@ -372,7 +372,7 @@ public <%=JavaTypesManager.getTypeToGenerate(ctxParam.getType(),true)%> get<%=Ch
 	%>
 
 <%
-	boolean enable_runtime_lineage_log = true;//TODO use a ui value to declide it
+	boolean enable_runtime_lineage_log = Boolean.getBoolean("enable_runtime_lineage_log");
 	
 	INode jobCatcherNode = null;
 	for (INode nodeInProcess : processNodes) {

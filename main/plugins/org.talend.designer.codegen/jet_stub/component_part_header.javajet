@@ -248,7 +248,7 @@
 		log.logCompSetting();
 		
 		if(logstashCurrent) {
-			boolean enable_runtime_lineage_log = true;//TODO use a ui value to declide it
+			boolean enable_runtime_lineage_log = Boolean.getBoolean("enable_runtime_lineage_log");
 			if(enable_runtime_lineage_log) {
 			%>
 			class ParameterUtil_<%=cid%>{
