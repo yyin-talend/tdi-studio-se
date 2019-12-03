@@ -8,7 +8,7 @@ product: https://talend.poolparty.biz/coretaxonomy/17
 
 | Info             | Value |
 | ---------------- | ---------------- |
-| Patch Name       | Patch\_20191203\_TPS-3592\_v2 |
+| Patch Name       | Patch\_20191203\_TPS-3592\_v3 |
 | Release Date     | 2019-12-03 |
 | Target Version   | 20190620\_1446-V7.2.1 |
 | Product affected | Talend Studio |
