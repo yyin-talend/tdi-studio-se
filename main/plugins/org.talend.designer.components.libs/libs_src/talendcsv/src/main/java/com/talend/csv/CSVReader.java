@@ -1,59 +1,27 @@
 package com.talend.csv;
 
-import java.io.BufferedReader;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.Reader;
-import java.io.StringReader;
+import java.io.*;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
+import java.util.function.Consumer;
 
-public class CSVReader {
+public class CSVReader implements AutoCloseable {
     
-    private Reader reader;
-    
-    private char separator = ',';
+    private final Source source;
 
-    private char quotechar = '"';
-    
-    private char escapechar = '"';
+    private final CSVConfig config = new CSVConfig();
 
-    private String lineEnd;
-
-    private boolean skipEmptyRecords = false;
-    
-    private boolean trimWhitespace = true;
-    
-    private static final int BUFFER_SIZE = 4 * 1024;
-    
-    private static final int FETCH_SIZE = 10 * 50;
-    
-    private char[] buffer = new char[FETCH_SIZE]; 
-    private int currentPosition = 0;
-    private int bufferCount = 0;
-    
-    private boolean hasMoreData = true;
-    
     private boolean hasNext = false;
-    
-    private boolean inColumn = false;
-    
-    private boolean escaping = false;
-    
-    private char previousChar = '\0';
-    
+
     private String[] values = new String[10];
     
     private HeadersReader headersReader = new HeadersReader();
     
     private int columnCount = 0;
-    
-    private boolean inQuote = false; 
-    
-    private StringBuilder sb = new StringBuilder(16);
-    
+
     private boolean storeRawRecord = false;
-    private StringBuilder stringBuilder = new StringBuilder(16 * 10);
+
     private String rawRecord = "";
     
     public CSVReader(String filename,char separator,String charset) throws IOException {
@@ -65,8 +33,8 @@ public class CSVReader {
     }
 
     public CSVReader(Reader reader,char separator) {
-        this.reader = new BufferedReader(reader,BUFFER_SIZE);
-        this.separator = separator;
+        this.source = new Source(reader);
+        this.config.setSeparator(separator);
     }
     
     public static CSVReader parse(String content) {
@@ -79,36 +47,36 @@ public class CSVReader {
     }
     
     public CSVReader setLineEnd(String lineEnd) {
-        this.lineEnd = lineEnd;
+        this.config.setLineEnd(lineEnd);
         return this;
     }
 
     public CSVReader setSeparator(char separator) {
-        this.separator = separator;
+        this.config.setSeparator(separator);
         return this;
     }
 
     public CSVReader setEscapeChar(char escapechar) {
-        this.escapechar = escapechar;
+        this.config.setEscapechar(escapechar);
         return this;
     }
     
     public CSVReader setQuoteChar(char quotechar) {
-        this.quotechar = quotechar;
+        this.config.setQuotechar(quotechar);
         return this;
     }
     
     public char getQuoteChar() {
-        return this.quotechar;
+        return this.config.getQuotechar();
     }
     
     public CSVReader setTrimWhitespace(boolean trimWhitespace) {
-        this.trimWhitespace = trimWhitespace;
+        this.config.setTrimWhitespace(trimWhitespace);
         return this;
     }
     
     public CSVReader setSkipEmptyRecords(boolean skipEmptyRecords) {
-        this.skipEmptyRecords = skipEmptyRecords;
+        this.config.setSkipEmptyRecords(skipEmptyRecords);
         return this;
     }
     
@@ -120,310 +88,33 @@ public class CSVReader {
     public String getRawRecord() {
         return rawRecord;
     }
-    
-    public void endRecord() {
-        hasNext = true;
+
+
+    private State state = new StartState(null);
+
+    private void toRecord(List<String> fields) {
+        this.values = fields.toArray(new String[fields.size()]);
+        this.hasNext = true;
     }
-    
-    public void endColumn() {
-        inColumn = false;
-        
-        String currentValue = sb.toString();
-        
-        if(trimWhitespace && !inQuote) {
-            currentValue = trimTail(currentValue);
-        }
-        
-        if (columnCount == values.length) {
-            int newLength = values.length * 2;
 
-            String[] holder = new String[newLength];
+    private CSVReader.ResultAction result = new CSVReader.ResultAction(this::toRecord);
 
-            System.arraycopy(values, 0, holder, 0, values.length);
-
-            values = holder;
-        }
-
-        values[columnCount] = currentValue;
-        
-        columnCount++;
-        
-        sb.setLength(0);
-    }
-    
     public boolean readNext() throws IOException {
-        columnCount = 0;
+
         hasNext = false;
-        
-        rawRecord = "";
-        
-        if(!hasMoreData) {
+        if (!this.source.hasMoreData()) {
             return false;
         }
-        
-        while(hasMoreData && !hasNext) {
-            if(arriveEnd()) {
-                fill();
-                continue;
-            }
-            
-            char currentChar = buffer[currentPosition];
-            
-            inQuote = false;
-            
-            if(quotechar!='\0' && currentChar == quotechar) {//quote char as start of column
-                inColumn = true;
-                inQuote = true;
-                currentPosition++;
-                escaping = false;
-                
-                boolean previousCharAsQuote = false;
-                boolean deleteTrailNoUseChars = false;
-                
-                if(storeRawRecord) {
-                    stringBuilder.append(currentChar);
-                }
-                
-                while(hasMoreData && inColumn) {
-                    if(arriveEnd()) {
-                        fill();
-                        continue;
-                    }
-                    
-                    currentChar = buffer[currentPosition];
-                    if(deleteTrailNoUseChars){
-                        if(currentChar == separator) {
-                            endColumn();
-                            
-                            if(storeRawRecord) {
-                                stringBuilder.append(currentChar);
-                            }
-                        } else if((lineEnd == null && (currentChar == '\n' || currentChar == '\r'))
-                                || (lineEnd!=null && currentChar == lineEnd.charAt(0))) {
-                            endColumn();
-                            endRecord();
-                        } else {
-                            if(storeRawRecord) {
-                                stringBuilder.append(currentChar);
-                            }
-                        }
-                    } else if(currentChar == quotechar) {
-                        if(escaping) {//quote char as text
-                            sb.append(currentChar);
-                            escaping = false;
-                            previousCharAsQuote = false;
-                        } else {//quote char as escape or end of column 
-                            if(escapechar!='\0' && currentChar == escapechar) {
-                                escaping = true;
-                            } 
-                            previousCharAsQuote = true;
-                        }
-                        
-                        if(storeRawRecord) {
-                            stringBuilder.append(currentChar);
-                        }
-                    } else if(escapechar!='\0' && escapechar!=quotechar && escaping) {
-                        switch (currentChar) {
-                        case 'n':
-                            sb.append('\n');
-                            break;
-                        case 'r':
-                            sb.append('\r');
-                            break;
-                        case 't':
-                            sb.append('\t');
-                            break;
-                        case 'b':
-                            sb.append('\b');
-                            break;
-                        case 'f':
-                            sb.append('\f');
-                            break;
-                        case 'e':
-                            sb.append('\u001B');
-                            break;
-                        case 'v':
-                            sb.append('\u000B');
-                            break;
-                        case 'a':
-                            sb.append('\u0007');
-                            break;
-                        default : 
-                            sb.append(currentChar);
-                            break;
-                        }
-                        
-                        escaping = false;
-                        
-                        if(storeRawRecord) {
-                            stringBuilder.append(currentChar);
-                        }
-                    } else if(escapechar!='\0' && currentChar == escapechar) {
-                        escaping =  true;
-                        
-                        if(storeRawRecord) {
-                            stringBuilder.append(currentChar);
-                        }
-                    } else if(previousCharAsQuote) {//quote char as end of column
-                        if(currentChar == separator) {
-                            endColumn();
-                            
-                            if(storeRawRecord) {
-                                stringBuilder.append(currentChar);
-                            }
-                        } else if((lineEnd == null && (currentChar == '\n' || currentChar == '\r'))
-                                || (lineEnd!=null && currentChar == lineEnd.charAt(0))) {
-                            endColumn();
-                            endRecord();
-                        } else {
-                            deleteTrailNoUseChars = true;
-                            
-                            if(storeRawRecord) {
-                                stringBuilder.append(currentChar);
-                            }
-                        }
-                        
-                        previousCharAsQuote = false;
-                    } else {
-                        sb.append(currentChar);
-                        
-                        if(storeRawRecord) {
-                            stringBuilder.append(currentChar);
-                        }
-                    }
-                    
-                    previousChar = currentChar;
-                    
-                    currentPosition++;
-                }
-            } else if(currentChar == separator) {
-                previousChar = currentChar;
-                endColumn();
-                currentPosition++;
-                
-                if(storeRawRecord) {
-                    stringBuilder.append(currentChar);
-                }
-            } else if (lineEnd!=null && currentChar == lineEnd.charAt(0)) {
-                if (inColumn || columnCount > 0 || !skipEmptyRecords) {
-                    endColumn();
-                    endRecord();
-                }
-                
-                currentPosition++;
-                previousChar = currentChar;
-            } else if(lineEnd==null && (currentChar == '\r' || currentChar == '\n')) {
-                if (inColumn || columnCount > 0 || (!skipEmptyRecords && (currentChar == '\r' || previousChar!='\r'))) {
-                    endColumn();
-                    endRecord();
-                }
-                
-                currentPosition++;
-                previousChar = currentChar;
-            } else if(trimWhitespace && (currentChar == ' ' || currentChar == '\t')) {
-                inColumn = true;
-                currentPosition++;
-                
-                if(storeRawRecord) {
-                    stringBuilder.append(currentChar);
-                }
-            } else {
-                inColumn = true;
-                escaping = false;
-                
-                while(hasMoreData && inColumn) {
-                    if(arriveEnd()) {
-                        fill();
-                        continue;
-                    }
-                    
-                    currentChar = buffer[currentPosition];
-                    
-                    if(quotechar == '\0' && escapechar != '\0' && currentChar == escapechar) {
-                        if(escaping) {
-                            sb.append(currentChar);
-                            escaping = false;
-                        } else {
-                            escaping = true;
-                        }
-                        
-                        if(storeRawRecord) {
-                            stringBuilder.append(currentChar);
-                        }
-                    } else if(escapechar!='\0' && escapechar!=quotechar && escaping) {
-                        switch (currentChar) {
-                        case 'n':
-                            sb.append('\n');
-                            break;
-                        case 'r':
-                            sb.append('\r');
-                            break;
-                        case 't':
-                            sb.append('\t');
-                            break;
-                        case 'b':
-                            sb.append('\b');
-                            break;
-                        case 'f':
-                            sb.append('\f');
-                            break;
-                        case 'e':
-                            sb.append('\u001B');
-                            break;
-                        case 'v':
-                            sb.append('\u000B');
-                            break;
-                        case 'a':
-                            sb.append('\u0007');
-                            break;
-                        default : 
-                            sb.append(currentChar);
-                            break;
-                        }
-                        
-                        escaping = false;
-                        
-                        if(storeRawRecord) {
-                            stringBuilder.append(currentChar);
-                        }
-                    } else if(currentChar == separator) {
-                        endColumn();
-                        
-                        if(storeRawRecord) {
-                            stringBuilder.append(currentChar);
-                        }
-                    } else if((lineEnd == null && (currentChar == '\n' || currentChar == '\r'))
-                            || (lineEnd!=null && currentChar == lineEnd.charAt(0))) {
-                        endColumn();
-                        endRecord();
-                    } else {
-                        sb.append(currentChar);
-                        
-                        if(storeRawRecord) {
-                            stringBuilder.append(currentChar);
-                        }
-                    }
-                    
-                    previousChar = currentChar;
-                    currentPosition++;
-                    
-                }
-            }
-            
+
+        while(this.source.hasMoreData() && !hasNext) {
+            char currentChar = this.source.currentChar();
+            this.state = this.state.accept(currentChar, this.config, result);
+            this.source.next();
         }
-        
-        if(inColumn || previousChar == separator) {
-            endColumn();
-            endRecord();
+        if (!this.source.hasMoreData()) {
+            this.state = this.state.accept('\0', this.config, result); // end of file.
         }
-        
-        if(storeRawRecord) {
-            rawRecord = stringBuilder.toString();
-            stringBuilder.setLength(0);
-        }
-        
         return hasNext;
-        
     }
     
     public String get(int index) {
@@ -435,55 +126,25 @@ public class CSVReader {
     }
     
     public String[] getValues() {
-        String[] result = new String[columnCount];
-        System.arraycopy(values, 0, result, 0, columnCount);
+        String[] result = new String[values.length];
+        System.arraycopy(values, 0, result, 0, values.length);
         return result;
     }
-    
-    private void fill() throws IOException {
-        int count = reader.read(buffer, 0, buffer.length);
-        currentPosition = 0;
-        bufferCount = count;
-        if(count == -1) {
-            hasMoreData = false;
-        }
-    }
-    
-    private boolean arriveEnd() {
-        return currentPosition == bufferCount;
-    }
-    
-    private String trimTail(String content) {
-        int len = content.length();
-        int newLen = len;
-        
-        while (newLen > 0) {
-            char tail = content.charAt(newLen - 1);
-            if(tail != ' ' && tail != '\t') {
-                break;
-            }
-            newLen--;
-        }
-        
-        if(newLen != len) {
-            content = content.substring(0,newLen);
-        }
-        
-        return content;
-    }
-    
+
+
+    @Override
     public void close() throws IOException {
-        reader.close();
+        this.source.close();
         headersReader.clear();
     }
 
     //Added 20141016 TDQ-9496
     public int getCurrentRecord(){
-        return this.currentPosition;
+        return this.source.getCurrentPosition();
     }
     
     public char getSeperator(){
-        return separator;
+        return this.config.getSeparator();
     }
     
     /**
@@ -493,6 +154,8 @@ public class CSVReader {
      */
     public boolean readHeaders() throws IOException {
         boolean result = readNext();
+
+        columnCount = this.values.length;
 
         headersReader.length = columnCount;
 
@@ -505,7 +168,7 @@ public class CSVReader {
         }
 
         if (result) {
-            currentPosition--;
+            this.source.decreaseCurrentPosition();
         }
 
         columnCount = 0;
@@ -561,4 +224,307 @@ public class CSVReader {
         }
     }
     /**End of added by TDQ-9496 **/
+
+
+    static class ResultAction {
+
+        private final List<String> fields = new ArrayList<>();
+
+        private final StringBuilder field = new StringBuilder();
+
+        private final Consumer<List<String>> recordConsumer;
+
+        private boolean doTrimTail;
+
+        public ResultAction(Consumer<List<String>> recordConsumer) {
+            this.recordConsumer = recordConsumer;
+        }
+
+        public void addToCurrentField(char c) {
+            this.field.append(c);
+        }
+
+        public void addToCurrentField(String c) {
+            this.field.append(c);
+        }
+
+        public void endField() {
+            if (this.doTrimTail) {
+                this.trimTail();
+            }
+            this.fields.add(this.field.toString());
+            this.field.setLength(0);
+        }
+
+        public void endRecord(boolean skipEmpty) {
+            if (!skipEmpty || this.fields.size() > 0) {
+                this.recordConsumer.accept(this.fields);
+            }
+            this.fields.clear();
+        }
+
+        public void setDoTrimTail(boolean doTrimTail) {
+            this.doTrimTail = doTrimTail;
+        }
+
+        public List<String> getFields() {
+            return fields;
+        }
+
+        private void trimTail() {
+            boolean doTrim = true;
+            while (doTrim) {
+                doTrim = this.field.length() > 0;
+                if (doTrim) {
+                    char lastChar = this.field.charAt(this.field.length() - 1);
+                    doTrim = lastChar == ' ' || lastChar == '\t';
+                }
+                if (doTrim) {
+                    this.field.setLength(this.field.length() - 1);
+                }
+            }
+        }
+    }
+
+    static abstract class State {
+        protected final State preceding;
+
+        public State(State preceding) {
+            this.preceding = preceding;
+        }
+
+        public State backToStart() {
+            // back to start.
+            State prec = this.preceding;
+            while (prec != null
+                    && !(StartState.class.isInstance(prec))
+                    && prec.preceding != null) {
+                prec = prec.preceding;
+            }
+            return prec;
+        }
+
+        public abstract State accept(char newChar, CSVConfig config, ResultAction action);
+    }
+
+    static class EscapeState extends State {
+        public EscapeState(State preceding) {
+            super(preceding);
+        }
+
+        @Override
+        public State accept(char currentChar, CSVConfig config, ResultAction action) {
+            char real = currentChar;
+
+            switch (currentChar) {
+                case 'n':
+                    real = '\n';
+                    break;
+                case 'r':
+                    real = '\r';
+                    break;
+                case 't':
+                    real = '\t';
+                    break;
+                case 'b':
+                    real = '\b';
+                    break;
+                case 'f':
+                    real = '\f';
+                    break;
+                case 'e':
+                    real = '\u001B';
+                    break;
+                case 'v':
+                    real = '\u000B';
+                    break;
+                case 'a':
+                    real = '\u0007';
+                    break;
+                default:
+                    break;
+            }
+
+            action.addToCurrentField(real);
+            return this.preceding;
+        }
+    }
+
+    static class StartState extends State {
+
+       // private final StringBuilder blanksElement = new StringBuilder();
+
+        public StartState(State preceding) {
+            super(preceding);
+        }
+
+        @Override
+        public State accept(char newChar, CSVConfig config, ResultAction action) {
+            /*if (newChar == '\t' || newChar == ' ') {
+                blanksElement.append(newChar);
+                return this;
+            }*/
+            if ((newChar == '\t' || newChar == ' ') && config.isTrimWhitespace()) {
+                return this;
+            }
+            if (newChar == '\0') {
+                //this.blanksElement.setLength(0);
+                action.endRecord(config.isSkipEmptyRecords());
+                return this;
+            }
+            if (newChar == config.getQuotechar()) {
+                //this.blanksElement.setLength(0);
+                return new QuotedFieldState(this);
+            }
+            if (config.isSeparator(newChar)) {
+               // action.addToCurrentField(this.blanksElement.toString()); // blank field.
+                action.setDoTrimTail(config.isTrimWhitespace());
+                action.endField();
+               // this.blanksElement.setLength(0);
+                return this;
+            }
+            if (config.isLineEnd(newChar, 0)) {
+                EndLineState state = new EndLineState(this);
+                return state.accept(newChar, config, action);
+            }
+
+            //action.addToCurrentField(this.blanksElement.toString()); // blank field.
+            //this.blanksElement.setLength(0);
+            UnQuotedFieldState nextStep = new UnQuotedFieldState(this);
+            nextStep.accept(newChar, config, action);
+            return nextStep;
+
+        }
+    }
+
+    static class QuotedFieldState extends State {
+
+        private final StringBuilder next = new StringBuilder();
+
+        private boolean quoteClosed = false;
+
+        public QuotedFieldState(State preceding) {
+            super(preceding);
+        }
+
+        @Override
+        public State accept(char newChar, CSVConfig config, ResultAction action) {
+            action.setDoTrimTail(false);
+            if (config.isQuoteChar(newChar)) {
+                if (!quoteClosed) {
+                    quoteClosed = true;
+                    this.next.append(newChar);
+                } else if (config.isEscapechar(newChar)) { // double quote and quote is also escape char.
+                    quoteClosed = false;
+                    this.next.append(newChar);
+                }
+                return this;
+            }
+            if (!quoteClosed) {
+                if (config.isEscapechar(newChar)) {
+                    return new EscapeState(this);
+                }
+
+                action.addToCurrentField(newChar);
+                return this;
+            }
+            if (newChar == '\0') {
+                next.setLength(0);
+                action.setDoTrimTail(false);
+                action.endField();
+                action.endRecord(config.isSkipEmptyRecords());
+                return this.preceding;
+            }
+            if (newChar == ' ' || newChar == '\t') {
+                this.next.append(newChar);
+                return this;
+            }
+            if (config.isSeparator(newChar)) {
+                next.setLength(0);
+                action.endField();
+                return this.preceding;
+            }
+            if (config.isLineEnd(newChar, 0)) {
+                next.setLength(0);
+                quoteClosed = false;
+                action.setDoTrimTail(false);
+                EndLineState state = new EndLineState(this);
+                return state.accept(newChar, config, action);
+            }
+
+            // field continue
+            action.addToCurrentField(next.toString());
+            action.addToCurrentField(newChar);
+            next.setLength(0);
+            quoteClosed = false;
+            return this;
+        }
+    }
+
+
+    static class EndLineState extends State {
+        private int pos = 0;
+        private final StringBuilder builder = new StringBuilder(4);
+
+        public EndLineState(State preceding) {
+            super(preceding);
+        }
+
+        @Override
+        public State accept(char newChar, CSVConfig config, ResultAction action) {
+
+            // end of line continue
+            this.builder.append(newChar);
+
+            if (config.isLineSep(this.builder.toString())) {
+                // end of line complete
+                action.endField();
+                action.endRecord(config.isSkipEmptyRecords());
+
+                return this.backToStart();
+            }
+
+            if (config.isLineEnd(newChar, pos)) {
+                this.pos++;
+                return this;
+            }
+            // not end of line.
+            action.addToCurrentField(builder.toString());
+            //this.preceding.accept(newChar, config, action);
+            this.pos = 0;
+            this.builder.setLength(0);
+            return this.preceding;
+        }
+    }
+
+    static class UnQuotedFieldState extends State {
+
+        public UnQuotedFieldState(State preceding) {
+            super(preceding);
+        }
+
+        @Override
+        public State accept(char newChar, CSVConfig config, ResultAction action) {
+
+            action.setDoTrimTail(config.isTrimWhitespace());
+
+            if (config.isSeparator(newChar)) {
+                action.endField();
+                return this.preceding;
+            }
+            if (newChar == '\0') {
+                action.endField();
+                action.endRecord(config.isSkipEmptyRecords());
+                return this.preceding;
+            }
+            if (config.isLineEnd(newChar, 0)) {
+                EndLineState state = new EndLineState(this);
+                return state.accept(newChar, config, action);
+            }
+            action.addToCurrentField(newChar);
+            return this;
+        }
+    }
+
+
 }

@@ -18,7 +18,7 @@ class CSVReaderTest {
                 "\"001\",\"CN\",\"This is some \\\\ttext\",\"event_200\"\n" +                // normal line
                 "\"002\",\"CN\",\"This is some text, with sep\",\"event_250\"\n" +      // test field sep inside value
                 "\"003\",\"CN\",\"This is some \\\"text\\\" inside value\",\"event_300\"\n" +  // escape quote inside value
-             //   "\"004\",\"CN\",\"This is some other \"text\" inside value\",\"event_400\"\n" + // unescape quote inside value
+                "\"004\",\"CN\",\"This is some other \"text\" inside value\",\"event_400\"\n" + // unescape quote inside value
                 "\"005\"  , \"CN\" , \"This is some text\"  ,  event_500\n" + // spaced field
                 "006, CN , \"Text\" ,\"  xx  \" \n" +         // unquoted fields.
                 "007,,\"\",\"  xx  \" ";                                      // empty record.
@@ -40,7 +40,7 @@ class CSVReaderTest {
                 () -> this.checkNextValues("normal", reader, "001", "CN", "This is some \\ttext", "event_200"),
                 () -> this.checkNextValues("field sep in value", reader, "002", "CN", "This is some text, with sep", "event_250"),
                 () -> this.checkNextValues("escape quote inside value", reader, "003", "CN", "This is some \"text\" inside value", "event_300"),
-                //() -> this.checkNextValues("unescape quote inside value", reader, "004", "CN", "This is some other \"text\" inside value", "event_400"),
+                () -> this.checkNextValues("unescape quote inside value", reader, "004", "CN", "This is some other \"text\" inside value", "event_400"),
                 () -> this.checkNextValues("spaced field", reader, "005", " \"CN\" "," \"This is some text\"  ", "  event_500"),
                 () -> this.checkNextValues("unquoted fields", reader, "006", " CN "," \"Text\" ", "  xx  "),
                 () -> this.checkNextValues("empty record", reader, "007", "", "", "  xx  ")
@@ -54,13 +54,13 @@ class CSVReaderTest {
         Assertions.assertTrue(reader2.readNext());
 
         Assertions.assertAll(
-                () -> this.checkNextValues("normal", reader2, "001", "CN", "This is some \\ttext", "event_200"),
-                () -> this.checkNextValues("field sep in value", reader2, "002", "CN", "This is some text, with sep", "event_250"),
-                () -> this.checkNextValues("escape quote inside value", reader2, "003", "CN", "This is some \"text\" inside value", "event_300"),
-                //() -> this.checkNextValues("unescape quote inside value", reader2, "004", "CN", "This is some other \"text\" inside value", "event_400"),
-                () -> this.checkNextValues("spaced field", reader2, "005", "CN","This is some text", "event_500"),
-                () -> this.checkNextValues("unquoted fields", reader2, "006", "CN","Text", "  xx  "),
-                () -> this.checkNextValues("empty record", reader2, "007", "", "", "  xx  ")
+                () -> this.checkNextValues("normal 2", reader2, "001", "CN", "This is some \\ttext", "event_200"),
+                () -> this.checkNextValues("field sep in value 2", reader2, "002", "CN", "This is some text, with sep", "event_250"),
+                () -> this.checkNextValues("escape quote inside value 2", reader2, "003", "CN", "This is some \"text\" inside value", "event_300"),
+                () -> this.checkNextValues("unescape quote inside value", reader2, "004", "CN", "This is some other \"text\" inside value", "event_400"),
+                () -> this.checkNextValues("spaced field 2", reader2, "005", "CN","This is some text", "event_500"),
+                () -> this.checkNextValues("unquoted fields 2", reader2, "006", "CN","Text", "  xx  "),
+                () -> this.checkNextValues("empty record 2", reader2, "007", "", "", "  xx  ")
         );
         Assertions.assertFalse(reader2.readNext());
     }
@@ -77,7 +77,7 @@ class CSVReaderTest {
         );
     }
 
-   // @Test
+    @Test
     void lineSepTest() throws IOException {
 
         String lines = "line@1@#line#2";
@@ -92,7 +92,7 @@ class CSVReaderTest {
 
     }
 
-   // @Test
+    @Test
     void testEscapeIsQuote() throws IOException {
         String lines = "\"L\"\"in\"te 1\"\nLine\"t\"\"2";
         final CSVReader reader = new CSVReader(new StringReader(lines), ',');
