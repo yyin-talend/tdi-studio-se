@@ -71,10 +71,6 @@ import org.talend.repository.ui.utils.UpdateLog4jJarUtils;
 public class JavaProcessUtil {
 
     public static Set<ModuleNeeded> getNeededModules(final IProcess process, int options) {
-        return getNeededModules(process, options, false);
-    }
-
-    public static Set<ModuleNeeded> getNeededModules(final IProcess process, int options, boolean isOriganlModuleNeeded) {
         List<ModuleNeeded> modulesNeeded = new ArrayList<ModuleNeeded>();
         // see bug 4939: making tRunjobs work loop will cause a error of "out of memory"
         Set<ProcessItem> searchItems = new HashSet<ProcessItem>();
@@ -92,7 +88,10 @@ public class JavaProcessUtil {
 
         // call recursive function to get all dependencies from job & subjobs
         getNeededModules(process, searchItems, modulesNeeded, options);
-
+        Set<ModuleNeeded> childrenModules = null;
+        if (!BitwiseOptionUtils.containOption(options, TalendProcessOptionConstants.MODULES_WITH_CHILDREN)) {
+            childrenModules = getChildrenModulesFromProcess(process, searchItems);
+        }
         /*
          * Remove duplicates in the modulesNeeded list after having prioritize the modules. Details in the
          * ModuleNeededComparator class.
@@ -123,10 +122,9 @@ public class JavaProcessUtil {
         if (BitwiseOptionUtils.containOption(options, TalendProcessOptionConstants.MODULES_EXCLUDE_SHADED)) {
             new BigDataJobUtil(process).removeExcludedModules(modulesNeeded);
         }
-        if (!isOriganlModuleNeeded) {
-            UpdateLog4jJarUtils.addLog4jToModuleList(modulesNeeded, Log4jPrefsSettingManager.getInstance().isSelectLog4j2(),
-                    process);
-        }
+
+        UpdateLog4jJarUtils.addLog4jToModuleList(modulesNeeded, childrenModules,
+                Log4jPrefsSettingManager.getInstance().isSelectLog4j2(), process);
         return new HashSet<ModuleNeeded>(modulesNeeded);
     }
 
@@ -191,6 +189,10 @@ public class JavaProcessUtil {
             if (item instanceof ProcessItem) {
                 modulesNeeded.addAll(ModulesNeededProvider.getModulesNeededForProcess((ProcessItem) item, process));
             }
+        } else {
+            Set<ModuleNeeded> optionalJarsOnlyForRoutines = new HashSet<ModuleNeeded>();
+            optionalJarsOnlyForRoutines.addAll(ModulesNeededProvider.getSystemRunningModules());
+            modulesNeeded.addAll(optionalJarsOnlyForRoutines);
         }
 
         boolean isTestcaseProcess = ProcessUtils.isTestContainer(process);
@@ -375,6 +377,22 @@ public class JavaProcessUtil {
         }
 
         return new HashSet<ModuleNeeded>(modulesNeeded);
+    }
+
+    private static Set<ModuleNeeded> getChildrenModulesFromProcess(final IProcess process, Set<ProcessItem> searchItems) {
+        Set<ModuleNeeded> childrenModules = new HashSet<ModuleNeeded>();
+        List<INode> nodeList = (List<INode>) process.getGeneratingNodes();
+        if (nodeList != null) {
+
+            for (INode node : nodeList) {
+                List<ModuleNeeded> findeModules = getChildrenModules(node, searchItems,
+                        TalendProcessOptionConstants.MODULES_WITH_CHILDREN);
+                if (findeModules.size() > 0) {
+                    childrenModules.addAll(findeModules);
+                }
+            }
+        }
+        return childrenModules;
     }
 
     static List<ModuleNeeded> getChildrenModules(final INode node, Set<ProcessItem> searchItems, int options) {
