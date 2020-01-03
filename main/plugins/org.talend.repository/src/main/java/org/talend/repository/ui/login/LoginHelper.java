@@ -40,6 +40,7 @@ import org.eclipse.ui.PlatformUI;
 import org.talend.commons.CommonsPlugin;
 import org.talend.commons.exception.BusinessException;
 import org.talend.commons.exception.CommonExceptionHandler;
+import org.talend.commons.exception.InformException;
 import org.talend.commons.exception.LoginException;
 import org.talend.commons.exception.OperationCancelException;
 import org.talend.commons.exception.PersistenceException;
@@ -601,6 +602,9 @@ public class LoginHelper {
                     }
 
                 });
+            } else if (e.getTargetException() instanceof InformException) {
+                Display.getDefault().syncExec(() -> MessageDialog.openInformation(Display.getDefault().getActiveShell(),
+                        Messages.getString("LoginDialog.logonDenyTitle"), e.getTargetException().getLocalizedMessage()));
             } else {
                 MessageBoxExceptionHandler.process(e.getTargetException(), getUsableShell());
             }
