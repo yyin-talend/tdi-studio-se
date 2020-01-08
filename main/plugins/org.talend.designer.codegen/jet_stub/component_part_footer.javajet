@@ -208,10 +208,13 @@ if((codePart.equals(ECodePart.END))&&(stat || logstashCurrent)){
       
       %>
       
-      class SchemaUtil_<%=cid%> {
+      class SchemaUtil_<%=conn.getUniqueName()%>_<%=conn.getMetadataTable().getTableName()%> {
           
           public java.util.List<java.util.Map<String, String>> getSchema(final <%=NodeUtil.getPrivateConnClassName(conn) %>Struct <%=conn.getName()%>) {
               java.util.List<java.util.Map<String, String>> schema = new java.util.ArrayList<>();
+              if(<%=conn.getName()%> == null) {
+            	  return schema;
+              }
               java.util.Map<String, String> field = null;
           <%
           for(IMetadataColumn column : columns){
@@ -240,7 +243,7 @@ if((codePart.equals(ECodePart.END))&&(stat || logstashCurrent)){
               
               String pattern = column.getPattern();
               if(pattern == null || pattern.isEmpty() || pattern.equals("\"\"")) {
-                  pattern = "";
+                  pattern = "\"\"";
               }
               %>
               field = new java.util.HashMap<>();
@@ -250,7 +253,7 @@ if((codePart.equals(ECodePart.END))&&(stat || logstashCurrent)){
               field.put("talend_type", "<%=column.getTalendType()%>");
               field.put("type", "<%=column.getType()%>");
               field.put("nullable", "<%=column.isNullable()%>");
-              field.put("pattern", "<%=pattern%>");
+              field.put("pattern", <%=pattern%>);
               field.put("length", "<%=column.getLength()%>");
               field.put("precision", "<%=column.getPrecision()%>");
               schema.add(field);
@@ -262,7 +265,7 @@ if((codePart.equals(ECodePart.END))&&(stat || logstashCurrent)){
           
       }
       
-      java.util.List<java.util.Map<String, String>> schema_<%=cid%> = new SchemaUtil_<%=cid%>().getSchema(<%=conn.getName()%>);
+      java.util.List<java.util.Map<String, String>> schema_<%=conn.getUniqueName()%>_<%=conn.getMetadataTable().getTableName()%> = new SchemaUtil_<%=conn.getUniqueName()%>_<%=conn.getMetadataTable().getTableName()%>.getSchema(<%=conn.getName()%>);
       <%
       INode target = conn.getTarget();
       String targetNodeId = target.getUniqueName();
@@ -270,7 +273,7 @@ if((codePart.equals(ECodePart.END))&&(stat || logstashCurrent)){
       
       %>
       <%=jobCatcherNode.getUniqueName()%>.addConnectionSchemaMessage("<%=node.getUniqueName()%>","<%=node.getComponent().getName()%>", 
-        "<%=targetNodeId%>","<%=targetNodeComponent%>", "<%=conn.getUniqueName()%>" + iterateId, schema_<%=cid%>);
+        "<%=targetNodeId%>","<%=targetNodeComponent%>", "<%=conn.getUniqueName()%>" + iterateId, schema_<%=conn.getUniqueName()%>_<%=conn.getMetadataTable().getTableName()%>);
       <%=jobCatcherNode.getDesignSubjobStartNode().getUniqueName() %>Process(globalMap);
       <%
   }
