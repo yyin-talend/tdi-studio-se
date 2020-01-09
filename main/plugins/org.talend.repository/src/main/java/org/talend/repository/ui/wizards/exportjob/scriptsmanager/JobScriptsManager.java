@@ -230,8 +230,7 @@ public abstract class JobScriptsManager {
         pushRegistry,
         registryUsername,
         registryPassword,
-        avoidBranchName,
-        mainJobOnly
+        avoidBranchName
     }
 
     /**
