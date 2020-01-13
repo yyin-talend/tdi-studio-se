@@ -191,6 +191,7 @@ if((codePart.equals(ECodePart.END))&&(stat || logstashCurrent)){
   }
   
   for (IConnection conn : outConns) {
+
       if(!conn.getLineStyle().equals(EConnectionType.FLOW_MAIN) && !conn.getLineStyle().equals(EConnectionType.FLOW_MERGE) && !conn.getLineStyle().equals(EConnectionType.FLOW_REF)) {
           continue;
       }
@@ -207,12 +208,13 @@ if((codePart.equals(ECodePart.END))&&(stat || logstashCurrent)){
       }
       
       %>
-      
+	  
       class SchemaUtil_<%=conn.getUniqueName()%>_<%=conn.getMetadataTable().getTableName()%> {
+
           
           public java.util.List<java.util.Map<String, String>> getSchema(final <%=NodeUtil.getPrivateConnClassName(conn) %>Struct <%=conn.getName()%>) {
               java.util.List<java.util.Map<String, String>> schema = new java.util.ArrayList<>();
-              if(<%=conn.getName()%> == null) {
+			  if(<%=conn.getName()%> == null) {
             	  return schema;
               }
               java.util.Map<String, String> field = null;
@@ -265,7 +267,7 @@ if((codePart.equals(ECodePart.END))&&(stat || logstashCurrent)){
           
       }
       
-      java.util.List<java.util.Map<String, String>> schema_<%=conn.getUniqueName()%>_<%=conn.getMetadataTable().getTableName()%> = new SchemaUtil_<%=conn.getUniqueName()%>_<%=conn.getMetadataTable().getTableName()%>.getSchema(<%=conn.getName()%>);
+      java.util.List<java.util.Map<String, String>> schema_<%=conn.getUniqueName()%>_<%=conn.getMetadataTable().getTableName()%> = new SchemaUtil_<%=conn.getUniqueName()%>_<%=conn.getMetadataTable().getTableName()%>().getSchema(<%=conn.getName()%>);
       <%
       INode target = conn.getTarget();
       String targetNodeId = target.getUniqueName();
