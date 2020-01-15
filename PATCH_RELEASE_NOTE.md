@@ -1,16 +1,16 @@
 ---
-version: 7.2.1
+version: 7.0.1
 module: https://talend.poolparty.biz/coretaxonomy/42
-product: https://talend.poolparty.biz/coretaxonomy/17
+product: https://talend.poolparty.biz/coretaxonomy/22
 ---
 
-# TPS-3592
+# TPS-3624
 
 | Info             | Value |
 | ---------------- | ---------------- |
-| Patch Name       | Patch\_20191203\_TPS-3592\_v3 |
-| Release Date     | 2019-12-03 |
-| Target Version   | 20190620\_1446-V7.2.1 |
+| Patch Name       | Patch\_20180411\_TPS-3624\_v1 |
+| Release Date     | 2012-01-17 |
+| Target Version   | 20180411\_1414-V7.0.1 |
 | Product affected | Talend Studio |
 
 ## Introduction
@@ -23,13 +23,13 @@ This is a self-contained patch.
 
 This patch contains the following fixes:
 
-- TPS-3592 tBigQueryBulkExec loading data from Google Cloud Storage to BigQuery failed after setting header (TBD-9578)
+- TPS-3624 NoSuchMethodError when Having tGSConnection and tS3Connection Components Within one Job (TBD-8343)
 
 ## Prerequisites
 
 Consider the following requirements for your system:
 
-- Talend Studio 7.2.1 must be installed.
+- Talend Studio 7.0.1 must be installed.
 
 ## Installation
 
@@ -59,4 +59,4 @@ Execute the following commands:
 
 The following files are installed by this patch:
 
-- plugins/org.talend.designer.components.localprovider/components/tBigQueryBulkExec/tBigQueryBulkExec_begin.javajet
+- plugins/org.talend.designer.components.localprovider/components/tGSConnection/tGSConnection_java.xml
