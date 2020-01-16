@@ -8,7 +8,7 @@ product: https://talend.poolparty.biz/coretaxonomy/22
 
 | Info             | Value |
 | ---------------- | ---------------- |
-| Patch Name       | Patch\_20180411\_TPS-3624\_v1 |
+| Patch Name       | Patch\_20180411\_TPS-3624\_v2 |
 | Release Date     | 2012-01-17 |
 | Target Version   | 20180411\_1414-V7.0.1 |
 | Product affected | Talend Studio |
