@@ -2578,6 +2578,14 @@ public class EmfComponent extends AbstractBasicComponent {
                 case PATTERN_PROPERTY:
                     newParam.setFieldType(EParameterFieldType.PATTERN_PROPERTY);
                     break;
+                case NUMBERLIMITTEXT:
+                    newParam.setFieldType(EParameterFieldType.NUMBERLIMITTEXT);
+                    if (item.getVALUE() == null || item.getVALUE().equals("")) { //$NON-NLS-1$
+                        newParam.setValue(""); //$NON-NLS-1$
+                    } else {
+                        newParam.setValue(item.getVALUE());
+                    }
+                    break;
                 default: // TEXT by default
                     newParam.setFieldType(EParameterFieldType.TEXT);
                     if (item.getVALUE() == null || item.getVALUE().equals("")) { //$NON-NLS-1$
@@ -3988,6 +3996,7 @@ public class EmfComponent extends AbstractBasicComponent {
             optionMap.put(XMLResource.OPTION_USE_PARSER_POOL, new XMLParserPoolImpl());
             optionMap.put(XMLResource.OPTION_USE_XML_NAME_TO_FEATURE_MAP, new HashMap());
             optionMap.put(XMLResource.OPTION_USE_DEPRECATED_METHODS, Boolean.FALSE);
+            optionMap.put(XMLResource.OPTION_RECORD_UNKNOWN_FEATURE,Boolean.TRUE);
             optionMapSoftRef = new SoftReference<Map>(optionMap);
         }
         return optionMap;

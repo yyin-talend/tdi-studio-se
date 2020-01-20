@@ -25,14 +25,12 @@ import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.TreeSet;
 import java.util.concurrent.Callable;
 import java.util.concurrent.FutureTask;
 import java.util.jar.Attributes;
@@ -107,7 +105,6 @@ import org.talend.core.context.RepositoryContext;
 import org.talend.core.hadoop.HadoopConstants;
 import org.talend.core.model.components.EComponentType;
 import org.talend.core.model.general.ModuleNeeded;
-import org.talend.core.model.process.ElementParameterParser;
 import org.talend.core.model.process.IContext;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.INode;
@@ -161,6 +158,7 @@ import org.talend.repository.constants.BuildJobConstants;
 import org.talend.repository.ui.utils.UpdateLog4jJarUtils;
 import org.talend.repository.utils.EmfModelUtils;
 import org.talend.repository.utils.EsbConfigUtils;
+import org.talend.utils.StudioKeysFileCheck;
 import org.talend.utils.io.FilesUtils;
 
 /**
@@ -1308,6 +1306,7 @@ public class JavaProcessor extends AbstractJavaProcessor implements IJavaBreakpo
                 throw new ProcessorException(e);
             }
         }
+
         useRelativeClasspath = false;
         return libsStr;
     }
@@ -1470,21 +1469,23 @@ public class JavaProcessor extends AbstractJavaProcessor implements IJavaBreakpo
         if (isExportConfig() || isSkipClasspathJar()) {
             option = option | TalendProcessOptionConstants.MODULES_EXCLUDE_SHADED;
         }
-        Set<ModuleNeeded> neededModulesLogjarUnsorted = getNeededModules(option);
+        Set<ModuleNeeded> neededModulesLogjarUnsorted = LastGenerationInfo.getInstance()
+                .getModulesNeededWithSubjobPerJob(process.getId(), process.getVersion());
+        if (neededModulesLogjarUnsorted.isEmpty()) {
+            neededModulesLogjarUnsorted = getNeededModules(option);
+        }
         JavaProcessorUtilities.checkJavaProjectLib(neededModulesLogjarUnsorted);
-        Set<ModuleNeeded> neededModules = new TreeSet<ModuleNeeded>(new Comparator<ModuleNeeded>() {
 
-            @Override
-            public int compare(ModuleNeeded o1, ModuleNeeded o2) {
-                for (String moduleName : UpdateLog4jJarUtils.MODULES_NEED_ADDED_BACK) {
-                    if (StringUtils.equals(moduleName, o2.getModuleName())) {
-                        return -1;
-                    }
-                }
-                return 1;
-            }
-        });
+        Set<ModuleNeeded> highPriorityModuleNeeded = LastGenerationInfo.getInstance().getHighPriorityModuleNeeded(process.getId(),
+                process.getVersion());
+
+
+        List<ModuleNeeded> neededModules = new ArrayList<ModuleNeeded>();
+
         neededModules.addAll(neededModulesLogjarUnsorted);
+
+        UpdateLog4jJarUtils.sortClassPath4Log4j(highPriorityModuleNeeded, neededModules);
+
         // Ignore hadoop confs jars in lib path.
         if (ProcessorUtilities.hadoopConfJarCanBeLoadedDynamically(property)) {
             Iterator<ModuleNeeded> moduleIter = neededModules.iterator();
@@ -1540,7 +1541,7 @@ public class JavaProcessor extends AbstractJavaProcessor implements IJavaBreakpo
                 } else if (hasSapjco3 || hasSapidoc3) {
                     libPath.append(jarPath.toPortableString()).append(classPathSeparator);
                 } else {
-                    libPath.append(PomUtil.getAbsArtifactPathAsCP(artifact)).append(classPathSeparator);
+                    libPath.append(PomUtil.getArtifactFullPath(artifact)).append(classPathSeparator);
                 }
             }
         }
@@ -1600,19 +1601,13 @@ public class JavaProcessor extends AbstractJavaProcessor implements IJavaBreakpo
     @Override
     public Set<ModuleNeeded> getNeededModules(int options) {
         Set<ModuleNeeded> neededLibraries = JavaProcessorUtilities.getNeededModulesForProcess(process, options);
-        boolean isLog4jEnabled = Boolean.parseBoolean(ElementParameterParser.getValue(process, "__LOG4J_ACTIVATE__")); //$NON-NLS-1$
-        if (isLog4jEnabled) {
-            JavaProcessorUtilities.addLog4jToModuleList(neededLibraries, process);
-        }
+
         return neededLibraries;
     }
 
     @Override
     public void updateModulesAfterSetLog4j(Collection<ModuleNeeded> modulesNeeded) {
-        boolean isLog4jEnabled = Boolean.parseBoolean(ElementParameterParser.getValue(process, "__LOG4J_ACTIVATE__")); //$NON-NLS-1$
-        if (isLog4jEnabled) {
-            JavaProcessorUtilities.addLog4jToModuleList(modulesNeeded, process);
-        }
+
     }
 
     protected String[] getAdditionCommandStrings() {
@@ -1782,6 +1777,7 @@ public class JavaProcessor extends AbstractJavaProcessor implements IJavaBreakpo
             wc.setAttribute(IJavaLaunchConfigurationConstants.ATTR_MAIN_TYPE_NAME, this.getMainClass());
             wc.setAttribute(IJavaLaunchConfigurationConstants.ATTR_STOP_IN_MAIN, true);
             wc.setAttribute(IJavaLaunchConfigurationConstants.ATTR_PROGRAM_ARGUMENTS, CTX_ARG + context.getName());
+            setupEncryptionFilePathParameter(wc);
             config = wc.doSave();
         }
         return config;
@@ -1808,9 +1804,26 @@ public class JavaProcessor extends AbstractJavaProcessor implements IJavaBreakpo
             wc.setAttribute(IJavaLaunchConfigurationConstants.ATTR_MAIN_TYPE_NAME, this.getMainClass());
             wc.setAttribute(IJavaLaunchConfigurationConstants.ATTR_STOP_IN_MAIN, true);
             wc.setAttribute(IJavaLaunchConfigurationConstants.ATTR_PROGRAM_ARGUMENTS, CTX_ARG + context.getName() + parameterStr);
+            setupEncryptionFilePathParameter(wc);
             config = wc.doSave();
         }
         return config;
+    }
+
+    private void setupEncryptionFilePathParameter(ILaunchConfigurationWorkingCopy wc) throws CoreException {
+        StringBuilder vmArguments = new StringBuilder();
+        vmArguments.append(wc.getAttribute(IJavaLaunchConfigurationConstants.ATTR_VM_ARGUMENTS, ""));
+        if (vmArguments.indexOf(StudioKeysFileCheck.ENCRYPTION_KEY_FILE_JVM_PARAM) < 0) {
+            if (vmArguments.length() > 0) {
+                vmArguments.append(" ");
+            }
+            String encryptionFilePath = System.getProperty(StudioKeysFileCheck.ENCRYPTION_KEY_FILE_SYS_PROP);
+            File encryptionFile = new File(encryptionFilePath);
+            if (encryptionFile.exists()) {
+                vmArguments.append(StudioKeysFileCheck.ENCRYPTION_KEY_FILE_JVM_PARAM + "=" + encryptionFile.toURI().getPath());
+            }
+            wc.setAttribute(IJavaLaunchConfigurationConstants.ATTR_VM_ARGUMENTS, vmArguments.toString());
+        }
     }
 
     /*

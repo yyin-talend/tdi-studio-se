@@ -229,6 +229,25 @@
   </PARAMETERS>
 
   <ADVANCED_PARAMETERS>
+    
+    <PARAMETER
+      NAME="USE_ALTERNATE_SCHEMA"
+      FIELD="CHECK"
+      NUM_ROW="3"
+      SHOW_IF="USE_EXISTING_CONNECTION == 'true'"
+    >
+      <DEFAULT>false</DEFAULT>
+    </PARAMETER>
+
+    <PARAMETER
+      NAME="ALTERNATE_SCHEMA"
+      FIELD="TEXT"
+      NUM_ROW="4"
+      SHOW_IF="(USE_EXISTING_CONNECTION == 'true') AND (USE_ALTERNATE_SCHEMA == 'true')"
+    >
+      <DEFAULT>""</DEFAULT>
+    </PARAMETER>
+
   	<PARAMETER
     	NAME="EXTENDINSERT"
     	FIELD="CHECK"
@@ -369,7 +388,7 @@
 
    <CODEGENERATION>
      <IMPORTS>
-        <IMPORT NAME="Driver-Redshift" MODULE="redshift-jdbc42-no-awssdk-1.2.32.1056.jar" MVN="mvn:com.amazon.redshift/redshift-jdbc42-no-awssdk/1.2.32.1056" REQUIRED="true" />
+        <IMPORT NAME="Driver-Redshift" MODULE="redshift-jdbc42-no-awssdk-1.2.37.1061.jar" MVN="mvn:com.amazon.redshift/redshift-jdbc42-no-awssdk/1.2.37.1061" REQUIRED="true" />
         <IMPORT NAME="aws-java-sdk-1.11.406.jar" MODULE="aws-java-sdk-1.11.406.jar" MVN="mvn:com.amazonaws/aws-java-sdk/1.11.406" REQUIRED_IF="(JDBC_URL == 'SSO') AND (USE_EXISTING_CONNECTION == 'false')" />
         <IMPORT NAME="commons-logging-1.1.3.jar" MODULE="commons-logging-1.1.3.jar" MVN="mvn:commons-logging/commons-logging/1.1.3" UrlPath="platform:/plugin/org.talend.libraries.apache.common/lib/commons-logging-1.1.3.jar" REQUIRED_IF="(JDBC_URL == 'SSO') AND (USE_EXISTING_CONNECTION == 'false')" />
         <IMPORT NAME="jackson-databind-2.10.1.jar" MODULE="jackson-databind-2.10.1.jar" MVN="mvn:com.fasterxml.jackson.core/jackson-databind/2.10.1" REQUIRED_IF="(JDBC_URL == 'SSO') AND (USE_EXISTING_CONNECTION == 'false')" />

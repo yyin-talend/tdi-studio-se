@@ -288,7 +288,7 @@ public class SettingVisitor implements PropertyVisitor {
      *
      * @param node current PropertyNode
      */
-    private void buildHealthCheck(final PropertyNode node) {
+    protected void buildHealthCheck(final PropertyNode node) {
         if (hasHealthCheck(node)) {
             final ActionReference action = actions
                     .stream()
@@ -519,7 +519,7 @@ public class SettingVisitor implements PropertyVisitor {
         parameter.setDisplayName(node.getProperty().getDisplayName());
         parameter.setFieldType(node.getFieldType());
         parameter.setName(node.getProperty().getPath());
-        parameter.setRepositoryValue(node.getProperty().getPath());
+        // parameter.setRepositoryValue(node.getProperty().getPath());
         parameter.setNumRow(node.getLayout(form).getPosition());
         parameter.setShow(true);
         String defaultValue = node.getProperty().getDefaultValue();
@@ -530,6 +530,7 @@ public class SettingVisitor implements PropertyVisitor {
         parameter.setRequired(node.getProperty().isRequired());
         if (TaCoKitElementParameter.class.isInstance(parameter)) {
             final TaCoKitElementParameter taCoKitElementParameter = TaCoKitElementParameter.class.cast(parameter);
+            taCoKitElementParameter.setPropertyNode(node);
             taCoKitElementParameter.updateValueOnly(defaultValue);
             if (node.getProperty().hasConstraint() || node.getProperty().hasValidation()) {
                 taCoKitElementParameter.setRegistValidatorCallback(new Callable<Void>() {

@@ -16,9 +16,12 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import java.util.Set;
+import java.util.Stack;
 
 import org.apache.commons.lang3.StringUtils;
 import org.eclipse.core.runtime.IPath;
@@ -34,10 +37,13 @@ import org.talend.core.runtime.maven.MavenConstants;
 import org.talend.repository.ProjectManager;
 import org.talend.sdk.component.server.front.model.ComponentIndex;
 import org.talend.sdk.component.server.front.model.ConfigTypeNode;
+import org.talend.sdk.component.server.front.model.ConfigTypeNodes;
 import org.talend.sdk.component.studio.Lookups;
 import org.talend.sdk.component.studio.metadata.TaCoKitCache;
 import org.talend.sdk.component.studio.metadata.WizardRegistry;
 import org.talend.sdk.component.studio.metadata.model.TaCoKitConfigurationModel;
+import org.talend.sdk.component.studio.model.parameter.PropertyDefinitionDecorator;
+import org.talend.sdk.component.studio.model.parameter.PropertyNode;
 import org.talend.updates.runtime.utils.PathUtils;
 
 /**
@@ -306,6 +312,57 @@ public class TaCoKitUtil {
         return null;
     }
 
+    public static PropertyNode getSamePropertyNode(PropertyNode propertyNode, ConfigTypeNode configTypeNode) throws Exception {
+        return getSamePropertyNode(new Stack<>(), getRootPropertyNode(propertyNode), configTypeNode);
+    }
+
+    private static PropertyNode getSamePropertyNode(Stack<Object> visited, PropertyNode propertyNode,
+            ConfigTypeNode configTypeNode) {
+        if (propertyNode == null || visited.contains(propertyNode)) {
+            return null;
+        }
+        PropertyDefinitionDecorator property = propertyNode.getProperty();
+        if (property == null) {
+            return null;
+        }
+        if (StringUtils.equals(property.getConfigurationType(), configTypeNode.getConfigurationType())
+                && StringUtils.equals(property.getConfigurationTypeName(), configTypeNode.getName())) {
+            return propertyNode;
+        }
+        try {
+            visited.push(propertyNode);
+            List<PropertyNode> children = propertyNode.getChildren();
+            if (children != null) {
+                for (PropertyNode c : children) {
+                    PropertyNode pn = getSamePropertyNode(visited, c, configTypeNode);
+                    if (pn != null) {
+                        return pn;
+                    }
+                }
+            }
+
+            return null;
+        } finally {
+            visited.pop();
+        }
+    }
+
+    public static PropertyNode getRootPropertyNode(PropertyNode propertyNode) throws Exception {
+        Set<Object> visited = new HashSet<>();
+        PropertyNode node = propertyNode;
+        PropertyNode parentNode = node;
+        while (node != null) {
+            if (visited.contains(node)) {
+                throw new IllegalArgumentException("dead loop detected from input parameter");
+            } else {
+                visited.add(node);
+            }
+            parentNode = node;
+            node = node.getParent();
+        }
+        return parentNode;
+    }
+
     public static boolean isTaCoKitComponentMadeByTalend(final ComponentIndex index) {
         if (index != null) {
             String location = index.getId().getPluginLocation().trim();
@@ -314,6 +371,27 @@ public class TaCoKitUtil {
             }
         }
         return false;
+    }
+
+    public static int getConfigTypeVersion(final PropertyDefinitionDecorator p, final ConfigTypeNodes configTypeNodes,
+            final String familyId) {
+        final String type = p.getMetadata().get("configurationtype::type");
+        final String name = p.getMetadata().get("configurationtype::name");
+        return configTypeNodes.getNodes().values().stream().filter(c -> c.getConfigurationType() != null && c.getName() != null)
+                .filter(c -> c.getConfigurationType().equals(type) && c.getName().equals(name))
+                .filter(c -> familyId.equals(getPropertyFamilyId(c, configTypeNodes))).findFirst().map(ConfigTypeNode::getVersion)
+                .orElse(-1);
+    }
+
+    public static String getPropertyFamilyId(final ConfigTypeNode it, final ConfigTypeNodes nodes) {
+        if (it.getParentId() == null) {
+            return null;
+        }
+        String parent = it.getParentId();
+        while (nodes.getNodes().get(parent) != null && nodes.getNodes().get(parent).getParentId() != null) {
+            parent = nodes.getNodes().get(parent).getParentId();
+        }
+        return parent;
     }
 
     public static class GAV {

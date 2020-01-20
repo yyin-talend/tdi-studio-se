@@ -37,6 +37,7 @@ import java.util.Collection;
 import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Lock;
@@ -46,9 +47,12 @@ import java.util.logging.Logger;
 import java.util.logging.SimpleFormatter;
 import java.util.stream.Stream;
 
+import org.apache.commons.lang3.StringUtils;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.m2e.core.MavenPlugin;
 import org.talend.commons.exception.ExceptionHandler;
+import org.talend.core.GlobalServiceRegister;
+import org.talend.core.services.ICoreTisService;
 import org.talend.sdk.component.studio.lang.LocalLock;
 import org.talend.sdk.component.studio.lang.StringPropertiesTokenizer;
 import org.talend.sdk.component.studio.logging.JULToOsgiHandler;
@@ -57,6 +61,8 @@ import org.talend.sdk.component.studio.util.TaCoKitConst;
 import org.talend.sdk.component.studio.util.TaCoKitUtil;
 
 public class ProcessManager implements AutoCloseable {
+
+    private static final String CLIENT_IP = "127.0.0.1";
 
     private final String groupId;
 
@@ -331,8 +337,8 @@ public class ProcessManager implements AutoCloseable {
                         lock.unlock();
                         throw new IllegalStateException("Component server startup failed");
                     }
-                    try (final Socket ignored = new Socket("localhost", port)) {
-                        final URLConnection conn = new URL("http://localhost:" + port + "/api/v1/environment")
+                    try (final Socket ignored = new Socket(CLIENT_IP, port)) {
+                        final URLConnection conn = new URL("http://" + CLIENT_IP + ":" + port + "/api/v1/environment")
                                 .openConnection();
                         conn.setRequestProperty("Content-Type", "application/json");
                         conn.setRequestProperty("Accept", "application/json");
@@ -372,12 +378,23 @@ public class ProcessManager implements AutoCloseable {
         if (m2Repo == null) {
             m2Repo = MavenPlugin.getMaven().getLocalRepositoryPath();
         }
-        final String components = System.getProperty(TaCoKitConst.PROP_COMPONENT);
+        String components = System.getProperty(TaCoKitConst.PROP_COMPONENT);
+
         final String registry = System.getProperty(TaCoKitConst.PROP_REGISTRY);
         if (m2Repo != null) {
             System.setProperty("talend.component.server.maven.repository", m2Repo);
         }
         if (components != null) {
+            // filter from component blacklist.
+            if (GlobalServiceRegister.getDefault().isServiceRegistered(ICoreTisService.class)) {
+                ICoreTisService coreTisService = GlobalServiceRegister.getDefault().getService(ICoreTisService.class);
+                StringBuilder builder = new StringBuilder();
+                String separator = TaCoKitConst.PROP_COMPONENT_SEPARATOR;
+                Set<String> blackList = coreTisService.getComponentBlackList();
+                Stream.of(components.split(separator)).filter(s -> !blackList.contains(s))
+                        .forEach(s -> builder.append(s).append(separator));
+                components = StringUtils.removeEnd(builder.toString(), separator);
+            }
             System.setProperty("talend.component.server.component.coordinates", components);
         }
         if (registry != null) {
