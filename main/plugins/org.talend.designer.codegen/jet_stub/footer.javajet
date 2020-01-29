@@ -674,7 +674,15 @@
                             context.<%=ctxParam.getName()%>=null;
                         }
 <%
-                        } else if(typeToGenerate.equals("Object")||typeToGenerate.equals("String")||typeToGenerate.equals("java.lang.String")) {
+                        } else if(typeToGenerate.equals("String")||typeToGenerate.equals("java.lang.String")) {
+%>
+                            String currTempValue_<%=ctxParam.getName()%> = (String)context.getProperty("<%=ctxParam.getName()%>");
+                            if("<TALEND_NULL>".equals(currTempValue_<%=ctxParam.getName()%>)) {
+                                currTempValue_<%=ctxParam.getName()%> = null;
+                            }
+                            context.<%=ctxParam.getName()%>=currTempValue_<%=ctxParam.getName()%>;
+<%
+                        } else if(typeToGenerate.equals("Object")) {
 %>
                             context.<%=ctxParam.getName()%>=(<%=typeToGenerate%>) context.getProperty("<%=ctxParam.getName()%>");
 <%
