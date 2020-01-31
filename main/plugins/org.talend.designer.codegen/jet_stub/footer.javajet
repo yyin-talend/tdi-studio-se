@@ -677,7 +677,7 @@
                         } else if(typeToGenerate.equals("String")||typeToGenerate.equals("java.lang.String")) {
 %>
                             String currTempValue_<%=ctxParam.getName()%> = (String)context.getProperty("<%=ctxParam.getName()%>");
-                            if("<TALEND_NULL>".equals(currTempValue_<%=ctxParam.getName()%>)) {
+                            if(NULL_VALUE_EXPRESSION_IN_COMMAND_STRING_FOR_CHILD_JOB_ONLY.equals(currTempValue_<%=ctxParam.getName()%>)) {
                                 currTempValue_<%=ctxParam.getName()%> = null;
                             }
                             context.<%=ctxParam.getName()%>=currTempValue_<%=ctxParam.getName()%>;
