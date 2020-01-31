@@ -57,6 +57,7 @@ int validate_<%=cid %> = 0;
 
 	class TalendErrorHandler_<%=cid %> implements org.xml.sax.ErrorHandler{
 	  	String errorMessage=null;
+		java.util.Map<String,String> errorMessageMap = new java.util.HashMap<>();
 
 		public void warning(org.xml.sax.SAXParseException ex) throws org.xml.sax.SAXException{
 			if (errorMessage== null){
@@ -83,6 +84,11 @@ int validate_<%=cid %> = 0;
 			}
 		}
 		
+		public void error(org.xml.sax.SAXParseException ex, String column) {
+			errorMessage = "There is an Error on line " + String.valueOf(ex.getLineNumber()) + " : " + ex.getMessage();
+			errorMessageMap.put(column, errorMessage);
+		}
+		
 		public void fatalError(org.xml.sax.SAXParseException ex) throws org.xml.sax.SAXException{
 			if (errorMessage == null){
 				errorMessage = "There is a Fatal Error on line " + String.valueOf(ex.getLineNumber()) + " : " + ex.getMessage();
@@ -95,7 +101,6 @@ int validate_<%=cid %> = 0;
 		private String returnMessage(){
 			return errorMessage==null?"":errorMessage;
 		}
-
 	}
 TalendErrorHandler_<%=cid %> errorHandler_<%=cid %>=new TalendErrorHandler_<%=cid %>();
 java.io.InputStream xmlfile<%=cid %> = null;
@@ -159,7 +164,7 @@ if("FLOW_MODE".equals(mode)){
 							validator<%=cid %>.setErrorHandler(errorHandler_<%=cid %>);
 						    validator<%=cid %>.validate(source<%=cid %>);
 						} catch (org.xml.sax.SAXParseException ex<%=cid %>) {
-							errorHandler_<%=cid %>.error(ex<%=cid %>);
+							errorHandler_<%=cid %>.error(ex<%=cid %>, "<%=column.getLabel()%>");
 						} catch (java.io.IOException ioEx<%=cid %>){
 							errorHandler_<%=cid %>.error(ioEx<%=cid %>);
 						}finally{
@@ -167,53 +172,51 @@ if("FLOW_MODE".equals(mode)){
 								xmlfile<%=cid %>.close();
 							}
 						}
-						errorMessage_<%=cid %> = errorHandler_<%=cid %>.returnMessage();
-						if (errorMessage_<%=cid%>==null || errorMessage_<%=cid%>.length()<1) {
-							<%=outConnName%>.<%=column.getLabel()%> = <%=inConnName%>.<%=column.getLabel()%>;
-							validate_<%=cid %> = 1;
-<%
-							if(rejectConnName != null){
-%>
-								<%=rejectConnName%> = null;
-<%
-							}
-%>
-						} else {
-						    errorMessageRow_<%=cid%> = errorMessageRow_<%=cid%> + "<%=column.getLabel()%>: "+errorMessage_<%=cid%>+'\n';
-<%
-							if(rejectConnName != null){
-%>
-								<%=rejectConnName%>.<%=column.getLabel()%> = <%=inConnName%>.<%=column.getLabel()%>;
-								<%=rejectConnName%>.errorMessage = "<%=column.getLabel()%>: "+errorMessage_<%=cid%>;
-<%
-							}else{
-%>
-								System.err.println("<%=column.getLabel()%>: "+errorMessage_<%=cid%>);
-<%
-							}
-							if(!outConnName.equals(rejectConnName)){
-%>
-								<%=outConnName%> = null;
-<%
-                            }
-%>
-						}
-<%
-		    		}else{
-%>
-						if (errorMessage_<%=cid%>==null || errorMessage_<%=cid%>.length()<1) {
-							<%=outConnName%>.<%=column.getLabel()%> = <%=inConnName%>.<%=column.getLabel()%>;
-							validate_<%=cid %> = 1;
-						}
-						<%
-						if(rejectConnName!=null){
-						%>
-						else {
-						    <%=rejectConnName%>.<%=column.getLabel()%> = <%=inConnName%>.<%=column.getLabel()%>;
-						}
 <%
                     }
 	    		}
+				for(IMetadataColumn column : columns){
+%>
+					if (errorHandler_<%=cid %>.errorMessageMap.isEmpty()) {
+						<%=outConnName%>.<%=column.getLabel()%> = <%=inConnName%>.<%=column.getLabel()%>;
+						validate_<%=cid %> = 1;
+<%
+						if(rejectConnName != null){
+%>
+							<%=rejectConnName%> = null;
+<%
+						}
+%>
+					} else {
+						String columnErrorMessage_<%=cid%> = "";
+						if (errorHandler_<%=cid %>.errorMessageMap.containsKey("<%=column.getLabel()%>")) {
+							columnErrorMessage_<%=cid%> = "<%=column.getLabel()%>: " + errorHandler_<%=cid %>.errorMessageMap.get("<%=column.getLabel()%>") + '\n';
+							errorMessageRow_<%=cid%> += columnErrorMessage_<%=cid%>;
+						}
+<%
+						if(rejectConnName != null){
+%>
+							<%=rejectConnName%>.<%=column.getLabel()%> = <%=inConnName%>.<%=column.getLabel()%>;
+							if (<%=rejectConnName%>.errorMessage == null) {
+								<%=rejectConnName%>.errorMessage = columnErrorMessage_<%=cid%>;
+							} else {
+								<%=rejectConnName%>.errorMessage += columnErrorMessage_<%=cid%>;
+							}
+<%
+						}else{
+%>
+							System.err.println(columnErrorMessage_<%=cid%>;);
+<%
+						}
+						if(!outConnName.equals(rejectConnName)){
+%>
+							<%=outConnName%> = null;
+<%
+						}
+%>
+					}
+<%
+				}
 	    	}
 %>
             globalMap.put("<%=cid %>_DIFFERENCE", "" + validate_<%=cid %>);
@@ -221,7 +224,6 @@ if("FLOW_MODE".equals(mode)){
 	    	globalMap.put("<%=cid %>_XSD_ERROR_MESSAGE", errorMessageRow_<%=cid%>);
 <%
 	    }
-	}
 }else{
 %>
 Object oXmlFile<%=cid %> = null;
