@@ -98,4 +98,6 @@ Bundle-Activator: org.talend.repository.RepositoryPlugin
 Bundle-ClassPath: .,
  lib/velocity-1.7.jar
 Import-Package: com.fasterxml.jackson.core,
- com.fasterxml.jackson.databind
+ com.fasterxml.jackson.core.type,
+ com.fasterxml.jackson.databind,
+ com.fasterxml.jackson.annotation
