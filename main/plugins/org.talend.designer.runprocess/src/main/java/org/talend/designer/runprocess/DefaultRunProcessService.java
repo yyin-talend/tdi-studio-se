@@ -18,6 +18,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -80,6 +81,7 @@ import org.talend.core.runtime.projectsetting.ProjectPreferenceManager;
 import org.talend.core.service.IESBMicroService;
 import org.talend.core.service.IESBRouteService;
 import org.talend.core.ui.ITestContainerProviderService;
+import org.talend.designer.core.ui.editor.process.Process;
 import org.talend.designer.maven.model.TalendMavenConstants;
 import org.talend.designer.maven.tools.AggregatorPomsHelper;
 import org.talend.designer.maven.tools.BuildCacheManager;
@@ -102,6 +104,7 @@ import org.talend.repository.ProjectManager;
 import org.talend.repository.RepositoryWorkUnit;
 import org.talend.repository.constants.Log4jPrefsConstants;
 import org.talend.repository.ui.utils.Log4jPrefsSettingManager;
+import org.talend.repository.ui.wizards.exportjob.scriptsmanager.JarBuilder;
 import org.talend.utils.io.FilesUtils;
 
 /**
@@ -725,6 +728,12 @@ public class DefaultRunProcessService implements IRunProcessService {
         return JavaProcessorUtilities.getJavaProjectLibFolder2();
     }
 
+    @Override
+    public IFolder getJavaProjectExternalResourcesFolder(IProcess process) {
+        ITalendProcessJavaProject talendProject = getTalendJobJavaProject(((Process) process).getProperty());
+        return talendProject.getExternalResourcesFolder();        
+    }
+    
     @Override
     public void updateProjectPomWithTemplate() {
         try {
