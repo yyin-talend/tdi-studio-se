@@ -4779,8 +4779,10 @@ public class Node extends Element implements IGraphicalNode {
             size = new Dimension();
             if (getIcon32() != null) {
                 ImageData data = getIcon32().getImageData();
-                size.height = data.height;
-                size.width = data.width;
+                if (data != null) {
+                	size.height = data.height;
+                	size.width = data.width;
+                }
             } else {
                 size.height = DEFAULT_SIZE;
                 size.width = DEFAULT_SIZE;
