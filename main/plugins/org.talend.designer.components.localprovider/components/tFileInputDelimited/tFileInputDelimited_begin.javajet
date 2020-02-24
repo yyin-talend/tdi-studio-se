@@ -1127,7 +1127,7 @@
 					
 					csvReader<%=cid %>.setTrimWhitespace(false);
 					if ( (rowSeparator_<%=cid %>[0] != '\n') && (rowSeparator_<%=cid %>[0] != '\r') )
-	        			csvReader<%=cid %>.setLineEnd(""+rowSeparator_<%=cid %>[0]);
+	        			csvReader<%=cid %>.setLineEnd(new String(rowSeparator_<%=cid %>));
 						<%
 						if(("").equals(textEnclosure1) || textEnclosure1.startsWith("\"")){//normal situation
 						%>
@@ -1228,7 +1228,7 @@
 						}
 						csvReader<%=cid %>.setTrimWhitespace(false);
 						if ( (rowSeparator_<%=cid %>[0] != '\n') && (rowSeparator_<%=cid %>[0] != '\r') )	
-	        				csvReader<%=cid %>.setLineEnd(""+rowSeparator_<%=cid %>[0]);
+	        				csvReader<%=cid %>.setLineEnd(new String(rowSeparator_<%=cid %>));
 						<%
 						if(("").equals(textEnclosure1) || textEnclosure1.startsWith("\"")){//normal situation
 						%>

@@ -98,8 +98,8 @@ class CSVReaderTest {
         Assertions.assertAll(
                 () -> checkNextValues("line 1 for line sep", reader1, "Hello"),
                 () -> checkNextValues("line 2 for line sep", reader1, "World"),
-                () -> checkNextValues("line 2 for line sep", reader1, "With@butoneline"),
-                () -> checkNextValues("line 2 for line sep", reader1, "With#butoneline\n")
+                () -> checkNextValues("line 3 for line sep", reader1, "With@butoneline"),
+                () -> checkNextValues("line 4 for line sep", reader1, "With#butoneline\n")
         );
 
     }
