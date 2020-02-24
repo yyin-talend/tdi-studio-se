@@ -352,35 +352,24 @@ public class CSVReader implements AutoCloseable {
 
     static class StartState extends State {
 
-       // private final StringBuilder blanksElement = new StringBuilder();
-
         public StartState(State preceding) {
             super(preceding);
         }
 
         @Override
         public State accept(char newChar, CSVConfig config, ResultAction action) {
-            /*if (newChar == '\t' || newChar == ' ') {
-                blanksElement.append(newChar);
-                return this;
-            }*/
             if ((newChar == '\t' || newChar == ' ') && config.isTrimWhitespace()) {
                 return this;
             }
             if (newChar == '\0') {
-                //this.blanksElement.setLength(0);
-                action.endRecord(config.isSkipEmptyRecords());
                 return this;
             }
             if (newChar == config.getQuotechar()) {
-                //this.blanksElement.setLength(0);
                 return new QuotedFieldState(this);
             }
             if (config.isSeparator(newChar)) {
-               // action.addToCurrentField(this.blanksElement.toString()); // blank field.
                 action.setDoTrimTail(config.isTrimWhitespace());
                 action.endField();
-               // this.blanksElement.setLength(0);
                 return this;
             }
             if (config.isLineEnd(newChar, 0)) {
@@ -388,12 +377,9 @@ public class CSVReader implements AutoCloseable {
                 return state.accept(newChar, config, action);
             }
 
-            //action.addToCurrentField(this.blanksElement.toString()); // blank field.
-            //this.blanksElement.setLength(0);
             UnQuotedFieldState nextStep = new UnQuotedFieldState(this);
             nextStep.accept(newChar, config, action);
             return nextStep;
-
         }
     }
 
@@ -490,7 +476,7 @@ public class CSVReader implements AutoCloseable {
             }
             // not end of line.
             action.addToCurrentField(builder.toString());
-            //this.preceding.accept(newChar, config, action);
+
             this.pos = 0;
             this.builder.setLength(0);
             return this.preceding;

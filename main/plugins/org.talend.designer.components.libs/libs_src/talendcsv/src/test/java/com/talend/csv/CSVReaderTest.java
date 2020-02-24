@@ -4,6 +4,8 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Assumptions;
 import org.junit.jupiter.api.Test;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.StringReader;
 
@@ -90,6 +92,16 @@ class CSVReaderTest {
                 () -> checkNextValues("line 2 for line sep", reader, "line#2")
         );
 
+        String lines2 = "Hello@#World@#With@butoneline@#With#butoneline\n";
+        final CSVReader reader1 = new CSVReader(new StringReader(lines2), ',');
+        reader1.setLineEnd("@#");
+        Assertions.assertAll(
+                () -> checkNextValues("line 1 for line sep", reader1, "Hello"),
+                () -> checkNextValues("line 2 for line sep", reader1, "World"),
+                () -> checkNextValues("line 2 for line sep", reader1, "With@butoneline"),
+                () -> checkNextValues("line 2 for line sep", reader1, "With#butoneline\n")
+        );
+
     }
 
     @Test
@@ -101,6 +113,27 @@ class CSVReaderTest {
                 () -> checkNextValues("line 1", reader, "L\"in\"te 1"),
                 () -> checkNextValues("line 2", reader, "Line\"t\"\"2")
         );
+    }
+
+    @Test
+    void testQuoted() throws IOException {
+        String input = "\"Hello\",\"ss\"\n\"World\",\"ddzs\"\n\"OneColumn\",\"ddzs\"\n";
+        File fic = new File("/home/clesaec/project/jobs/csvConv/oneCol.txt");
+
+
+        final CSVReader reader = new CSVReader(new StringReader(input), ',');
+        //final CSVReader reader = new CSVReader(new FileInputStream(fic), ',', "ISO-8859-15");
+        reader.setQuoteChar('"');
+        reader.setTrimWhitespace(false);
+        reader.setEscapeChar('"');
+        reader.setSkipEmptyRecords(false);
+
+        Assertions.assertAll(
+                () -> checkNextValues("line 1", reader, "Hello", "ss"),
+                () -> checkNextValues("line 2", reader, "World", "ddzs"),
+                () -> checkNextValues("line 3", reader, "OneColumn", "ddzs")
+        );
+        Assertions.assertFalse(reader.readNext());
     }
 
     void checkNextValues(String comment, CSVReader reader, String... excepted) throws IOException {
