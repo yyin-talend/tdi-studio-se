@@ -539,12 +539,13 @@ public class JSONFileStep2Form extends AbstractJSONFileStepForm implements IRefr
         if (getConnection().getJSONFilePath() == null || !(new File(getConnection().getJSONFilePath()).exists())
                 && JSONUtil.tempJSONXsdPath == null) {
             previewInformationLabel.setText("   " + "The file path must be specified");
+            previewInformationLabel.getParent().layout();
             return;
         }
-
         // if incomplete settings, , the process don't be executed
         if (!checkFieldsValue()) {
             previewInformationLabel.setText("   " + "The settings must be completed to show the preview");
+            previewInformationLabel.getParent().layout();
             return;
         }
 
@@ -554,6 +555,7 @@ public class JSONFileStep2Form extends AbstractJSONFileStepForm implements IRefr
         }
 
         previewInformationLabel.setText("   " + "Preview in progress...");
+        previewInformationLabel.getParent().layout();
 
         String shadowProcessType = null;
         if (EJsonReadbyMode.JSONPATH.getValue().equals(getConnection().getReadbyMode())) {
@@ -717,6 +719,7 @@ public class JSONFileStep2Form extends AbstractJSONFileStepForm implements IRefr
     @Override
     protected boolean checkFieldsValue() {
         previewInformationLabel.setText("   " + "The settings must be completed to show the preview");
+        previewInformationLabel.getParent().layout();
         updateStatus(IStatus.OK, null);
         previewButton.setEnabled(false);
 
