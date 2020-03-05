@@ -696,7 +696,7 @@ public class LoginProjectPage extends AbstractLoginActionPage {
                 } catch (JSONException e) {
                     CommonExceptionHandler.process(e);
                 } finally {
-                    TalendProxySelector.getInstance();
+                    TalendProxySelector.checkProxy();
                 }
             }
 
