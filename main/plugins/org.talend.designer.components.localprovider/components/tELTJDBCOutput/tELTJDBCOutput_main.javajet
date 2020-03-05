@@ -145,7 +145,16 @@ skeleton="../templates/db_output_bulk.skeleton"
             if(useUpdateStatement){
             %>
                 String updateQuery = select_query;
-            <%
+                <%
+                if(CodeGenerationUtils.hasAlphaNumericCharacter(whereClause)) {
+                %>
+                    if (updateQuery.toUpperCase().contains(" WHERE ")) {
+                        updateQuery += " AND (" + <%=CodeGenerationUtils.replaceAllCrBySpace(whereClause)%> + ")";
+                    } else {
+                        updateQuery += " WHERE " + <%=CodeGenerationUtils.replaceAllCrBySpace(whereClause)%>;
+                    }
+                <%
+                }
             } else {
             %>
         	    String updateQuery = "UPDATE "+tableName_<%=cid%>+" SET <%=updateSetStmt.toString()%> "
