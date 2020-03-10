@@ -9,14 +9,14 @@ product:
 
 | Info             | Value |
 | ---------------- | ---------------- |
-| Patch Name       | Patch\_20200228\_TPS-3808\_v1-7.0.1 |
-| Release Date     | 2020-02-28 |
+| Patch Name       | Patch\_20200310\_TPS-3808\_v1-7.0.1 |
+| Release Date     | 2020-03-10 |
 | Target Version   | 20180411_1414-V7.0.1 |
 | Product affected | Talend Studio |
 
 ## Introduction
 
-This is a self-contained patch.
+This is a self-contained patch only for the customers who already applied TPS-2956 patch.
 
 **NOTE**: For information on how to obtain this patch, reach out to your Support contact at Talend.
 
@@ -31,6 +31,7 @@ This patch contains the following fixes:
 Consider the following requirements for your system:
 
 - Talend Studio 7.0.1 must be installed.
+- TPS-2956 patch is already been installed.
 
 ## Installation
 
