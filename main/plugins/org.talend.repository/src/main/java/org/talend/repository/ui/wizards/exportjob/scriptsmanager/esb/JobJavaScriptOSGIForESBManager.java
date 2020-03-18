@@ -22,6 +22,7 @@ import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Enumeration;
@@ -105,22 +106,9 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
 
     protected static final char MANIFEST_ITEM_SEPARATOR = ',';
 
-    @SuppressWarnings("serial")
-    private static final Collection<String> EXCLUDED_MODULES = new ArrayList<String>() {
-        {
-            try (InputStream is = RepositoryPlugin.getDefault().getBundle()
-                    .getEntry("/resources/osgi-exclude.properties").openStream()) { //$NON-NLS-1$
-                final Properties p = new Properties();
-                p.load(is);
-                for (Enumeration<?> e = p.propertyNames(); e.hasMoreElements();) {
-                    add((String) e.nextElement());
-                }
-            } catch (IOException e) {
-                RepositoryPlugin.getDefault().getLog()
-                        .log(new Status(Status.ERROR, RepositoryPlugin.PLUGIN_ID, "Unable to load OSGi excludes", e));
-            }
-        }
-    };
+    protected static final String OSGI_EXCLUDE_PROP_FILENAME = "osgi-exclude.properties"; ////$NON-NLS-1$
+
+    private static final Collection<String> EXCLUDED_MODULES = new ArrayList<String>();
 
     public JobJavaScriptOSGIForESBManager(Map<ExportChoice, Object> exportChoiceMap, String contextName, String launcher,
             int statisticPort, int tracePort) {
@@ -145,6 +133,53 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
 
     private static final String OSGI_OS_CODE = ';' + "osname=" + System.getProperty("osgi.os") + ';' + "processor=" //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
             + System.getProperty("osgi.arch") + ','; //$NON-NLS-1$
+    
+    private static final String RESOLUTION_OPTIONAL = ";resolution:=optional";
+
+    private static final String COMPILER_LOG_DELIMITER = "----------";
+
+    private static final String COMPILER_LOG_REGEX = "(^[a-z_0-9\\.]+)\\.";
+
+    private static final String COMPILER_LOG_ERROR_1 = "cannot be resolved to a type";
+
+    private static final String COMPILER_LOG_ERROR_2 = "cannot be resolved";
+    
+    private static String complianceLevel = "1.8";
+    
+    private static String complianceParameter;
+    
+    static {
+        String javaVersion = System.getProperty(JAVA_VERSION);
+        if (javaVersion != null) {
+            if (javaVersion.startsWith("1.7")) {
+                complianceLevel = "1.7";
+            } else if (javaVersion.startsWith("1.8")) {
+                complianceLevel = "1.8";
+            } else if (javaVersion.startsWith("9")) {
+                complianceLevel = "9";
+            } else if (javaVersion.startsWith("10")) {
+                complianceLevel = "10";
+            } else if (javaVersion.startsWith("11")) {
+                complianceLevel = "11";
+            }
+        }
+        complianceParameter = " -" + complianceLevel + " -maxProblems 100000 -nowarn";
+        
+        try (InputStream is = RepositoryPlugin.getDefault().getBundle().getEntry("/resources/osgi-exclude.properties") //$NON-NLS-1$
+                .openStream()) {
+            final Properties p = new Properties();
+            p.load(is);
+            for (Enumeration<?> e = p.propertyNames(); e.hasMoreElements();) {
+                EXCLUDED_MODULES.add((String) e.nextElement());
+            }
+            if ("1.8".equals(complianceLevel) && null != p.getProperty("java8.excludes")) {
+                EXCLUDED_MODULES.addAll(Arrays.asList(p.getProperty("java8.excludes").split(",")));
+            }
+        } catch (IOException e) {
+            RepositoryPlugin.getDefault().getLog()
+                    .log(new Status(Status.ERROR, RepositoryPlugin.PLUGIN_ID, "Unable to load OSGi excludes", e));
+        }
+    }
 
     @Override
     public List<ExportFileResource> getExportResources(ExportFileResource[] processes, String... codeOptions)
@@ -739,7 +774,7 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
                     .getService(IRunProcessService.class);
             ITalendProcessJavaProject talendProcessJavaProject = service.getTalendJobJavaProject(processItem.getProperty());
             if (talendProcessJavaProject != null) {
-                String optional = ";resolution:=optional";
+                String optional = RESOLUTION_OPTIONAL;
                 Set<String> imports = importCompiler(service, processItem);
                 String[] defaultPackages = analyzer.getProperty(Analyzer.IMPORT_PACKAGE).split(",");
 
@@ -780,7 +815,7 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
         // In some cases of Java8, if user compiled some classes with newer(Java 11) JDK versions, the
         // Require-Capability will use the last version(Java 11)
         // https://github.com/bndtools/bnd/blob/master/biz.aQute.bndlib/src/aQute/bnd/osgi/Analyzer.java#L975
-        if (System.getProperty(JAVA_VERSION) != null && System.getProperty(JAVA_VERSION).startsWith("1.8")) { //$NON-NLS-1$
+        if ("1.8".equals(complianceLevel)) { //$NON-NLS-1$
             String requireCapability = manifest.getMainAttributes().getValue(Analyzer.REQUIRE_CAPABILITY);
             // set back to 1.8, version from:
             // https://github.com/bndtools/bnd/blob/master/biz.aQute.bndlib/src/aQute/bnd/osgi/Clazz.java#L141
@@ -1074,21 +1109,21 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         ByteArrayOutputStream err = new ByteArrayOutputStream();
         try {
-            org.eclipse.jdt.core.compiler.batch.BatchCompiler.compile(src + " -1.7 -nowarn -maxProblems 100000 ", new PrintWriter(out),
+            org.eclipse.jdt.core.compiler.batch.BatchCompiler.compile(src.concat(complianceParameter), new PrintWriter(out),
                     new PrintWriter(err), null);
             String errString = new String(err.toByteArray());
-            String[] errBlocks = errString.split("----------");
-            String reg = "(^[a-z_0-9\\.]+)\\.";
+            String[] errBlocks = errString.split(COMPILER_LOG_DELIMITER);
+            String reg = COMPILER_LOG_REGEX;
             Pattern pattern = Pattern.compile(reg);
             for (String errBlock : errBlocks) {
                 String[] lines = errBlock.trim().replaceAll("\r", "").split("\n");
                 if (lines.length == 4) {
-                    if (lines[3].endsWith("cannot be resolved to a type") || lines[3].endsWith("cannot be resolved")) {
+                    if (lines[3].endsWith(COMPILER_LOG_ERROR_1) || lines[3].endsWith(COMPILER_LOG_ERROR_2)) {
                         int markerPos = lines[2].indexOf('^');
                         Matcher m = pattern.matcher(lines[1].substring(markerPos));
                         if (m.find()) {
                             if (m.groupCount() == 1 && m.group(1).indexOf('.') > 0) {
-                                imports.add(m.group(1) + ";resolution:=optional");
+                                imports.add(m.group(1) + RESOLUTION_OPTIONAL);
                             }
                         }
                     }
