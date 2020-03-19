@@ -1407,6 +1407,7 @@ public class LoginProjectPage extends AbstractLoginActionPage {
                         errorManager.setErrMessage(Messages.getString("LoginComposite.PROJECT_NEED")); //$NON-NLS-1$
                     }
                 }
+                errorManager.setInfoMessage("Patch is installed successfully!");
             } else {
                 errorManager.setErrMessage(Messages.getString("LoginComposite.connectionEmpty")); //$NON-NLS-1$
             }
