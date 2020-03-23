@@ -183,6 +183,9 @@ imports="
 
 	<%@ include file="../templates/DB/AbstractDBConnection.javajet"%>
 
+	if(!globalMap.containsKey("conn_<%=cid%>") || globalMap.get("conn_<%=cid%>") == null){
+		globalMap.put("conn_<%=cid%>",conn_<%=cid%>);
+	}
 <%
 	String connectionType = ElementParameterParser.getValue(node, "__CONNECTION_TYPE__");
 	if(("ORACLE_WALLET").equals(connectionType)&&(dbschema==null||"".equals(dbschema)||"\"\"".equals(dbschema))) {
