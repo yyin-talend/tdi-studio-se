@@ -59,8 +59,4 @@ imports="
 
 	<%@ include file="../templates/DB/AbstractDBConnection.javajet"%>
 
-	if(!globalMap.containsKey("conn_<%=cid%>") || globalMap.get("conn_<%=cid%>") == null){
-		globalMap.put("conn_<%=cid%>",conn_<%=cid%>);
-	}
-
 	globalMap.put("db_<%=cid%>",<%=dbname%>);
