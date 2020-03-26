@@ -9,8 +9,8 @@ product:
 
 | Info             | Value |
 | ---------------- | ---------------- |
-| Patch Name       | Patch\_20200325_TPS-3873\_v1-7.0.1 |
-| Release Date     | 2020-03-25 |
+| Patch Name       | Patch\_20200326_TPS-3873\_v1-7.0.1 |
+| Release Date     | 2020-03-26 |
 | Target Version   | 20180411\_1414-V7.0.1 |
 | Product affected | Talend Studio |
 
@@ -31,6 +31,7 @@ This patch contains the following fixes:
 Consider the following requirements for your system:
 
 - Talend Studio 7.0.1 must be installed.
+- Installed Patch_20190218_TPS-2919_v1-7.0.1 in advance
 
 
 ## Installation
@@ -64,6 +65,6 @@ Backup the Affected files list below. Uninstall the patch by restore the backup 
 
 The following files are installed by this patch:
 
-- {Talend\_Studio\_path}/plugins/org.talend.designer.components.localprovider\_7.0.1.20180406\_1345/components/tFileArchive/tFileArchive\_java.xml
-- {Talend\_Studio\_path}/plugins/org.talend.designer.components.localprovider\_7.0.1.20180406\_1345/components/tFileUnarchive/tFileUnarchive/_java.xml
-- {Talend\_Studio\_path}/plugins/org.talend.libraries.custom\_7.0.1.20180406\_1345/lib/checkArchive-1.1-20181130.jar
+- {Talend\_Studio\_path}/plugins/org.talend.designer.components.localprovider\_7.0.1.20190213\_1315-patch/components/tFileArchive/tFileArchive\_java.xml
+- {Talend\_Studio\_path}/plugins/org.talend.designer.components.localprovider\_7.0.1.20190213\_1315-patch/components/tFileUnarchive/tFileUnarchive\_java.xml
+- {Talend\_Studio\_path}/plugins/org.talend.libraries.custom\_7.0.1.20180411\_1414/lib/checkArchive-1.1-20181130.jar
