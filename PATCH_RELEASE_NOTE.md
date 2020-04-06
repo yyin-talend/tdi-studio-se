@@ -1,5 +1,8 @@
 ---
 version: 7.2.1
+module: https://talend.poolparty.biz/coretaxonomy/42
+product:
+- https://talend.poolparty.biz/coretaxonomy/23
 ---
 
 # TPS-3918
