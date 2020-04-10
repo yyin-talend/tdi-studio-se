@@ -95,6 +95,7 @@ imports="
 <%
 			}
 %>
+			globalMap.put("conn_<%=cid%>", conn_<%=cid%>);
 <%
 		}
 
