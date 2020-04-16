@@ -41,6 +41,8 @@ boolean fire_triggers = ("true").equals(ElementParameterParser.getValue(node, "_
 String additional_query_parameters = ElementParameterParser.getValue(node, "__ADDITIONAL_QUERY_PARAMETERS__");
 boolean convertToUppercase = false; // not active this function
 boolean useExistingDynamic = ("true").equals(ElementParameterParser.getValue(node, "__USE_EXISTING_DYNAMIC__"));
+boolean useCodePage = ("true").equals(ElementParameterParser.getValue(node, "__USE_CODE_PAGE__"));
+boolean useActiveDirectoryAuth = "true".equals(ElementParameterParser.getValue(node, "__ACTIVE_DIR_AUTH__"));
 %>
 int deletedCount_<%=cid%>=0;
 <%@ include file="../templates/Log4j/Log4jDBConnUtil.javajet"%>
