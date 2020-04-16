@@ -9,8 +9,8 @@ product:
 
 | Info             | Value |
 | ---------------- | ---------------- |
-| Patch Name       | Patch\_20200414\_TPS-3928\_v1-7.2.1 |
-| Release Date     | 2020-04-14 |
+| Patch Name       | Patch\_20200416\_TPS-3928\_v1-7.2.1 |
+| Release Date     | 2020-04-16 |
 | Target Version   | Talend-Studio-20190620\_1446-V7.2.1 |
 | Product affected | Talend Studio |
 
@@ -54,11 +54,11 @@ Backup the Affected files list below. Uninstall the patch by restore the backup 
 
 The following files are installed by this patch:
 
-- {Talend\_Studio\_path}/plugins/org.talend.designer.components.localprovider\_7.2.1.20190620\_1446/components/tDotNETInstantiate/tDotNETInstantiate\_java.xml
-- {Talend\_Studio\_path}/plugins/org.talend.designer.components.localprovider\_7.2.1.20190620\_1446/components/tDotNETRow/tDotNETRow\_java.xml
-- {Talend\_Studio\_path}/plugins/org.talend.designer.components.localprovider\_7.2.1.20190620\_1446/components/tMSAXInput/tMSAXInput\_java.xml
-- {Talend\_Studio\_path}/plugins/org.talend.designer.components.localprovider\_7.2.1.20190620\_1446/components/tMSAXOutput/tMSAXOutput\_java.xml
-- {Talend\_Studio\_path}/plugins/org.talend.designer.components.localprovider\_7.2.1.20190620\_1446/components/tOleDbInput/tOleDbInput\_java.xml
-- {Talend\_Studio\_path}/plugins/org.talend.designer.components.localprovider\_7.2.1.20190620\_1446/components/tOleDbOutput/tOleDbOutput\_java.xml
-- {Talend\_Studio\_path}/plugins/org.talend.designer.components.localprovider\_7.2.1.20190620\_1446/components/tOleDbRow/tOleDbRow\_java.xml
+- {Talend\_Studio\_path}/plugins/org.talend.designer.components.localprovider\_7.2.1.20190614\_0309/components/tDotNETInstantiate/tDotNETInstantiate\_java.xml
+- {Talend\_Studio\_path}/plugins/org.talend.designer.components.localprovider\_7.2.1.20190614\_0309/components/tDotNETRow/tDotNETRow\_java.xml
+- {Talend\_Studio\_path}/plugins/org.talend.designer.components.localprovider\_7.2.1.20190614\_0309/components/tMSAXInput/tMSAXInput\_java.xml
+- {Talend\_Studio\_path}/plugins/org.talend.designer.components.localprovider\_7.2.1.20190614\_0309/components/tMSAXOutput/tMSAXOutput\_java.xml
+- {Talend\_Studio\_path}/plugins/org.talend.designer.components.localprovider\_7.2.1.20190614\_0309/components/tOleDbInput/tOleDbInput\_java.xml
+- {Talend\_Studio\_path}/plugins/org.talend.designer.components.localprovider\_7.2.1.20190614\_0309/components/tOleDbOutput/tOleDbOutput\_java.xml
+- {Talend\_Studio\_path}/plugins/org.talend.designer.components.localprovider\_7.2.1.20190614\_0309/components/tOleDbRow/tOleDbRow\_java.xml
 - janet-win64.dll (the file is in the place where java.library.path variable points out)
