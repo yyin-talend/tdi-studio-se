@@ -9,8 +9,8 @@ product:
 
 | Info             | Value |
 | ---------------- | ---------------- |
-| Patch Name       | Patch\_20200417\_TPS-3928\_v1-7.2.1 |
-| Release Date     | 2020-04-17 |
+| Patch Name       | Patch\_20200418\_TPS-3928\_v1-7.2.1 |
+| Release Date     | 2020-04-18 |
 | Target Version   | Talend-Studio-20190620\_1446-V7.2.1 |
 | Product affected | Talend Studio |
 
