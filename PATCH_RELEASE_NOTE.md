@@ -32,10 +32,6 @@ This patch contains the following fixes:
 Consider the following requirements for your system:
 
 - Talend Studio 7.1.1 must be installed.
-- Patch_20190424_TPS-3060_v1,7.1.1 must be installed.
-- Patch_20190430_TPS-3084_v1,7.1.1 must be installed.
-- Patch_20190528_TPS-3144_v1,7.1.1 must be installed.
-- Patch_20190604_TPS-3159_v1,7.1.1 must be installed.
 
 ## Installation <!-- mandatory -->
 
