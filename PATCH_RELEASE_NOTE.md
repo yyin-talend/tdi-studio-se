@@ -8,8 +8,8 @@ product: https://talend.poolparty.biz/coretaxonomy/23
 
 | Info             | Value |
 | ---------------- | ---------------- |
-| Patch Name       | Patch\_20200421\_TPS-3944\_v1-7.1.1|
-| Release Date     | 2020-04-21 |
+| Patch Name       | Patch\_20200423\_TPS-3944\_v1-7.1.1|
+| Release Date     | 2020-04-23 |
 | Target Version   | 20181026\_1147-v7.1.1 |
 | Product affected | Talend Studio |
 
@@ -32,6 +32,10 @@ This patch contains the following fixes:
 Consider the following requirements for your system:
 
 - Talend Studio 7.1.1 must be installed.
+- Patch_20190424_TPS-3060_v1,7.1.1 must be installed.
+- Patch_20190430_TPS-3084_v1,7.1.1 must be installed.
+- Patch_20190528_TPS-3144_v1,7.1.1 must be installed.
+- Patch_20190604_TPS-3159_v1,7.1.1 must be installed.
 
 ## Installation <!-- mandatory -->
 
