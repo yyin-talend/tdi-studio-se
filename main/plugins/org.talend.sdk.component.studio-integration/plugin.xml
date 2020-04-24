@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-  Copyright (C) 2006-2018 Talend Inc. - www.talend.com
+  Copyright (C) 2006-2020 Talend Inc. - www.talend.com
    Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
   You may obtain a copy of the License at
@@ -118,6 +118,10 @@
            class="org.talend.sdk.component.studio.service.TaCoKitUpdateService"
            serviceId="ITaCoKitUpdateService">
      </Service>
+    <Service
+      class="org.talend.sdk.component.studio.service.TaCoKitDependencyService"
+      serviceId="ITaCoKitDependencyService">
+    </Service>
   </extension>
   <extension
         point="org.talend.designer.core.generators">
@@ -270,4 +274,7 @@
     <Service serviceId="IGenericWizardService" class="org.talend.sdk.component.studio.metadata.WizardRegistry" />
   </extension>
   -->
+  <extension point="org.talend.core.runtime.buildExport_provider">
+    <dependenciesProvider class="org.talend.sdk.component.studio.provider.TacokitExportDependenciesProvider"></dependenciesProvider>
+  </extension>
 </plugin>

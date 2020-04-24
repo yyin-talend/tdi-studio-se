@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2006-2018 Talend Inc. - www.talend.com
+ * Copyright (C) 2006-2020 Talend Inc. - www.talend.com
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with
  * the License. You may obtain a copy of the License at
@@ -13,23 +13,36 @@
 package org.talend.sdk.component.studio.util;
 
 import java.io.File;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.Properties;
+import java.util.stream.Stream;
 
 import org.apache.commons.lang3.StringUtils;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.emf.common.util.EList;
+import org.talend.commons.utils.system.EnvironmentUtils;
+import org.talend.core.model.components.ComponentCategory;
+import org.talend.core.model.components.IComponent;
 import org.talend.core.model.general.Project;
 import org.talend.core.model.properties.ConnectionItem;
+import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.repository.model.ProxyRepositoryFactory;
+import org.talend.core.ui.component.ComponentsFactoryProvider;
+import org.talend.designer.core.utils.UnifiedComponentUtil;
 import org.talend.repository.ProjectManager;
 import org.talend.sdk.component.server.front.model.ConfigTypeNode;
+import org.talend.sdk.component.studio.ComponentModel;
 import org.talend.sdk.component.studio.Lookups;
 import org.talend.sdk.component.studio.metadata.WizardRegistry;
 import org.talend.sdk.component.studio.metadata.model.TaCoKitConfigurationModel;
@@ -42,10 +55,12 @@ public class TaCoKitUtil {
 
     /**
      * Get ConnectionItem from specified project
-     * 
+     *
      * @param project {@link Project} only search from the given project
-     * @param itemId item id
+     * @param itemId  item id
+     *
      * @return stored item of the given parameters, or null
+     *
      * @throws Exception unexpected exception occured during searching
      */
     public static ConnectionItem getLatestTaCoKitConnectionItem(final Project project, final String itemId)
@@ -60,9 +75,11 @@ public class TaCoKitUtil {
 
     /**
      * Get ConnectionItem from main project or it's reference project
-     * 
+     *
      * @param itemId item id
+     *
      * @return stored item of the given parameters, or null
+     *
      * @throws Exception unexpected exception occured during searching
      */
     public static ConnectionItem getLatestTaCoKitConnectionItem(final String itemId) throws Exception {
@@ -181,9 +198,10 @@ public class TaCoKitUtil {
 
     /**
      * Method to create component name from component's family name and component's name itself.
-     * 
-     * @param familyName component's family name
+     *
+     * @param familyName    component's family name
      * @param componentName component's name
+     *
      * @return full component name
      */
     public static String getFullComponentName(final String familyName, final String componentName) {
@@ -246,6 +264,103 @@ public class TaCoKitUtil {
             }
         }
     }
+    /**
+     * Find the maven repository path.
+     *
+     * @return the configured m2 repository path
+     */
+    public static java.nio.file.Path findM2Path() {
+        return Optional.ofNullable(System.getProperty("talend.component.manager.m2.repository"))
+                .map(Paths::get)
+                .orElseGet(() -> {
+                    // check if we are in the studio process if so just grab the the studio config
+                    final String m2Repo = System.getProperty("maven.repository");
+                    if (!"global".equals(m2Repo)) {
+                        final String m2StudioRepo = EnvironmentUtils.isWindowsSystem()
+                                ? System.getProperty("osgi.configuration.area", "").replaceAll("^file:/", "")
+                                : System.getProperty("osgi.configuration.area", "").replaceAll("^file:", "");
+                        final java.nio.file.Path localM2 = Paths.get(m2StudioRepo, ".m2/repository");
+                        if (Files.exists(localM2)) {
+                            return localM2;
+                        }
+                    }
+                    // defaults to user m2
+                    return Paths.get(System.getProperty("user.home", "")).resolve(".m2/repository");
+                });
+    }
+
+    /**
+     * Translates a GAV (ie com.tutorial:tutorial-component:0.0.1) to a maven repository path (ie com/tutorial/tutorial-component/0.0.1/tutorial-component-0.0.1.jar).
+     *
+     * @param gav GroupId ArtifactId Version. The GAV may have the following forms:
+     *            com.tutorial:tutorial-component:0.0.1
+     *            or
+     *            com.tutorial:tutorial-component:jar:0.0.1:compile
+     *
+     * @return a translated maven path
+     */
+    public static String gavToMvnPath(String gav) {
+        final String jarPathFmt = "%s/%s/%s/%s-%s.jar";
+        final String[] segments = gav.split(":");
+        if (segments.length < 3) {
+            throw new IllegalArgumentException("Bad GAV given!"); // TODO improve message
+        }
+        String group = segments[0].replaceAll("\\.", "/");
+        String artifact = segments[1];
+        String version = "";
+        if (segments.length == 3) {
+            version = segments[2];
+        } else {
+            version = segments[3];
+        }
+        return String.format(jarPathFmt, group, artifact, version, artifact, version);
+    }
+
+
+    /**
+     * Get all components defined in <code>item</code>.
+     *
+     * @param item the currently processed <code>ProcessItem</code> during job build export
+     *
+     * @return a non-null stream of {@link IComponent}
+     */
+    public static Stream<IComponent> getJobComponents(final Item item) {
+        final EList<?> nodes = ProcessItem.class.cast(item).getProcess().getNode();
+        final String DI = ComponentCategory.CATEGORY_4_DI.getName();
+        return nodes.stream().map(node -> {
+            final String componentName = ((NodeType) node).getComponentName();
+            IComponent component = ComponentsFactoryProvider.getInstance().get(componentName, DI);
+            if (component == null) {
+                component = UnifiedComponentUtil.getDelegateComponent(componentName, DI);
+            }
+            return component;
+        }).filter(Objects::nonNull);
+    }
+
+    /**
+     * Get component-runtime components from <code>components</code>.
+     *
+     * @param components <code>{@link IComponent}</code>
+     *
+     * @return a non-null stream of {@link ComponentModel}
+     */
+    public static Stream<ComponentModel> getTaCoKitComponents(final Stream<IComponent> components) {
+        return components
+                .filter(ComponentModel.class::isInstance)
+                .map(ComponentModel.class::cast);
+    }
+
+    /**
+     * Check if <code>components</code> holds component-runtime components.
+     *
+     * @param components <code>IComponent</code>
+     *
+     * @return true if item has some component-runtime components
+     */
+    public static boolean hasTaCoKitComponents(final Stream<IComponent> components) {
+        return components.anyMatch(ComponentModel.class::isInstance);
+    }
+
 
     public static class GAV {
 
