@@ -9,8 +9,8 @@ product:
 
 | Info             | Value |
 | ---------------- | ---------------- |
-| Patch Name       | Patch\_20200423_TPS-3957\_v1-7.0.1 |
-| Release Date     | 2020-04-23 |
+| Patch Name       | Patch\_20200426_TPS-3957\_v1-7.0.1 |
+| Release Date     | 2020-04-26 |
 | Target Version   | 20180411\_1414-V7.0.1 |
 | Product affected | Talend Studio |
 
@@ -31,7 +31,7 @@ This patch contains the following fixes:
 Consider the following requirements for your system:
 
 - Talend Studio 7.0.1 must be installed.
-- Installed Patch_20190518_TPS-3103_v1-7.0.1 in advance
+- Installed Patch\_20190518\_TPS-3103\_v1-7.0.1 in advance
 
 
 ## Installation
