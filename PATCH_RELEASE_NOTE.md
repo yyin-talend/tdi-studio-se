@@ -5,12 +5,12 @@ product:
 - https://talend.poolparty.biz/coretaxonomy/23
 ---
 
-# TPS-3392
+# TPS-3978
 
 | Info             | Value |
 | ---------------- | ---------------- |
-| Patch Name       | Patch\_20200424_TPS-3978\_v1-7.1.1 |
-| Release Date     | 2020-04-24 |
+| Patch Name       | Patch\_20200427_TPS-3978\_v1-7.1.1 |
+| Release Date     | 2020-04-27 |
 | Target Version   | 20181026\_1147-V7.1.1 |
 | Product affected | Talend Studio |
 
