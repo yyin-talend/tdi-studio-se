@@ -9,8 +9,8 @@ product:
 
 | Info             | Value |
 | ---------------- | ---------------- |
-| Patch Name       | Patch\_20200424\_TPS-3950\_v1-7.0.1 |
-| Release Date     | 2020-04-24 |
+| Patch Name       | Patch\_20200427\_TPS-3950\_v1-7.0.1 |
+| Release Date     | 2020-04-27 |
 | Target Version   | 20180411\_1414-V7.0.1 |
 | Product affected | Talend Studio |
 
@@ -64,5 +64,5 @@ Backup the Affected files list below. Uninstall the patch by restore the backup 
 
 The following files are installed by this patch:
 
-- {Talend\_Studio\_path}/plugins/org.talend.designer.components.localprovider\_7.0.1.20180406\_1345/components/tFileInputMail/tFileInputMail\_begin.javajet
-- {Talend\_Studio\_path}/plugins/org.talend.designer.components.localprovider\_7.0.1.20180406\_1345/components/tFileInputMail/tFileInputMail\_MIME.javajet
+- {Talend\_Studio\_path}/plugins/org.talend.designer.components.localprovider\_7.0.1.20180411\_1414/components/tFileInputMail/tFileInputMail\_begin.javajet
+- {Talend\_Studio\_path}/plugins/org.talend.designer.components.localprovider\_7.0.1.20180411\_1414/components/tFileInputMail/tFileInputMail\_MIME.javajet
