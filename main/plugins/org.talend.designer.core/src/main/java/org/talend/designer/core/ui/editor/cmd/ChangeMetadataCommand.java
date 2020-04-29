@@ -560,8 +560,8 @@ public class ChangeMetadataCommand extends Command {
             }
         }
 
-        if (!currentOutputMetadata.sameMetadataAs(newOutputMetadata, IMetadataColumn.OPTIONS_NONE, true)) {
-            if (!currentOutputMetadata.sameMetadataAs(newOutputMetadata, IMetadataColumn.OPTIONS_IGNORE_USED, true)) {
+        if (!currentOutputMetadata.sameMetadataAs(newOutputMetadata, IMetadataColumn.OPTIONS_NONE)) {
+            if (!currentOutputMetadata.sameMetadataAs(newOutputMetadata, IMetadataColumn.OPTIONS_IGNORE_USED)) {
                 String type = (String) node.getPropertyValue(EParameterName.SCHEMA_TYPE.getName());
                 if (type != null && type.equals(EmfComponent.REPOSITORY) && !repositoryMode) {
                     // for one node has several schema_type,set mode for the current one

@@ -1533,9 +1533,9 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
 
                                         if (onlySimpleShow
                                                 || !metadataTable.sameMetadataAs(copyOfrepositoryMetadata,
-                                                        IMetadataColumn.OPTIONS_IGNORE_DBTYPE, true)
+                                                        IMetadataColumn.OPTIONS_IGNORE_DBTYPE)
                                                 || connectionItem instanceof GenericSchemaConnectionItem && !metadataTable
-                                                        .sameMetadataAs(copyOfrepositoryMetadata, IMetadataColumn.OPTIONS_NONE, true)) {
+                                                        .sameMetadataAs(copyOfrepositoryMetadata, IMetadataColumn.OPTIONS_NONE)) {
                                             result = new UpdateCheckResult(node);
                                             result.setResult(EUpdateItemType.NODE_SCHEMA, EUpdateResult.UPDATE,
                                                     copyOfrepositoryMetadata, source);
