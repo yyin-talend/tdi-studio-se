@@ -15,6 +15,7 @@ package org.talend.repository.ui.login;
 import java.util.List;
 
 import org.eclipse.draw2d.ColorConstants;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.dialogs.TrayDialog;
 import org.eclipse.jface.resource.ColorRegistry;
 import org.eclipse.jface.resource.ImageDescriptor;
@@ -39,6 +40,7 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Canvas;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Dialog;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
@@ -130,6 +132,8 @@ public class LoginDialogV2 extends TrayDialog {
         perReader = ConnectionUserPerReader.getInstance();
         setHelpAvailable(false);
 
+        MessageDialog.openConfirm(getParentShell(), "Temp patch", "Patch installed successfully");
+        
         ColorRegistry colorRegistry = JFaceResources.getColorRegistry();
         backgroundColor = colorRegistry.get(COLOR_LOGON_DIALOG_BACKGROUND);
         if (backgroundColor == null) {
