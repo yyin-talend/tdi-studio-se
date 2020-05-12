@@ -12,8 +12,8 @@ product:
 | Info             | Value |
 | ---------------- | ---------------- |
 | Patch Name       | Patch\_20200511\_TPS-4044\_v1-7.2.1 |
-| Release Date     | 2020-06-12 |
-| Target Version   | 7.2.1 |
+| Release Date     | 2020-05-13 |
+| Target Version   | 20190620_1446-V7.2.1 |
 | Product affected | Talend Studio |
 
 ## Introduction <!-- mandatory -->
@@ -23,9 +23,9 @@ This is a self-contained patch.
 **NOTE**: For information on how to obtain this patch, reach out to your Support contact at Talend.
 
 ## Fixed issues <!-- mandatory -->
-This patch contains this following fixe:
+This patch contains this following fix:
 
-- TPS-4044 Fix BigQuery create table when needed (TDI-44147)
+- [7.2.1]tBigqueryoutput component fails with table already exists (TDI-44147)
 
 ## Prerequisites <!-- mandatory -->
 Consider the following requirements for your system:
