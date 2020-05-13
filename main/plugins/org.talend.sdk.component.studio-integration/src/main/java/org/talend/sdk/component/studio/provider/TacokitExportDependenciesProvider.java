@@ -20,8 +20,6 @@ import static org.talend.sdk.component.studio.util.TaCoKitUtil.getJobComponents;
 import static org.talend.sdk.component.studio.util.TaCoKitUtil.getTaCoKitComponents;
 import static org.talend.sdk.component.studio.util.TaCoKitUtil.hasTaCoKitComponents;
 
-import aQute.bnd.make.Make;
-
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
@@ -66,7 +64,7 @@ public class TacokitExportDependenciesProvider implements IBuildExportDependenci
      * @see org.talend.core.runtime.repository.build.IBuildExportDependenciesProvider
      */
     @Override
-    public void exportDependencies(final ExportFileResource exfeat(TCOMP-1681): Make ESB Studio job export TaCoKit compliantportFileResource, final Item item) {
+    public void exportDependencies(final ExportFileResource exportFileResource, final Item item) {
         if (!BuildExportManager.getInstance().getCurrentExportType()
                 .equals(EXPORT_TYPE.OSGI) || !hasTaCoKitComponents(getJobComponents(item))) {
             return;
