@@ -3705,6 +3705,9 @@
       <ExtraBuildChecker
             ExtraBuildChecker="org.talend.repository.ui.wizards.exportjob.extrachecker.LimitESBConsumerJobChecker">
       </ExtraBuildChecker>
+      <ExtraBuildChecker
+            ExtraBuildChecker="org.talend.repository.ui.wizards.exportjob.extrachecker.EndpointPortJobChecker">
+      </ExtraBuildChecker>
    </extension>
    <extension
          point="org.talend.core.repository.login.task">
