@@ -11,8 +11,8 @@ product:
 
 | Info             | Value |
 | ---------------- | ---------------- |
-| Patch Name       | Patch\_20200511\_TPS-4044\_v1-7.2.1 |
-| Release Date     | 2020-05-13 |
+| Patch Name       | Patch\_20200514\_TPS-4044\_v1-7.2.1 |
+| Release Date     | 2020-05-14 |
 | Target Version   | 20190620_1446-V7.2.1 |
 | Product affected | Talend Studio |
 
