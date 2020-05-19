@@ -33,12 +33,12 @@
       </projecttask>
       <projecttask
             beforeLogon="false"
-            breaks="5.1.2"
+            breaks="7.3.0"
             class="org.talend.designer.dbmap.migration.DbOperatorMigrationTask"
             description="Save elt map external data to emf"
             id="org.talend.designer.dbmap.migration.DbOperatorMigrationTask"
             name="DbOperatorMigrationTask"
-            version="7.4.1">
+            version="7.3.1">
       </projecttask>
    </extension>
    <extension
