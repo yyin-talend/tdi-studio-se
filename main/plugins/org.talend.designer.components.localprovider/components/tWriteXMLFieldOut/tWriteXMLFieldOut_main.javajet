@@ -744,13 +744,13 @@ if(("Dom4j").equals(mode)){
 			if(removeHeader_<%=cid %>.indexOf("<?xml") >=0 ){
 				removeHeader_<%=cid %> = removeHeader_<%=cid %>.substring(removeHeader_<%=cid %>.indexOf("?>")+3);
 			}
-			listGroupby_<%=cid %>.add(removeHeader_<%=cid %>);
+			listGroupby_<%=cid %>.put(removeHeader_<%=cid %>);
 <%
 		}else{
             if(destination!=null && (destination.indexOf("tCouchbaseOutput_")==0) || destination.indexOf("tCouchDBOutput_")==0){
 %>
                 map_<%=cid%>.put("json_<%=destination%>",strWriter_<%=cid %>.toString());
-                listGroupby_<%=cid %>.add(map_<%=cid%>);
+                listGroupby_<%=cid %>.put(map_<%=cid%>);
 <%
             }else{
 				if(istWriteJSONField){
@@ -768,11 +768,11 @@ if(("Dom4j").equals(mode)){
 					     }
 					%>
 					     		row_<%= cid %>.<%= jsonField %> = strWriter_<%=cid %>.toString();
-					     		listGroupby_<%=cid %>.add(row_<%= cid %>);
+					     		listGroupby_<%=cid %>.put(row_<%= cid %>);
 					<%
 				}else{
 								%>
-										    listGroupby_<%=cid %>.add(strWriter_<%=cid %>.toString());
+										    listGroupby_<%=cid %>.put(strWriter_<%=cid %>.toString());
 								<%
 				}
             }
@@ -988,7 +988,7 @@ else if(("Null").equals(mode)){
 //		endTabStrs_<%=cid%>.clear();
 		out_<%=cid %>.write("<%=rowSeparator%>");
 		out_<%=cid%>.close();
-		listGroupby_<%=cid %>.add(strWriter_<%=cid %>.toString());
+		listGroupby_<%=cid %>.put(strWriter_<%=cid %>.toString());
 
 		//create a new StringWriter and BufferWriter
 		//write the head title to the StringWriter		

@@ -79,16 +79,16 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 				if(nextMergeConn == null || nextMergeConn.getInputId()==1){
 				    if(destination.indexOf("tCouchbaseOutput_")==0 || destination.indexOf("tCouchDBOutput_")==0){
 					%>
-				        java.util.Queue<java.util.Map> listGroupby_<%=cid%> = new java.util.concurrent.ConcurrentLinkedQueue<java.util.Map>();
+				        java.util.concurrent.BlockingQueue<java.util.Map> listGroupby_<%=cid%> = new java.util.concurrent.LinkedBlockingQueue<java.util.Map>(1000);
 					<%
 				    }else{
 						 if(istWriteJSONField){
 							%>
-						        java.util.Queue<<%= rowStructNameOutput %>> listGroupby_<%=cid%> = new java.util.concurrent.ConcurrentLinkedQueue<<%= rowStructNameOutput %>>();
+						        java.util.concurrent.BlockingQueue<<%= rowStructNameOutput %>> listGroupby_<%=cid%> = new java.util.concurrent.LinkedBlockingQueue<<%= rowStructNameOutput %>>(1000);
 							<%
 						}else{
 							%>
-						        java.util.Queue<String> listGroupby_<%=cid%> = new java.util.concurrent.ConcurrentLinkedQueue<String>();
+						        java.util.concurrent.BlockingQueue<String> listGroupby_<%=cid%> = new java.util.concurrent.LinkedBlockingQueue<String>(1000);
 							<%
 						}
 				    }
@@ -104,16 +104,16 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 						<%
 						if(destination.indexOf("tCouchbaseOutput_")==0 || destination.indexOf("tCouchDBOutput_")==0){
 						%>
-							java.util.Queue<java.util.Map> queue;
+							java.util.concurrent.BlockingQueue<java.util.Map> queue;
 						<%
 						}else{
 							 if(istWriteJSONField){
 									%>
-									    java.util.Queue<<%= rowStructNameOutput %>> queue;
+									    java.util.concurrent.BlockingQueue<<%= rowStructNameOutput %>> queue;
 									<%
 							}else{
 									%>
-									    java.util.Queue<String> queue;
+									    java.util.concurrent.BlockingQueue<String> queue;
 									<%
 							}
 						}
@@ -123,13 +123,13 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 						java.lang.Error lastError;
 						String currentComponent;
 						
-						ThreadXMLField_<%=cid%>(java.util.Queue q) {
+						ThreadXMLField_<%=cid%>(java.util.concurrent.BlockingQueue q) {
 							this.queue = q;
 							globalMap.put("queue_<%=virtualTargetCid%>", queue);
 							lastException = null;
 						}
 						
-						ThreadXMLField_<%=cid%>(java.util.Queue q, java.util.List<java.util.Map<String,String>> l) {
+						ThreadXMLField_<%=cid%>(java.util.concurrent.BlockingQueue q, java.util.List<java.util.Map<String,String>> l) {
 							this.queue = q;
 							this.flows = l;
 							lastException = null;
@@ -172,16 +172,16 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 				}else{
 					if(destination.indexOf("tCouchbaseOutput_")==0 || destination.indexOf("tCouchDBOutput_")==0){
 					%>
-				        java.util.Queue<java.util.Map> listGroupby_<%=cid%> = (java.util.Queue<java.util.Map>) globalMap.get("queue_<%=cid%>");
+				        java.util.concurrent.BlockingQueue<java.util.Map> listGroupby_<%=cid%> = (java.util.concurrent.BlockingQueue<java.util.Map>) globalMap.get("queue_<%=cid%>");
 					<%
 				    }else{
 				    	if(istWriteJSONField){
 				    %>
-				    	java.util.Queue<<%= rowStructNameOutput %>> listGroupby_<%=cid%> = (java.util.Queue<<%= rowStructNameOutput %>>) globalMap.get("queue_<%=cid%>");
+				    	java.util.concurrent.BlockingQueue<<%= rowStructNameOutput %>> listGroupby_<%=cid%> = (java.util.concurrent.BlockingQueue<<%= rowStructNameOutput %>>) globalMap.get("queue_<%=cid%>");
 				    <%
 				    	} else {
 					%>
-						java.util.Queue<String> listGroupby_<%=cid%> = (java.util.Queue<String>) globalMap.get("queue_<%=cid%>");
+						java.util.concurrent.BlockingQueue<String> listGroupby_<%=cid%> = (java.util.concurrent.BlockingQueue<String>) globalMap.get("queue_<%=cid%>");
 					<%
 						}
 				    }

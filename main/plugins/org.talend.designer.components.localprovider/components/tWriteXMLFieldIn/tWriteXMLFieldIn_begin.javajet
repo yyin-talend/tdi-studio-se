@@ -38,22 +38,22 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
     			IConnection nextMergeConn = NodeUtil.getNextMergeConnection(node);
     			if(nextMergeConn != null && nextMergeConn.getInputId()>1 && startNodeCid != null){
    				%>
-    				java.util.Queue<String> queue_<%=cid%> = new java.util.concurrent.ConcurrentLinkedQueue<String>();
+    				java.util.concurrent.BlockingQueue<String> queue_<%=cid%> = new java.util.concurrent.LinkedBlockingQueue<String>(1000);
 					
 					class ThreadXMLField_<%=cid%> extends Thread {
-						java.util.Queue<String> queue;
+						java.util.concurrent.BlockingQueue<String> queue;
 						java.util.List<java.util.Map<String,String>> flows;
 						java.lang.Exception lastException;
 						java.lang.Error lastError;
 						String currentComponent;
 						
-						ThreadXMLField_<%=cid%>(java.util.Queue q) {
+						ThreadXMLField_<%=cid%>(java.util.concurrent.BlockingQueue q) {
 							this.queue = q;
 							globalMap.put("queue_<%=virtualSourceCid%>", queue);
 							lastException = null;
 						}
 						
-						ThreadXMLField_<%=cid%>(java.util.Queue q, java.util.List<java.util.Map<String,String>> l) {
+						ThreadXMLField_<%=cid%>(java.util.concurrent.BlockingQueue q, java.util.List<java.util.Map<String,String>> l) {
 							this.queue = q;
 							this.flows = l;
 							lastException = null;
@@ -93,7 +93,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
     			<%
     			}else{
 				%>
-					java.util.Queue<String> queue_<%=cid%> = (java.util.Queue<String>) globalMap.get("queue_<%=cid%>");
+					java.util.concurrent.BlockingQueue<String> queue_<%=cid%> = (java.util.concurrent.BlockingQueue<String>) globalMap.get("queue_<%=cid%>");
 				<%
 				}
 				%>

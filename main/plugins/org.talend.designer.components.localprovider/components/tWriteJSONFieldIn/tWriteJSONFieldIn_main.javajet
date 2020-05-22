@@ -34,7 +34,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
                 String outputRowStructName = conns.get(0).getName()+"Struct";//row2
                 if(destination!=null && (destination.indexOf("tCouchbaseOutput_")>=0 || destination.indexOf("tCouchDBOutput_")>=0)){
 %>
-                    map_<%=cid%> = queue_<%=cid %>.poll();
+                    map_<%=cid%> = queue_<%=cid %>.take();
                     str_<%=cid %> = (String)map_<%=cid%>.get("json_<%=destination%>");
                     String columnValue_<%=cid%> = "";
 <%
@@ -89,7 +89,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
                     }
                 }else{
                     %>
-                    <%= outputRowStructName %> result_<%= cid %> = queue_<%=cid %>.poll();
+                    <%= outputRowStructName %> result_<%= cid %> = queue_<%=cid %>.take();
                     str_<%=cid %> = result_<%= cid %>.<%= jsonField %>;
                     <%
                     List<Map<String,String>> groupbys = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__GROUPBYS__");

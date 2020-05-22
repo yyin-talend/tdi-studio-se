@@ -211,14 +211,14 @@ if(nb_line_<%=cid %> > 0){
 	if(removeHeader_<%=cid %>.indexOf("<?xml") >=0 ){
 		removeHeader_<%=cid %> = removeHeader_<%=cid %>.substring(removeHeader_<%=cid %>.indexOf("?>")+3);
 	}
-	listGroupby_<%=cid %>.add(removeHeader_<%=cid %>);
+	listGroupby_<%=cid %>.put(removeHeader_<%=cid %>);
 <%
 		}else{
 		    String destination = ElementParameterParser.getValue(node, "__DESTINATION__");
 		    if(destination.indexOf("tCouchbaseOutput_")==0 || destination.indexOf("tCouchDBOutput_")==0){
 %>				
                 map_<%=cid%>.put("json_<%=destination%>",strWriter_<%=cid %>.toString());
-                listGroupby_<%=cid %>.add(map_<%=cid%>);
+                listGroupby_<%=cid %>.put(map_<%=cid%>);
 <%
 		    }else{
 				 if(istWriteJSONField){
@@ -236,11 +236,11 @@ if(nb_line_<%=cid %> > 0){
 					       }
 							%>
 					     		row_<%= cid %>.<%= jsonField %> = strWriter_<%=cid %>.toString();
-					     		listGroupby_<%=cid %>.add(row_<%= cid %>);
+					     		listGroupby_<%=cid %>.put(row_<%= cid %>);
 		    		<%
 				}else{
 					%>
-					    listGroupby_<%=cid %>.add(strWriter_<%=cid %>.toString());
+					    listGroupby_<%=cid %>.put(strWriter_<%=cid %>.toString());
 					<%
 				}
 		    }
@@ -293,7 +293,7 @@ if(nb_line_<%=cid %> > 0){
 	out_<%=cid%>.newLine();
 	out_<%=cid%>.close();
 	
-	listGroupby_<%=cid %>.add(strWriter_<%=cid %>.toString());
+	listGroupby_<%=cid %>.put(strWriter_<%=cid %>.toString());
 <%
 	}
 %>

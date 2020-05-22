@@ -27,11 +27,11 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
     		if (conn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {
 				if("id_Document".equals(metadata.getColumn(xmlField).getTalendType())) {
 %>
-					<%=conn.getName()%>.<%=xmlField %> = ParserUtils.parseTo_Document(queue_<%=cid %>.poll());
+					<%=conn.getName()%>.<%=xmlField %> = ParserUtils.parseTo_Document(queue_<%=cid %>.take());
 <%
 				} else {
 %>
-					<%=conn.getName()%>.<%=xmlField %> = queue_<%=cid %>.poll();
+					<%=conn.getName()%>.<%=xmlField %> = queue_<%=cid %>.take();
 <%
 				}
 %>

@@ -24,14 +24,14 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 	IConnection nextMergeConn = NodeUtil.getNextMergeConnection(node);
 	if(nextMergeConn == null || nextMergeConn.getInputId()==1){
 	%>
-		java.util.Queue listGroupby_<%=cid%> = (java.util.Queue)globalMap.get("queue_<%=virtualTargetCid%>");
+		java.util.concurrent.BlockingQueue listGroupby_<%=cid%> = (java.util.concurrent.BlockingQueue)globalMap.get("queue_<%=virtualTargetCid%>");
 		if(resourceMap.get("finish_<%=cid%>") == null){
 			globalMap.put("<%=virtualTargetCid%>_FINISH_WITH_EXCEPTION" + (listGroupby_<%=cid%>==null?"":listGroupby_<%=cid%>.hashCode()), "true");
 		}
 	<%
 	}else{
 	%>
-		java.util.Queue listGroupby_<%=cid%> = (java.util.Queue)globalMap.get("queue_<%=cid%>");
+		java.util.concurrent.BlockingQueue listGroupby_<%=cid%> = (java.util.concurrent.BlockingQueue)globalMap.get("queue_<%=cid%>");
 	<%
 	}
 	%>

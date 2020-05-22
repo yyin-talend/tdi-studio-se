@@ -48,11 +48,11 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 					if(destination.indexOf("tCouchbaseOutput_")==0 || destination.indexOf("tCouchDBOutput_")==0){
 					%>
 						java.util.Map map_<%=cid%> = new java.util.HashMap();
-				        java.util.Queue<java.util.Map> queue_<%=cid%> = new java.util.concurrent.ConcurrentLinkedQueue<java.util.Map>();
+				        java.util.concurrent.BlockingQueue<java.util.Map> queue_<%=cid%> = new java.util.concurrent.LinkedBlockingQueue<java.util.Map>(1000);
 					<%
 				    }else{
 					%>
-					   java.util.Queue<<%= outputRowStructName %>> queue_<%=cid%> = new java.util.concurrent.ConcurrentLinkedQueue<<%= outputRowStructName %>>();
+					   java.util.concurrent.BlockingQueue<<%= outputRowStructName %>> queue_<%=cid%> = new java.util.concurrent.LinkedBlockingQueue<<%= outputRowStructName %>>(1000);
 					<%
 				    }
 					%>
@@ -61,11 +61,11 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 						<%
 						if(destination.indexOf("tCouchbaseOutput_")==0 || destination.indexOf("tCouchDBOutput_")==0){
 						%>
-							java.util.Queue<java.util.Map> queue;
+							java.util.concurrent.BlockingQueue<java.util.Map> queue;
 						<%
 						}else{
 						%>
-						    java.util.Queue<<%= outputRowStructName %>> queue;
+						    java.util.concurrent.BlockingQueue<<%= outputRowStructName %>> queue;
 						<%
 						}
 						%>
@@ -74,13 +74,13 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 						java.lang.Error lastError;
 						String currentComponent;
 						
-						ThreadXMLField_<%=cid%>(java.util.Queue q) {
+						ThreadXMLField_<%=cid%>(java.util.concurrent.BlockingQueue q) {
 							this.queue = q;
 							globalMap.put("queue_<%=virtualSourceCid%>", queue);
 							lastException = null;
 						}
 						
-						ThreadXMLField_<%=cid%>(java.util.Queue q, java.util.List<java.util.Map<String,String>> l) {
+						ThreadXMLField_<%=cid%>(java.util.concurrent.BlockingQueue q, java.util.List<java.util.Map<String,String>> l) {
 							this.queue = q;
 							this.flows = l;
 							lastException = null;
@@ -123,11 +123,11 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
     				if(destination!=null && (destination.indexOf("tCouchbaseOutput_")>=0 || destination.indexOf("tCouchDBOutput_")>=0)){
 					%>
 				        java.util.Map map_<%=cid%> = new java.util.HashMap();
-				        java.util.Queue<java.util.Map> queue_<%=cid%> = (java.util.Queue<java.util.Map>) globalMap.get("queue_<%=cid%>");
+				        java.util.concurrent.BlockingQueue<java.util.Map> queue_<%=cid%> = (java.util.concurrent.BlockingQueue<java.util.Map>) globalMap.get("queue_<%=cid%>");
 					<%
     				}else{
 					%>
-					   java.util.Queue<<%= outputRowStructName %>> queue_<%=cid%> = (java.util.Queue<<%= outputRowStructName %>>) globalMap.get("queue_<%=cid%>");
+					   java.util.concurrent.BlockingQueue<<%= outputRowStructName %>> queue_<%=cid%> = (java.util.concurrent.BlockingQueue<<%= outputRowStructName %>>) globalMap.get("queue_<%=cid%>");
 					<%
 				    }
 				}
