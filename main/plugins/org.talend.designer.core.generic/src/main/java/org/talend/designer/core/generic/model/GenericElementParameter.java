@@ -574,7 +574,6 @@ public class GenericElementParameter extends ElementParameter implements IGeneri
         this.drivedByForm = drivedByForm;
     }
 
-    @Override
     public Property getProperty() {
         NamedThing content = widget.getContent();
         if (content instanceof Property) {
