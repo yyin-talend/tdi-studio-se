@@ -35,10 +35,10 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 				if(startNode != null){
 					startNodeCid = startNode.getUniqueName();
 				} 
-    			IConnection nextMergeConn = NodeUtil.getNextMergeConnection(node);
-    			if(nextMergeConn != null && nextMergeConn.getInputId()>1 && startNodeCid != null){
-   				%>
-    				java.util.concurrent.BlockingQueue<String> queue_<%=cid%> = new java.util.concurrent.LinkedBlockingQueue<String>(1000);
+				IConnection nextMergeConn = NodeUtil.getNextMergeConnection(node);
+				if(nextMergeConn != null && nextMergeConn.getInputId()>1 && startNodeCid != null){
+				%>
+					java.util.concurrent.BlockingQueue<String> queue_<%=cid%> = new java.util.concurrent.LinkedBlockingQueue<String>(1000);
 					
 					class ThreadXMLField_<%=cid%> extends Thread {
 						java.util.concurrent.BlockingQueue<String> queue;
@@ -90,8 +90,8 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 					
 					ThreadXMLField_<%=cid%> txf_<%=cid%> = new ThreadXMLField_<%=cid%>(queue_<%=cid%>);
 					txf_<%=cid%>.start();
-    			<%
-    			}else{
+				<%
+				}else{
 				%>
 					java.util.concurrent.BlockingQueue<String> queue_<%=cid%> = (java.util.concurrent.BlockingQueue<String>) globalMap.get("queue_<%=cid%>");
 				<%

@@ -48,13 +48,13 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 					if(destination.indexOf("tCouchbaseOutput_")==0 || destination.indexOf("tCouchDBOutput_")==0){
 					%>
 						java.util.Map map_<%=cid%> = new java.util.HashMap();
-				        java.util.concurrent.BlockingQueue<java.util.Map> queue_<%=cid%> = new java.util.concurrent.LinkedBlockingQueue<java.util.Map>(1000);
+						java.util.concurrent.BlockingQueue<java.util.Map> queue_<%=cid%> = new java.util.concurrent.LinkedBlockingQueue<java.util.Map>(1000);
 					<%
-				    }else{
+					}else{
 					%>
-					   java.util.concurrent.BlockingQueue<<%= outputRowStructName %>> queue_<%=cid%> = new java.util.concurrent.LinkedBlockingQueue<<%= outputRowStructName %>>(1000);
+						java.util.concurrent.BlockingQueue<<%= outputRowStructName %>> queue_<%=cid%> = new java.util.concurrent.LinkedBlockingQueue<<%= outputRowStructName %>>(1000);
 					<%
-				    }
+					}
 					%>
 					
 					class ThreadXMLField_<%=cid%> extends Thread {
@@ -120,12 +120,12 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 				<%
 				}else{
 
-    				if(destination!=null && (destination.indexOf("tCouchbaseOutput_")>=0 || destination.indexOf("tCouchDBOutput_")>=0)){
+					if(destination!=null && (destination.indexOf("tCouchbaseOutput_")>=0 || destination.indexOf("tCouchDBOutput_")>=0)){
 					%>
 				        java.util.Map map_<%=cid%> = new java.util.HashMap();
 				        java.util.concurrent.BlockingQueue<java.util.Map> queue_<%=cid%> = (java.util.concurrent.BlockingQueue<java.util.Map>) globalMap.get("queue_<%=cid%>");
 					<%
-    				}else{
+					}else{
 					%>
 					   java.util.concurrent.BlockingQueue<<%= outputRowStructName %>> queue_<%=cid%> = (java.util.concurrent.BlockingQueue<<%= outputRowStructName %>>) globalMap.get("queue_<%=cid%>");
 					<%
