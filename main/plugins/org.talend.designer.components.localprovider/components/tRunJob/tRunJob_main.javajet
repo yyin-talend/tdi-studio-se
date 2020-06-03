@@ -247,6 +247,7 @@ String inputConnName = null;
 		  		}
 		  		%>
 			}
+
 			<%
 			if(use_custom_jvm_setting) {
 			%>
