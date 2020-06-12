@@ -1,6 +1,12 @@
 <%@ jet%>
 
 <%
+boolean isEnableType0 = ("true").equals(ElementParameterParser.getValue(node, "__USE_L0__"));
+List<Map<String, String>> type0Attributes = new ArrayList<Map<String, String>>();
+if(isEnableType0) {
+    type0Attributes = (List<Map<String, String>>)ElementParameterParser.getObjectValue(node, "__L0_FIELDS__");
+}
+
 boolean isEnableType1 = ("true").equals(ElementParameterParser.getValue(node, "__USE_L1__"));
 List<Map<String, String>> type1Attributes = new ArrayList<Map<String, String>>();
 if(isEnableType1) {
@@ -190,4 +196,91 @@ if(isEnableDebug) {
     System.out.println("[<%=cid%>] new rows sql\n" + insert_<%=cid %>_debug + "\ndone");
     <%
 }
+	
+	if(isEnableType0) {
+	    List<String> columnNames = new ArrayList<String>();
+	    List<String> setColumns = new ArrayList<String>();
+	    List<String> whereClause = new ArrayList<String>();
+	    for(Map<String, String> sk : sourceKeys) {
+	        if(isEqualWithSK) {
+	            if(!sk.get("NAME").equals(surrogateKey)) {
+	                columnNames.add(StringUtils.getMysqlProtectedColumnName(sk.get("NAME")));
+	            }
+	        } else {
+	            columnNames.add(StringUtils.getMysqlProtectedColumnName(sk.get("NAME")));
+	        }
+	    }
+	    for(Map<String, String> type0Attribute : type0Attributes) {
+	    	strFieldName = StringUtils.getMysqlProtectedColumnName(type0Attribute.get("NAME"));
+	        columnNames.add(strFieldName);
+	        setColumns.add(" d." + strFieldName + " = t." + strFieldName);
+	        whereClause.add("( d." + strFieldName + " is null AND t." + strFieldName + " is not null )");
+	    }
+	    selectColumnString = StringUtils.join(columnNames.toArray(), ", t.");
+	    columnNameString = StringUtils.join(columnNames.toArray(), ", ");
+	    String setColumnsString = StringUtils.join(setColumns.toArray(), ", ");
+	    String whereClauseString = StringUtils.join(whereClause.toArray(), " OR ");
+	    %>
+	    String updateForType0_<%=cid%> = "UPDATE `" + tableName_<%=cid%> + "` d " + "INNER JOIN `" + tableName_<%=cid%> + "` as t ON <%=joinClauseString%> SET <%=setColumnsString%> WHERE (<%=whereClauseString%>)";
+
+	    <%
+		    if(log4jEnabled) {
+			    if(log4jEnabled){
+	        %>
+			    log.debug("[<%=cid%>] type0 update sql\n" + updateForType0_<%=cid%> + "\ndone");
+	        <%
+			} else{
+			%>
+			    System.out.println("[<%=cid%>] type0 update sql\n" + updateForType0_<%=cid%> + "\ndone");
+			<%
+			}
+	    }
+		%>
+		java.sql.Statement stmtType0Update_<%=cid%> = conn_<%=cid%>.createStatement();
+	    stmtType0Update_<%=cid%>.executeUpdate(updateForType0_<%=cid%>);
+	    stmtType0Update_<%=cid%>.close();
+		String updateNullForType0_<%=cid%> = "UPDATE `" + tableName_<%=cid%> + "` d, `" + sourceTable_<%=cid%> + "` t SET <%=setColumnsString%> WHERE <%=joinClauseString%> AND (<%=whereClauseString%>)";
+	    <%
+		    if(log4jEnabled) {
+			     if(log4jEnabled){
+	        %>
+			    log.debug("[<%=cid%>] type0 update sql\n" + updateNullForType0_<%=cid%> + "\ndone");
+	        <%
+			} else{
+			%>
+			    System.out.println("[<%=cid%>] type0 update sql\n" + updateNullForType0_<%=cid%> + "\ndone");
+			<%
+			}
+	    }
+		%>
+		
+		java.sql.Statement stmtType0NullUpdate_<%=cid%> = conn_<%=cid%>.createStatement();
+	    stmtType0NullUpdate_<%=cid%>.executeUpdate(updateNullForType0_<%=cid%>);
+	    stmtType0NullUpdate_<%=cid%>.close();
+		
+		<% if(!isEnableType0 && !isEnableType0){ %>
+		String insertForTpye0_<%=cid%> = "INSERT INTO `" + tableName_<%=cid%> + "`(<%=columnNameString%>) SELECT t.<%=selectColumnString%>"
+	+ " FROM `" + 
+	sourceTable_<%=cid%> + "` t LEFT JOIN `" + tableName_<%=cid%> + "` d ON <%=joinClauseString%> WHERE (<%=outerWhereClauseString%>)";
+	    <%
+		    if(log4jEnabled) {
+			     if(log4jEnabled){
+	        %>
+			    log.debug("[<%=cid%>] type0 update sql\n" + insertForTpye0_<%=cid%> + "\ndone");
+	        <%
+			} else{
+			%>
+			    System.out.println("[<%=cid%>] type0 update sql\n" + insertForTpye0_<%=cid%> + "\ndone");
+			<%
+			}
+	    }
+		%>
+	java.sql.Statement stmtInsertForTpye0_<%=cid%> = conn_<%=cid%>.createStatement();
+	stmtInsertForTpye0_<%=cid%>.executeUpdate(insertForTpye0_<%=cid%>);
+	stmtInsertForTpye0_<%=cid%>.close();
+	    <%
+		}
+
+
+	}
 %>
