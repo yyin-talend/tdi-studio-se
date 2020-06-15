@@ -192,11 +192,11 @@ java.sql.Statement stmtInsert_<%=cid%> = conn_<%=cid%>.createStatement();
 		    if(isEnableDebug) {
 			    if(log4jEnabled){
 	        %>
-			    log.debug("[<%=cid%>] type0 update sql\n" + insert_<%=cid%> + "\ndone");
+			    log.debug("[<%=cid%>] new rows sql\n" + insert_<%=cid %>_debug + "\ndone");
 	        <%
 			} else{
 			%>
-			    System.out.println("[<%=cid%>] type0 update sql\n" + insert_<%=cid%> + "\ndone");
+			    System.out.println("[<%=cid%>] new rows sql\n" + insert_<%=cid %>_debug + "\ndone");
 			<%
 			}
 	    }
