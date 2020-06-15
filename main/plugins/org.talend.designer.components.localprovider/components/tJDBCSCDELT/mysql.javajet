@@ -183,19 +183,29 @@ for (Map<String, String> sk : sourceKeys) {
 }
 String outerWhereClauseString = StringUtils.join(outerWhereClause.toArray(), " AND ");
 %>
+<% if(isEnableType1 || isEnableType2){ %>
 String insert_<%=cid%> = "INSERT INTO `" + tableName_<%=cid%> + "`(<%=columnNameString%>) SELECT t.<%=selectColumnString%>"<%if(isEnableType2) {%> + ", '" + (changeDateTime_<%=cid%>) + "',<% if ("NULL".equals(l2EndDateFieldType)) { %> NULL"<% } else {%> '" + (customEndDate_<%=cid%>) + "'"<%}}%>
 + "<%if(isEnableType2 && isEnableActive) {%>, 1<%}%><%if(isEnableType2 && isEnableVersion) {%>, 1<%}%> FROM `" + 
 sourceTable_<%=cid%> + "` t LEFT JOIN `" + tableName_<%=cid%> + "` d ON <%=joinClauseString%> WHERE (<%=outerWhereClauseString%>)";
 java.sql.Statement stmtInsert_<%=cid%> = conn_<%=cid%>.createStatement();
+	    <%
+		    if(isEnableDebug) {
+			    if(log4jEnabled){
+	        %>
+			    log.debug("[<%=cid%>] type0 update sql\n" + insert_<%=cid%> + "\ndone");
+	        <%
+			} else{
+			%>
+			    System.out.println("[<%=cid%>] type0 update sql\n" + insert_<%=cid%> + "\ndone");
+			<%
+			}
+	    }
+		%>
 stmtInsert_<%=cid%>.executeUpdate(insert_<%=cid%>);
 stmtInsert_<%=cid%>.close();
+<%}%>
+
 <%
-if(isEnableDebug) {
-    %>
-	String insert_<%=cid%>_debug = "INSERT INTO `" + tableName_<%=cid%> + "`(<%=columnNameString%>) SELECT t.<%=selectColumnString%>"<%if(isEnableType2) {%> + ", '" + (changeDateTime_<%=cid%>_begin) + "',<% if ("NULL".equals(l2EndDateFieldType)) { %> NULL"<% } else {%> '"+ (customEndDate_<%=cid%>) +"'"<%}}%> + "<%if(isEnableType2 && isEnableActive) {%>, 1<%}%><%if(isEnableType2 && isEnableVersion) {%>, 1<%}%> FROM `" + sourceTable_<%=cid%> + "` t LEFT JOIN `" + tableName_<%=cid%> + "` d ON <%=joinClauseString%> WHERE (<%=outerWhereClauseString%>)";
-    System.out.println("[<%=cid%>] new rows sql\n" + insert_<%=cid %>_debug + "\ndone");
-    <%
-}
 	
 	if(isEnableType0) {
 	    List<String> columnNames = new ArrayList<String>();
@@ -224,7 +234,7 @@ if(isEnableDebug) {
 	    String updateForType0_<%=cid%> = "UPDATE `" + tableName_<%=cid%> + "` d " + "INNER JOIN `" + tableName_<%=cid%> + "` as t ON <%=joinClauseString%> SET <%=setColumnsString%> WHERE (<%=whereClauseString%>)";
 
 	    <%
-		    if(log4jEnabled) {
+		    if(isEnableDebug) {
 			    if(log4jEnabled){
 	        %>
 			    log.debug("[<%=cid%>] type0 update sql\n" + updateForType0_<%=cid%> + "\ndone");
@@ -241,7 +251,7 @@ if(isEnableDebug) {
 	    stmtType0Update_<%=cid%>.close();
 		String updateNullForType0_<%=cid%> = "UPDATE `" + tableName_<%=cid%> + "` d, `" + sourceTable_<%=cid%> + "` t SET <%=setColumnsString%> WHERE <%=joinClauseString%> AND (<%=whereClauseString%>)";
 	    <%
-		    if(log4jEnabled) {
+		    if(isEnableDebug) {
 			     if(log4jEnabled){
 	        %>
 			    log.debug("[<%=cid%>] type0 update sql\n" + updateNullForType0_<%=cid%> + "\ndone");
@@ -258,12 +268,12 @@ if(isEnableDebug) {
 	    stmtType0NullUpdate_<%=cid%>.executeUpdate(updateNullForType0_<%=cid%>);
 	    stmtType0NullUpdate_<%=cid%>.close();
 		
-		<% if(!isEnableType0 && !isEnableType0){ %>
+		<% if(!isEnableType1 && !isEnableType2){ %>
 		String insertForTpye0_<%=cid%> = "INSERT INTO `" + tableName_<%=cid%> + "`(<%=columnNameString%>) SELECT t.<%=selectColumnString%>"
 	+ " FROM `" + 
 	sourceTable_<%=cid%> + "` t LEFT JOIN `" + tableName_<%=cid%> + "` d ON <%=joinClauseString%> WHERE (<%=outerWhereClauseString%>)";
 	    <%
-		    if(log4jEnabled) {
+		    if(isEnableDebug) {
 			     if(log4jEnabled){
 	        %>
 			    log.debug("[<%=cid%>] type0 update sql\n" + insertForTpye0_<%=cid%> + "\ndone");
