@@ -33,4 +33,3 @@ ClassLoader threadClassLoader_<%=cid %> = Thread.currentThread().getContextClass
 java.net.URLClassLoader newthreadClassLoader_<%=cid %> = new java.net.URLClassLoader(libURLArray_<%=cid %>, threadClassLoader_<%=cid %>);
 Thread.currentThread().setContextClassLoader(newthreadClassLoader_<%=cid %>);
 <%}%>
-
