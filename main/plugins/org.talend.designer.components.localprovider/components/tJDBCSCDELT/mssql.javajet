@@ -211,7 +211,7 @@ if(isEnableType0) {
 	    String setColumnsString = StringUtils.join(setColumns.toArray(), ", ");
 	    String whereClauseString = StringUtils.join(whereClause.toArray(), " OR ");
 	    %>
-	    String updateForType0_<%=cid%> = "UPDATE <%=text_util.wrap("tableName", cid)%> SET <%=setColumnsString%> FROM <%=text_util.wrap("tableName", cid)%> d, <%=text_util.wrap("tableName", cid)%> t WHERE <%=joinClauseString%> AND (<%=whereClauseString%>)";
+	    String updateForType0_<%=cid%> = "UPDATE d SET <%=setColumnsString%> FROM <%=text_util.wrap("tableName", cid)%> d, <%=text_util.wrap("tableName", cid)%> t WHERE <%=joinClauseString%> AND (<%=whereClauseString%>)";
 
 	    <%
 		    if(isEnableDebug) {
@@ -229,7 +229,7 @@ if(isEnableType0) {
 		java.sql.Statement stmtType0Update_<%=cid%> = conn_<%=cid%>.createStatement();
 	    stmtType0Update_<%=cid%>.executeUpdate(updateForType0_<%=cid%>);
 	    stmtType0Update_<%=cid%>.close();
-	    String updateNullForType0_<%=cid%> ="UPDATE <%=text_util.wrap("tableName", cid)%> SET <%=setColumnsString%> FROM <%=text_util.wrap("tableName", cid)%> d, <%=text_util.wrap("sourceTable", cid)%> t WHERE <%=joinClauseString%> AND (<%=whereClauseString%>)";
+	    String updateNullForType0_<%=cid%> ="UPDATE d SET <%=setColumnsString%> FROM <%=text_util.wrap("tableName", cid)%> d, <%=text_util.wrap("sourceTable", cid)%> t WHERE <%=joinClauseString%> AND (<%=whereClauseString%>)";
 		
 		
 	    <%
