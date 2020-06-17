@@ -551,6 +551,7 @@ public class DataProcess implements IGeneratingProcess {
             uniqueName = prefix + uniqueName;
         }
         dataNode.setUniqueName(uniqueName);
+        dataNode.setLabel(graphicalNode.getLabel());
         dataNode.setSubProcessStart(graphicalNode.isSubProcessStart());
         dataNode.setThereLinkWithHash(graphicalNode.isThereLinkWithHash());
         dataNode.setHasConditionalOutputs(graphicalNode.hasConditionalOutputs());
@@ -919,6 +920,7 @@ public class DataProcess implements IGeneratingProcess {
                 curNode.setListConnector(graphicalNode.getListConnector());
                 copyElementParametersValue(graphicalNode, curNode);
                 curNode.setUniqueName(uniqueName);
+                curNode.setLabel(graphicalNode.getLabel());
                 curNode.setSubProcessStart(graphicalNode.isSubProcessStart());
                 curNode.setThereLinkWithHash(graphicalNode.isThereLinkWithHash());
                 curNode.setHasConditionalOutputs(graphicalNode.hasConditionalOutputs());
