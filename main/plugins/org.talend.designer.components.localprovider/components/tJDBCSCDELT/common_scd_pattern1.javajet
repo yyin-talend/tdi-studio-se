@@ -210,10 +210,20 @@ if(isEnableType0) {
 	    columnNameString = StringUtils.join(columnNames.toArray(), ", ");
 	    String setColumnsString = StringUtils.join(setColumns.toArray(), ", ");
 	    String whereClauseString = StringUtils.join(whereClause.toArray(), " OR ");
+		if("id_MSSQL".equals(dbmsId)){
 	    %>
-	    String updateForType0_<%=cid%> = "UPDATE <%=text_util.wrap("tableName", cid)%> SET <%=setColumnsString%> FROM <%=text_util.wrap("tableName", cid)%> d, <%=text_util.wrap("tableName", cid)%> t WHERE <%=joinClauseString%> AND (<%=whereClauseString%>)";
+             String updateForType0_<%=cid%> = "UPDATE d SET <%=setColumnsString%> FROM <%=text_util.wrap("tableName", cid)%> d, <%=text_util.wrap("tableName", cid)%> t WHERE <%=joinClauseString%> AND (<%=whereClauseString%>)";
 
 	    <%
+		} else if ("Exasol_id".equals(dbmsId)){
+		%>
+			String updateForType0_<%=cid%> = "UPDATE <%=text_util.wrap("tableName", cid)%> AS d SET <%=setColumnsString%> FROM <%=text_util.wrap("tableName", cid)%> d, (SELECT DISTINCT <%=columnNameString%> FROM <%=text_util.wrap("tableName", cid)%>) t WHERE <%=joinClauseString%> AND (<%=whereClauseString%>)";
+		<%
+		}else{
+		%>
+			String updateForType0_<%=cid%> = "UPDATE <%=text_util.wrap("tableName", cid)%> SET <%=setColumnsString%> FROM <%=text_util.wrap("tableName", cid)%> d, <%=text_util.wrap("tableName", cid)%> t WHERE <%=joinClauseString%> AND (<%=whereClauseString%>)";
+		<%
+		}
 		    if(isEnableDebug) {
 			    if(log4jEnabled){
 	        %>
@@ -229,8 +239,22 @@ if(isEnableType0) {
 		java.sql.Statement stmtType0Update_<%=cid%> = conn_<%=cid%>.createStatement();
 	    stmtType0Update_<%=cid%>.executeUpdate(updateForType0_<%=cid%>);
 	    stmtType0Update_<%=cid%>.close();
-	    String updateNullForType0_<%=cid%> ="UPDATE <%=text_util.wrap("tableName", cid)%> SET <%=setColumnsString%> FROM <%=text_util.wrap("tableName", cid)%> d, <%=text_util.wrap("sourceTable", cid)%> t WHERE <%=joinClauseString%> AND (<%=whereClauseString%>)";
-		
+		<%
+				if("id_MSSQL".equals(dbmsId)){
+	    %>
+             String updateNullForType0_<%=cid%> ="UPDATE d SET <%=setColumnsString%> FROM <%=text_util.wrap("tableName", cid)%> d, <%=text_util.wrap("sourceTable", cid)%> t WHERE <%=joinClauseString%> AND (<%=whereClauseString%>)";
+
+	    <%
+		} else if ("Exasol_id".equals(dbmsId)){
+		%>
+	         String updateNullForType0_<%=cid%> ="UPDATE <%=text_util.wrap("tableName", cid)%> AS d SET <%=setColumnsString%> FROM <%=text_util.wrap("tableName", cid)%> d, <%=text_util.wrap("sourceTable", cid)%> t WHERE <%=joinClauseString%> AND (<%=whereClauseString%>)";
+		<%
+		}else{
+		%>
+	         String updateNullForType0_<%=cid%> ="UPDATE <%=text_util.wrap("tableName", cid)%> SET <%=setColumnsString%> FROM <%=text_util.wrap("tableName", cid)%> d, <%=text_util.wrap("sourceTable", cid)%> t WHERE <%=joinClauseString%> AND (<%=whereClauseString%>)";
+		<%
+		}
+		%>
 		
 	    <%
 		    if(isEnableDebug) {
@@ -250,9 +274,10 @@ if(isEnableType0) {
 	    stmtType0NullUpdate_<%=cid%>.executeUpdate(updateNullForType0_<%=cid%>);
 	    stmtType0NullUpdate_<%=cid%>.close();
 		
+
+		
 		<% if(!isEnableType1 && !isEnableType2){ %>
-	String insertForTpye0_<%=cid%> = "INSERT INTO <%=text_util.wrap("tableName", cid)%>(<%if(useSequence) {%><%=text_util.wrap(surrogateKey)%>, <%}%><%=columnNameString%>) SELECT " + <%if(useSequence) {%>sequenceValueFetchPattern_<%=cid%> + ", " + <%}%>" t.<%=selectColumnString%>"
-+ " FROM <%=text_util.wrap("sourceTable", cid)%> t LEFT JOIN <%=text_util.wrap("tableName", cid)%> d ON <%=joinClauseString%> WHERE (<%=outerWhereClauseString%>)";
+	         String insertForTpye0_<%=cid%> = "INSERT INTO <%=text_util.wrap("tableName", cid)%>(<%if(useSequence) {%><%=text_util.wrap(surrogateKey)%>, <%}%><%=columnNameString%>) SELECT " + <%if(useSequence) {%>sequenceValueFetchPattern_<%=cid%> + ", " + <%}%>" t.<%=selectColumnString%>"+ " FROM <%=text_util.wrap("sourceTable", cid)%> t LEFT JOIN <%=text_util.wrap("tableName", cid)%> d ON <%=joinClauseString%> WHERE (<%=outerWhereClauseString%>)";
 	    <%
 		    if(isEnableDebug) {
 			     if(log4jEnabled){
