@@ -25,7 +25,8 @@
             boolean checkDiskSpace = ("true").equals(ElementParameterParser.getValue(node,"__CHECK_DISK_SPACE__"));
             boolean flushOnRow = ("true").equals(ElementParameterParser.getValue(node, "__FLUSHONROW__"));
             String flushMod = ElementParameterParser.getValue(node, "__FLUSHONROW_NUM__");
-            
+            boolean useCustomNullMarker = ElementParameterParser.getBooleanValue(node, "__USE_CUSTOM_NULL_MARKER__");
+            String nullMarker = useCustomNullMarker ? ElementParameterParser.getValue(node, "__CUSTOM_NULL_MARKER__") : "\"\\\\N\"";
             String encoding = ElementParameterParser.getValue(node,"__ENCODING__");        
             
             List< ? extends IConnection> conns = node.getIncomingConnections();
@@ -35,8 +36,8 @@
             		if (conn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {
             			List<IMetadataColumn> columns = metadata.getListColumns();
                 		int sizeColumns = columns.size();
-            			%>  	
-                    	String[] row_<%=cid%>=new String[]{<%for(int j=0;j<sizeColumns;j++){%>"\\N",<%}%>};		//empty value must be NULL('\N' in bulk file)
+%>
+                               String[] row_<%=cid%>=new String[]{<%for(int j=0;j<sizeColumns;j++){%> <%= nullMarker %>,<%}%>};		//empty value must be defined by null marker('\N' is default in bulk file)
                     	<%
             			for (int i = 0; i < sizeColumns; i++) {
                 			IMetadataColumn column = columns.get(i);
@@ -86,7 +87,7 @@
                 			        }
                 			        %>                			    
                 			    } else {
-                                    row_<%=cid%>[<%=i%>] = "\\N";
+                                    row_<%=cid%>[<%=i%>] = <%= nullMarker %>;
                                 }
                 		 	<% 
                 			}
