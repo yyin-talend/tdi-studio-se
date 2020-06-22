@@ -70,6 +70,7 @@ The following files are installed by this patch:
 - {Talend\_Studio\_path}/plugins/org.talend.designer.components.localprovider_7.1.1.20181026_1147/components/templates/FTP/sftp\_connect.javajet
 - {Talend\_Studio\_path}/plugins/org.talend.designer.components.localprovider_7.1.1.20181026_1147/components/tFTPClose/tFTPClose\_begin.javajet
 - {Talend\_Studio\_path}/plugins/org.talend.designer.components.localprovider_7.1.1.20181026_1147/components/tFTPClose/tFTPClose\_finally.javajet
+- {Talend\_Studio\_path}/plugins/org.talend.designer.components.localprovider_7.1.1.20181026_1147/components/tFTPConnection/commons-net-ftps-proxy-3.6.1-talend-20190128.jar
 - {Talend\_Studio\_path}/plugins/org.talend.designer.components.localprovider_7.1.1.20181026_1147/components/tFTPConnection/tFTPConnection\_begin.javajet
 - {Talend\_Studio\_path}/plugins/org.talend.designer.components.localprovider_7.1.1.20181026_1147/components/tFTPConnection/tFTPConnection\_java.xml
 - {Talend\_Studio\_path}/plugins/org.talend.designer.components.localprovider_7.1.1.20181026_1147/components/tFTPDelete/tFTPDelete\_begin.javajet
