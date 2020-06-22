@@ -9,8 +9,8 @@ product:
 
 | Info             | Value |
 | ---------------- | ---------------- |
-| Patch Name       | Patch\_20200620_TPS-4071\_v1-7.1.1 |
-| Release Date     | 2020-06-20 |
+| Patch Name       | Patch\_20200622_TPS-4071\_v1-7.1.1 |
+| Release Date     | 2020-06-22 |
 | Target Version   | 20181026\_1147-V7.1.1 |
 | Product affected | Talend Studio |
 
