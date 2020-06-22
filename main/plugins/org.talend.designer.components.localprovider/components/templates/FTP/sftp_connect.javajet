@@ -68,17 +68,10 @@ do {
 
     channel_<%=cid%> = null;
     try {
-        if (connectionTimeout_<%=cid %> > 0) {
-            session_<%=cid%>.connect(connectionTimeout_<%=cid %>);
-        } else {
-            session_<%=cid%>.connect();
-        }
+        session_<%=cid%>.connect();
         channel_<%=cid%> = session_<%=cid%>.openChannel("sftp");
-        if (connectionTimeout_<%=cid %> > 0) {
-            channel_<%=cid%>.connect(connectionTimeout_<%=cid %>);
-        } else {
-            channel_<%=cid%>.connect();
-        }
+        
+        channel_<%=cid%>.connect();
         <%if(isLog4jEnabled){%>
             log.info("<%=cid%> - Connect to '" + <%=host %> + "' has succeeded.");
         <%}%>

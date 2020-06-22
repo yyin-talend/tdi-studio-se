@@ -46,7 +46,6 @@ boolean ftps = false;
 
 String protectionLevel = ElementParameterParser.getValue(node, "__FTPS_PROT__");
 String protectionBufferSize = ElementParameterParser.getValue(node, "__FTPS_PROTECTION_BUFF_SIZE__");
-String timeoutValue = ElementParameterParser.getValue(node, "__CONNECTION_TIMEOUT__");
 boolean useRemoteVerification = ("true").equals(ElementParameterParser.getValue(node, "__REMOTE_VERIFICATION__"));
 
 log4jFileUtil.componentStartInfo(node);
@@ -64,7 +63,6 @@ if (("true").equals(useExistingConn)) {
   sftp = ("true").equals(ElementParameterParser.getValue(node, "__SFTP__"));
   ftps = ("true").equals(ElementParameterParser.getValue(node, "__FTPS__"));
 %>
-  int connectionTimeout_<%=cid %> = Integer.valueOf(<%=timeoutValue %>);
 <%
 }
 
