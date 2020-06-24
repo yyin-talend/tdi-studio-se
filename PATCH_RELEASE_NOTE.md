@@ -5,12 +5,12 @@ product:
 - https://talend.poolparty.biz/coretaxonomy/23
 ---
 
-# TPS-3392
+# TPS-4071
 
 | Info             | Value |
 | ---------------- | ---------------- |
-| Patch Name       | Patch\_20200622_TPS-4071\_v1-7.1.1 |
-| Release Date     | 2020-06-22 |
+| Patch Name       | Patch\_20200624_TPS-4071\_v1-7.1.1 |
+| Release Date     | 2020-06-24 |
 | Target Version   | 20181026\_1147-V7.1.1 |
 | Product affected | Talend Studio |
 
@@ -104,4 +104,3 @@ The following files are installed by this patch:
 - {Talend\_Studio\_path}/plugins/org.talend.designer.components.localprovider_7.1.1.20181026_1147/components/tFTPTruncate/tFTPTruncate\_end.javajet
 - {Talend\_Studio\_path}/plugins/org.talend.designer.components.localprovider_7.1.1.20181026_1147/components/tFTPTruncate/tFTPTruncate\_java.xml
 - {Talend\_Studio\_path}/plugins/org.talend.designer.components.localprovider_7.1.1.20181026_1147/components/tSetProxy/talend-proxy-1.0.1.jar
-- {Talend\_Studio\_path}/plugins/org.talend.designer.codegen_7.1.1.20181026_1147/jet_stub/footer.javajet
