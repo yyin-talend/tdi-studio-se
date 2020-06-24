@@ -172,7 +172,7 @@ if(isEnableType2) {
     if(isEnableDebug) {
         %>
 		String insertForType2_<%=cid%>_debug = "INSERT INTO `" + tableName_<%=cid%> + "`(<%=columnNameString%>) SELECT t.<%=selectColumnString%>, '" + (changeDateTime_<%=cid%>_begin) + "',<% if("NULL".equals(l2EndDateFieldType)) { %> NULL<% } else {%> '" + (customEndDate_<%=cid%>) + "'<%} if(isEnableActive) {%>, 1<%}%><%if(isEnableVersion) {%>, d.`<%=versionField%>` + 1<%}%> FROM `" + sourceTable_<%=cid%> + "` t, `" + tableName_<%=cid%> + "` d WHERE <%=joinClauseString%> AND (<%=whereClauseString%>) AND d.`<%=endDateField%>` = '" + (changeDateTime_<%=cid%>_end) + "'";
-        System.out.println("[<%=cid%>] type2 new active row slq\n" + insertForType2_<%=cid %>_debug + "\ndone");
+        System.out.println("[<%=cid%>] type2 new active row sql\n" + insertForType2_<%=cid %>_debug + "\ndone");
         <%
     }
 }
