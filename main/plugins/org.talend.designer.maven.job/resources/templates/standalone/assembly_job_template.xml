@@ -208,6 +208,13 @@
 				<include>config/**</include>
 			</includes>
 		</fileSet>
+		<fileSet>
+			<directory>${current.tacokit.dir}</directory>
+			<outputDirectory>${file.separator}</outputDirectory>
+			<includes>
+				<include>MAVEN-INF/**</include>
+			</includes>
+		</fileSet>
 	</fileSets>
 	<dependencySets></dependencySets>
 </assembly>

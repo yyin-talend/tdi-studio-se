@@ -42,6 +42,9 @@
 		<current.resources.dir>${basedir}/src/main/ext-resources</current.resources.dir>
 		<current.bundle.resources.dir>${basedir}/src/main/bundle-resources</current.bundle.resources.dir>
 		<current.test.resources.dir>${basedir}/src/test/resources</current.test.resources.dir>
+		<current.maven-inf.dir>${basedir}/src/main/tacokit-resources/MAVEN-INF</current.maven-inf.dir>
+		<current.talend-inf.dir>${basedir}/src/main/tacokit-resources/TALEND-INF</current.talend-inf.dir>
+		<current.tacokit.dir>${basedir}/src/main/tacokit-resources</current.tacokit.dir>
 	</properties>
 
 	<dependencies>
