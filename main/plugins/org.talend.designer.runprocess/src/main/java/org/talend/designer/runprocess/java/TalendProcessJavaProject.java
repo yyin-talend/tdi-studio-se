@@ -144,6 +144,10 @@ public class TalendProcessJavaProject implements ITalendProcessJavaProject {
     public IFolder getExternalResourcesFolder() {
         return createFolder(MavenSystemFolders.EXT_RESOURCES.getPath());
     }
+    @Override
+    public IFolder getTaCoKitResourcesFolder() {
+        return createFolder(MavenSystemFolders.TCK_RESOURCES.getPath());
+    }
 
     @Override
     public IFolder getBundleResourcesFolder() {
