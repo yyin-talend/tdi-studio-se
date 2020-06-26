@@ -285,7 +285,8 @@ public class BuildJobHandler extends AbstractBuildJobHandler {
                 while (relativepath.hasNext()) {
                     String relativePath = relativepath.next();
                     // TDQ-12852 do nothing if it is DQ resources.
-                    if (relativePath == null || relativePath.contains("metadata/survivorship")) { //$NON-NLS-1$
+                    if (relativePath == null || relativePath.contains("metadata/survivorship") || relativePath
+                            .startsWith("MAVEN-INF") || relativePath.startsWith("TALEND-INF")) { //$NON-NLS-1$
                         continue;
                     }
                     Set<URL> sources = resouece.getResourcesByRelativePath(relativePath);
