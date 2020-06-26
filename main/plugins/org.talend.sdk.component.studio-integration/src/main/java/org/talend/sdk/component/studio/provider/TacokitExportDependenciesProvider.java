@@ -40,8 +40,6 @@ import org.talend.commons.utils.system.EnvironmentUtils;
 import org.talend.core.CorePlugin;
 import org.talend.core.model.properties.Item;
 import org.talend.core.runtime.process.ITalendProcessJavaProject;
-import org.talend.core.runtime.repository.build.BuildExportManager;
-import org.talend.core.runtime.repository.build.BuildExportManager.EXPORT_TYPE;
 import org.talend.core.runtime.repository.build.IBuildExportDependenciesProvider;
 import org.talend.repository.documentation.ExportFileResource;
 import org.talend.sdk.component.studio.ComponentModel;
@@ -65,8 +63,7 @@ public class TacokitExportDependenciesProvider implements IBuildExportDependenci
      */
     @Override
     public void exportDependencies(final ExportFileResource exportFileResource, final Item item) {
-        if (!BuildExportManager.getInstance().getCurrentExportType()
-                .equals(EXPORT_TYPE.OSGI) || !hasTaCoKitComponents(getJobComponents(item))) {
+        if (!hasTaCoKitComponents(getJobComponents(item))) {
             return;
         }
         LOG.debug("[exportDependencies] Searching for TaCoKit components...");
@@ -81,11 +78,14 @@ public class TacokitExportDependenciesProvider implements IBuildExportDependenci
             ITalendProcessJavaProject project = CorePlugin.getDefault().getRunProcessService()
                     .getTalendJobJavaProject(item.getProperty());
             final String output = EnvironmentUtils.isWindowsSystem() ?
+                    project.getTaCoKitResourcesFolder().getLocationURI().getPath().substring(1) :
+                    project.getTaCoKitResourcesFolder().getLocationURI().getPath();
+            final String resources = EnvironmentUtils.isWindowsSystem() ?
                     project.getResourcesFolder().getLocationURI().getPath().substring(1) :
                     project.getResourcesFolder().getLocationURI().getPath();
             final Path m2 = findM2Path();
             final Path resM2 = Paths.get(output, TaCoKitConst.MAVEN_INF, "repository");
-            final Path coordinates = Paths.get(output, TaCoKitConst.TALEND_INF, "plugins.properties");
+            final Path coordinates = Paths.get(resources, TaCoKitConst.TALEND_INF, "plugins.properties");
             exportFileResource.addResource("TALEND-INF/", coordinates.toUri().toURL());
             Files.createDirectories(resM2);
             if (Files.exists(coordinates)) {
