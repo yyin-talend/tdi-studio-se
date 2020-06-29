@@ -9,16 +9,11 @@ product:
 
 | Info             | Value |
 | ---------------- | ---------------- |
-| Patch Name       | Patch\_20200624_TPS-4071\_v1-7.1.1 |
-| Release Date     | 2020-06-24 |
+| Patch Name       | Patch\_20200629_TPS-4071\_v1-7.1.1 |
+| Release Date     | 2020-06-29 |
 | Target Version   | 20181026\_1147-V7.1.1 |
 | Product affected | Talend Studio |
 
-## Introduction
-
-This is a self-contained patch.
-
-**NOTE**: For information on how to obtain this patch, reach out to your Support contact at Talend.
 
 ## Fixed issues
 
@@ -31,6 +26,8 @@ This patch contains the following fixes:
 Consider the following requirements for your system:
 
 - Talend Studio 7.1.1 must be installed.
+
+- This patch is dependent to the patch https://jira.talendforge.org/browse/TPS-3856, please install that patch <PATCH_NAME> first.
 
 ## Installation
 
@@ -55,52 +52,3 @@ Execute the following commands:
 1. Talend-Studio-win-x86_64.exe -nosplash -application org.talend.commandline.CommandLine -consoleLog -data commandline-workspace startServer -p 8002 --talendDebug
 2. initRemote {tac_url} -ul {TAC login username} -up {TAC login password}
 3. checkAndUpdate -tu {TAC login username} -tup {TAC login password}
-
-## Uninstallation
-Backup the Affected files list below. Uninstall the patch by restore the backup files.
-
-## Affected files for this patch
-
-The following files are installed by this patch:
-
-- {Talend\_Studio\_path}/plugins/org.talend.designer.components.localprovider_7.1.1.20181026_1147/components/templates/FTP/commons\_net\_create\_connection.javajet
-- {Talend\_Studio\_path}/plugins/org.talend.designer.components.localprovider_7.1.1.20181026_1147/components/templates/FTP/ftp\_connect.javajet
-- {Talend\_Studio\_path}/plugins/org.talend.designer.components.localprovider_7.1.1.20181026_1147/components/templates/FTP/ftps\_connect.javajet
-- {Talend\_Studio\_path}/plugins/org.talend.designer.components.localprovider_7.1.1.20181026_1147/components/templates/FTP/ftpsTrust.javajet
-- {Talend\_Studio\_path}/plugins/org.talend.designer.components.localprovider_7.1.1.20181026_1147/components/templates/FTP/sftp\_connect.javajet
-- {Talend\_Studio\_path}/plugins/org.talend.designer.components.localprovider_7.1.1.20181026_1147/components/tFTPClose/tFTPClose\_begin.javajet
-- {Talend\_Studio\_path}/plugins/org.talend.designer.components.localprovider_7.1.1.20181026_1147/components/tFTPClose/tFTPClose\_finally.javajet
-- {Talend\_Studio\_path}/plugins/org.talend.designer.components.localprovider_7.1.1.20181026_1147/components/tFTPConnection/commons-net-ftps-proxy-3.6.1-talend-20190128.jar
-- {Talend\_Studio\_path}/plugins/org.talend.designer.components.localprovider_7.1.1.20181026_1147/components/tFTPConnection/tFTPConnection\_begin.javajet
-- {Talend\_Studio\_path}/plugins/org.talend.designer.components.localprovider_7.1.1.20181026_1147/components/tFTPConnection/tFTPConnection\_java.xml
-- {Talend\_Studio\_path}/plugins/org.talend.designer.components.localprovider_7.1.1.20181026_1147/components/tFTPDelete/tFTPDelete\_begin.javajet
-- {Talend\_Studio\_path}/plugins/org.talend.designer.components.localprovider_7.1.1.20181026_1147/components/tFTPDelete/tFTPDelete\_main.javajet
-- {Talend\_Studio\_path}/plugins/org.talend.designer.components.localprovider_7.1.1.20181026_1147/components/tFTPDelete/tFTPDelete\_end.javajet
-- {Talend\_Studio\_path}/plugins/org.talend.designer.components.localprovider_7.1.1.20181026_1147/components/tFTPDelete/tFTPDelete\_java.xml
-- {Talend\_Studio\_path}/plugins/org.talend.designer.components.localprovider_7.1.1.20181026_1147/components/tFTPFileExist/tFTPFileExist\_begin.javajet
-- {Talend\_Studio\_path}/plugins/org.talend.designer.components.localprovider_7.1.1.20181026_1147/components/tFTPFileExist/tFTPFileExist\_main.javajet
-- {Talend\_Studio\_path}/plugins/org.talend.designer.components.localprovider_7.1.1.20181026_1147/components/tFTPFileExist/tFTPFileExist\_end.javajet
-- {Talend\_Studio\_path}/plugins/org.talend.designer.components.localprovider_7.1.1.20181026_1147/components/tFTPFileExist/tFTPFileExist\_java.xml
-- {Talend\_Studio\_path}/plugins/org.talend.designer.components.localprovider_7.1.1.20181026_1147/components/tFTPFileList/tFTPFileList\_begin.javajet
-- {Talend\_Studio\_path}/plugins/org.talend.designer.components.localprovider_7.1.1.20181026_1147/components/tFTPFileList/tFTPFileList\_end.javajet
-- {Talend\_Studio\_path}/plugins/org.talend.designer.components.localprovider_7.1.1.20181026_1147/components/tFTPFileList/tFTPFileList\_java.xml
-- {Talend\_Studio\_path}/plugins/org.talend.designer.components.localprovider_7.1.1.20181026_1147/components/tFTPFileProperties/tFTPFileProperties\_begin.javajet
-- {Talend\_Studio\_path}/plugins/org.talend.designer.components.localprovider_7.1.1.20181026_1147/components/tFTPFileProperties/tFTPFileProperties\_end.javajet
-- {Talend\_Studio\_path}/plugins/org.talend.designer.components.localprovider_7.1.1.20181026_1147/components/tFTPFileProperties/tFTPFileProperties\_java.xml
-- {Talend\_Studio\_path}/plugins/org.talend.designer.components.localprovider_7.1.1.20181026_1147/components/tFTPGet/tFTPGet\_begin.javajet
-- {Talend\_Studio\_path}/plugins/org.talend.designer.components.localprovider_7.1.1.20181026_1147/components/tFTPGet/tFTPGet\_main.javajet
-- {Talend\_Studio\_path}/plugins/org.talend.designer.components.localprovider_7.1.1.20181026_1147/components/tFTPGet/tFTPGet\_end.javajet
-- {Talend\_Studio\_path}/plugins/org.talend.designer.components.localprovider_7.1.1.20181026_1147/components/tFTPGet/tFTPGet\_java.xml
-- {Talend\_Studio\_path}/plugins/org.talend.designer.components.localprovider_7.1.1.20181026_1147/components/tFTPPut/tFTPPut\_begin.javajet
-- {Talend\_Studio\_path}/plugins/org.talend.designer.components.localprovider_7.1.1.20181026_1147/components/tFTPPut/tFTPPut\_main.javajet
-- {Talend\_Studio\_path}/plugins/org.talend.designer.components.localprovider_7.1.1.20181026_1147/components/tFTPPut/tFTPPut\_end.javajet
-- {Talend\_Studio\_path}/plugins/org.talend.designer.components.localprovider_7.1.1.20181026_1147/components/tFTPPut/tFTPPut\_java.xml
-- {Talend\_Studio\_path}/plugins/org.talend.designer.components.localprovider_7.1.1.20181026_1147/components/tFTPRename/tFTPRename\_begin.javajet
-- {Talend\_Studio\_path}/plugins/org.talend.designer.components.localprovider_7.1.1.20181026_1147/components/tFTPRename/tFTPRename\_main.javajet
-- {Talend\_Studio\_path}/plugins/org.talend.designer.components.localprovider_7.1.1.20181026_1147/components/tFTPRename/tFTPRename\_end.javajet
-- {Talend\_Studio\_path}/plugins/org.talend.designer.components.localprovider_7.1.1.20181026_1147/components/tFTPRename/tFTPRename\_java.xml
-- {Talend\_Studio\_path}/plugins/org.talend.designer.components.localprovider_7.1.1.20181026_1147/components/tFTPTruncate/tFTPTruncate\_begin.javajet
-- {Talend\_Studio\_path}/plugins/org.talend.designer.components.localprovider_7.1.1.20181026_1147/components/tFTPTruncate/tFTPTruncate\_main.javajet
-- {Talend\_Studio\_path}/plugins/org.talend.designer.components.localprovider_7.1.1.20181026_1147/components/tFTPTruncate/tFTPTruncate\_end.javajet
-- {Talend\_Studio\_path}/plugins/org.talend.designer.components.localprovider_7.1.1.20181026_1147/components/tFTPTruncate/tFTPTruncate\_java.xml
-- {Talend\_Studio\_path}/plugins/org.talend.designer.components.localprovider_7.1.1.20181026_1147/components/tSetProxy/talend-proxy-1.0.1.jar
