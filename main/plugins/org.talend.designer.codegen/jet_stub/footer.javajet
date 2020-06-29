@@ -1171,13 +1171,27 @@ if (execStat) {
             } else {
                 type = "ftp";
             }
-            if ("ftp".equals(type)) { %>
-                ((com.enterprisedt.net.ftp.FTPClient) obj_conn).quit();
-        <%} else if ("sftp".equals(type)) { %>
+            if ("sftp".equals(type)) { %>
                 ((com.jcraft.jsch.ChannelSftp) obj_conn).quit();
-        <%} else { %>
-                ((org.apache.commons.net.ftp.FTPSClient) obj_conn).disconnect();
-        <%}%>
+            <%} else {
+                String libImplementation = ElementParameterParser.getValue(ftpNode, "__LIB_IMPLEMENTATION__");
+                if ("Apache".equalsIgnoreCase(libImplementation)) {
+%>
+                    ((org.apache.commons.net.ftp.FTPClient) obj_conn).disconnect();
+<%
+                } else {
+                    if ("ftp".equals(type)) { 
+%>
+                        ((com.enterprisedt.net.ftp.FTPClient) obj_conn).quit();
+<%
+                    }else{
+%>
+                        ((org.apache.commons.net.ftp.FTPSClient) obj_conn).disconnect();
+<%
+                    }
+                }
+            }
+%>
             }
 <%  } %>
         } catch (java.lang.Exception e) {
