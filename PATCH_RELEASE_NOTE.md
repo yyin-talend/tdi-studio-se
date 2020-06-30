@@ -9,8 +9,8 @@ product:
 
 | Info             | Value |
 | ---------------- | ---------------- |
-| Patch Name       | Patch\_20200629_TPS-4071\_v1-7.1.1 |
-| Release Date     | 2020-06-29 |
+| Patch Name       | Patch\_20200630_TPS-4071\_v1-7.1.1 |
+| Release Date     | 2020-06-30 |
 | Target Version   | 20181026\_1147-V7.1.1 |
 | Product affected | Talend Studio |
 
@@ -27,7 +27,7 @@ Consider the following requirements for your system:
 
 - Talend Studio 7.1.1 must be installed.
 
-- This patch is dependent to the patch https://jira.talendforge.org/browse/TPS-3856, please install that patch <PATCH_NAME> first.
+- This patch is dependent to the patch mentioned in https://jira.talendforge.org/browse/TPS-3856, please install that patch or any patch after that first.
 
 ## Installation
 
