@@ -367,6 +367,10 @@ public abstract class AbstractBuildJobHandler implements IBuildJobHandler, IBuil
         if (parameters == null) {
             parameters = new HashMap<String, Object>();
         }
+        if (processItem.getProperty().getAdditionalProperties() != null &&
+            processItem.getProperty().getAdditionalProperties().containsKey("USER_VERSION")) {
+            version = (String) processItem.getProperty().getAdditionalProperties().get("USER_VERSION");
+        }
         parameters.put(OBJ_PROCESS_ITEM, processItem);
         parameters.put(VERSION, version);
         parameters.put(OBJ_PROCESS_JAVA_PROJECT, talendProcessJavaProject);
