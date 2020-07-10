@@ -464,6 +464,7 @@ if (sftp) { // *** sftp *** //
 						log.debug("<%=cid%> - Downloaded file " + (count +1) +  " : '" + remoteFileName + "' successfully.");
 					<%}%>
 					msg_<%=cid%>.add("file [" + remoteFileName + "] downloaded successfully.");
+					globalMap.put("<%=cid %>_CURRENT_STATUS", "File transfer OK.");
 					<%if (bPrintMsg) {%>
 						System.out.println("file [" + remoteFileName + "] downloaded successfully.");
 					<%}%>
