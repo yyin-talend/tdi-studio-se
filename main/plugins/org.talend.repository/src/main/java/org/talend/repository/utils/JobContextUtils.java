@@ -61,7 +61,11 @@ public class JobContextUtils {
                         Map<String, String> contextParams = new HashMap<String, String>();
                         EList<ContextParameterType> params = ct.getContextParameter();
                         for (ContextParameterType param : params) {
-                            contextParams.put(param.getName(), param.getRawValue());
+                            String paramValue = param.getRawValue();
+                        	if(paramValue.contains("\\")){
+                        		paramValue = paramValue.replaceAll("\\","\\\\");
+                            }                        	
+                            contextParams.put(param.getName(), paramValue);
                         }
                         return contextParams;
                     }
