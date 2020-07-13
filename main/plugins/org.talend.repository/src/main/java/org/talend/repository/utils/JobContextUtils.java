@@ -63,7 +63,7 @@ public class JobContextUtils {
                         for (ContextParameterType param : params) {
                             String paramValue = param.getRawValue();
                             if(paramValue.contains("\\")){
-                               paramValue = paramValue.replace("\\","\\\\");
+                                 paramValue = paramValue.replace("\\","\\\\");
                             }
                             contextParams.put(param.getName(), paramValue);
                         }
