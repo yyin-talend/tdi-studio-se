@@ -16,7 +16,6 @@
             <outputDirectory>${file.separator}</outputDirectory>
             <includes>
                 <include>${talend.job.path}/**/*.class</include>
-                <include>${talend.job.path}/**/*.wsdl</include>
                 <include>__tdm/**</include>
             </includes>
         </fileSet>
@@ -72,15 +71,15 @@
         </fileSet>
     </fileSets>
 
-<!-- 	<dependencySets>
-		<dependencySet>
-			<outputDirectory>lib</outputDirectory>
-			<includes>
-				<include>${routines.binaries.includes.set}</include>
-			</includes>
-			without version for talend libraries
-			<outputFileNameMapping>${artifact.artifactId}.${artifact.extension}</outputFileNameMapping>
-			<useProjectArtifact>false</useProjectArtifact>
-		</dependencySet>
-	</dependencySets> -->
+    <!-- <dependencySets>
+        <dependencySet>
+            <outputDirectory>lib</outputDirectory>
+            <includes>
+                <include>${routines.binaries.includes.set}</include>
+            </includes>
+            without version for talend libraries
+            <outputFileNameMapping>${artifact.artifactId}.${artifact.extension}</outputFileNameMapping>
+            <useProjectArtifact>false</useProjectArtifact>
+        </dependencySet>
+    </dependencySets> -->
 </assembly>
