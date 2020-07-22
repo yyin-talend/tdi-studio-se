@@ -18,6 +18,8 @@
 		<thashfile.version>3.0-20170711</thashfile.version>
 		<ftpProxy.dir>${project.basedir}/components/tFTPConnection</ftpProxy.dir>
 		<ftpProxy.version>3.6.1-talend-20190128</ftpProxy.version>
+		<tproxy.dir>${project.basedir}/components/tSetProxy</tproxy.dir>
+		<tproxy.version>1.0.1</tproxy.version>
 	</properties>
 
 	<build>
@@ -93,6 +95,14 @@
 									<type>jar</type>
 									<overWrite>true</overWrite>
 									<outputDirectory>${ftpProxy.dir}</outputDirectory>
+								</artifactItem>
+								<artifactItem>
+									<groupId>org.talend.components.lib</groupId>
+									<artifactId>talend-proxy</artifactId>
+									<version>${tproxy.version}</version>
+									<type>jar</type>
+									<overWrite>true</overWrite>
+									<outputDirectory>${tproxy.dir}</outputDirectory>
 								</artifactItem>
 							</artifactItems>
 						</configuration>
