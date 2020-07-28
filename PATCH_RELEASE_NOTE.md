@@ -6,8 +6,8 @@ product: https://talend.poolparty.biz/coretaxonomy/22
 # TPS-3161
 | Info             | Value |
 | ---------------- | ---------------- |
-| Patch Name       | patch\_20190823\_TPS-3161\_v3|
-| Release Date     | 2019-08-23 |
+| Patch Name       | patch\_20200731\_TPS-4205\_v1|
+| Release Date     | 2020-07-31 |
 | Target Version   | 20181026\_1147-V7.1.1 |
 | Product affected | Talend Studio |
 ## Introduction <!-- mandatory -->
@@ -15,7 +15,7 @@ This is a self-contained patch.
 **NOTE**: For information on how to obtain this patch, reach out to your Support contact at Talend.
 ## Fixed issues <!-- mandatory -->
 This patch contains the following fixes:
-- TPS-3161 resolves issue on tBigQueryOutput (TBD-8708)
+- [7.1.1] tBigQueryBulkExec does not 'truncate' on Service Account auth (TDI-44454)
 ## Prerequisites <!-- mandatory -->
 Consider the following requirements for your system:
 - Talend Studio 7.1.1 must be installed.
