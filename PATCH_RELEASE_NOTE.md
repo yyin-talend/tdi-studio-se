@@ -24,6 +24,11 @@ This is a self-contained patch.
 
 This patch contains the following fixes:
 
+- TBD-8853 tBigQueryBulkExec get error when run with big file
+- TBD-8925 could not insert a value which the column type is DATETIME via tBigQueryBulkExec
+- TBD-8950 Change redundant code appearance in tBigQueryBulkExec
+- TBD-8945 Add drop table checkbox to OAuth auth mode BigQuery
+- TBD-8951 Header field is ignored in Service account mode tBigQueryBulkExec
 - TPS-4259 [7.2.1]  tBigQueryOutput with Service account +"create the table if it doesn't exist" + "append" give BigQueryException: Already Exists, data can not insert(TDI-44516)
 
 ## Prerequisites
