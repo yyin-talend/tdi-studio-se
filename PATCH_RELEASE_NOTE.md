@@ -1,24 +1,24 @@
 ---
-version: 7.1.1
+version: 7.0.1
 module: https://talend.poolparty.biz/coretaxonomy/42
 product: https://talend.poolparty.biz/coretaxonomy/22
 ---
-# TPS-3161
+# TPS-4279
 | Info             | Value |
 | ---------------- | ---------------- |
-| Patch Name       | patch\_20190823\_TPS-3161\_v3|
-| Release Date     | 2019-08-23 |
-| Target Version   | 20181026\_1147-V7.1.1 |
+| Patch Name       | patch\_20200728\_TPS-3161\_v1|
+| Release Date     | 2020-07-28 |
+| Target Version   | 20180411\_1414-V7.0.1 |
 | Product affected | Talend Studio |
 ## Introduction <!-- mandatory -->
 This is a self-contained patch.
 **NOTE**: For information on how to obtain this patch, reach out to your Support contact at Talend.
 ## Fixed issues <!-- mandatory -->
 This patch contains the following fixes:
-- TPS-3161 resolves issue on tBigQueryOutput (TBD-8708)
+- [7.0.1] Checkbox for Date/Timestamp granularity (TBD-7495)
 ## Prerequisites <!-- mandatory -->
 Consider the following requirements for your system:
-- Talend Studio 7.1.1 must be installed.
+- Talend Studio 7.0.1 must be installed.
 ## Installation <!-- mandatory -->
 ### Installing the patch using Software update <!-- if applicable -->
 1) Logon TAC and switch to Configuration->Software Update, then enter the correct values and save referring to the documentation: https://help.talend.com/reader/f7Em9WV_cPm2RRywucSN0Q/j9x5iXV~vyxMlUafnDejaQ
