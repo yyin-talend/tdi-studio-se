@@ -6,7 +6,7 @@ product: https://talend.poolparty.biz/coretaxonomy/22
 # TPS-4205
 | Info             | Value |
 | ---------------- | ---------------- |
-| Patch Name       | patch\_20200731\_TPS-4205\_v3|
+| Patch Name       | patch\_20200731\_TPS-4205\_v4|
 | Release Date     | 2020-07-31 |
 | Target Version   | 20181026\_1147-V7.1.1 |
 | Product affected | Talend Studio |
