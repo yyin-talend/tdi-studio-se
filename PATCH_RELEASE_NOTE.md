@@ -6,7 +6,7 @@ product: https://talend.poolparty.biz/coretaxonomy/22
 # TPS-4279
 | Info             | Value |
 | ---------------- | ---------------- |
-| Patch Name       | patch\_20200728\_TPS-4279\_v1|
+| Patch Name       | patch\_20200728\_TPS-4279\_v3|
 | Release Date     | 2020-07-28 |
 | Target Version   | 20180411\_1414-V7.0.1 |
 | Product affected | Talend Studio |
