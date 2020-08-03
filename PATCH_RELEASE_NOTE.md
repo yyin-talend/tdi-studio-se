@@ -9,8 +9,8 @@ product:
 
 | Info             | Value |
 | ---------------- | ---------------- |
-| Patch Name       | Patch\_20200727_TPS-4259\_v1-7.2.1 |
-| Release Date     | 2020-07-27 |
+| Patch Name       | Patch\_20200803_TPS-4259\_v1-7.2.1 |
+| Release Date     | 2020-08-03 |
 | Target Version   | 20190620\_1446-V7.2.1 |
 | Product affected | Talend Studio |
 
