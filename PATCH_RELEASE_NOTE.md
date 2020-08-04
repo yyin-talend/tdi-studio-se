@@ -5,12 +5,12 @@ product:
 - https://talend.poolparty.biz/coretaxonomy/23
 ---
 
-# TPS-4009
+# TPS-4243
 
 | Info             | Value |
 | ---------------- | ---------------- |
-| Patch Name       | Patch\_20200507_TPS-4009\_v1-7.2.1 |
-| Release Date     | 2020-05-07 |
+| Patch Name       | Patch\_20200807_TPS-4243\_v1-7.2.1 |
+| Release Date     | 2020-08-07 |
 | Target Version   | 20190620_1446-V7.2.1 |
 | Product affected | Talend Studio |
 
@@ -24,7 +24,7 @@ This is a self-contained patch.
 
 This patch contains the following fixes:
 
-- TPS-4009 [7.2.1] Insert Performance Issue on SQL components with Date columns (TDI-44074)
+- [7.2.1] tBigQueryBulkExec get error when run with big file (TBD-8853, TPS-3592, TPS-4066)
 
 ## Prerequisites
 
