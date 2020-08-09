@@ -1221,7 +1221,7 @@ public class JavaProcessor extends AbstractJavaProcessor implements IJavaBreakpo
             list.addAll(Arrays.asList(cmd2));
             if (isStandardJob() && isExternalUse()) {
                 // for dynamic/independent subjob
-                localM2Path += "../lib"; //$NON-NLS-1$
+                localM2Path += "../MAVEN-INF/repository"; //$NON-NLS-1$
                 insertArgument(list, localM2Path);
             }
             return list.toArray(new String[0]);
