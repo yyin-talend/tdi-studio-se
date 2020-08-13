@@ -128,7 +128,7 @@ String inputConnName = null;
 			}
 		}
 	}
-	
+
 	if(useDynamicJob){
 		useIndependentProcess = true;
 		%>
@@ -207,8 +207,9 @@ String inputConnName = null;
               				%>
 		        				jvm_argument_helper_<%=cid%>.addArgumentsTo(paraList_<%=cid %>, dealChildJobLibrary_<%=cid %>.replaceJarPathsFromCrcMap("<%=commandLineWindows[i] %>"));
 		      				<%
-		          			}else{
-              				%>
+		      				}else if (commandLineWindows[i].indexOf("talend.component.manager.m2.repository")>0) {%>
+								// nope !
+		          			<%}else{%>
 		      					jvm_argument_helper_<%=cid%>.addArgumentsTo(paraList_<%=cid %>, "<%=commandLineWindows[i] %>");
 		      				<%
 		          			}
@@ -246,7 +247,9 @@ String inputConnName = null;
 							if(param.indexOf(".jar") >= 0){
 		      				%>
 		      					jvm_argument_helper_<%=cid%>.addArgumentsTo(paraList_<%=cid %>, dealChildJobLibrary_<%=cid %>.replaceJarPathsFromCrcMap(<%=param %>).replace("$ROOT_PATH",System.getProperty("user.dir")));
-		      				<%}else{%>
+		      				<%}else if (param.indexOf("talend.component.manager.m2.repository")>0) {%>
+								// nope !
+		      				<%}else {%>
 								jvm_argument_helper_<%=cid%>.addArgumentsTo(paraList_<%=cid %>, <%=param %>);
 		      				<%
 		      				}
