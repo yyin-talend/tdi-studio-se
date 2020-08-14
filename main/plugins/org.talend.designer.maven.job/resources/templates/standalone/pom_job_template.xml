@@ -270,6 +270,9 @@
 					<value>true</value>
 				</property>
 			</activation>
+			<properties>
+				<contexts.running.dir>${current.resources.dir}/</contexts.running.dir>
+			</properties>
 			<dependencies>
 				<dependency>
 					<groupId>io.micrometer</groupId>
@@ -287,6 +290,29 @@
 					<version>2.1.2.RELEASE</version>
 				</dependency>
 			</dependencies>
+			<build>
+			    <plugins>
+			        <plugin>
+			            <artifactId>maven-assembly-plugin</artifactId>
+			            <executions>
+			                <execution>
+			                    <phase>package</phase>
+			                    <goals>
+			                        <goal>single</goal>
+			                    </goals>
+			                    <configuration>
+			                        <descriptors>
+			                            <descriptor>${basedir}/src/main/assemblies/assembly.xml</descriptor>
+			                        </descriptors>
+			                        <tarLongFileMode>gnu</tarLongFileMode>
+			                        <appendAssemblyId>false</appendAssemblyId>
+			                        <finalName>${talend.job.finalName}</finalName>
+			                    </configuration>
+			                </execution>
+			            </executions>
+			        </plugin>
+			    </plugins>
+			</build>
 		</profile>
 	</profiles>
 </project>
