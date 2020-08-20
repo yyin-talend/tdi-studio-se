@@ -3425,7 +3425,7 @@
               class="org.talend.repository.model.migration.spark.UpdateSeparatorAndEscapeForDatasetAPI"
               description="change separator and escape to work with dataset API"
               id="org.talend.repository.model.migration.spark.UpdateSeparatorAndEscapeForDatasetAPI"
-              name="UpdateSeparatorAndEscapeForDatasetAPI"
+              name="UpdateSeparatorAndEscapeForDatasetAPI">
         </projecttask>
         <projecttask
               beforeLogon="true"
