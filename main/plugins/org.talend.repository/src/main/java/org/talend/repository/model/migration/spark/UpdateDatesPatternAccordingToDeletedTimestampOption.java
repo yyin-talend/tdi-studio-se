@@ -43,7 +43,7 @@ public class UpdateDatesPatternAccordingToDeletedTimestampOption extends Abstrac
 
     private static final List<String> IMPACTED_COMPONENTS =
             Arrays.asList("tFileOutputParquet", "tHiveOutput", "tRedshiftOutput", "tSqlRow", "tMatchPairing",
-                    "tMatchPredict", "tMatchModel", "tDataShuffling");
+                    "tMatchPredict", "tMatchModel", "tDataShuffling", "tFileInputParquet", "tHiveInput");
     
     @Override
     public Date getOrder() {
@@ -92,6 +92,8 @@ public class UpdateDatesPatternAccordingToDeletedTimestampOption extends Abstrac
                             column.setPattern("\"yyyy-MM-dd HH:mm:ss\"");
                         } else if ("false".equals(ComponentUtilities.getNodePropertyValue(node, CHECK_BOX_NAME))) {
                             column.setPattern("\"dd-MM-yyyy\"");
+                        } else {
+                        	column.setPattern("\"yyyy-MM-dd HH:mm:ss\"");
                         }
                     }
                 }
