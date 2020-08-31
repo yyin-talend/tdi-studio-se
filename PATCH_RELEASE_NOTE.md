@@ -9,8 +9,8 @@ product:
 
 | Info             | Value |
 | ---------------- | ---------------- |
-| Patch Name       | Patch\_20200831\_TPS-4346\_v1-7.2.1 |
-| Release Date     | 2020-08-31 |
+| Patch Name       | Patch\_20200901\_TPS-4346\_v1-7.2.1 |
+| Release Date     | 2020-09-01 |
 | Target Version   | 20190620_1446-V7.2.1 |
 | Product affected | Talend Studio |
 
@@ -31,6 +31,7 @@ This patch contains the following fixes:
 Consider the following requirements for your system:
 
 - Talend Studio 7.2.1 must be installed.
+- If already installed one of the 4 patches(TPS-4193,TPS-3855,TPS-4183,TPS-3858), please install TPS-4186 or later cumulative patch before installing current patch.
 
 ## Installation
 
