@@ -12,11 +12,15 @@
 // ============================================================================
 package org.talend.sdk.component.studio.model.parameter;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
 import org.apache.commons.lang3.StringUtils;
+import org.talend.core.model.metadata.IMetadataColumn;
 import org.talend.core.model.metadata.IMetadataTable;
+import org.talend.core.model.metadata.MetadataColumn;
+import org.talend.core.model.metadata.MetadataTable;
 import org.talend.core.model.process.EComponentCategory;
 import org.talend.core.model.process.EConnectionType;
 import org.talend.core.model.process.EParameterFieldType;
@@ -40,22 +44,40 @@ public class OutputSchemaParameter extends SchemaElementParameter {
     public OutputSchemaParameter(final IElement element, final String name, final String connectionName,
                                  final String discoverSchema, final boolean show) {
         super(element);
-
+        boolean isRabbitMQConnector = isRabbitMQConnector(connectionName);
         setName(name);
         setDisplayName(DISPLAY_NAME);
         setCategory(EComponentCategory.BASIC);
         setFieldType(EParameterFieldType.SCHEMA_TYPE);
         setShow(show);
-        setReadOnly(false);
+        setReadOnly(isRabbitMQConnector);
         setRequired(true);
         setContext(connectionName);
 
         createSchemaType(connectionName, show);
         createRepository(show);
-        createGuessSchema(name, connectionName, discoverSchema, show);
+        if (!isRabbitMQConnector) {
+            createGuessSchema(name, connectionName, discoverSchema, show);
+        } else {
+            setRabbitMQMetadataColumn();
+            setValue(Arrays.asList("message"));
+        }
 
         setTaggedValue(CONNECTION_TYPE, PropertyDefinitionDecorator.Connection.Type.OUT.toString());
     }
+
+	private boolean isRabbitMQConnector(String connectionName) {
+        if (!"FLOW".equals(connectionName)) {
+            return false;
+        }
+        IElement element = getElement();
+        return Optional.ofNullable(element)
+                .filter(Node.class::isInstance)
+                .map(Node.class::cast)
+                .map(e -> e.getComponent().getName())
+                .map(s -> s.equals("RabbitMQInput") || s.equals("RabbitMQOutput"))
+                .orElse(false);
+	}
 
     private void createSchemaType(final String connectionName, final boolean show) {
         final ElementParameter schemaType = new ElementParameter(getElement());
@@ -160,5 +182,13 @@ public class OutputSchemaParameter extends SchemaElementParameter {
         }
         final IMetadataTable metadata = ((Node) elem).getMetadataFromConnector(getContext());
         return Optional.ofNullable(metadata);
+    }
+
+    private void setRabbitMQMetadataColumn() {
+        IMetadataTable table = new MetadataTable();
+        table.setAttachedConnector("FLOW");
+        table.setLabel("RabbitMQ");
+        table.setReadOnly(true);
+        ((Node)getElement()).getMetadataList().add(table);
     }
 }
