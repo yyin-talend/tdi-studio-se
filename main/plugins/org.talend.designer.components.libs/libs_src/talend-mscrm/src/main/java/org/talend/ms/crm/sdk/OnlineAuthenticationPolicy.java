@@ -11,7 +11,6 @@ import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import javax.activity.InvalidActivityException;
 import javax.wsdl.WSDLException;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.xpath.XPathExpressionException;
@@ -107,7 +106,7 @@ public final class OnlineAuthenticationPolicy {
         this.initialize(flatWsdlUrl, targetDocument);
     }
 
-    private void initialize(String url, String wsdl) throws URISyntaxException, InvalidActivityException {
+    private void initialize(String url, String wsdl) throws URISyntaxException {
         final String PolicyNodeContentRegexPatern = "(?i)(<wsp:All.*?>)(.+?)(</wsp:All>)";
         final String LiveIdentityProviderTrustRegexPatern = "(?i)(<ms-xrm:LiveTrust.*?>)(.+?)(</ms-xrm:LiveTrust>)";
         final String OrgIdentityProviderTrustRegexPatern = "(?i)(<ms-xrm:OrgTrust.*?>)(.+?)(</ms-xrm:OrgTrust>)";
@@ -166,7 +165,7 @@ public final class OnlineAuthenticationPolicy {
             }
         }
 
-        throw new InvalidActivityException(
+        throw new RuntimeException(
                 String.format(Locale.getDefault(), "Unable to parse the authentication policy from the WSDL \"%s\".", url));
 
     }
