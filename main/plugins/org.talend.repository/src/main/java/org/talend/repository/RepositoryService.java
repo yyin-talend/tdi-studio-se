@@ -16,6 +16,7 @@ import java.beans.PropertyChangeEvent;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -87,6 +88,7 @@ import org.talend.core.model.process.INode;
 import org.talend.core.model.properties.ContextItem;
 import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.ProcessItem;
+import org.talend.core.model.properties.PropertiesFactory;
 import org.talend.core.model.properties.Property;
 import org.talend.core.model.properties.RulesItem;
 import org.talend.core.model.properties.SAPConnectionItem;
@@ -110,6 +112,7 @@ import org.talend.core.repository.model.repositoryObject.SalesforceModuleReposit
 import org.talend.core.repository.utils.ProjectHelper;
 import org.talend.core.repository.utils.RepositoryPathProvider;
 import org.talend.core.runtime.process.ITalendProcessJavaProject;
+import org.talend.core.services.ICoreTisService;
 import org.talend.core.services.IGITProviderService;
 import org.talend.core.services.ISVNProviderService;
 import org.talend.core.ui.branding.IBrandingService;
@@ -333,6 +336,28 @@ public class RepositoryService implements IRepositoryService, IRepositoryContext
             logged = LoginHelper.getInstance().loginAuto();
         }
         if (!logged) {
+            if (ArrayUtils.contains(Platform.getApplicationArgs(), EclipseCommandLine.LOGIN_ONLINE_UPDATE)) {
+                ICoreTisService tisService = ICoreTisService.get();
+                if (tisService != null) {
+                    LoginHelper loginHelper = LoginHelper.getInstance();
+                    ConnectionBean connBean = loginHelper.getCurrentSelectedConnBean();
+                    try {
+                        User user = PropertiesFactory.eINSTANCE.createUser();
+                        user.setLogin(connBean.getUser());
+                        user.setPassword(connBean.getPassword().getBytes(StandardCharsets.UTF_8));
+                        LoginHelper.setRepositoryContextInContext(connBean, user, null, null);
+                        tisService.downLoadAndInstallUpdates(connBean.getUser(), connBean.getPassword(),
+                                LoginHelper.getAdminURL(connBean));
+                        tisService.setNeedResartAfterUpdate(true);
+                        LoginHelper.isRestart = true;
+                        EclipseCommandLine.updateOrCreateExitDataPropertyWithCommand(EclipseCommandLine.LOGIN_ONLINE_UPDATE, null,
+                                true, true);
+                        return true;
+                    } catch (Throwable e) {
+                        ExceptionHandler.process(e);
+                    }
+                }
+            }
             LoginDialogV2 loginDialog = new LoginDialogV2(shell);
             logged = (loginDialog.open() == LoginDialogV2.OK);
         }
@@ -358,7 +383,7 @@ public class RepositoryService implements IRepositoryService, IRepositoryContext
 
         if (ArrayUtils.contains(Platform.getApplicationArgs(), EclipseCommandLine.TALEND_DISABLE_LOGINDIALOG_COMMAND)) {
             boolean deleteProjectIfExist = ArrayUtils.contains(Platform.getApplicationArgs(), "--deleteProjectIfExist"); //$NON-NLS-1$
-            IBrandingService brandingService = (IBrandingService) GlobalServiceRegister.getDefault().getService(
+            IBrandingService brandingService = GlobalServiceRegister.getDefault().getService(
                     IBrandingService.class);
             brandingService.getBrandingConfiguration().setUseProductRegistration(false);
             ProxyRepositoryFactory repositoryFactory = ProxyRepositoryFactory.getInstance();
@@ -472,7 +497,7 @@ public class RepositoryService implements IRepositoryService, IRepositoryContext
                 }
                 if (project != null && reload && lastBean != null && repositoryFactory.getRepositoryContext().isOffline()) {
                     if (PluginChecker.isSVNProviderPluginLoaded()) {
-                        ISVNProviderService svnProviderService = (ISVNProviderService) GlobalServiceRegister.getDefault()
+                        ISVNProviderService svnProviderService = GlobalServiceRegister.getDefault()
                                 .getService(ISVNProviderService.class);
                         if (svnProviderService.isSVNProject(project)) {
                             String projectUrl = svnProviderService.getProjectUrl(project);
@@ -791,7 +816,7 @@ public class RepositoryService implements IRepositoryService, IRepositoryContext
     public String getRulesProviderPath(RulesItem currentRepositoryItem) {
         IRulesProviderService rulesService = null;
         if (PluginChecker.isRulesPluginLoaded()) {
-            rulesService = (IRulesProviderService) GlobalServiceRegister.getDefault().getService(IRulesProviderService.class);
+            rulesService = GlobalServiceRegister.getDefault().getService(IRulesProviderService.class);
             try {
                 rulesService.syncRule(currentRepositoryItem);
                 IFile ruleFile = rulesService.getRuleFile(currentRepositoryItem, FileConstants.XLS_FILE_SUFFIX);
@@ -915,9 +940,9 @@ public class RepositoryService implements IRepositoryService, IRepositoryContext
     private void initProviderService() {
         if (PluginChecker.isSVNProviderPluginLoaded()) {
             try {
-                svnProviderService = (ISVNProviderService) GlobalServiceRegister.getDefault()
+                svnProviderService = GlobalServiceRegister.getDefault()
                         .getService(ISVNProviderService.class);
-                gitProviderService = (IGITProviderService) GlobalServiceRegister.getDefault()
+                gitProviderService = GlobalServiceRegister.getDefault()
                         .getService(IGITProviderService.class);
             } catch (RuntimeException e) {
                 // nothing to do
@@ -1008,7 +1033,7 @@ public class RepositoryService implements IRepositoryService, IRepositoryContext
     @Override
     public boolean isSVN() {
         if (svnProviderService == null && PluginChecker.isSVNProviderPluginLoaded()) {
-            svnProviderService = (ISVNProviderService) GlobalServiceRegister.getDefault().getService(ISVNProviderService.class);
+            svnProviderService = GlobalServiceRegister.getDefault().getService(ISVNProviderService.class);
         }
         if (svnProviderService != null) {
             return svnProviderService.isProjectInSvnMode();
@@ -1019,7 +1044,7 @@ public class RepositoryService implements IRepositoryService, IRepositoryContext
     @Override
     public boolean isGIT() {
         if (gitProviderService == null && PluginChecker.isGITProviderPluginLoaded()) {
-            gitProviderService = (IGITProviderService) GlobalServiceRegister.getDefault().getService(IGITProviderService.class);
+            gitProviderService = GlobalServiceRegister.getDefault().getService(IGITProviderService.class);
         }
         if (gitProviderService != null) {
             return gitProviderService.isProjectInGitMode();
