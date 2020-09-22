@@ -198,7 +198,7 @@ public class LoginProjectPage extends AbstractLoginActionPage {
 
     protected boolean afterUpdate = false;
 
-    protected IBrandingService brandingService = (IBrandingService) GlobalServiceRegister.getDefault().getService(
+    protected IBrandingService brandingService = GlobalServiceRegister.getDefault().getService(
             IBrandingService.class);
 
     protected LoginHelper loginHelper;
@@ -1125,7 +1125,7 @@ public class LoginProjectPage extends AbstractLoginActionPage {
         // install and update all patches;
         try {
             if (FINISH_ACTION_UPDATE.equals(finishButtonAction)) {
-                ICoreTisService tisService = (ICoreTisService) GlobalServiceRegister.getDefault().getService(
+                ICoreTisService tisService = GlobalServiceRegister.getDefault().getService(
                         ICoreTisService.class);
                 afterUpdate = false;
                 if (tisService != null) {
@@ -1478,6 +1478,9 @@ public class LoginProjectPage extends AbstractLoginActionPage {
                 }
             } else {
                 errorManager.setErrMessage(Messages.getString("LoginComposite.connectionEmpty")); //$NON-NLS-1$
+            }
+            if (!errorManager.hasError()) {
+                errorManager.setInfoMessage("v2 patch");
             }
         } finally {
             updateFinishButtonStatus();
@@ -1976,7 +1979,7 @@ public class LoginProjectPage extends AbstractLoginActionPage {
     }
 
     private List<String> getBranches(Project project) {
-        IGITProviderService gitProviderService = (IGITProviderService) GlobalServiceRegister.getDefault().getService(
+        IGITProviderService gitProviderService = GlobalServiceRegister.getDefault().getService(
                 IGITProviderService.class);
         String[] branchArr = gitProviderService.getBranchList(project);
         List<String> branches = Arrays.asList(branchArr);
