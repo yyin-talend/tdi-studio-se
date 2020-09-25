@@ -62,9 +62,11 @@ public class UpdateRemovedSparkVersion extends AbstractJobMigrationTask {
                         if (!isSparkLocal && "SPARK_LOCAL_VERSION".equals(param.getName())) {//$NON-NLS-1$
                         	param.setValue("SPARK_2_4_0");//$NON-NLS-1$
                         } else if (isSparkLocal && "SPARK_VERSION".equals(param.getName())) {//$NON-NLS-1$
-                        	param.setValue("EMR_5_29_0");//$NON-NLS-1$
+                        	param.setValue("Cloudera_CDP7_1_1_0_565");//$NON-NLS-1$
                         } else if (isSparkLocal && "SUPPORTED_SPARK_VERSION".equals(param.getName())) {//$NON-NLS-1$
                         	param.setValue("SPARK_2_4_0");//$NON-NLS-1$
+                        } else if (isSparkLocal && "DISTRIBUTION".equals(param.getName())) {//$NON-NLS-1$
+                        	param.setValue("CLOUDERA");//$NON-NLS-1$
                         }
                     }
                     ProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
