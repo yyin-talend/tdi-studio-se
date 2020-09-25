@@ -1476,7 +1476,7 @@ public class StatsAndLogsManager {
                     if (!moduleNameList.contains(moduleName)) {
                         moduleNameList.add(moduleName);
                     }
-                    String moduleValue = TalendTextUtils.addQuotes(module.getMavenUri());
+                    String moduleValue = TalendTextUtils.addQuotes(moduleName);
                     if (!moduleValueList.contains(moduleValue)) {
                         moduleValueList.add(moduleValue);
                     }

@@ -126,7 +126,7 @@ public class ModuleListController extends AbstractElementPropertySectionControll
             String initValue = value == null ? "" : TalendTextUtils.removeQuotes(value.toString());
             ConfigModuleDialog dial = new ConfigModuleDialog(composite.getShell(), initValue);
             if (Window.OK == dial.open()) {
-                String moduleName = dial.getMavenURI();
+                String moduleName = dial.getModuleName();
                 if (moduleName != null && !moduleName.equals("")) { //$NON-NLS-1$
                     String lastSegment = TalendTextUtils.addQuotes(moduleName);
 
