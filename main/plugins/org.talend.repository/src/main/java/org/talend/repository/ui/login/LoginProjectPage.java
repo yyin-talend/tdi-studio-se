@@ -1477,7 +1477,7 @@ public class LoginProjectPage extends AbstractLoginActionPage {
                     }
                 }
                 if (!errorManager.hasError()) {
-                    errorManager.setInfoMessage("Temp patch v1");
+                    errorManager.setInfoMessage("Temp patch v2");
                 }
             } else {
                 errorManager.setErrMessage(Messages.getString("LoginComposite.connectionEmpty")); //$NON-NLS-1$
