@@ -74,6 +74,7 @@
 		<module>main/features/org.talend.help.tos.components.feature</module>
 		<module>main/plugins/org.talend.designer.core.generic</module>
 		<module>main/plugins/org.talend.repository.generic</module>
+		<module>main/plugins/org.talend.patch.test</module>
 		<module>main/plugins/org.talend.designer.abstractmap</module>
 		<module>main/plugins/org.talend.designer.alfrescooutput</module>
 		<module>main/plugins/org.talend.designer.business.diagram</module>

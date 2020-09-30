@@ -1,0 +1,10 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Test
+Bundle-SymbolicName: org.talend.patch.test;singleton:=true
+Bundle-Version: 7.4.1.qualifier
+Bundle-Activator: org.talend.patch.test.Activator
+Require-Bundle: org.eclipse.ui,
+ org.eclipse.core.runtime
+Automatic-Module-Name: org.talend.patch.test
+Export-Package: org.talend.patch.test
