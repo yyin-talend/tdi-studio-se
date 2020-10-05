@@ -308,6 +308,9 @@ public class ExcelTool {
     		if(outputStream != null) {
     			outputStream.close();
     		}
+    		if (wb != null) {
+    			wb.close();
+    		}
     	}
     }
 
@@ -319,14 +322,18 @@ public class ExcelTool {
                 pFile.mkdirs();
             }
         }
-        FileOutputStream fileOutput = new FileOutputStream(fileName);
         if (appendWorkbook && appendSheet && recalculateFormula) {
             evaluateFormulaCell();
         }
+        FileOutputStream fileOutput = null;
         try {
+	        fileOutput = new FileOutputStream(fileName);
         	wb.write(fileOutput);
         } finally {
-        	fileOutput.close();
+        	if (fileOutput != null)
+        		fileOutput.close();
+        	if (wb != null)
+        		wb.close();
         }
     }
 
