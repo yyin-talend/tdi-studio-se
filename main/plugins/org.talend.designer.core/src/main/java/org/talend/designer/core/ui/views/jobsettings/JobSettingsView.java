@@ -546,9 +546,9 @@ public class JobSettingsView extends ViewPart implements IJobSettingsView, ISele
                 return false;
             }
             // child route job
-            if (ProcessUtils.isChildRouteProcess(process)) {
-                return false;
-            }
+            // if (ProcessUtils.isChildRouteProcess(process)) {
+            //     return false;
+            // }
             // test case
             if (ProcessUtils.isTestContainer(process)) {
                 return false;
