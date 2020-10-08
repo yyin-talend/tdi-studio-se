@@ -326,6 +326,22 @@ public class DeploymentComposite extends AbstractTabComposite {
             final Control buildTypeControl = buildTypeCombo.getControl();
             buildTypeControl.setVisible(showBuildType);
             buildTypeLabel.setVisible(showBuildType);
+            
+            if (isChildJob) {
+                groupIdText.setText("");
+                groupIdCheckbox.setSelection(false);
+                groupIdText.setEnabled(false);
+                
+                versionText.setText("");
+                versionCheckbox.setSelection(false);
+                versionText.setEnabled(false);
+                versionText.setToolTipText(""); //$NON-NLS-1$
+                
+                snapshotCheckbox.setSelection(false);
+                
+                buildTypeLabel.setVisible(false);
+                buildTypeCombo.getCCombo().setVisible(false);
+            }
 
             if (showBuildType) {
                 Map<String, Object> parameters = new HashMap<String, Object>();
@@ -394,6 +410,9 @@ public class DeploymentComposite extends AbstractTabComposite {
     private boolean isShowBuildType() {
         // add support for ESB Service.
         if (!PluginChecker.isTIS()) {
+            return false;
+        }
+        if (isChildJob) {
             return false;
         }
         Map<String, Object> parameters = new HashMap<String, Object>();
