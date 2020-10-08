@@ -197,7 +197,7 @@ public class DeploymentComposite extends AbstractTabComposite {
                     .getLastVersion(isService ? serviceItem.getProperty().getId() : process.getId());
             String latestVersion = obj.getVersion();
 
-            if (!currentVersion.equals(latestVersion) || isDataServiceJob || isProcessItem || isServiceItem) {
+            if (!currentVersion.equals(latestVersion) || isDataServiceJob || isChildJob || isProcessItem || isServiceItem) {
                 groupIdCheckbox.setEnabled(false);
                 groupIdText.setEnabled(false);
                 versionCheckbox.setEnabled(false);
