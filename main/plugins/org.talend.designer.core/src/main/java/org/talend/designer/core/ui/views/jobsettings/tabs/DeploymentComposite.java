@@ -299,7 +299,7 @@ public class DeploymentComposite extends AbstractTabComposite {
             Property property = isService ? serviceItem.getProperty() : process.getProperty();
             PomIdsHelper.getJobGroupId(property);
             String defaultProjectGroupId = PomIdsHelper.getJobGroupId(property);
-            defaultGroupId = isDataServiceJob ? "" : defaultProjectGroupId; //$NON-NLS-1$
+            defaultGroupId = (isDataServiceJob || isChildJob) ? "" : defaultProjectGroupId; //$NON-NLS-1$
             groupId = (String) get(getObject(), MavenConstants.NAME_GROUP_ID);
             boolean isCustomGroupId = groupId != null;
             if (!isCustomGroupId) {
