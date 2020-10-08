@@ -197,7 +197,7 @@ public class DeploymentComposite extends AbstractTabComposite {
                     .getLastVersion(isService ? serviceItem.getProperty().getId() : process.getId());
             String latestVersion = obj.getVersion();
 
-            if (!currentVersion.equals(latestVersion) || isDataServiceJob || isChildJob || isProcessItem || isServiceItem) {
+            if (!currentVersion.equals(latestVersion) || isDataServiceJob || isProcessItem || isServiceItem) {
                 groupIdCheckbox.setEnabled(false);
                 groupIdText.setEnabled(false);
                 versionCheckbox.setEnabled(false);
@@ -299,7 +299,7 @@ public class DeploymentComposite extends AbstractTabComposite {
             Property property = isService ? serviceItem.getProperty() : process.getProperty();
             PomIdsHelper.getJobGroupId(property);
             String defaultProjectGroupId = PomIdsHelper.getJobGroupId(property);
-            defaultGroupId = (isDataServiceJob || isChildJob) ? "" : defaultProjectGroupId; //$NON-NLS-1$
+            defaultGroupId = isDataServiceJob ? "" : defaultProjectGroupId; //$NON-NLS-1$
             groupId = (String) get(getObject(), MavenConstants.NAME_GROUP_ID);
             boolean isCustomGroupId = groupId != null;
             if (!isCustomGroupId) {
