@@ -334,6 +334,5 @@ try {
 		}
 	}
 } catch (ProcessorException e) {
-globalMap.put("<%=cid%>_ERROR_MESSAGE",e.getMessage());
 }	
 %>

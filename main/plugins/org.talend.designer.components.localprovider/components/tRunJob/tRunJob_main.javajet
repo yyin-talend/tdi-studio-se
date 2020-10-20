@@ -161,7 +161,6 @@ String inputConnName = null;
 		    	commandLine = ProcessorUtilities.getMainCommand(process,version, context,org.talend.designer.runprocess.IProcessor.NO_STATISTICS,org.talend.designer.runprocess.IProcessor.NO_TRACES, codeOptions);  
 			}
 		} catch (ProcessorException e) {
-globalMap.put("<%=cid%>_ERROR_MESSAGE",e.getMessage());
 		}
 
 
