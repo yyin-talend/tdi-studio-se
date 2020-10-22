@@ -43,6 +43,12 @@ Consider the following requirements for your system:
 
 3) On Studio Side: Logon Studio with remote mode, on the logon page the Update button is displayed: click this button to install the patch.
 
+### Installing the patch using Talend Studio <!-- if applicable -->
+
+1) Create a folder named "patches" under your studio installer directory and copy the patch .zip file to this folder.
+
+2) Restart your studio: a window pops up, then click OK to install the patch, or restart the commandline and the patch will be installed automatically.
+
 ### Installing the patch using Commandline <!-- if applicable -->
 
 Execute the following commands:
