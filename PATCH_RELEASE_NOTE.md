@@ -9,8 +9,8 @@ product:
 
 | Info             | Value |
 | ---------------- | ---------------- |
-| Patch Name       | Patch\_20201020\_TPS-4399\_v1-7.1.1 |
-| Release Date     | 2020-10-20 |
+| Patch Name       | Patch\_20201023\_TPS-4399\_v1-7.1.1 |
+| Release Date     | 2020-10-23 |
 | Target Version   | 20181026\_1147-V7.1.1 |
 | Product affected | Talend Studio |
 
