@@ -1031,7 +1031,6 @@
 	try {
 		sql = tail.run(sqlObject);
 	} catch (java.lang.Exception e) {
-globalMap.put("<%=cid%>_ERROR_MESSAGE",e.getMessage());
 		err = e.getMessage() + " ";
 		e.printStackTrace();
 	}
