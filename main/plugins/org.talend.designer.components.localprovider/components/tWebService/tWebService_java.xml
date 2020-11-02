@@ -273,6 +273,7 @@
                 MVN="mvn:org.apache.cxf/cxf-rt-transports-http/3.3.4"
                 REQUIRED="true"
             />
+            
 
             <IMPORT
                 NAME="WSDL4J-1_6_3"
