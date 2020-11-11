@@ -63,13 +63,12 @@
 	} else if (authMode.equals("SERVICEACCOUNT")) {
 	%>
 		com.google.cloud.bigquery.QueryJobConfiguration queryConfiguration_<%=cid%> = com.google.cloud.bigquery.QueryJobConfiguration.newBuilder(<%=query%>).setUseLegacySql(<%=useLegacySql%>).build();
-		com.google.cloud.bigquery.JobId jobId_<%=cid%> = com.google.cloud.bigquery.JobId.of(java.util.UUID.randomUUID().toString());
-		com.google.cloud.bigquery.Job job_<%=cid%> = bigquery_<%=cid%>.create(com.google.cloud.bigquery.JobInfo.newBuilder(queryConfiguration_<%=cid%>).setJobId(jobId_<%=cid%>).build());
+		com.google.cloud.bigquery.Job job_<%=cid%> = bigquery_<%=cid%>.create(com.google.cloud.bigquery.JobInfo.newBuilder(queryConfiguration_<%=cid%>).build());
 
 		<%
 		if(isLog4jEnabled){
 		%>
-			log.info("<%=cid%> - Sending job " + jobId_<%=cid%> + " with query: " + <%=query%>);
+			log.info("<%=cid%> - Sending job " + job_<%=cid%>.getJobId().getJob() + " with query: " + <%=query%>);
 		<%
 		}
 		%>
@@ -84,7 +83,7 @@
 		<%
 		if(isLog4jEnabled){
 		%>
-			log.info("<%=cid%> - Job " + jobId_<%=cid%> + " finished successfully.");
+			log.info("<%=cid%> - Job " + job_<%=cid%>.getJobId().getJob() + " finished successfully.");
 		<%
 		}
 		%>
