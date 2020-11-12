@@ -130,6 +130,7 @@ public class BuildJobFactory {
         parameters.put(IBuildParametes.VERSION, version);
         parameters.put(IBuildJobParameters.CONTEXT_GROUP, contextName);
         parameters.put(IBuildJobParameters.CHOICE_OPTION, exportChoiceMap);
+        processItem.getProperty().getAdditionalProperties().put(TalendProcessArgumentConstant.ARG_EXPORT_BUILD_TYPE, buildType);
 
         final AbstractBuildProvider buildProvider = BuildExportManager.getInstance().getBuildProvider(buildType, parameters);
         if (buildProvider != null) {

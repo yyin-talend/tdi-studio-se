@@ -212,6 +212,16 @@ public class DefaultRunProcessService implements IRunProcessService {
      * @return
      */
     protected IProcessor createJavaProcessor(IProcess process, Property property, boolean filenameFromLabel) {
+        String propertiesBuildType = null;
+        String exportBuildType = null;
+        boolean propertyExists = property != null && property.getAdditionalProperties() != null;
+        if (propertyExists) {
+        	propertiesBuildType = (String) property.getAdditionalProperties().get(TalendProcessArgumentConstant.ARG_BUILD_TYPE);
+        	exportBuildType = (String) property.getAdditionalProperties().get(TalendProcessArgumentConstant.ARG_EXPORT_BUILD_TYPE);
+        }
+
+        String buildType = exportBuildType != null ? exportBuildType : propertiesBuildType;
+
         boolean isTestContainer = false;
         if (GlobalServiceRegister.getDefault().isServiceRegistered(ITestContainerProviderService.class)) {
             ITestContainerProviderService testContainerService = GlobalServiceRegister.getDefault()
@@ -244,8 +254,7 @@ public class DefaultRunProcessService implements IRunProcessService {
         if (GlobalServiceRegister.getDefault().isServiceRegistered(IESBMicroService.class)) {
             microService = GlobalServiceRegister.getDefault().getService(IESBMicroService.class);
 
-            if (property != null && property.getAdditionalProperties() != null
-                    && "REST_MS".equals(property.getAdditionalProperties().get(TalendProcessArgumentConstant.ARG_BUILD_TYPE))) {
+            if (propertyExists && "REST_MS".equals(buildType)) {
                 if (microService != null) {
                     IProcessor processor = microService.createJavaProcessor(process, property, filenameFromLabel, false);
                     if (processor != null) {
@@ -276,8 +285,7 @@ public class DefaultRunProcessService implements IRunProcessService {
         } else if (ComponentCategory.CATEGORY_4_SPARKSTREAMING.getName().equals(process.getComponentsType())) {
             return new SparkJavaProcessor(process, property, filenameFromLabel);
         } else if (ComponentCategory.CATEGORY_4_CAMEL.getName().equals(process.getComponentsType())) {
-            if ("ROUTE_MICROSERVICE"
-                    .equals(property.getAdditionalProperties().get(TalendProcessArgumentConstant.ARG_BUILD_TYPE))) {
+            if ("ROUTE_MICROSERVICE".equals(buildType)) {
                 if (microService != null) {
                     IProcessor processor = microService.createJavaProcessor(process, property, filenameFromLabel, true);
                     if (processor != null) {
@@ -323,8 +331,7 @@ public class DefaultRunProcessService implements IRunProcessService {
                         }
                     }
 
-                    boolean isOSGI = "OSGI"
-                            .equals(property.getAdditionalProperties().get(TalendProcessArgumentConstant.ARG_BUILD_TYPE));
+                    boolean isOSGI = "OSGI".equals(buildType);
                     // TESB-25116 The microservice jar which is built from route with ctalendjob is only 2kb
                     boolean isMicroservice = lastMainJob != null && lastMainJob.getProcessor().getProperty() != null
                             && "ROUTE_MICROSERVICE".equals(lastMainJob.getProcessor().getProperty().getAdditionalProperties()
@@ -723,9 +730,9 @@ public class DefaultRunProcessService implements IRunProcessService {
     @Override
     public IFolder getJavaProjectExternalResourcesFolder(IProcess process) {
         ITalendProcessJavaProject talendProject = getTalendJobJavaProject(((Process) process).getProperty());
-        return talendProject.getExternalResourcesFolder();        
+        return talendProject.getExternalResourcesFolder();
     }
-    
+
     @Override
     public void updateProjectPomWithTemplate() {
         try {
@@ -896,7 +903,7 @@ public class DefaultRunProcessService implements IRunProcessService {
             codeProject.buildModules(monitor, null, argumentsMap);
         }
     }
-    
+
     private void deleteRefProjects(Project refProject, AggregatorPomsHelper refHelper) throws Exception {
         IProgressMonitor monitor = new NullProgressMonitor();
         for (ERepositoryObjectType codeType : ERepositoryObjectType.getAllTypesOfCodes()) {
@@ -906,17 +913,17 @@ public class DefaultRunProcessService implements IRunProcessService {
         }
 
     }
-    
+
     private void deleteRefProject(ERepositoryObjectType codeType, AggregatorPomsHelper refHelper, IProgressMonitor monitor)
             throws Exception, CoreException {
-    	
+
         if (!refHelper.getProjectRootPom().exists()) {
             return;
         }
-        
+
         String projectTechName = refHelper.getProjectTechName();
         ITalendProcessJavaProject codeProject = TalendJavaProjectManager.getExistingTalendCodeProject(codeType, projectTechName);
-       	
+
         if (codeProject != null) {
             codeProject.getProject().delete(false, true, monitor);
             TalendJavaProjectManager.removeFromCodeJavaProjects(codeType, projectTechName);
