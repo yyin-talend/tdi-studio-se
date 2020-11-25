@@ -261,6 +261,43 @@
 				<microservice.running.configs.dir>${current.int-resources.dir}/</microservice.running.configs.dir>
 			</properties>
 		</profile>
-
+		
+		<profile>
+			<id>include-microservice-em-dependencies</id>
+			<activation>
+				<property>
+					<name>studio.prometheus.metrics</name>
+					<value>true</value>
+				</property>
+			</activation>
+			<properties>
+				<contexts.running.dir>${current.resources.dir}/</contexts.running.dir>
+				<microservice.configs.dir>${current.resources.dir}/</microservice.configs.dir>
+				<microservice.running.configs.dir>${current.int-resources.dir}/</microservice.running.configs.dir>
+			</properties>
+			<build>
+			    <plugins>
+			        <plugin>
+			            <artifactId>maven-assembly-plugin</artifactId>
+			            <executions>
+			                <execution>
+			                    <phase>package</phase>
+			                    <goals>
+			                        <goal>single</goal>
+			                    </goals>
+			                    <configuration>
+			                        <descriptors>
+			                            <descriptor>${basedir}/src/main/assemblies/assembly.xml</descriptor>
+			                        </descriptors>
+			                        <tarLongFileMode>gnu</tarLongFileMode>
+			                        <appendAssemblyId>false</appendAssemblyId>
+			                        <finalName>${talend.job.finalName}</finalName>
+			                    </configuration>
+			                </execution>
+			            </executions>
+			        </plugin>
+			    </plugins>
+			</build>
+		</profile>
 	</profiles>
 </project>

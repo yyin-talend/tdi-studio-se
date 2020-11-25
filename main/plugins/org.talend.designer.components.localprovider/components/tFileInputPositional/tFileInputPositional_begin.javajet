@@ -69,7 +69,7 @@
         	String dieOnErrorStr = ElementParameterParser.getValue(node, "__DIE_ON_ERROR__");
     		boolean dieOnError = (dieOnErrorStr!=null&&!("").equals(dieOnErrorStr))?("true").equals(dieOnErrorStr):false;
     		
-    		//need to process rows longger than 100 000 characters, the property SafetySwitch(in talend_file_enhanced_20070724.jar) should be sent to false.(the default is true)
+    		//need to process rows longger than 100 000 characters, the property SafetySwitch(in talend_file_enhanced-1.0.jar) should be sent to false.(the default is true)
     		//that means if check the option(true), the logic value of bSafetySwitch should be changed to false (XOR with 'true')
     		boolean bSafetySwitch = (("true").equals(ElementParameterParser.getValue(node, "__PROCESS_LONG_ROW__")) ^ true);    		
     		String advancedSeparatorStr = ElementParameterParser.getValue(node, "__ADVANCED_SEPARATOR__");
@@ -761,10 +761,10 @@
                 try {//TD110 begin
                 	if(filename_<%=cid %> instanceof java.io.InputStream){
                 		in_<%=cid %> = 
-                				new java.io.BufferedReader(new java.io.InputStreamReader((java.io.InputStream)filename_<%=cid %>, <%=encoding %>));
+                				new java.io.BufferedReader(new routines.system.UnicodeReader((java.io.InputStream)filename_<%=cid %>, <%=encoding %>));
                 	}else{
                 		in_<%=cid %> = 
-                			new java.io.BufferedReader(new java.io.InputStreamReader(new java.io.FileInputStream(String.valueOf(filename_<%=cid %>)), <%=encoding %>));
+                			new java.io.BufferedReader(new routines.system.UnicodeReader(new java.io.FileInputStream(String.valueOf(filename_<%=cid %>)), <%=encoding %>));
                 	}
 
 			<%
@@ -838,7 +838,7 @@
             	if(filename_<%=cid %> instanceof java.io.InputStream){
             		throw new java.lang.RuntimeException("When the input source is a stream,footer shouldn't be bigger than 0.");
             	}else{
-            		in_<%=cid %> = new java.io.BufferedReader(new java.io.InputStreamReader(new java.io.FileInputStream(String.valueOf(filename_<%=cid %>)), <%=encoding %>));
+            		in_<%=cid %> = new java.io.BufferedReader(new routines.system.UnicodeReader(new java.io.FileInputStream(String.valueOf(filename_<%=cid %>)), <%=encoding %>));
             	}
 				<%
 				if("BYTES".equals(patternUnits)&&(("").equals(rowSeparator) || ("\"\"").equals(rowSeparator))){

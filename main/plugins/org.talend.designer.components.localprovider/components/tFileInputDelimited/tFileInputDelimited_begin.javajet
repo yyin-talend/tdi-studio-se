@@ -227,18 +227,19 @@
 						this.isBehindDynamic=true;
 						dynamic_index = valueN;
 					%>
-						<%=dynamicName%>.clearColumnValues();
+						
+						<%=targetConnName %>.<%=column.getLabel() %> = <%=dynamicName%>.copyMetadata();
+						
 						int fieldCount = <%=sourceValueName%>.getColumnsCountOfCurrentRow();
 						dynamic_column_count_<%=cid%> = <%=dynamicName%>.getColumnCount();
 						for (int i = 0; i < dynamic_column_count_<%=cid%> ; i++) {
 							if ((<%=dynamic_index%>+i) < fieldCount){
-								<%=dynamicName%>.addColumnValue(<%=sourceValueName%>.get(<%=dynamic_index%>+i)<%=(isTrimAll || (!trimSelects.isEmpty() && ("true").equals(trimSelects.get(valueN).get("TRIM"))))?".trim()":"" %>);
+								<%=targetConnName %>.<%=column.getLabel() %>.addColumnValue(<%=sourceValueName%>.get(<%=dynamic_index%>+i)<%=(isTrimAll || (!trimSelects.isEmpty() && ("true").equals(trimSelects.get(valueN).get("TRIM"))))?".trim()":"" %>);
 							}
 							else{
-								<%=dynamicName%>.addColumnValue("");
+								<%=targetConnName %>.<%=column.getLabel() %>.addColumnValue("");
 							}
 						}
-						<%=targetConnName %>.<%=column.getLabel() %>=<%=dynamicName%>;
 					<%
 					}else{
 						
@@ -464,6 +465,7 @@
 									log.error("<%=cid%> - " +e.getMessage());
 								<%}%>
 								System.err.println(e.getMessage());
+								globalMap.put("<%=cid %>_ERROR_MESSAGE", e.getMessage());
 							<% } %>
 						}
 						java.util.zip.ZipEntry entry_<%=cid %> = null;
@@ -479,6 +481,7 @@
 										log.error("<%=cid%> - " +e.getMessage());
 									<%}%>
 									System.err.println(e.getMessage());
+									globalMap.put("<%=cid %>_ERROR_MESSAGE", e.getMessage());
 									break;
 								<% } %>
 							}
@@ -503,6 +506,7 @@
 										log.error("<%=cid%> - " +e.getMessage());
 									<%}%>
 									System.err.println(e.getMessage());
+									globalMap.put("<%=cid %>_ERROR_MESSAGE", e.getMessage());
 								<% } %>
 							}
 					<%
@@ -528,6 +532,7 @@
 									log.error("<%=cid%> - " +e.getMessage());
 								<%}%>
 								System.err.println(e.getMessage());
+								globalMap.put("<%=cid %>_ERROR_MESSAGE", e.getMessage());
 							<% } %>
 						}
 					<%
@@ -606,7 +611,9 @@
 			            					} else if(rejectConnName.equals(firstConnName)){%>
 			            						<%=rejectConnName%>.errorMessage = e.getMessage() + " - Line: " + tos_count_<%=node.getUniqueName() %>;
 			            					<%
-									}
+			            			} %>
+			            			globalMap.put("<%=cid %>_ERROR_MESSAGE", e.getMessage());
+										<%
 			        					} 
 			        					%>
 			    					}
@@ -698,8 +705,7 @@
 						IMetadataColumn column1 =metadata.getListColumns().get(colNo);
 						if("id_Dynamic".equals(column1.getTalendType())) {
 					%>
-    						<%=dynamicName%>.clearColumnValues();
-    						<%=targetConnName %>.<%=column1.getLabel() %> = <%=dynamicName%>;
+    						<%=targetConnName %>.<%=column1.getLabel() %> = <%=dynamicName%>.copyMetadata();
 					<%
 						} else {
 					%>
@@ -867,17 +873,16 @@
 								%>
 								    dynamic_column_count_<%=cid%> = <%=dynamicName%>.getColumnCount();
 									if(dynamic_column_count_<%=cid%> > 0) {
-										<%=dynamicName%>.clearColumnValues();
+										<%=targetConnName %>.<%=column.getLabel() %> = <%=dynamicName%>.copyMetadata();
 									}
 									int fieldCount = <%=sourceValueName%>.length;
 									for (int i = 0; i < dynamic_column_count_<%=cid%>; i++) {
 										if ((<%=dynamic_index%>+i) < fieldCount) {
-											<%=dynamicName%>.addColumnValue(<%=sourceValueName%>[<%=dynamic_index%>+i]);
+											<%=targetConnName %>.<%=column.getLabel() %>.addColumnValue(<%=sourceValueName%>[<%=dynamic_index%>+i]);
 										} else {
-											<%=dynamicName%>.addColumnValue("");
+											<%=targetConnName %>.<%=column.getLabel() %>.addColumnValue("");
 										}
 									}
-									<%=targetConnName %>.<%=column.getLabel() %> = <%=dynamicName%>;
 								<%
 								}
 							}
@@ -1076,6 +1081,7 @@
 									log.error("<%=cid%> - " + e.getMessage());
 								<%}%>
 								System.err.println(e.getMessage());
+								globalMap.put("<%=cid %>_ERROR_MESSAGE", e.getMessage());
 							<% } %>
 	        			}
 	        			java.util.zip.ZipEntry entry_<%=cid %> = null;
@@ -1091,6 +1097,7 @@
 										log.error("<%=cid%> - " + e.getMessage());
 									<%}%>
 									System.err.println(e.getMessage());
+									globalMap.put("<%=cid %>_ERROR_MESSAGE", e.getMessage());
 									break;
 								<% } %>
 	        				}
@@ -1118,8 +1125,7 @@
 							%>
 								csvReader<%=cid %>=new com.talend.csv.CSVReader((java.io.InputStream)filename_<%=cid %>, fieldSeparator_<%=cid %>[0], <%=encoding %>);
 							}else{
-								csvReader<%=cid %>=new com.talend.csv.CSVReader(new java.io.BufferedReader(new java.io.InputStreamReader(
-		                		new java.io.FileInputStream(String.valueOf(filename_<%=cid %>)),<%=encoding %>)), fieldSeparator_<%=cid %>[0]);
+								csvReader<%=cid %>=new com.talend.csv.CSVReader(String.valueOf(filename_<%=cid %>),fieldSeparator_<%=cid %>[0], <%=encoding %>);
 		        			}
 					<%
 					}
@@ -1223,8 +1229,7 @@
 				        if(filename_<%=cid %> instanceof java.io.InputStream){
 				 			csvReader<%=cid %>=new com.talend.csv.CSVReader((java.io.InputStream)filename_<%=cid %>, fieldSeparator_<%=cid %>[0], <%=encoding %>);
 		        		}else{
-				 			csvReader<%=cid %>=new com.talend.csv.CSVReader(new java.io.BufferedReader(new java.io.InputStreamReader(
-				          	new java.io.FileInputStream(String.valueOf(filename_<%=cid %>)),<%=encoding %>)), fieldSeparator_<%=cid %>[0]);
+							csvReader<%=cid %>=new com.talend.csv.CSVReader(String.valueOf(filename_<%=cid %>),fieldSeparator_<%=cid %>[0], <%=encoding %>);
 						}
 						csvReader<%=cid %>.setTrimWhitespace(false);
 						if ( (rowSeparator_<%=cid %>[0] != '\n') && (rowSeparator_<%=cid %>[0] != '\r') )	
@@ -1285,6 +1290,7 @@
 							log.error("<%=cid%> - " +e.getMessage());
 						<%}%>
 						System.err.println(e.getMessage());
+						globalMap.put("<%=cid %>_ERROR_MESSAGE", e.getMessage());
 					<% } %>
 	    		}//TD110 end
 	        
@@ -1295,7 +1301,7 @@
 	        		rowstate_<%=cid%>.reset();
 	        
 		        	row<%=cid %>=csvReader<%=cid %>.getValues();
-	        	
+		        	
 					<%
 	   				if(("true").equals(removeEmptyRow)){
 	   				%>
@@ -1388,7 +1394,9 @@
             							%>
             								<%=rejectConnName%>.errorMessage = e.getMessage() + " - Line: " + tos_count_<%=node.getUniqueName() %>;
             							<%
-            							}
+            							} %>
+            							globalMap.put("<%=cid %>_ERROR_MESSAGE", e.getMessage());
+            							<%
         							} 
         							%>
 	    						}

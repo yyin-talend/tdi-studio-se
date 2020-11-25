@@ -45,6 +45,8 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.osgi.framework.Bundle;
 import org.osgi.service.prefs.Preferences;
 import org.talend.commons.exception.ExceptionHandler;
+import org.talend.commons.utils.io.FilesUtils;
+import org.talend.commons.utils.workbench.resources.ResourceUtils;
 import org.talend.core.CorePlugin;
 import org.talend.core.GlobalServiceRegister;
 import org.talend.core.IESBService;
@@ -84,6 +86,7 @@ import org.talend.designer.core.ui.editor.process.Process;
 import org.talend.designer.maven.model.TalendMavenConstants;
 import org.talend.designer.maven.tools.AggregatorPomsHelper;
 import org.talend.designer.maven.tools.BuildCacheManager;
+import org.talend.designer.maven.tools.CodeM2CacheManager;
 import org.talend.designer.maven.tools.MavenPomSynchronizer;
 import org.talend.designer.maven.tools.ProjectPomManager;
 import org.talend.designer.maven.utils.PomIdsHelper;
@@ -103,7 +106,6 @@ import org.talend.repository.ProjectManager;
 import org.talend.repository.RepositoryWorkUnit;
 import org.talend.repository.constants.Log4jPrefsConstants;
 import org.talend.repository.ui.utils.Log4jPrefsSettingManager;
-import org.talend.utils.io.FilesUtils;
 
 /**
  * DOC amaumont class global comment. Detailled comment <br/>
@@ -242,14 +244,6 @@ public class DefaultRunProcessService implements IRunProcessService {
         if (GlobalServiceRegister.getDefault().isServiceRegistered(IESBMicroService.class)) {
             microService = GlobalServiceRegister.getDefault().getService(IESBMicroService.class);
 
-            if (ProcessorUtilities.isExportJobAsMicroService()) {
-                if (microService != null) {
-                    IProcessor processor = microService.createJavaProcessor(process, property, filenameFromLabel, false);
-                    if (processor != null) {
-                        return processor;
-                    }
-                }
-            }
             if (property != null && property.getAdditionalProperties() != null
                     && "REST_MS".equals(property.getAdditionalProperties().get(TalendProcessArgumentConstant.ARG_BUILD_TYPE))) {
                 if (microService != null) {
@@ -847,9 +841,13 @@ public class DefaultRunProcessService implements IRunProcessService {
      */
     @Override
     public void initializeRootPoms(IProgressMonitor monitor) {
+        if (isCIMode()) {
+            return;
+        }
         try {
             AggregatorPomsHelper helper = new AggregatorPomsHelper();
             helper.installRootPom(false);
+            // won't do for CI since all needed modules are already shared to Nexus
             AggregatorPomsHelper.updateAllCodesProjectNeededModules(monitor);
             List<ProjectReference> references = ProjectManager.getInstance().getCurrentProject().getProjectReferenceList(true);
             for (ProjectReference ref : references) {
@@ -873,10 +871,11 @@ public class DefaultRunProcessService implements IRunProcessService {
 
         // install ref codes project.
         IProgressMonitor monitor = new NullProgressMonitor();
-        installRefCodeProject(ERepositoryObjectType.ROUTINES, refHelper, monitor);
-
-        if (ProcessUtils.isRequiredBeans(null, refProject)) {
-            installRefCodeProject(ERepositoryObjectType.valueOf("BEANS"), refHelper, monitor); //$NON-NLS-1$
+        for (ERepositoryObjectType codeType : ERepositoryObjectType.getAllTypesOfCodes()) {
+            if (CodeM2CacheManager.needUpdateCodeProject(refProject, codeType)) {
+                installRefCodeProject(codeType, refHelper, monitor);
+                CodeM2CacheManager.updateCodeProjectCache(refProject, codeType);
+            }
         }
 
         deleteRefProjects(refProject, refHelper);
@@ -962,7 +961,7 @@ public class DefaultRunProcessService implements IRunProcessService {
             IFolder targetFolder = mainProject.getFolder(refPath.removeLastSegments(1));
 
             if (!targetFolder.exists()) {
-                targetFolder.create(true, false, progressMonitor);
+                ResourceUtils.createFolder(targetFolder);
             }
             if (codeFile.getLocation().removeLastSegments(1).equals(targetFolder.getLocation())) {
                 continue;
@@ -997,6 +996,11 @@ public class DefaultRunProcessService implements IRunProcessService {
     @Override
     public boolean isCIMode() {
         return ProcessorUtilities.isCIMode();
+    }
+
+    @Override
+    public boolean isExcludeDeletedItems(Property property) {
+        return PomIdsHelper.getIfExcludeDeletedItems(property);
     }
 
 }
