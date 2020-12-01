@@ -3766,6 +3766,70 @@ public class Process extends Element implements IProcess2, IGEFProcess, ILastVer
 
         return matchingNodes;
     }
+    
+    @SuppressWarnings("unchecked")
+    @Override
+    public boolean checkPresenceNodeOfType(String componentName) {
+        List<INode> generatingNodes = new ArrayList<INode>();
+
+        generatingNodes = (List<INode>) getGraphicalNodes();
+        if (checkPresenceNodeOfType(componentName, generatingNodes)) {
+            return true;
+        }
+
+        generatingNodes = (List<INode>) getGeneratingNodes();
+        if (checkPresenceNodeOfType(componentName, generatingNodes)) {
+            return true;
+        }
+
+        generatingNodes = getRealGraphicalNodesFromVirtrualNodes(generatingNodes);
+        if (checkPresenceNodeOfType(componentName, generatingNodes)) {
+            return true;
+        }
+        return false;
+    };
+    
+    private boolean checkPresenceNodeOfType(String componentName, List<INode> generatingNodes) {
+        if (componentName == null) {
+            return false;
+        }
+        for (INode node : new ArrayList<>(generatingNodes)) {
+            if (node.isActivate()) {
+                if (componentName.startsWith("FAMILY:")) { //$NON-NLS-1$
+                    String familly = componentName.substring("FAMILY:".length()); //$NON-NLS-1$
+                    if (node.getComponent().getOriginalFamilyName().startsWith(familly)) {
+                        return true;
+                    }
+                } else if (componentName.startsWith("REGEXP:")) { //$NON-NLS-1$
+                    Perl5Matcher matcher = new Perl5Matcher();
+                    Perl5Compiler compiler = new Perl5Compiler();
+                    Pattern pattern;
+
+                    String regexp = componentName.substring("REGEXP:".length()); //$NON-NLS-1$
+                    try {
+                        pattern = compiler.compile(regexp);
+                        if (matcher.matches(node.getComponent().getName(), pattern)) {
+                        	return true;
+                        }
+                    } catch (MalformedPatternException e) {
+                        throw new RuntimeException(e);
+                    }
+                } else if ((node.getComponent().getName() != null)) {
+                    if (node.getComponent().getName().compareTo(componentName) == 0) {
+                    	return true;
+                    } else if (node.getComponent() instanceof EmfComponent) {
+                        EmfComponent component = (EmfComponent) node.getComponent();
+                        String eqCompName = component.getEquivalent();
+                        if (componentName.equals(eqCompName)) {
+                        	return true;
+                        }
+                    }
+                }
+            }
+        }
+        
+        return false;
+    }
 
     private List<INode> getRealGraphicalNodesFromVirtrualNodes(List<INode> generatingNodes) {
         Set<INode> set = new HashSet<INode>();
