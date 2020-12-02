@@ -576,7 +576,7 @@ public class FileinToXmlProcess<K extends FileInputNode> extends RepositoryObjec
     }
     
     @Override
-    public boolean checkPresenceNodeOfType(String componentName) {
+    public boolean checkPresenceGraphicalNodeOfType(String componentName) {
         if ((inNode != null) && (inNode.getComponentName() != null) && (inNode.getComponentName().compareTo(componentName) == 0)) {
             return true;
         }
