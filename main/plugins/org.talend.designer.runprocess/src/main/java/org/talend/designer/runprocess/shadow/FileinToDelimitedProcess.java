@@ -616,7 +616,7 @@ public class FileinToDelimitedProcess<K extends FileInputNode> extends Repositor
     }
     
     @Override
-    public boolean checkPresenceNodeOfType(String componentName) {
+    public boolean checkPresenceGraphicalNodeOfType(String componentName) {
         if ((prejob != null) && (prejob.getComponentName() != null) && (prejob.getComponentName().compareTo(componentName) == 0)) {
             return true;
         }
