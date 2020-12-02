@@ -614,6 +614,25 @@ public class FileinToDelimitedProcess<K extends FileInputNode> extends Repositor
         }
         return matchingNodes;
     }
+    
+    @Override
+    public boolean checkPresenceNodeOfType(String componentName) {
+        if ((prejob != null) && (prejob.getComponentName() != null) && (prejob.getComponentName().compareTo(componentName) == 0)) {
+            return true;
+        }
+        if ((setProxy != null) && (setProxy.getComponentName() != null)
+                && (setProxy.getComponentName().compareTo(componentName) == 0)) {
+            return true;
+        }
+        if ((inNode != null) && (inNode.getComponentName() != null) && (inNode.getComponentName().compareTo(componentName) == 0)) {
+            return true;
+        }
+        if ((outNode != null) && (outNode.getComponentName() != null)
+                && (outNode.getComponentName().compareTo(componentName) == 0)) {
+            return true;
+        }
+        return false;
+    }
 
     @Override
     public boolean checkValidConnectionName(String connectionName, boolean checkExists) {
