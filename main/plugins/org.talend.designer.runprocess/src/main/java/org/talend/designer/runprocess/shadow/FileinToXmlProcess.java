@@ -574,6 +574,18 @@ public class FileinToXmlProcess<K extends FileInputNode> extends RepositoryObjec
         }
         return matchingNodes;
     }
+    
+    @Override
+    public boolean checkPresenceNodeOfType(String componentName) {
+        if ((inNode != null) && (inNode.getComponentName() != null) && (inNode.getComponentName().compareTo(componentName) == 0)) {
+            return true;
+        }
+        if ((outNode != null) && (outNode.getComponentName() != null)
+                && (outNode.getComponentName().compareTo(componentName) == 0)) {
+            return true;
+        }
+        return false;
+    }
 
     @Override
     public boolean checkValidConnectionName(String connectionName, boolean checkExists) {
