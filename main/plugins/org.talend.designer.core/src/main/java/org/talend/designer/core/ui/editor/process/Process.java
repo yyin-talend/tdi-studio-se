@@ -3769,21 +3769,8 @@ public class Process extends Element implements IProcess2, IGEFProcess, ILastVer
     
     @SuppressWarnings("unchecked")
     @Override
-    public boolean checkPresenceNodeOfType(String componentName) {
-        List<INode> generatingNodes = new ArrayList<INode>();
-
-        generatingNodes = (List<INode>) getGraphicalNodes();
-        if (checkPresenceNodeOfType(componentName, generatingNodes)) {
-            return true;
-        }
-
-        generatingNodes = (List<INode>) getGeneratingNodes();
-        if (checkPresenceNodeOfType(componentName, generatingNodes)) {
-            return true;
-        }
-
-        generatingNodes = getRealGraphicalNodesFromVirtrualNodes(generatingNodes);
-        if (checkPresenceNodeOfType(componentName, generatingNodes)) {
+    public boolean checkPresenceGraphicalNodeOfType(String componentName) {
+        if (checkPresenceNodeOfType(componentName, (List<INode>) getGraphicalNodes())) {
             return true;
         }
         return false;
