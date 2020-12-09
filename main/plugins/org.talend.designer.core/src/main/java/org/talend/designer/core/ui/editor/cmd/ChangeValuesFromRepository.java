@@ -616,17 +616,21 @@ public class ChangeValuesFromRepository extends ChangeMetadataCommand {
                                         Map map = new HashMap();
                                         String driver = String.valueOf(((Map) value).get("drivers"));
                                         if (driver != null) {
-                                            MavenArtifact artifact = MavenUrlHelper
-                                                    .parseMvnUrl(TalendTextUtils.removeQuotes(driver));
-                                            if (artifact != null) {
-                                                driver = artifact.getFileName();
-                                            }
-                                            map.put("JAR_NAME", driver);
+                                            map.put("JAR_NAME", TalendTextUtils.removeQuotes(driver));
                                             newValue.add(map);
                                         }
                                     }
                                 }
                                 objectValue = newValue;
+                            }
+
+                            /**
+                             * For tCreateTable, several parameter have the same repository value
+                             * (e.g.DB_MYSQL_VERSION/DB_POSTGRE_VERSION/...=>DB_VERSION), avoid to set all...
+                             */
+                            if (EParameterName.DB_VERSION.getName().equals(param.getRepositoryValue())
+                                    && !param.isShow(elem.getElementParameters())) {
+                                continue;
                             }
 
                             elem.setPropertyValue(param.getName(), objectValue);

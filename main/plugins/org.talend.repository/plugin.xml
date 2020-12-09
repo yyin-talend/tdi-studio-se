@@ -3429,6 +3429,15 @@
        </projecttask>
        <projecttask
               beforeLogon="false"
+              breaks="7.3.0"
+              class="org.talend.repository.model.migration.SetDefaultPartSizeForTGSPutMigrationTask"
+              description="Set default value of part size for Google Storage Put component to 0"
+              id="org.talend.repository.model.migration.SetDefaultPartSizeForTGSPutMigrationTask"
+              name="SetDefaultPartSizeForTGSPutMigrationTask"
+              version="7.3.1">
+       </projecttask>
+       <projecttask
+              beforeLogon="false"
               breaks="7.2.0"
               class="org.talend.repository.model.migration.spark.SetGlobalTimestampOptionForPreviousVersions"
               description="set global timestamp option to true for older studio"
@@ -3452,7 +3461,43 @@
               description="update version to avoid compile errors from removed distribs"
               id="org.talend.repository.model.migration.spark.UpdateRemovedSparkVersion"
               name="UpdateRemovedSparkVersion"
-              version="7.3.1">                     
+              version="7.3.1">         
+       </projecttask>
+	     <projecttask
+               beforeLogon="false"
+               breaks="7.3.0"
+               class="org.talend.repository.model.migration.UncheckTrustAllMigrationTask"
+               description="Uncheck Trust all server in tFileFetch"
+               id="org.talend.repository.model.migration.UncheckTrustAllMigrationTask"
+               name="UncheckTrustAllMigrationTask"
+               version="7.3.1">
+       </projecttask>
+       <projecttask
+          beforeLogon="true"
+          breaks="7.3.0"
+          class="org.talend.repository.model.migration.RemoveSnapshotJarMigrationTask"
+          id="org.talend.repository.model.migration.RemoveSnapshotJarMigrationTask"
+          description="Regnerate all poms"
+          name="RemoveSnapshotJarMigrationTask"
+          version="7.3.1">
+       </projecttask>
+       <projecttask
+              beforeLogon="false"
+              breaks="7.3.0"
+              class="org.talend.repository.model.migration.ChangeELTPostgresDbVersionMigrationTask"
+              description="Change the tELTPostgresqlMap DB_VERSION to old version if DB_VERSION is not set"
+              id="org.talend.repository.model.migration.ChangeELTPostgresDbVersionMigrationTask"
+              name="ChangeELTPostgresDbVersionMigrationTask"
+              version="7.3.1">
+       </projecttask>
+       <projecttask
+               beforeLogon="false"
+               breaks="7.3.0"
+               class="org.talend.repository.model.migration.SpecialUpdateELTDefaultNameMigrationTask"
+               description="Update ELT default table name or schema name"
+               id="org.talend.repository.model.migration.SpecialUpdateELTDefaultNameMigrationTask"
+               name="SpecialUpdateELTDefaultNameMigrationTask"
+               version="7.3.1">
        </projecttask>
    </extension>
 

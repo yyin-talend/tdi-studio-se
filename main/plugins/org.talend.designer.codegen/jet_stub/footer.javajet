@@ -649,13 +649,15 @@
                 inContext = <%=className%>.class.getClassLoader().getResourceAsStream("config/contexts/" + contextStr + ".properties");
             }
             if (inContext != null) {
-                //defaultProps is in order to keep the original context value
-                if(context != null && context.isEmpty()) {
+                try {
+                    //defaultProps is in order to keep the original context value
+                    if(context != null && context.isEmpty()) {
 	                defaultProps.load(inContext);
 	                context = new ContextProperties(defaultProps);
+                    }
+                } finally {
+                    inContext.close();
                 }
-                
-                inContext.close();
             } else if (!isDefaultContext) {
                 //print info and job continue to run, for case: context_param is not empty.
                 System.err.println("Could not find the context " + contextStr);
@@ -1194,6 +1196,24 @@ if (execStat) {
     }
 %>
     int returnCode = 0;
+
+<%
+    if (isRunInMultiThread) {
+%>
+        Integer localErrorCode = (Integer)(((java.util.Map)threadLocal.get()).get("errorCode"));
+        String localStatus = (String)(((java.util.Map)threadLocal.get()).get("status"));
+        if (localErrorCode != null) {
+            if (errorCode == null || localErrorCode.compareTo(errorCode) > 0) {
+                   errorCode = localErrorCode;
+            }
+        }
+        if (localStatus != null && !status.equals("failure")){
+            status = localStatus;
+        }
+<%
+    }
+%>
+
     if(errorCode == null) {
          returnCode = status != null && status.equals("failure") ? 1 : 0;
     } else {
