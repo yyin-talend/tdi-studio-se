@@ -71,4 +71,9 @@ public class TaCoKitConst {
     public static final String MAVEN_INF = "MAVEN-INF"; //$NON-NLS-1$
 
     public static final String TALEND_INF = "TALEND-INF"; //$NON-NLS-1$
+
+    public static final String PREF_CACHE_COMPONENT_COORDINATES = PROP_COMPONENT;
+
+    public static final String PREF_CACHE_COMPONENT_REGISTRY = PROP_REGISTRY;
+
 }

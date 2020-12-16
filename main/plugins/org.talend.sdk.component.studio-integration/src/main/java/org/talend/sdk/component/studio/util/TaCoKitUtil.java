@@ -12,6 +12,7 @@
  */
 package org.talend.sdk.component.studio.util;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -33,6 +34,8 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.emf.common.util.EList;
+import org.eclipse.jface.preference.IPersistentPreferenceStore;
+import org.eclipse.jface.preference.IPreferenceStore;
 import org.talend.commons.utils.data.container.Container;
 import org.talend.commons.utils.system.EnvironmentUtils;
 import org.talend.core.model.components.ComponentCategory;
@@ -54,6 +57,7 @@ import org.talend.sdk.component.server.front.model.ConfigTypeNode;
 import org.talend.sdk.component.server.front.model.ConfigTypeNodes;
 import org.talend.sdk.component.studio.ComponentModel;
 import org.talend.sdk.component.studio.Lookups;
+import org.talend.sdk.component.studio.SdkComponentPlugin;
 import org.talend.sdk.component.studio.metadata.TaCoKitCache;
 import org.talend.sdk.component.studio.metadata.WizardRegistry;
 import org.talend.sdk.component.studio.metadata.model.TaCoKitConfigurationModel;
@@ -500,6 +504,94 @@ public class TaCoKitUtil {
         return components
                 .filter(ComponentModel.class::isInstance)
                 .map(ComponentModel.class::cast);
+    }
+
+    public static boolean isComponentsConfigChanged() throws Exception {
+        IPreferenceStore prefStore = SdkComponentPlugin.getDefault().getPreferenceStore();
+        String cachedCoordinatesStr = prefStore.getString(TaCoKitConst.PREF_CACHE_COMPONENT_COORDINATES);
+        String cachedRegistryStr = prefStore.getString(TaCoKitConst.PREF_CACHE_COMPONENT_REGISTRY);
+        if (StringUtils.isBlank(cachedCoordinatesStr) && StringUtils.isBlank(cachedRegistryStr)) {
+            return true;
+        }
+        final String EMPTY = "";
+        if (cachedCoordinatesStr == null) {
+            cachedCoordinatesStr = EMPTY;
+        }
+        String[] cachedCoordinatesArr = cachedCoordinatesStr.split(TaCoKitConst.PROP_COMPONENT_SEPARATOR);
+        Set<String> cachedComponents = new HashSet<>();
+        for (String coordinate : cachedCoordinatesArr) {
+            if (StringUtils.isNotBlank(coordinate)) {
+                cachedComponents.add(coordinate);
+            }
+        }
+        if (cachedRegistryStr == null) {
+            cachedRegistryStr = EMPTY;
+        }
+        String[] cachedRegistryArr = cachedRegistryStr.split(TaCoKitConst.PROP_COMPONENT_SEPARATOR);
+        for (String registry : cachedRegistryArr) {
+            if (StringUtils.isNotBlank(registry)) {
+                cachedComponents.add(registry);
+            }
+        }
+
+        String coordinatesStr = System.getProperty(TaCoKitConst.PROP_COMPONENT);
+        Properties componentRegistry = TaCoKitUtil.loadComponentRegistry();
+        if (StringUtils.isBlank(coordinatesStr) && (componentRegistry == null || componentRegistry.isEmpty())) {
+            return false;
+        }
+        if (coordinatesStr == null) {
+            coordinatesStr = EMPTY;
+        }
+        String[] coordinatesArr = coordinatesStr.split(TaCoKitConst.PROP_COMPONENT_SEPARATOR);
+        Set<String> installedComponents = new HashSet<>();
+        for (String coordinate : coordinatesArr) {
+            if (StringUtils.isNotBlank(coordinate)) {
+                installedComponents.add(coordinate);
+            }
+        }
+        if (componentRegistry != null) {
+            for (Object compObj : componentRegistry.values()) {
+                if (compObj != null) {
+                    String component = (String) compObj;
+                    if (StringUtils.isNotBlank(component)) {
+                        installedComponents.add(component);
+                    }
+                }
+            }
+        }
+        boolean equals = cachedComponents.size() == installedComponents.size()
+                && cachedComponents.containsAll(installedComponents);
+        return !equals;
+    }
+
+    public static void updateComponentConfigCache() throws Exception {
+        IPreferenceStore prefStore = SdkComponentPlugin.getDefault().getPreferenceStore();
+        prefStore.setValue(TaCoKitConst.PREF_CACHE_COMPONENT_COORDINATES, System.getProperty(TaCoKitConst.PROP_COMPONENT));
+        StringBuilder registryComponentsStrBuilder = new StringBuilder();
+        Properties loadComponentRegistry = loadComponentRegistry();
+        if (loadComponentRegistry != null) {
+            for (Object obj : loadComponentRegistry.values()) {
+                if (obj != null) {
+                    registryComponentsStrBuilder.append(obj.toString()).append(TaCoKitConst.PROP_COMPONENT_SEPARATOR);
+                }
+            }
+        }
+        prefStore.setValue(TaCoKitConst.PREF_CACHE_COMPONENT_REGISTRY, registryComponentsStrBuilder.toString());
+        if (prefStore instanceof IPersistentPreferenceStore && prefStore.needsSaving()) {
+            ((IPersistentPreferenceStore) prefStore).save();
+        }
+    }
+
+    public static Properties loadComponentRegistry() throws Exception {
+        String registryPath = System.getProperty(TaCoKitConst.PROP_REGISTRY);
+        if (StringUtils.isBlank(registryPath)) {
+            return null;
+        }
+        Properties prop = new Properties();
+        try (BufferedReader reader = Files.newBufferedReader(new File(registryPath).toPath())) {
+            prop.load(reader);
+        }
+        return prop;
     }
 
     /**

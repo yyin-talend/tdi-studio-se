@@ -34,18 +34,56 @@ import org.talend.updates.runtime.service.ITaCoKitUpdateService;
 
 public class TaCoKitService implements ITaCoKitService {
 
+    private final Object startLock = new Object();
+
     @Override
     public void start() throws Exception {
-        ServerManager.getInstance().start();
+        boolean isComponentsConfigChanged = true;
         try {
-            TaCoKitUtil.registAllTaCoKitRepositoryTypes();
+            isComponentsConfigChanged = TaCoKitUtil.isComponentsConfigChanged();
         } catch (Exception e) {
-            Exception ex = Lookups.manager().getLoadException();
-            if (ex == null) {
-                Lookups.manager().setLoadException(e);
-            }
             ExceptionHandler.process(e);
         }
+        if (isComponentsConfigChanged) {
+            startInner();
+        } else {
+            new Thread(new Runnable() {
+
+                @Override
+                public void run() {
+                    try {
+                        startInner();
+                    } catch (Exception e) {
+                        ExceptionHandler.process(e);
+                    }
+                }
+            }, "Starting TaCoKit in background...").start();
+        }
+    }
+
+    private void startInner() throws Exception {
+        if (isStarted()) {
+            return;
+        }
+        synchronized (startLock) {
+            if (!isStarted()) {
+                ServerManager.getInstance().start();
+                try {
+                    TaCoKitUtil.registAllTaCoKitRepositoryTypes();
+                } catch (Exception e) {
+                    Exception ex = Lookups.manager().getLoadException();
+                    if (ex == null) {
+                        Lookups.manager().setLoadException(e);
+                    }
+                    ExceptionHandler.process(e);
+                }
+            }
+        }
+    }
+
+    @Override
+    public void updateComponentsCache() throws Exception {
+        TaCoKitUtil.updateComponentConfigCache();
     }
 
     @Override
