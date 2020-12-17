@@ -29,9 +29,9 @@ public class UpdateCDPDistributionDropDown extends AbstractSparkJobMigrationTask
                 if (parameters != null) {
                     boolean modified = false;
                     EList<ElementParameterType> elementParameters = parameters.getElementParameter();
-
                     ElementParameterType sparkVersion = null;
                     ElementParameterType distribution = null;
+                    // Get useful parameters
                     for (ElementParameterType elementParameter : elementParameters) {
                         if ("SPARK_VERSION".equals(elementParameter.getName())) {
                             sparkVersion = elementParameter;
@@ -40,18 +40,16 @@ public class UpdateCDPDistributionDropDown extends AbstractSparkJobMigrationTask
                             distribution = elementParameter;
                         }
                     }
-
+                    // Move DISTRIBUTION parameter to CDP if still on CLOUDERA and version (SPARK_VERSION) is a CDP one
                     if (sparkVersion != null && distribution != null && sparkVersion.getValue().contains("CDP") && distribution.getValue().equals("CLOUDERA")) {
                         distribution.setValue("CDP");
                         modified = true;
                     }
-
                     if (modified) {
                         ProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
                         factory.save(item, true);
                         return ExecutionResult.SUCCESS_NO_ALERT;
                     }
-
                 }
             }
         } catch (PersistenceException e) {
