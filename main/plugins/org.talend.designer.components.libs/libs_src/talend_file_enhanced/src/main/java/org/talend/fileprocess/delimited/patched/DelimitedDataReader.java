@@ -19,7 +19,7 @@
 // Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 //
 // ============================================================================
-package org.talend.fileprocess.delimited;
+package org.talend.fileprocess.delimited.patched;
 
 import java.io.BufferedReader;
 import java.io.IOException;

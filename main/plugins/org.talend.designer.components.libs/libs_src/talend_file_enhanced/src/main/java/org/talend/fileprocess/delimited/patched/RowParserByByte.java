@@ -1,4 +1,4 @@
-package org.talend.fileprocess.delimited;
+package org.talend.fileprocess.delimited.patched;
 
 import java.io.BufferedInputStream;
 import java.io.File;
