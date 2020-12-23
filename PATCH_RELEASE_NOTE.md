@@ -31,7 +31,6 @@ This patch contains the following fixes:
 Consider the following requirements for your system:
 
 - Talend Studio 7.0.1 must be installed.
-- Installed Patch_20190218_TPS-2919_v1-7.0.1 in advance
 
 
 ## Installation
