@@ -5,12 +5,12 @@ product:
 - https://talend.poolparty.biz/coretaxonomy/23
 ---
 
-# TPS-3873
+# TPS-4614
 
 | Info             | Value |
 | ---------------- | ---------------- |
-| Patch Name       | Patch\_20200326_TPS-3873\_v1-7.0.1 |
-| Release Date     | 2020-03-26 |
+| Patch Name       | Patch\_20201225_TPS-4614\_v1-7.0.1 |
+| Release Date     | 2020-12-25 |
 | Target Version   | 20180411\_1414-V7.0.1 |
 | Product affected | Talend Studio |
 
@@ -24,7 +24,7 @@ This is a self-contained patch.
 
 This patch contains the following fixes:
 
-- TPS-3873 [7.0.1] tFileUnarchive : Option "Check the integrity before unzip" states file corrupted while zip file can be unzipped (TDI-41469)
+- TPS-4614 [7.0.1] COVEA unitary TPS request for expiring certificate issue (TUP-29525)
 
 ## Prerequisites
 
