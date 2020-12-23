@@ -57,13 +57,3 @@ Execute the following commands:
 2. initRemote {tac_url} -ul {TAC login username} -up {TAC login password}
 3. checkAndUpdate -tu {TAC login username} -tup {TAC login password}
 
-## Uninstallation
-Backup the Affected files list below. Uninstall the patch by restore the backup files.
-
-## Affected files for this patch
-
-The following files are installed by this patch:
-
-- {Talend\_Studio\_path}/plugins/org.talend.designer.components.localprovider\_7.0.1.20190213\_1315-patch/components/tFileArchive/tFileArchive\_java.xml
-- {Talend\_Studio\_path}/plugins/org.talend.designer.components.localprovider\_7.0.1.20190213\_1315-patch/components/tFileUnarchive/tFileUnarchive\_java.xml
-- {Talend\_Studio\_path}/plugins/org.talend.libraries.custom\_7.0.1.20180411\_1414/lib/checkArchive-1.1-20181130.jar
