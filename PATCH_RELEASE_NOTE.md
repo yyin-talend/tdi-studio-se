@@ -26,6 +26,10 @@ This patch contains the following fixes:
 
 - TPS-4614 [7.0.1] COVEA unitary TPS request for expiring certificate issue (TUP-29525)
 
+## Important note
+
+- You need to close Studio and delelte folder Studio_Installation_Folder/configuration/org.eclipse.osgi after install this patch.
+
 ## Prerequisites
 
 Consider the following requirements for your system:
