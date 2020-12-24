@@ -28,7 +28,7 @@ This patch contains the following fixes:
 
 ## Important note
 
-- You need to close Studio and delelte the folder Studio_Installation_Folder/configuration/org.eclipse.osgi after install this patch.
+- You need to close Studio and delete the folder Studio_Installation_Folder/configuration/org.eclipse.osgi after install this patch.
 
 ## Prerequisites
 
