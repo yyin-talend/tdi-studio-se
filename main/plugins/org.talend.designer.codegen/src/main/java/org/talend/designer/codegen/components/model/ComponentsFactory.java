@@ -338,9 +338,11 @@ public class ComponentsFactory implements IComponentsFactory {
 
     private void loadComponentsFromComponentsProviderExtension() {
         ComponentsProviderManager componentsProviderManager = ComponentsProviderManager.getInstance();
-        for (AbstractComponentsProvider componentsProvider : componentsProviderManager.getProviders()) {
-            loadComponents(componentsProvider);
-        }
+        // for (AbstractComponentsProvider componentsProvider : componentsProviderManager.getProviders()) {
+        // loadComponents(componentsProvider);
+        // }
+        ComponentsLoader.getInstance().loadComponents(componentsProviderManager.getProviders(), componentList,
+                customComponentList, userComponentList, skeletonList, componentToProviderMap);
     }
 
     private void loadComponents(AbstractComponentsProvider componentsProvider) {

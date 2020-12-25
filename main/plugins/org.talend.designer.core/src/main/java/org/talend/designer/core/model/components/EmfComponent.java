@@ -279,9 +279,9 @@ public class EmfComponent extends AbstractBasicComponent {
         if (!isAlreadyLoad) {
             info = ComponentCacheFactory.eINSTANCE.createComponentInfo();
             load();
+            setImportTypes();
             getOriginalFamilyName();
             getPluginExtension();
-            getModulesNeeded(null);
             isTechnical();
             getVersion();
             getPluginDependencies();
@@ -3231,6 +3231,15 @@ public class EmfComponent extends AbstractBasicComponent {
         return getModulesNeeded(null);
     }
 
+    private void setImportTypes() {
+        IMPORTSType imports = compType.getCODEGENERATION().getIMPORTS();
+        List<IMPORTType> importTypes = new ArrayList<IMPORTType>();
+        if (imports != null) {
+            importTypes.addAll(ImportModuleManager.getInstance().getImportTypes(imports));
+            info.getImportType().addAll(importTypes);
+        }
+    }
+
     @Override
     public List<ModuleNeeded> getModulesNeeded(INode node) {
         if (componentImportNeedsList != null && componentImportNeedsList.size() > 0) {
@@ -3247,13 +3256,11 @@ public class EmfComponent extends AbstractBasicComponent {
         List<String> moduleNames = new ArrayList<String>();
         if (!isAlreadyLoad) {
             IMPORTSType imports = compType.getCODEGENERATION().getIMPORTS();
-            List<IMPORTType> importTypes = new ArrayList<IMPORTType>();
+            List<IMPORTType> importTypes = info.getImportType();
             if (imports != null) {
-                importTypes.addAll(ImportModuleManager.getInstance().getImportTypes(imports));
                 for (IMPORTType importType : importTypes) {
                     ModulesNeededProvider.collectModuleNeeded(this.getName(), importType, componentImportNeedsList);
                 }
-                info.getImportType().addAll(importTypes);
                 List<String> componentList = info.getComponentNames();
                 for (IMultipleComponentManager multipleComponentManager : getMultipleComponentManagers()) {
                     for (IMultipleComponentItem multipleComponentItem : multipleComponentManager.getItemList()) {
@@ -4392,6 +4399,10 @@ public class EmfComponent extends AbstractBasicComponent {
             }
         }
         return super.isActiveDbColumns();
+    }
+
+    public void setSha1(String sha1) {
+        info.setSha1(sha1);
     }
 
 }
