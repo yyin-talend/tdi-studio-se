@@ -17,10 +17,7 @@ import java.io.FileFilter;
 import java.io.FileInputStream;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
 import java.util.concurrent.Callable;
 import java.util.concurrent.CompletionService;
 import java.util.concurrent.ConcurrentLinkedQueue;
@@ -40,12 +37,10 @@ import org.osgi.service.packageadmin.PackageAdmin;
 import org.talend.commons.exception.BusinessException;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.core.language.LanguageManager;
-import org.talend.core.model.component_cache.ComponentsCache;
+import org.talend.core.model.component_cache.ComponentInfo;
 import org.talend.core.model.components.AbstractComponentsProvider;
 import org.talend.core.model.components.ComponentCategory;
-import org.talend.core.model.components.ComponentManager;
 import org.talend.core.model.components.ComponentUtilities;
-import org.talend.core.model.components.IComponent;
 import org.talend.core.model.components.IComponentsFactory;
 import org.talend.core.model.components.filters.ComponentsFactoryProviderManager;
 import org.talend.core.model.components.filters.IComponentFactoryFilter;
@@ -59,6 +54,8 @@ import org.talend.designer.core.model.components.EmfComponent;
  */
 public class ComponentsLoader {
 
+    private static final Logger LOGGER = Logger.getLogger(ComponentsLoader.class);
+
     private static final ComponentsLoader INSTANCE = new ComponentsLoader();
 
     private ComponentsLoader() {
@@ -68,9 +65,9 @@ public class ComponentsLoader {
         return INSTANCE;
     }
 
-    public void loadComponents(List<AbstractComponentsProvider> providers, Set<IComponent> componentList,
-            HashSet<IComponent> customComponentList, HashSet<IComponent> userComponentList, ArrayList<String> skeletonList,
-            Map<IComponent, AbstractComponentsProvider> componentToProviderMap) {
+    public void loadComponents(List<AbstractComponentsProvider> providers, String installLocation) {
+
+        ComponentsMemoryCacheMgr.getInstance().loadComponentsFromMemoryCache(providers);
 
         // this is a disk heavy task
         int nThreads = Runtime.getRuntime().availableProcessors() * 2;
@@ -87,22 +84,23 @@ public class ComponentsLoader {
         }
 
         for (int i = 0; i < nThreads; i++) {
-            LoadComponentTask task = new LoadComponentTask(taskInputs, componentList, customComponentList, userComponentList,
-                    skeletonList, componentToProviderMap);
+            LoadComponentTask task = new LoadComponentTask(taskInputs);
             service.submit(task);
         }
 
-        // wait for all of task completed
+        // wait for all of tasks completed
         for (int i = 0; i < nThreads; i++) {
             try {
                 service.take();
             } catch (InterruptedException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
+                LOGGER.error(e);
             }
         }
 
+        // initiate shutdown
         WORKER_THREAD_POOL.shutdown();
+        // save cache
+        ComponentsMemoryCacheMgr.getInstance().persist();
     }
 
     private List<TaskInput> getTaskInputs(AbstractComponentsProvider provider) {
@@ -137,6 +135,72 @@ public class ComponentsLoader {
         return ret;
     }
 
+    public static void createEmfComponent(String name, ComponentInfo ci, AbstractComponentsProvider provider) {
+
+        // check cache
+        if (ComponentsMemoryCacheMgr.getInstance().containComponent(name, ci)) {
+            return;
+        }
+
+        EmfComponent currentComp = null;
+        try {
+            currentComp = new EmfComponent(ci.getUriString(), ci.getSourceBundleName(), name, ci.getPathSource(), ci.getOwner(),
+                    false, provider);
+            ComponentsMemoryCacheMgr.getInstance().update(name, currentComp.getComponentInfo());
+        } catch (BusinessException e) {
+            ExceptionHandler.process(e);
+            return;
+        }
+
+        boolean hiddenComponent = false;
+
+        Collection<IComponentFactoryFilter> filters = ComponentsFactoryProviderManager.getInstance().getProviders();
+        for (IComponentFactoryFilter filter : filters) {
+            if (!filter.isAvailable(currentComp.getName())) {
+                hiddenComponent = true;
+                break;
+            }
+        }
+
+        // if the component is not needed in the current branding,
+        // and that this one IS NOT a specific component for code generation
+        // just don't load it
+        if (hiddenComponent && !(currentComp.getOriginalFamilyName().contains("Technical") || currentComp.isTechnical())) {
+            return;
+        }
+
+        ComponentsMemoryCacheMgr.getInstance().putComponentsProvider(currentComp, provider);
+        // if the component is not needed in the current branding,
+        // and that this one IS a specific component for code generation,
+        // hide it
+        if (hiddenComponent && (currentComp.getOriginalFamilyName().contains("Technical") || currentComp.isTechnical())) {
+            currentComp.setVisible(false);
+            currentComp.setTechnical(true);
+        }
+        if (provider.getId().contains("Camel")) {
+            currentComp.setPaletteType(ComponentCategory.CATEGORY_4_CAMEL.getName());
+        } else {
+            currentComp.setPaletteType(currentComp.getType());
+        }
+
+        currentComp.setProvider(provider);
+
+        ComponentsMemoryCacheMgr.getInstance().addComponent(currentComp);
+    }
+
+    public static void createEmfComponent(int owner, String name, String pathName, String bundleName, String pathSource,
+            String sha1, AbstractComponentsProvider provider) {
+        ComponentInfo ci = EmfComponent.newComponentInfo();
+        ci.setOwner(owner);
+        ci.setPathSource(pathSource);
+        ci.setSourceBundleName(bundleName);
+        ci.setProviderClass(provider.getClass().getCanonicalName());
+        ci.setUriString(pathName);
+        ci.setSha1(sha1);
+
+        createEmfComponent(name, ci, provider);
+    }
+
     private static class TaskInput {
 
         AbstractComponentsProvider componentsProvider;
@@ -154,7 +218,7 @@ public class ComponentsLoader {
 
     private static class LoadComponentTask implements Callable<Boolean> {
 
-        private static Logger log = Logger.getLogger(LoadComponentTask.class);
+        private static Logger LOGGER = Logger.getLogger(LoadComponentTask.class);
 
         private static final String SKELETON_SUFFIX = ".skeleton"; //$NON-NLS-1$
 
@@ -164,25 +228,8 @@ public class ComponentsLoader {
 
         ConcurrentLinkedQueue<TaskInput> tis;
 
-        Set<IComponent> componentList;
-
-        HashSet<IComponent> customComponentList;
-
-        HashSet<IComponent> userComponentList;
-
-        ArrayList<String> skeletonList;
-
-        Map<IComponent, AbstractComponentsProvider> componentToProviderMap;
-
-        public LoadComponentTask(ConcurrentLinkedQueue<TaskInput> tis, Set<IComponent> componentList,
-                HashSet<IComponent> customComponentList, HashSet<IComponent> userComponentList, ArrayList<String> skeletonList,
-                Map<IComponent, AbstractComponentsProvider> componentToProviderMap) {
+        public LoadComponentTask(ConcurrentLinkedQueue<TaskInput> tis) {
             this.tis = tis;
-            this.componentList = componentList;
-            this.customComponentList = customComponentList;
-            this.userComponentList = userComponentList;
-            this.skeletonList = skeletonList;
-            this.componentToProviderMap = componentToProviderMap;
         }
 
         @Override
@@ -234,133 +281,67 @@ public class ComponentsLoader {
                 } else {
                     bundleName = ti.componentsProvider.getComponentsBundle();
                 }
-                ComponentsCache cache = ComponentManager.getComponentCache();
                 if (ti.dir != null) {
-                    if (skeletonList != null) {
-                        // get the skeleton files first, then XML config files later.
-                        File[] skeletonFiles = ti.dir.listFiles(skeletonFilter);
-                        if (skeletonFiles != null) {
-                            synchronized (skeletonList) {
-                                for (File file : skeletonFiles) {
-                                    skeletonList.add(file.getAbsolutePath()); // path
-                                }
+                    // get the skeleton files first, then XML config files later.
+                    File[] skeletonFiles = ti.dir.listFiles(skeletonFilter);
+                    if (skeletonFiles != null) {
+                        for (File file : skeletonFiles) {
+                            ComponentsMemoryCacheMgr.getInstance().addSkeleton(file.getAbsolutePath());
+                        }
+                    }
+
+                    try {
+                        File xmlMainFile = new File(ti.dir,
+                                ComponentFilesNaming.getInstance().getMainXMLFileName(ti.dir.getName(), getCodeLanguageSuffix()));
+                        if (!xmlMainFile.exists()) {
+                            // if not a component folder, ignore it.
+                            return;
+                        }
+
+                        String name = xmlMainFile.getParentFile().getName();
+
+                        String currentXmlSha1 = null;
+                        try (FileInputStream fis = new FileInputStream(xmlMainFile)) {
+                            currentXmlSha1 = DigestUtils.shaHex(fis);
+                        } catch (Exception e) {
+                            // nothing since exceptions are directly in the check bellow
+                        }
+
+                        ComponentFileChecker.checkComponentFolder(ti.dir, getCodeLanguageSuffix());
+                        String pathName = xmlMainFile.getAbsolutePath();
+
+                        String applicationPath = ComponentBundleToPath.getPathFromBundle(bundleName);
+
+                        // pathName = C:\myapp\plugins\myplugin\components\mycomponent\mycomponent.xml
+                        pathName = (new Path(pathName)).toPortableString();
+                        // pathName = C:/myapp/plugins/myplugin/components/mycomponent/mycomponent.xml
+                        pathName = pathName.replace(applicationPath, ""); //$NON-NLS-1$
+                        // pathName = /components/mycomponent/mycomponent.xml
+
+                        int owner = EmfComponent.OWNER_DEFAULT;
+                        if (isCustom) {
+                            owner |= EmfComponent.OWNER_CUSTOM;
+                        }
+
+                        if (ti.pathSource != null) {
+                            Path userComponent = new Path(ti.pathSource);
+                            Path templatePath = new Path(IComponentsFactory.COMPONENTS_INNER_FOLDER + File.separatorChar
+                                    + IComponentsFactory.EXTERNAL_COMPONENTS_INNER_FOLDER + File.separatorChar
+                                    + ComponentUtilities.getExtFolder(LoadComponentTask.OLD_COMPONENTS_USER_INNER_FOLDER));
+                            if (userComponent.equals(templatePath)) {
+                                owner |= EmfComponent.OWNER_USER;
                             }
                         }
 
-                        try {
-                            File xmlMainFile = new File(ti.dir, ComponentFilesNaming.getInstance()
-                                    .getMainXMLFileName(ti.dir.getName(), getCodeLanguageSuffix()));
-                            if (!xmlMainFile.exists()) {
-                                // if not a component folder, ignore it.
-                                return;
-                            }
-                            String currentXmlSha1 = null;
-                            try (FileInputStream fis = new FileInputStream(xmlMainFile)) {
-                                currentXmlSha1 = DigestUtils.shaHex(fis);
-                            } catch (Exception e) {
-                                // nothing since exceptions are directly in the check bellow
-                            }
+                        createEmfComponent(owner, name, pathName, bundleName, ti.pathSource, currentXmlSha1,
+                                ti.componentsProvider);
 
-                            ComponentFileChecker.checkComponentFolder(ti.dir, getCodeLanguageSuffix());
-                            String pathName = xmlMainFile.getAbsolutePath();
-
-                            String applicationPath = ComponentBundleToPath.getPathFromBundle(bundleName);
-
-                            // pathName = C:\myapp\plugins\myplugin\components\mycomponent\mycomponent.xml
-                            pathName = (new Path(pathName)).toPortableString();
-                            // pathName = C:/myapp/plugins/myplugin/components/mycomponent/mycomponent.xml
-                            pathName = pathName.replace(applicationPath, ""); //$NON-NLS-1$
-                            // pathName = /components/mycomponent/mycomponent.xml
-
-                            // if not already in memory, just load the component from cache.
-                            // if the component is already existing in cache and if it's the same, it won't reload all
-                            // (cf
-                            // flag: foundComponentIsSame)
-                            EmfComponent currentComp = new EmfComponent(pathName, bundleName,
-                                    xmlMainFile.getParentFile().getName(), ti.pathSource, cache, false, ti.componentsProvider);
-                            // force to call some functions to update the cache. (to improve)
-                            currentComp.isVisibleInComponentDefinition();
-                            currentComp.isTechnical();
-                            currentComp.getOriginalFamilyName();
-                            currentComp.getTranslatedFamilyName();
-                            currentComp.getPluginExtension();
-                            currentComp.getVersion();
-                            currentComp.getModulesNeeded(null);
-                            currentComp.getPluginDependencies();
-                            currentComp.setSha1(currentXmlSha1);
-                            // end of force cache update.
-                            ComponentManager.setModified(true); // this will force to save the cache later.
-
-                            boolean hiddenComponent = false;
-
-                            Collection<IComponentFactoryFilter> filters = ComponentsFactoryProviderManager.getInstance()
-                                    .getProviders();
-                            for (IComponentFactoryFilter filter : filters) {
-                                if (!filter.isAvailable(currentComp.getName())) {
-                                    hiddenComponent = true;
-                                    break;
-                                }
-                            }
-
-                            // if the component is not needed in the current branding,
-                            // and that this one IS NOT a specific component for code generation
-                            // just don't load it
-                            if (hiddenComponent && !(currentComp.getOriginalFamilyName().contains("Technical")
-                                    || currentComp.isTechnical())) {
-                                return;
-                            }
-
-                            synchronized (componentToProviderMap) {
-                                componentToProviderMap.put(currentComp, ti.componentsProvider);
-                            }
-                            // if the component is not needed in the current branding,
-                            // and that this one IS a specific component for code generation,
-                            // hide it
-                            if (hiddenComponent
-                                    && (currentComp.getOriginalFamilyName().contains("Technical") || currentComp.isTechnical())) {
-                                currentComp.setVisible(false);
-                                currentComp.setTechnical(true);
-                            }
-                            if (ti.componentsProvider.getId().contains("Camel")) {
-                                currentComp.setPaletteType(ComponentCategory.CATEGORY_4_CAMEL.getName());
-                            } else {
-                                currentComp.setPaletteType(currentComp.getType());
-                            }
-
-                            currentComp.setProvider(ti.componentsProvider);
-
-                            synchronized (componentList) {
-                                if (componentList.contains(currentComp)) {
-                                    log.warn("Component " + currentComp.getName() + " already exists. Cannot load user version.");
-                                    return;
-                                }
-                                componentList.add(currentComp);
-                            }
-
-                            if (isCustom) {
-                                synchronized (customComponentList) {
-                                    customComponentList.add(currentComp);
-                                }
-                            }
-                            if (ti.pathSource != null) {
-                                Path userComponent = new Path(ti.pathSource);
-                                Path templatePath = new Path(IComponentsFactory.COMPONENTS_INNER_FOLDER + File.separatorChar
-                                        + IComponentsFactory.EXTERNAL_COMPONENTS_INNER_FOLDER + File.separatorChar
-                                        + ComponentUtilities.getExtFolder(OLD_COMPONENTS_USER_INNER_FOLDER));
-                                if (userComponent.equals(templatePath)) {
-                                    synchronized (userComponentList) {
-                                        userComponentList.add(currentComp);
-                                    }
-                                }
-                            }
-
-                        } catch (MissingMainXMLComponentFileException e) {
-                            log.trace(ti.dir.getName() + " is not a " + getCodeLanguageSuffix() + " component", e); //$NON-NLS-1$ //$NON-NLS-2$
-                        } catch (BusinessException e) {
-                            BusinessException ex = new BusinessException("Cannot load component \"" + ti.dir.getName() + "\": " //$NON-NLS-1$ //$NON-NLS-2$
-                                    + e.getMessage(), e);
-                            ExceptionHandler.process(ex, Level.ERROR);
-                        }
+                    } catch (MissingMainXMLComponentFileException e) {
+                        LOGGER.trace(ti.dir.getName() + " is not a " + getCodeLanguageSuffix() + " component", e); //$NON-NLS-1$ //$NON-NLS-2$
+                    } catch (BusinessException e) {
+                        BusinessException ex = new BusinessException("Cannot load component \"" + ti.dir.getName() + "\": " //$NON-NLS-1$ //$NON-NLS-2$
+                                + e.getMessage(), e);
+                        ExceptionHandler.process(ex, Level.ERROR);
                     }
                 }
             }

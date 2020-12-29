@@ -30,8 +30,8 @@ import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.Set;
 
-import org.apache.commons.lang.ArrayUtils;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.ArrayUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.IPath;
@@ -267,8 +267,23 @@ public class EmfComponent extends AbstractBasicComponent {
     private static SoftReference<Map> optionMapSoftRef;
 
     private AbstractComponentsProvider provider;
+    
+    public static final int OWNER_DEFAULT = 0b001;
 
-    public EmfComponent(String uriString, String bundleId, String name, String pathSource, ComponentsCache cache, boolean isload,
+    public static final int OWNER_CUSTOM = OWNER_DEFAULT << 1;
+
+    public static final int OWNER_USER = OWNER_DEFAULT << 2;
+
+    public static ComponentInfo newComponentInfo() {
+        return ComponentCacheFactory.eINSTANCE.createComponentInfo();
+    }
+
+    public EmfComponent(String name, ComponentInfo ci, boolean isload, AbstractComponentsProvider provider)
+            throws BusinessException {
+        this(ci.getUriString(), ci.getSourceBundleName(), name, ci.getPathSource(), ci.getOwner(), isload, provider);
+    }
+
+    public EmfComponent(String uriString, String bundleId, String name, String pathSource, int owner, boolean isload,
             AbstractComponentsProvider provider) throws BusinessException {
         this.uriString = uriString;
         this.name = name;
@@ -277,7 +292,7 @@ public class EmfComponent extends AbstractBasicComponent {
         this.isAlreadyLoad = isload;
         this.provider = provider;
         if (!isAlreadyLoad) {
-            info = ComponentCacheFactory.eINSTANCE.createComponentInfo();
+            info = newComponentInfo();
             load();
             setImportTypes();
             getOriginalFamilyName();
@@ -292,35 +307,9 @@ public class EmfComponent extends AbstractBasicComponent {
             info.setUriString(uriString);
             info.setSourceBundleName(bundleId);
             info.setPathSource(pathSource);
-
-            if (!cache.getComponentEntryMap().containsKey(getName())) {
-                cache.getComponentEntryMap().put(getName(), new BasicEList<ComponentInfo>());
-            }
-            EList<ComponentInfo> componentsInfo = cache.getComponentEntryMap().get(getName());
-            Iterator<ComponentInfo> it = componentsInfo.iterator();
-            while (it.hasNext()) {
-                ComponentInfo cInfo = it.next();
-                if (cInfo.getSourceBundleName().equals(bundleId)) {
-                    it.remove();
-                    // in case we already had in the cache the same component
-                    // just remove it to force to reload all from cache.
-                    break;
-                }
-            }
-            componentsInfo.add(info);
+            info.setOwner(owner);
+            info.setProviderClass(provider.getClass().getCanonicalName());
             isAlreadyLoad = true;
-        } else {
-            EList<ComponentInfo> componentsInfo = cache.getComponentEntryMap().get(getName());
-            for (ComponentInfo cInfo : componentsInfo) {
-                if (cInfo.getSourceBundleName().equals(bundleId)) {
-                    info = cInfo;
-                    break;
-                }
-            }
-            if (info == null) {
-                throw new BusinessException("Component " + name + " not found in cache for bundle " + bundleId //$NON-NLS-1$ //$NON-NLS-2$
-                        + ". Please reinitalize the cache."); //$NON-NLS-1$
-            }
             isLoaded = true;
         }
     }
@@ -4293,6 +4282,10 @@ public class EmfComponent extends AbstractBasicComponent {
         int result = super.hashCode();
         result = prime * result + ((this.name == null) ? 0 : this.name.hashCode());
         result = prime * result + ((this.getPaletteType() == null) ? 0 : this.getPaletteType().hashCode());
+        result = prime * result + ((this.info.getSha1() == null) ? 0 : this.info.getSha1().hashCode());
+        result = prime * result + ((this.info.getUriString() == null) ? 0 : this.info.getUriString().hashCode());
+        result = prime * result + ((this.info.getType() == null) ? 0 : this.info.getType().hashCode());
+        result = prime * result + ((this.info.getSourceBundleName() == null) ? 0 : this.info.getSourceBundleName().hashCode());
         return result;
     }
 
@@ -4327,6 +4320,23 @@ public class EmfComponent extends AbstractBasicComponent {
         } else if (!this.getPaletteType().equals(other.getPaletteType())) {
             return false;
         }
+
+        if (!StringUtils.equals(this.info.getSha1(), other.getComponentInfo().getSha1())) {
+            return false;
+        }
+
+        if (!StringUtils.equals(this.info.getUriString(), other.getComponentInfo().getUriString())) {
+            return false;
+        }
+
+        if (!StringUtils.equals(this.info.getType(), other.getComponentInfo().getType())) {
+            return false;
+        }
+
+        if (!StringUtils.equals(this.info.getSourceBundleName(), other.getComponentInfo().getSourceBundleName())) {
+            return false;
+        }
+
         return true;
     }
 
@@ -4405,4 +4415,7 @@ public class EmfComponent extends AbstractBasicComponent {
         info.setSha1(sha1);
     }
 
+    public ComponentInfo getComponentInfo() {
+        return this.info;
+    }
 }
