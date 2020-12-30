@@ -14,6 +14,7 @@ package org.talend.designer.codegen.components.model;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -98,6 +99,42 @@ public class ComponentsMemoryCacheMgr {
                 userComponentList.add(comp);
             }
         }
+    }
+
+    public void addComponents(Collection<IComponent> comps) {
+        componentList.addAll(comps);
+        for (IComponent comp : comps) {
+            if (comp instanceof EmfComponent) {
+                int owner = ((EmfComponent) comp).getComponentInfo().getOwner();
+                if ((owner & EmfComponent.OWNER_CUSTOM) > 0) {
+                    customComponentList.add(comp);
+                }
+                if ((owner & EmfComponent.OWNER_USER) > 0) {
+                    userComponentList.add(comp);
+                }
+            }
+        }
+    }
+
+    public void removeComponents(Collection<IComponent> comps) {
+        componentList.removeAll(comps);
+        for (IComponent comp : comps) {
+            if (comp instanceof EmfComponent) {
+                int owner = ((EmfComponent) comp).getComponentInfo().getOwner();
+                if ((owner & EmfComponent.OWNER_CUSTOM) > 0) {
+                    customComponentList.remove(comp);
+                }
+                if ((owner & EmfComponent.OWNER_USER) > 0) {
+                    userComponentList.remove(comp);
+                }
+            }
+        }
+    }
+
+    public void clearComponents() {
+        componentList.clear();
+        customComponentList.clear();
+        userComponentList.clear();
     }
 
     public void addUserComponent(IComponent comp) {

@@ -18,6 +18,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -483,12 +484,10 @@ public class ComponentsFactory implements IComponentsFactory {
      * @see org.talend.core.model.components.IComponentsFactory#getComponents()
      */
     @Override
+    @Deprecated
     public Set<IComponent> getComponents() {
-        wait4InitialiseFinish();
-        if (componentList == null) {
-            init(false);
-        }
-        return componentList;
+        // just return cache components
+        return ComponentsMemoryCacheMgr.getInstance().getComponents();
     }
 
     @Override
@@ -498,12 +497,12 @@ public class ComponentsFactory implements IComponentsFactory {
 
     @Override
     public Collection<IComponent> readComponents() {
-        Set<IComponent> components = getComponents();
-        Collection<IComponent> readComponents = null;
-        synchronized (components) {
-            readComponents = Arrays.asList(components.toArray(new IComponent[0]));
+        wait4InitialiseFinish();
+        if (componentList == null) {
+            init(false);
         }
-        return readComponents;
+        Set<IComponent> components = ComponentsMemoryCacheMgr.getInstance().getComponents();
+        return Collections.unmodifiableCollection(components);
     }
 
     @Override
@@ -689,6 +688,26 @@ public class ComponentsFactory implements IComponentsFactory {
     	String bundle = componentsProvider.getComponentsBundle();
     	return ComponentBundleToPath.getPathFromBundle(bundle);
     	
+    }
+
+    public void removeComponents(Collection<IComponent> comps) {
+        ComponentsMemoryCacheMgr.getInstance().removeComponents(comps);
+    }
+
+    public void addComponents(Collection<IComponent> comps) {
+        ComponentsMemoryCacheMgr.getInstance().addComponents(comps);
+    }
+
+    public void clearComponents() {
+        ComponentsMemoryCacheMgr.getInstance().clearComponents();
+    }
+
+    public void addComponent(IComponent comp) {
+        ComponentsMemoryCacheMgr.getInstance().addComponent(comp);
+    }
+
+    public boolean containComponent(IComponent comp) {
+        return ComponentsMemoryCacheMgr.getInstance().containComponent(comp);
     }
 
 }
