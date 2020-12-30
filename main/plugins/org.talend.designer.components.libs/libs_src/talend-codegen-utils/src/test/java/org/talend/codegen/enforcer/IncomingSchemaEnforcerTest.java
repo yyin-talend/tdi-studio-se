@@ -725,9 +725,7 @@ public class IncomingSchemaEnforcerTest {
         Schema expectedRuntimeSchema = Schema.createRecord("Record", null, null, false, fields);
 
         Schema designSchema = SchemaBuilder.builder().record("Record").prop(SchemaConstants.INCLUDE_ALL_FIELDS, "true")
-                .prop(DiSchemaConstants.TALEND6_DYNAMIC_COLUMN_POSITION, "0")
-                .fields()
-                .endRecord();
+                .prop(DiSchemaConstants.TALEND6_DYNAMIC_COLUMN_POSITION, "0").fields().endRecord();
 
         IncomingSchemaEnforcer enforcer = new IncomingSchemaEnforcer(designSchema);
         enforcer.addDynamicField("StringField", "id_String", null, null, null, "TEXT", false);
