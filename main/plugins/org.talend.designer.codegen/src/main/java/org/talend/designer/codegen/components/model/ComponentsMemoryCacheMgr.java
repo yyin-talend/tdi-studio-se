@@ -162,7 +162,7 @@ public class ComponentsMemoryCacheMgr {
     }
 
     public Set<IComponent> getComponents() {
-        return Collections.unmodifiableSet(componentList);
+        return componentList;
     }
 
     public Set<IComponent> getUserComponents() {
