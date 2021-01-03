@@ -79,13 +79,11 @@ public final class Expression {
 
     private static final String isShowPrefix = "isShow"; //$NON-NLS-1$
 
-    private static final java.util.regex.Pattern isShowFuncPattern = java.util.regex.Pattern
-            .compile(isShowPrefix + "\\[(\\w+)(\\.\\w+)*\\]"); //$NON-NLS-1$
+    private static final java.util.regex.Pattern isShowFuncPattern = java.util.regex.Pattern.compile(isShowPrefix + "\\[(\\w+)(\\.\\w+)*\\]"); //$NON-NLS-1$
 
     private static final String sparkVersionPrefix = "SPARK_"; //$NON-NLS-1$
 
-    private static final java.util.regex.Pattern sparkVersionPattern = java.util.regex.Pattern
-            .compile("(lt|le|gt|ge|eq|ne)\\s*'(" + sparkVersionPrefix + ".*)'"); //$NON-NLS-1$ //$NON-NLS-2$
+    private static final java.util.regex.Pattern sparkVersionPattern = java.util.regex.Pattern.compile("(lt|le|gt|ge|eq|ne)\\s*'(" + sparkVersionPrefix + ".*)'"); //$NON-NLS-1$ //$NON-NLS-2$
 
     private static Perl5Matcher conditionMatcher = new Perl5Matcher();
 
@@ -108,20 +106,22 @@ public final class Expression {
 
     private static final String CONTAINS = "CONTAINS"; //$NON-NLS-1$
 
+    private static final String IS_PLUGIN_LOADED = "IS_PLUGIN_LOADED"; //$NON-NLS-1$
+
     private Expression(String expressionString) {
         this.expressionString = expressionString;
     }
 
     private String getExpressionString() {
-        return this.expressionString;
+        return expressionString;
     }
 
     private void setExpressionString(String value) {
-        this.expressionString = value;
+        expressionString = value;
     }
 
     private String getCondition() {
-        return this.condition;
+        return condition;
     }
 
     private void setCondition(String condition) {
@@ -129,7 +129,7 @@ public final class Expression {
     }
 
     private Expression getLeftExpression() {
-        return this.leftExpression;
+        return leftExpression;
     }
 
     private void setLeftExpression(Expression leftExpression) {
@@ -137,7 +137,7 @@ public final class Expression {
     }
 
     private Expression getRightExpression() {
-        return this.rightExpression;
+        return rightExpression;
     }
 
     private void setRightExpression(Expression rightExpression) {
@@ -145,19 +145,18 @@ public final class Expression {
     }
 
     private boolean isValid() {
-        return this.valid;
+        return valid;
     }
 
     private void setValid(boolean value) {
-        this.valid = value;
+        valid = value;
     }
 
     public static boolean evaluate(final String string, List<? extends IElementParameter> listParam) {
         return evaluate(string, listParam, null);
     }
 
-    public static boolean evaluate(final String string, List<? extends IElementParameter> listParam,
-            ElementParameter curParam) {
+    public static boolean evaluate(final String string, List<? extends IElementParameter> listParam, ElementParameter curParam) {
         if (Boolean.FALSE.toString().equals(string)) {
             return false;
         }
@@ -230,7 +229,7 @@ public final class Expression {
             // like: <empty> / A / , / B / , / C / <empty>
             if ("SCHEMA".equals(parameterName) && variableToTest.contains("DB_TYPE")) { //$NON-NLS-1$ //$NON-NLS-2$
                 IElement element = currentParam.getElement();
-                if (element == null || (!(element instanceof INode))) {
+                if ((element == null) || (!(element instanceof INode))) {
                     throwUnsupportedExpression(simpleExpression, currentParam);
                     return false;
                 }
@@ -241,7 +240,7 @@ public final class Expression {
                     }
                     for (IMetadataTable table : node.getMetadataList()) {
                         for (IMetadataColumn column : table.getListColumns()) {
-                            if (column.getType() != null && column.getType().equals(value)) {
+                            if ((column.getType() != null) && column.getType().equals(value)) {
                                 return true;
                             }
                         }
@@ -253,7 +252,7 @@ public final class Expression {
                     for (Map<String, Object> line : allLines) {
                         // for each line, check if the column we want have one of the value defined in the "IN".
                         Object o = line.get(variableToTest);
-                        if (o != null && (o instanceof String)) {
+                        if ((o != null) && (o instanceof String)) {
                             String currentValue = (String) o;
                             for (String value : values) {
                                 if (value.isEmpty() || value.trim().equals(",")) { //$NON-NLS-1$
@@ -275,7 +274,7 @@ public final class Expression {
     }
 
     private static void throwUnsupportedExpression(String simpleExpression, IElementParameter currentParam) {
-        if (currentParam != null && currentParam.getElement() != null) {
+        if ((currentParam != null) && (currentParam.getElement() != null)) {
             ExceptionHandler.process(new Exception("Element: '" + currentParam.getElement().getElementName() //$NON-NLS-1$
                     + "' does not support expression '" + simpleExpression + "'")); //$NON-NLS-1$ //$NON-NLS-2$
         } else {
@@ -283,8 +282,7 @@ public final class Expression {
         }
     }
 
-    private static boolean evaluateSimpleExpression(String simpleExpression,
-            List<? extends IElementParameter> listParam, ElementParameter currentParam) {
+    private static boolean evaluateSimpleExpression(String simpleExpression, List<? extends IElementParameter> listParam, ElementParameter currentParam) {
         boolean showParameter = false;
         String test = null;
         if (simpleExpression.contains(EQUALS)) {
@@ -304,14 +302,17 @@ public final class Expression {
         if ((simpleExpression.contains("DISTRIB["))) { //$NON-NLS-1$
             return evaluateDistrib(simpleExpression, listParam, currentParam);
         }
-        if (simpleExpression.contains("SPARK_VERSION[") || simpleExpression.contains("SPARK_LOCAL_VERSION[")) { //$NON-NLS-1$
+        if (simpleExpression.contains("SPARK_VERSION[") || simpleExpression.contains("SPARK_LOCAL_VERSION[")) { //$NON-NLS-1$ //$NON-NLS-2$
             return evaluateSparkVersion(simpleExpression, listParam, currentParam);
         }
-        
-        if ((simpleExpression.contains(CONTAINS))) { //$NON-NLS-1$
+
+        if ((simpleExpression.contains(CONTAINS))) {
             return evaluateContains(simpleExpression, listParam);
         }
 
+        if (simpleExpression.contains(IS_PLUGIN_LOADED + "[")) { //$NON-NLS-1$
+            return evaluateIsPluginLoaded(simpleExpression);
+        }
         List<String> paraNames = getParaNamesFromIsShowFunc(simpleExpression);
         if (paraNames.size() > 0) {
             // Here only be one isShow() function since it has been already split.
@@ -323,7 +324,7 @@ public final class Expression {
                 return false;
             }
             for (IElementParameter param : listParam) {
-                if (paraName != null && paraName.equals(param.getName())) {
+                if ((paraName != null) && paraName.equals(param.getName())) {
                     if (simpleExpression.startsWith("!")) { //$NON-NLS-1$
                         return !param.isShow(param.getShowIf(), param.getNotShowIf(), listParam);
                     } else {
@@ -354,7 +355,7 @@ public final class Expression {
         /*
          * this is only for Current OS condition.
          */
-        if (variableName != null && EParameterName.CURRENT_OS.getName().equals(variableName)) {
+        if ((variableName != null) && EParameterName.CURRENT_OS.getName().equals(variableName)) {
             if (variableValue != null) {
                 if (EQUALS.endsWith(test)) {
                     return checkCurrentOS(variableValue);
@@ -402,10 +403,10 @@ public final class Expression {
         if ((variableName != null) && (variableValue != null)) {
             if (varNames[0].equals("#LINK@NODE")) { //$NON-NLS-1$
                 INode node = null;
-                if (currentParam != null && currentParam.getElement() instanceof INode) {
+                if ((currentParam != null) && (currentParam.getElement() instanceof INode)) {
                     node = (INode) currentParam.getElement();
                 } else if (currentParam == null) {
-                    if (listParam != null && listParam.size() > 0) {
+                    if ((listParam != null) && (listParam.size() > 0)) {
                         IElement element = listParam.get(0).getElement();
                         if (element instanceof INode) {
                             node = (INode) element;
@@ -415,7 +416,7 @@ public final class Expression {
                 if (node != null) {
                     String relatedNodeName = ElementParameterParser.getValue(node, "__" + varNames[1] + "__"); //$NON-NLS-1$ //$NON-NLS-2$
                     // if relatedNodeName is empty, maybe means this property have not been setted
-                    if (relatedNodeName != null && !relatedNodeName.trim().isEmpty()) {
+                    if ((relatedNodeName != null) && !relatedNodeName.trim().isEmpty()) {
                         List<? extends INode> generatingNodes = node.getProcess().getGeneratingNodes();
                         for (INode aNode : generatingNodes) {
                             if (aNode.getUniqueName().equals(relatedNodeName)) {
@@ -434,11 +435,11 @@ public final class Expression {
              * TESB-6240 GangLiu Test the connection configuration.
              */
             else if ("#LINK@CONNECTOR".equals(varNames[0])) { //$NON-NLS-1$
-                if (listParam != null && listParam.size() > 0) {
+                if ((listParam != null) && (listParam.size() > 0)) {
                     IElement element = listParam.get(0).getElement();
-                    if (element != null && element instanceof INode) {
+                    if ((element != null) && (element instanceof INode)) {
                         INode node = (INode) element;
-                        if (varNames.length > 2 && varNames[1] != null && varNames[2] != null) {
+                        if ((varNames.length > 2) && (varNames[1] != null) && (varNames[2] != null)) {
                             // read in/out connection type accounts
                             List<? extends IConnection> connections = new ArrayList<IConnection>();
                             if ("IN".equals(varNames[1]) || "OUT".equals(varNames[1])) { //$NON-NLS-1$ //$NON-NLS-2$
@@ -485,9 +486,9 @@ public final class Expression {
                 return false;
             } // End of TESB-6240
             else if ("#NODE@IN".equals(varNames[0])) { //$NON-NLS-1$
-                if (listParam != null && listParam.size() > 0) {
+                if ((listParam != null) && (listParam.size() > 0)) {
                     IElement element = listParam.get(0).getElement();
-                    if (element != null && element instanceof IConnection) {
+                    if ((element != null) && (element instanceof IConnection)) {
                         INode sourceNode = ((IConnection) element).getSource();
                         // change from: #NODE@IN.SUBTREE_START == 'false'
                         // to: SUBTREE_START == 'false'
@@ -496,9 +497,9 @@ public final class Expression {
                     }
                 }
             } else if ("#NODE@OUT".equals(varNames[0])) { //$NON-NLS-1$
-                if (listParam != null && listParam.size() > 0) {
+                if ((listParam != null) && (listParam.size() > 0)) {
                     IElement element = listParam.get(0).getElement();
-                    if (element != null && element instanceof IConnection) {
+                    if ((element != null) && (element instanceof IConnection)) {
                         INode sourceNode = ((IConnection) element).getTarget();
                         // change from: #NODE@OUT.END_OF_FLOW == 'false'
                         // to: END_OF_FLOW == 'false'
@@ -548,7 +549,7 @@ public final class Expression {
                                         columnName = (String) obj;
                                     } else if (obj instanceof Integer) {
                                         int index = (Integer) obj;
-                                        if (index < testedParameter.getListItemsDisplayName().length && index >= 0) {
+                                        if ((index < testedParameter.getListItemsDisplayName().length) && (index >= 0)) {
                                             columnName = testedParameter.getListItemsDisplayName()[(Integer) obj];
                                         }
                                     }
@@ -605,17 +606,13 @@ public final class Expression {
                                         if (baseColumn != null) {
                                             switch (LanguageManager.getCurrentLanguage()) {
                                             case JAVA:
-                                                value =
-                                                        JavaTypesManager.getTypeToGenerate(baseColumn.getTalendType(),
-                                                                baseColumn.isNullable());
+                                                value = JavaTypesManager.getTypeToGenerate(baseColumn.getTalendType(), baseColumn.isNullable());
                                                 // PARTICULAR_SURVIVORSHIP and SURVIVORSHIP_JOIN_KEY are the table names
                                                 // which will use the filter
-                                                IElementParameter filterParameter =
-                                                        node.getElementParameter(param.getName() + "_FILTER_PARAMETER"); //$NON-NLS-1$
-                                                if (filterParameter != null
-                                                        && "true".equals(filterParameter.getValue().toString()) //$NON-NLS-1$
-                                                        // Number is from DefaultSurvivorShipDataTypeEnum in
-                                                        // record.linkage plugin
+                                                IElementParameter filterParameter = node.getElementParameter(param.getName() + "_FILTER_PARAMETER"); //$NON-NLS-1$
+                                                if ((filterParameter != null) && "true".equals(filterParameter.getValue().toString()) //$NON-NLS-1$
+                                                // Number is from DefaultSurvivorShipDataTypeEnum in
+                                                // record.linkage plugin
                                                         && "Number".equals(variableValue) //$NON-NLS-1$
                                                         && JavaTypesManager.isNumber(baseColumn.getTalendType())) {
                                                     value = variableValue;
@@ -633,17 +630,14 @@ public final class Expression {
                                 }
                             }
                         }
-                    } else if (param.getFieldType() != null
-                            && (param.getFieldType().equals(EParameterFieldType.PROPERTY_TYPE)
-                                    || param.getFieldType().equals(EParameterFieldType.SCHEMA_TYPE)
-                                    || param.getFieldType().equals(EParameterFieldType.SCHEMA_REFERENCE)
-                                    || param.getFieldType().equals(EParameterFieldType.QUERYSTORE_TYPE)
-                                    || param.getFieldType().equals(EParameterFieldType.ENCODING_TYPE))) {
+                    } else if ((param.getFieldType() != null) && (param.getFieldType().equals(EParameterFieldType.PROPERTY_TYPE) || param.getFieldType().equals(EParameterFieldType.SCHEMA_TYPE)
+                            || param.getFieldType().equals(EParameterFieldType.SCHEMA_REFERENCE) || param.getFieldType().equals(EParameterFieldType.QUERYSTORE_TYPE)
+                            || param.getFieldType().equals(EParameterFieldType.ENCODING_TYPE))) {
 
                         boolean child = false;
                         Map<String, IElementParameter> childParameters = param.getChildParameters();
 
-                        if ("PROPERTY".equals(param.getName()) || EParameterFieldType.PROPERTY_TYPE == param.getFieldType()) { //$NON-NLS-1$
+                        if ("PROPERTY".equals(param.getName()) || (EParameterFieldType.PROPERTY_TYPE == param.getFieldType())) { //$NON-NLS-1$
                             if (childParameters != null) {
                                 IElementParameter iElementParameter = childParameters.get("PROPERTY_TYPE"); //$NON-NLS-1$
                                 if (iElementParameter != null) {
@@ -657,7 +651,7 @@ public final class Expression {
                             }
                         }
 
-                        if (varNames.length > 1 && varNames[1] != null) {
+                        if ((varNames.length > 1) && (varNames[1] != null)) {
                             IElementParameter tempParam = childParameters.get(varNames[1]);
                             if (tempParam != null) {
                                 value = tempParam.getValue();
@@ -683,10 +677,10 @@ public final class Expression {
                             found = true;
                         } else if (testedParameter.getListItemsValue() instanceof Object[]) {
                             Object[] values = testedParameter.getListItemsValue();
-                            for (int i = 0; i < values.length && !found; i++) {
+                            for (int i = 0; (i < values.length) && !found; i++) {
                                 if (value.equals(values[i])) {
                                     String[] listItemsDisplayCodeName = testedParameter.getListItemsDisplayCodeName();
-                                    if(listItemsDisplayCodeName!=null) {
+                                    if (listItemsDisplayCodeName != null) {
                                         String variableCode = listItemsDisplayCodeName[i];
                                         if (variableCode.equals(variableValue)) {
                                             found = true;
@@ -715,15 +709,14 @@ public final class Expression {
                     break;
                 }
             }
-            if (currentParam != null && "INCOMING_LINK_TYPE".equals(variableName)) {//$NON-NLS-1$
+            if ((currentParam != null) && "INCOMING_LINK_TYPE".equals(variableName)) {//$NON-NLS-1$
                 IElement element = currentParam.getElement();
-                if (element != null && element instanceof INode) {
+                if ((element != null) && (element instanceof INode)) {
                     INode node = (INode) element;
-                    if (node.getComponent() != null && "tPigLoad".equals(node.getComponent().getName())) { //$NON-NLS-1$
+                    if ((node.getComponent() != null) && "tPigLoad".equals(node.getComponent().getName())) { //$NON-NLS-1$
                         List<IConnection> connectionsInputs = (List<IConnection>) node.getIncomingConnections();
                         for (IConnection connection : connectionsInputs) {
-                            if (connection.isActivate()
-                                    && connection.getLineStyle().hasConnectionCategory(IConnectionCategory.MAIN)
+                            if (connection.isActivate() && connection.getLineStyle().hasConnectionCategory(IConnectionCategory.MAIN)
                                     && variableValue.toUpperCase().equals(connection.getConnectorName())) {
                                 showParameter = true;
                             }
@@ -735,15 +728,14 @@ public final class Expression {
         return showParameter;
     }
 
-    private static INode retrieveNodeElementFromParameter(ElementParameter currentParam,
-            List<? extends IElementParameter> listParam) {
-        if (currentParam != null && currentParam.getElement() instanceof INode) {
+    private static INode retrieveNodeElementFromParameter(ElementParameter currentParam, List<? extends IElementParameter> listParam) {
+        if ((currentParam != null) && (currentParam.getElement() instanceof INode)) {
             return (INode) currentParam.getElement();
-        } else if (currentParam != null && currentParam.getElement() instanceof Process) {
-            List<INode> sparkConfiguration = ((Process)currentParam.getElement()).getNodesOfType("tSparkConfiguration");
+        } else if ((currentParam != null) && (currentParam.getElement() instanceof Process)) {
+            List<INode> sparkConfiguration = ((Process) currentParam.getElement()).getNodesOfType("tSparkConfiguration"); //$NON-NLS-1$
             return sparkConfiguration.size() > 0 ? (INode) sparkConfiguration.get(0) : null;
         } else if (currentParam == null) {
-            if (listParam != null && listParam.size() > 0) {
+            if ((listParam != null) && (listParam.size() > 0)) {
                 IElement element = listParam.get(0).getElement();
                 if (element instanceof INode) {
                     return (INode) element;
@@ -757,15 +749,13 @@ public final class Expression {
         return parameter.replace(parameter.split("\\.")[0] + "." + parameter.split("\\.")[1] + ".", ""); //$NON-NLS-1$ //$NON-NLS-2$//$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
     }
 
-    private static List<? extends IElementParameter> retrieveLinkedParameters(ElementParameter currentParam,
-            List<? extends IElementParameter> listParam, String distributionParam) {
+    private static List<? extends IElementParameter> retrieveLinkedParameters(ElementParameter currentParam, List<? extends IElementParameter> listParam, String distributionParam) {
         INode node = retrieveNodeElementFromParameter(currentParam, listParam);
 
         if (node != null) {
-            String relatedNodeName =
-                    ElementParameterParser.getValue(node, "__" + distributionParam.split("\\.")[1] + "__"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+            String relatedNodeName = ElementParameterParser.getValue(node, "__" + distributionParam.split("\\.")[1] + "__"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
             // if relatedNodeName is empty, maybe means this property have not been setted
-            if (relatedNodeName != null && !relatedNodeName.trim().isEmpty()) {
+            if ((relatedNodeName != null) && !relatedNodeName.trim().isEmpty()) {
                 for (INode aNode : node.getProcess().getGeneratingNodes()) {
                     if (aNode.getUniqueName().equals(relatedNodeName)) {
                         return aNode.getElementParameters();
@@ -777,8 +767,7 @@ public final class Expression {
     }
 
     // should be private, but need to unitary tested
-    public static boolean evaluateDistrib(String simpleExpression, List<? extends IElementParameter> listParam,
-            ElementParameter currentParam) {
+    public static boolean evaluateDistrib(String simpleExpression, List<? extends IElementParameter> listParam, ElementParameter currentParam) {
         boolean positiveAssertion = !simpleExpression.trim().startsWith("!"); //$NON-NLS-1$
         String args = (simpleExpression.split("\\[")[1]).split("\\]")[0]; //$NON-NLS-1$ //$NON-NLS-2$
         String distributionParam = args.split(",")[0].trim(); //$NON-NLS-1$
@@ -823,8 +812,7 @@ public final class Expression {
     }
 
     // should be private, but need to unitary tested
-    public static boolean evaluateSparkVersion(String simpleExpression, List<? extends IElementParameter> listParam,
-            ElementParameter currentParam) {
+    public static boolean evaluateSparkVersion(String simpleExpression, List<? extends IElementParameter> listParam, ElementParameter currentParam) {
         if (!simpleExpression.contains(sparkVersionPrefix)) {
             return false;
         }
@@ -858,15 +846,14 @@ public final class Expression {
     /**
      * Execute a methode for a given distribution and version. This function must return a booelan
      *
-     * @param methodName the name of the method
+     * @param methodName   the name of the method
      * @param distribution the name of the distribution
-     * @param version the name of the version
+     * @param version      the name of the version
      * @positiveAssertion if we are on a positive assertion. A negative one will inverse the return of the method,
-     * except on an error case.
+     *                    except on an error case.
      * @return
      */
-    private static boolean executeBooleanMethod(String methodName, String distribution, String version,
-            boolean positiveAssertion) {
+    private static boolean executeBooleanMethod(String methodName, String distribution, String version, boolean positiveAssertion) {
         try {
             boolean ret = DistributionFactory.executeBooleanMethod(methodName, distribution, version);
             return positiveAssertion ? ret : !ret;
@@ -879,7 +866,7 @@ public final class Expression {
 
     private static List<String> getParaNamesFromIsShowFunc(String expr) {
         List<String> paraNames = new ArrayList<String>();
-        if (expr == null || !expr.contains(isShowPrefix)) {
+        if ((expr == null) || !expr.contains(isShowPrefix)) {
             return paraNames;
         }
         Matcher matcher = isShowFuncPattern.matcher(expr);
@@ -893,8 +880,7 @@ public final class Expression {
         return paraNames;
     }
 
-    private static void checkIsShowLoop(String testParamName, String expression,
-            List<? extends IElementParameter> listParam, IElementParameter currentParam, List<String> testedParaNames)
+    private static void checkIsShowLoop(String testParamName, String expression, List<? extends IElementParameter> listParam, IElementParameter currentParam, List<String> testedParaNames)
             throws Exception {
         List<String> paraNames = testedParaNames;
         if (paraNames == null) {
@@ -914,14 +900,13 @@ public final class Expression {
                         + "\" bring an endless loop by parameter \"" + testParamName + "\" in the element \"" //$NON-NLS-1$ //$NON-NLS-2$
                         + currentParam.getElement().getElementName() + "\". Please check and amend it!"); //$NON-NLS-1$
             } else {
-                throw new Exception(
-                        "Expression \"" + expression + "\" bring an endless loop by parameter \"" + testParamName //$NON-NLS-1$ //$NON-NLS-2$
-                                + "\". Please check and amend it!"); //$NON-NLS-1$
+                throw new Exception("Expression \"" + expression + "\" bring an endless loop by parameter \"" + testParamName //$NON-NLS-1$ //$NON-NLS-2$
+                        + "\". Please check and amend it!"); //$NON-NLS-1$
             }
         } else {
             paraNames.add(testParamName);
             for (IElementParameter param : listParam) {
-                if (testParamName != null && testParamName.equals(param.getName())) {
+                if ((testParamName != null) && testParamName.equals(param.getName())) {
                     List<String> paramNames = getParaNamesFromIsShowFunc(param.getShowIf());
                     for (String paramName : paramNames) {
                         checkIsShowLoop(paramName, expression, listParam, currentParam, paraNames);
@@ -931,8 +916,7 @@ public final class Expression {
         }
     }
 
-    private static Expression evaluateExpression(Expression expression, List<? extends IElementParameter> listParam,
-            ElementParameter currentParam) {
+    private static Expression evaluateExpression(Expression expression, List<? extends IElementParameter> listParam, ElementParameter currentParam) {
         int indexBegining = 0, indexEnd;
         int expressionLevel = 0;
         String string = expression.getExpressionString();
@@ -940,7 +924,7 @@ public final class Expression {
 
         // if there's no braket then there should be only simple expression
         // or only one expression.
-        for (int i = 0; i < string.length() && !conditionFound; i++) {
+        for (int i = 0; (i < string.length()) && !conditionFound; i++) {
             if (string.charAt(i) == '(') {
                 if (expressionLevel == 0) {
                     indexBegining = i + 1;
@@ -1073,28 +1057,30 @@ public final class Expression {
         }
         return false;
     }
-    
+
     public static boolean evaluateContains(String simpleExpression, List<? extends IElementParameter> listParam) {
-        //Split to get param name and param value to look after
+        // Split to get param name and param value to look after
         String[] splitted = simpleExpression.split(CONTAINS);
         if (splitted.length != 2) {
             return false;
         }
         String paramName = splitted[0].trim();
         String paramValue = splitted[1].trim();
-        
-        //Look for the param name in list
-        IElementParameter param = listParam.stream()
-                .filter(p -> paramName.equals(p.getName()))
-                .findAny()
-                .orElse(null);
-        if (param == null || ! EParameterFieldType.TABLE.equals(param.getFieldType())) {
+
+        // Look for the param name in list
+        IElementParameter param = listParam.stream().filter(p -> paramName.equals(p.getName())).findAny().orElse(null);
+        if ((param == null) || !EParameterFieldType.TABLE.equals(param.getFieldType())) {
             return false;
         }
-        
+
         // Check if we can find paraValue among table lines
-        return ((List<Map<String, Object>>) param.getValue()).stream()
-                .anyMatch(line -> paramValue.equals(line.toString()));
-    }    
+        return ((List<Map<String, Object>>) param.getValue()).stream().anyMatch(line -> paramValue.equals(line.toString()));
+    }
+
+    public static boolean evaluateIsPluginLoaded(String simpleExpression) {
+        java.util.regex.Pattern pluginNamePattern = java.util.regex.Pattern.compile(IS_PLUGIN_LOADED + "\\[(.*)\\]"); //$NON-NLS-1$
+        Matcher m = pluginNamePattern.matcher(simpleExpression);
+        return m.find() ? PluginChecker.isPluginLoaded(m.group(1)) : false;
+    }
 
 }
