@@ -12,8 +12,8 @@
 // ============================================================================
 package org.talend.designer.dbmap.language.generation;
 
-import static java.util.Optional.*;
-import static java.util.stream.Collectors.*;
+import static java.util.Optional.ofNullable;
+import static java.util.stream.Collectors.toList;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -1613,7 +1613,7 @@ public abstract class DbGenerationManager {
         return false;
     }
 
-    private String getQuote(DbMapComponent component){
+    protected String getQuote(DbMapComponent component) {
         String quote = TalendQuoteUtils.QUOTATION_MARK;
         IElementParameter mappingPara = component.getElementParameter(EParameterName.MAPPING.getName());
         if(mappingPara == null){
