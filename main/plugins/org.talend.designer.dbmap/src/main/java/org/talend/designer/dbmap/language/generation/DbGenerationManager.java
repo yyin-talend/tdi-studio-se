@@ -1613,7 +1613,7 @@ public abstract class DbGenerationManager {
         return false;
     }
 
-    private String getQuote(DbMapComponent component){
+    protected String getQuote(DbMapComponent component) {
         String quote = TalendQuoteUtils.QUOTATION_MARK;
         IElementParameter mappingPara = component.getElementParameter(EParameterName.MAPPING.getName());
         if(mappingPara == null){
