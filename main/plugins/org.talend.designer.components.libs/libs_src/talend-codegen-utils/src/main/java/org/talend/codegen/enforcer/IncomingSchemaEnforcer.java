@@ -189,7 +189,7 @@ public class IncomingSchemaEnforcer {
     }
 
     public void addIncomingNodeField(String name, String className) {
-        String diType = "id_String";
+        String diType;
         switch (className) {
         case "java.lang.String":
             diType = "id_String";
@@ -223,6 +223,7 @@ public class IncomingSchemaEnforcer {
             break;
         case "java.lang.Date":
             diType = "id_Date";
+            break;
         default:
             diType = "id_String";
         }
@@ -298,7 +299,7 @@ public class IncomingSchemaEnforcer {
 
         // Copy all of the fields that were initialized from dynamic columns into the runtime Schema.
         boolean dynamicFieldsAdded = false;
-        List<Schema.Field> fields = new ArrayList<Schema.Field>();
+        List<Schema.Field> fields = new ArrayList<>();
         for (Schema.Field designField : designSchema.getFields()) {
             // Replace the dynamic column by all of its contents.
             if (designField.pos() == dynamicColumnPosition) {
