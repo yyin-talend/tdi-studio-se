@@ -79,6 +79,8 @@ public abstract class DbGenerationManager {
 
     protected String tabSpaceString = DEFAULT_TAB_SPACE_STRING;
 
+    private final String DOT_STR = "."; //$NON-NLS-1$
+
     protected static final String DEFAULT_TAB_SPACE_STRING = ""; //$NON-NLS-1$
 
     protected List<String> queryColumnsSegments = new ArrayList<String>();
@@ -90,6 +92,8 @@ public abstract class DbGenerationManager {
     private Boolean useDelimitedIdentifiers;
 
     protected Set<String> subQueryTable = new HashSet<String>();
+
+    protected Set<String> inputSchemaContextSet = new HashSet<String>();
 
     /**
      * DOC amaumont GenerationManager constructor comment.
@@ -276,6 +280,7 @@ public abstract class DbGenerationManager {
         queryColumnsSegments.clear();
         querySegments.clear();
         subQueryTable.clear();
+        inputSchemaContextSet.clear();
 
         this.tabSpaceString = tabString;
         DbMapComponent component = getDbMapComponent(dbMapComponent);
@@ -288,7 +293,9 @@ public abstract class DbGenerationManager {
         }
 
         ExternalDbMapData data = component.getExternalData();
-
+        List<ExternalDbMapTable> inputTables = data.getInputTables();
+        List<String> contextList = getContextList(component);
+        collectSchemaContextParam(dbMapComponent, inputTables, contextList);
         StringBuilder sb = new StringBuilder();
 
         List<ExternalDbMapTable> outputTables = data.getOutputTables();
@@ -361,8 +368,6 @@ public abstract class DbGenerationManager {
             appendSqlQuery(sb, DbMapSqlConstants.NEW_LINE);
             appendSqlQuery(sb, tabSpaceString);
             appendSqlQuery(sb, DbMapSqlConstants.FROM);
-            List<ExternalDbMapTable> inputTables = data.getInputTables();
-
             // load input table in hash
             boolean explicitJoin = false;
             int lstSizeInputTables = inputTables.size();
@@ -551,6 +556,40 @@ public abstract class DbGenerationManager {
         return sqlQuery;
     }
 
+    protected void collectSchemaContextParam(DbMapComponent dbMapComponent, List<ExternalDbMapTable> inputTables,
+            List<String> contextList) {
+        List<IConnection> incomingConnections = (List<IConnection>) dbMapComponent.getIncomingConnections();
+        if (incomingConnections != null) {
+            for (IConnection connection : incomingConnections) {
+                INode input = connection.getSource();
+                if (input != null) {
+                    IElementParameter eltSchemaNameParam = input.getElementParameter("ELT_SCHEMA_NAME"); //$NON-NLS-1$
+                    if (eltSchemaNameParam != null && eltSchemaNameParam.getValue() != null) {
+                        String schema = String.valueOf(eltSchemaNameParam.getValue());
+                        if (schema != null && !inputSchemaContextSet.contains(schema) && contextList.contains(schema)) {
+                            inputSchemaContextSet.add(schema);
+                        }
+                    }
+                    IElementParameter eltTableNameParam = input.getElementParameter("ELT_TABLE_NAME"); //$NON-NLS-1$
+                    if (eltTableNameParam != null && eltTableNameParam.getValue() != null) {
+                        String table = String.valueOf(eltTableNameParam.getValue());
+                        if (table != null && !inputSchemaContextSet.contains(table) && contextList.contains(table)) {
+                            inputSchemaContextSet.add(table);
+                        }
+                    }
+                }
+            }
+        }
+        if (inputTables != null) {
+            for (ExternalDbMapTable table : inputTables) {
+                if (table.getAlias() != null && !inputSchemaContextSet.contains(table.getAlias())
+                        && contextList.contains(table.getAlias())) {
+                    inputSchemaContextSet.add(table.getAlias());
+                }
+            }
+        }
+    }
+
     protected DbMapComponent getDbMapComponent(DbMapComponent dbMapComponent) {
         DbMapComponent component = dbMapComponent;
         INode realGraphicalNode = dbMapComponent.getRealGraphicalNode();
@@ -714,7 +753,7 @@ public abstract class DbGenerationManager {
 
         return contextList;
     }
-
+    
     protected Set<String> getGlobalMapList(DbMapComponent component, String sqlQuery) {
         return parser.getGlobalMapSet(sqlQuery);
     }
@@ -786,8 +825,7 @@ public abstract class DbGenerationManager {
      */
     private boolean buildCondition(DbMapComponent component, StringBuilder sbWhere, ExternalDbMapTable table,
             boolean isFirstClause, ExternalDbMapEntry dbMapEntry, boolean writeCr, boolean isSqlQuery) {
-        String expression = dbMapEntry.getExpression();
-        expression = initExpression(component, dbMapEntry);
+        String expression = initExpression(component, dbMapEntry);
         IDbOperator dbOperator = getOperatorsManager().getOperatorFromValue(dbMapEntry.getOperator());
         boolean operatorIsSet = dbOperator != null;
         boolean expressionIsSet = expression != null && expression.trim().length() > 0;
