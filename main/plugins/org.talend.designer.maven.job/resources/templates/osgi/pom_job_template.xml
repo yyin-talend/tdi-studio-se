@@ -52,10 +52,25 @@
 				<version>5.1.1</version>
 				<extensions>true</extensions>
 				<dependencies>
+				  <dependency>
+       				<groupId>com.google.guava</groupId>
+       				<artifactId>guava</artifactId>
+       				<version>30.0-jre</version>
+      			  </dependency>
 					<dependency>
 						<groupId>org.codehaus.plexus</groupId>
 						<artifactId>plexus-utils</artifactId>
-						<version>3.0.24</version>
+						<version>3.3.0</version>
+					</dependency>
+					<dependency>
+				      <groupId>org.apache.commons</groupId>
+				      <artifactId>commons-lang3</artifactId>
+				      <version>3.8.1</version>
+				    </dependency>
+					<dependency>
+						<groupId>commons-collections</groupId>
+						<artifactId>commons-collections</artifactId>
+						<version>3.2.2</version>
 					</dependency>
 				</dependencies>
 				<configuration>
@@ -83,6 +98,11 @@
 							<artifactId>commons-codec</artifactId>
 							<version>1.15</version>
 			            </dependency>
+			            <dependency>
+							<groupId>org.apache.commons</groupId>
+							<artifactId>commons-compress</artifactId>
+							<version>1.19</version>
+						</dependency>
 					</dependencies>
                 <executions>
                     <execution>
@@ -123,6 +143,11 @@
 							<artifactId>commons-codec</artifactId>
 							<version>1.15</version>
 			            </dependency>
+			            <dependency>
+							<groupId>org.apache.commons</groupId>
+							<artifactId>commons-compress</artifactId>
+							<version>1.19</version>
+						</dependency>
 					</dependencies>
                         <executions>
                             <execution>
