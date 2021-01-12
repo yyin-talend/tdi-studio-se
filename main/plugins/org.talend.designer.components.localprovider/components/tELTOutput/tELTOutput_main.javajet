@@ -82,14 +82,16 @@ skeleton="../templates/db_output_bulk.skeleton"
 	%>
 	String dbschema_<%=cid%> = <%=dbschema%>;
 	if(dbschema_<%=cid%> != null && dbschema_<%=cid%>.trim().length() > 0) {
-		tableName_<%=cid%> = <%=dbschema%> + "." + <%=tableName%>;
 		<%if(isSnowflakeUseDelimitedIdentifiers){%>
 		   tableName_<%=cid%> = "\"" + <%=dbschema%> + "\"" + "." + "\"" + <%=tableName%> + "\"";
+		<%}else{%>
+		   tableName_<%=cid%> = <%=dbschema%> + "." + <%=tableName%>;
 		<%}%>
 	}else {
-		tableName_<%=cid%> = <%=tableName%>;
 		<%if(isSnowflakeUseDelimitedIdentifiers){%>
 		   tableName_<%=cid%> = "\"" + <%=tableName%> + "\"";
+        <%}else{%>
+           tableName_<%=cid%> = <%=tableName%>;
         <%}%>
 	}
 	<%
