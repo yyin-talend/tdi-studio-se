@@ -12,8 +12,13 @@
 // ============================================================================
 package org.talend.designer.dbmap.language.generation;
 
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
 
+import org.apache.commons.lang3.StringUtils;
 import org.talend.core.database.EDatabaseTypeName;
 import org.talend.core.model.metadata.Dbms;
 import org.talend.core.model.metadata.MappingTypeRetriever;
@@ -21,7 +26,6 @@ import org.talend.core.model.metadata.MetadataTalendType;
 import org.talend.core.model.metadata.builder.database.ExtractMetaDataUtils;
 import org.talend.core.model.process.IConnection;
 import org.talend.core.model.process.IElementParameter;
-import org.talend.core.model.process.INode;
 import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.core.utils.TalendQuoteUtils;
 import org.talend.designer.core.model.components.EParameterName;
@@ -43,6 +47,41 @@ public class GenericDbGenerationManager extends DbGenerationManager {
     }
 
     @Override
+    protected String getExpressionTableName(DbMapComponent component, IConnection conn, String name, String quote) {
+        if (!isRefTableConnection(conn) && isSnowflakeUseDelimitedIdentifiers(component)) {
+            if (name.contains(".") && name != null) { //$NON-NLS-1$
+                MapExpressionParser mapParser2 = new MapExpressionParser("\\s*(\\w+)\\s*\\.\\s*(\\w+)\\s*"); //$NON-NLS-1$
+                List<Map<String, String>> tableNameList = mapParser2.parseInTableEntryLocations(name);
+                for (Map<String, String> tableNameMap : tableNameList) {
+                    Set<Entry<String, String>> setTable = tableNameMap.entrySet();
+                    Iterator<Entry<String, String>> iteTable = setTable.iterator();
+                    while (iteTable.hasNext()) {
+                        Entry<String, String> tableEntry = iteTable.next();
+                        String tableValue = tableEntry.getKey();
+                        String schemaValue = tableEntry.getValue();
+                        String handledTableName = null;
+                        if (StringUtils.isNotBlank(schemaValue)) {
+                            handledTableName = getNameWithDelimitedIdentifier(schemaValue, quote) + "."; //$NON-NLS-1$
+                        }
+                        return handledTableName + getNameWithDelimitedIdentifier(tableValue, quote);
+                    }
+                }
+            }
+            return getNameWithDelimitedIdentifier(name, quote);
+        }
+        return name;
+    }
+
+    @Override
+    protected String getTableName(DbMapComponent component, IConnection conn, String name, String quote) {
+        if (!isRefTableConnection(conn) && isSnowflakeUseDelimitedIdentifiers(component)) {
+            return getHandledTableName(component, name, "");//$NON-NLS-1$
+        } else {
+            return name;
+        }
+    }
+
+    @Override
     protected String getQuote(DbMapComponent component) {
         String quote = TalendQuoteUtils.QUOTATION_MARK;
         IElementParameter mappingPara = component.getElementParameter(EParameterName.MAPPING.getName());
@@ -59,7 +98,7 @@ public class GenericDbGenerationManager extends DbGenerationManager {
         }
         Dbms dbms = mappingTypeRetriever.getDbms();
         String product = dbms.getProduct();
-        if (isUseDelimitedIdentifiers() && ExtractMetaDataUtils.SNOWFLAKE.equalsIgnoreCase(product)) {
+        if (isSnowflakeUseDelimitedIdentifiers(component)) {
             return quote;
         }
         EDatabaseTypeName type = EDatabaseTypeName.getTypeFromProductName(product);
@@ -67,48 +106,12 @@ public class GenericDbGenerationManager extends DbGenerationManager {
     }
 
     @Override
-    protected String getHandledTableName(DbMapComponent component, String tableName, String alias) {
-        if (alias == null) {
-            return replaceVariablesForExpression(component, tableName);
-        } else {
-            List<IConnection> inputConnections = (List<IConnection>) component.getIncomingConnections();
-            IConnection iconn = this.getConnectonByName(inputConnections, tableName);
-            if (iconn != null) {
-                String handledTableName = "";
-                boolean inputIsELTDBMap = false;
-                INode source = iconn.getSource();
-                String schemaValue = "";
-                String tableValue = "";
-                if (source != null) {
-                    inputIsELTDBMap = isELTDBMap(source);
-                    if (inputIsELTDBMap) {
-                        tableValue = iconn.getName();
-                    } else {
-                        IElementParameter schemaParam = source.getElementParameter("ELT_SCHEMA_NAME");
-                        IElementParameter tableParam = source.getElementParameter("ELT_TABLE_NAME");
-                        if (schemaParam != null && schemaParam.getValue() != null) {
-                            schemaValue = schemaParam.getValue().toString();
-                        }
-                        if (tableParam != null && tableParam.getValue() != null) {
-                            tableValue = tableParam.getValue().toString();
-                        }
-                    }
-                }
-
-                String schemaNoQuote = TalendTextUtils.removeQuotes(schemaValue);
-                boolean hasSchema = !"".equals(schemaNoQuote);
-                if (hasSchema) {
-                    handledTableName = schemaValue + "+\".\"+";
-                }
-                handledTableName = handledTableName + tableValue;
-                if (isUseDelimitedIdentifiers() && ExtractMetaDataUtils.SNOWFLAKE.equalsIgnoreCase(getDbType(component))) {
-                    handledTableName = TalendTextUtils.removeQuotes(handledTableName);
-                    return "\" +\"\\" + "\"" + handledTableName + "\\" + "\"\"+ \"";
-                }
-                return "\" +" + handledTableName + "+ \"";
-            }
+    protected String getReplaceHandledName(DbMapComponent component, String handledName) {
+        if (isSnowflakeUseDelimitedIdentifiers(component)) {
+            handledName = TalendTextUtils.removeQuotes(handledName);
+            return "\"\\" + "\"" + handledName + "\\" + "\"\""; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
         }
-        return tableName;
+        return handledName;
     }
 
     private String getDbType(DbMapComponent component) {
@@ -129,5 +132,9 @@ public class GenericDbGenerationManager extends DbGenerationManager {
             return null;
         }
         return dbms.getProduct();
+    }
+
+    private boolean isSnowflakeUseDelimitedIdentifiers(DbMapComponent component) {
+        return isUseDelimitedIdentifiers() && ExtractMetaDataUtils.SNOWFLAKE.equalsIgnoreCase(getDbType(component));
     }
 }
