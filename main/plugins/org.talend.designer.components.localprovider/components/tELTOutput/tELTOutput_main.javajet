@@ -26,18 +26,18 @@ skeleton="../templates/db_output_bulk.skeleton"
 	INode node = (INode)codeGenArgument.getArgument();
 	
 	boolean isSnowflakeUseDelimitedIdentifiers = false;
-       List<IConnection> inConnections = (List<IConnection>) node.getIncomingConnections();
-       if(inConnections != null && inConnections.size() > 0 && inConnections.get(0) != null) {
-       IConnection inConnection = inConnections.get(0);
-       INode sourceNode = inConnection.getSource();
-       if(sourceNode!=null){
-          boolean useDelimitedIdentifiers = "true".equals(ElementParameterParser.getValue(sourceNode, "__ACTIVE_DATABASE_DELIMITED_IDENTIFIERS__"));
-          String mappingID = ElementParameterParser.getValue(node,"__MAPPING__");
-          if(useDelimitedIdentifiers && mappingID!=null && "snowflake_id".equalsIgnoreCase(mappingID)){
-             isSnowflakeUseDelimitedIdentifiers = true;
-          }
-       }
-    }
+	List<IConnection> inConnections = (List<IConnection>) node.getIncomingConnections();
+	if(inConnections != null && inConnections.size() > 0 && inConnections.get(0) != null) {
+	IConnection inConnection = inConnections.get(0);
+	INode sourceNode = inConnection.getSource();
+	if(sourceNode!=null){
+	   boolean useDelimitedIdentifiers = "true".equals(ElementParameterParser.getValue(sourceNode, "__ACTIVE_DATABASE_DELIMITED_IDENTIFIERS__"));
+	   String mappingID = ElementParameterParser.getValue(node,"__MAPPING__");
+	   if(useDelimitedIdentifiers && mappingID!=null && "snowflake_id".equalsIgnoreCase(mappingID)){
+	     isSnowflakeUseDelimitedIdentifiers = true;
+	   }
+     }
+   }
 
 	boolean isLog4jEnabled = ("true").equals(ElementParameterParser.getValue(node.getProcess(), "__LOG4J_ACTIVATE__"));
 	String cid = node.getUniqueName();
@@ -90,9 +90,9 @@ skeleton="../templates/db_output_bulk.skeleton"
 	}else {
 		<%if(isSnowflakeUseDelimitedIdentifiers){%>
 		   tableName_<%=cid%> = "\"" + <%=tableName%> + "\"";
-        <%}else{%>
-           tableName_<%=cid%> = <%=tableName%>;
-        <%}%>
+		<%}else{%>
+		   tableName_<%=cid%> = <%=tableName%>;
+		<%}%>
 	}
 	<%
 	String dataAction = ElementParameterParser.getValue(node,"__DATA_ACTION__");
