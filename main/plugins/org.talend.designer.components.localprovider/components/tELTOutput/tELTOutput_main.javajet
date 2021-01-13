@@ -26,8 +26,8 @@ skeleton="../templates/db_output_bulk.skeleton"
 	INode node = (INode)codeGenArgument.getArgument();
 	
 	boolean isSnowflakeUseDelimitedIdentifiers = false;
-    List<IConnection> inConnections = (List<IConnection>) node.getIncomingConnections();
-    if(inConnections != null && inConnections.size() > 0 && inConnections.get(0) != null) {
+       List<IConnection> inConnections = (List<IConnection>) node.getIncomingConnections();
+       if(inConnections != null && inConnections.size() > 0 && inConnections.get(0) != null) {
        IConnection inConnection = inConnections.get(0);
        INode sourceNode = inConnection.getSource();
        if(sourceNode!=null){
@@ -173,7 +173,7 @@ skeleton="../templates/db_output_bulk.skeleton"
 				columnName = column.getLabel();
     		}
             if(isSnowflakeUseDelimitedIdentifiers){
-               columnName= "\"+" + "\"\\" + "\"" + columnName + "\\" + "\"\"" + "+\"";;
+               columnName= "\"+\"\\\"" + columnName + "\\\"\"+\"";
             }
           boolean isUpdateColumn = "true".equals(setColumns.get(counterOuter).get("UPDATE_COLUMN"));
           insertColName.append(columnName).append(suffix);

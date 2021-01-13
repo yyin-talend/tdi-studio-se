@@ -1555,8 +1555,12 @@ public abstract class DbGenerationManager {
                                         } else {
                                             oriName = oriName.replaceAll("\\$", "\\\\\\$"); //$NON-NLS-1$ //$NON-NLS-2$
                                         }
+                                        String tableValueTemp = tableValue;
+                                        if (tableValue != null && tableValue.equals(originaltableName)) {
+                                            tableValueTemp = getExpressionTableName(component, iconn, tableValue, quote);
+                                        }
                                         expression = expression.replaceFirst(tableValue + "\\." + co.getLabel(), //$NON-NLS-1$
-                                                tableValue + "\\." + oriName); //$NON-NLS-1$
+                                                tableValueTemp + "\\." + oriName); //$NON-NLS-1$
                                         expression = replaceAuotes(component, expression, quto_markParser, quto_mark);
                                     }
                                 }

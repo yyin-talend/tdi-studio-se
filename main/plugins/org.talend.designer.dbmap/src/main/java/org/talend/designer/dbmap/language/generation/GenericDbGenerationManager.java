@@ -137,4 +137,13 @@ public class GenericDbGenerationManager extends DbGenerationManager {
     private boolean isSnowflakeUseDelimitedIdentifiers(DbMapComponent component) {
         return isUseDelimitedIdentifiers() && ExtractMetaDataUtils.SNOWFLAKE.equalsIgnoreCase(getDbType(component));
     }
+
+    @Override
+    protected String getHandledTableName(DbMapComponent component, String tableName, String alias) {
+        if (isSnowflakeUseDelimitedIdentifiers(component) && alias == null) {
+            return super.getHandledTableName(component, tableName, "");//$NON-NLS-1$
+        } else {
+            return super.getHandledTableName(component, tableName, alias);
+        }
+    }
 }
