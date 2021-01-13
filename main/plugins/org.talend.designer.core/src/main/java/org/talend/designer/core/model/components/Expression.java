@@ -113,15 +113,15 @@ public final class Expression {
     }
 
     private String getExpressionString() {
-        return expressionString;
+        return this.expressionString;
     }
 
     private void setExpressionString(String value) {
-        expressionString = value;
+        this.expressionString = value;
     }
 
     private String getCondition() {
-        return condition;
+        return this.condition;
     }
 
     private void setCondition(String condition) {
@@ -129,7 +129,7 @@ public final class Expression {
     }
 
     private Expression getLeftExpression() {
-        return leftExpression;
+        return this.leftExpression;
     }
 
     private void setLeftExpression(Expression leftExpression) {
@@ -137,7 +137,7 @@ public final class Expression {
     }
 
     private Expression getRightExpression() {
-        return rightExpression;
+        return this.rightExpression;
     }
 
     private void setRightExpression(Expression rightExpression) {
@@ -145,11 +145,11 @@ public final class Expression {
     }
 
     private boolean isValid() {
-        return valid;
+        return this.valid;
     }
 
     private void setValid(boolean value) {
-        valid = value;
+        this.valid = value;
     }
 
     public static boolean evaluate(final String string, List<? extends IElementParameter> listParam) {
