@@ -79,7 +79,8 @@ public final class Expression {
 
     private static final String isShowPrefix = "isShow"; //$NON-NLS-1$
 
-    private static final java.util.regex.Pattern isShowFuncPattern = java.util.regex.Pattern.compile(isShowPrefix + "\\[(\\w+)(\\.\\w+)*\\]"); //$NON-NLS-1$
+    private static final java.util.regex.Pattern isShowFuncPattern = java.util.regex.Pattern
+            .compile(isShowPrefix + "\\[(\\w+)(\\.\\w+)*\\]"); //$NON-NLS-1$
 
     private static final String sparkVersionPrefix = "SPARK_"; //$NON-NLS-1$
 
@@ -608,13 +609,16 @@ public final class Expression {
                                         if (baseColumn != null) {
                                             switch (LanguageManager.getCurrentLanguage()) {
                                             case JAVA:
-                                                value = JavaTypesManager.getTypeToGenerate(baseColumn.getTalendType(), baseColumn.isNullable());
+                                                value = JavaTypesManager.getTypeToGenerate(baseColumn.getTalendType(),
+                                                        baseColumn.isNullable());
                                                 // PARTICULAR_SURVIVORSHIP and SURVIVORSHIP_JOIN_KEY are the table names
                                                 // which will use the filter
-                                                IElementParameter filterParameter = node.getElementParameter(param.getName() + "_FILTER_PARAMETER"); //$NON-NLS-1$
-                                                if (filterParameter != null && "true".equals(filterParameter.getValue().toString()) //$NON-NLS-1$
-                                                // Number is from DefaultSurvivorShipDataTypeEnum in
-                                                // record.linkage plugin
+                                                IElementParameter filterParameter = node
+                                                        .getElementParameter(param.getName() + "_FILTER_PARAMETER"); //$NON-NLS-1$
+                                                if (filterParameter != null
+                                                        && "true".equals(filterParameter.getValue().toString()) //$NON-NLS-1$
+                                                        // Number is from DefaultSurvivorShipDataTypeEnum in
+                                                        // record.linkage plugin
                                                         && "Number".equals(variableValue) //$NON-NLS-1$
                                                         && JavaTypesManager.isNumber(baseColumn.getTalendType())) {
                                                     value = variableValue;
@@ -641,7 +645,8 @@ public final class Expression {
                         boolean child = false;
                         Map<String, IElementParameter> childParameters = param.getChildParameters();
 
-                        if ("PROPERTY".equals(param.getName()) || EParameterFieldType.PROPERTY_TYPE == param.getFieldType()) { //$NON-NLS-1$
+                        if ("PROPERTY".equals(param.getName()) //$NON-NLS-1$
+                                || EParameterFieldType.PROPERTY_TYPE == param.getFieldType()) {
                             if (childParameters != null) {
                                 IElementParameter iElementParameter = childParameters.get("PROPERTY_TYPE"); //$NON-NLS-1$
                                 if (iElementParameter != null) {
@@ -720,7 +725,8 @@ public final class Expression {
                     if (node.getComponent() != null && "tPigLoad".equals(node.getComponent().getName())) { //$NON-NLS-1$
                         List<IConnection> connectionsInputs = (List<IConnection>) node.getIncomingConnections();
                         for (IConnection connection : connectionsInputs) {
-                            if (connection.isActivate() && connection.getLineStyle().hasConnectionCategory(IConnectionCategory.MAIN)
+                            if (connection.isActivate()
+                                    && connection.getLineStyle().hasConnectionCategory(IConnectionCategory.MAIN)
                                     && variableValue.toUpperCase().equals(connection.getConnectorName())) {
                                 showParameter = true;
                             }
@@ -732,7 +738,8 @@ public final class Expression {
         return showParameter;
     }
 
-    private static INode retrieveNodeElementFromParameter(ElementParameter currentParam, List<? extends IElementParameter> listParam) {
+    private static INode retrieveNodeElementFromParameter(ElementParameter currentParam,
+            List<? extends IElementParameter> listParam) {
         if (currentParam != null && currentParam.getElement() instanceof INode) {
             return (INode) currentParam.getElement();
         } else if (currentParam != null && currentParam.getElement() instanceof Process) {
@@ -772,7 +779,8 @@ public final class Expression {
     }
 
     // should be private, but need to unitary tested
-    public static boolean evaluateDistrib(String simpleExpression, List<? extends IElementParameter> listParam, ElementParameter currentParam) {
+    public static boolean evaluateDistrib(String simpleExpression, List<? extends IElementParameter> listParam,
+            ElementParameter currentParam) {
         boolean positiveAssertion = !simpleExpression.trim().startsWith("!"); //$NON-NLS-1$
         String args = simpleExpression.split("\\[")[1].split("\\]")[0]; //$NON-NLS-1$ //$NON-NLS-2$
         String distributionParam = args.split(",")[0].trim(); //$NON-NLS-1$
@@ -817,7 +825,8 @@ public final class Expression {
     }
 
     // should be private, but need to unitary tested
-    public static boolean evaluateSparkVersion(String simpleExpression, List<? extends IElementParameter> listParam, ElementParameter currentParam) {
+    public static boolean evaluateSparkVersion(String simpleExpression, List<? extends IElementParameter> listParam,
+            ElementParameter currentParam) {
         if (!simpleExpression.contains(sparkVersionPrefix)) {
             return false;
         }
@@ -851,14 +860,15 @@ public final class Expression {
     /**
      * Execute a methode for a given distribution and version. This function must return a booelan
      *
-     * @param methodName   the name of the method
+     * @param methodName the name of the method
      * @param distribution the name of the distribution
-     * @param version      the name of the version
+     * @param version the name of the version
      * @positiveAssertion if we are on a positive assertion. A negative one will inverse the return of the method,
-     *                    except on an error case.
+     * except on an error case.
      * @return
      */
-    private static boolean executeBooleanMethod(String methodName, String distribution, String version, boolean positiveAssertion) {
+    private static boolean executeBooleanMethod(String methodName, String distribution, String version,
+            boolean positiveAssertion) {
         try {
             boolean ret = DistributionFactory.executeBooleanMethod(methodName, distribution, version);
             return positiveAssertion ? ret : !ret;
@@ -921,7 +931,8 @@ public final class Expression {
         }
     }
 
-    private static Expression evaluateExpression(Expression expression, List<? extends IElementParameter> listParam, ElementParameter currentParam) {
+    private static Expression evaluateExpression(Expression expression, List<? extends IElementParameter> listParam,
+            ElementParameter currentParam) {
         int indexBegining = 0, indexEnd;
         int expressionLevel = 0;
         String string = expression.getExpressionString();
