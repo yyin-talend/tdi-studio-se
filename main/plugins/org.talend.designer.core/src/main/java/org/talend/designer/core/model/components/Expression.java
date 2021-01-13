@@ -83,7 +83,8 @@ public final class Expression {
 
     private static final String sparkVersionPrefix = "SPARK_"; //$NON-NLS-1$
 
-    private static final java.util.regex.Pattern sparkVersionPattern = java.util.regex.Pattern.compile("(lt|le|gt|ge|eq|ne)\\s*'(" + sparkVersionPrefix + ".*)'"); //$NON-NLS-1$ //$NON-NLS-2$
+    private static final java.util.regex.Pattern sparkVersionPattern = java.util.regex.Pattern
+            .compile("(lt|le|gt|ge|eq|ne)\\s*'(" + sparkVersionPrefix + ".*)'"); //$NON-NLS-1$ //$NON-NLS-2$
 
     private static Perl5Matcher conditionMatcher = new Perl5Matcher();
 
@@ -282,7 +283,8 @@ public final class Expression {
         }
     }
 
-    private static boolean evaluateSimpleExpression(String simpleExpression, List<? extends IElementParameter> listParam, ElementParameter currentParam) {
+    private static boolean evaluateSimpleExpression(String simpleExpression, List<? extends IElementParameter> listParam,
+            ElementParameter currentParam) {
         boolean showParameter = false;
         String test = null;
         if (simpleExpression.contains(EQUALS)) {
@@ -630,8 +632,10 @@ public final class Expression {
                                 }
                             }
                         }
-                    } else if (param.getFieldType() != null && (param.getFieldType().equals(EParameterFieldType.PROPERTY_TYPE) || param.getFieldType().equals(EParameterFieldType.SCHEMA_TYPE)
-                            || param.getFieldType().equals(EParameterFieldType.SCHEMA_REFERENCE) || param.getFieldType().equals(EParameterFieldType.QUERYSTORE_TYPE)
+                    } else if (param.getFieldType() != null && (param.getFieldType().equals(EParameterFieldType.PROPERTY_TYPE)
+                            || param.getFieldType().equals(EParameterFieldType.SCHEMA_TYPE)
+                            || param.getFieldType().equals(EParameterFieldType.SCHEMA_REFERENCE)
+                            || param.getFieldType().equals(EParameterFieldType.QUERYSTORE_TYPE)
                             || param.getFieldType().equals(EParameterFieldType.ENCODING_TYPE))) {
 
                         boolean child = false;
@@ -749,7 +753,8 @@ public final class Expression {
         return parameter.replace(parameter.split("\\.")[0] + "." + parameter.split("\\.")[1] + ".", ""); //$NON-NLS-1$ //$NON-NLS-2$//$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
     }
 
-    private static List<? extends IElementParameter> retrieveLinkedParameters(ElementParameter currentParam, List<? extends IElementParameter> listParam, String distributionParam) {
+    private static List<? extends IElementParameter> retrieveLinkedParameters(ElementParameter currentParam,
+            List<? extends IElementParameter> listParam, String distributionParam) {
         INode node = retrieveNodeElementFromParameter(currentParam, listParam);
 
         if (node != null) {
@@ -880,8 +885,8 @@ public final class Expression {
         return paraNames;
     }
 
-    private static void checkIsShowLoop(String testParamName, String expression, List<? extends IElementParameter> listParam, IElementParameter currentParam, List<String> testedParaNames)
-            throws Exception {
+    private static void checkIsShowLoop(String testParamName, String expression, List<? extends IElementParameter> listParam,
+            IElementParameter currentParam, List<String> testedParaNames) throws Exception {
         List<String> paraNames = testedParaNames;
         if (paraNames == null) {
             paraNames = new ArrayList<String>();
