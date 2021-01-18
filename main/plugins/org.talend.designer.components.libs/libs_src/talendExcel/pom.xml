@@ -2,9 +2,9 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
-	<groupId>org.talend.libraries</groupId>
-	<artifactId>talendExcel-1.3-20180215</artifactId>
-	<version>6.0.0</version>
+	<groupId>org.talend.components</groupId>
+	<artifactId>talendExcel</artifactId>
+	<version>1.10-20210113-patched</version>
 	<packaging>jar</packaging>
 
 	<name>talendExcel</name>
