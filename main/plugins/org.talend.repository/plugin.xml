@@ -3172,6 +3172,15 @@
               name="SAPBAPIParameterTypeMigrationTask"
               version="7.1.2">
         </projecttask>
+        <projecttask
+            beforeLogon="false"
+            breaks="7.1.0"
+            class="ChangeDefaultTruncExceedCharsFieldExcelOutputMigrationTask"
+            description="Change default truncate exceeding characters property for tFileOutputExcel components"
+            id="ChangeDefaultTruncExceedCharsFieldExcelOutputMigrationTask"
+            name="ChangeDefaultTruncExceedCharsFieldExcelOutputMigrationTask"
+            version="7.1.1">
+         </projecttask>
    </extension>
    
 

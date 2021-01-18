@@ -26,8 +26,9 @@ import org.talend.core.model.properties.Item;
  */
 public class AddAdditionalFieldMigrationTask extends AbstractItemMigrationTask {
 
+    @Override
     public Date getOrder() {
-        GregorianCalendar gc = new GregorianCalendar(2012, 6, 25, 14, 0, 0);
+        GregorianCalendar gc = new GregorianCalendar(2021, 0, 6, 19, 0, 0);
         return gc.getTime();
     }
 
