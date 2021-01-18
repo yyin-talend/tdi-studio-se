@@ -72,6 +72,8 @@ public class ExcelTool {
 
     private boolean isTruncateExceedingCharacters = false;
 
+    private Map<CellStyle, CellStyle> existedOriginToClone;
+
     private static final int CELL_CHARACTERS_LIMIT = 32767;
 
     public ExcelTool() {
@@ -241,6 +243,9 @@ public class ExcelTool {
 
     private CellStyle getPreCellStyle() {
         if (preSheet != null && isAbsY && keepCellFormat) {
+            if(existedOriginToClone == null) {
+                existedOriginToClone = new HashMap<>();
+            }
             CellStyle preCellStyle;
             if (preCell == null) {
                 preCellStyle = preSheet.getColumnStyle(curCell.getColumnIndex());
@@ -248,9 +253,12 @@ public class ExcelTool {
                 preCellStyle = preCell.getCellStyle();
             }
 
-            CellStyle targetCellStyle = wb.createCellStyle();
-            targetCellStyle.cloneStyleFrom(preCellStyle);
-
+            CellStyle targetCellStyle = existedOriginToClone.get(preCellStyle);
+            if(targetCellStyle == null) {
+                targetCellStyle = wb.createCellStyle();
+                targetCellStyle.cloneStyleFrom(preCellStyle);
+                existedOriginToClone.put(preCellStyle, targetCellStyle);
+            }
             return targetCellStyle;
 
         } else {
@@ -310,6 +318,9 @@ public class ExcelTool {
 
     public void writeExcel(OutputStream outputStream) throws Exception {
         wb.write(outputStream);
+        if(existedOriginToClone!=null) {
+            existedOriginToClone = null;
+        }
     }
 
     public void writeExcel(String fileName, boolean createDir) throws Exception {
@@ -325,6 +336,9 @@ public class ExcelTool {
             evaluateFormulaCell();
         }
         wb.write(fileOutput);
+        if(existedOriginToClone!=null) {
+        	existedOriginToClone = null;
+        }
         fileOutput.close();
     }
 
