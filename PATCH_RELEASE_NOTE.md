@@ -25,6 +25,7 @@ This is a self-contained patch.
 This patch contains the following fixes:
 
 - TPS-4636 [7.1] Not able to create excel file (.xlsx) after migrating to 7.1 from 6.3 using tFileOutputExcel component (TDI-45455)
+- TDI-45404 tFileOutputExcel component gives The maximum number of cell styles was exceeded error
 
 ## Prerequisites
 
