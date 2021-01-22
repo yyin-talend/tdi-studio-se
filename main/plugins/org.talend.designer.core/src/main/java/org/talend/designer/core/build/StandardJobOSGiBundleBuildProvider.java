@@ -18,6 +18,7 @@ import java.util.Map;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.runtime.IPath;
+import org.talend.commons.CommonsPlugin;
 import org.talend.core.model.process.INode;
 import org.talend.core.model.process.IProcess2;
 import org.talend.core.model.properties.Item;
@@ -100,7 +101,7 @@ public class StandardJobOSGiBundleBuildProvider extends RepositoryObjectTypeBuil
      */
     @SuppressWarnings("unchecked")
     private void fixDefaultBuildType(Property property) {
-        if(property != null && property.getAdditionalProperties().get(TalendProcessArgumentConstant.ARG_BUILD_TYPE) == null) {
+        if(CommonsPlugin.isHeadless() && property != null && property.getAdditionalProperties().get(TalendProcessArgumentConstant.ARG_BUILD_TYPE) == null) {
             property.getAdditionalProperties().put(TalendProcessArgumentConstant.ARG_BUILD_TYPE, OSGI);
         }
     }
