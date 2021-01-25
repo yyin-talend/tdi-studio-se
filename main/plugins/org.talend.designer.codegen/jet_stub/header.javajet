@@ -199,6 +199,16 @@ protected static void logIgnoredError(String message, Throwable cause) {
 	<% } %>
 <% } %>
 
+    private org.osgi.service.cm.ConfigAdmin configAdmin = null;
+
+    public void setConfigAdmin(org.osgi.service.cm.ConfigAdmin configAdmin) {
+        this.configAdmin = configAdmin;
+    }
+
+    public org.osgi.service.cm.ConfigAdmin getConfigAdmin() {
+        return this.configAdmin;
+    }
+
 <% if (talendEsbJobFactory) { %>
 	public TalendESBJob newTalendESBJob() {
 		<%=process.getName()%> talendESBJob = new <%=process.getName()%>();

@@ -641,6 +641,12 @@
 <%
         }
 %>
+        try {
+            java.util.Dictionary<String, Object> jobProperties = configAdmin.getConfiguration(jobName).getProperties();
+
+            contextStr = (String)jobProperties.get("context");
+        } catch(java.lang.Exception e) {
+        }
 
         try {
             //call job/subjob with an existing context, like: --context=production. if without this parameter, there will use the default context instead.

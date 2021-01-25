@@ -151,6 +151,7 @@
 
 	<bean id="job" class="${job.className}" destroy-method="destroy">
 		<property name="runInTalendEsbRuntimeContainer" value="true" />
+		<property name="configAdmin" ref="configAdmin" />
 #if ($endpoint.useAuthentication && $endpoint.authenticationType == "SAML")
 		<property name="bus" ref="cxf" />
 #end
