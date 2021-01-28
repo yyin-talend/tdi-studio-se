@@ -12,6 +12,7 @@
 // ============================================================================
 package org.talend.repository.preference;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
@@ -26,6 +27,8 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.ISchedulingRule;
 import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.jface.dialogs.ProgressMonitorDialog;
+import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -37,8 +40,6 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.Shell;
-import org.eclipse.ui.internal.progress.ProgressMonitorFocusJobDialog;
 import org.talend.commons.exception.LoginException;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.ui.runtime.exception.ExceptionHandler;
@@ -137,36 +138,60 @@ public class SecurityProjectSettingPage extends ProjectSettingPage {
     }
 
     private void onForceRegenSignatureBtnSelected(SelectionEvent event) {
-        Job forceRegenSignatureJob = new Job(Messages.getString("SecurityProjectSettingPage.forceRegenSignature")) { //$NON-NLS-1$
+        final Job forceRegenSignatureJob[] = new Job[1];
+        final IRunnableWithProgress forceRegenSignatureProgress = new IRunnableWithProgress() {
 
             @Override
-            protected IStatus run(IProgressMonitor monitor) {
-                regenerateSignature(monitor);
-                return Status.OK_STATUS;
+            public void run(IProgressMonitor progressMonitor) throws InvocationTargetException, InterruptedException {
+                forceRegenSignatureJob[0] = new Job(Messages.getString("SecurityProjectSettingPage.forceRegenSignature")) { //$NON-NLS-1$
+
+                    @Override
+                    protected IStatus run(IProgressMonitor m) {
+                        regenerateSignature(progressMonitor);
+                        return Status.OK_STATUS;
+                    }
+
+                    @Override
+                    protected void canceling() {
+                        Thread thread = getThread();
+                        if (thread != null) {
+                            thread.interrupt();
+                        }
+                        super.canceling();
+                    }
+
+                };
+                forceRegenSignatureJob[0].setUser(false);
+                forceRegenSignatureJob[0].setSystem(true);
+                forceRegenSignatureJob[0].schedule();
+                forceRegenSignatureJob[0].join();
             }
+        };
+
+        ProgressMonitorDialog dialog = new ProgressMonitorDialog(Display.getDefault().getActiveShell()) {
 
             @Override
-            protected void canceling() {
-                Thread thread = getThread();
-                if (thread != null) {
-                    thread.interrupt();
+            protected void cancelPressed() {
+                super.cancelPressed();
+                if (forceRegenSignatureJob[0] != null) {
+                    forceRegenSignatureJob[0].cancel();
                 }
-                super.canceling();
             }
 
         };
-        forceRegenSignatureJob.schedule();
+        try {
+            dialog.run(true, true, forceRegenSignatureProgress);
+        } catch (Throwable e) {
+            ExceptionHandler.process(e);
+        }
 
-        Shell shell = Display.getDefault().getActiveShell();
-        ProgressMonitorFocusJobDialog dialog = new ProgressMonitorFocusJobDialog(shell);
-        dialog.show(forceRegenSignatureJob, shell);
     }
 
     private void regenerateSignature(IProgressMonitor monitor) {
         IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
         Project currentProject = ProjectManager.getInstance().getCurrentProject();
         RepositoryWorkUnit rwu = new RepositoryWorkUnit(currentProject,
-                Messages.getString("SecurityProjectSettingPage.forceRegenSignature")) {
+                Messages.getString("SecurityProjectSettingPage.forceRegenSignature")) { //$NON-NLS-1$
 
             @Override
             protected void run() throws LoginException, PersistenceException {
@@ -178,23 +203,25 @@ public class SecurityProjectSettingPage extends ProjectSettingPage {
                         List<ERepositoryObjectType> repoObjTypes = Arrays
                                 .asList((ERepositoryObjectType[]) ERepositoryObjectType.values());
                         int repoObjTypeSize = repoObjTypes.size();
-                        monitor.beginTask(Messages.getString("SecurityProjectSettingPage.forceRegenSignature.progress.begin"),
+                        monitor.beginTask(Messages.getString("SecurityProjectSettingPage.forceRegenSignature.progress.begin"), //$NON-NLS-1$
                                 repoObjTypeSize);
                         for (ERepositoryObjectType repoObjType : repoObjTypes) {
                             if (monitor.isCanceled() || currentThread.isInterrupted()) {
                                 ExceptionHandler.log(
-                                        Messages.getString("SecurityProjectSettingPage.forceRegenSignature.progress.cancel"));
+                                        Messages.getString("SecurityProjectSettingPage.forceRegenSignature.progress.cancel")); //$NON-NLS-1$
                                 return;
                             }
                             monitor.setTaskName(
-                                    Messages.getString("SecurityProjectSettingPage.forceRegenSignature.progress.curRepoType",
+                                    Messages.getString("SecurityProjectSettingPage.forceRegenSignature.progress.curRepoType", //$NON-NLS-1$
                                             repoObjType.getLabel()));
                             try {
-                                List<IRepositoryViewObject> repoObjs = factory.getAll(currentProject, repoObjType, isValid(),
-                                        isControlCreated());
+                                monitor.subTask(
+                                        Messages.getString("SecurityProjectSettingPage.forceRegenSignature.progress.collect", //$NON-NLS-1$
+                                                repoObjType.getLabel()));
+                                List<IRepositoryViewObject> repoObjs = factory.getAll(currentProject, repoObjType, true, true);
                                 if (monitor.isCanceled() || currentThread.isInterrupted()) {
                                     ExceptionHandler.log(
-                                            Messages.getString("SecurityProjectSettingPage.forceRegenSignature.progress.cancel"));
+                                            Messages.getString("SecurityProjectSettingPage.forceRegenSignature.progress.cancel")); //$NON-NLS-1$
                                     return;
                                 }
                                 if (repoObjs != null) {
@@ -203,7 +230,7 @@ public class SecurityProjectSettingPage extends ProjectSettingPage {
                                     for (int i = 0; iterator.hasNext(); i++) {
                                         if (monitor.isCanceled() || currentThread.isInterrupted()) {
                                             ExceptionHandler.log(Messages
-                                                    .getString("SecurityProjectSettingPage.forceRegenSignature.progress.cancel"));
+                                                    .getString("SecurityProjectSettingPage.forceRegenSignature.progress.cancel")); //$NON-NLS-1$
                                             return;
                                         }
                                         IRepositoryViewObject next = iterator.next();
@@ -211,7 +238,7 @@ public class SecurityProjectSettingPage extends ProjectSettingPage {
                                             continue;
                                         }
                                         monitor.subTask(
-                                                Messages.getString("SecurityProjectSettingPage.forceRegenSignature.progress.save",
+                                                Messages.getString("SecurityProjectSettingPage.forceRegenSignature.progress.save", //$NON-NLS-1$
                                                         repoObjType, i + "/" + repoObjSize, next.getLabel()));
                                         try {
                                             factory.save(next.getProperty().getItem());
