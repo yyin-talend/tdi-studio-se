@@ -411,7 +411,7 @@ public class JavaProcessor extends AbstractJavaProcessor implements IJavaBreakpo
                             }
                         } else {
                             // for case normal job and not for build, should be resource folder
-                            if (ProcessorUtilities.isExportConfig()) {
+                            if (!ProcessorUtilities.isExportConfig()) {
                                 needContextInJar = true;
                             }
                         }
