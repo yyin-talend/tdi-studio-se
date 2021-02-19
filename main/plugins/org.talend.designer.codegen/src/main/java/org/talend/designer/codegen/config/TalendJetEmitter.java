@@ -104,7 +104,9 @@ public class TalendJetEmitter extends JETEmitter {
         super(arg0, arg1);
 
         for (String classKey : globalClasspath.keySet()) {
-            this.addVariable(classKey, globalClasspath.get(classKey));
+        	if (classKey != null && globalClasspath.get(classKey) != null) {
+        		this.addVariable(classKey, globalClasspath.get(classKey));
+        	}
         }
         this.talendEclipseHelper = new TalendEclipseHelper(progressMonitor, this, rebuild);
     }
