@@ -1556,7 +1556,7 @@ public class LoginProjectPage extends AbstractLoginActionPage {
     }
 
     protected void refreshBranchAreaVisible() {
-        boolean tisRemote = isSVNProviderPluginLoadedRemote();
+        boolean tisRemote = isRemoteProviderPluginLoaded();
         refreshBranchAreaVisible(tisRemote);
     }
 
@@ -1813,7 +1813,7 @@ public class LoginProjectPage extends AbstractLoginActionPage {
             return;
         }
         try {
-            if (currentBean != null && isSVNProviderPluginLoadedRemote() && isWorkSpaceSame()) {
+            if (currentBean != null && isRemoteProviderPluginLoaded() && isWorkSpaceSame()) {
                 if (afterUpdate) {
                     Display.getDefault().syncExec(() -> {
                         if (monitor.isCanceled() || isDisposed()) {
@@ -2163,14 +2163,14 @@ public class LoginProjectPage extends AbstractLoginActionPage {
     }
 
     /**
-     * svn provider plugin loaded && a remote connection
+     * remote provider plugin loaded && a remote connection
      *
      * @return
      */
-    protected boolean isSVNProviderPluginLoadedRemote() {
+    protected boolean isRemoteProviderPluginLoaded() {
         AtomicBoolean isRemote = new AtomicBoolean(false);
         Display.getDefault().syncExec(() -> {
-            if (PluginChecker.isSVNProviderPluginLoaded()) {
+            if (PluginChecker.isRemoteProviderPluginLoaded()) {
                 StructuredSelection selection = (StructuredSelection) connectionsViewer.getSelection();
                 Object firstElement = selection.getFirstElement();
                 if (firstElement instanceof ConnectionBean) {
