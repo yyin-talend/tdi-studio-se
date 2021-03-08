@@ -1,6 +1,6 @@
 // ============================================================================
 //
-// Copyright (C) 2006-2019 Talend Inc. - www.talend.com
+// Copyright (C) 2006-2021 Talend Inc. - www.talend.com
 //
 // This source code is available under agreement available at
 // %InstallDIR%\features\org.talend.rcp.branding.%PRODUCTNAME%\%PRODUCTNAME%license.txt
@@ -139,6 +139,7 @@ import org.talend.core.runtime.projectsetting.RuntimeLineageManager;
 import org.talend.core.ui.services.IRulesProviderService;
 import org.talend.core.utils.BitwiseOptionUtils;
 import org.talend.core.utils.CodesJarResourceCache;
+import org.talend.core.utils.TalendQuoteUtils;
 import org.talend.designer.codegen.ICodeGenerator;
 import org.talend.designer.codegen.ICodeGeneratorService;
 import org.talend.designer.core.DesignerPlugin;
@@ -1524,9 +1525,14 @@ public class JavaProcessor extends AbstractJavaProcessor implements IJavaBreakpo
         Set<String> classPaths = new HashSet<>();
         EList<RoutinesParameterType> routinesParameter = null;
         if (item instanceof ProcessItem) {
-            routinesParameter = ((ProcessItem) item).getProcess().getParameters().getRoutinesParameter();
+            if (((ProcessItem) item).getProcess() != null && ((ProcessItem) item).getProcess().getParameters() != null) {
+                routinesParameter = ((ProcessItem) item).getProcess().getParameters().getRoutinesParameter();
+            }
         } else if (item instanceof JobletProcessItem) {
-            routinesParameter = ((JobletProcessItem) item).getJobletProcess().getParameters().getRoutinesParameter();
+            if (((JobletProcessItem) item).getJobletProcess() != null
+                    && ((JobletProcessItem) item).getJobletProcess().getParameters() != null) {
+                routinesParameter = ((JobletProcessItem) item).getJobletProcess().getParameters().getRoutinesParameter();
+            }
         }
         if (routinesParameter != null) {
             routinesParameter.stream().filter(r -> r.getType() != null).forEach(r -> {
@@ -2037,7 +2043,8 @@ public class JavaProcessor extends AbstractJavaProcessor implements IJavaBreakpo
             String encryptionFilePath = System.getProperty(StudioKeysFileCheck.ENCRYPTION_KEY_FILE_SYS_PROP);
             File encryptionFile = new File(encryptionFilePath);
             if (encryptionFile.exists()) {
-                vmArguments.append(StudioKeysFileCheck.ENCRYPTION_KEY_FILE_JVM_PARAM + "=" + encryptionFile.toURI().getPath());
+                String encryptFilePath = TalendQuoteUtils.addQuotes(encryptionFile.toURI().getPath());
+                vmArguments.append(StudioKeysFileCheck.ENCRYPTION_KEY_FILE_JVM_PARAM + "=" + encryptFilePath);
             }
             wc.setAttribute(IJavaLaunchConfigurationConstants.ATTR_VM_ARGUMENTS, vmArguments.toString());
         }
