@@ -1002,6 +1002,7 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
     private boolean cacheManifest(URL url, String relativePath) {
         boolean result = false;
         ObjectOutputStream o = null;
+        Analyzer al = null;
         try {
             File jarFile = new File(url.toURI());
 
@@ -1020,9 +1021,9 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
 
                 if (dependencyCacheMap == null || dependencyCacheMap.get(key) == null) {
                     Jar bin = new Jar(jarFile);
-                    analyzer.clear();
-                    analyzer.setJar(bin);
-                    Manifest manifest = analyzer.calcManifest();
+                    al = new Analyzer();
+                    al.setJar(bin);
+                    Manifest manifest = al.calcManifest();
                     String requireCapabilityString = manifest.getMainAttributes().getValue(Analyzer.REQUIRE_CAPABILITY);
 
                     // Todo Handle requireCapabilityString to the MANIFEST.MF file ?
@@ -1059,6 +1060,9 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
                 if (o != null) {
                     o.close();
                 }
+                if (al != null) {
+                    al.close();
+                }
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -1072,15 +1076,15 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
 
     private void filterImportPackages(Manifest manifest) {
 
-        List<String> bundleClasspaths = null;
-        if (manifest.getMainAttributes().getValue(Analyzer.BUNDLE_CLASSPATH) == null) {
-            bundleClasspaths = new ArrayList<>();
-        } else {
-            bundleClasspaths = Stream.of(manifest.getMainAttributes().getValue(Analyzer.BUNDLE_CLASSPATH).split(","))
-                    .collect(Collectors.toList());
-        }
-        
-        manifest.getMainAttributes().putValue(Analyzer.BUNDLE_CLASSPATH, String.join(",", bundleClasspaths));
+//        List<String> bundleClasspaths = null;
+//        if (manifest.getMainAttributes().getValue(Analyzer.BUNDLE_CLASSPATH) == null) {
+//            bundleClasspaths = new ArrayList<>();
+//        } else {
+//            bundleClasspaths = Stream.of(manifest.getMainAttributes().getValue(Analyzer.BUNDLE_CLASSPATH).split(","))
+//                    .collect(Collectors.toList());
+//        }
+//        
+//        manifest.getMainAttributes().putValue(Analyzer.BUNDLE_CLASSPATH, String.join(",", bundleClasspaths));
 
         List<String> privatePackages = null;
         if (manifest.getMainAttributes().getValue(Analyzer.PRIVATE_PACKAGE) == null) {
@@ -1090,7 +1094,6 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
                     .collect(Collectors.toList());
         }
         
-        manifest.getMainAttributes().putValue(Analyzer.PRIVATE_PACKAGE, String.join(",", bundleClasspaths));
         
         String importPackagesString = manifest.getMainAttributes().getValue(Analyzer.IMPORT_PACKAGE);
         int size = bundleClasspathKeys.size();
@@ -1101,8 +1104,10 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
             List<String> infos = dependencyCacheMap.get(bundleClasspathKeys.get(i));
             privatePackages.add(infos.get(0));
             importPackagesArray[i] = infos.get(1);
-            bundleClasspaths.add(infos.get(2));
+            // bundleClasspaths.add(infos.get(2));
         }
+
+        manifest.getMainAttributes().putValue(Analyzer.PRIVATE_PACKAGE, String.join(",", privatePackages));
 
         StringBuilder fileterdImportPackage = new StringBuilder();
         
@@ -1171,10 +1176,10 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
                 //If don't want to enable this feature just comment out
                 if (cacheManifest(url, relativePath)) {
                     bundleClasspathKeys.add(dependencyFile.length() + dependencyFile.getName());
+                    bundleClasspath.append(MANIFEST_ITEM_SEPARATOR).append(relativePath);
                     continue;
                 }
 
-                bundleClasspath.append(MANIFEST_ITEM_SEPARATOR).append(relativePath);
                 bin.putResource(relativePath, new FileResource(dependencyFile));
                 // analyzer.addClasspath(new File(url.getPath()));
                 // Add dynamic library declaration in manifest
