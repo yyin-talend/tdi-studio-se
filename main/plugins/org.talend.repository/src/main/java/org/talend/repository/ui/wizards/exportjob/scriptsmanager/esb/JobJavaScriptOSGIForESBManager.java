@@ -941,25 +941,26 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
 
         Analyzer analyzer = createAnalyzer(libResource, processItem);
 
+        Set<String> imports = null;
+
         if (GlobalServiceRegister.getDefault().isServiceRegistered(IRunProcessService.class)) {
             IRunProcessService service = (IRunProcessService) GlobalServiceRegister.getDefault()
                     .getService(IRunProcessService.class);
             ITalendProcessJavaProject talendProcessJavaProject = service.getTalendJobJavaProject(processItem.getProperty());
             if (talendProcessJavaProject != null) {
-                String optional = ";resolution:=optional";
-                Set<String> imports = importCompiler(service, processItem);
+                imports = importCompiler(service, processItem);
                 String[] defaultPackages = analyzer.getProperty(Analyzer.IMPORT_PACKAGE).split(",");
                 // JDK upgrade to 11
                 imports.add("org.osgi.framework");
 
                 for (String dp : defaultPackages) {
-                    if (!imports.contains(dp) && !imports.contains(dp + optional)) {
+                    if (!imports.contains(dp) && !imports.contains(dp + RESOLUTION_OPTIONAL)) {
                         imports.add(dp);
                     }
                 }
                 imports.remove("*;resolution:=optional");
                 imports.remove("routines.system");
-                imports.remove("routines.system" + optional);
+                imports.remove("routines.system" + RESOLUTION_OPTIONAL);
                 StringBuilder importPackage = new StringBuilder();
                 for (String packageName : imports) {
                     importPackage.append(packageName).append(',');
@@ -975,7 +976,7 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
         try {
             manifest = analyzer.calcManifest();
             if(ENABLE_CACHE) {
-                filterImportPackagesCache(manifest);
+                filterImportPackagesCache(manifest, imports);
             }else {
                 filterImportPackages(manifest);
             }
@@ -1126,7 +1127,7 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
         manifest.getMainAttributes().putValue(Analyzer.IMPORT_PACKAGE, str);
     }
 
-    private void filterImportPackagesCache(Manifest manifest) {
+    private void filterImportPackagesCache(Manifest manifest, Set<String> imports) {
 
 //        List<String> bundleClasspaths = null;
 //        if (manifest.getMainAttributes().getValue(Analyzer.BUNDLE_CLASSPATH) == null) {
@@ -1152,10 +1153,9 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
         if (manifest.getMainAttributes().getValue(Analyzer.IMPORT_PACKAGE) == null) {
             importNonRepetitivePackages = new HashSet<>();
         } else {
-            importNonRepetitivePackages = Stream.of(manifest.getMainAttributes().getValue(Analyzer.IMPORT_PACKAGE).split(","))
-                    .map(v -> {
-                        if (!StringUtils.endsWith(v, ";resolution:=optional")) {
-                            return v + ";resolution:=optional";
+            importNonRepetitivePackages = imports.stream().map(v -> {
+                if (!StringUtils.endsWith(v, RESOLUTION_OPTIONAL)) {
+                    return v + RESOLUTION_OPTIONAL;
                         }
                         return v;
                     }).collect(Collectors.toSet());
@@ -1169,8 +1169,8 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
                 continue;
             }
             importNonRepetitivePackages.addAll(Stream.of(infos.get(0).split(",")).map(v -> {
-                if (!StringUtils.endsWith(v, ";resolution:=optional")) {
-                    return v + ";resolution:=optional";
+                if (!StringUtils.endsWith(v, RESOLUTION_OPTIONAL)) {
+                    return v + RESOLUTION_OPTIONAL;
                 }
                 return v;
             }).collect(Collectors.toSet()));
@@ -1178,26 +1178,20 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
             Collections.addAll(privateNonRepetitivePackages, infos.get(1).split(","));
             // bundleClasspaths.add(infos.get(2));
         }
-
-        StringBuilder fileterdImportPackage = new StringBuilder();
         
         importNonRepetitivePackages.remove("routines.system");
-        importNonRepetitivePackages.remove("routines.system" + ";resolution:=optional");
+        importNonRepetitivePackages.remove("routines.system" + RESOLUTION_OPTIONAL);
+
+        Set<String> fileterdImportPackage = new HashSet<>();
 
         for (String p : importNonRepetitivePackages) {
-            String importPackage = p.split(";")[0];
-            if (!privateNonRepetitivePackages.contains(importPackage) || importPackage.startsWith("routines")) {
-                fileterdImportPackage.append(p).append(",");
+            if (!privateNonRepetitivePackages.contains(p.replace(RESOLUTION_OPTIONAL, "")) || p.startsWith("routines")) {
+                fileterdImportPackage.add(p);
             }
         }
         
-        String str = fileterdImportPackage.toString();
-        if (str != null && str.length() > 0 && str.endsWith(",")) {
-            str = str.substring(0, str.length() - 1);
-        }
-        
         manifest.getMainAttributes().putValue(Analyzer.PRIVATE_PACKAGE, String.join(",", privateNonRepetitivePackages));
-        manifest.getMainAttributes().putValue(Analyzer.IMPORT_PACKAGE, str);
+        manifest.getMainAttributes().putValue(Analyzer.IMPORT_PACKAGE, String.join(",", fileterdImportPackage));
     }
 
     protected Analyzer createAnalyzer(ExportFileResource libResource, ProcessItem processItem) throws IOException {
@@ -1475,7 +1469,7 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
                         Matcher m = pattern.matcher(lines[1].substring(markerPos));
                         if (m.find()) {
                             if (m.groupCount() == 1 && m.group(1).indexOf('.') > 0) {
-                                imports.add(m.group(1) + ";resolution:=optional");
+                                imports.add(m.group(1) + RESOLUTION_OPTIONAL);
                             }
                         }
                     }
