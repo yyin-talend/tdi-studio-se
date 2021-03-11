@@ -128,7 +128,8 @@ public class IncomingSchemaEnforcer {
         // Add all of the runtime columns except any dynamic column to the index map.
         for (Schema.Field f : designSchema.getFields()) {
             if (f.pos() != dynamicColumnPosition) {
-                columnToFieldIndex.put(f.name(), f.pos());
+                System.out.println("Adding col to field index " + f.name() + ", " + f.pos());
+                columnToFieldIndex.put(sanitizeColumnName(f.name()), f.pos());
             }
         }
     }
@@ -163,12 +164,35 @@ public class IncomingSchemaEnforcer {
         if (isNullable) {
             fieldSchema = SchemaBuilder.nullable().type(fieldSchema);
         }
-        Schema.Field field = new Schema.Field(name, fieldSchema, description, (Object) null);
+        String sanitizedName = sanitizeColumnName(name);
+        Schema.Field field = new Schema.Field(sanitizedName, fieldSchema, description, (Object) null);
+        field.addProp("rawName", name);
         // Set pattern for date type
         if ("id_Date".equals(diType) && fieldPattern != null) {
             field.addProp(SchemaConstants.TALEND_COLUMN_PATTERN, fieldPattern);
         }
         dynamicFields.add(field);
+    }
+
+    public String sanitizeColumnName(final String name) {
+        if (name.isEmpty()) {
+            return name;
+        }
+        final char[] original = name.toCharArray();
+        final boolean skipFirstChar = !Character.isLetter(original[0]) && original[0] != '_';
+        final int offset = skipFirstChar ? 1 : 0;
+        final char[] sanitized = skipFirstChar ? new char[original.length - offset] : new char[original.length];
+        if (!skipFirstChar) {
+            sanitized[0] = original[0];
+        }
+        for (int i = 1; i < original.length; i++) {
+            if (!Character.isLetterOrDigit(original[i]) && original[i] != '_') {
+                sanitized[i - offset] = '_';
+            } else {
+                sanitized[i - offset] = original[i];
+            }
+        }
+        return new String(sanitized).toUpperCase();
     }
 
     public void addIncomingNodeField(String name, String className) {
@@ -376,7 +400,10 @@ public class IncomingSchemaEnforcer {
      * @param diValue data value
      */
     public void put(String name, Object diValue) {
-        put(columnToFieldIndex.get(name), diValue);
+        System.out.println("put(" + name + ", " + diValue + ")");
+        System.out.println(columnToFieldIndex);
+        System.out.println(sanitizeColumnName(name));
+        put(columnToFieldIndex.get(sanitizeColumnName(name)), diValue);
     }
 
     /**

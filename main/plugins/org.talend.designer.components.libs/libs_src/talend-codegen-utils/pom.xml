@@ -142,29 +142,29 @@
 					</execution>
 				</executions>
 			</plugin>
-			<plugin>
-				<groupId>net.revelc.code.formatter</groupId>
-				<artifactId>formatter-maven-plugin</artifactId>
-				<version>${formatter.plugin.version}</version>
-				<configuration>
-					<configFile>talend_java_eclipse_formatter.xml</configFile>
-					<lineEnding>LF</lineEnding>
-				</configuration>
-				<dependencies>
-					<dependency>
-						<groupId>org.talend.tools</groupId>
-						<artifactId>java-formatter</artifactId>
-						<version>${java-formatter.plugin.version}</version>
-					</dependency>
-				</dependencies>
-				<executions>
-					<execution>
-						<goals>
-							<goal>validate</goal>
-						</goals>
-					</execution>
-				</executions>				
-			</plugin>
+<!--			<plugin>-->
+<!--				<groupId>net.revelc.code.formatter</groupId>-->
+<!--				<artifactId>formatter-maven-plugin</artifactId>-->
+<!--				<version>${formatter.plugin.version}</version>-->
+<!--				<configuration>-->
+<!--					<configFile>talend_java_eclipse_formatter.xml</configFile>-->
+<!--					<lineEnding>LF</lineEnding>-->
+<!--				</configuration>-->
+<!--				<dependencies>-->
+<!--					<dependency>-->
+<!--						<groupId>org.talend.tools</groupId>-->
+<!--						<artifactId>java-formatter</artifactId>-->
+<!--						<version>${java-formatter.plugin.version}</version>-->
+<!--					</dependency>-->
+<!--				</dependencies>-->
+<!--				<executions>-->
+<!--					<execution>-->
+<!--						<goals>-->
+<!--							<goal>validate</goal>-->
+<!--						</goals>-->
+<!--					</execution>-->
+<!--				</executions>				-->
+<!--			</plugin>-->
 		</plugins>
 	</build>
 </project>
