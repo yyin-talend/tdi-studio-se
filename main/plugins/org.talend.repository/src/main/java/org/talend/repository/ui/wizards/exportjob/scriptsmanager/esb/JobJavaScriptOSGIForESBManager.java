@@ -35,11 +35,9 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.Properties;
 import java.util.Set;
-import java.util.TreeSet;
 import java.util.jar.Attributes;
 import java.util.jar.Manifest;
 import java.util.regex.Matcher;
@@ -109,15 +107,12 @@ import org.talend.repository.utils.EmfModelUtils;
 import org.talend.repository.utils.EsbConfigUtils;
 import org.talend.repository.utils.TemplateProcessor;
 
-import aQute.bnd.header.Attrs;
+import aQute.bnd.header.Parameters;
 import aQute.bnd.osgi.Analyzer;
 import aQute.bnd.osgi.Clazz;
-import aQute.bnd.osgi.Descriptors;
+import aQute.bnd.osgi.Domain;
 import aQute.bnd.osgi.FileResource;
 import aQute.bnd.osgi.Jar;
-import aQute.bnd.service.AnalyzerPlugin;
-import aQute.bnd.service.Plugin;
-import aQute.service.reporter.Reporter;
 
 /**
  * DOC ycbai class global comment. Detailled comment
@@ -129,7 +124,7 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
 
     protected static final String OSGI_EXCLUDE_PROP_FILENAME = "osgi-exclude.properties"; ////$NON-NLS-1$
     
-    private boolean ENABLE_CACHE = true;
+    private boolean ENABLE_CACHE = StringUtils.equals(System.getProperty("enable.manifest.cache", "true"), "true");
 
     @SuppressWarnings("serial")
     private static final Collection<String> EXCLUDED_MODULES = new ArrayList<String>() {
@@ -207,7 +202,7 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
 
     }
 
-    Map<String, List<String>> dependencyCacheMap = null;
+    Map<String, List<Object>> dependencyCacheMap = null;
 
     protected static final char PACKAGE_SEPARATOR = '.';
 
@@ -961,13 +956,15 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
                 imports.remove("*;resolution:=optional");
                 imports.remove("routines.system");
                 imports.remove("routines.system" + RESOLUTION_OPTIONAL);
-                StringBuilder importPackage = new StringBuilder();
-                for (String packageName : imports) {
-                    importPackage.append(packageName).append(',');
+
+                if (!ENABLE_CACHE) {
+                    // TESB-24730 set specific version for "javax.annotation"
+                    imports.remove("javax.annotation");
+                    imports.remove("javax.annotation" + RESOLUTION_OPTIONAL);
+                    imports.add("javax.annotation;version=\"[1.3,2)\"" + RESOLUTION_OPTIONAL);
                 }
 
-                importPackage.append("*;resolution:=optional");
-                analyzer.setProperty(Analyzer.IMPORT_PACKAGE, importPackage.toString());
+                analyzer.setProperty(Analyzer.IMPORT_PACKAGE, String.join(",", imports) + ",*;resolution:=optional");
             }
         }
 
@@ -976,7 +973,7 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
         try {
             manifest = analyzer.calcManifest();
             if(ENABLE_CACHE) {
-                filterImportPackagesCache(manifest, imports);
+                filterPackagesCache(manifest, imports);
             }else {
                 filterImportPackages(manifest);
             }
@@ -1040,6 +1037,8 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
 //                    if (requireCapabilityString != null) {
 //
 //                    }
+                    Domain d = Domain.domain(manifest);
+                    Parameters imports = d.getImportPackage();
 
                     String privatePackageString = manifest.getMainAttributes().getValue(Analyzer.PRIVATE_PACKAGE);
                     String importPackageString = manifest.getMainAttributes().getValue(Analyzer.IMPORT_PACKAGE);
@@ -1049,8 +1048,8 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
                         return false;
                     }
 
-                    List<String> infos = new ArrayList<>();
-                    infos.add(importPackageString);
+                    List<Object> infos = new ArrayList<>();
+                    infos.add(imports.keyList());
                     infos.add(privatePackageString);
                     infos.add(relativePath);
 
@@ -1127,7 +1126,7 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
         manifest.getMainAttributes().putValue(Analyzer.IMPORT_PACKAGE, str);
     }
 
-    private void filterImportPackagesCache(Manifest manifest, Set<String> imports) {
+    private void filterPackagesCache(Manifest manifest, Set<String> imports) {
 
 //        List<String> bundleClasspaths = null;
 //        if (manifest.getMainAttributes().getValue(Analyzer.BUNDLE_CLASSPATH) == null) {
@@ -1164,23 +1163,30 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
         int size = bundleClasspathKeys.size();
 
         for (int i = 0; i < size; i++) {
-            List<String> infos = dependencyCacheMap.get(bundleClasspathKeys.get(i));
+            List<Object> infos = dependencyCacheMap.get(bundleClasspathKeys.get(i));
             if (infos == null) {
                 continue;
             }
-            importNonRepetitivePackages.addAll(Stream.of(infos.get(0).split(",")).map(v -> {
+            List<String> parameters = (List<String>) infos.get(0);
+
+            importNonRepetitivePackages.addAll(parameters.stream().map(v -> {
                 if (!StringUtils.endsWith(v, RESOLUTION_OPTIONAL)) {
                     return v + RESOLUTION_OPTIONAL;
                 }
                 return v;
             }).collect(Collectors.toSet()));
 
-            Collections.addAll(privateNonRepetitivePackages, infos.get(1).split(","));
+            Collections.addAll(privateNonRepetitivePackages, infos.get(1).toString().split(","));
             // bundleClasspaths.add(infos.get(2));
         }
         
         importNonRepetitivePackages.remove("routines.system");
         importNonRepetitivePackages.remove("routines.system" + RESOLUTION_OPTIONAL);
+
+        // TESB-24730 set specific version for "javax.annotation"
+        importNonRepetitivePackages.remove("javax.annotation");
+        importNonRepetitivePackages.remove("javax.annotation" + RESOLUTION_OPTIONAL);
+        importNonRepetitivePackages.add("javax.annotation;version=\"[1.3,2)\"" + RESOLUTION_OPTIONAL);
 
         Set<String> fileterdImportPackage = new HashSet<>();
 
@@ -1264,11 +1270,6 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
             analyzer.setProperty(Analyzer.BUNDLE_NATIVECODE, bundleNativeCode.toString());
         }
 
-        // TESB-24730 set specific version for "javax.annotation"
-        ImportedPackageRangeReplacer r = new ImportedPackageRangeReplacer();
-        r.addRange("javax.annotation", "[1.3,2)");
-        analyzer.addBasicPlugin(r);
-
         return analyzer;
     }
 
@@ -1286,7 +1287,6 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
             if (EmfModelUtils.computeCheckElementValue("EXPOSE_SWAGGER_SPEC", restRequestComponent)) {
                 importPackages.add("org.apache.cxf.jaxrs.swagger");
             }
-
 
             if (EmfModelUtils.computeCheckElementValue("NEED_AUTH", restRequestComponent)) { //$NON-NLS-1$
                 String authType = EmfModelUtils.computeTextElementValue("AUTH_TYPE", restRequestComponent); //$NON-NLS-1$
@@ -1481,117 +1481,5 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
             e.printStackTrace();
         }
         return imports;
-    }
-
-    private class ImportedPackageRangeReplacer implements AnalyzerPlugin, Plugin {
-
-        private Set<Range> ranges = new TreeSet<>();
-
-        public void addRange(String packageName, String packageVersion) {
-            ranges.add(new Range(packageName, packageVersion));
-        }
-
-        /**
-         * Analyzes the jar and update the version range.
-         *
-         * @param analyzer the analyzer
-         * @return {@code false}
-         * @throws Exception if the analaysis fails.
-         */
-        @Override
-        public boolean analyzeJar(Analyzer analyzer) throws Exception {
-
-            if (analyzer.getReferred() == null) {
-                return false;
-            }
-
-            for (Map.Entry<Descriptors.PackageRef, Attrs> entry : analyzer.getReferred().entrySet()) {
-                for (Range range : ranges) {
-                    if (range.matches(entry.getKey().getFQN())) {
-                        String value = range.getRange(analyzer);
-                        if (value != null) {
-                            entry.getValue().put("version", value);
-                        }
-                    }
-                }
-            }
-            return false;
-        }
-
-
-        private class Range implements Comparable<Range> {
-            final String name;
-            final String value;
-            final Pattern regex;
-
-            private String foundRange;
-
-            private Range(String name, String value) {
-                this.name = name;
-                this.value = value;
-                this.regex = Pattern.compile(name.trim().replace(".", "\\.").replace("*", ".*"));
-            }
-
-            private boolean matches(String pck) {
-                return regex.matcher(pck).matches();
-            }
-
-            private String getRange(Analyzer analyzer) throws Exception {
-                if (foundRange != null) {
-                    return foundRange;
-                }
-                if (null == value || value.isEmpty()) {
-                    for (Jar jar : analyzer.getClasspath()) {
-                        if (isProvidedByJar(jar) && jar.getVersion() != null) {
-                            foundRange = jar.getVersion();
-                            return jar.getVersion();
-                        }
-                    }
-                    return null;
-                } else {
-                    return value;
-                }
-            }
-
-            private boolean isProvidedByJar(Jar jar) {
-                for (String s : jar.getPackages()) {
-                    if (matches(s)) {
-                        return true;
-                    }
-                }
-                return false;
-            }
-
-            @Override
-            public int compareTo(Range o) {
-                return Integer.compare(this.regex.pattern().length(), o.regex.pattern().length());
-            }
-
-            @Override
-            public boolean equals(Object o) {
-                if (this == o) {
-                    return true;
-                }
-                if (o == null || getClass() != o.getClass()) {
-                    return false;
-                }
-                Range range = (Range) o;
-                return Objects.equals(name, range.name) &&
-                        Objects.equals(value, range.value);
-            }
-
-            @Override
-            public int hashCode() {
-                return Objects.hashCode(name + value);
-            }
-        }
-
-        @Override
-        public void setReporter(Reporter processor) {
-        }
-
-        @Override
-        public void setProperties(Map<String, String> map) throws Exception {
-        }
     }
 }
