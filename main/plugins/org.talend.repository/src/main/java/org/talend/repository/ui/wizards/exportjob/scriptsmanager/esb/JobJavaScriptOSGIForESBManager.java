@@ -1002,7 +1002,7 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
     private boolean cacheManifest(URL url, String relativePath) {
         boolean result = false;
         ObjectOutputStream o = null;
-        Analyzer al = null;
+        Analyzer al = new Analyzer();
         try {
             File jarFile = new File(url.toURI());
 
@@ -1021,8 +1021,10 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
 
                 if (dependencyCacheMap == null || dependencyCacheMap.get(key) == null) {
                     Jar bin = new Jar(jarFile);
-                    al = new Analyzer();
+                    al.clear();
                     al.setJar(bin);
+                    al.setProperty(Analyzer.IMPORT_PACKAGE, "*;resolution:=optional");
+                    // bin.putResource(relativePath, new FileResource(jarFile));
                     Manifest manifest = al.calcManifest();
                     String requireCapabilityString = manifest.getMainAttributes().getValue(Analyzer.REQUIRE_CAPABILITY);
 
@@ -1033,6 +1035,11 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
 
                     String privatePackageString = manifest.getMainAttributes().getValue(Analyzer.PRIVATE_PACKAGE);
                     String importPackageString = manifest.getMainAttributes().getValue(Analyzer.IMPORT_PACKAGE);
+
+                    if (StringUtils.isBlank(privatePackageString) || StringUtils.isBlank(importPackageString)) {
+                        bundleClasspathKeys.remove(key);
+                        return false;
+                    }
 
                     List<String> infos = new ArrayList<>();
                     infos.add(importPackageString);
@@ -1050,6 +1057,12 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
                         o = new ObjectOutputStream(f);
                         o.writeObject(dependencyCacheMap);
                     }
+                } else {
+                    if (dependencyCacheMap.get(key).get(0) == null || dependencyCacheMap.get(key).get(1) == null) {
+                        dependencyCacheMap.remove(key);
+                        bundleClasspathKeys.remove(key);
+                    }
+
                 }
             }
 
@@ -1086,39 +1099,42 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
 //        
 //        manifest.getMainAttributes().putValue(Analyzer.BUNDLE_CLASSPATH, String.join(",", bundleClasspaths));
 
-        List<String> privatePackages = null;
+        Set<String> privateNonRepetitivePackages = new HashSet<>();
+
         if (manifest.getMainAttributes().getValue(Analyzer.PRIVATE_PACKAGE) == null) {
-            privatePackages = new ArrayList<>();
+            privateNonRepetitivePackages = new HashSet<>();
         } else {
-            privatePackages = Stream.of(manifest.getMainAttributes().getValue(Analyzer.PRIVATE_PACKAGE).split(","))
-                    .collect(Collectors.toList());
+            privateNonRepetitivePackages = Stream.of(manifest.getMainAttributes().getValue(Analyzer.PRIVATE_PACKAGE).split(","))
+                    .collect(Collectors.toSet());
         }
         
+        Set<String> importNonRepetitivePackages = new HashSet<>();
         
-        String importPackagesString = manifest.getMainAttributes().getValue(Analyzer.IMPORT_PACKAGE);
+        if (manifest.getMainAttributes().getValue(Analyzer.IMPORT_PACKAGE) == null) {
+            importNonRepetitivePackages = new HashSet<>();
+        } else {
+            importNonRepetitivePackages = Stream.of(manifest.getMainAttributes().getValue(Analyzer.IMPORT_PACKAGE).split(","))
+                    .collect(Collectors.toSet());
+        }
+
         int size = bundleClasspathKeys.size();
-        String[] importPackagesArray = new String[size+1];
-        importPackagesArray[size] = importPackagesString;
-        
+
         for (int i = 0; i < size; i++) {
             List<String> infos = dependencyCacheMap.get(bundleClasspathKeys.get(i));
-            privatePackages.add(infos.get(0));
-            importPackagesArray[i] = infos.get(1);
+            if (infos == null) {
+                continue;
+            }
+            Collections.addAll(importNonRepetitivePackages, infos.get(0).split(","));
+            Collections.addAll(privateNonRepetitivePackages, infos.get(1).split(","));
             // bundleClasspaths.add(infos.get(2));
         }
 
-        manifest.getMainAttributes().putValue(Analyzer.PRIVATE_PACKAGE, String.join(",", privatePackages));
-
         StringBuilder fileterdImportPackage = new StringBuilder();
         
-        if (importPackagesString != null) {
-            
-            String [] packages = importPackagesString.split(",");
-            for (String p : packages) {
-                String importPackage = p.split(";")[0];
-                if (!privatePackages.contains(importPackage) || importPackage.startsWith("routines")) {
-                    fileterdImportPackage.append(p).append(",");
-                }
+        for (String p : importNonRepetitivePackages) {
+            String importPackage = p.split(";")[0];
+            if (!privateNonRepetitivePackages.contains(importPackage) || importPackage.startsWith("routines")) {
+                fileterdImportPackage.append(p).append(",");
             }
         }
         
@@ -1126,6 +1142,8 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
         if (str != null && str.length() > 0 && str.endsWith(",")) {
             str = str.substring(0, str.length() - 1);
         }
+        
+        manifest.getMainAttributes().putValue(Analyzer.PRIVATE_PACKAGE, String.join(",", privateNonRepetitivePackages));
         manifest.getMainAttributes().putValue(Analyzer.IMPORT_PACKAGE, str);
     }
 
@@ -1173,20 +1191,22 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
                 File dependencyFile = new File(FilesUtils.getFileRealPath(url.getPath()));
                 String relativePath = libResource.getDirectoryName() + PATH_SEPARATOR + dependencyFile.getName();
                 
-                //If don't want to enable this feature just comment out
-                if (cacheManifest(url, relativePath)) {
-                    bundleClasspathKeys.add(dependencyFile.length() + dependencyFile.getName());
-                    bundleClasspath.append(MANIFEST_ITEM_SEPARATOR).append(relativePath);
-                    continue;
-                }
-
-                bin.putResource(relativePath, new FileResource(dependencyFile));
+                bundleClasspathKeys.add(dependencyFile.length() + dependencyFile.getName());
+                bundleClasspath.append(MANIFEST_ITEM_SEPARATOR).append(relativePath);
+                
                 // analyzer.addClasspath(new File(url.getPath()));
                 // Add dynamic library declaration in manifest
                 if (relativePath.toLowerCase().endsWith(DLL_FILE) || relativePath.toLowerCase().endsWith(SO_FILE)) {
                     bundleNativeCode.append(libResource.getDirectoryName() + PATH_SEPARATOR + dependencyFile.getName()).append(
                             OSGI_OS_CODE);
                 }
+                
+                //If don't want to enable this feature just comment out
+                if (cacheManifest(url, relativePath)) {
+                    continue;
+                }
+
+                bin.putResource(relativePath, new FileResource(dependencyFile));
             }
         }
         analyzer.setProperty(Analyzer.BUNDLE_CLASSPATH, bundleClasspath.toString());
