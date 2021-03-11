@@ -128,6 +128,8 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
     protected static final char MANIFEST_ITEM_SEPARATOR = ',';
 
     protected static final String OSGI_EXCLUDE_PROP_FILENAME = "osgi-exclude.properties"; ////$NON-NLS-1$
+    
+    private boolean ENABLE_CACHE = false;
 
     @SuppressWarnings("serial")
     private static final Collection<String> EXCLUDED_MODULES = new ArrayList<String>() {
@@ -972,7 +974,12 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
         Manifest manifest = null;
         try {
             manifest = analyzer.calcManifest();
-            filterImportPackages(manifest);
+            if(ENABLE_CACHE) {
+                filterImportPackagesCache(manifest);
+            }else {
+                filterImportPackages(manifest);
+            }
+            
         } catch (IOException e) {
             throw e;
         } catch (Exception e) {
@@ -1086,8 +1093,40 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
     }
 
     private List<String> bundleClasspathKeys = new ArrayList<>();
-
+    
     private void filterImportPackages(Manifest manifest) {
+
+        // remove import packages which are present in private packages
+
+        List<String> privatePackages = new ArrayList<String>(); 
+        String privatePackagesString = manifest.getMainAttributes().getValue(Analyzer.PRIVATE_PACKAGE);
+        if (privatePackagesString != null) {
+            String [] packages = privatePackagesString.split(",");
+            for (String p : packages) {
+                privatePackages.add(p);
+            }
+        }
+        
+        StringBuilder fileterdImportPackage = new StringBuilder();
+        String importPackagesString = manifest.getMainAttributes().getValue(Analyzer.IMPORT_PACKAGE);
+        if (importPackagesString != null) {
+            String [] packages = importPackagesString.split(",");
+            for (String p : packages) {
+                String importPackage = p.split(";")[0];
+                if (!privatePackages.contains(importPackage) || importPackage.startsWith("routines")) {
+                    fileterdImportPackage.append(p).append(",");
+                }
+            }
+        }
+        
+        String str = fileterdImportPackage.toString();
+        if (str != null && str.length() > 0 && str.endsWith(",")) {
+            str = str.substring(0, str.length() - 1);
+        }
+        manifest.getMainAttributes().putValue(Analyzer.IMPORT_PACKAGE, str);
+    }
+
+    private void filterImportPackagesCache(Manifest manifest) {
 
 //        List<String> bundleClasspaths = null;
 //        if (manifest.getMainAttributes().getValue(Analyzer.BUNDLE_CLASSPATH) == null) {
@@ -1114,7 +1153,12 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
             importNonRepetitivePackages = new HashSet<>();
         } else {
             importNonRepetitivePackages = Stream.of(manifest.getMainAttributes().getValue(Analyzer.IMPORT_PACKAGE).split(","))
-                    .collect(Collectors.toSet());
+                    .map(v -> {
+                        if (!StringUtils.endsWith(v, ";resolution:=optional")) {
+                            return v + ";resolution:=optional";
+                        }
+                        return v;
+                    }).collect(Collectors.toSet());
         }
 
         int size = bundleClasspathKeys.size();
@@ -1202,7 +1246,7 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
                 }
                 
                 //If don't want to enable this feature just comment out
-                if (cacheManifest(url, relativePath)) {
+                if (ENABLE_CACHE && cacheManifest(url, relativePath)) {
                     continue;
                 }
 
