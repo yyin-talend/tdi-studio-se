@@ -129,7 +129,7 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
 
     protected static final String OSGI_EXCLUDE_PROP_FILENAME = "osgi-exclude.properties"; ////$NON-NLS-1$
     
-    private boolean ENABLE_CACHE = false;
+    private boolean ENABLE_CACHE = true;
 
     @SuppressWarnings("serial")
     private static final Collection<String> EXCLUDED_MODULES = new ArrayList<String>() {
@@ -1030,7 +1030,7 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
                     Jar bin = new Jar(jarFile);
                     al.clear();
                     al.setJar(bin);
-                    al.setProperty(Analyzer.IMPORT_PACKAGE, "*;resolution:=optional");
+                    // al.setProperty(Analyzer.IMPORT_PACKAGE, "*;resolution:=optional");
                     // bin.putResource(relativePath, new FileResource(jarFile));
                     Manifest manifest = al.calcManifest();
                     String requireCapabilityString = manifest.getMainAttributes().getValue(Analyzer.REQUIRE_CAPABILITY);
@@ -1138,7 +1138,7 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
 //        
 //        manifest.getMainAttributes().putValue(Analyzer.BUNDLE_CLASSPATH, String.join(",", bundleClasspaths));
 
-        Set<String> privateNonRepetitivePackages = new HashSet<>();
+        Set<String> privateNonRepetitivePackages = null;
 
         if (manifest.getMainAttributes().getValue(Analyzer.PRIVATE_PACKAGE) == null) {
             privateNonRepetitivePackages = new HashSet<>();
@@ -1147,7 +1147,7 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
                     .collect(Collectors.toSet());
         }
         
-        Set<String> importNonRepetitivePackages = new HashSet<>();
+        Set<String> importNonRepetitivePackages = null;
         
         if (manifest.getMainAttributes().getValue(Analyzer.IMPORT_PACKAGE) == null) {
             importNonRepetitivePackages = new HashSet<>();
@@ -1168,13 +1168,22 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
             if (infos == null) {
                 continue;
             }
-            Collections.addAll(importNonRepetitivePackages, infos.get(0).split(","));
+            importNonRepetitivePackages.addAll(Stream.of(infos.get(0).split(",")).map(v -> {
+                if (!StringUtils.endsWith(v, ";resolution:=optional")) {
+                    return v + ";resolution:=optional";
+                }
+                return v;
+            }).collect(Collectors.toSet()));
+
             Collections.addAll(privateNonRepetitivePackages, infos.get(1).split(","));
             // bundleClasspaths.add(infos.get(2));
         }
 
         StringBuilder fileterdImportPackage = new StringBuilder();
         
+        importNonRepetitivePackages.remove("routines.system");
+        importNonRepetitivePackages.remove("routines.system" + ";resolution:=optional");
+
         for (String p : importNonRepetitivePackages) {
             String importPackage = p.split(";")[0];
             if (!privateNonRepetitivePackages.contains(importPackage) || importPackage.startsWith("routines")) {
