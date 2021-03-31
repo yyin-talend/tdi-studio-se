@@ -758,7 +758,7 @@ public class JobJavaScriptsManager extends JobScriptsManager {
         String projectName = getCorrespondingProjectName(processItem);
         String folderName = JavaResourcesHelper.getJobFolderName(jobName, jobVersion);
         try {
-            String jobPackagePath = projectName + PATH_SEPARATOR + folderName + PATH_SEPARATOR
+            String jobPackagePath = projectName + JavaUtils.JAVA_PACKAGE + PATH_SEPARATOR + folderName + PATH_SEPARATOR
                     + JavaUtils.JAVA_CONTEXTS_DIRECTORY;
             ITalendProcessJavaProject talendProcessJavaProject = RepositoryPlugin.getDefault().getRunProcessService()
                     .getTalendJobJavaProject(processItem.getProperty());
@@ -1468,7 +1468,7 @@ public class JobJavaScriptsManager extends JobScriptsManager {
 
             // builds the jar file of the job classes,needContext specifies whether inclucdes the context.
             // add the job
-            String jobPath = projectName + PATH_SEPARATOR + jobFolderName;
+            String jobPath = projectName + JavaUtils.JAVA_PACKAGE + PATH_SEPARATOR + jobFolderName;
             jarbuilder.setIncludeDir(Collections.singleton(jobPath));
             // filter the context
             String contextPath = jobPath + PATH_SEPARATOR + JavaUtils.JAVA_CONTEXTS_DIRECTORY;

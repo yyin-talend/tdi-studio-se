@@ -53,7 +53,7 @@ if(service instanceof AbstractBrandingService){
         jobFolderName = JavaResourcesHelper.getJobFolderName(baseProcess.getName(), baseProcess.getVersion()) + ".";
     }
 	jobFolderName = jobFolderName + JavaResourcesHelper.getJobFolderName(process.getName(), process.getVersion());
-	String packageName = codeGenArgument.getCurrentProjectName().toLowerCase() + "." + jobFolderName;
+	String packageName = codeGenArgument.getCurrentProjectName().toLowerCase() + "package." + jobFolderName;
 %>
 package <%= packageName %>;
 

@@ -200,6 +200,7 @@ public class ContextModifyCommand extends Command {
      */
     private IResource getContextResource(IProcess2 process, IContext context) throws Exception {
         IPath path = new Path(JavaResourcesHelper.getProjectFolderName(process.getProperty().getItem()))
+                .append(JavaUtils.JAVA_PACKAGE)
                 .append(JavaResourcesHelper.getJobFolderName(process.getName(), process.getVersion()))
                 .append(JavaUtils.JAVA_CONTEXTS_DIRECTORY).append(context.getName() + JavaUtils.JAVA_CONTEXT_EXTENSION);
 

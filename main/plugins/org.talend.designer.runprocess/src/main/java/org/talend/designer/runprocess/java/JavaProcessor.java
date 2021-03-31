@@ -453,25 +453,29 @@ public class JavaProcessor extends AbstractJavaProcessor implements IJavaBreakpo
          * assume the job is "TestJob 0.1", project is "Test" .
          */
         String jobClassPackageFolder = null;
+        String jobClassPackageFolderForContextFiles = null;
         String jobClassFilePath = null;
         // only for "standard" job
         if (isStandardJob()) {
             Item item = property.getItem();
             // test/testjob_0_1
             jobClassPackageFolder = JavaResourcesHelper.getJobClassPackageFolder(item, isTestJob);
+            jobClassPackageFolderForContextFiles = JavaResourcesHelper.getJobClassPackageFolderForContextFiles(item, isTestJob);
             // test/testjob_0_1/TestJob.java
             jobClassFilePath = JavaResourcesHelper.getJobClassFilePath(item, filenameFromLabel, isTestJob);
             // test.testjob_0_1.TestJob
             this.mainClass = JavaResourcesHelper.getJobPackagedClass(item, filenameFromLabel, isTestJob);
         } else { // for shadow process, or preview process
             // test/shadowfileinputtodelimitedoutput_0_1, test/preview_data
-            jobClassPackageFolder = JavaResourcesHelper.getProjectFolderName(property) + JavaUtils.PATH_SEPARATOR
+            jobClassPackageFolder = JavaResourcesHelper.getProjectFolderName(property) + JavaUtils.JAVA_PACKAGE + JavaUtils.PATH_SEPARATOR
+                    + JavaResourcesHelper.getJobFolderName(process.getName(), process.getVersion());
+            jobClassPackageFolderForContextFiles = JavaResourcesHelper.getProjectFolderName(property) + JavaUtils.JAVA_PACKAGE + JavaUtils.PATH_SEPARATOR
                     + JavaResourcesHelper.getJobFolderName(process.getName(), process.getVersion());
             // test/shadowfileinputtodelimitedoutput_0_1/ShadowFileInputToDelimitedOutput.java,
             // test/preview_data/Preview_Data.java
-            jobClassFilePath = jobClassPackageFolder + JavaUtils.PATH_SEPARATOR
-                    + (filenameFromLabel ? JavaResourcesHelper.escapeFileName(process.getName()) : process.getId())
-                    + JavaUtils.JAVA_EXTENSION;
+            jobClassFilePath = jobClassPackageFolder + JavaUtils.JAVA_PACKAGE + JavaUtils.PATH_SEPARATOR
+                + (filenameFromLabel ? JavaResourcesHelper.escapeFileName(process.getName()) : process.getId())
+                + JavaUtils.JAVA_EXTENSION;
             // test.shadowfileinputtodelimitedoutput_0_1.ShadowFileInputToDelimitedOutput,
             // test.preview_data.Preview_Data
             this.mainClass = new Path(jobClassFilePath).removeFileExtension().toString().replace('/', '.');
@@ -504,7 +508,7 @@ public class JavaProcessor extends AbstractJavaProcessor implements IJavaBreakpo
          */
         // test/testjob_0_1/contexts
         // or test/testjob_0_1/testjunitjob_0_1/contexts
-        IPath jobContextFolderPath = new Path(jobClassPackageFolder).append(JavaUtils.JAVA_CONTEXTS_DIRECTORY);
+        IPath jobContextFolderPath = new Path(jobClassPackageFolderForContextFiles).append(JavaUtils.JAVA_CONTEXTS_DIRECTORY);
         // src/main/resources/test/testjob_0_1/contexts
         // or src/test/resources/test/testjob_0_1/testjunitjob_0_1/contexts
         tProcessJavaProject.createSubFolder(monitor, resourcesFolder, jobContextFolderPath.toString());
@@ -2233,7 +2237,7 @@ public class JavaProcessor extends AbstractJavaProcessor implements IJavaBreakpo
             }
             IFolder externalResourcesFolder = tProcessJvaProject.getExternalResourcesFolder();
             IFolder resourcesFolder = tProcessJvaProject.getResourcesFolder();
-            String jobClassPackageFolder = JavaResourcesHelper.getJobClassPackageFolder(item, false);
+            String jobClassPackageFolder = JavaResourcesHelper.getJobClassPackageFolderForContextFiles(item, false);
             IPath jobContextFolderPath = new Path(jobClassPackageFolder).append(JavaUtils.JAVA_CONTEXTS_DIRECTORY);
 
             IFolder extResourcePath = externalResourcesFolder.getFolder(jobContextFolderPath);
