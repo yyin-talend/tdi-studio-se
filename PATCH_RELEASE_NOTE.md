@@ -9,8 +9,8 @@ product:
 
 | Info             | Value |
 | ---------------- | ---------------- |
-| Patch Name       | Patch\_20210303\_TPS-4718\_v1-7.2.1 |
-| Release Date     | 2021-03-03 |
+| Patch Name       | Patch\_20210409\_TPS-4718\_v1-7.2.1 |
+| Release Date     | 2021-04-09 |
 | Target Version   | 20190620_1446-V7.2.1 |
 | Product affected | Talend Studio |
 
