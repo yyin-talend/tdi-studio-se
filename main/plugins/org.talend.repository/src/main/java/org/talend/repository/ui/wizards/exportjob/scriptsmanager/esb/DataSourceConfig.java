@@ -62,15 +62,15 @@ public class DataSourceConfig {
         }
         Collection<String> aliases = new HashSet<String>();
 
-//        List<? extends INode> generatingNodes = processItem.getGeneratingNodes();
-//
-//
-//        for (INode node : generatingNodes) {
-//            getDatasourceAliasesFrom(node, aliases, "SPECIFY_DATASOURCE_ALIAS", "DATASOURCE_ALIAS");
-//            getDatasourceAliasesFrom(node, aliases, "useDataSource", "dataSource");
-//        }
+        List<? extends INode> generatingNodes = processItem.getGeneratingNodes();
 
-        getAliases(processItem.getId(), aliases);
+
+        for (INode node : generatingNodes) {
+            getDatasourceAliasesFrom(node, aliases, "SPECIFY_DATASOURCE_ALIAS", "DATASOURCE_ALIAS");
+            getDatasourceAliasesFrom(node, aliases, "useDataSource", "dataSource");
+        }
+
+//        getAliases(processItem.getId(), aliases);
         return aliases;
     }
 
