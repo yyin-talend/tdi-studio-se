@@ -46,10 +46,13 @@
 					final Object cache = sessionHostPortCache.get(context);
 					final java.lang.reflect.Method putMethod = cache.getClass().getDeclaredMethod("put", Object.class, Object.class);
 					putMethod.setAccessible(true);
-					final java.lang.reflect.Method getHostMethod = socket.getClass().getDeclaredMethod("getHost");
-					getHostMethod.setAccessible(true);
-					Object host = getHostMethod.invoke(socket);
-					final String key = String.format("%s:%s", host, String.valueOf(socket.getPort())).toLowerCase(java.util.Locale.ROOT);
+					java.net.InetAddress address = socket.getInetAddress();
+					int port = socket.getPort();
+					
+					String key = String.format("%s:%s", address.getHostName(), String.valueOf(port)).toLowerCase(java.util.Locale.ROOT);
+					putMethod.invoke(cache, key, session);
+					
+					key = String.format("%s:%s", address.getHostAddress(), String.valueOf(port)).toLowerCase(java.util.Locale.ROOT);
 					putMethod.invoke(cache, key, session);
 				} catch(Exception e) {
 <%
