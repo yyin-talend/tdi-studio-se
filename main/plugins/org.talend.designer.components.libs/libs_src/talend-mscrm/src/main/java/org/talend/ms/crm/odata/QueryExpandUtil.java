@@ -27,7 +27,6 @@ public class QueryExpandUtil {
 
             name = getSanitizedName(name);
             StringBuilder sb = new StringBuilder(name);
-
             final String param = params.get(i);
             if(!"".equals(param.trim())){
                 sb.append('(');

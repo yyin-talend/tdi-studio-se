@@ -122,7 +122,7 @@ if ((metadatas != null) && (metadatas.size() > 0)) {
 				clientConfig_<%=cid%>.setReuseHttpClient(<%=reuseHttpClient%>);
 				org.talend.ms.crm.odata.DynamicsCRMClient client_<%=cid%> = new org.talend.ms.crm.odata.DynamicsCRMClient(clientConfig_<%=cid%>,<%=serviceURL%>,entitySetName_<%=cid%>);
 				String queryFilter_<%=cid%>=null;
-                                List<String> expands_<%=cid%> = null;
+                                List<String> expands_<%=cid%> = new java.util.ArrayList<>();
 				<%
 	     		String logical = ElementParameterParser.getValue(node,"__LOGICAL_OP__");
 	     		boolean isSpecifyComplexFilter="true".equals(ElementParameterParser.getValue(node, "__SPECIFY_COMPLEX_FILTER__"));
@@ -245,10 +245,17 @@ if ((metadatas != null) && (metadatas.size() > 0)) {
 	                  final String sanitizedName_<%=in_col%>_<%=cid%> = org.talend.ms.crm.odata.QueryExpandUtil.getSanitizedName("<%=in_col%>");
 	                  final org.apache.olingo.client.api.domain.ClientInlineEntity clientInlineEntity_<%=in_col%>_<%=cid%> = expandLinks_tMicrosoftCrmInput_1.get(sanitizedName_<%=in_col%>_<%=cid%>).asInlineEntity();
 	                  if(clientInlineEntity_<%=in_col%>_<%=cid%> != null){
-	                      final org.apache.olingo.client.api.domain.ClientEntity exp_entity_<%=in_col%>_<%=cid%> = clientInlineEntity_<%=in_col%>_<%=cid%>.getEntity();
-	                      final java.io.InputStream exp_entity_<%=in_col%>_inputStream_<%=cid%> = client_tMicrosoftCrmInput_1.getClient().getWriter().writeEntity(exp_entity_<%=in_col%>_<%=cid%>, org.apache.olingo.commons.api.format.ContentType.APPLICATION_JSON);
+	                      final java.io.InputStream exp_entity_<%=in_col%>_inputStream_<%=cid%> = client_tMicrosoftCrmInput_1.getClient().getWriter().writeEntity(clientInlineEntity_<%=in_col%>_<%=cid%>.getEntity(), org.apache.olingo.commons.api.format.ContentType.APPLICATION_JSON);
 	                      row1.<%=expandRow.get("OUTPUT_COLUMN")%> = new java.io.BufferedReader(new java.io.InputStreamReader(exp_entity_<%=in_col%>_inputStream_<%=cid%>)).lines().collect(java.util.stream.Collectors.joining("\n"));
 	                  }
+	                  {
+	                      final org.apache.olingo.client.api.domain.ClientInlineEntitySet clientInlineEntitySet_<%=in_col%>_<%=cid%> = expandLinks_tMicrosoftCrmInput_1.get(sanitizedName_<%=in_col%>_<%=cid%>).asInlineEntitySet();
+	                      if(clientInlineEntitySet_<%=in_col%>_<%=cid%> != null){
+	                          final java.io.InputStream exp_entity_<%=in_col%>_inputStream_<%=cid%> = client_tMicrosoftCrmInput_1.getClient().getWriter().writeEntities(clientInlineEntitySet_<%=in_col%>_<%=cid%>.getEntitySet().getEntities(), org.apache.olingo.commons.api.format.ContentType.APPLICATION_JSON);
+	                          row1.<%=expandRow.get("OUTPUT_COLUMN")%> = new java.io.BufferedReader(new java.io.InputStreamReader(exp_entity_<%=in_col%>_inputStream_<%=cid%>)).lines().collect(java.util.stream.Collectors.joining("\n"));
+   	                      }
+	                  }
+
 	                  <%
 			  }
 	                  // End expand
