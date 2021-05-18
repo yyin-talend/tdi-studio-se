@@ -27519,7 +27519,6 @@
             <ITEMS>
                 <ITEM NAME="INPUT_COLUMN" FIELD="COLUMN_LIST" />
                 <ITEM NAME="EXPAND_PARAMS" FIELD="String"/>
-                <ITEM NAME="EXPAND_LIST" FIELD="CHECK"/>
                 <ITEM NAME="OUTPUT_COLUMN" FIELD="COLUMN_LIST" /> <!-- Must be type 'document' or 'Dynamic' -->
             </ITEMS>
         </PARAMETER>

@@ -158,15 +158,12 @@ if ((metadatas != null) && (metadatas.size() > 0)) {
 				%>
 				java.util.List<String> expand_incol_<%=cid%> = new java.util.ArrayList<String>();
 				java.util.List<String> expand_params_<%=cid%> = new java.util.ArrayList<String>();
-	        	        java.util.List<Boolean> expand_islist_<%=cid%> = new java.util.ArrayList<Boolean>();
 				java.util.List<String> expand_outcol_<%=cid%> = new java.util.ArrayList<String>();
                                 <%
                                 for(Map<String, String> expandRow : expandArray) {
                                     %>
                                         expand_incol_<%=cid%>.add("<%=expandRow.get("INPUT_COLUMN")%>");
                                         expand_params_<%=cid%>.add("<%=expandRow.get("EXPAND_PARAMS")%>");
-                                        expand_islist_<%=cid%>.add(<%=expandRow.get("EXPAND_LIST")%>);
-                                        //expand_outcol_<%=cid%>.add("<%=expandRow.get("OUTPUT_COLUMN")%>");
                                     <%
                                 }
                                 %>
