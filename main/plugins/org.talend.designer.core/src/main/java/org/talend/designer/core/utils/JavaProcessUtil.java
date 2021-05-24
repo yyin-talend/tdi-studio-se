@@ -472,10 +472,13 @@ public class JavaProcessUtil {
     }
 
     public static void addJunitNeededModules(Collection<ModuleNeeded> modulesNeeded) {
-        ModuleNeeded junitModule = new ModuleNeeded("junit", "junit.jar", null, true); //$NON-NLS-1$ //$NON-NLS-2$
-        junitModule.setModuleLocaion("platform:/plugin/org.junit/junit.jar");
-        junitModule.setMavenUri("mvn:org.talend.libraries/junit/6.0.0");
+        ModuleNeeded junitModule = new ModuleNeeded("junit-4.13.2", "junit-4.13.2.jar", null, true); //$NON-NLS-1$ //$NON-NLS-2$
+        junitModule.setMavenUri("mvn:junit/junit/4.13.2/jar");
         modulesNeeded.add(junitModule);
+        //junit4 required dependencies
+        ModuleNeeded requiredMoule = new ModuleNeeded("hamcrest-core", "hamcrest-core-1.3.jar", null, true);
+        requiredMoule.setMavenUri("mvn:org.hamcrest/hamcrest-core/1.3/jar");
+        modulesNeeded.add(requiredMoule);
     }
 
     /**
@@ -993,7 +996,7 @@ public class JavaProcessUtil {
     private static Set<String> getCodesJarExportJarFromRoutinesParameterType(List<RoutinesParameterType> routinesParameters) {
         return routinesParameters.stream().filter(r -> r.getType() != null)
                 .map(r -> CodesJarResourceCache.getCodesJarById(r.getId())).filter(info -> info != null)
-                .map(info -> info.getProperty().getLabel().toLowerCase() + FileExtensions.JAR_FILE_SUFFIX)
+                .map(info -> info.getLabel().toLowerCase() + FileExtensions.JAR_FILE_SUFFIX)
                 .collect(Collectors.toSet());
     }
 

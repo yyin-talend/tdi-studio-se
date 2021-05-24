@@ -85,7 +85,7 @@ public class SetupProcessDependenciesRoutinesAction extends AContextualAction {
                 } else if (ERepositoryObjectType.SPARK_STREAMING_JOBLET != null && node.getObjectType().equals(ERepositoryObjectType.SPARK_STREAMING_JOBLET)) {
                     canWork = true;
                 } else if (ERepositoryObjectType.TEST_CONTAINER != null && node.getObjectType().equals(ERepositoryObjectType.TEST_CONTAINER)) {
-                    canWork = true;
+                    canWork = false;
                 } else if (node.getObjectType() != ERepositoryObjectType.PROCESS
                         && node.getObjectType() != ERepositoryObjectType.JOBLET
                         && node.getObjectType() != ERepositoryObjectType.PROCESS_ROUTE
@@ -98,9 +98,6 @@ public class SetupProcessDependenciesRoutinesAction extends AContextualAction {
             }
             if (canWork && node.getObject() != null
                     && ProxyRepositoryFactory.getInstance().getStatus(node.getObject()) == ERepositoryStatus.DELETED) {
-                canWork = false;
-            }
-            if (canWork && !ProjectManager.getInstance().isInCurrentMainProject(node)) {
                 canWork = false;
             }
 
@@ -125,7 +122,8 @@ public class SetupProcessDependenciesRoutinesAction extends AContextualAction {
         ProxyRepositoryFactory repFactory = ProxyRepositoryFactory.getInstance();
         ERepositoryStatus status = repFactory.getStatus(node.getObject());
         if (!repFactory.isPotentiallyEditable(node.getObject()) || status == ERepositoryStatus.LOCK_BY_OTHER
-                || status == ERepositoryStatus.LOCK_BY_USER || (ERepositoryObjectType.TEST_CONTAINER != null
+                || status == ERepositoryStatus.LOCK_BY_USER || !ProjectManager.getInstance().isInCurrentMainProject(node)
+                || (ERepositoryObjectType.TEST_CONTAINER != null
                         && node.getObjectType().equals(ERepositoryObjectType.TEST_CONTAINER))) {
             readonly = true;
         }
