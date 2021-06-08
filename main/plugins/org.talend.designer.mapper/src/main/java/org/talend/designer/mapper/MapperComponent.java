@@ -93,7 +93,7 @@ public class MapperComponent extends AbstractMapComponent implements IHashableIn
     private ExternalMapperData externalData;
 
     private GenerationManager generationManager;
-    
+
     private boolean shouldGenerateDatasetCode;
 
     /**
@@ -844,7 +844,6 @@ public class MapperComponent extends AbstractMapComponent implements IHashableIn
             }
         }
         return routinesToAdd;
-
     }
 
     /*
@@ -880,8 +879,11 @@ public class MapperComponent extends AbstractMapComponent implements IHashableIn
             return false;
         }
 
-        //only two input connections
-        if (this.externalData.getInputTables().size() != 2) {
+        // max two input connections
+        if (this.externalData.getInputTables().size() > 2) {
+            return false;
+        } // not ALL ROWS matching mode
+        else if (matchingModeIsAllRows(this.externalData)) {
             return false;
         }
 
@@ -903,6 +905,11 @@ public class MapperComponent extends AbstractMapComponent implements IHashableIn
             return false;
         }
         return true;
+    }
+
+    private boolean matchingModeIsAllRows(ExternalMapperData data) {
+        return "ALL_ROWS".equals(data.getInputTables().get(0).getMatchingMode()) //$NON-NLS-1$
+                && "ALL_ROWS".equals(data.getInputTables().get(1).getMatchingMode()); //$NON-NLS-1$
     }
 
     @Override
