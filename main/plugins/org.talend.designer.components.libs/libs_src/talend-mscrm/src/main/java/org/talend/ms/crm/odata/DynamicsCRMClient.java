@@ -608,13 +608,14 @@ public class DynamicsCRMClient implements IHttpClientFactoryObserver {
                 if (isResponseSuccess(response.getStatusLine().getStatusCode())) {
                     if (this.clientConfiguration.isReturnRepresentation()) {
                         final HttpEntity entity = response.getEntity();
-                        if (entity.isStreaming()) {
-                            InputStream instream = entity.getContent();
-                            String e = new BufferedReader(new InputStreamReader(instream))
-                                    .lines().collect(Collectors.joining("\n"));
-                            result.setEntity(e);
-                            if (instream != null) {
-                                instream.close();
+                        if (entity != null && entity.isStreaming()) {
+                            try(InputStream instream = entity.getContent()) {
+                                String e = new BufferedReader(new InputStreamReader(instream))
+                                        .lines().collect(Collectors.joining("\n"));
+                                result.setEntity(e);
+                                if (instream != null) {
+                                    instream.close();
+                                }
                             }
                         }
                     } else {
