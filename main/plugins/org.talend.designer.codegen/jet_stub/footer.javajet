@@ -579,6 +579,7 @@
 			<%}%>
 			
 			runtime_lineage_logger_<%=jobCatcherNode.getUniqueName()%> = org.talend.job.audit.JobEventAuditLoggerFactory.createJobAuditLogger(p_<%=jobCatcherNode.getUniqueName()%>);
+			logAction.setRuntimeLineageLogger(runtime_lineage_logger_<%=jobCatcherNode.getUniqueName()%>);
 		<%
 		}
 		
@@ -611,6 +612,8 @@
 				org.apache.logging.log4j.core.config.Configurator.setLevel(properties_<%=jobCatcherNode.getUniqueName()%>.getProperty("root.logger"), org.apache.logging.log4j.Level.DEBUG);
 				<%}%>
 				auditLogger_<%=jobCatcherNode.getUniqueName()%> = org.talend.job.audit.JobEventAuditLoggerFactory.createJobAuditLogger(properties_<%=jobCatcherNode.getUniqueName()%>);
+				
+				logAction.setAuditLogger(auditLogger_<%=jobCatcherNode.getUniqueName()%>);
 			}
 		<%
 		}
@@ -1029,13 +1032,9 @@ this.globalResumeTicket = true;//to run tPreJob
         
         if(enableLogStash) {
 %>
-		if(enableLogStash) {
-	        <%=jobCatcherNode.getUniqueName() %>.addJobStartMessage();
-	        try {
-	            <%=jobCatcherNode.getDesignSubjobStartNode().getUniqueName() %>Process(globalMap);
-	        } catch (java.lang.Exception e) {
-	            e.printStackTrace();
-	        }
+       if(enableLogStash) {
+            logAction.startAction();
+            <%=jobCatcherNode.getUniqueName() %>.addJobStartMessage();
         }
 <%
         }
@@ -1184,11 +1183,7 @@ this.globalResumeTicket = true;//to run tPostJob
 %>
 		if(enableLogStash) {
 	        <%=jobCatcherNode.getUniqueName() %>.addJobEndMessage(startTime, end, status);
-	        try {
-	            <%=jobCatcherNode.getDesignSubjobStartNode().getUniqueName() %>Process(globalMap);
-	        } catch (java.lang.Exception e) {
-	            e.printStackTrace();
-	        }
+	        logAction.stopAction();
         }
 <%
     }
