@@ -78,14 +78,25 @@
                    	if("insert".equals(action)){
 							%>
                             org.talend.ms.crm.odata.DynamicsCRMClient.CreateUpdateResult result = client_<%=cid%>.insertEntity(entity_<%=cid%>);
+
+                            <%
+                            if(returnRepresentation){
+                            %>
                             <%=conn.getName()%>.<%=returnRepresentationCol%> = result.getEntity();
+                            <%
+                            }
+                            %>
                     	<%
                     	}else if("update".equals(action)){
                     		if(idColumnName!=null){
                     		%>
                                 org.talend.ms.crm.odata.DynamicsCRMClient.CreateUpdateResult result = client_<%=cid%>.updateEntity( entity_<%=cid%>, <%=connName%>.<%=idColumnName%>);
+                                <%
+                                if(returnRepresentation){
+                                %>
                                 <%=conn.getName()%>.<%=returnRepresentationCol%> = result.getEntity();
                     		<%
+				}
                     		}
                     	} else if ("delete".equals(action)){
                     	%>
