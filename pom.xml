@@ -68,7 +68,6 @@
 		<module>main/plugins/org.talend.designer.rowgenerator</module>
 		<module>main/plugins/org.talend.designer.runprocess</module>
 		<module>main/plugins/org.talend.designer.scd</module>
-		<module>main/plugins/org.talend.designer.spss</module>
 		<module>main/plugins/org.talend.designer.tutorials</module>
 		<module>main/plugins/org.talend.designer.webservice</module>
 		<module>main/plugins/org.talend.designer.xmlmap</module>
