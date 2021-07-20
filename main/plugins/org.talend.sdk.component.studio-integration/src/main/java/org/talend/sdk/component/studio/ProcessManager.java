@@ -56,6 +56,9 @@ import org.talend.commons.CommonsPlugin;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.utils.network.NetworkUtil;
 import org.talend.core.GlobalServiceRegister;
+import org.talend.core.model.utils.ComponentGAV;
+import org.talend.core.model.utils.ComponentInstallerTaskRegistryReader;
+import org.talend.core.model.utils.IComponentInstallerTask;
 import org.talend.core.services.ICoreTisService;
 import org.talend.sdk.component.studio.lang.LocalLock;
 import org.talend.sdk.component.studio.lang.StringPropertiesTokenizer;
@@ -265,6 +268,7 @@ public class ProcessManager implements AutoCloseable {
     }
 
     public synchronized void start() {
+        reloadProperties();
         final Collection<URL> paths;
         try {
             paths = createClasspath();
@@ -433,14 +437,49 @@ public class ProcessManager implements AutoCloseable {
 
     private void reloadProperties() {
         try {
+            /*******************************
+             * <pre>
+             * Two cases
+             * 1 - load installed TCK components from config.ini which is the same as before
+             * 2 - load installed TCK components from TCK component plugin registry
+             * </pre>
+             *******************************/
+            StringBuilder sb = new StringBuilder();
             final String value = TaCoKitUtil.getInstalledComponentsString(new NullProgressMonitor());
-            if (value == null) {
-                return;
+            if (!StringUtils.isEmpty(value)) {
+                sb.append(value);
             }
-            System.setProperty(TaCoKitConst.PROP_COMPONENT, value);
+            String installedOfficialTCKComponents = getInstalledTCKComponents();
+            if (!StringUtils.isEmpty(installedOfficialTCKComponents)) {
+                if (sb.length() > 0) {
+                    sb.append(",");
+                }
+                sb.append(installedOfficialTCKComponents);
+            }
+
+            System.setProperty(TaCoKitConst.PROP_COMPONENT, sb.toString());
         } catch (Exception e) {
             ExceptionHandler.process(e);
         }
+    }
+    
+    private String getInstalledTCKComponents() {
+        List<IComponentInstallerTask> tasks = ComponentInstallerTaskRegistryReader.getInstance().getTasks(IComponentInstallerTask.COMPONENT_TYPE_TCOMPV1);
+        final StringBuilder sb = new StringBuilder();
+        tasks.forEach(t -> {
+            // already installed
+            if (!t.needInstall()) {
+                Set<ComponentGAV> gavs = t.getComponentGAV();
+                gavs.forEach(gav -> {
+                    if (sb.length() > 0) {
+                        sb.append(",");
+                    }
+                    sb.append(gav.toCoordinateStr());
+                });
+            }
+        });
+
+        return sb.toString();
     }
 
     private void updateProperties() {
