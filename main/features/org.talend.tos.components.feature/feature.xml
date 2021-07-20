@@ -37,7 +37,6 @@
   <plugin id="org.talend.designer.mapper" download-size="0" install-size="0" version="0.0.0" unpack="false"/>
   <plugin id="org.talend.designer.rowgenerator" download-size="0" install-size="0" version="0.0.0" unpack="false"/>
   <plugin id="org.talend.designer.scd" download-size="0" install-size="0" version="0.0.0" unpack="false"/>
-  <plugin id="org.talend.designer.spss" download-size="0" install-size="0" version="0.0.0" unpack="false"/>
   <plugin id="org.talend.designer.unifiedcomponent" download-size="0" install-size="0" version="0.0.0" unpack="false"/>
   <plugin id="org.talend.designer.webservice" download-size="0" install-size="0" version="0.0.0" unpack="false"/>
   <plugin id="org.talend.designer.xmlmap" download-size="0" install-size="0" version="0.0.0" unpack="false"/>
