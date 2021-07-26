@@ -198,10 +198,9 @@ public class ServerManager {
         int spent = 0;
         int time = 1000;
         int timeout = 1000 * 60 * 10;
-        Thread thread = Thread.currentThread();
         while (starting.get()) {
             try {
-                thread.sleep(time);
+                Thread.sleep(time);
                 spent += time;
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);

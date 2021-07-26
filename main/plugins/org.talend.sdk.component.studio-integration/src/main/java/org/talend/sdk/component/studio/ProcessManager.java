@@ -394,9 +394,13 @@ public class ProcessManager implements AutoCloseable {
                         lock.unlock();
                         throw new IllegalStateException("Component server startup failed");
                     }
-                    // 500 * 10 == 5000ms == 5s => means switching address per 5s
-                    int select = Math.abs(i / 10 % addressCount);
-                    String clientIp = localHostAddresses.get(select);
+                    
+                    String clientIp = getServerAddress();
+                    if (StringUtils.isEmpty(clientIp)) {
+                        // 500 * 10 == 5000ms == 5s => means switching address per 5s
+                        int select = Math.abs(i / 10 % addressCount);
+                        clientIp = localHostAddresses.get(select);
+                    }
                     String ip = clientIp;
                     if (ip.startsWith("[") && ip.endsWith("]")) {
                         // ipv6
@@ -674,6 +678,7 @@ public class ProcessManager implements AutoCloseable {
         final Integer port = Integer.getInteger("component.java.port", -1);
         if (port <= 0) {
             try (ServerSocket socket = new ServerSocket(0)) {
+                socket.setReuseAddress(true);
                 return socket.getLocalPort();
             } catch (final IOException e) {
                 throw new IllegalStateException(e);
