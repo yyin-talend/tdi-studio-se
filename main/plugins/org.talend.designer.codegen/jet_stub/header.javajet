@@ -398,7 +398,7 @@ public <%=JavaTypesManager.getTypeToGenerate(ctxParam.getType(),true)%> get<%=Ch
 	
 	if(jobCatcherNode!=null) {
 %>
-private final JobStructureCatcherUtils <%=jobCatcherNode.getUniqueName() %> = new JobStructureCatcherUtils(jobName, "<%=process.getId() %>", "<%=process.getVersion() %>", System.getProperty("audit.batch"));
+private final JobStructureCatcherUtils <%=jobCatcherNode.getUniqueName() %> = new JobStructureCatcherUtils(jobName, "<%=process.getId() %>", "<%=process.getVersion() %>", System.getProperty("audit.batch.size"));
 
 <%
 	if(enableLogStash || enable_runtime_lineage_log) {

@@ -99,10 +99,8 @@ if((codePart.equals(ECodePart.END))&&(stat || logstashCurrent)){
 				String sourceNodeComponent = source.getComponent().getName();
 	 			for (INode jobStructureCatcher : jobCatcherNodes) {
 	 			%>
-			 		if(runStat.updateStatAndLog(execStat,enableLogStash,resourceMap,iterateId,"<%=con.getUniqueName()%>",2,0,
-			 			"<%=sourceNodeId%>","<%=sourceNodeLabel%>","<%=sourceNodeComponent%>","<%=node.getUniqueName()%>","<%=targetNodeLabel%>","<%=node.getComponent().getName()%>","<%="REJECT".equals(con.getConnectorName()) ? "reject" : "output"%>")) {
-						//<%=jobStructureCatcher.getDesignSubjobStartNode().getUniqueName() %>Process(globalMap);
-					}
+			 		runStat.updateStatAndLog(execStat,enableLogStash,resourceMap,iterateId,"<%=con.getUniqueName()%>",2,0,
+			 			"<%=sourceNodeId%>","<%=sourceNodeLabel%>","<%=sourceNodeComponent%>","<%=node.getUniqueName()%>","<%=targetNodeLabel%>","<%=node.getComponent().getName()%>","<%="REJECT".equals(con.getConnectorName()) ? "reject" : "output"%>");
 				<%
 					break;
 				}
@@ -133,10 +131,8 @@ if((codePart.equals(ECodePart.END))&&(stat || logstashCurrent)){
 					String sourceNodeComponent = source.getComponent().getName();
 		 			for (INode jobStructureCatcher : jobCatcherNodes) {
 		 			%>
-				 		if(runStat.log(resourceMap,iterateId,"<%=con.getUniqueName()%>",2,0,
-				 			"<%=sourceNodeId%>","<%=sourceNodeLabel%>","<%=sourceNodeComponent%>","<%=node.getUniqueName()%>","<%=targetNodeLabel%>","<%=node.getComponent().getName()%>","<%="REJECT".equals(con.getConnectorName()) ? "reject" : "output"%>")) {
-							//<%=jobStructureCatcher.getDesignSubjobStartNode().getUniqueName() %>Process(globalMap);
-						}
+				 		runStat.log(resourceMap,iterateId,"<%=con.getUniqueName()%>",2,0,
+				 			"<%=sourceNodeId%>","<%=sourceNodeLabel%>","<%=sourceNodeComponent%>","<%=node.getUniqueName()%>","<%=targetNodeLabel%>","<%=node.getComponent().getName()%>","<%="REJECT".equals(con.getConnectorName()) ? "reject" : "output"%>");
 					<%
 						break;
 					}
@@ -290,7 +286,6 @@ if((codePart.equals(ECodePart.END))&&(stat || logstashCurrent)){
       %>
       <%=jobCatcherNode.getUniqueName()%>.addConnectionSchemaMessage("<%=node.getUniqueName()%>","<%=node.getComponent().getName()%>", 
         "<%=targetNodeId%>","<%=targetNodeComponent%>", "<%=conn.getUniqueName()%>" + iterateId, schema_<%=conn.getUniqueName()%>_<%=conn.getMetadataTable().getTableName()%>);
-      <%=jobCatcherNode.getDesignSubjobStartNode().getUniqueName() %>Process(globalMap);
       <%
   }
   

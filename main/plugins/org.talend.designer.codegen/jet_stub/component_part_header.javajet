@@ -152,9 +152,6 @@
 	boolean enableLogStash = !Boolean.getBoolean("deactivate_extended_component_log") && jobCatcherExists;
 	boolean logstashCurrent = enableLogStash && !cid.startsWith("tJobStructureCatcher") && !cid.startsWith("talend");
 	
-	//about performance monitor, no way to support more than one job catcher component, also that is not necessary
-	final String subprocessName4Catcher = logstashCurrent ? jobCatcherNodes.get(0).getDesignSubjobStartNode().getUniqueName() : null;
-	
 	if ((codePart.equals(ECodePart.BEGIN))&&(stat || logstashCurrent)&&connSet.size()>0) {
 		if(containsTPartitioner) {
 			%>
@@ -191,7 +188,7 @@
 		if(!node.getComponent().useMerge()) {
 			if(stat && logstashCurrent) {
 			%>
-			if(runStat.update(execStat,enableLogStash,iterateId,1,1
+			runStat.update(execStat,enableLogStash,iterateId,1,1
 				<%for(IConnection con : connSet){
 					INode source = con.getSource();
 					String sourceNodeId = source.getUniqueName();
@@ -206,9 +203,7 @@
 				%>
 					,"<%=con.getUniqueName()%>","<%=sourceNodeId%>","<%=sourceNodeLabel%>","<%=sourceNodeComponent%>","<%=node.getUniqueName()%>","<%=targetNodeLabel%>","<%=node.getComponent().getName()%>"
 				<%}%>
-			)) {
-				//<%=subprocessName4Catcher %>Process(globalMap);
-			}
+			);
 			<%
 			} else {
 				if(stat) {
@@ -227,7 +222,7 @@
 				if(logstashCurrent) {
 					%>
 					if(enableLogStash) {
-						if(runStat.updateLog(iterateId,1,1
+						runStat.updateLog(iterateId,1,1
 						<%for(IConnection con : connSet){
 							INode source = con.getSource();
 							String sourceNodeId = source.getUniqueName();
@@ -242,9 +237,7 @@
 						%>
 							,"<%=con.getUniqueName()%>","<%=sourceNodeId%>","<%=sourceNodeLabel%>","<%=sourceNodeComponent%>","<%=node.getUniqueName()%>","<%=targetNodeLabel%>","<%=node.getComponent().getName()%>"
 						<%}%>
-						)) {
-							//<%=subprocessName4Catcher %>Process(globalMap);
-						}
+						);
 					}
 					<%
 				}
@@ -254,7 +247,7 @@
 				if(connection.getUniqueName().equals((String)codeGenArgument.getIncomingName())){
 					if(stat && logstashCurrent) {
 					%>
-					if(runStat.update(execStat,enableLogStash,iterateId,1,1
+					runStat.update(execStat,enableLogStash,iterateId,1,1
 						<%for(IConnection con : connSet){
 							INode source = con.getSource();
 							String sourceNodeId = source.getUniqueName();
@@ -271,9 +264,7 @@
 							,"<%=con.getUniqueName()%>","<%=sourceNodeId%>","<%=sourceNodeLabel%>","<%=sourceNodeComponent%>","<%=node.getUniqueName()%>","<%=targetNodeLabel%>","<%=node.getComponent().getName()%>"
 							<%}
 						}%>
-					)) {
-						//<%=subprocessName4Catcher %>Process(globalMap);
-					}
+					);
 					<%
 					} else {
 						if(stat) {%>
@@ -290,7 +281,7 @@
 						
 						if(logstashCurrent) {%>
 						if(enableLogStash) {
-							if(runStat.updateLog(iterateId,1,1
+							runStat.updateLog(iterateId,1,1
 								<%for(IConnection con : connSet){
 									INode source = con.getSource();
 									String sourceNodeId = source.getUniqueName();
@@ -307,9 +298,7 @@
 									,"<%=con.getUniqueName()%>","<%=sourceNodeId%>","<%=sourceNodeLabel%>","<%=sourceNodeComponent%>","<%=node.getUniqueName()%>","<%=targetNodeLabel%>","<%=node.getComponent().getName()%>"
 									<%}
 								}%>
-							)) {
-								//<%=subprocessName4Catcher %>Process(globalMap);
-							}
+							);
 						}
 						<%}
 					}
@@ -428,7 +417,6 @@
         
         <%=jobCatcherNode.getUniqueName()%>.addComponentParameterMessage("<%=node.getUniqueName()%>", "<%=node.getComponent().getName()%>",
           new ParameterUtil_<%=cid%>().getParameter());
-        <%=jobCatcherNode.getDesignSubjobStartNode().getUniqueName() %>Process(globalMap);
 		<%
 		}
 		
@@ -439,7 +427,6 @@
 			%>
 			if(enableLogStash) {
 				<%=jobStructureCatcher.getUniqueName() %>.addCM("<%=node.getUniqueName()%>", "<%=nodeLabel%>", "<%=node.getComponent().getName()%>");
-				//<%=jobStructureCatcher.getDesignSubjobStartNode().getUniqueName() %>Process(globalMap);
 			}
 			<%
 				break;
