@@ -468,16 +468,13 @@ public class ProcessManager implements AutoCloseable {
         List<IComponentInstallerTask> tasks = ComponentInstallerTaskRegistryReader.getInstance().getTasks(IComponentInstallerTask.COMPONENT_TYPE_TCOMPV1);
         final StringBuilder sb = new StringBuilder();
         tasks.forEach(t -> {
-            // already installed
-            if (!t.needInstall()) {
-                Set<ComponentGAV> gavs = t.getComponentGAV();
-                gavs.forEach(gav -> {
-                    if (sb.length() > 0) {
-                        sb.append(",");
-                    }
-                    sb.append(gav.toCoordinateStr());
-                });
-            }
+            Set<ComponentGAV> gavs = t.getComponentGAV();
+            gavs.forEach(gav -> {
+                if (sb.length() > 0) {
+                    sb.append(",");
+                }
+                sb.append(gav.toCoordinateStr());
+            });
         });
 
         return sb.toString();
