@@ -279,7 +279,7 @@
 				<%
 				if(enableLogStash || enable_runtime_lineage_log) {
 				%>
-				logAction.stopAction();
+				<%=jobCatcherNode.getUniqueName() %>.addJobEndMessage(startTime, System.currentTimeMillis(), "failure");
 				<%
 				}
 				%>
