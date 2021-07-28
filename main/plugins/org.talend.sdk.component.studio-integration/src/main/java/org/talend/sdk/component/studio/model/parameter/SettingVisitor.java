@@ -172,7 +172,7 @@ public class SettingVisitor implements PropertyVisitor {
      * @return created parameters
      */
     public List<IElementParameter> getSettings() {
-        activations.forEach((String path,  List<ConditionGroup> conditionGroups) -> {
+        activations.forEach((path, conditionGroups) -> {
             final TaCoKitElementParameter param = (TaCoKitElementParameter) settings.get(path);
             if (param == null) {
                 throw new RuntimeException("ElementParameter not found. Path: " + path);
@@ -188,10 +188,9 @@ public class SettingVisitor implements PropertyVisitor {
                         }
                     })
                     .map(this.settings::get)
-                    .filter(Objects::nonNull)
-                    .filter(TaCoKitElementParameter.class::isInstance)
+                    .filter(Objects::nonNull).filter(TaCoKitElementParameter.class::isInstance)
                     .map(TaCoKitElementParameter.class::cast)
-                    .collect(toMap(ElementParameter::getName, identity(), (a, b) -> a));
+                    .collect(toMap(ElementParameter::getName, identity()));
 
             final ActiveIfListener activationListener = new ActiveIfListener(conditionGroups, param, targetParams);
 
