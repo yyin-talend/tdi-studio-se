@@ -1032,7 +1032,7 @@ this.globalResumeTicket = true;//to run tPreJob
         
         if(enableLogStash) {
 %>
-       if(enableLogStash) {
+        if(enableLogStash) {
             <%=jobCatcherNode.getUniqueName() %>.addJobStartMessage();
         }
 <%
