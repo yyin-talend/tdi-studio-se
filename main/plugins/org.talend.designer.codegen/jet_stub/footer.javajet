@@ -517,9 +517,26 @@
     	    }
         	log.info("TalendJob: '<%=codeGenArgument.getJobName()%>' - Start.");
     	<%}%>
-    	
-    	<%
-    	INode jobCatcherNode = null;
+
+        if(clientHost == null) {
+            clientHost = defaultClientHost;
+        }
+
+        if(pid == null || "0".equals(pid)) {
+            pid = TalendString.getAsciiRandomString(6);
+        }
+
+        if (rootPid==null) {
+            rootPid = pid;
+        }
+        if (fatherPid==null) {
+            fatherPid = pid;
+        }else{
+            isChildJob = true;
+        }
+        
+		<%
+		INode jobCatcherNode = null;
 		for (INode nodeInProcess : process.getGeneratingNodes()) {
 			String componentName = nodeInProcess.getComponent().getName();
 			if("tJobStructureCatcher".equals(componentName)) {
@@ -579,6 +596,8 @@
 			<%}%>
 			
 			runtime_lineage_logger_<%=jobCatcherNode.getUniqueName()%> = org.talend.job.audit.JobEventAuditLoggerFactory.createJobAuditLogger(p_<%=jobCatcherNode.getUniqueName()%>);
+			
+			<%=jobCatcherNode.getUniqueName()%>.init(pid, fatherPid, rootPid);
 			<%=jobCatcherNode.getUniqueName()%>.setRuntimeLineageLogger(runtime_lineage_logger_<%=jobCatcherNode.getUniqueName()%>);
 		<%
 		}
@@ -613,28 +632,12 @@
 				<%}%>
 				auditLogger_<%=jobCatcherNode.getUniqueName()%> = org.talend.job.audit.JobEventAuditLoggerFactory.createJobAuditLogger(properties_<%=jobCatcherNode.getUniqueName()%>);
 				
+				<%=jobCatcherNode.getUniqueName()%>.init(pid, fatherPid, rootPid);
 				<%=jobCatcherNode.getUniqueName()%>.setAuditLogger(auditLogger_<%=jobCatcherNode.getUniqueName()%>);
 			}
 		<%
 		}
 		%>
-
-        if(clientHost == null) {
-            clientHost = defaultClientHost;
-        }
-
-        if(pid == null || "0".equals(pid)) {
-            pid = TalendString.getAsciiRandomString(6);
-        }
-
-        if (rootPid==null) {
-            rootPid = pid;
-        }
-        if (fatherPid==null) {
-            fatherPid = pid;
-        }else{
-            isChildJob = true;
-        }
 
 <%
         if (stats) {
