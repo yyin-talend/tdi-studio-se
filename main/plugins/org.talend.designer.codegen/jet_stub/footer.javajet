@@ -245,6 +245,7 @@
     public String rootPid = null;
     public String fatherPid = null;
     public String fatherNode = null;
+    public boolean newVM = true;
     public long startTime = 0;
     public boolean isChildJob = false;
     public String log4jLevel = "";
@@ -1181,10 +1182,21 @@ this.globalResumeTicket = true;//to run tPostJob
 <%
     }
     
+    if(enable_runtime_lineage_log) {
+%>
+    if(newVM) {
+        <%=jobCatcherNode.getUniqueName() %>.shutdown();
+    }
+<%
+    }
+    
     if(enableLogStash) {
 %>
-		if(enableLogStash) {
-	        <%=jobCatcherNode.getUniqueName() %>.addJobEndMessage(startTime, end, status);
+        if(enableLogStash) {
+            <%=jobCatcherNode.getUniqueName() %>.addJobEndMessage(startTime, end, status);
+            if(newVM) {
+                <%=jobCatcherNode.getUniqueName() %>.shutdown();
+            }
         }
 <%
     }
@@ -1677,6 +1689,8 @@ if (execStat) {
             fatherNode = arg.substring(14);
         } else if (arg.startsWith("--pid=")) {
             pid = arg.substring(6);
+        } else if (arg.startsWith("--newVM=")) {
+            newVM = Boolean.getBoolean(arg.substring(8));
         } else if (arg.startsWith("--context_type")) {
             String keyValue = arg.substring(15);
 			int index = -1;

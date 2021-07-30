@@ -30,13 +30,15 @@ String[] codeOptions = null;
 
 String[] commandLine = new String[] {"<command>"};
 
+boolean newVM = useDynamicJob || useIndependentProcess;
+
 String childJobName;
 int jobNamePosition;
 boolean isLog4jEnabled = ("true").equals(ElementParameterParser.getValue(node.getProcess(), "__LOG4J_ACTIVATE__"));
 if(isLog4jEnabled){
-	codeOptions = new String[] {"\"--father_pid=\"+pid", "\"--root_pid=\"+rootPid", "\"--father_node="+ cid + "\"", "\"--log4jLevel=\"+ log4jLevel", "(\"--audit.enabled=\"+ enableLogStash)"};
+	codeOptions = new String[] {"\"--father_pid=\"+pid", "\"--root_pid=\"+rootPid", "\"--father_node="+ cid + "\"", "\"--newVM=" + newVM + "\"", "\"--log4jLevel=\"+ log4jLevel", "(\"--audit.enabled=\"+ enableLogStash)"};
 } else {
-	codeOptions = new String[] {"\"--father_pid=\"+pid", "\"--root_pid=\"+rootPid", "\"--father_node="+ cid + "\""};
+	codeOptions = new String[] {"\"--father_pid=\"+pid", "\"--root_pid=\"+rootPid", "\"--father_node="+ cid + "\"", "\"--newVM=" + newVM + "\""};
 }
 
 boolean use_custom_jvm_setting = "true".equals(ElementParameterParser.getValue(node, "__USE_CUSTOM_JVM_SETTING__"));

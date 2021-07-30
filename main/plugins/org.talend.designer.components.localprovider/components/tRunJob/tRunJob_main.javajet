@@ -47,11 +47,15 @@ boolean printParameter = ("true").equals(ElementParameterParser.getValue(node, "
 boolean originalContext = ("true").equals(ElementParameterParser.getValue(node, "__TRANSMIT_ORIGINAL_CONTEXT__")); 
 
 IProcess currentProcess = node.getProcess();
+
+boolean useDynamicJob = ("true").equals(ElementParameterParser.getValue(node, "__USE_DYNAMIC_JOB__"));
+boolean newVM = useDynamicJob || useIndependentProcess;
+
 List<Map<String, String>> contextParams = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__CONTEXTPARAMS__");
 String process = ElementParameterParser.getValue(node,"__PROCESS_TYPE_PROCESS__");
 String context = ElementParameterParser.getValue(node,"__PROCESS_TYPE_CONTEXT__");
 String version = ElementParameterParser.getValue(node,"__PROCESS_TYPE_VERSION__");
-String[] codeOptions = new String[] {"\"--father_pid=\"+pid", "\"--root_pid=\"+rootPid", "\"--father_node="+ cid + "\""};
+String[] codeOptions = new String[] {"\"--father_pid=\"+pid", "\"--root_pid=\"+rootPid", "\"--father_node="+ cid + "\"", "\"--newVM=" + newVM + "\""};
 String[] commandLineWindows = new String[] {"<command>"};
 String[] commandLineUnix = new String[] {"<command>"};
 String[] commandLine = new String[] {"<command>"};
@@ -59,7 +63,6 @@ String childJob = ElementParameterParser.getValue(node,"__PROCESS__");
 
 boolean isPropagateChildResult = ("true").equals(ElementParameterParser.getValue(node, "__PROPAGATE_CHILD_RESULT__"));
 
-boolean useDynamicJob = ("true").equals(ElementParameterParser.getValue(node, "__USE_DYNAMIC_JOB__"));
 String dynamicJobName = ElementParameterParser.getValue(node,"__CONTEXT_JOB__");
 boolean isLog4jEnabled = ("true").equals(ElementParameterParser.getValue(node.getProcess(), "__LOG4J_ACTIVATE__"));
 boolean propagateData = false;
