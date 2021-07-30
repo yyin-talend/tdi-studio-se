@@ -67,8 +67,8 @@ imports="
 		}
 		
 		public void createConnection(INode node) {
-		
-			boolean useLDAP = "true".equals(ElementParameterParser.getValue(node, "__USE_LDAP__"));
+
+			boolean useLDAP = !"".equals(ElementParameterParser.getValue(node, "__PASS__"));
 			
 			if (useLDAP) {
 %>
