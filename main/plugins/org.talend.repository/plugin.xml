@@ -3242,6 +3242,15 @@
              name="SpecialUpdateELTEnableColumnAliasMigrationTask"
              version="7.2.1">
        </projecttask>
+       <projecttask
+          beforeLogon="true"
+          breaks="7.2.0"
+          class="org.talend.repository.model.migration.RemoveSnapshotJarMigrationTask"
+          id="org.talend.repository.model.migration.RemoveSnapshotJarMigrationTask"
+          description="Regnerate all poms"
+          name="RemoveSnapshotJarMigrationTask"
+          version="7.2.1">
+       </projecttask>
    </extension>
 
    <extension
