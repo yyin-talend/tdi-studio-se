@@ -3182,8 +3182,9 @@ public class EmfComponent extends AbstractBasicComponent {
         }
         IElementParameter hdElemParam = node.getElementParameter(compType.getVersionParameter());
         Object value = null;
-        if (hdElemParam != null && hdElemParam.isShow(node.getElementParameters())) {
-            value = hdElemParam.getValue();
+        if (hdElemParam != null && (hdElemParam.isShow(node.getElementParameters()) || hdElemParam.getValue().toString().contains("SPARK"))) {
+            // for universal feature, the parameter is not shown in DI components, yet we still need to retrieve its value
+        	value = hdElemParam.getValue();
         } else {
             if (JavaProcessUtil.isUseExistingConnection(node)) {
                 IElementParameter connection = node.getElementParameter(EParameterName.CONNECTION.getName());
