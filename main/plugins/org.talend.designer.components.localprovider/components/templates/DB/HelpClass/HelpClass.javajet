@@ -67,9 +67,19 @@ imports="
 		}
 		
 		public void createConnection(INode node) {
+
+			boolean useLDAP = !"".equals(ElementParameterParser.getValue(node, "__PASS__"));
+			
+			if (useLDAP) {
 %>
-			conn_<%=cid%> = java.sql.DriverManager.getConnection(url_<%=cid%>,dbUser_<%=cid%>,dbPwd_<%=cid%>);
+				conn_<%=cid%> = java.sql.DriverManager.getConnection(url_<%=cid%>+";user="+dbUser_<%=cid%>+";password="+dbPwd_<%=cid%>);
 <%
+			} else {
+		
+%>
+				conn_<%=cid%> = java.sql.DriverManager.getConnection(url_<%=cid%>,dbUser_<%=cid%>,dbPwd_<%=cid%>);
+<%			
+			}
 		}
 		public void setAutoCommit(INode node) {
 			boolean setAutoCommit = "true".equals(ElementParameterParser.getValue(node, "__AUTO_COMMIT__"));
