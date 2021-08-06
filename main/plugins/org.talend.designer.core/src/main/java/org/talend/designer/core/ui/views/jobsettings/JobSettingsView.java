@@ -144,7 +144,7 @@ public class JobSettingsView extends ViewPart implements IJobSettingsView, ISele
     public JobSettingsView() {
         tabFactory = new HorizontalTabFactory();
         CorePlugin.getDefault().getRepositoryService().addRepositoryTreeViewListener(this);
-        IBrandingService brandingService = (IBrandingService) GlobalServiceRegister.getDefault()
+        IBrandingService brandingService = GlobalServiceRegister.getDefault()
                 .getService(IBrandingService.class);
         allowVerchange = brandingService.getBrandingConfiguration().isAllowChengeVersion();
         initProviderServices();
@@ -154,16 +154,16 @@ public class JobSettingsView extends ViewPart implements IJobSettingsView, ISele
     private void initProviderServices() {
 
         if (PluginChecker.isSVNProviderPluginLoaded()) {
-            svnService = (ISVNProviderService) GlobalServiceRegister.getDefault().getService(ISVNProviderService.class);
-            svnUIService = (ISVNUiProviderService) GlobalServiceRegister.getDefault().getService(ISVNUiProviderService.class);
+            svnService = GlobalServiceRegister.getDefault().getService(ISVNProviderService.class);
+            svnUIService = GlobalServiceRegister.getDefault().getService(ISVNUiProviderService.class);
         }
         if (PluginChecker.isGITProviderPluginLoaded()) {
-            gitService = (IGITProviderService) GlobalServiceRegister.getDefault().getService(IGITProviderService.class);
-            gitUIService = (IGitUIProviderService) GlobalServiceRegister.getDefault().getService(IGitUIProviderService.class);
+            gitService = GlobalServiceRegister.getDefault().getService(IGITProviderService.class);
+            gitUIService = GlobalServiceRegister.getDefault().getService(IGitUIProviderService.class);
         }
 
         if (GlobalServiceRegister.getDefault().isServiceRegistered(IESBService.class)) {
-            esbService = (IESBService) GlobalServiceRegister.getDefault().getService(IESBService.class);
+            esbService = GlobalServiceRegister.getDefault().getService(IESBService.class);
         }
     }
 
@@ -312,7 +312,7 @@ public class JobSettingsView extends ViewPart implements IJobSettingsView, ISele
             }
         } else if (EComponentCategory.HEADERFOOTER.equals(category)) {
             if (GlobalServiceRegister.getDefault().isServiceRegistered(IHeaderFooterProviderService.class)) {
-                IHeaderFooterProviderService headerFooterService = (IHeaderFooterProviderService) GlobalServiceRegister
+                IHeaderFooterProviderService headerFooterService = GlobalServiceRegister
                         .getDefault().getService(IHeaderFooterProviderService.class);
                 if (headerFooterService.isVisible()) {
                     dynamicComposite = new HeaderFooterComposite(parent, SWT.NONE, tabFactory.getWidgetFactory(),
@@ -507,8 +507,6 @@ public class JobSettingsView extends ViewPart implements IJobSettingsView, ISele
                     icon = ImageProvider.getImage(EJobSettingImage.PROCESS_SPARK_ICON_X16);
                 } else if (ComponentCategory.CATEGORY_4_SPARKSTREAMING.getName().equals(process.getComponentsType())) {
                     icon = ImageProvider.getImage(EJobSettingImage.PROCESS_SPARK_STREAMING_ICON_X16);
-                } else if (ComponentCategory.CATEGORY_4_STORM.getName().equals(process.getComponentsType())) {
-                    icon = ImageProvider.getImage(EJobSettingImage.PROCESS_STORM_ICON_X16);
                 }
             }
         }
@@ -583,7 +581,7 @@ public class JobSettingsView extends ViewPart implements IJobSettingsView, ISele
                 category.add(EComponentCategory.DEPLOYMENT);
             }
             if (GlobalServiceRegister.getDefault().isServiceRegistered(IHeaderFooterProviderService.class)) {
-                IHeaderFooterProviderService headerFooterService = (IHeaderFooterProviderService) GlobalServiceRegister
+                IHeaderFooterProviderService headerFooterService = GlobalServiceRegister
                         .getDefault().getService(IHeaderFooterProviderService.class);
                 if (headerFooterService.isVisible()) {
                     category.add(EComponentCategory.HEADERFOOTER);
@@ -884,7 +882,7 @@ public class JobSettingsView extends ViewPart implements IJobSettingsView, ISele
     private Image getImageFromFramework(ERepositoryObjectType itemType) {
         IGenericWizardService wizardService = null;
         if (GlobalServiceRegister.getDefault().isServiceRegistered(IGenericWizardService.class)) {
-            wizardService = (IGenericWizardService) GlobalServiceRegister.getDefault().getService(IGenericWizardService.class);
+            wizardService = GlobalServiceRegister.getDefault().getService(IGenericWizardService.class);
         }
         if (wizardService != null && wizardService.isGenericType(itemType)) {
             return wizardService.getNodeImage(itemType.getType());
@@ -915,7 +913,7 @@ public class JobSettingsView extends ViewPart implements IJobSettingsView, ISele
     public ISelection getSelection() {
         ISVNUiProviderService service = null;
         if (PluginChecker.isSVNProviderPluginLoaded()) {
-            service = (ISVNUiProviderService) GlobalServiceRegister.getDefault().getService(ISVNUiProviderService.class);
+            service = GlobalServiceRegister.getDefault().getService(ISVNUiProviderService.class);
         }
         if (currentSelectedTab == null) {
             return null;

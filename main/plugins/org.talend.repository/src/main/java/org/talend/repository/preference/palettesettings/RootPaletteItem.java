@@ -41,10 +41,6 @@ public class RootPaletteItem extends AbstractPaletteItem implements IPaletteItem
             type = ERepositoryObjectType.valueOf("PROCESS_MR"); //$NON-NLS-1$
             imageDesc = ImageProvider.getImageDesc(ECoreImage.PROCESS_BATCH_MR_ICON);
             break;
-        case CATEGORY_4_STORM:
-            type = ERepositoryObjectType.valueOf("PROCESS_STORM"); //$NON-NLS-1$
-            imageDesc = ImageProvider.getImageDesc(ECoreImage.PROCESS_STREAMING_STORM_ICON);
-            break;
         case CATEGORY_4_SPARK:
             type = ERepositoryObjectType.valueOf("PROCESS_MR"); //$NON-NLS-1$
             imageDesc = ImageProvider.getImageDesc(ECoreImage.PROCESS_BATCH_SPARK_ICON);

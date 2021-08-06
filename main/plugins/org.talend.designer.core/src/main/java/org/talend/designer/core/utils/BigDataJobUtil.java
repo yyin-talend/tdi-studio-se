@@ -55,9 +55,6 @@ public class BigDataJobUtil {
         if (isMRWithHDInsight()) {
             return true;
         }
-        if (isBDJobWithFramework(ERepositoryObjectType.PROCESS_STORM, HadoopConstants.FRAMEWORK_STORM)) {
-            return true;
-        }
         return isSparkWithHDInsight();
     }
 

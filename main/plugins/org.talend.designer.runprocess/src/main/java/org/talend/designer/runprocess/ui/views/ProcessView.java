@@ -299,9 +299,9 @@ public class ProcessView extends ViewPart implements PropertyChangeListener {
         });
         setElement();
 
-        IHandlerService handlerService = (IHandlerService) getSite().getService(IHandlerService.class);
+        IHandlerService handlerService = getSite().getService(IHandlerService.class);
         IHandler handler1;
-        IBrandingService brandingService = (IBrandingService) GlobalServiceRegister.getDefault().getService(
+        IBrandingService brandingService = GlobalServiceRegister.getDefault().getService(
                 IBrandingService.class);
         if (brandingService.getBrandingConfiguration().isAllowDebugMode()) {
             Action debugAction = new DebugAction();
@@ -317,7 +317,7 @@ public class ProcessView extends ViewPart implements PropertyChangeListener {
             @Override
             public void focusGained(FocusEvent e) {
                 log.trace(Messages.getString("ProcessView.gainFocusLog")); //$NON-NLS-1$
-                IContextService contextService = (IContextService) RunProcessPlugin.getDefault().getWorkbench()
+                IContextService contextService = RunProcessPlugin.getDefault().getWorkbench()
                         .getAdapter(IContextService.class);
                 ca = contextService.activateContext("talend.runProcess"); //$NON-NLS-1$
             }
@@ -326,7 +326,7 @@ public class ProcessView extends ViewPart implements PropertyChangeListener {
             public void focusLost(FocusEvent e) {
                 log.trace(Messages.getString("ProcessView.lostFocusLog")); //$NON-NLS-1$
                 if (ca != null) {
-                    IContextService contextService = (IContextService) RunProcessPlugin.getDefault().getWorkbench()
+                    IContextService contextService = RunProcessPlugin.getDefault().getWorkbench()
                             .getAdapter(IContextService.class);
                     contextService.deactivateContext(ca);
                 }
@@ -522,10 +522,6 @@ public class ProcessView extends ViewPart implements PropertyChangeListener {
                 categories = (EComponentCategory[]) ArrayUtils.add(categories, 1,
                         EComponentCategory.MAPREDUCE_JOB_CONFIG_FOR_HADOOP);
             }
-            if (processContext.getProcess().getComponentsType().equals(ComponentCategory.CATEGORY_4_STORM.getName())) {
-                categories = (EComponentCategory[]) ArrayUtils.add(categories, 1, EComponentCategory.STORM_JOB_CONFIG);
-            }
-
             if (processContext.getProcess().getComponentsType().equals(ComponentCategory.CATEGORY_4_SPARK.getName())
                     || processContext.getProcess().getComponentsType()
                             .equals(ComponentCategory.CATEGORY_4_SPARKSTREAMING.getName())) {

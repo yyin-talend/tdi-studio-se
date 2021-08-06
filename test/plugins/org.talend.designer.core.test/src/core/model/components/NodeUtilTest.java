@@ -33,7 +33,6 @@ import org.talend.core.model.metadata.DummyMetadataTalendTypeFilter;
 import org.talend.core.model.metadata.MetadataTalendTypeFilter;
 import org.talend.core.model.metadata.MrMetadataTalendTypeFilter;
 import org.talend.core.model.metadata.SparkMetadataTalendTypeFilter;
-import org.talend.core.model.metadata.StormMetadataTalendTypeFilter;
 import org.talend.core.model.process.INode;
 import org.talend.core.model.properties.PropertiesFactory;
 import org.talend.core.model.properties.Property;
@@ -86,10 +85,10 @@ public class NodeUtilTest {
             ProjectPreferenceManager prefManager = runtimeLineageManager.getPrefManager();
             JSONArray jobsJson = new JSONArray();
             JSONObject jobJson = new JSONObject();
-            jobJson.put(runtimeLineageManager.JOB_ID, "_HT5BMNFmEeqhpr5Qh0-X9g");
+            jobJson.put(RuntimeLineageManager.JOB_ID, "_HT5BMNFmEeqhpr5Qh0-X9g");
             jobsJson.put(jobJson);
-            prefManager.setValue(runtimeLineageManager.RUNTIMELINEAGE_ALL, true);
-            prefManager.setValue(runtimeLineageManager.RUNTIMELINEAGE_SELECTED, jobsJson.toString());
+            prefManager.setValue(RuntimeLineageManager.RUNTIMELINEAGE_ALL, true);
+            prefManager.setValue(RuntimeLineageManager.RUNTIMELINEAGE_SELECTED, jobsJson.toString());
             prefManager.save();
         } catch (Exception e) {
             ExceptionHandler.process(e);
@@ -132,12 +131,6 @@ public class NodeUtilTest {
         node = new DataNode(comp, ""); //$NON-NLS-1$
 
         assertTrue(NodeUtil.isBigDataFrameworkNode(node));
-
-        Mockito.when(comp.getType()).thenReturn(ComponentCategory.CATEGORY_4_STORM.getName());
-        node = new DataNode(comp, ""); //$NON-NLS-1$
-
-        assertTrue(NodeUtil.isBigDataFrameworkNode(node));
-
     }
 
     @Test
@@ -175,13 +168,5 @@ public class NodeUtilTest {
         filter = NodeUtil.createMetadataTalendTypeFilter(node);
 
         assertTrue(filter instanceof SparkMetadataTalendTypeFilter);
-
-        Mockito.when(comp.getType()).thenReturn(ComponentCategory.CATEGORY_4_STORM.getName());
-        node = new DataNode(comp, ""); //$NON-NLS-1$
-
-        filter = NodeUtil.createMetadataTalendTypeFilter(node);
-
-        assertTrue(filter instanceof StormMetadataTalendTypeFilter);
-
     }
 }

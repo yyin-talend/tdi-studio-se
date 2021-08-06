@@ -627,12 +627,11 @@ public class PaletteSettingPage extends ProjectSettingPage {
             ERepositoryObjectType stormType = ERepositoryObjectType.valueOf("PROCESS_STORM"); //$NON-NLS-1$
             if (stormType != null) {
                 List<IRepositoryViewObject> allStorm = repositoryFactory.getAll(project, stormType, true);
-                addUsedComponents(componentsUsed, allStorm, ComponentCategory.CATEGORY_4_STORM);
                 addUsedComponents(componentsUsed, allStorm, ComponentCategory.CATEGORY_4_SPARKSTREAMING);
             }
 
             if (GlobalServiceRegister.getDefault().isServiceRegistered(ITestContainerProviderService.class)) {
-                ITestContainerProviderService testContainerService = (ITestContainerProviderService) GlobalServiceRegister
+                ITestContainerProviderService testContainerService = GlobalServiceRegister
                         .getDefault().getService(ITestContainerProviderService.class);
                 if (testContainerService != null) {
                     ERepositoryObjectType testCaseType = testContainerService.getTestCaseObjectType();

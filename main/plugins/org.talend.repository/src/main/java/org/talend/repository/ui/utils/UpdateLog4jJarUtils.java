@@ -32,7 +32,7 @@ public class UpdateLog4jJarUtils {
     public static void addLog4jToJarList(Collection<String> jarList, boolean isSelectLog4j2) {
         IProcess process = null;
         if (GlobalServiceRegister.getDefault().isServiceRegistered(IRunProcessService.class)) {
-            IRunProcessService processService = (IRunProcessService) GlobalServiceRegister.getDefault()
+            IRunProcessService processService = GlobalServiceRegister.getDefault()
                     .getService(IRunProcessService.class);
             process = processService.getActiveProcess();
         }
@@ -75,7 +75,6 @@ public class UpdateLog4jJarUtils {
             if (process != null) {
                 String componentsType = process.getComponentsType();
                 if (!usedlog4j1JarBefore && (StringUtils.equals(ComponentCategory.CATEGORY_4_MAPREDUCE.getName(), componentsType)
-                        || StringUtils.equals(ComponentCategory.CATEGORY_4_STORM.getName(), componentsType)
                         || StringUtils.equals(ComponentCategory.CATEGORY_4_SPARK.getName(), componentsType)
                         || StringUtils.equals(ComponentCategory.CATEGORY_4_SPARKSTREAMING.getName(), componentsType))) {
                     usedlog4j1JarBefore = true;
@@ -144,7 +143,6 @@ public class UpdateLog4jJarUtils {
             if (process != null) {
                 String componentsType = process.getComponentsType();
                 if (!usedlog4j1JarBefore && (StringUtils.equals(ComponentCategory.CATEGORY_4_MAPREDUCE.getName(), componentsType)
-                        || StringUtils.equals(ComponentCategory.CATEGORY_4_STORM.getName(), componentsType)
                         || StringUtils.equals(ComponentCategory.CATEGORY_4_SPARK.getName(), componentsType)
                         || StringUtils.equals(ComponentCategory.CATEGORY_4_SPARKSTREAMING.getName(), componentsType))) {
                     usedlog4j1JarBefore = true;
@@ -320,7 +318,7 @@ public class UpdateLog4jJarUtils {
     }
 
     public static final String[] NEEDREMOVEMODULES = { "jcl-over-slf4j-\\d+\\.\\d+\\.\\d+\\.jar", //$NON-NLS-1$
-            "log4j-to-slf4j-\\d+\\.\\d+\\.\\d+\\.jar", //$NON-NLS-1$ //$NON-NLS-2$
+            "log4j-to-slf4j-\\d+\\.\\d+\\.\\d+\\.jar", //$NON-NLS-1$ 
             "log4j-to-slf4j-\\d+\\.\\d+\\.\\d+\\.jar", "slf4j-log4j12-\\d+\\.\\d+\\.\\d+\\.jar", "log4j-\\d+\\.\\d+\\.\\d+\\.jar", //$NON-NLS-1$//$NON-NLS-2$//$NON-NLS-3$
             "log4j-jcl-\\d+\\.\\d+\\.\\d+\\.jar", "log4j-jul-\\d+\\.\\d+\\.\\d+\\.jar", //$NON-NLS-1$//$NON-NLS-2$
             "log4j-slf4j-impl-\\d+\\.\\d+\\.\\d+\\.jar", "log4j-1.2-api-\\d+\\.\\d+\\.\\d+\\.jar", //$NON-NLS-1$//$NON-NLS-2$
