@@ -449,12 +449,12 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
         Map<JobExportType, String> map = BuildJobConstants.oldBuildTypeMap;
         JobExportType jType = null;
         if (bType != null) {
-	        for (JobExportType t : map.keySet()) {
-	            if (bType.toString().equals(map.get(t))) { // same build type
-	            	jType = t;
-	                break;
-	            }
-	        }
+            for (JobExportType t : map.keySet()) {
+                if (bType.toString().equals(map.get(t))) { // same build type
+                    jType = t;
+                    break;
+                }
+            }
         }
         
         for (Object o : ((ProcessItem) processItem).getProcess().getNode()) {
@@ -522,16 +522,16 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
         }
 
         if (jType != null) {
-        	exportTypeCombo.setText(jType.label);
-        	
-        	if (jType.equals(JobExportType.OSGI)) {
-            	exportTypeCombo.remove(JobExportType.MSESB.label);
-            	exportTypeCombo.remove(JobExportType.MSESB_IMAGE.label);
-            	exportTypeCombo.setEnabled(false);
+            exportTypeCombo.setText(jType.label);
+
+            if (jType.equals(JobExportType.OSGI)) {
+                exportTypeCombo.remove(JobExportType.MSESB.label);
+                exportTypeCombo.remove(JobExportType.MSESB_IMAGE.label);
+                exportTypeCombo.setEnabled(false);
             }
             
             if (jType.equals(JobExportType.MSESB) || jType.equals(JobExportType.MSESB_IMAGE)) {
-            	exportTypeCombo.remove(JobExportType.OSGI.label);
+                exportTypeCombo.remove(JobExportType.OSGI.label);
             }
         }
         
@@ -1278,7 +1278,7 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
             restoreWidgetValuesForPOJO();
             break;
         case OSGI:
-        	createOptionsForOSGIESB(optionsGroupComposite, font);
+            createOptionsForOSGIESB(optionsGroupComposite, font);
             restoreWidgetValuesForOSGI();
             
             break;
