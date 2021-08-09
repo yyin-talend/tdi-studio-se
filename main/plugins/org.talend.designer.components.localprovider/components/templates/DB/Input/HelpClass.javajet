@@ -57,19 +57,6 @@ imports="
 	    	dbport = ElementParameterParser.getValue(node, "__PORT__");
 	    	dbname = ElementParameterParser.getValue(node, "__DBNAME__");
 	    	dbuser = ElementParameterParser.getValue(node, "__USER__");
-	    	
-	    	boolean useLDAP = "true".equals(ElementParameterParser.getValue(node, "__USE_LDAP__"));
-	    	boolean isImpala = "impala".equalsIgnoreCase(ElementParameterParser.getValue(node, "__IMPALA_DRIVER__"));
-	    	
-	    	String userPrefix = "user";
-	    	String passwordPrefix = "password";
-	    	String authPrefix = "";
-	    	
-	    	if (isImpala) {
-				userPrefix = "UID";
-				passwordPrefix = "PWD";
-				authPrefix = ";AuthMech=3";
-			}	
 
 	 		boolean specify_alias = "true".equals(ElementParameterParser.getValue(node, "__SPECIFY_DATASOURCE_ALIAS__"));
  		if(specify_alias){
@@ -108,12 +95,9 @@ imports="
 				} else {
 					log4jCodeGenerateUtil.connect_begin();
 				}
-
-			if (useLDAP) {
-%>
-				conn_<%=cid%> = java.sql.DriverManager.getConnection(url_<%=cid%>+"<%=authPrefix%>"+";<%=userPrefix%>="+dbUser_<%=cid%>+";<%=passwordPrefix%>="+dbPwd_<%=cid%>);
+				%>
 <%
-			} else if(needUserAndPassword) {
+			if(needUserAndPassword) {
 %>
 				conn_<%=cid%> = java.sql.DriverManager.getConnection(url_<%=cid %>,dbUser_<%=cid%>,dbPwd_<%=cid%>);
 <%
