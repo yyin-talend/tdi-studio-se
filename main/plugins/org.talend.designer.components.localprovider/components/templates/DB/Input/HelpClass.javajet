@@ -57,8 +57,8 @@ imports="
 	    	dbport = ElementParameterParser.getValue(node, "__PORT__");
 	    	dbname = ElementParameterParser.getValue(node, "__DBNAME__");
 	    	dbuser = ElementParameterParser.getValue(node, "__USER__");
-
-	    	boolean useLDAP = !"".equals(ElementParameterParser.getValue(node, "__PASS__"));
+	    	
+	    	boolean useLDAP = "true".equals(ElementParameterParser.getValue(node, "__USE_LDAP__"));
 	    	boolean isImpala = "impala".equalsIgnoreCase(ElementParameterParser.getValue(node, "__IMPALA_DRIVER__"));
 	    	
 	    	String userPrefix = "user";
