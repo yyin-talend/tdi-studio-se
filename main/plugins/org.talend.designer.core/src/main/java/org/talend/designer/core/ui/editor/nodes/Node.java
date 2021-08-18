@@ -510,12 +510,11 @@ public class Node extends Element implements IGraphicalNode {
         this.oldcomponent = oldNode.getComponent();
         this.delegateComponent = UnifiedComponentUtil.getDelegateComponent(oldNode.getComponent());
         this.process = process;
-        this.component = UnifiedComponentUtil.getEmfComponent(this, oldNode.getComponent());
+        init(oldNode.getComponent());
         if (component != null && component instanceof AbstractBasicComponent) {
             AbstractBasicComponent comp = (AbstractBasicComponent) component;
             comp.initNodeProperties(this, oldNode);
         }
-        init();
         needlibrary = false;
     }
 
@@ -526,10 +525,6 @@ public class Node extends Element implements IGraphicalNode {
 
     private void init(IComponent newComponent) {
         this.component = UnifiedComponentUtil.getEmfComponent(this, newComponent);
-        init();
-    }
-
-    private void init() {
         this.label = component.getDisplayName();
         updateComponentStatusIfNeeded(true);
         IPreferenceStore store = DesignerPlugin.getDefault().getPreferenceStore();
