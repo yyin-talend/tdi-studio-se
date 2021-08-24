@@ -510,12 +510,11 @@ public class Node extends Element implements IGraphicalNode {
         this.oldcomponent = oldNode.getComponent();
         this.delegateComponent = UnifiedComponentUtil.getDelegateComponent(oldNode.getComponent());
         this.process = process;
-        this.component = UnifiedComponentUtil.getEmfComponent(this, oldNode.getComponent());
+        init(oldNode.getComponent());
         if (component != null && component instanceof AbstractBasicComponent) {
             AbstractBasicComponent comp = (AbstractBasicComponent) component;
             comp.initNodeProperties(this, oldNode);
         }
-        init();
         needlibrary = false;
     }
 
@@ -526,10 +525,6 @@ public class Node extends Element implements IGraphicalNode {
 
     private void init(IComponent newComponent) {
         this.component = UnifiedComponentUtil.getEmfComponent(this, newComponent);
-        init();
-    }
-
-    private void init() {
         this.label = component.getDisplayName();
         updateComponentStatusIfNeeded(true);
         IPreferenceStore store = DesignerPlugin.getDefault().getPreferenceStore();
@@ -665,8 +660,7 @@ public class Node extends Element implements IGraphicalNode {
             }
         }
 
-        for (int i = 0; i < getElementParameters().size(); i++) {
-            IElementParameter param = getElementParameters().get(i);
+        for (IElementParameter param : getElementParameters()) {
             Object obj = param.getValue();
             if (obj != null) {
                 if (param.getName().equals(EParameterName.LABEL.getName())) {
@@ -2246,8 +2240,8 @@ public class Node extends Element implements IGraphicalNode {
         IConnection connec;
         if (isActivate()) {
             if (!isELTComponent()) {
-                for (int j = 0; j < getIncomingConnections().size(); j++) {
-                    connec = getIncomingConnections().get(j);
+                for (IConnection element : getIncomingConnections()) {
+                    connec = element;
                     if (connec.isActivate()) {
                         if (connec.getLineStyle().hasConnectionCategory(IConnectionCategory.MAIN)) {
                             return false;
@@ -2391,8 +2385,8 @@ public class Node extends Element implements IGraphicalNode {
         //
         // });
 
-        for (int j = 0; j < getIncomingConnections().size(); j++) {
-            connec = getIncomingConnections().get(j);
+        for (IConnection element : getIncomingConnections()) {
+            connec = element;
             if (!connec.getLineStyle().hasConnectionCategory(IConnectionCategory.USE_HASH)) {
                 INode source = connec.getSource();
                 if (source.getJobletNode() != null) {
@@ -2959,15 +2953,13 @@ public class Node extends Element implements IGraphicalNode {
                 case COMPONENT_LIST:
                     if (param != null) {
                         String errorMessage;
-                        boolean isContextMode = false;
                         if (!param.isSelectedFromItemValue()) {
                             errorMessage = Messages.getString("Node.parameterEmpty", param.getDisplayName()); //$NON-NLS-1$
                         } else {
                             errorMessage = Messages.getString("Node.parameterNotExist", param.getDisplayName(), param.getValue()); //$NON-NLS-1$
-                            isContextMode = param.isDynamicSettings();
                         }
-
-                        if (!isContextMode && ((!hasUseExistingConnection(this)) || (isUseExistedConnetion(this)))) {
+                        if (!checkDynamicSettings(param)
+                                && ((!hasUseExistingConnection(this)) || (isUseExistedConnetion(this)))) {
                             List<INode> list = (List<INode>) this.getProcess().getNodesOfType(param.getFilter());
                             if (list == null || list.size() == 0 || list.isEmpty()) {
                                 Problems.add(ProblemStatus.ERROR, this, errorMessage);
@@ -4710,8 +4702,7 @@ public class Node extends Element implements IGraphicalNode {
     public boolean canModifySchema() {
         boolean canModifySchema = false;
         List<? extends IElementParameter> listParam = this.getElementParameters();
-        for (int i = 0; i < listParam.size(); i++) {
-            IElementParameter param = listParam.get(i);
+        for (IElementParameter param : listParam) {
             if (param.isShow(listParam)) {
                 if (param.getFieldType().equals(EParameterFieldType.SCHEMA_TYPE)
                         || param.getFieldType().equals(EParameterFieldType.SCHEMA_REFERENCE)) {
@@ -5724,6 +5715,33 @@ public class Node extends Element implements IGraphicalNode {
             } else if (value instanceof String) {
                 return Boolean.parseBoolean((String) value);
             }
+        }
+        return false;
+    }
+
+    public boolean isContextOrGlobalMapValue(IElementParameter param) {
+        if (param != null) {
+            Object paramValue = param.getValue();
+            if (paramValue != null && paramValue instanceof String) {
+                String paramValueStr = (String) paramValue;
+                if (paramValueStr.contains("context") || paramValueStr.contains("globalMap")) { //$NON-NLS-1$ //$NON-NLS-2$
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    public boolean checkDynamicSettings(IElementParameter param) {
+        if (param != null) {
+            boolean isJoblet = false;
+            if (GlobalServiceRegister.getDefault().isServiceRegistered(IJobletProviderService.class)) {
+                IJobletProviderService service = GlobalServiceRegister.getDefault().getService(IJobletProviderService.class);
+                if (service != null && service.isJobletProcess(this.process)) {
+                    isJoblet = true;
+                }
+            }
+            return param.isDynamicSettings() && (isContextOrGlobalMapValue(param) || isJoblet);
         }
         return false;
     }
