@@ -1404,24 +1404,28 @@ if (execStat) {
 
         boolean isCustom = hbaseDistrib instanceof org.talend.hadoop.distribution.custom.CustomDistribution;
 
-	    boolean isHadoop2 = "HADOOP_2".equals(ElementParameterParser.getValue(hbaseComponent, "__HADOOP_CUSTOM_VERSION__"));%>
-   			org.apache.hadoop.conf.Configuration conn_<%=hbaseComponent.getUniqueName()%> =(org.apache.hadoop.conf.Configuration)globalMap.get("conn_<%=hbaseComponent.getUniqueName()%>");
-			if(conn_<%=hbaseComponent.getUniqueName()%> != null )
-	        {
-			<%
-		        if((isCustom && isHadoop2) || (!isCustom && hbaseDistrib.doSupportNewHBaseAPI())) {
-		            if (!hbaseDistrib.doSupportHBase2x()) {%>
-                                org.apache.hadoop.hbase.client.HConnection hConnection_<%=hbaseComponent.getUniqueName() %> = org.apache.hadoop.hbase.client.HConnectionManager.getConnection(conn_<%=hbaseComponent.getUniqueName() %>);
-                         <% } else {%>
-                                org.apache.hadoop.hbase.client.Connection hConnection_<%=hbaseComponent.getUniqueName() %> = org.apache.hadoop.hbase.client.ConnectionFactory.createConnection(conn_<%=hbaseComponent.getUniqueName() %>);
-                         <% }%>
-		        if ((hConnection_<%=hbaseComponent.getUniqueName() %> != null) && (!hConnection_<%=hbaseComponent.getUniqueName() %>.isClosed())) {
-				    hConnection_<%=hbaseComponent.getUniqueName() %>.close();
-			}
-			<%} else {%>
-				org.apache.hadoop.hbase.client.HConnectionManager.deleteConnection(conn_<%=hbaseComponent.getUniqueName() %>,true);
-			<%}%>
-			}
+	    boolean isHadoop2 = "HADOOP_2".equals(ElementParameterParser.getValue(hbaseComponent, "__HADOOP_CUSTOM_VERSION__"));
+        boolean isSparkDistrib = "SPARK".equals(hbaseDistribution);
+        boolean isHBase2x = isSparkDistrib ? "HBASE_2".equals(ElementParameterParser.getValue(hbaseComponent, "__HBASE_API_VERSION__")) : hbaseDistrib.doSupportHBase2x();
+        %>
+        org.apache.hadoop.conf.Configuration conn_<%=hbaseComponent.getUniqueName()%> =(org.apache.hadoop.conf.Configuration)globalMap.get("conn_<%=hbaseComponent.getUniqueName()%>");
+
+        if(conn_<%=hbaseComponent.getUniqueName()%> != null )
+        {
+        <%
+            if((isCustom && isHadoop2) || (!isCustom && hbaseDistrib.doSupportNewHBaseAPI())) {
+                if (!isHBase2x) {%>
+                            org.apache.hadoop.hbase.client.HConnection hConnection_<%=hbaseComponent.getUniqueName() %> = org.apache.hadoop.hbase.client.HConnectionManager.getConnection(conn_<%=hbaseComponent.getUniqueName() %>);
+                        <% } else {%>
+                            org.apache.hadoop.hbase.client.Connection hConnection_<%=hbaseComponent.getUniqueName() %> = org.apache.hadoop.hbase.client.ConnectionFactory.createConnection(conn_<%=hbaseComponent.getUniqueName() %>);
+                        <% }%>
+            if ((hConnection_<%=hbaseComponent.getUniqueName() %> != null) && (!hConnection_<%=hbaseComponent.getUniqueName() %>.isClosed())) {
+                hConnection_<%=hbaseComponent.getUniqueName() %>.close();
+        }
+        <%} else {%>
+            org.apache.hadoop.hbase.client.HConnectionManager.deleteConnection(conn_<%=hbaseComponent.getUniqueName() %>,true);
+        <%}%>
+        }
       globalMap.remove("conn_<%=hbaseComponent.getUniqueName() %>");
 	<%}%>
         } catch (java.lang.Exception e) {

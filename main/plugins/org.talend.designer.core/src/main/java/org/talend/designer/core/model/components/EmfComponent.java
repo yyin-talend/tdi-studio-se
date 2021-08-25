@@ -27,6 +27,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.Set;
 
@@ -1782,11 +1783,21 @@ public class EmfComponent extends AbstractBasicComponent {
             newParam.setFieldType(EParameterFieldType.CLOSED_LIST);
             newParam.setShow(true);
             String showIf = xmlParam.getSHOWIF();
-            if (showIf != null) {
-                newParam.setShowIf(showIf + " AND (" + componentType.getDistributionParameter() + "!='CUSTOM')"); //$NON-NLS-1$ //$NON-NLS-2$
+            Optional<ElementParameter> componentName = listParam.stream().filter(x -> "COMPONENT_NAME".equals(x.getName())).findFirst();
+            if (componentName.isPresent() && "tSparkConfiguration".equals(componentName.get().getValue())) {
+            	if (showIf != null) {
+                    newParam.setShowIf(showIf + " AND (" + componentType.getDistributionParameter() + "!='CUSTOM')"); //$NON-NLS-1$ //$NON-NLS-2$
+                } else {
+                    newParam.setShowIf("(" + componentType.getDistributionParameter() + "!='CUSTOM')"); //$NON-NLS-1$ //$NON-NLS-2$
+                }
             } else {
-                newParam.setShowIf("(" + componentType.getDistributionParameter() + "!='CUSTOM')"); //$NON-NLS-1$ //$NON-NLS-2$
+            	if (showIf != null) {
+                    newParam.setShowIf(showIf + " AND (" + componentType.getDistributionParameter() + "!='CUSTOM')" + " AND (" + componentType.getDistributionParameter() + "!='SPARK')"); //$NON-NLS-1$ //$NON-NLS-2$
+                } else {
+                    newParam.setShowIf("(" + componentType.getDistributionParameter() + "!='CUSTOM')" + " AND (" + componentType.getDistributionParameter() + "!='SPARK')"); //$NON-NLS-1$ //$NON-NLS-2$
+                }
             }
+            
             newParam.setNotShowIf(xmlParam.getNOTSHOWIF());
             newParam.setGroup(xmlParam.getGROUP());
             newParam.setGroupDisplayName(parentParam.getGroupDisplayName());
@@ -1842,9 +1853,9 @@ public class EmfComponent extends AbstractBasicComponent {
                 newParam.setGroupDisplayName(parentParam.getGroupDisplayName());
                 showIf = xmlParam.getSHOWIF();
                 if (showIf != null) {
-                    newParam.setShowIf(showIf + " AND (" + componentType.getDistributionParameter() + "!='CUSTOM')"); //$NON-NLS-1$ //$NON-NLS-2$
+                    newParam.setShowIf(showIf + " AND (" + componentType.getDistributionParameter() + "!='CUSTOM')" + " AND (" + componentType.getDistributionParameter() + "!='SPARK')"); //$NON-NLS-1$ //$NON-NLS-2$
                 } else {
-                    newParam.setShowIf("(" + componentType.getDistributionParameter() + "!='CUSTOM')"); //$NON-NLS-1$ //$NON-NLS-2$
+                    newParam.setShowIf("(" + componentType.getDistributionParameter() + "!='CUSTOM')" + " AND (" + componentType.getDistributionParameter() + "!='SPARK')"); //$NON-NLS-1$ //$NON-NLS-2$
                 }
                 newParam.setNotShowIf(xmlParam.getNOTSHOWIF());
 
@@ -3171,8 +3182,9 @@ public class EmfComponent extends AbstractBasicComponent {
         }
         IElementParameter hdElemParam = node.getElementParameter(compType.getVersionParameter());
         Object value = null;
-        if (hdElemParam != null && hdElemParam.isShow(node.getElementParameters())) {
-            value = hdElemParam.getValue();
+        if (hdElemParam != null && (hdElemParam.isShow(node.getElementParameters()) || hdElemParam.getValue().toString().contains("SPARK"))) {
+            // for universal feature, the parameter is not shown in DI components, yet we still need to retrieve its value
+        	value = hdElemParam.getValue();
         } else {
             if (JavaProcessUtil.isUseExistingConnection(node)) {
                 IElementParameter connection = node.getElementParameter(EParameterName.CONNECTION.getName());
