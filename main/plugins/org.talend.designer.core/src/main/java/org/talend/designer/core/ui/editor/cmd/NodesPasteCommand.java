@@ -396,24 +396,8 @@ public class NodesPasteCommand extends Command {
             if (this.isCheckNodeExist && !containNodeInProcess(copiedNode)) {
                 continue;
             }
-            IComponent component = ComponentsFactoryProvider.getInstance().get(copiedNode.getComponent().getName(),
-                    process.getComponentsType());
-            if (component == null) {
-                boolean isJobletInOutComponent = false;
-                if (PluginChecker.isJobLetPluginLoaded()) {
-                    IJobletProviderService service = GlobalServiceRegister.getDefault()
-                            .getService(IJobletProviderService.class);
-                    if (service != null && service.isJobletInOutComponent(copiedNode)) {
-                        isJobletInOutComponent = true;
-                    }
-                }
-                if (isJobletInOutComponent) {
-                    component = copiedNode.getComponent();
-                } else {
-                    component = new DummyComponent(copiedNode.getComponent().getName());
-                }
-            }
-            IGraphicalNode pastedNode = new Node(component, process);
+
+            IGraphicalNode pastedNode = new Node(copiedNode, process);
             if (nodeMap != null) {
                 nodeMap.put(copiedNode, pastedNode);
             }
