@@ -169,6 +169,10 @@ public class ProjectSettingsPreferenceDialog extends PreferenceDialog implements
         setInReopen(false);
     }
 
+    public void exeCancelPressed() {
+        cancelPressed();
+    }
+
     private void importPressed() {
 
         FileDialog fileDialog = new FileDialog(getShell(), SWT.OPEN);
