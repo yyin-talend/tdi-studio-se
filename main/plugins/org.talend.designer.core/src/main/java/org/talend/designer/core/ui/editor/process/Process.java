@@ -1222,7 +1222,7 @@ public class Process extends Element implements IProcess2, IGEFProcess, ILastVer
                         if (o instanceof String) {
                             strValue = o != null ? ((String)o).trim() : (String)o;
                             
-                            isHexValue = isNeedConvertToHex(strValue);
+                            isHexValue = Hex.isNeedConvertToHex(strValue);
                             if (isHexValue) {
                                 try {
                                     strValue = Hex.encodeHexString(strValue.getBytes(UTF8));
@@ -1291,19 +1291,6 @@ public class Process extends Element implements IProcess2, IGEFProcess, ILastVer
         return parameter.getFieldType().equals(EParameterFieldType.TABLE) ||
                 parameter.getFieldType().equals(EParameterFieldType.TACOKIT_SUGGESTABLE_TABLE)
                 || parameter.getFieldType().equals(EParameterFieldType.TACOKIT_TABLE);
-    }
-
-    protected boolean isNeedConvertToHex(String value) {
-        if (value == null || "".equals(value.trim())) {
-            return false;
-        }
-        for (int i = 0; i < value.length(); i++) {
-            int ch = value.charAt(i);
-            if (ch < 32) {
-                return true;
-            }
-        }
-        return false;
     }
 
     private void loadElementParameters(Element elemParam, EList listParamType) {
