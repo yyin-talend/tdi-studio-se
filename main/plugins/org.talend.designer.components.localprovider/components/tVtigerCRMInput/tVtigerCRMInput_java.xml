@@ -784,7 +784,7 @@
 	</PARAMETERS>
 	<CODEGENERATION>
 		<IMPORTS>
-			<IMPORT NAME="VtigerCRM" MODULE="vtigercrm.jar" MVN="mvn:org.talend.libraries/vtigercrm/6.0.0"  UrlPath="platform:/plugin/org.talend.libraries.crm/lib/vtigercrm.jar" REQUIRED="true"/>
+			<IMPORT NAME="VtigerCRM" MODULE="vtigercrm.jar" MVN="mvn:org.talend.libraries/vtigercrm/6.0.0" REQUIRED="true"/>
 			<IMPORT NAME="SOAP-axis" MODULE="axis-1.4.jar" MVN="mvn:org.apache.axis/axis/1.4" REQUIRED="true"/>
 			<IMPORT NAME="SOAP-jaxrpc" MODULE="jaxrpc.jar" MVN="mvn:org.talend.libraries/jaxrpc/6.0.0"  UrlPath="platform:/plugin/org.talend.libraries.jax/lib/jaxrpc.jar" REQUIRED="true"/>
 			<IMPORT NAME="SOAP-saaj" MODULE="saaj.jar" MVN="mvn:org.talend.libraries/saaj/6.0.0"  UrlPath="platform:/plugin/org.talend.libraries.saaj/lib/saaj.jar" REQUIRED="true"/>
@@ -794,7 +794,7 @@
 			<IMPORT NAME="SOAP-JavaMail" MODULE="mail.jar" MVN="mvn:org.talend.libraries/mail/6.0.0"  UrlPath="platform:/plugin/org.talend.libraries.apache.axis2/lib/mail.jar" REQUIRED="true"/>
 			<IMPORT NAME="SOAP-JAF" MODULE="activation.jar" MVN="mvn:org.talend.libraries/activation/6.0.0"  UrlPath="platform:/plugin/org.talend.libraries.apache.axis2/lib/activation.jar" REQUIRED="true"/>
 
-			<IMPORT NAME="vtwsclib" MODULE="vtwsclib.jar" MVN="mvn:org.talend.libraries/vtwsclib/6.0.0"  UrlPath="platform:/plugin/org.talend.libraries.crm/lib/vtwsclib.jar" REQUIRED="true" />
+			<IMPORT NAME="vtwsclib" MODULE="vtwsclib.jar" MVN="mvn:org.talend.libraries/vtwsclib/6.0.0" REQUIRED="true" />
 			<IMPORT NAME="apache-mime4j" MODULE="apache-mime4j-0.6.jar" MVN="mvn:org.talend.libraries/apache-mime4j-0.6/6.0.0"  UrlPath="platform:/plugin/org.talend.libraries.apache/lib/apache-mime4j-0.6.jar" REQUIRED="true" />
 			<IMPORT NAME="commons-codec" MODULE="commons-codec-1.14.jar" MVN="mvn:commons-codec/commons-codec/1.14" REQUIRED="true" />
 			<IMPORT NAME="commons-logging" MODULE="commons-logging-1.2.jar" MVN="mvn:commons-logging/commons-logging/1.2" REQUIRED="true" />
