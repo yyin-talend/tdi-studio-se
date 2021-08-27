@@ -324,7 +324,31 @@ globalMap.put("<%=cid%>_ERROR_MESSAGE",e.getMessage());
             String path = ftpClient.printWorkingDirectory();
             org.apache.commons.net.ftp.FTPFile[] ftpFiles = null;
             ftpFiles = ftpClient.listFiles();
+            String[] nameLists = null;
+            try {
+                 nameLists = ftpClient.listNames();
+            } catch (IOException e) {
+                 e.printStackTrace();
+            }
+            if( nameLists!=null && (ftpFiles == null || ftpFiles.length == 0)){
+            	//if the file is folder, catch the FTPException and recur
+                for (String ftpFileName : nameLists){
+                try{
+                    downloadFile(localDirectory + "/" + ftpFileName,ftpFileName);
+                } catch (IOException e) {
+            		<%if(isLog4jEnabled){%>
+            			log.warn("<%=cid%> - " + e.getMessage());
+            		<%}%>
+                  	java.io.File localFile = new java.io.File(localDirectory + "/" + ftpFileName);
 
+                    if (!localFile.exists()) {
+                    	localFile.mkdir();
+                    }
+            	    getAllFiles(path + "/" + ftpFileName, localDirectory + "/" + ftpFileName);
+                  	chdir(remoteDirectory);
+            	}
+            	}
+            }else{
             for (org.apache.commons.net.ftp.FTPFile ftpFile : ftpFiles) {
 
                 if (ftpFile.isDirectory()) {
@@ -343,19 +367,15 @@ globalMap.put("<%=cid%>_ERROR_MESSAGE",e.getMessage());
                 }
             }
         }
+        }
 
         public void getFiles(String remoteDirectory, String localDirectory, String maskStr) 
             throws IllegalStateException, IOException, java.io.FileNotFoundException {
 
             chdir(remoteDirectory);
-            org.apache.commons.net.ftp.FTPFile[] ftpFiles = null;
-            ftpFiles = ftpClient.listFiles(".");
-
-            for(org.apache.commons.net.ftp.FTPFile ftpFile : ftpFiles) {
-
-                if (ftpFile.isFile()) {
-                    String fileName = ftpFile.getName();
-
+            String[] nameLists = ftpClient.listNames(".");
+            if(nameLists != null){
+                for (String fileName : nameLists) {
                     if (fileName.matches(maskStr)) {
                         downloadFile(localDirectory + "/" + fileName,fileName);
                     }
@@ -363,10 +383,11 @@ globalMap.put("<%=cid%>_ERROR_MESSAGE",e.getMessage());
             }
         }
 
-        public void chdir(String path) throws IllegalStateException, IOException {
+        public boolean chdir(String path) throws IllegalStateException, IOException {
             if (!".".equals(path)) {
-                ftpClient.changeWorkingDirectory(path);
+                return ftpClient.changeWorkingDirectory(path);
             }
+            return true;
         }
 
         public String pwd() throws IllegalStateException, IOException {
@@ -414,14 +435,15 @@ globalMap.put("<%=cid%>_ERROR_MESSAGE",e.getMessage());
         final java.util.List<String> msg_<%=cid%> = new java.util.ArrayList<String>();
         FTPGetter_<%=cid%> getter_<%=cid%> = new FTPGetter_<%=cid%>() {
             @Override
-            protected void downloadFile(String localFileName, String remoteFileName) 
+            protected void downloadFile(String localFileName, String remoteFileName)
             throws IllegalStateException, java.io.FileNotFoundException, IOException {
                 java.io.File localFile = new java.io.File(localFileName);
 <%
                 if (append) {
 %>
                     try (java.io.FileOutputStream localFos = new java.io.FileOutputStream(localFileName, true)) {
-                        ftpClient.retrieveFile(remoteFileName, localFos);
+                        boolean status = ftpClient.retrieveFile(remoteFileName, localFos);
+                        if(status){
                         <%if(isLog4jEnabled){%>
                             log.debug("<%=cid%> - Downloaded file " + (count +1) +  " : '" + remoteFileName + "' successfully.");
                         <%}%>
@@ -431,8 +453,12 @@ globalMap.put("<%=cid%>_ERROR_MESSAGE",e.getMessage());
                         <%}%>
                         globalMap.put("<%=cid %>_CURRENT_STATUS", "File transfer OK.");
                         count++;
+                        }else{
+                            msg_<%=cid%>.add("file [" + remoteFileName + "] downloaded unsuccessfully.");
+                            globalMap.put("<%=cid %>_CURRENT_STATUS", "File transfer fail.");
+                        }
                     } catch (IOException e) {
-globalMap.put("<%=cid%>_ERROR_MESSAGE",e.getMessage());
+                        globalMap.put("<%=cid%>_ERROR_MESSAGE",e.getMessage());
                         msg_<%=cid%>.add("file [" + remoteFileName + "] downloaded unsuccessfully.");
                         globalMap.put("<%=cid %>_CURRENT_STATUS", "File transfer fail.");
                         throw e;
@@ -441,7 +467,10 @@ globalMap.put("<%=cid%>_ERROR_MESSAGE",e.getMessage());
                 } else if ("never".equals(overwrite)) {
 %>
                     if (!localFile.exists()) {
-                        downloadFileWithOverwrite(localFileName, remoteFileName);
+                        boolean status = downloadFileWithOverwrite(localFileName, remoteFileName);
+                        if(!status){
+                            localFile.delete();
+                        }
                     } else {
                         <%if(isLog4jEnabled){%>
                            log.info("<%= cid %> - file ["+ remoteFileName +"] exit transmission.");
@@ -469,17 +498,21 @@ globalMap.put("<%=cid%>_ERROR_MESSAGE",e.getMessage());
                             globalMap.put("<%=cid %>_CURRENT_STATUS", "No file transfered.");
                         }
                     } else {
-                        downloadFileWithOverwrite(localFileName, remoteFileName);
+                        boolean status = downloadFileWithOverwrite(localFileName, remoteFileName);
+                        if(!status){
+                            localFile.delete();
+                    }
                     }
 <%
                 }
 %>
             }
             
-            private void downloadFileWithOverwrite(String localFileName, String remoteFileName) 
+            private boolean downloadFileWithOverwrite(String localFileName, String remoteFileName)
                 throws IllegalStateException, java.io.FileNotFoundException, IOException {
                 try (java.io.FileOutputStream localFos = new java.io.FileOutputStream(localFileName)) {
-                        ftpClient.retrieveFile(remoteFileName, localFos);
+                        boolean status = ftpClient.retrieveFile(remoteFileName, localFos);
+                        if(status){
                         <%if(isLog4jEnabled){%>
                             log.debug("<%=cid%> - Downloaded file " + (count +1) +  " : '" + remoteFileName + "' successfully.");
                         <%}%>
@@ -489,8 +522,10 @@ globalMap.put("<%=cid%>_ERROR_MESSAGE",e.getMessage());
                         <%}%>
                         globalMap.put("<%=cid %>_CURRENT_STATUS", "File transfer OK.");
                         count++;
+                        }
+                        return status;
                     } catch (IOException e) {
-globalMap.put("<%=cid%>_ERROR_MESSAGE",e.getMessage());
+                        globalMap.put("<%=cid%>_ERROR_MESSAGE",e.getMessage());
                         msg_<%=cid%>.add("file [" + remoteFileName + "] downloaded unsuccessfully.");
                         globalMap.put("<%=cid %>_CURRENT_STATUS", "File transfer fail.");
                         throw e;
@@ -531,14 +566,16 @@ globalMap.put("<%=cid%>_ERROR_MESSAGE",e.getMessage());
 %>
         FTPGetter_<%=cid%> getter_<%=cid%> = new FTPGetter_<%=cid%>() {
             @Override
-            protected void downloadFile(String localFileName, String remoteFileName) 
+            protected void downloadFile(String localFileName, String remoteFileName)
             throws IllegalStateException, java.io.FileNotFoundException, IOException {
                 try (java.io.FileOutputStream localFos = new java.io.FileOutputStream(localFileName)) {
-                    ftpClient.retrieveFile(remoteFileName, localFos);
+                    boolean status = ftpClient.retrieveFile(remoteFileName, localFos);
+                    if(status){
                     <%if(isLog4jEnabled){%>
                         log.debug("<%=cid%> - Downloaded file " + (count +1) +  " : '" + remoteFileName + "' successfully.");
                     <%}%>
                     count++;
+                    }
                 }
             }
         };
