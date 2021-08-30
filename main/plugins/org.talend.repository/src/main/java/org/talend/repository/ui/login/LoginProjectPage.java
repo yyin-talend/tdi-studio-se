@@ -97,7 +97,7 @@ import org.talend.core.model.general.Project;
 import org.talend.core.model.properties.ProjectReference;
 import org.talend.core.model.properties.User;
 import org.talend.core.model.repository.ERepositoryObjectType;
-import org.talend.core.model.repository.SVNConstant;
+import org.talend.core.model.repository.GITConstant;
 import org.talend.core.repository.model.IRepositoryFactory;
 import org.talend.core.repository.model.ProxyRepositoryFactory;
 import org.talend.core.repository.model.RepositoryFactoryProvider;
@@ -1429,7 +1429,7 @@ public class LoginProjectPage extends AbstractLoginActionPage {
         if (LoginHelper.isRemotesConnection(getConnection())) {
             String branch = getBranch();
             if (branch == null) {
-                branch = SVNConstant.EMPTY;
+                branch = GITConstant.EMPTY;
             }
             try {
                 loginHelper.getPrefManipulator().setLastSVNBranch(
@@ -2268,20 +2268,20 @@ public class LoginProjectPage extends AbstractLoginActionPage {
                     popularBranches.add(branchName);
                 }
             } else if ("git".equals(storage)) {
-                if ( StringUtils.equals(SVNConstant.NAME_MAIN, branchName)) {
+                if ( StringUtils.equals(GITConstant.NAME_MAIN, branchName)) {
                     popularBranches.add(0,branchName);
-                } else if ( StringUtils.equals(SVNConstant.NAME_MASTER, branchName)) {
+                } else if ( StringUtils.equals(GITConstant.NAME_MASTER, branchName)) {
                     int index = 0;
-                    if (popularBranches.contains(SVNConstant.NAME_MAIN)) {
+                    if (popularBranches.contains(GITConstant.NAME_MAIN)) {
                         index++;
                     } 
                     popularBranches.add(index,branchName);
                 } else if ( StringUtils.equals(defaultBranch, branchName)) {
                     int index = 0;
-                    if (popularBranches.contains(SVNConstant.NAME_MAIN)) {
+                    if (popularBranches.contains(GITConstant.NAME_MAIN)) {
                         index++;
                     } 
-                    if (popularBranches.contains(SVNConstant.NAME_MASTER)) {
+                    if (popularBranches.contains(GITConstant.NAME_MASTER)) {
                         index++;
                     } 
                     popularBranches.add(index,branchName);

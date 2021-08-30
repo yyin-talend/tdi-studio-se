@@ -39,7 +39,7 @@ import org.talend.core.context.RepositoryContext;
 import org.talend.core.language.ECodeLanguage;
 import org.talend.core.model.general.ConnectionBean;
 import org.talend.core.model.general.Project;
-import org.talend.core.model.repository.SVNConstant;
+import org.talend.core.model.repository.GITConstant;
 import org.talend.core.repository.model.ProxyRepositoryFactory;
 import org.talend.core.repository.model.RepositoryFactoryProvider;
 import org.talend.core.repository.utils.ProjectHelper;
@@ -529,7 +529,7 @@ public class LoginFirstTimeStartupActionPage extends AbstractLoginActionPage {
             return;
         }
         LoginHelper.setRepositoryContextInContext(defaultConnectionBean, LoginHelper.getUser(defaultConnectionBean), project,
-                SVNConstant.NAME_TRUNK);
+                GITConstant.NAME_TRUNK);
         if (loginHelper.logIn(defaultConnectionBean, project)) {
             loginHelper.saveLastConnectionBean(defaultConnectionBean);
             loginHelper.getPrefManipulator().setLastProject(project.getLabel());
