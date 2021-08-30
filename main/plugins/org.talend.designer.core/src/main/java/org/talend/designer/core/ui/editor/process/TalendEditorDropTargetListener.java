@@ -27,7 +27,6 @@ import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.PolylineConnection;
 import org.eclipse.draw2d.Viewport;
 import org.eclipse.draw2d.geometry.Point;
-import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.draw2d.geometry.Translatable;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.gef.EditPart;
@@ -2276,9 +2275,6 @@ public class TalendEditorDropTargetListener extends TemplateTransferDropTargetLi
 
     public void translateAbsolateToRelative(IFigure owner, Translatable t) {
         owner.translateToRelative(t);
-
-        Rectangle bounds = owner.getBounds();
-        t.performTranslate(-bounds.x, -bounds.y);
 
     }
 
