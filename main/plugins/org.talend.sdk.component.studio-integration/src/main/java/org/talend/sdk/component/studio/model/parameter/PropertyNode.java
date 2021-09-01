@@ -254,7 +254,7 @@ public class PropertyNode {
         if (property.hasOptionsOrder()) {
             return property.getOptionsOrderNames();
         }
-        return getChildrenNames();
+        return Collections.emptyList();
     }
 
     public Layout getLayout(final String name) {
