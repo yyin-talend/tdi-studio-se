@@ -442,10 +442,10 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
 
         boolean canESBMicroServiceJob = EmfModelUtils.getComponentByName(getProcessItem(), "tRESTRequest") != null;
         boolean isESBJob = false;
-        
+
         boolean canESBMicroServiceDockerImage = PluginChecker.isDockerPluginLoaded();
         Object bType = getProcessItem().getProperty().getAdditionalProperties().get(TalendProcessArgumentConstant.ARG_BUILD_TYPE);
-        
+
         Map<JobExportType, String> map = BuildJobConstants.oldBuildTypeMap;
         JobExportType jType = null;
         if (bType != null) {
@@ -456,7 +456,7 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
 	            }
 	        }
         }
-        
+
         for (Object o : ((ProcessItem) processItem).getProcess().getNode()) {
             if (o instanceof NodeType) {
                 NodeType currentNode = (NodeType) o;
@@ -525,17 +525,17 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
         }
         if (jType != null) {
         	exportTypeCombo.setText(jType.label);
-        	
+
         	if (jType.equals(JobExportType.OSGI)) {
             	for (String item : exportTypeCombo.getItems()) {
-                    if (item != null && (item.equalsIgnoreCase(JobExportType.MSESB.label) || 
+                    if (item != null && (item.equalsIgnoreCase(JobExportType.MSESB.label) ||
                         item.equalsIgnoreCase(JobExportType.MSESB_IMAGE.label))) {
                         exportTypeCombo.remove(item);
                     }
                 }
                 exportTypeCombo.setEnabled(false);
             }
-            
+
             if (jType.equals(JobExportType.MSESB) || jType.equals(JobExportType.MSESB_IMAGE)) {
                 for (String item : exportTypeCombo.getItems()) {
                     if (item != null && item.equalsIgnoreCase(JobExportType.OSGI.label)) {
@@ -544,14 +544,14 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
                 }
             }
         }
-        
+
         if (exportTypeFixed != null) {
             left.setVisible(false);
             optionsGroup.setVisible(false);
             exportTypeCombo.setText(exportTypeFixed.label);
         }
-        
-        
+
+
 
         chkButton = new Button(left, SWT.CHECK);
         chkButton.setText(Messages.getString("JavaJobScriptsExportWSWizardPage.extractZipFile")); //$NON-NLS-1$
@@ -1263,24 +1263,33 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
         gdlOptionsGroupComposite.marginHeight = 0;
         gdlOptionsGroupComposite.marginWidth = 0;
         optionsGroupComposite.setLayout(gdlOptionsGroupComposite);
+        
+        Group optionsGroup = null;
+        Composite left = null;
+        Font font = null;
+        
+        String buildType = (String) getProcessItem().getProperty()
+                .getAdditionalProperties().get(TalendProcessArgumentConstant.ARG_BUILD_TYPE);
 
-        // options group
-        Group optionsGroup = new Group(optionsGroupComposite, SWT.NONE);
-        GridDataFactory.fillDefaults().grab(true, false).applyTo(optionsGroup);
+        if ("REST_MS".equals(buildType) && getCurrentExportType1() != JobExportType.MSESB_IMAGE) {
+        	// options group
+            optionsGroup = new Group(optionsGroupComposite, SWT.NONE);
+            GridDataFactory.fillDefaults().grab(true, false).applyTo(optionsGroup);
 
-        optionsGroup.setText(Messages.getString("IDEWorkbenchMessages.WizardExportPage_options")); //$NON-NLS-1$
-        optionsGroup.setFont(parent.getFont());
+            optionsGroup.setText(Messages.getString("IDEWorkbenchMessages.WizardExportPage_options")); //$NON-NLS-1$
+            optionsGroup.setFont(parent.getFont());
 
-        Font font = optionsGroup.getFont();
-        optionsGroup.setLayout(new GridLayout());
+            font = optionsGroup.getFont();
+            optionsGroup.setLayout(new GridLayout());
 
-        Composite left = new Composite(optionsGroup, SWT.NONE);
-        GridDataFactory.fillDefaults().grab(true, false).applyTo(left);
+            left = new Composite(optionsGroup, SWT.NONE);
+            GridDataFactory.fillDefaults().grab(true, false).applyTo(left);
 
-        GridLayout gdlLeft = new GridLayout();
-        gdlLeft.marginHeight = 0;
-        gdlLeft.marginWidth = 0;
-        left.setLayout(gdlLeft);
+            GridLayout gdlLeft = new GridLayout();
+            gdlLeft.marginHeight = 0;
+            gdlLeft.marginWidth = 0;
+            left.setLayout(gdlLeft);
+        }
 
         switch (getCurrentExportType1()) {
         case POJO:
@@ -1290,7 +1299,7 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
         case OSGI:
         	createOptionsForOSGIESB(optionsGroupComposite, font);
             restoreWidgetValuesForOSGI();
-            
+
             break;
         case MSESB:
             createOptionsForMSESB(left, font);
@@ -1304,7 +1313,7 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
             if (checkExport()) {
                 addDockerOptionsListener();
             }
-            optionsGroupComposite.setVisible(false);
+            optionsGroupComposite.setVisible(true);
             break;
         case IMAGE:
             createOptionForDockerImage(left, font);
