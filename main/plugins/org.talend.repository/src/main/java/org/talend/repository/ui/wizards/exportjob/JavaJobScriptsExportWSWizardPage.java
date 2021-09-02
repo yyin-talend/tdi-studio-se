@@ -1271,7 +1271,7 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
         String buildType = (String) getProcessItem().getProperty()
                 .getAdditionalProperties().get(TalendProcessArgumentConstant.ARG_BUILD_TYPE);
 
-        if ("REST_MS".equals(buildType) && getCurrentExportType1() != JobExportType.MSESB_IMAGE) {
+        if (("REST_MS".equals(buildType) || buildType == null) && getCurrentExportType1() != JobExportType.MSESB_IMAGE) {
         	// options group
             optionsGroup = new Group(optionsGroupComposite, SWT.NONE);
             GridDataFactory.fillDefaults().grab(true, false).applyTo(optionsGroup);
