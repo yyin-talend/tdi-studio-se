@@ -1792,9 +1792,9 @@ public class EmfComponent extends AbstractBasicComponent {
                 }
             } else {
             	if (showIf != null) {
-                    newParam.setShowIf(showIf + " AND (" + componentType.getDistributionParameter() + "!='CUSTOM')" + " AND (" + componentType.getDistributionParameter() + "!='SPARK')"); //$NON-NLS-1$ //$NON-NLS-2$
+                    newParam.setShowIf(showIf + " AND (" + componentType.getDistributionParameter() + "!='CUSTOM')"); //$NON-NLS-1$ //$NON-NLS-2$
                 } else {
-                    newParam.setShowIf("(" + componentType.getDistributionParameter() + "!='CUSTOM')" + " AND (" + componentType.getDistributionParameter() + "!='SPARK')"); //$NON-NLS-1$ //$NON-NLS-2$
+                    newParam.setShowIf("(" + componentType.getDistributionParameter() + "!='CUSTOM')"); //$NON-NLS-1$ //$NON-NLS-2$
                 }
             }
             

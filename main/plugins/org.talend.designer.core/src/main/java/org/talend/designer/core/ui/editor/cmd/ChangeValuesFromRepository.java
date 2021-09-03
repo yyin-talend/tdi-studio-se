@@ -229,7 +229,7 @@ public class ChangeValuesFromRepository extends ChangeMetadataCommand {
         if (propertyName.split(":")[1].equals(propertyTypeName)) { //$NON-NLS-1$
             elem.setPropertyValue(propertyName, value);
             if (allowAutoSwitch) {
-                // Update spark mode to YARN_CLIENT if repository
+                // Update spark mode to YARN_CLUSTER if repository
                 if (elem instanceof IProcess) {
                     if (ComponentCategory.CATEGORY_4_SPARK.getName().equals(((IProcess) elem).getComponentsType())
                             || ComponentCategory.CATEGORY_4_SPARKSTREAMING.getName()

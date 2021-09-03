@@ -709,13 +709,13 @@ public class TalendEditorDropTargetListener extends TemplateTransferDropTargetLi
                     Messages.getString("TalendEditorDropTargetListener.updateHadoopCfgDialog.title"), //$NON-NLS-1$
                     Messages.getString("TalendEditorDropTargetListener.updateHadoopCfgDialog.msg")); //$NON-NLS-1$
             if (confirmUpdate) {
-                // Update spark mode to YARN_CLIENT if repository
+                // Update spark mode to YARN_CLUSTER if repository
                 if (ComponentCategory.CATEGORY_4_SPARK.getName().equals(process.getComponentsType())
                         || ComponentCategory.CATEGORY_4_SPARKSTREAMING.getName().equals(process.getComponentsType())) {
                     IElementParameter sparkParam = process.getElementParameter(HadoopConstants.SPARK_MODE);
 
-                    if (sparkParam != null && !HadoopConstants.SPARK_MODE_YARN_CLIENT.equals(sparkParam.getValue())) {
-                        sparkParam.setValue(HadoopConstants.SPARK_MODE_YARN_CLIENT);
+                    if (sparkParam != null && !HadoopConstants.SPARK_MODE_YARN_CLUSTER.equals(sparkParam.getValue())) {
+                        sparkParam.setValue(HadoopConstants.SPARK_MODE_YARN_CLUSTER);
                     }
 
                 }
