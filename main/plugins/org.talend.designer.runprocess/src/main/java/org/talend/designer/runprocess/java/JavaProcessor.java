@@ -265,7 +265,7 @@ public class JavaProcessor extends AbstractJavaProcessor implements IJavaBreakpo
             this.jobId = property.getId();
             this.jobVersion = property.getVersion();
         }
-        if (!ProcessorUtilities.isGeneratePomOnly()) {
+        if (!ProcessorUtilities.isGeneratePomOnly() && !isJoblet()) {
             if (isStandardJob() && !isGuessSchemaJob(property)) {
                 this.talendJavaProject = TalendJavaProjectManager.getTalendJobJavaProject(property);
             } else {
@@ -371,6 +371,11 @@ public class JavaProcessor extends AbstractJavaProcessor implements IJavaBreakpo
             initCodePath(c);
         }
         this.context = c;
+    }
+
+    protected boolean isJoblet() {
+        return getProperty() != null && getProperty().getItem() != null && ERepositoryObjectType.getAllTypesOfJoblet()
+                .contains(ERepositoryObjectType.getItemType(getProperty().getItem()));
     }
 
     @Override

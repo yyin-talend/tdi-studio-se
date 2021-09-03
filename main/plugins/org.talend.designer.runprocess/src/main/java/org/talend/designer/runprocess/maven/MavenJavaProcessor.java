@@ -100,11 +100,6 @@ public class MavenJavaProcessor extends JavaProcessor {
     protected void generateCodeAfter(boolean statistics, boolean trace, boolean javaProperties, int option)
             throws ProcessorException {
         if (isStandardJob()) {
-            int options = ProcessUtils.getOptionValue(getArguments(), TalendProcessArgumentConstant.ARG_GENERATE_OPTION, 0);
-            if (!BitwiseOptionUtils.containOption(options, TalendProcessOptionConstants.GENERATE_WITHOUT_COMPILING)) {
-                PomUtil.backupPomFile(getTalendJavaProject());
-            }
-
             // we need to generate the pom everytime since we have a classpath adjuster
             // means classpath can be changed during the code generation itself by anything using the IClasspathAdjuster
             // (currently TDM)
@@ -406,9 +401,6 @@ public class MavenJavaProcessor extends JavaProcessor {
                     talendJavaProject.buildWholeCodeProject();
                 }
                 buildCacheManager.putJobCache(getProperty());
-            } else {
-                // for already installed sub jobs, can restore pom here directly
-                PomUtil.restorePomFile(getTalendJavaProject());
             }
             return;
         }

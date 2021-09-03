@@ -82,7 +82,6 @@ import org.talend.designer.core.ui.editor.subjobcontainer.sparkstreaming.SparkSt
 import org.talend.designer.core.utils.ConnectionUtil;
 import org.talend.designer.core.utils.ParallelExecutionUtils;
 import org.talend.designer.maven.tools.BuildCacheManager;
-import org.talend.designer.maven.utils.PomUtil;
 import org.talend.designer.runprocess.ProcessMessage.MsgType;
 import org.talend.designer.runprocess.i18n.Messages;
 import org.talend.designer.runprocess.jmx.JMXPerformanceChangeListener;
@@ -659,10 +658,6 @@ public class RunProcessContext {
                         TimeMeasure.begin(generateCodeId);
                         try {
                             BuildCacheManager.getInstance().clearCurrentCache();
-                            //TESB-29071
-                            if (ProcessorUtilities.isRemoteProject()) {
-                                BuildCacheManager.getInstance().clearAllCodesCache();
-                            }
                             ProcessorUtilities.resetExportConfig();
                             ProcessorUtilities
                                     .generateCode(processor, process, context,
@@ -672,7 +667,6 @@ public class RunProcessContext {
                                             true, progressMonitor);
                         } catch (Throwable e) {
                             BuildCacheManager.getInstance().performBuildFailure();
-                            PomUtil.restorePomFile(processor.getTalendJavaProject());
                             // catch any Exception or Error to kill the process,
                             // see bug 0003567
                             running = true;
@@ -758,7 +752,6 @@ public class RunProcessContext {
                                                 kill();
                                             }
                                         } finally {
-                                            PomUtil.restorePomFile(processor.getTalendJavaProject());
                                             refreshUiAndWait[0] = false;
                                         }
                                     }

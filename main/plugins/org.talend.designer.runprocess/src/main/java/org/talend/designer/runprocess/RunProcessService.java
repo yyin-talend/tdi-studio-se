@@ -559,8 +559,8 @@ public class RunProcessService implements IRunProcessService {
     }
 
     @Override
-    public void checkAndUpdateDaikonDependencies() {
-        delegateService.checkAndUpdateDaikonDependencies();
+    public void updateAllCodeCacheStatus(boolean isUpdated) {
+        delegateService.updateAllCodeCacheStatus(isUpdated);
     }
 
 }

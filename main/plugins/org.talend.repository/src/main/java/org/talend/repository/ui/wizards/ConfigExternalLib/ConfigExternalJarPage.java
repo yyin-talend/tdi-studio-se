@@ -19,7 +19,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.eclipse.core.resources.IProject;
-import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -37,8 +37,10 @@ import org.talend.core.ILibraryManagerUIService;
 import org.talend.core.model.properties.Item;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.routines.CodesJarInfo;
+import org.talend.core.runtime.process.ITalendProcessJavaProject;
 import org.talend.designer.core.model.utils.emf.component.ComponentFactory;
 import org.talend.designer.core.model.utils.emf.component.IMPORTType;
+import org.talend.designer.maven.tools.AggregatorPomsHelper;
 import org.talend.designer.maven.tools.CodesJarM2CacheManager;
 import org.talend.designer.maven.utils.MavenProjectUtils;
 import org.talend.designer.runprocess.IRunProcessService;
@@ -122,18 +124,26 @@ public class ConfigExternalJarPage extends ConfigExternalLibPage {
                 } catch (Exception e) {
                     ExceptionHandler.process(e);
                 }
+                IRunProcessService runProcessService = IRunProcessService.get();
+                runProcessService.updateLibraries(getSelectedItem());
+
                 Item item = getSelectedItem();
-                if (ERepositoryObjectType.getAllTypesOfCodesJar().contains(ERepositoryObjectType.getItemType(item))) {
-                    CodesJarInfo info = CodesJarInfo.create(item.getProperty());
-                    IProject project = IRunProcessService.get().getTalendCodesJarJavaProject(info).getProject();
-                    CodesJarM2CacheManager.updateCodesJarProjectPom(new NullProgressMonitor(), info);
-                    try {
-                        MavenProjectUtils.updateMavenProject(new NullProgressMonitor(), project);
-                    } catch (CoreException e) {
-                        ExceptionHandler.process(e);
+                ERepositoryObjectType itemType = ERepositoryObjectType.getItemType(item);
+                IProgressMonitor monitor = new NullProgressMonitor();
+                try {
+                    if (ERepositoryObjectType.getAllTypesOfCodesJar().contains(itemType)) {
+                        CodesJarInfo info = CodesJarInfo.create(item.getProperty());
+                        IProject project = runProcessService.getTalendCodesJarJavaProject(info).getProject();
+                        CodesJarM2CacheManager.updateCodesJarProjectPom(monitor, info);
+                        MavenProjectUtils.updateMavenProject(monitor, project);
+                    } else {
+                        ITalendProcessJavaProject codeProject = runProcessService.getTalendCodeJavaProject(itemType);
+                        new AggregatorPomsHelper().updateCodeProjectPom(monitor, itemType, codeProject.getProjectPom());
+                        MavenProjectUtils.updateMavenProject(monitor, codeProject.getProject());
                     }
+                } catch (Exception e) {
+                    ExceptionHandler.process(e);
                 }
-                CorePlugin.getDefault().getRunProcessService().updateLibraries(getSelectedItem());
             }
         });
 

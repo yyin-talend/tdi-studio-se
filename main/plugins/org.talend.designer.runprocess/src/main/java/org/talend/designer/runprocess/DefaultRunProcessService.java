@@ -875,8 +875,7 @@ public class DefaultRunProcessService implements IRunProcessService {
             for (ProjectReference ref : references) {
                 initRefPoms(new Project(ref.getReferencedProject()));
             }
-            helper.updateRefProjectModules(references, monitor);
-            helper.updateCodeProjects(monitor, true, false, true);
+            helper.updateCodeProjects(monitor, false, true);
 
             CodesJarM2CacheManager.updateCodesJarProjectForLogon(monitor);
             CodesJarResourceCache.getAllCodesJars().stream().filter(info -> getExistingTalendCodesJarProject(info) != null)
@@ -900,7 +899,7 @@ public class DefaultRunProcessService implements IRunProcessService {
         for (ERepositoryObjectType codeType : ERepositoryObjectType.getAllTypesOfCodes()) {
             if (CodeM2CacheManager.needUpdateCodeProject(refProject, codeType)) {
                 installRefCodeProject(codeType, refHelper, monitor);
-                CodeM2CacheManager.updateCodeProjectCache(refProject, codeType);
+                CodeM2CacheManager.updateCacheStatus(refProject.getTechnicalLabel(), codeType, true);
             } else {
                 ITalendProcessJavaProject codeProject = TalendJavaProjectManager.getExistingTalendCodeProject(codeType,
                         refHelper.getProjectTechName());
@@ -921,6 +920,9 @@ public class DefaultRunProcessService implements IRunProcessService {
         String projectTechName = refHelper.getProjectTechName();
         ITalendProcessJavaProject codeProject = TalendJavaProjectManager.getExistingTalendCodeProject(codeType, projectTechName);
         if (codeProject != null) {
+            // FIXME pom has been created during syncAllRoutines, no need to create again here
+            // but if later syncAllRoutines refactored and nowhere to create pom, then must do it here
+            // refHelper.updateCodeProjectPom(monitor, codeType, pomFile);
             codeProject.buildWholeCodeProject();
             Map<String, Object> argumentsMap = new HashMap<>();
             argumentsMap.put(TalendProcessArgumentConstant.ARG_GOAL, TalendMavenConstants.GOAL_INSTALL);
@@ -1057,8 +1059,8 @@ public class DefaultRunProcessService implements IRunProcessService {
     }
 
     @Override
-    public void checkAndUpdateDaikonDependencies() {
-        new AggregatorPomsHelper().checkAndUpdateDaikonDependencies();
+    public void updateAllCodeCacheStatus(boolean isUpdated) {
+        CodeM2CacheManager.updateAllCacheStatus(false);
     }
 
 }
