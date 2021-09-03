@@ -358,7 +358,8 @@ public class JobSettingsView extends ViewPart implements IJobSettingsView, ISele
                 categories = getCategories(process);
             }
         } else if (obj instanceof IEditorPart) {
-            if (CorePlugin.getDefault().getDiagramModelService().isBusinessDiagramEditor((IEditorPart) obj)) {
+            if (CorePlugin.getDefault().getDiagramModelService() != null 
+                    && CorePlugin.getDefault().getDiagramModelService().isBusinessDiagramEditor((IEditorPart) obj)) {
                 categories = getCategories(obj);
             } else if (esbService != null && esbService.isWSDLEditor((IWorkbenchPart) obj)) {
                 IEditorInput input = ((IEditorPart) obj).getEditorInput();
@@ -601,7 +602,8 @@ public class JobSettingsView extends ViewPart implements IJobSettingsView, ISele
                 category.add(EComponentCategory.DEPLOYMENT);
             }
         } else if (obj instanceof IEditorPart) {
-            if (CorePlugin.getDefault().getDiagramModelService().isBusinessDiagramEditor((IEditorPart) obj)) {
+            if (CorePlugin.getDefault().getDiagramModelService() != null 
+                    && CorePlugin.getDefault().getDiagramModelService().isBusinessDiagramEditor((IEditorPart) obj)) {
                 category.add(EComponentCategory.MAIN);
                 category.add(EComponentCategory.APPEARANCE);
                 category.add(EComponentCategory.RULERS_AND_GRID);
