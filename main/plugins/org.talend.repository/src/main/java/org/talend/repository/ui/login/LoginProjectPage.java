@@ -2538,7 +2538,7 @@ public class LoginProjectPage extends AbstractLoginActionPage {
                     ECodeLanguage.JAVA.getName(), repositoryContext.getUser());
             Project project = repositoryFactory.createProject(projectInfor);
             resetProjectOperationSelectionWithBusyCursor(false);
-            fillUIProjectListWithBusyCursor();
+            fillUIProjectList(new NullProgressMonitor());
             selectProject(project.getLabel());
             checkErrors();
             newProjectName.setText(""); //$NON-NLS-1$
