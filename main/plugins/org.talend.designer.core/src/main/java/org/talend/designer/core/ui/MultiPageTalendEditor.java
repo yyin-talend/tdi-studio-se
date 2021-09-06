@@ -30,6 +30,7 @@ import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.ui.editor.AbstractTalendEditor;
 import org.talend.designer.core.ui.editor.ProcessEditorInput;
 import org.talend.designer.core.ui.editor.TalendEditor;
+import org.talend.designer.core.ui.views.jobsettings.JobSettings;
 
 /**
  * This class is the main editor, the differents pages in it are: <br/>
@@ -113,9 +114,11 @@ public class MultiPageTalendEditor extends AbstractMultiPageTalendEditor {
         }
         // if (getActivePage() == 1) {
         ISVNProviderService service = null;
+        boolean needRefreshJobSettingTitle = false;
         if (PluginChecker.isSVNProviderPluginLoaded()) {
             service = (ISVNProviderService) GlobalServiceRegister.getDefault().getService(ISVNProviderService.class);
             if (revisionChanged && service.isProjectInSvnMode()) {
+                needRefreshJobSettingTitle = true;
                 revisionNumStr = service.getCurrentSVNRevision(process2);
                 revisionChanged = false;
                 if (revisionNumStr != null) {
@@ -145,6 +148,9 @@ public class MultiPageTalendEditor extends AbstractMultiPageTalendEditor {
             } else {
                 setPartName(Messages.getString(title, label, "")); //$NON-NLS-1$
             }
+        }
+        if (needRefreshJobSettingTitle) {
+            JobSettings.switchToCurJobSettingsView();
         }
 
     }
