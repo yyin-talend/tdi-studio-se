@@ -130,7 +130,7 @@ abstract public class TCKComponentInstallerTask extends BaseComponentInstallerTa
             }
             if (!files.isEmpty()) {
                 try {
-                    ICarInstallationResult result = ITaCoKitUpdateService.getInstance().installCars(files, true, monitor, true, false);
+                    ICarInstallationResult result = ITaCoKitUpdateService.getInstance().installCars(files, false, monitor, true, false);
                     for (File carFile : carFiles) {
                         IStatus stat = result.getInstalledStatus().get(carFile);
                         if (stat == null) {
