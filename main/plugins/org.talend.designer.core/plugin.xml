@@ -943,4 +943,19 @@
                 class="org.talend.designer.core.ui.help.TalendHelpUI">
           </config>
        </extension>
+       <extension
+             point="org.talend.core.runtime.analysisTask">
+          <analysisTask
+                class="org.talend.designer.core.model.analysistask.ItemComponentMissingAnalysisTask"
+                description="Check if there exist component missing"
+                id="org.talend.designer.core.model.analysistask.ItemComponentMissingAnalysisTask"
+                name="ItemComponentMissingAnalysisTask">
+          </analysisTask>
+          <analysisTask
+                class="org.talend.designer.core.model.analysistask.ChildJobMissingAnalysisTask"
+                description="Check if there exist child job missing"
+                id="org.talend.designer.core.model.analysistask.ChildJobMissingAnalysisTask"
+                name="ChildJobMissingAnalysisTask">
+          </analysisTask>
+       </extension>
 </plugin>
