@@ -265,18 +265,14 @@ public class JavaProcessor extends AbstractJavaProcessor implements IJavaBreakpo
             this.jobId = property.getId();
             this.jobVersion = property.getVersion();
         }
-        if (!ProcessorUtilities.isGeneratePomOnly() && !isJoblet()) {
+        if (!ProcessorUtilities.isGeneratePomOnly()) {
             if (isStandardJob() && !isGuessSchemaJob(property)) {
                 this.talendJavaProject = TalendJavaProjectManager.getTalendJobJavaProject(property);
             } else {
                 // for shadow process/data preview
                 this.talendJavaProject = TalendJavaProjectManager.getTempJavaProject();
-                if (GlobalServiceRegister.getDefault().isServiceRegistered(IRunProcessService.class)) {
-                    IRunProcessService service = GlobalServiceRegister.getDefault()
-                            .getService(IRunProcessService.class);
-                    if (service != null) {
-                        service.updateLogFiles(talendJavaProject, true);
-                    }
+                if (IRunProcessService.get() != null) {
+                    IRunProcessService.get().updateLogFiles(talendJavaProject, true);
                 }
             }
             Assert.isNotNull(this.talendJavaProject, Messages.getString("JavaProcessor.notFoundedProjectException"));
@@ -371,11 +367,6 @@ public class JavaProcessor extends AbstractJavaProcessor implements IJavaBreakpo
             initCodePath(c);
         }
         this.context = c;
-    }
-
-    protected boolean isJoblet() {
-        return getProperty() != null && getProperty().getItem() != null && ERepositoryObjectType.getAllTypesOfJoblet()
-                .contains(ERepositoryObjectType.getItemType(getProperty().getItem()));
     }
 
     @Override
