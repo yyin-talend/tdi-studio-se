@@ -63,7 +63,8 @@ Require-Bundle: org.talend.model,
  org.slf4j.api,
  org.eclipse.help.ui,
  org.talend.core.runtime,
- org.eclipse.compare
+ org.eclipse.compare,
+ org.talend.camel.model
 Eclipse-LazyStart: true
 Plugin-Class: org.talend.designer.core.DesignerPlugin
 Export-Package: org.talend.designer.core;
