@@ -727,6 +727,10 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
         endpointInfo.put("unwrapJsonResponse", //$NON-NLS-1$
                 EmfModelUtils.computeCheckElementValue("UNWRAP_JSON_RESPONSE", restRequestComponent)); //$NON-NLS-1$
 
+        // Attributes to Elements
+        endpointInfo.put("attributesToElements", //$NON-NLS-1$
+                EmfModelUtils.computeCheckElementValue("ATTRIBUTES_TO_ELEMENTS", restRequestComponent)); //$NON-NLS-1$
+        
         // Convert JSON to string (big double values)
         endpointInfo.put("convertTypesToStrings", //$NON-NLS-1$
                 EmfModelUtils.computeCheckElementValue("CONVERT_JSON_VALUES_TO_STRING", restRequestComponent)); //$NON-NLS-1$
