@@ -320,7 +320,13 @@ globalMap.put("<%=cid%>_ERROR_MESSAGE",e.getMessage());
         public void getAllFiles(String remoteDirectory, String localDirectory)
             throws IllegalStateException, IOException, java.io.FileNotFoundException {
 
-            chdir(remoteDirectory);
+            if(!chdir(remoteDirectory)){
+                //change dir fail
+               <%if(isLog4jEnabled){%>
+                log.error("Change dir fail. Skip Directory: " + remoteDirectory);
+                <%}%>
+                return;
+            }
             String path = ftpClient.printWorkingDirectory();
             org.apache.commons.net.ftp.FTPFile[] ftpFiles = null;
             ftpFiles = ftpClient.listFiles();
