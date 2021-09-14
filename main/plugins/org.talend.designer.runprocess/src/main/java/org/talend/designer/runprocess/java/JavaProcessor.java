@@ -110,6 +110,7 @@ import org.talend.core.hadoop.HadoopConstants;
 import org.talend.core.model.components.ComponentCategory;
 import org.talend.core.model.components.EComponentType;
 import org.talend.core.model.general.ModuleNeeded;
+import org.talend.core.model.metadata.designerproperties.SapJcoVersion;
 import org.talend.core.model.process.IContext;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.INode;
@@ -1661,7 +1662,7 @@ public class JavaProcessor extends AbstractJavaProcessor implements IJavaBreakpo
                 IPath jarPath = JavaProcessorUtilities.getJavaProjectLibFolder2()
                         .getFile(MavenUrlHelper.generateModuleNameByMavenURI(neededModule.getMavenUri())).getLocation();
                 String artifactId = artifact.getArtifactId();
-                boolean hasSapjco3 = "sapjco3".equals(artifactId) //$NON-NLS-1$
+                boolean hasSapjco3 = SapJcoVersion.SAP3.getModulName().startsWith(artifactId)
                         && compareSapjco3Version(jarPath.toPortableString()) > 0;
                 boolean hasSapidoc3 = "sapidoc3".equals(artifactId); //$NON-NLS-1$
                 if (hasCXFComponent) {

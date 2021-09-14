@@ -3675,6 +3675,15 @@
               name="RenameConnectionName4tSQSOutput"
               version="7.3.1">
         </projecttask>
+        <projecttask
+              beforeLogon="false"
+              breaks="7.3.0"
+              class="org.talend.repository.model.migration.ChangeDBVersion4tSAPConnection"
+              description="Change one of the DBVersion item value"
+              id="org.talend.repository.model.migration.ChangeDBVersion4tSAPConnection"
+              name="ChangeDBVersion4tSAPConnection"
+              version="7.3.1">
+        </projecttask>
    </extension>
 
    <extension
