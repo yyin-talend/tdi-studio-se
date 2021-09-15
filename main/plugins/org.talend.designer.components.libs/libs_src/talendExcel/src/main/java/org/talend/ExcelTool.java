@@ -1,35 +1,23 @@
 package org.talend;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.security.GeneralSecurityException;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
-
+import com.monitorjbl.xlsx.StreamingReader;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.poi.poifs.crypt.Decryptor;
 import org.apache.poi.poifs.crypt.EncryptionInfo;
 import org.apache.poi.poifs.crypt.EncryptionMode;
 import org.apache.poi.poifs.crypt.Encryptor;
 import org.apache.poi.poifs.filesystem.POIFSFileSystem;
-import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.CellStyle;
-import org.apache.poi.ss.usermodel.CellType;
-import org.apache.poi.ss.usermodel.Font;
-import org.apache.poi.ss.usermodel.FormulaEvaluator;
-import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.ss.usermodel.Sheet;
-import org.apache.poi.ss.usermodel.Workbook;
-import org.apache.poi.ss.usermodel.WorkbookFactory;
+import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.streaming.SXSSFSheet;
 import org.apache.poi.xssf.streaming.SXSSFWorkbook;
+import org.apache.poi.xssf.usermodel.XSSFFont;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbookType;
+
+import java.io.*;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 
 public class ExcelTool {
 
@@ -54,6 +42,8 @@ public class ExcelTool {
     private boolean appendWorkbook = false;
 
     private boolean appendSheet = false;
+    
+    private boolean streamingAppend = false;
 
     private int startX = 0;
 
@@ -91,9 +81,12 @@ public class ExcelTool {
         cellStylesMapping = new HashMap<>();
     }
 
-    public void setAppend(boolean appendWorkbook, boolean appendSheet) {
+    public void setAppend(boolean appendWorkbook, boolean appendSheet, boolean streamingAppend) {
         this.appendWorkbook = appendWorkbook;
         this.appendSheet = appendSheet;
+        if(this.appendWorkbook) {
+            this.streamingAppend = streamingAppend;
+        }
     }
 
     public void setXY(boolean isAbsY, int absX, int absY, boolean keepFormat) {
@@ -112,6 +105,8 @@ public class ExcelTool {
     }
 
     public void prepareStream() {
+        streamingAppend = false;
+
         wb = new SXSSFWorkbook(rowAccessWindowSize);
         sheet = wb.createSheet(sheetName);
         if (isAbsY) {
@@ -167,6 +162,103 @@ public class ExcelTool {
     }
 
     private void appendActionForFile(String fileName) throws Exception {
+        if (this.streamingAppend) {
+            wb = new SXSSFWorkbook(rowAccessWindowSize);
+
+            Workbook preWorkbookForAppend = null;
+            try {
+                preWorkbookForAppend = StreamingReader.builder()
+                        .rowCacheSize(100)
+                        .bufferSize(4096).password(password).open(new File(fileName));
+
+                Iterator<Sheet> sheets = preWorkbookForAppend.sheetIterator();
+                while (sheets.hasNext()) {
+                    Sheet preSheet = sheets.next();
+                    Sheet targetSheet = null;
+                    if (sheetName.equals(preSheet.getSheetName())) {
+                        sheet = wb.createSheet(sheetName);
+
+                        //need to skip the same name sheet if not append sheet
+                        if(!appendSheet) {
+                            continue;
+                        }
+
+                        targetSheet = sheet;
+                    } else {
+                        targetSheet = wb.createSheet(preSheet.getSheetName());
+                    }
+
+                    int y = 0;
+
+                    Iterator<Row> rows = preSheet.rowIterator();
+                    while (rows.hasNext()) {
+                        curRow = targetSheet.createRow(y);
+                        y++;
+                        if(targetSheet == sheet) {
+                            curY = y;// store the append point
+                        }
+                        xOffset = 0;
+
+                        Row row = rows.next();
+                        Iterator<Cell> cells = row.cellIterator();
+                        while (cells.hasNext()) {
+                            Cell cell = cells.next();
+                            CellType cellType = cell.getCellType();
+                            CellStyle cellStyle = getPreCellStyleForStreamingAppend(cell);
+
+                            curCell = curRow.createCell(startX + xOffset, cellType);
+                            xOffset++;
+
+                            switch (cellType) {
+                                case BLANK:
+                                    if (cellStyle != null) curCell.setCellStyle(cellStyle);
+                                    curCell.setBlank();
+                                    break;
+                                case BOOLEAN:
+                                    curCell.setCellValue(cell.getBooleanCellValue());
+                                    if (cellStyle != null) curCell.setCellStyle(cellStyle);
+                                    break;
+                                case NUMERIC:
+                                    if (DateUtil.isCellDateFormatted(cell)) {
+                                        curCell.setCellValue(cell.getDateCellValue());
+                                    } else {
+                                        curCell.setCellValue(cell.getNumericCellValue());
+                                    }
+                                    if (cellStyle != null) curCell.setCellStyle(cellStyle);
+                                    break;
+                                case STRING:
+                                    curCell.setCellValue(cell.getStringCellValue());
+                                    if (cellStyle != null) curCell.setCellStyle(cellStyle);
+                                    break;
+                                case FORMULA:
+                                    curCell.setCellValue(cell.getCellFormula());
+                                    if (cellStyle != null) curCell.setCellStyle(cellStyle);
+                                    break;
+                                case _NONE:
+                                    break;
+                                case ERROR:
+                                    break;// now only ignore error cell as streaming read api don't support to read that
+                                //throw new RuntimeException("Unsupported Cell Type for streaming append: " + cellType);
+                                default:
+                                    throw new RuntimeException("Unknown Cell Type: " + cellType);
+                            }
+                        }
+                    }
+                }
+
+                if(sheet  == null) {
+                    sheet = wb.createSheet(sheetName);
+                }
+            } finally {
+                if (preWorkbookForAppend != null) {
+                    preWorkbookForAppend.close();
+                }
+            }
+
+            return;
+        }
+
+        // if use file instread of streaming, will throw an exception, TODO check why
         InputStream inp = new FileInputStream(fileName);
         wb = WorkbookFactory.create(inp, password);
         sheet = wb.getSheet(sheetName);
@@ -193,6 +285,7 @@ public class ExcelTool {
     }
 
     private void initPreXlsx(String fileName) throws Exception {
+        // if use file instread of streaming, will throw an exception, TODO check why
         InputStream preIns = new FileInputStream(fileName);
         preWb = WorkbookFactory.create(preIns, password);
         preSheet = preWb.getSheet(sheetName);
@@ -200,8 +293,21 @@ public class ExcelTool {
 
     public void setFont(String fontName) {
         if (StringUtils.isNotEmpty(fontName)) {
-            font = wb.createFont();
-            font.setFontName(fontName);
+            if (!streamingAppend) {
+                //TODO this will make duplicted font and stored in excel file, not right for some case, fix it
+                font = wb.createFont();
+                font.setFontName(fontName);
+            } else {
+                XSSFFont newFont = new XSSFFont();
+                newFont.setFontName(fontName);
+                Font existedFont = wb.findFont(newFont.getBold(), newFont.getColor(), newFont.getFontHeight(), newFont.getFontName(), newFont.getItalic(), newFont.getStrikeout(), newFont.getTypeOffset(), newFont.getUnderline());
+                if(existedFont!=null) {
+                    font = existedFont;
+                } else {
+                    font = wb.createFont();
+                    font.setFontName(fontName);
+                }
+            }
         }
     }
 
@@ -237,15 +343,52 @@ public class ExcelTool {
             if (cellStylesMapping.get("normal") != null) {
                 return cellStylesMapping.get("normal");
             } else {
-                CellStyle style = wb.createCellStyle();
-                if (font != null) {
-                    style.setFont(font);
+                Font searchFont = null;
+                if (font == null) {
+                    searchFont = new XSSFFont();
+                } else {
+                    searchFont = font;
                 }
+
+                CellStyle style = searchCellStyleFromPre(searchFont, (short) 0);
+
+                if (style == null) {
+                    style = wb.createCellStyle();
+                    if (font != null) {
+                        style.setFont(font);
+                    }
+                }
+
                 cellStylesMapping.put("normal", style);
                 return style;
             }
         }
         return preCellStyle;
+    }
+
+    private CellStyle searchCellStyleFromPre(Font searchFont, short dataFormat) {
+        if (streamingAppend && existedOriginToClone != null && existedOriginToClone.size() < 1000) {
+            //fetch cell style by font name and data pattern for date
+            for (Map.Entry<CellStyle, CellStyle> cc : existedOriginToClone.entrySet()) {
+                CellStyle cellStyle = cc.getKey();
+
+                if ((dataFormat == cellStyle.getDataFormat()) && (sameFont(searchFont, wb.getFontAt(cellStyle.getFontIndexAsInt())))) {
+                    return cc.getValue();
+                }
+            }
+        }
+        return null;
+    }
+
+    private boolean sameFont(Font f1, Font f2) {
+        return f1.getBold() == f2.getBold()
+                && f1.getColor() == f2.getColor()
+                && f1.getFontHeight() == f2.getFontHeight()
+                && f1.getFontName().equalsIgnoreCase(f2.getFontName())
+                && f1.getItalic() == f2.getItalic()
+                && f1.getStrikeout() == f2.getStrikeout()
+                && f1.getTypeOffset() == f2.getTypeOffset()
+                && f1.getUnderline() == f2.getUnderline();
     }
 
     private CellStyle getDateCellStyle(String pattern) {
@@ -254,13 +397,29 @@ public class ExcelTool {
             if (cellStylesMapping.get(pattern) != null) {
                 return cellStylesMapping.get(pattern);
             } else {
-                CellStyle style = wb.createCellStyle();
-                if (font != null) {
-                    style.setFont(font);
-                }
+                short dataFormat = 0; //default data format id
                 if (StringUtils.isNotEmpty(pattern)) {
-                    style.setDataFormat(wb.getCreationHelper().createDataFormat().getFormat(pattern));
+                    dataFormat = wb.getCreationHelper().createDataFormat().getFormat(pattern);
                 }
+
+                Font searchFont = null;
+                if (font == null) {
+                    searchFont = new XSSFFont();
+                } else {
+                    searchFont = font;
+                }
+                CellStyle style = searchCellStyleFromPre(searchFont, dataFormat);
+
+                if (style == null) {
+                    style = wb.createCellStyle();
+                    if (font != null) {
+                        style.setFont(font);
+                    }
+                    if (StringUtils.isNotEmpty(pattern)) {
+                        style.setDataFormat(dataFormat);
+                    }
+                }
+
                 cellStylesMapping.put(pattern, style);
                 return style;
             }
@@ -268,9 +427,26 @@ public class ExcelTool {
         return preCellStyle;
     }
 
+    private CellStyle getPreCellStyleForStreamingAppend(Cell preCell) {
+        if (existedOriginToClone == null) {
+            existedOriginToClone = new HashMap<>();
+        }
+        CellStyle preCellStyle = preCell.getCellStyle();
+        if (preCellStyle == null) return null;
+
+        CellStyle targetCellStyle = existedOriginToClone.get(preCellStyle);
+        if (targetCellStyle == null) {
+            targetCellStyle = wb.createCellStyle();
+            targetCellStyle.cloneStyleFrom(preCellStyle);
+            existedOriginToClone.put(preCellStyle, targetCellStyle);
+        }
+
+        return targetCellStyle;
+    }
+
     private CellStyle getPreCellStyle() {
         if (preSheet != null && isAbsY && keepCellFormat) {
-            if(existedOriginToClone==null) {
+            if (existedOriginToClone == null) {
                 existedOriginToClone = new HashMap<>();
             }
             CellStyle preCellStyle;
@@ -347,11 +523,11 @@ public class ExcelTool {
         try {
             wb.write(outputStream);
             wb.close();
-            if(preWb != null){
+            if (preWb != null) {
                 preWb.close();
             }
         } finally {
-            if(existedOriginToClone!=null) {
+            if (existedOriginToClone != null) {
                 existedOriginToClone = null;
             }
             if (outputStream != null) {
@@ -368,7 +544,7 @@ public class ExcelTool {
                 pFile.mkdirs();
             }
         }
-        if (appendWorkbook && appendSheet && recalculateFormula) {
+        if (appendWorkbook && appendSheet && !streamingAppend && recalculateFormula) {
             evaluateFormulaCell();
         }
         try (FileOutputStream fileOutput = new FileOutputStream(fileName); 
@@ -420,6 +596,30 @@ public class ExcelTool {
 
     public void setTruncateExceedingCharacters(boolean isTruncateExceedingCharacters) {
         this.isTruncateExceedingCharacters = isTruncateExceedingCharacters;
+    }
+
+    public static void main(String[] args) throws Exception {
+        org.talend.ExcelTool tool = new org.talend.ExcelTool();
+        tool.setTruncateExceedingCharacters(false);
+        tool.setSheet("Sheet3");
+        tool.setAppend(true, true, true);
+        tool.setRecalculateFormula(false);
+        tool.setXY(false, 0, 0, true);
+
+        String file = "/Users/wangwei/Downloads/streamappend.xlsx";
+        tool.prepareXlsxFile(file);
+
+        tool.setFont("COURIER");
+
+        tool.addRow();
+
+        tool.addCellValue(String.valueOf("王伟"));
+        tool.addCellValue(new Date(), "yyyy-MM-dd");
+
+        tool.setColAutoSize(0);
+        tool.setColAutoSize(1);
+
+        tool.writeExcel(file, false);
     }
 
 }
