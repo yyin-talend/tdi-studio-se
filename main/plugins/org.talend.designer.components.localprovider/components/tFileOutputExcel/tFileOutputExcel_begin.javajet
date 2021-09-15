@@ -790,9 +790,10 @@ if(!hasDynamic && isIncludeHeader){
 		}
 
 		boolean recalculateFormula = "true".equals(ElementParameterParser.getValue(node,"__RECALCULATE_FORMULA__"));
+		boolean isStreamingAppend = "true".equals(ElementParameterParser.getValue(node,"__STREAMING_APPEND__"));
 %>
 		xlsxTool_<%=cid%>.setSheet(<%=sheetname%>);
-		xlsxTool_<%=cid%>.setAppend(<%=isAppendFile%>,<%=isAppendSheet%>);
+		xlsxTool_<%=cid%>.setAppend(<%=isAppendFile%>,<%=isAppendSheet%>, <%=isStreamingAppend%>);
 		xlsxTool_<%=cid%>.setRecalculateFormula(<%=recalculateFormula%>);
 		xlsxTool_<%=cid%>.setXY(<%=firstCellYAbsolute%>,<%=firstCellXStr%>,<%=firstCellYStr%>,<%=keepCellFormating%>);
 		<%if(!useStream){%>
