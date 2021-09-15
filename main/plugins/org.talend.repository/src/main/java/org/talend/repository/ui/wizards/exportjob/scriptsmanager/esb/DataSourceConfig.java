@@ -81,10 +81,10 @@ public class DataSourceConfig {
     private static void getJobletAliases(IProcess process, Collection<String> ds) {
         String dataSourceAlias = null;
         boolean specifyDataSourceAlias = false;
-        
+
         for (Iterator<?> e = process.getGeneratingNodes().iterator(); e.hasNext();) {
             INode node = (INode) e.next();
-            
+
             for (Iterator<?> iterator = node.getElementParameters().iterator(); iterator.hasNext();) {
             	IElementParameter elementParameter = (IElementParameter)iterator.next();
                 if (StringUtils.equals(elementParameter.getName(), "SPECIFY_DATASOURCE_ALIAS")) {
@@ -94,14 +94,14 @@ public class DataSourceConfig {
                     dataSourceAlias = (String) elementParameter.getValue();
                 }
             }
-            
+
             if (specifyDataSourceAlias) {
                 ds.add(dataSourceAlias);
                 specifyDataSourceAlias = false;
             }
         }
     }
-
+    
     /**
      * DOC sunchaoqun Comment method "getAliases".
      * 
@@ -159,7 +159,7 @@ public class DataSourceConfig {
                         value = TalendQuoteUtils.removeQuotes(result.trim());
                     }
 
-                    if (useDS && StringUtils.isNotBlank(value)) {
+                    if (useDS && StringUtils.isNotBlank(value) && StringUtils.isNotBlank(value.replace("\"", ""))) {
                         ds.add(value);
                     }
                 }
