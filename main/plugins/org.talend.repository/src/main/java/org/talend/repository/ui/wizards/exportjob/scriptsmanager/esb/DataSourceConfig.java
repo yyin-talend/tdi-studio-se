@@ -159,7 +159,7 @@ public class DataSourceConfig {
                         value = TalendQuoteUtils.removeQuotes(result.trim());
                     }
 
-                    if (useDS && StringUtils.isNotBlank(value)) {
+                    if (useDS && StringUtils.isNotBlank(value) && StringUtils.isNotBlank(value.replace("\"", ""))) {
                         ds.add(value);
                     }
                 }
