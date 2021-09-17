@@ -436,16 +436,24 @@ public class ComponentModel extends AbstractBasicComponent implements IAdditiona
                         final Collection<String> coordinates = Collection.class.cast(Map.class
                                 .cast(Map.class.cast(componentDependencies.get("dependencies")).values().iterator().next())
                                 .get("dependencies"));
+                        
                         if (coordinates != null) {
                             modulesNeeded.addAll(coordinates.stream()
                                     .map(coordinate -> new ModuleNeeded(getName(), "", true, Mvn.locationToMvn(coordinate).replace(MavenConstants.LOCAL_RESOLUTION_URL + '!', "")))
                                     .collect(Collectors.toList()));
+                            //TODO fix this, this is wrong here as coordinates is a list object, not string, it's on purpose?
                             if (coordinates.contains("org.apache.beam") || coordinates.contains(":beam-sdks-java-io")) {
                                 modulesNeeded.addAll(dependencies
                                         .getBeam()
                                         .stream()
                                         .map(s -> new ModuleNeeded(getName(), "", true, s))
                                         .collect(toList()));
+                            }
+                            
+                            String content = coordinates.toString();
+                            if(content.contains("org.scala-lang") && !content.contains(":scala-library:")) {
+                                //we can't add this dependency to connector as spark/beam class conflict for TPD, so add here as provided by platform like spark/beam
+                                modulesNeeded.add(new ModuleNeeded(getName(), "", true, "mvn:org.scala-lang/scala-library/2.12.12"));
                             }
                         }
                     }
