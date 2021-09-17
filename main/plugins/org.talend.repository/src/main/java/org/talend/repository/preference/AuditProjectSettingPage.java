@@ -56,7 +56,7 @@ import org.talend.core.database.EDatabaseTypeName;
 import org.talend.core.database.conn.version.EDatabaseVersion4Drivers;
 import org.talend.core.repository.model.ProxyRepositoryFactory;
 import org.talend.core.runtime.projectsetting.ProjectPreferenceManager;
-import org.talend.core.service.ICommandLineService;
+import org.talend.core.service.IAuditService;
 import org.talend.repository.ProjectManager;
 import org.talend.repository.RepositoryPlugin;
 import org.talend.repository.i18n.Messages;
@@ -121,9 +121,8 @@ public class AuditProjectSettingPage extends ProjectSettingPage {
         Composite composite = new Composite(parent, SWT.NULL);
         GridLayout layout = new GridLayout(1, false);
         composite.setLayout(layout);
-        if (GlobalServiceRegister.getDefault().isServiceRegistered(ICommandLineService.class)) {
-            ICommandLineService service = (ICommandLineService) GlobalServiceRegister.getDefault()
-                    .getService(ICommandLineService.class);
+        if (GlobalServiceRegister.getDefault().isServiceRegistered(IAuditService.class)) {
+            IAuditService service = (IAuditService) GlobalServiceRegister.getDefault().getService(IAuditService.class);
             if (service != null) {
                 // server enabled can create project audit area
                 createProjectAuditArea(composite);
@@ -269,7 +268,7 @@ public class AuditProjectSettingPage extends ProjectSettingPage {
                             t[0] = Thread.currentThread();
                             monitor.beginTask(Messages.getString("AuditProjectSettingPage.generateAuditReportProgressBar"), //$NON-NLS-1$
                                     IProgressMonitor.UNKNOWN);
-                            ICommandLineService service = getCommandLineService();
+                            IAuditService service = getAuditService();
                             if (service != null) {
                                 if (dbChecked) {
                                     if (dbResults.isOk()) {
@@ -408,7 +407,7 @@ public class AuditProjectSettingPage extends ProjectSettingPage {
 
             @Override
             public void widgetSelected(SelectionEvent e) {
-                ICommandLineService service = getCommandLineService();
+                IAuditService service = getAuditService();
                 if (service != null && savedInDBButton.getSelection()) {
                     try {
                         TypedReturnCode<java.sql.Connection> dbResults = getConnectionReturnCode();
@@ -469,7 +468,7 @@ public class AuditProjectSettingPage extends ProjectSettingPage {
                             t[0] = Thread.currentThread();
                             monitor.beginTask(Messages.getString("AuditProjectSettingPage.generateAuditReportProgressBar"), //$NON-NLS-1$
                                     IProgressMonitor.UNKNOWN);
-                            ICommandLineService service = getCommandLineService();
+                            IAuditService service = getAuditService();
                             if (service != null && dbChecked) {
                                 if (dbResults.isOk()) {
                                     try {
@@ -592,7 +591,7 @@ public class AuditProjectSettingPage extends ProjectSettingPage {
     }
 
     private TypedReturnCode<java.sql.Connection> getConnectionReturnCode() {
-        ICommandLineService service = getCommandLineService();
+        IAuditService service = getAuditService();
         if (service != null) {
             return service.checkConnection(getCurrentDBVersion(), urlText.getText(), driverText.getText(), usernameText.getText(),
                     passwordText.getText());
@@ -600,9 +599,9 @@ public class AuditProjectSettingPage extends ProjectSettingPage {
         return new TypedReturnCode<java.sql.Connection>();
     }
 
-    private ICommandLineService getCommandLineService() {
-        if (GlobalServiceRegister.getDefault().isServiceRegistered(ICommandLineService.class)) {
-            return (ICommandLineService) GlobalServiceRegister.getDefault().getService(ICommandLineService.class);
+    private IAuditService getAuditService() {
+        if (GlobalServiceRegister.getDefault().isServiceRegistered(IAuditService.class)) {
+            return (IAuditService) GlobalServiceRegister.getDefault().getService(IAuditService.class);
         }
         return null;
     }
