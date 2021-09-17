@@ -38,7 +38,7 @@ public class ChangeDBVersion4tSAPConnection extends AbstractJobMigrationTask {
     @Override
     public ExecutionResult execute(Item item) {
         final ProcessType processType = getProcessType(item);
-        String[] compNames = { "tSAPConnection" };
+        String compName = "tSAPConnection";
 
         IComponentConversion changeDBNVersion = new IComponentConversion() {
 
@@ -57,18 +57,20 @@ public class ChangeDBVersion4tSAPConnection extends AbstractJobMigrationTask {
             }
         };
 
-        for (String name : compNames) {
-            IComponentFilter filter = new NameComponentFilter(name);
-            try {
-                ModifyComponentsAction
-                        .searchAndModify(item, processType, filter, Arrays
-                                .<IComponentConversion> asList(changeDBNVersion));
-            } catch (PersistenceException e) {
-                ExceptionHandler.process(e);
-                return ExecutionResult.FAILURE;
+        IComponentFilter filter = new NameComponentFilter(compName);
+        try {
+            boolean modified = ModifyComponentsAction
+                    .searchAndModify(item, processType, filter, Arrays
+                            .<IComponentConversion> asList(changeDBNVersion));
+            if (modified) {
+                return ExecutionResult.SUCCESS_NO_ALERT;
+            } else {
+                return ExecutionResult.NOTHING_TO_DO;
             }
+        } catch (PersistenceException e) {
+            ExceptionHandler.process(e);
+            return ExecutionResult.FAILURE;
         }
-        return ExecutionResult.SUCCESS_NO_ALERT;
 
     }
 }
