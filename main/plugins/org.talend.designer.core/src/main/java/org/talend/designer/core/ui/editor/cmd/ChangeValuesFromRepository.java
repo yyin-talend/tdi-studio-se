@@ -66,6 +66,7 @@ import org.talend.core.utils.TalendQuoteUtils;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.model.components.EmfComponent;
+import org.talend.designer.core.model.components.Expression;
 import org.talend.designer.core.model.process.jobsettings.JobSettingsConstants;
 import org.talend.designer.core.model.utils.emf.talendfile.ContextType;
 import org.talend.designer.core.ui.editor.nodes.Node;
@@ -229,7 +230,7 @@ public class ChangeValuesFromRepository extends ChangeMetadataCommand {
         if (propertyName.split(":")[1].equals(propertyTypeName)) { //$NON-NLS-1$
             elem.setPropertyValue(propertyName, value);
             if (allowAutoSwitch) {
-                // Update spark mode to YARN_CLIENT if repository
+                // Update spark mode to first default value available
                 if (elem instanceof IProcess) {
                     if (ComponentCategory.CATEGORY_4_SPARK.getName().equals(((IProcess) elem).getComponentsType())
                             || ComponentCategory.CATEGORY_4_SPARKSTREAMING.getName()
@@ -241,8 +242,12 @@ public class ChangeValuesFromRepository extends ChangeMetadataCommand {
                             if (sparkLocalParam != null && (Boolean) (sparkLocalParam.getValue())) {
                                 sparkLocalParam.setValue(false);
                             }
-                            if (sparkParam != null && !HadoopConstants.SPARK_MODE_YARN_CLIENT.equals(sparkParam.getValue())) {
-                                sparkParam.setValue(HadoopConstants.SPARK_MODE_YARN_CLIENT);
+                            List<? extends IElementParameter> listParam = elem.getElementParameters();
+                            for (int i = 0; i < sparkParam.getListItemsShowIf().length; i++) {
+                            	if (Expression.evaluate(sparkParam.getListItemsShowIf()[i], listParam)) {
+                            		sparkParam.setValue(sparkParam.getListItemsValue()[i]);
+                            		break;
+                            	}
                             }
                         }
                     }
