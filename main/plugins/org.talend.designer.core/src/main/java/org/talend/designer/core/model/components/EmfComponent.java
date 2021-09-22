@@ -1706,7 +1706,7 @@ public class EmfComponent extends AbstractBasicComponent {
                 }
             }
 
-            String defaultValue = itemValue[0];
+            String defaultValue = itemValue.length > 0 ? itemValue[0] : "";//$NON-NLS-1$
 
             newParam.setListItemsDisplayName(displayName);
             newParam.setListItemsDisplayCodeName(displayName);
@@ -1768,7 +1768,7 @@ public class EmfComponent extends AbstractBasicComponent {
             }
             areHadoopDistribsLoaded = true;
 
-            defaultValue = itemValue[0];
+            defaultValue = itemValue.length > 0 ? itemValue[0] : defaultValue;
 
             newParam = new ElementParameter(node);
             newParam.setCategory(EComponentCategory.BASIC);
