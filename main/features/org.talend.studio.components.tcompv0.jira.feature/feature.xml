@@ -16,19 +16,9 @@
       [Enter License Description here.]
    </license>
    <requires>
-      <import plugin="org.talend.designer.maven.repo.tcompv0" version="0.0.0" match="greaterOrEqual"/>
+      <import plugin="org.talend.designer.maven.repo.tcompv0"/>
+      <import plugin="org.talend.studio.components.tcompv0.jira"/>
+      <import plugin="org.talend.components.jira"/>
    </requires>
-   <plugin
-         id="org.talend.studio.components.tcompv0.jira"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"/>
-
-   <plugin
-         id="org.talend.components.jira"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
 
 </feature>
