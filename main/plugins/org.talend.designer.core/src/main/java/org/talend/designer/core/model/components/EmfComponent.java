@@ -19,7 +19,6 @@ import java.lang.ref.SoftReference;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -33,10 +32,8 @@ import java.util.Set;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
-import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
-import org.eclipse.core.runtime.Platform;
 import org.eclipse.emf.common.util.BasicEList;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.common.util.URI;
@@ -3311,7 +3308,12 @@ public class EmfComponent extends AbstractBasicComponent {
 
                 }
                 for (String name : info.getComponentNames()) {
-                    IComponent component = ComponentsFactoryProvider.getInstance().get(name);
+                    IComponent component = null;
+                    if (StringUtils.isNotBlank(getPaletteType())) {
+                        component = ComponentsFactoryProvider.getInstance().get(name, getPaletteType());
+                    }else {
+                        component = ComponentsFactoryProvider.getInstance().get(name);
+                    }
                     if (component == null) {
                         continue;
                     }
