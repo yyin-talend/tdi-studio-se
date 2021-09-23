@@ -17,9 +17,20 @@
    </license>
 
    <requires>
-      <import plugin="org.talend.designer.maven.repo.tcompv0"/>
-      <import plugin="org.talend.studio.components.tcompv0.azurestorage"/>
-      <import plugin="org.talend.components.azurestorage"/>
+      <import plugin="org.talend.designer.maven.repo.tcompv0" version="0.0.0" match="greaterOrEqual"/>
    </requires>
+
+   <plugin
+         id="org.talend.studio.components.tcompv0.azurestorage"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"/>
+
+   <plugin
+         id="org.talend.components.azurestorage"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
 
 </feature>

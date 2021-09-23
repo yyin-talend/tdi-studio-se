@@ -17,8 +17,18 @@
    </license>
    <requires>
       <import plugin="org.talend.designer.maven.repo.tcompv0" version="0.0.0" match="greaterOrEqual"/>
-      <import plugin="org.talend.studio.components.tcompv0.googledrive"/>
-      <import plugin="org.talend.components.googledrive"/>
    </requires>
+   <plugin
+         id="org.talend.studio.components.tcompv0.googledrive"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"/>
+
+   <plugin
+         id="org.talend.components.googledrive"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
 
 </feature>
