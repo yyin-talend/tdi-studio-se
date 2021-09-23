@@ -123,8 +123,8 @@ public class ProcessChangeListenerTest {
         assertFalse(getItemPomFile(oldProperty2).exists());
         assertFalse(jobProject.getProject().exists());
 
-        assertFalse(getItemPomFile(newProperty1).exists());
-        assertFalse(getItemPomFile(newProperty2).exists());
+        assertTrue(getItemPomFile(newProperty1).exists());
+        assertTrue(getItemPomFile(newProperty2).exists());
     }
 
     @Test
@@ -160,8 +160,8 @@ public class ProcessChangeListenerTest {
         assertFalse(getItemPomFile(oldProperty1).exists());
         assertFalse(getItemPomFile(oldProperty2).exists());
 
-        assertFalse(getItemPomFile(newProperty1).exists());
-        assertFalse(getItemPomFile(newProperty2).exists());
+        assertTrue(getItemPomFile(newProperty1).exists());
+        assertTrue(getItemPomFile(newProperty2).exists());
 
         assertFalse(buildCacheManager.isInCurrentJobletCache(oldProperty1));
         assertFalse(buildCacheManager.isInCurrentJobletCache(oldProperty2));
@@ -175,7 +175,7 @@ public class ProcessChangeListenerTest {
         assertFalse(pomFile.exists());
         ProxyRepositoryFactory.getInstance().fireRepositoryPropertyChange(ERepositoryActionName.PROPERTIES_CHANGE.getName(),
                 new String[] { jobName, "0.2" }, property);
-        assertFalse(pomFile.exists());
+        assertTrue(pomFile.exists());
     }
 
     @Test
@@ -207,7 +207,7 @@ public class ProcessChangeListenerTest {
         for (IRepositoryViewObject obj : newObjects) {
             Property property = obj.getProperty();
             IFile pomFile = getItemPomFile(property);
-            assertFalse(getItemPomFile(property).exists());
+            assertTrue(getItemPomFile(property).exists());
             String jobProjectFolderName = AggregatorPomsHelper.getJobProjectFolderName(property);
             assertEquals("/" + projectTechName + "/poms/jobs/process/after_move/" + jobProjectFolderName + "/pom.xml",
                     pomFile.getFullPath().toPortableString());
@@ -257,7 +257,7 @@ public class ProcessChangeListenerTest {
         for (IRepositoryViewObject obj : newObjects) {
             Property property = obj.getProperty();
             IFile pomFile = getItemPomFile(property);
-            assertFalse(getItemPomFile(property).exists());
+            assertTrue(getItemPomFile(property).exists());
             String jobProjectFolderName = AggregatorPomsHelper.getJobProjectFolderName(property);
             assertEquals(
                     "/" + projectTechName + "/poms/jobs/process/after_folder_rename/" + jobProjectFolderName + "/pom.xml",
@@ -288,13 +288,13 @@ public class ProcessChangeListenerTest {
         assertFalse(pomsProcessFolder.getFolder(sourcePath).exists());
         assertFalse(jobProject.getProject().exists());
 
-        assertFalse(processFolder.getFolder(targetPath).exists());
+        assertTrue(processFolder.getFolder(targetPath).exists());
         List<IRepositoryViewObject> newObjects = factory.getAllVersion(id);
         assertTrue(newObjects.size() == 2);
         for (IRepositoryViewObject obj : newObjects) {
             Property property = obj.getProperty();
             IFile pomFile = getItemPomFile(property);
-            assertFalse(getItemPomFile(property).exists());
+            assertTrue(getItemPomFile(property).exists());
             String jobProjectFolderName = AggregatorPomsHelper.getJobProjectFolderName(property);
             assertEquals("/" + projectTechName + "/poms/jobs/process/after_folder_move/before_folder_move/" + jobProjectFolderName
                     + "/pom.xml",
@@ -347,13 +347,12 @@ public class ProcessChangeListenerTest {
 
         factory.fireRepositoryPropertyChange(ERepositoryActionName.IMPORT.getName(), null, importedItems);
 
-        assertFalse(getItemPomFile(property1).exists());
-        assertFalse(getItemPomFile(property2).exists());
+        assertTrue(getItemPomFile(property1).exists());
+        assertTrue(getItemPomFile(property2).exists());
 
     }
 
     @Test
-    // TODO to remove
     public void testSyncParentJobPomsForPropertyChange() throws Exception {
         ProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
         Property maintestProp = createJobPropertyWithContext("maintest", "0.1");
