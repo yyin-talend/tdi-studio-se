@@ -30,6 +30,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -146,6 +147,8 @@ import org.talend.hadoop.distribution.condition.ComponentCondition;
 import org.talend.hadoop.distribution.condition.EqualityOperator;
 import org.talend.hadoop.distribution.condition.NestedComponentCondition;
 import org.talend.hadoop.distribution.condition.SimpleComponentCondition;
+import org.talend.hadoop.distribution.constants.SparkBatchConstant;
+import org.talend.hadoop.distribution.constants.apache.ESparkMode;
 import org.talend.hadoop.distribution.dynamic.template.AbstractDynamicDistributionTemplate;
 import org.talend.hadoop.distribution.dynamic.template.IDynamicDistributionTemplate;
 import org.talend.hadoop.distribution.helper.DistributionsManager;
@@ -210,7 +213,7 @@ public class EmfComponent extends AbstractBasicComponent {
     private static final boolean NORMAL_PROPERTY = false;
 
     private static final String SIMPLE = "simple"; //$NON-NLS-1$
-    
+
     private static final String[] CAMEL_LANGUAGE_DISPLAY_NAMES = {
             "JavaScript", //$NON-NLS-1$
             "JSonPath", //$NON-NLS-1$
@@ -219,8 +222,8 @@ public class EmfComponent extends AbstractBasicComponent {
             "Simple", //$NON-NLS-1$
             "XPath", //$NON-NLS-1$
             "XQuery" //$NON-NLS-1$
-          };
-    
+    };
+
     private static final String[] CAMEL_LANGUAGE_ITEM_VALUES = {
             "javaScript", //$NON-NLS-1$
             "jsonpath", //$NON-NLS-1$
@@ -229,8 +232,8 @@ public class EmfComponent extends AbstractBasicComponent {
             "simple", //$NON-NLS-1$
             "xpath", //$NON-NLS-1$
             "xquery" //$NON-NLS-1$
-          };
-    
+    };
+
     private static final String[] CAMEL_LANGUAGE_DISPLAY_CODE_NAMES = {
             "JAVASCRIPT", //$NON-NLS-1$
             "JSONPATH", //$NON-NLS-1$
@@ -239,7 +242,7 @@ public class EmfComponent extends AbstractBasicComponent {
             "SIMPLE", //$NON-NLS-1$
             "XPATH", //$NON-NLS-1$
             "XQUERY" //$NON-NLS-1$
-          };
+    };
 
     private ResourceBundle resourceBundle;
 
@@ -360,19 +363,19 @@ public class EmfComponent extends AbstractBasicComponent {
                     installPath.substring(installPath.lastIndexOf(IComponentsFactory.COMPONENTS_INNER_FOLDER)));
 
             if (currentProvider instanceof ComponentsLocationProvider) {
-            	return currentProvider.getResourceBundle(label);
+                return currentProvider.getResourceBundle(label);
             } else if (currentProvider.isUseLocalProvider()) {
                 // if the component use local provider as storage (for user / ecosystem components)
                 // then get the bundle resource from the current main component provider.
 
                 // note: code here to review later, service like this shouldn't be used...
                 ResourceBundle bundle = null;
-                IBrandingService brandingService = (IBrandingService) GlobalServiceRegister.getDefault().getService(
+                IBrandingService brandingService = GlobalServiceRegister.getDefault().getService(
                         IBrandingService.class);
                 if (brandingService.isPoweredOnlyCamel()) {
                     bundle = currentProvider.getResourceBundle(label);
                 } else {
-                    ITisLocalProviderService service = (ITisLocalProviderService) GlobalServiceRegister.getDefault().getService(
+                    ITisLocalProviderService service = GlobalServiceRegister.getDefault().getService(
                             ITisLocalProviderService.class);
                     bundle = service.getResourceBundle(label);
                 }
@@ -885,7 +888,7 @@ public class EmfComponent extends AbstractBasicComponent {
     private String getNodeFormatIdWithoutFormatType(String nodeLabel, String nodeFamily) {
         String ids = null;
         if (GlobalServiceRegister.getDefault().isServiceRegistered(IComponentsLocalProviderService.class)) {
-            IComponentsLocalProviderService service = (IComponentsLocalProviderService) GlobalServiceRegister.getDefault()
+            IComponentsLocalProviderService service = GlobalServiceRegister.getDefault()
                     .getService(IComponentsLocalProviderService.class);
             if (service != null) {
                 ids = service.getPreferenceStore().getString(IComponentsLocalProviderService.FORMAT_IDS);
@@ -958,7 +961,7 @@ public class EmfComponent extends AbstractBasicComponent {
         ElementParameter param;
         IPreferenceStore localComponentProviderStore = null;
         if (GlobalServiceRegister.getDefault().isServiceRegistered(IComponentsLocalProviderService.class)) {
-            IComponentsLocalProviderService service = (IComponentsLocalProviderService) GlobalServiceRegister.getDefault()
+            IComponentsLocalProviderService service = GlobalServiceRegister.getDefault()
                     .getService(IComponentsLocalProviderService.class);
             if (service != null) {
                 localComponentProviderStore = service.getPreferenceStore();
@@ -1049,14 +1052,14 @@ public class EmfComponent extends AbstractBasicComponent {
         param.setDefaultValue(param.getValue());
         listParam.add(param);
     }
-    
+
     //rename for route break points
     public void addRouteExpressionParameters(final List<ElementParameter> listParam, INode node) {
         // fix for headless issue
         if (!ComponentCategory.CATEGORY_4_CAMEL.getName().equals(getPaletteType()) || !PluginChecker.isRouteletLoaded()) {
             return;
         }
-        
+
         ElementParameter param = new ElementParameter(node);
         param.setName(EParameterName.ACTIVEBREAKPOINT.getName());
         param.setDisplayName(EParameterName.ACTIVEBREAKPOINT.getDisplayName());
@@ -1067,14 +1070,14 @@ public class EmfComponent extends AbstractBasicComponent {
         param.setContextMode(false);
         param.setDefaultValue(param.getValue());
         listParam.add(param);
-        
+
         param = new ElementParameter(node);
         param.setName(EParameterName.ROUTE_BREAKPOINT_LANGUAGES.getName());
         param.setDisplayName(EParameterName.ROUTE_BREAKPOINT_LANGUAGES.getDisplayName());
         param.setFieldType(EParameterFieldType.CLOSED_LIST);
         param.setCategory(EComponentCategory.BREAKPOINT_CAMEL);
         param.setNumRow(14);
-        
+
         param.setListItemsValue(CAMEL_LANGUAGE_ITEM_VALUES);
         param.setListItemsDisplayCodeName(CAMEL_LANGUAGE_DISPLAY_CODE_NAMES);
         param.setListItemsDisplayName(CAMEL_LANGUAGE_DISPLAY_NAMES);
@@ -1088,7 +1091,7 @@ public class EmfComponent extends AbstractBasicComponent {
         param.setDefaultValue(SIMPLE);
         listParam.add(param);
 
-        
+
         param = new ElementParameter(node);
         param.setName(EParameterName.ROUTE_BREAKPOINT_EXPRESSION.getName());
         param.setDisplayName(EParameterName.ROUTE_BREAKPOINT_EXPRESSION.getDisplayName());
@@ -1109,7 +1112,7 @@ public class EmfComponent extends AbstractBasicComponent {
         param.setCategory(EComponentCategory.BREAKPOINT_CAMEL);
         param.setNumRow(16);
         listParam.add(param);
-        
+
     }
 
     public void addMainParameters(final List<ElementParameter> listParam, INode node) {
@@ -1406,9 +1409,6 @@ public class EmfComponent extends AbstractBasicComponent {
                 newParam.setListItemsValue(new String[] { BUILTIN, REPOSITORY });
             }
 
-            // if(xmlParam.isUSETNSFILE){
-            //
-            // }
             newParam.setValue(BUILTIN);
             newParam.setNumRow(xmlParam.getNUMROW());
             newParam.setFieldType(EParameterFieldType.TECHNICAL);
@@ -1419,7 +1419,6 @@ public class EmfComponent extends AbstractBasicComponent {
             newParam.setShowIf(xmlParam.getSHOWIF());
             newParam.setNotShowIf(xmlParam.getNOTSHOWIF());
             newParam.setParentParameter(parentParam);
-            // listParam.add(newParam);
 
             newParam = new ElementParameter(node);
             newParam.setCategory(EComponentCategory.BASIC);
@@ -1433,7 +1432,6 @@ public class EmfComponent extends AbstractBasicComponent {
             newParam.setShow(false);
             newParam.setRequired(true);
             newParam.setParentParameter(parentParam);
-            // listParam.add(newParam);
         } else if (type == EParameterFieldType.SCHEMA_TYPE) {
             String context = xmlParam.getCONTEXT();
             if (context == null) {
@@ -1522,7 +1520,6 @@ public class EmfComponent extends AbstractBasicComponent {
             newParam.setShowIf(xmlParam.getSHOWIF());
             newParam.setNotShowIf(xmlParam.getNOTSHOWIF());
             newParam.setParentParameter(parentParam);
-            // listParam.add(newParam);
         }// Ends
         else if (type == EParameterFieldType.QUERYSTORE_TYPE) {
             ElementParameter newParam = new ElementParameter(node);
@@ -1660,11 +1657,13 @@ public class EmfComponent extends AbstractBasicComponent {
             ComponentType componentType = ComponentType.getComponentType(parentParam.getName());
             DistributionsManager distributionsHelper = new DistributionsManager(componentType);
             final DistributionBean[] hadoopDistributions = distributionsHelper.getDistributions();
+
+            // Distribution parameter
             ElementParameter newParam = new ElementParameter(node);
             newParam.setCategory(EComponentCategory.BASIC);
             hadoopDistributionParamName = componentType;
             newParam.setName(componentType.getDistributionParameter());
-            newParam.setDisplayName("Distribution"); //$NON-NLS-1$
+            newParam.setDisplayName(SparkBatchConstant.getName(componentType.getDistributionParameter()));
 
             String[] displayName = new String[hadoopDistributions.length];
             String[] itemValue = new String[hadoopDistributions.length];
@@ -1679,7 +1678,6 @@ public class EmfComponent extends AbstractBasicComponent {
                 DistributionBean that = hadoopDistributions[i];
                 itemValue[i] = that.name;
                 displayName[i] = that.displayName;
-
                 showIfVersion[i] = that.getDisplayShowIf();
                 notShowIfVersion[i] = null;
                 if (!that.useCustom()) { // ignore custom version, because it's fake one
@@ -1770,10 +1768,11 @@ public class EmfComponent extends AbstractBasicComponent {
 
             defaultValue = itemValue.length > 0 ? itemValue[0] : defaultValue;
 
+            // Distribution version
             newParam = new ElementParameter(node);
             newParam.setCategory(EComponentCategory.BASIC);
             newParam.setName(componentType.getVersionParameter());
-            newParam.setDisplayName("Version"); //$NON-NLS-1$
+            newParam.setDisplayName(SparkBatchConstant.getName(componentType.getVersionParameter()));
             newParam.setListItemsDisplayName(displayName);
             newParam.setListItemsDisplayCodeName(displayName);
             newParam.setListItemsValue(itemValue);
@@ -1785,19 +1784,19 @@ public class EmfComponent extends AbstractBasicComponent {
             String showIf = xmlParam.getSHOWIF();
             Optional<ElementParameter> componentName = listParam.stream().filter(x -> "COMPONENT_NAME".equals(x.getName())).findFirst();
             if (componentName.isPresent() && "tSparkConfiguration".equals(componentName.get().getValue())) {
-            	if (showIf != null) {
+                if (showIf != null) {
                     newParam.setShowIf(showIf + " AND (" + componentType.getDistributionParameter() + "!='CUSTOM')"); //$NON-NLS-1$ //$NON-NLS-2$
                 } else {
                     newParam.setShowIf("(" + componentType.getDistributionParameter() + "!='CUSTOM')"); //$NON-NLS-1$ //$NON-NLS-2$
                 }
             } else {
-            	if (showIf != null) {
+                if (showIf != null) {
                     newParam.setShowIf(showIf + " AND (" + componentType.getDistributionParameter() + "!='CUSTOM')"); //$NON-NLS-1$ //$NON-NLS-2$
                 } else {
                     newParam.setShowIf("(" + componentType.getDistributionParameter() + "!='CUSTOM')"); //$NON-NLS-1$ //$NON-NLS-2$
                 }
             }
-            
+
             newParam.setNotShowIf(xmlParam.getNOTSHOWIF());
             newParam.setGroup(xmlParam.getGROUP());
             newParam.setGroupDisplayName(parentParam.getGroupDisplayName());
@@ -1839,8 +1838,8 @@ public class EmfComponent extends AbstractBasicComponent {
                 }
 
                 newParam.setCategory(EComponentCategory.BASIC);
-                newParam.setName("SUPPORTED_SPARK_VERSION"); //$NON-NLS-1$
-                newParam.setDisplayName("Spark Version"); //$NON-NLS-1$
+                newParam.setName(SparkBatchConstant.SUPPORTED_SPARK_VERSION_PARAMETER);
+                newParam.setDisplayName(SparkBatchConstant.getName(SparkBatchConstant.SUPPORTED_SPARK_VERSION_PARAMETER));
                 newParam.setListItemsDisplayName(sparkVersionLabels);
                 newParam.setListItemsDisplayCodeName(sparkVersionLabels);
                 newParam.setListItemsValue(sparkVersionValues);
@@ -1859,6 +1858,34 @@ public class EmfComponent extends AbstractBasicComponent {
                 }
                 newParam.setNotShowIf(xmlParam.getNOTSHOWIF());
 
+                listParam.add(newParam);
+
+                // Spark mode
+                String[] sparkModeLabels = Arrays.asList(ESparkMode.values()).stream().map(ESparkMode::getLabel)
+                        .collect(Collectors.toList()).toArray(new String[0]);
+                String[] sparkModeValues = Arrays.asList(ESparkMode.values()).stream().map(ESparkMode::getValue)
+                        .collect(Collectors.toList()).toArray(new String[0]);
+                String[] sparkModeDisplayConditions = Arrays.asList(ESparkMode.values()).stream()
+                        .map(ESparkMode::getDisplayCondition).collect(Collectors.toList()).toArray(new String[0]);
+                List<IElementParameterDefaultValue> sparkModesDefaultValues = Arrays.asList(ESparkMode.values()).stream()
+                        .map(m -> new ElementParameterDefaultValue(m.getValue(), m.getDisplayCondition()))
+                        .collect(Collectors.toList());
+
+                newParam = new ElementParameter(node);
+                newParam.setCategory(EComponentCategory.BASIC);
+                newParam.setName(SparkBatchConstant.SPARK_MODE_PARAMETER);
+                newParam.setDisplayName(SparkBatchConstant.getName(SparkBatchConstant.SPARK_MODE_PARAMETER));
+                newParam.setListItemsDisplayName(sparkModeLabels);
+                newParam.setListItemsDisplayCodeName(sparkModeLabels);
+                newParam.setListItemsValue(sparkModeValues);
+                newParam.setListItemsShowIf(sparkModeDisplayConditions);
+                newParam.setListItemsNotShowIf(new String[ESparkMode.values().length]);
+                newParam.setNumRow(xmlParam.getNUMROW() + 1);
+                newParam.setFieldType(EParameterFieldType.CLOSED_LIST);
+                newParam.setShow(true);
+                newParam.setGroup(xmlParam.getGROUP());
+                newParam.setGroupDisplayName(parentParam.getGroupDisplayName());
+                newParam.setDefaultValues(sparkModesDefaultValues);
                 listParam.add(newParam);
             }
         }
@@ -2671,9 +2698,9 @@ public class EmfComponent extends AbstractBasicComponent {
                 case RULE_TYPE: // hywang add for feature 6484
                     newParam.setFieldType(EParameterFieldType.RULE_TYPE);
                     break;
-                // case VALIDATION_RULE_TYPE:
-                // newParam.setFieldType(EParameterFieldType.VALIDATION_RULE_TYPE);
-                // break;
+                    // case VALIDATION_RULE_TYPE:
+                    // newParam.setFieldType(EParameterFieldType.VALIDATION_RULE_TYPE);
+                    // break;
                 case MULTI_PATTERN:
                     newParam.setFieldType(EParameterFieldType.MULTI_PATTERN);
                     break;
@@ -3184,7 +3211,7 @@ public class EmfComponent extends AbstractBasicComponent {
         Object value = null;
         if (hdElemParam != null && (hdElemParam.isShow(node.getElementParameters()) || hdElemParam.getValue().toString().contains("SPARK"))) {
             // for universal feature, the parameter is not shown in DI components, yet we still need to retrieve its value
-        	value = hdElemParam.getValue();
+            value = hdElemParam.getValue();
         } else {
             if (JavaProcessUtil.isUseExistingConnection(node)) {
                 IElementParameter connection = node.getElementParameter(EParameterName.CONNECTION.getName());
@@ -3422,7 +3449,7 @@ public class EmfComponent extends AbstractBasicComponent {
         if (areHadoopLibsLoaded) {
             addHadoopLibModuleNeededList(node, componentImportNeedsList);
         }
-        
+
         return componentImportNeedsList;
     }
 
@@ -3724,8 +3751,8 @@ public class EmfComponent extends AbstractBasicComponent {
             connType = (CONNECTORType) listConnType.get(i);
             if (connType.getCTYPE().equals(EConnectionType.FLOW_MAIN.getName())
                     && !(connType.isSetMAXINPUT() && connType.getMAXINPUT() == 0 && connType.isSetMAXOUTPUT()
-                            && connType.getMAXOUTPUT() == 0 || connType.isSetMININPUT() && connType.getMININPUT() == 0
-                            && connType.isSetMINOUTPUT() && connType.getMINOUTPUT() == 0)) {
+                    && connType.getMAXOUTPUT() == 0 || connType.isSetMININPUT() && connType.getMININPUT() == 0
+                    && connType.isSetMINOUTPUT() && connType.getMINOUTPUT() == 0)) {
                 useFlow = true;
                 break;
             }
@@ -4385,11 +4412,11 @@ public class EmfComponent extends AbstractBasicComponent {
         }
         return super.isActiveDbColumns();
     }
-    
+
     public ComponentInfo getComponentInfo() {
         return info;
     }
-    
+
     @SuppressWarnings("unchecked")
     public void loadForCacheAtrributes() throws BusinessException {
         info = ComponentCacheFactory.eINSTANCE.createComponentInfo();
@@ -4475,5 +4502,5 @@ public class EmfComponent extends AbstractBasicComponent {
         // providerId
         info.setProviderId(provider.getId());
     }
-    
+
 }
