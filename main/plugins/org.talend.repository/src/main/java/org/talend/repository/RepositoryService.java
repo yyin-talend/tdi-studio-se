@@ -360,7 +360,8 @@ public class RepositoryService implements IRepositoryService, IRepositoryContext
 
     private boolean isloginDialogDisabled() {
         boolean reload = Boolean.parseBoolean(System.getProperty("talend.project.reload")); //$NON-NLS-1$
-        reload = reload | Boolean.parseBoolean(EclipseCommandLine.getEclipseArgument(EclipseCommandLine.TALEND_CONTINUE_LOGON));
+        reload = reload | Boolean.parseBoolean(EclipseCommandLine.getEclipseArgument(EclipseCommandLine.TALEND_CONTINUE_LOGON))
+                | Boolean.parseBoolean(EclipseCommandLine.getEclipseArgument(EclipseCommandLine.TALEND_RESTART_FLAG));
         PreferenceManipulator preferenceManipulator = new PreferenceManipulator();
         ConnectionBean lastBean = null;
         if (reload) {
@@ -488,11 +489,10 @@ public class RepositoryService implements IRepositoryService, IRepositoryContext
 
                 }
                 if (!repositoryFactory.isLocalConnectionProvider()) {
-                    ProjectManager.getInstance().setMainProjectBranch(
-                            project,
-                            preferenceManipulator.getLastSVNBranch(
-                                    new JSONObject(project.getEmfProject().getUrl()).getString("location"),
-                                    project.getTechnicalLabel()));
+                    if (StringUtils.isBlank(branch)) {
+                        branch = preferenceManipulator.getLastSVNBranch(new JSONObject(project.getEmfProject().getUrl()).getString("location"), project.getTechnicalLabel());
+                    }
+                    ProjectManager.getInstance().setMainProjectBranch(project, branch);
                 }
                 if (project == null) {
                     throw new LoginException(Messages.getString("RepositoryService.projectNotFound", projectName)); //$NON-NLS-1$
