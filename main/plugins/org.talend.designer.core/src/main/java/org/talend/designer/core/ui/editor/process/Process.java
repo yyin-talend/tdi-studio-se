@@ -77,6 +77,7 @@ import org.talend.core.PluginChecker;
 import org.talend.core.language.ECodeLanguage;
 import org.talend.core.language.LanguageManager;
 import org.talend.core.model.components.ComponentCategory;
+import org.talend.core.model.components.ComponentUtilities;
 import org.talend.core.model.components.EComponentType;
 import org.talend.core.model.components.IComponent;
 import org.talend.core.model.context.ContextUtils;
@@ -121,6 +122,7 @@ import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.model.routines.RoutinesUtil;
 import org.talend.core.model.update.IUpdateManager;
+import org.talend.core.model.utils.NodeUtil;
 import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.core.repository.model.ProxyRepositoryFactory;
 import org.talend.core.repository.utils.ConvertJobsUtil;
@@ -151,6 +153,9 @@ import org.talend.designer.core.model.process.DataProcess;
 import org.talend.designer.core.model.process.IGeneratingProcess;
 import org.talend.designer.core.model.process.jobsettings.JobSettingsConstants;
 import org.talend.designer.core.model.process.jobsettings.JobSettingsManager;
+import org.talend.designer.core.model.utils.emf.component.COMPONENTType;
+import org.talend.designer.core.model.utils.emf.component.ITEMType;
+import org.talend.designer.core.model.utils.emf.component.PARAMETERType;
 import org.talend.designer.core.model.utils.emf.talendfile.ConnectionType;
 import org.talend.designer.core.model.utils.emf.talendfile.ElementParameterType;
 import org.talend.designer.core.model.utils.emf.talendfile.ElementValueType;
@@ -3827,6 +3832,9 @@ public class Process extends Element implements IProcess2, IGEFProcess, ILastVer
                 } else if ((node.getComponent().getName() != null)) {
                     if (node.getComponent().getName().compareTo(componentName) == 0) {
                         addNodeIfNotInTheList(matchingNodes, node);
+                    } else if (isCompatibleMatching(componentName, node))  {
+                        //TUP-32758:Show the drag&drop such as mysql + Amazonmysql if property type + db version are compatible)
+                        addNodeIfNotInTheList(matchingNodes, node);
                     } else if (node.getComponent() instanceof EmfComponent) {
                         EmfComponent component = (EmfComponent) node.getComponent();
                         String eqCompName = component.getEquivalent();
@@ -4959,5 +4967,57 @@ public class Process extends Element implements IProcess2, IGEFProcess, ILastVer
             }
         }
         return null;
+    }
+    
+    /**
+     * TUP-32758:Show the drag&drop mysql + Amazonmysql if property type + db version are compatible)
+     * The rules for the compatible node are:
+     * 1.The component name is compatible.
+     * 2.the root family is "Database"
+     * 3.the leaf family is same. For example: mysql
+     * 4.DB_VERSION is in the list of filter component. 
+     */
+    private boolean isCompatibleMatching(String filterComponentName, INode node) {
+        boolean isCompatible = false;
+        String componentName = node.getComponent().getName();
+        if (NodeUtil.isCompatibleByName(filterComponentName, componentName)) {
+            IComponent filterComponent = ComponentsFactoryProvider.getInstance().get(filterComponentName,
+                    ComponentCategory.CATEGORY_4_DI.getName());
+            if (filterComponent == null) return false;
+            if (NodeUtil.isDatabaseFamily(node.getComponent().getOriginalFamilyName()) && 
+                    NodeUtil.isDatabaseFamily(filterComponent.getOriginalFamilyName())) {
+                String[] familyNames = node.getComponent().getOriginalFamilyName()
+                        .split(ComponentUtilities.FAMILY_SEPARATOR_REGEX)[0].split("/");
+                String[] filterFamilyNames = filterComponent.getOriginalFamilyName()
+                        .split(ComponentUtilities.FAMILY_SEPARATOR_REGEX)[0].split("/");
+                if (filterFamilyNames.length > 0 && familyNames.length > 0 &&
+                        StringUtils.equals(filterFamilyNames[filterFamilyNames.length-1], familyNames[familyNames.length-1])) {
+                    if (filterComponent instanceof EmfComponent) {
+                        EmfComponent emfFilterComponent = (EmfComponent) filterComponent;
+                        COMPONENTType compType = emfFilterComponent.getEmfComponentType();
+                        if (compType != null && compType.getPARAMETERS() != null && compType.getPARAMETERS().getPARAMETER() != null) {
+                            EList parametersList = compType.getPARAMETERS().getPARAMETER();
+                            for (int i = 0; i < parametersList.size(); i++) {
+                                PARAMETERType parameterType = (PARAMETERType) parametersList.get(i);
+                                if (parameterType != null && parameterType.getNAME() != null 
+                                        && parameterType.getNAME().equals("DB_VERSION") && parameterType.getITEMS() != null 
+                                        && parameterType.getITEMS().getITEM() != null) {
+                                    EList itemsList = parameterType.getITEMS().getITEM();
+                                    for (int j = 0; j < itemsList.size(); j++) {
+                                        ITEMType itemType = (ITEMType) itemsList.get(j);
+                                        if (itemType != null && node.getElementParameter("DB_VERSION") !=null 
+                                                && StringUtils.equals(itemType.getVALUE(), (String) node.getElementParameter("DB_VERSION").getValue())) {
+                                            isCompatible = true;
+                                            break;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        return isCompatible;
     }
 }
