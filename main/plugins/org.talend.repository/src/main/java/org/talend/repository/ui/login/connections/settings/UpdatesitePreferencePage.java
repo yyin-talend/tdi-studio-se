@@ -12,9 +12,7 @@
 // ============================================================================
 package org.talend.repository.ui.login.connections.settings;
 
-import java.io.File;
 import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.stream.Collectors;
@@ -145,7 +143,7 @@ public class UpdatesitePreferencePage extends PreferencePage {
                 UpdateSiteConfig config = p2Service.getUpdateSiteConfig(new NullProgressMonitor());
                 if (config.isReleaseEditable()) {
                     String release = releaseUriText.getText();
-                    config.setRelease(monitor, StringUtils.isBlank(release) ? null : toUri(release.trim()));
+                    config.setRelease(monitor, StringUtils.isBlank(release) ? null : p2Service.toURI(release.trim()));
                 }
                 if (config.isUpdateEditable()) {
                     String update = updateUriText.getText();
@@ -155,7 +153,7 @@ public class UpdatesitePreferencePage extends PreferencePage {
                         Collection<URI> updates = new ArrayList<>();
                         String[] splits = update.split(",");
                         for (String split : splits) {
-                            updates.add(toUri(split.trim()));
+                            updates.add(p2Service.toURI(split.trim()));
                         }
                         config.setUpdates(monitor, updates);
                     }
@@ -165,24 +163,6 @@ public class UpdatesitePreferencePage extends PreferencePage {
             }
         }
         return super.performOk();
-    }
-
-    private URI toUri(String path) throws Exception {
-        URI uri = null;
-        try {
-            uri = new URI(path);
-        } catch (URISyntaxException e) {
-            if (path.contains("\\")) {
-                try {
-                    uri = new File(path).toURI();
-                } catch (Exception ex) {
-                    throw e;
-                }
-            } else {
-                throw e;
-            }
-        }
-        return uri;
     }
 
     @Override
