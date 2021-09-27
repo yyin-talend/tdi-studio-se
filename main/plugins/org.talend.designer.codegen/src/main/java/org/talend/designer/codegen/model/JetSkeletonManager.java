@@ -177,9 +177,8 @@ public final class JetSkeletonManager {
                 @Override
                 protected Class<?> resolveClass(ObjectStreamClass desc) throws IOException, ClassNotFoundException {
                     // Enforce the types that we are about to deserialize
-                    if (!(desc.getName().startsWith("java.util")
-                        || Long.class.getName().equals(desc.getName())
-                        || String.class.getName().equals(desc.getName()))) {
+                    if (!(desc.getName().startsWith("java.util") || Number.class.getName().equals(desc.getName()) || Long.class.getName().equals(desc.getName())
+                            || String.class.getName().equals(desc.getName()))) {
                         throw new InvalidClassException("Unauthorized deserialization attempt", desc.getName());
                     }
                     return super.resolveClass(desc);
