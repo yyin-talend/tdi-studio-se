@@ -3254,7 +3254,13 @@ public class EmfComponent extends AbstractBasicComponent {
                 List<String> componentList = info.getComponentNames();
                 for (IMultipleComponentManager multipleComponentManager : getMultipleComponentManagers()) {
                     for (IMultipleComponentItem multipleComponentItem : multipleComponentManager.getItemList()) {
-                        IComponent component = ComponentsFactoryProvider.getInstance().get(multipleComponentItem.getComponent());
+                        IComponent component = null;
+                        String type = getType();
+                        if (StringUtils.isNotBlank(type)) {
+                            component = ComponentsFactoryProvider.getInstance().get(multipleComponentItem.getComponent(), type);
+                        } else {
+                            component = ComponentsFactoryProvider.getInstance().get(multipleComponentItem.getComponent());
+                        }
                         componentList.add(multipleComponentItem.getComponent());
                         if (component == null) {
                             continue;
@@ -3309,8 +3315,9 @@ public class EmfComponent extends AbstractBasicComponent {
                 }
                 for (String name : info.getComponentNames()) {
                     IComponent component = null;
-                    if (StringUtils.isNotBlank(getPaletteType())) {
-                        component = ComponentsFactoryProvider.getInstance().get(name, getPaletteType());
+                    String type = getType();
+                    if (StringUtils.isNotBlank(type)) {
+                        component = ComponentsFactoryProvider.getInstance().get(name, type);
                     }else {
                         component = ComponentsFactoryProvider.getInstance().get(name);
                     }
