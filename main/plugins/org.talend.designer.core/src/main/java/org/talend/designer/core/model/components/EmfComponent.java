@@ -3372,7 +3372,13 @@ public class EmfComponent extends AbstractBasicComponent {
             ModulesNeededProvider.collectModuleNeeded(this.getName(), importType, componentImportNeedsList);
         }
         for (String name : info.getComponentNames()) {
-            IComponent component = ComponentsFactoryProvider.getInstance().get(name);
+            IComponent component = null;
+            String type = getType();
+            if (StringUtils.isNotBlank(type)) {
+                component = ComponentsFactoryProvider.getInstance().get(name, type);
+            } else {
+                component = ComponentsFactoryProvider.getInstance().get(name);
+            }
             if (component == null) {
                 continue;
             }
