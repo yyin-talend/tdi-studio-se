@@ -230,7 +230,7 @@
                         allowMultiple="false"
                         category="org.talend.core.root"
                         class="org.talend.designer.core.ui.hierarchy.JobHierarchyViewPart"
-                        icon="platform:/plugin/org.eclipse.jdt.ui/icons/full/eview16/class_hi.gif"
+                        icon="icons/class_hi.gif"
                         id="org.talend.designer.core.ui.hierarchy.JobHierarchyViewPart"
                         name="%jobHierarchyView">
                   </view>
