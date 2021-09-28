@@ -17,6 +17,7 @@ import static java.util.stream.Collectors.toList;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -756,19 +757,56 @@ public abstract class DbGenerationManager {
         if (expression == null) {
             return null;
         }
+
+        if (TalendQuoteUtils.isStartEndsWithQuotation(expression, true, false)) {
+            expression = " " + expression.substring(1);
+        }
+
+        if (TalendQuoteUtils.isStartEndsWithQuotation(expression, false, true)) {
+            expression = expression.substring(0, expression.length() - 1);
+        }
+
         List<String> contextList = getContextList(component);
+        Collections.sort(contextList, new Comparator<String>() {
+
+            @Override
+            public int compare(String o1, String o2) {
+                return o2.length() - o1.length();
+            }
+        });
         boolean haveReplace = false;
         for (String context : contextList) {
             if (expression.contains(context)) {
-                expression = expression.replaceAll("\\b" + context + "\\b", "\" +" + context + "+ \""); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
-                haveReplace = true;
+                if (expression.trim().equals(context)) {
+                    expression = expression.replaceAll("\\b" + context + "\\b", "\" +" + context + "+ \""); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+                    haveReplace = true;
+                } else {
+                    if (expression.trim().indexOf(context) == 0) {
+                        expression = expression.replaceFirst("\\b" + context + "\\b", "\" +" + context); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                        haveReplace = true;
+                    }
+                    if (expression.trim().endsWith(context)) {
+                        expression = expression.replaceAll("\\b" + context + "\\b", context + "+ \""); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                        haveReplace = true;
+                    }
+                }
             }
         }
         if (!haveReplace) {
             List<String> connContextList = getConnectionContextList(component);
             for (String context : connContextList) {
-                if (expression.contains(context)) {
+                if (expression.trim().equals(context)) {
                     expression = expression.replaceAll("\\b" + context + "\\b", "\" +" + context + "+ \""); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+                    haveReplace = true;
+                } else {
+                    if (expression.trim().indexOf(context) == 0) {
+                        expression = expression.replaceFirst("\\b" + context + "\\b", "\" +" + context); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                        haveReplace = true;
+                    }
+                    if (expression.trim().endsWith(context)) {
+                        expression = expression.replaceAll("\\b" + context + "\\b", context + "+ \""); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                        haveReplace = true;
+                    }
                 }
             }
         }
@@ -1647,7 +1685,11 @@ public abstract class DbGenerationManager {
         String targetSchemaTable = null;
         IElementParameter eltSchemaNameParam = source.getElementParameter("ELT_SCHEMA_NAME"); //$NON-NLS-1$
         if (eltSchemaNameParam != null && eltSchemaNameParam.getValue() != null) {
-            String schemaNoQuote = TalendQuoteUtils.removeQuotesIfExist(String.valueOf(eltSchemaNameParam.getValue()));
+            String value = String.valueOf(eltSchemaNameParam.getValue());
+            String schemaNoQuote = value;
+            if (TalendQuoteUtils.isStartEndsWithQuotation(value, true, false) && !isVariable(value)) {
+                schemaNoQuote = TalendQuoteUtils.removeQuotesIfExist(value);
+            }
             if (org.apache.commons.lang.StringUtils.isNotEmpty(schemaNoQuote)) {
                 targetSchemaTable = getHandledField(component, schemaNoQuote);
                 if (isVariable(schemaNoQuote)) {
@@ -1712,6 +1754,23 @@ public abstract class DbGenerationManager {
                 }
             }
             // Update
+            INode target = connection.getTarget();
+            if(target.isELTComponent()) {
+                String p_USE_DIFFERENT_TABLE = "USE_DIFFERENT_TABLE";
+                String p_DIFFERENT_TABLE_NAME = "DIFFERENT_TABLE_NAME";
+                IElementParameter useDiffTable = target.getElementParameter(p_USE_DIFFERENT_TABLE);
+                if (useDiffTable != null && (Boolean) useDiffTable.getValue()
+                        && target.getElementParameter(p_DIFFERENT_TABLE_NAME) != null) {
+                    outTableName = TalendQuoteUtils
+                            .removeQuotesIfExist(target.getElementParameter(p_DIFFERENT_TABLE_NAME).getValue().toString());
+                } else {
+                    String p_ELT_TABLE_NAME = "ELT_TABLE_NAME";
+                    if (target.getElementParameter(p_ELT_TABLE_NAME) != null) {
+                        outTableName = TalendQuoteUtils
+                                .removeQuotesIfExist(target.getElementParameter(p_ELT_TABLE_NAME).getValue().toString());
+                    }
+                }
+            }
             String targetSchemaTable = getTargetSchemaTable(component, outTableName);
 
             appendSqlQuery(sb, "\"", false); //$NON-NLS-1$
