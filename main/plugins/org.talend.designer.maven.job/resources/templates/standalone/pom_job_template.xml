@@ -35,7 +35,6 @@
 		<talend.job.applyContextToChildren>@JobApplyContextToChildren@</talend.job.applyContextToChildren>
 		<talend.product.version>@ProductVersion@</talend.product.version>
 		<talend.job.finalName>@JobFinalName@</talend.job.finalName>
-
 		<!-- for global properties -->
 		<current.int-resources.dir>${basedir}/src/main/resources</current.int-resources.dir>
 		<output.resources.dir>${talend.job.name}/src/main/resources</output.resources.dir>
