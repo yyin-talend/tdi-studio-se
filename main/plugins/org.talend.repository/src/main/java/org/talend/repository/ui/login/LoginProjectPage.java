@@ -106,7 +106,6 @@ import org.talend.core.repository.services.ILoginConnectionService;
 import org.talend.core.repository.utils.ProjectHelper;
 import org.talend.core.runtime.CoreRuntimePlugin;
 import org.talend.core.runtime.util.SharedStudioUtils;
-import org.talend.core.service.IUpdateService;
 import org.talend.core.services.ICoreTisService;
 import org.talend.core.ui.TalendBrowserLaunchHelper;
 import org.talend.core.ui.branding.IBrandingService;
@@ -1878,8 +1877,6 @@ public class LoginProjectPage extends AbstractLoginActionPage {
                                 changeFinishButtonAction(FINISH_ACTION_UPDATE);
                             });
                         }
-                    } else {
-                        validatePatchForSharedMode();
                     }
                 }
             }
@@ -1889,19 +1886,6 @@ public class LoginProjectPage extends AbstractLoginActionPage {
             Display.getDefault().syncExec(() -> updateArchivaErrorButton());
         } catch (Throwable e) {
             CommonExceptionHandler.process(e);
-        }
-    }
-    
-    protected void validatePatchForSharedMode() throws JSONException {
-        String missingPatchVersion = null;
-        if (GlobalServiceRegister.getDefault().isServiceRegistered(IUpdateService.class)) {
-            IUpdateService updateService = GlobalServiceRegister.getDefault().getService(IUpdateService.class);
-            missingPatchVersion = updateService.getSharedStudioMissingPatchVersion();
-        }
-        if (missingPatchVersion != null) {
-            String finalMissingPatchVersion = missingPatchVersion;
-            Display.getDefault().syncExec(() -> errorManager
-                    .setWarnMessage(Messages.getString("LoginProjectPage.sharedModeMissingPatchFile", finalMissingPatchVersion)));
         }
     }
 

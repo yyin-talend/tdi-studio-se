@@ -33,7 +33,6 @@ import org.talend.commons.exception.CommonExceptionHandler;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.ui.runtime.exception.MessageBoxExceptionHandler;
 import org.talend.core.CorePlugin;
-import org.talend.core.GlobalServiceRegister;
 import org.talend.core.context.Context;
 import org.talend.core.context.RepositoryContext;
 import org.talend.core.language.ECodeLanguage;
@@ -43,15 +42,12 @@ import org.talend.core.model.repository.GITConstant;
 import org.talend.core.repository.model.ProxyRepositoryFactory;
 import org.talend.core.repository.model.RepositoryFactoryProvider;
 import org.talend.core.repository.utils.ProjectHelper;
-import org.talend.core.runtime.util.SharedStudioUtils;
-import org.talend.core.service.IUpdateService;
 import org.talend.core.utils.ProjectUtils;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.ui.actions.importproject.ImportDemoProjectAction;
 import org.talend.repository.ui.actions.importproject.ImportProjectAsAction;
 import org.talend.repository.ui.login.connections.ConnectionsDialog;
-import org.talend.utils.json.JSONException;
 
 /**
  * created by cmeng on May 22, 2015 Detailled comment
@@ -216,27 +212,8 @@ public class LoginFirstTimeStartupActionPage extends AbstractLoginActionPage {
 
     @Override
     public void check() {
-        try {
-            if (SharedStudioUtils.isSharedStudioMode()) {
-                validatePatchForSharedMode();
-            }
-        } catch (JSONException e) {
-            CommonExceptionHandler.process(e);
-            log.error(e);
-        }
+        // nothing to do
     }
-    
-    protected void validatePatchForSharedMode() throws JSONException {
-        String missingPatchVersion = null;
-        if (GlobalServiceRegister.getDefault().isServiceRegistered(IUpdateService.class)) {
-            IUpdateService updateService = GlobalServiceRegister.getDefault().getService(IUpdateService.class);
-            missingPatchVersion = updateService.getSharedStudioMissingPatchVersion();
-        }
-        if (missingPatchVersion != null) {
-            errorManager.setWarnMessage(Messages.getString("LoginProjectPage.sharedModeMissingPatchFile", missingPatchVersion));
-        }
-    }
-
 
     @Override
     protected void addListeners() {

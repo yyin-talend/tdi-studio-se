@@ -4091,8 +4091,37 @@
             category="org.talend.core.prefs"
             class="org.talend.repository.ui.login.connections.settings.UpdatesiteWorkbenchPreferencePage"
             id="org.talend.repository.ui.login.connections.settings.UpdatesiteWorkbenchPreferencePage"
-            name="Update site">
+            name="%projectsetting.updatesite">
       </page>
    </extension>
-
+   <extension
+            point="org.eclipse.ui.services">
+         <sourceProvider
+               provider="org.talend.repository.sourceprovider.RepositoryPropertiesProvider">
+            <variable
+                  name="RepositoryPropertiesProvider.showLiteUpdatesitePref"
+                  priorityLevel="workbench">
+            </variable>
+         </sourceProvider>
+   </extension>
+   <extension
+         point="org.eclipse.ui.activities">
+      <activity
+         id="org.talend.repository.hideLiteUpdatesitesPref"
+         name="hideLiteUpdatesitesPref">
+            <enabledWhen>
+               <with
+                   variable="RepositoryPropertiesProvider.showLiteUpdatesitePref">
+                     <equals
+                        value="true">
+                     </equals>
+                </with>
+             </enabledWhen>
+      </activity>
+      <activityPatternBinding
+         activityId="org.talend.repository.hideLiteUpdatesitesPref"
+            isEqualityPattern="true"
+            pattern="org.talend.repository/org.talend.repository.ui.login.connections.settings.UpdatesiteWorkbenchPreferencePage">
+      </activityPatternBinding>
+   </extension>
 </plugin>
