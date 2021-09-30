@@ -757,6 +757,42 @@ public abstract class DbGenerationManager {
         if (expression == null) {
             return null;
         }
+        List<String> contextList = getContextList(component);
+        boolean haveReplace = false;
+        for (String context : contextList) {
+            if (expression.contains(context)) {
+                expression = expression.replaceAll("\\b" + context + "\\b", "\" +" + context + "+ \""); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+                haveReplace = true;
+            }
+        }
+        if (!haveReplace) {
+            List<String> connContextList = getConnectionContextList(component);
+            for (String context : connContextList) {
+                if (expression.contains(context)) {
+                    expression = expression.replaceAll("\\b" + context + "\\b", "\" +" + context + "+ \""); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+                }
+            }
+        }
+        Set<String> globalMapList = getGlobalMapList(component, expression);
+        if (globalMapList.size() > 0) {
+            String tempExpression = expression.trim();
+            if ((tempExpression.startsWith("\"+") && tempExpression.endsWith("+\"")) //$NON-NLS-1$//$NON-NLS-2$
+                    || (tempExpression.startsWith("\" +") && tempExpression.endsWith("+ \""))) {//$NON-NLS-1$ //$NON-NLS-2$
+                return expression;
+            }
+        }
+        for (String globalMapStr : globalMapList) {
+            String regex = parser.getGlobalMapExpressionRegex(globalMapStr);
+            String replacement = parser.getGlobalMapReplacement(globalMapStr);
+            expression = expression.replaceAll(regex, "\" +" + replacement + "+ \""); //$NON-NLS-1$ //$NON-NLS-2$
+        }
+        return expression;
+    }
+
+    protected String replaceVariablesForTargetTableExpression(DbMapComponent component, String expression) {
+        if (expression == null) {
+            return null;
+        }
 
         if (TalendQuoteUtils.isStartEndsWithQuotation(expression, true, false)) {
             expression = " " + expression.substring(1);
@@ -1693,14 +1729,14 @@ public abstract class DbGenerationManager {
             if (org.apache.commons.lang.StringUtils.isNotEmpty(schemaNoQuote)) {
                 targetSchemaTable = getHandledField(component, schemaNoQuote);
                 if (isVariable(schemaNoQuote)) {
-                    targetSchemaTable = replaceVariablesForExpression(component, schemaNoQuote);
+                    targetSchemaTable = replaceVariablesForTargetTableExpression(component, schemaNoQuote);
                 }
                 targetSchemaTable = targetSchemaTable + "."; //$NON-NLS-1$
             }
         }
         String targetTable = getHandledField(component, outTableName);
         if (isVariable(targetTable)) {
-            targetSchemaTable += replaceVariablesForExpression(component, targetTable);
+            targetSchemaTable += replaceVariablesForTargetTableExpression(component, targetTable);
         } else {
             if (org.apache.commons.lang.StringUtils.isNotBlank(targetSchemaTable)) {
                 targetSchemaTable += targetTable;
