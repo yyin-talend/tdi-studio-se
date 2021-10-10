@@ -92,9 +92,9 @@ import org.talend.core.model.properties.SQLPatternItem;
 import org.talend.core.model.properties.User;
 import org.talend.core.model.properties.impl.PropertiesFactoryImpl;
 import org.talend.core.model.repository.ERepositoryObjectType;
+import org.talend.core.model.repository.GITConstant;
 import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.model.repository.RepositoryElementDelta;
-import org.talend.core.model.repository.GITConstant;
 import org.talend.core.model.utils.CloneConnectionUtils;
 import org.talend.core.model.utils.RepositoryManagerHelper;
 import org.talend.core.prefs.PreferenceManipulator;
@@ -360,7 +360,9 @@ public class RepositoryService implements IRepositoryService, IRepositoryContext
 
     private boolean isloginDialogDisabled() {
         boolean reload = Boolean.parseBoolean(System.getProperty("talend.project.reload")); //$NON-NLS-1$
-        reload = reload | Boolean.parseBoolean(EclipseCommandLine.getEclipseArgument(EclipseCommandLine.TALEND_CONTINUE_LOGON))
+        final boolean continueLogon = Boolean
+                .parseBoolean(EclipseCommandLine.getEclipseArgument(EclipseCommandLine.TALEND_CONTINUE_LOGON));
+        reload = reload | continueLogon
                 | Boolean.parseBoolean(EclipseCommandLine.getEclipseArgument(EclipseCommandLine.TALEND_RESTART_FLAG));
         PreferenceManipulator preferenceManipulator = new PreferenceManipulator();
         ConnectionBean lastBean = null;
@@ -376,7 +378,8 @@ public class RepositoryService implements IRepositoryService, IRepositoryContext
             }
         }
 
-        if (ArrayUtils.contains(Platform.getApplicationArgs(), EclipseCommandLine.TALEND_DISABLE_LOGINDIALOG_COMMAND)) {
+        if (ArrayUtils.contains(Platform.getApplicationArgs(), EclipseCommandLine.TALEND_DISABLE_LOGINDIALOG_COMMAND)
+                || continueLogon) {
             boolean deleteProjectIfExist = ArrayUtils.contains(Platform.getApplicationArgs(), "--deleteProjectIfExist"); //$NON-NLS-1$
             IBrandingService brandingService = GlobalServiceRegister.getDefault().getService(
                     IBrandingService.class);
@@ -389,7 +392,7 @@ public class RepositoryService implements IRepositoryService, IRepositoryContext
             String password = getAppArgValue("-loginPass", ""); //$NON-NLS-1$ //$NON-NLS-2$
             String tacURL = getAppArgValue("-tacURL", null); //$NON-NLS-1$
             // if tacURL is null, the branch will be no useful.
-            String branch = getAppArgValue("-branch", null); //$NON-NLS-1$
+            String branch = getAppArgValue(EclipseCommandLine.ARG_BRANCH, null); // $NON-NLS-1$
             // if tacURL is not null, will be remote
             final boolean isRemote = tacURL != null;
 
@@ -520,8 +523,10 @@ public class RepositoryService implements IRepositoryService, IRepositoryContext
                 repositoryFactory.logOffProject();
                 LoginHelper.isAutoLogonFailed = true;
             } catch (LoginException e) {
-                MessageBoxExceptionHandler.process(e, DisplayUtils.getDefaultShell(false));
-                repositoryFactory.logOffProject();
+                if (!LoginException.RESTART.equals(e.getKey())) {
+                    MessageBoxExceptionHandler.process(e, DisplayUtils.getDefaultShell(false));
+                    repositoryFactory.logOffProject();
+                }
                 LoginHelper.isAutoLogonFailed = true;
             } catch (BusinessException e) {
                 MessageBoxExceptionHandler.process(e, DisplayUtils.getDefaultShell(false));

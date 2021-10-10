@@ -66,7 +66,7 @@ public class UpdatesitePreferencePage extends PreferencePage {
         composite.setLayout(compLayout);
 
         Label releaseLabel = new Label(composite, SWT.NONE);
-        releaseLabel.setText(Messages.getString("UpdatesitePreferencePage.releaseUrl"));
+        releaseLabel.setText(Messages.getString("UpdatesitePreferencePage.baseUrl"));
         GridData gd = new GridData(SWT.LEFT, SWT.CENTER, false, false);
         releaseLabel.setLayoutData(gd);
 
