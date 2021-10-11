@@ -32,6 +32,7 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 import org.talend.commons.exception.ExceptionHandler;
+import org.talend.commons.ui.runtime.exception.ExceptionMessageDialog;
 import org.talend.core.service.IStudioLiteP2Service;
 import org.talend.core.service.IStudioLiteP2Service.UpdateSiteConfig;
 import org.talend.repository.i18n.Messages;
@@ -159,7 +160,8 @@ public class UpdatesitePreferencePage extends PreferencePage {
                     }
                 }
             } catch (Exception e) {
-                ExceptionHandler.process(e);
+                ExceptionMessageDialog.openError(null, Messages.getString("UpdatesitePreferencePage.err.title"),
+                        e.getLocalizedMessage(), e);
             }
         }
         return super.performOk();
@@ -168,7 +170,28 @@ public class UpdatesitePreferencePage extends PreferencePage {
     @Override
     protected void performDefaults() {
         if (this.isControlCreated()) {
-            // TODO using talend offical?
+            try {
+                UpdateSiteConfig config = p2Service.getUpdateSiteConfig(new NullProgressMonitor());
+                if (config.isReleaseEditable()) {
+                    NullProgressMonitor monitor = new NullProgressMonitor();
+                    config.resetToDefault(monitor);
+                    URI release = config.getRelease(monitor);
+                    releaseUriText.setText(release == null ? "" : release.toString());
+                    Collection<URI> updates = config.getUpdates(monitor);
+                    StringBuilder updateStr = new StringBuilder();
+                    if (updates != null && !updates.isEmpty()) {
+                        updateStr.append(
+                                String.join(",", updates.stream().map(uri -> uri.toString()).collect(Collectors.toList())));
+                    }
+                    updateUriText.setText(updateStr.toString());
+                } else {
+                    // normally it should be a dead code
+                    throw new Exception("Can't reset to default values. since they are readonly.");
+                }
+            } catch (Exception e) {
+                ExceptionMessageDialog.openError(null, Messages.getString("UpdatesitePreferencePage.err.title"),
+                        e.getLocalizedMessage(), e);
+            }
         }
         super.performDefaults();
     }
@@ -180,9 +203,12 @@ public class UpdatesitePreferencePage extends PreferencePage {
 
     private boolean validate() {
         this.setErrorMessage(null);
-        if (StringUtils.equals(releaseUriText.getText().trim(), updateUriText.getText().trim())
-                && StringUtils.isNotBlank(releaseUriText.getText())) {
-            this.setErrorMessage(Messages.getString("UpdatesitePreferencePage.err.releaseAndUpdateShouldBeDiff"));
+        String releaseUriStr = releaseUriText.getText().trim();
+        if (StringUtils.isBlank(releaseUriStr)) {
+            this.setErrorMessage(Messages.getString("UpdatesitePreferencePage.err.baseCantEmpty"));
+            return false;
+        } else if (StringUtils.equals(releaseUriStr, updateUriText.getText().trim())) {
+            this.setErrorMessage(Messages.getString("UpdatesitePreferencePage.err.baseAndUpdateShouldBeDiff"));
             return false;
         } else {
             return true;
