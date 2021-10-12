@@ -309,6 +309,7 @@ public class ExpressionTest {
         INode node = mock(INode.class);
         when(node.getElementParameter("SPARK_LOCAL_MODE")).thenReturn(sparkLocalModeParameter);
         when(node.getElementParameter("SPARK_LOCAL_VERSION")).thenReturn(sparkLocalVersionParameter);
+        when(node.getElementParameter("SPARK_VERSION")).thenReturn(sparkLocalVersionParameter);
         when(node.getElementParameter("SPARK_API_VERSION")).thenReturn(sparkApiVersion);
         when(node.getElementParameter("DISTRIBUTION")).thenReturn(distributionParameter);
         when(node.getElementParameter("SUPPORTED_SPARK_VERSION")).thenReturn(supportedVersionParameter);
