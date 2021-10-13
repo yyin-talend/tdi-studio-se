@@ -3693,6 +3693,15 @@
               name="ChangeDBVersion4tSAPConnection"
               version="7.3.1">
         </projecttask>
+        <projecttask
+               beforeLogon="false"
+               breaks="7.3.0"
+               class="org.talend.repository.model.migration.AddHourFormatToBigqueryBulkOutput"
+               description="Add 12-hour format property to tBigQueryOutput and tBigQueryOutputBulk"
+               id="org.talend.repository.model.migration.AddHourFormatToBigqueryBulkOutput"
+               name="AddHourFormatToBigqueryBulkOutput"
+               version="7.3.1">
+        </projecttask>
    </extension>
 
    <extension
