@@ -316,6 +316,6 @@ public class ExpressionTest {
 
         ElementParameter currentParam = mock(ElementParameter.class);
         when(currentParam.getElement()).thenReturn(node);
-        assertTrue(Expression.evaluateSparkVersion("SPARK_VERSION ge 'SPARK_3_0'", null, currentParam));
+        assertTrue(Expression.evaluateSparkVersion("SPARK_VERSION ge 'SPARK_3_0_x'", null, currentParam));
     }
 }
