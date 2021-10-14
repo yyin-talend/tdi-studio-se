@@ -242,7 +242,6 @@ for(int i = 0; i &lt; result.length; i++){
 				NAME="SOAP-JavaMail"
 				MODULE="javax.mail-1.6.2.jar"
 				MVN="mvn:com.sun.mail/javax.mail/1.6.2"
-				UrlPath="platform:/plugin/org.talend.libraries.apache.axis2/lib/mail.jar"
 				REQUIRED="true"
 			/>
 			<IMPORT
