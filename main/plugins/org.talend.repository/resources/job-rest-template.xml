@@ -24,18 +24,18 @@
 #end
 
 #if ($endpoint.exposeSwaggerSpecification)
-    <!-- CXF Swagger2Feature -->
-    <bean id="swagger2Feature" class="org.apache.cxf.jaxrs.swagger.Swagger2Feature">
-        <property name="basePath" value="${endpoint.originalAddress}"/>
-        <property name="usePathBasedConfig" value="true"/>
-        <property name="scan" value="false"/>
-        <property name="swaggerUiMavenGroupAndArtifact" value="org.talend.esb/swagger-ui"/>
-        <property name="title" value="${job.name} REST Application"/>
-        <property name="description" value="${endpoint.description}"/>
-        <property name="contact"><null/></property>
-        <property name="license"><null/></property>
-        <property name="licenseUrl"><null/></property>
-    </bean>
+	<!-- CXF Swagger2Feature -->
+	<bean id="swagger2Feature" class="org.apache.cxf.jaxrs.swagger.Swagger2Feature">
+		<property name="basePath" value="${endpoint.originalAddress}"/>
+		<property name="usePathBasedConfig" value="true"/>
+		<property name="scan" value="false"/>
+		<property name="swaggerUiMavenGroupAndArtifact" value="org.talend.esb/swagger-ui"/>
+		<property name="title" value="${job.name} REST Application"/>
+		<property name="description" value="${endpoint.description}"/>
+		<property name="contact"><null/></property>
+		<property name="license"><null/></property>
+		<property name="licenseUrl"><null/></property>
+	</bean>
 #end
 
 	<jaxrs:server xmlns:jaxrs="http://cxf.apache.org/blueprint/jaxrs"
@@ -46,12 +46,12 @@
 #end
 
 #if (!$endpoint.useContextBean)
-	address="${endpoint.address}">
+			address="${endpoint.address}">
 #end
 
 #if ($endpoint.useContextBean)
-	address="#contextBean">
-#end			
+			address="#contextBean">
+#end
 		<jaxrs:serviceBeans>
 			<ref component-id="serviceBean" />
 		</jaxrs:serviceBeans>
@@ -88,22 +88,23 @@
 			<ref component-id="locatorFeature" />
 #end ## end use SL
 #if ($endpoint.logMessages)
+			<bean class="${job.className}.LogMarkerFeature" />
 			<bean class="org.apache.cxf.feature.LoggingFeature" />
 #end
 #if ($endpoint.useBusinesCorrelation)
 			<bean class="org.talend.esb.policy.correlation.feature.CorrelationIDFeature" />
 #end
-            <bean class="org.apache.cxf.metrics.MetricsFeature" />
+			<bean class="org.apache.cxf.metrics.MetricsFeature" />
 #if ($endpoint.exposeSwaggerSpecification)
-            <ref component-id="swagger2Feature" />
+			<ref component-id="swagger2Feature" />
 #end
 		</jaxrs:features>
 		<jaxrs:properties>
 #if ($endpoint.useSL)
 #if (!$endpoint.slCustomProps.isEmpty())
 #foreach ($entry in $endpoint.slCustomProps.entrySet())
-    		<entry key="esb.locator.properties">
-        		<map>
+			<entry key="esb.locator.properties">
+				<map>
 					<entry key="${entry.key}" value="${entry.value}"/>
 				</map>
 			</entry>
@@ -114,8 +115,8 @@
 #if ($endpoint.useSAM)
 #if (!$endpoint.samCustomProps.isEmpty())
 #foreach ($entry in $endpoint.samCustomProps.entrySet())
-    		<entry key="esb.sam.properties">
-        		<map>
+			<entry key="esb.sam.properties">
+				<map>
 					<entry key="${entry.key}" value="${entry.value}"/>
 				</map>
 			</entry>
@@ -163,7 +164,7 @@
 #end
 #if (!$job.dataSources.isEmpty())
 		<property name="dataSourceReferences">
-		    <ref component-id="dataSourceReferenceList" /> 
+		    <ref component-id="dataSourceReferenceList" />
 		</property>
 #end
 	</bean>
@@ -190,7 +191,7 @@
 	<bean id="contextBean" class="${job.className}.ContextBean" factory-method="getContext">
 		<argument value="${endpoint.defaultContext}" />
 		<argument value="${endpoint.address}" />
-        <argument value="${job.className}" />
+		<argument value="${job.className}" />
 	</bean>
 #end
 #if (!$job.dataSources.isEmpty())
