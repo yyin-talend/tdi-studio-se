@@ -21,6 +21,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.jface.preference.PreferencePage;
+import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
@@ -33,8 +34,11 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.ui.runtime.exception.ExceptionMessageDialog;
+import org.talend.commons.ui.runtime.image.EImage;
+import org.talend.commons.ui.runtime.image.ImageProvider;
 import org.talend.core.service.IStudioLiteP2Service;
 import org.talend.core.service.IStudioLiteP2Service.UpdateSiteConfig;
+import org.talend.core.ui.branding.IBrandingService;
 import org.talend.repository.i18n.Messages;
 
 /**
@@ -47,6 +51,8 @@ public class UpdatesitePreferencePage extends PreferencePage {
     private Text releaseUriText;
 
     private Text updateUriText;
+
+    private Composite warningPanel;
 
     @Override
     protected Control createContents(Composite parent) {
@@ -84,6 +90,21 @@ public class UpdatesitePreferencePage extends PreferencePage {
         gd = new GridData(SWT.FILL, SWT.CENTER, true, false);
         updateUriText.setLayoutData(gd);
 
+        Label placeHolder = new Label(composite, SWT.None);
+        gd = new GridData(SWT.LEFT, SWT.TOP, false, false);
+        placeHolder.setLayoutData(gd);
+
+        warningPanel = new Composite(composite, SWT.None);
+        gd = new GridData(SWT.FILL, SWT.CENTER, true, false);
+        warningPanel.setLayoutData(gd);
+        warningPanel.setLayout(new GridLayout(2, false));
+
+        Label warningImg = new Label(warningPanel, SWT.None);
+        warningImg.setImage(ImageProvider.getImage(EImage.WARNING_ICON));
+        Label warningDesc = new Label(warningPanel, SWT.None);
+        warningDesc.setText(Messages.getString("UpdatesitePreferencePage.warn.onPremUpdateSetup"));
+        warningDesc.setFont(JFaceResources.getFontRegistry().getBold(JFaceResources.DEFAULT_FONT));
+
         init();
         addListener();
         return parent;
@@ -91,6 +112,7 @@ public class UpdatesitePreferencePage extends PreferencePage {
 
     private void init() {
         try {
+            warningPanel.setVisible(false);
             IProgressMonitor monitor = new NullProgressMonitor();
             UpdateSiteConfig config = p2Service.getUpdateSiteConfig(new NullProgressMonitor());
             URI release = config.getRelease(monitor);
@@ -203,6 +225,7 @@ public class UpdatesitePreferencePage extends PreferencePage {
 
     private boolean validate() {
         this.setErrorMessage(null);
+        checkUpdateUriSettingsForOnPrem();
         String releaseUriStr = releaseUriText.getText().trim();
         if (StringUtils.isBlank(releaseUriStr)) {
             this.setErrorMessage(Messages.getString("UpdatesitePreferencePage.err.baseCantEmpty"));
@@ -212,6 +235,18 @@ public class UpdatesitePreferencePage extends PreferencePage {
             return false;
         } else {
             return true;
+        }
+    }
+
+    private void checkUpdateUriSettingsForOnPrem() {
+        if (IBrandingService.get().isCloudLicense()) {
+            return;
+        }
+        String updateUriStr = updateUriText.getText().trim();
+        if (StringUtils.isBlank(updateUriStr)) {
+            warningPanel.setVisible(true);
+        } else {
+            warningPanel.setVisible(false);
         }
     }
 
