@@ -299,7 +299,12 @@ public class ExportItemWizardPage extends WizardPage {
                 }
             }
             TimeMeasure.step(this.getClass().getSimpleName(), "finished to collect nodes"); //$NON-NLS-1$
-            exportItemsTreeViewer.setCheckedElements(nodes.toArray());
+            //TUP-31974 for eclipse upgrade
+            //exportItemsTreeViewer.setCheckedElements(nodes.toArray());
+            exportItemsTreeViewer.setAllChecked(false);
+            for (Object tocheck : nodes) {
+                exportItemsTreeViewer.setChecked(tocheck, true);
+            }
             TimeMeasure.step(this.getClass().getSimpleName(), "finished to check nodes"); //$NON-NLS-1$
         }
     }
@@ -1010,7 +1015,12 @@ public class ExportItemWizardPage extends WizardPage {
                                 }
                             }
                         } else {
-                            exportItemsTreeViewer.setCheckedElements(toselect.toArray());
+                        	//TUP-31974 for eclipse upgrade
+                        	//exportItemsTreeViewer.setCheckedElements(toselect.toArray());
+                        	exportItemsTreeViewer.setAllChecked(false);
+                        	for (Object tocheck : toselect) {
+                                exportItemsTreeViewer.setChecked(tocheck, true);
+                            }
                         }
                         if (!exportDependencies.getSelection()) {
                             for (Object unchecked : uncheckedNodes) {
