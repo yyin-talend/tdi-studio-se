@@ -357,9 +357,9 @@
             REQUIRED_IF="USE_EXISTING_CONNECTION == 'false'"
         />
         <IMPORT
-            NAME="ST4-4.3.0"
-            MODULE="ST4-4.3.0.jar"
-            MVN="mvn:org.antlr/ST4/4.3.0"
+            NAME="ST4-4.3"
+            MODULE="ST4-4.3.jar"
+            MVN="mvn:org.antlr/ST4/4.3"
             REQUIRED_IF="USE_EXISTING_CONNECTION == 'false'"
         />
         <IMPORT 
