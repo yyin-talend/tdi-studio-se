@@ -4100,7 +4100,7 @@
             category="org.talend.core.prefs"
             class="org.talend.repository.ui.login.connections.settings.UpdatesiteWorkbenchPreferencePage"
             id="org.talend.repository.ui.login.connections.settings.UpdatesiteWorkbenchPreferencePage"
-            name="%projectsetting.updatesite">
+            name="%projectsetting.updatesettings">
       </page>
    </extension>
    <extension

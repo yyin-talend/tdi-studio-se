@@ -25,7 +25,6 @@ import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
-import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
@@ -38,7 +37,6 @@ import org.talend.commons.ui.runtime.image.EImage;
 import org.talend.commons.ui.runtime.image.ImageProvider;
 import org.talend.core.service.IStudioLiteP2Service;
 import org.talend.core.service.IStudioLiteP2Service.UpdateSiteConfig;
-import org.talend.core.ui.branding.IBrandingService;
 import org.talend.repository.i18n.Messages;
 
 /**
@@ -56,58 +54,57 @@ public class UpdatesitePreferencePage extends PreferencePage {
 
     @Override
     protected Control createContents(Composite parent) {
-        Composite panel = new Composite(parent, SWT.NONE);
-        GridData data = new GridData(GridData.FILL_BOTH);
-        data.horizontalSpan = 2;
-        panel.setLayoutData(data);
+        this.setTitle(Messages.getString("UpdatesitePreferencePage.title"));
 
-        FillLayout layout = new FillLayout();
-        layout.marginHeight = 5;
-        layout.marginWidth = 10;
-        panel.setLayout(layout);
+        Composite panel = new Composite(parent, SWT.None);
+        panel.setLayoutData(new GridData(GridData.FILL_BOTH));
 
-        Composite composite = new Composite(panel, SWT.NONE);
-        GridLayout compLayout = new GridLayout(2, false);
-        compLayout.marginHeight = 0;
-        compLayout.marginWidth = 0;
-        composite.setLayout(compLayout);
+        GridLayout panelLayout = new GridLayout(2, false);
+        panelLayout.horizontalSpacing = 10;
+        panelLayout.verticalSpacing = 5;
+        panel.setLayout(panelLayout);
 
-        Label releaseLabel = new Label(composite, SWT.NONE);
-        releaseLabel.setText(Messages.getString("UpdatesitePreferencePage.baseUrl"));
-        GridData gd = new GridData(SWT.LEFT, SWT.CENTER, false, false);
+        Label releaseLabel = new Label(panel, SWT.NONE);
+        releaseLabel.setText(Messages.getString("UpdatesitePreferencePage.base"));
+        GridData gd = new GridData();
         releaseLabel.setLayoutData(gd);
 
-        releaseUriText = new Text(composite, SWT.BORDER);
-        gd = new GridData(SWT.FILL, SWT.CENTER, true, false);
+        releaseUriText = new Text(panel, SWT.BORDER);
+        gd = new GridData(GridData.FILL_HORIZONTAL);
         releaseUriText.setLayoutData(gd);
 
-        Label updateLabel = new Label(composite, SWT.NONE);
-        updateLabel.setText(Messages.getString("UpdatesitePreferencePage.updateUrl"));
-        gd = new GridData(SWT.LEFT, SWT.CENTER, false, false);
+        Label updateLabel = new Label(panel, SWT.NONE);
+        updateLabel.setText(Messages.getString("UpdatesitePreferencePage.update"));
+        gd = new GridData();
         updateLabel.setLayoutData(gd);
 
-        updateUriText = new Text(composite, SWT.BORDER);
-        gd = new GridData(SWT.FILL, SWT.CENTER, true, false);
+        updateUriText = new Text(panel, SWT.BORDER);
+        gd = new GridData(GridData.FILL_HORIZONTAL);
         updateUriText.setLayoutData(gd);
 
-        Label placeHolder = new Label(composite, SWT.None);
-        gd = new GridData(SWT.LEFT, SWT.TOP, false, false);
+        Label placeHolder = new Label(panel, SWT.None);
+        gd = new GridData();
         placeHolder.setLayoutData(gd);
 
-        warningPanel = new Composite(composite, SWT.None);
-        gd = new GridData(SWT.FILL, SWT.CENTER, true, false);
+        warningPanel = new Composite(panel, SWT.None);
+        gd = new GridData(GridData.GRAB_HORIZONTAL);
         warningPanel.setLayoutData(gd);
         warningPanel.setLayout(new GridLayout(2, false));
 
         Label warningImg = new Label(warningPanel, SWT.None);
+        gd = new GridData(GridData.VERTICAL_ALIGN_BEGINNING);
+        warningImg.setLayoutData(gd);
         warningImg.setImage(ImageProvider.getImage(EImage.WARNING_ICON));
-        Label warningDesc = new Label(warningPanel, SWT.None);
+        Label warningDesc = new Label(warningPanel, SWT.WRAP);
         warningDesc.setText(Messages.getString("UpdatesitePreferencePage.warn.onPremUpdateSetup"));
         warningDesc.setFont(JFaceResources.getFontRegistry().getBold(JFaceResources.DEFAULT_FONT));
+        gd = new GridData(GridData.VERTICAL_ALIGN_BEGINNING | GridData.FILL_HORIZONTAL);
+        gd.widthHint = 600;
+        warningDesc.setLayoutData(gd);
 
         init();
         addListener();
-        return parent;
+        return panel;
     }
 
     private void init() {
@@ -225,7 +222,7 @@ public class UpdatesitePreferencePage extends PreferencePage {
 
     private boolean validate() {
         this.setErrorMessage(null);
-        checkUpdateUriSettingsForOnPrem();
+        checkUpdateUriSettings();
         String releaseUriStr = releaseUriText.getText().trim();
         if (StringUtils.isBlank(releaseUriStr)) {
             this.setErrorMessage(Messages.getString("UpdatesitePreferencePage.err.baseCantEmpty"));
@@ -238,10 +235,7 @@ public class UpdatesitePreferencePage extends PreferencePage {
         }
     }
 
-    private void checkUpdateUriSettingsForOnPrem() {
-        if (IBrandingService.get().isCloudLicense()) {
-            return;
-        }
+    private void checkUpdateUriSettings() {
         String updateUriStr = updateUriText.getText().trim();
         if (StringUtils.isBlank(updateUriStr)) {
             warningPanel.setVisible(true);

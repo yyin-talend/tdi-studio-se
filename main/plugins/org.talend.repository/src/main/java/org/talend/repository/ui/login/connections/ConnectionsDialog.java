@@ -211,7 +211,7 @@ public class ConnectionsDialog extends TitleAreaDialog {
         IStudioLiteP2Service p2Service = IStudioLiteP2Service.get();
         if (p2Service != null && IBrandingService.get().isPoweredbyTalend()) {
             UpdatesitePreferencePage updateSitePage = new UpdatesitePreferencePage();
-            updateSitePage.setTitle(Messages.getString("ConnectionsDialog.ui.pref.updatesite"));
+            updateSitePage.setTitle(Messages.getString("ConnectionsDialog.ui.pref.updateSettings"));
             pd.getPreferenceManager().addToRoot(new PreferenceNode("updateSitePage", updateSitePage));
         }
 
