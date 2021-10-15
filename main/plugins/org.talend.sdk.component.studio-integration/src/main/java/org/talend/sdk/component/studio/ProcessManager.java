@@ -450,7 +450,13 @@ public class ProcessManager implements AutoCloseable {
             if (!StringUtils.isEmpty(value)) {
                 sb.append(value);
             }
+            
+            ExceptionHandler.log("installedComponentString: " + sb.toString());
+
             String installedOfficialTCKComponents = getInstalledTCKComponents();
+
+            ExceptionHandler.log("installedOfficialTCKComponents: " + installedOfficialTCKComponents);
+
             if (!StringUtils.isEmpty(installedOfficialTCKComponents)) {
                 if (sb.length() > 0) {
                     sb.append(",");
