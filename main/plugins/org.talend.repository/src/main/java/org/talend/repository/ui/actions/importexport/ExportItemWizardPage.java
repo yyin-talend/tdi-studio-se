@@ -575,6 +575,7 @@ public class ExportItemWizardPage extends WizardPage {
 
                 Set toselect = new HashSet();
                 if (event.getChecked()) {
+                	exportItemsTreeViewer.expandToLevel(event.getElement(), 3);
                     initcheckedNodes.add(event.getElement());
 
                     checkedDependency.addAll(beanDependencies);
@@ -583,7 +584,7 @@ public class ExportItemWizardPage extends WizardPage {
                         for (Object obj : beanDependencies) {
                             ERepositoryObjectType objectType = getObjectType(obj);
                             expandRoot(objectType);
-                            expandParent(exportItemsTreeViewer, obj, objectType);
+                            //expandParent(exportItemsTreeViewer, obj, objectType);
                             checkElement(obj, toselect);
                         }
                     }
@@ -617,7 +618,9 @@ public class ExportItemWizardPage extends WizardPage {
                     uncheckedNodes.addAll(beanDependencies);
                 }
                 if (exportDependencies.getSelection()) {
-                    exportDependencies.notifyListeners(SWT.Selection, new Event());
+                	Event e = new Event();
+                	e.data = "treecheck";
+                    exportDependencies.notifyListeners(SWT.Selection, e);
                     return;
                 }
             }
@@ -1000,7 +1003,7 @@ public class ExportItemWizardPage extends WizardPage {
                         if (exportDependencies == null || exportDependencies.isDisposed()) return;
                         for (Object obj : allNode) {
                             ERepositoryObjectType objectType = getObjectType(obj);
-                            if (exportDependencies.getSelection()) {
+                            if (exportDependencies.getSelection() && e.data == null) {
                                 expandRoot(objectType);
                                 expandParent(exportItemsTreeViewer, obj, objectType);
                             }
