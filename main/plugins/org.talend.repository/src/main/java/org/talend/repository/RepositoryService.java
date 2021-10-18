@@ -13,6 +13,7 @@
 package org.talend.repository;
 
 import java.beans.PropertyChangeEvent;
+import java.lang.reflect.InvocationTargetException;
 import java.nio.charset.StandardCharsets;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
@@ -32,10 +33,13 @@ import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.dialogs.IDialogSettings;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.dialogs.ProgressMonitorDialog;
+import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.StructuredViewer;
@@ -501,8 +505,32 @@ public class RepositoryService implements IRepositoryService, IRepositoryContext
                     throw new LoginException(Messages.getString("RepositoryService.projectNotFound", projectName)); //$NON-NLS-1$
                 }
                 repositoryContext.setProject(project);
+                if (CommonsPlugin.isHeadless() || CommonsPlugin.isScriptCmdlineMode()) {
+                    repositoryFactory.logOnProject(project, new NullProgressMonitor());
+                } else {
+                    final Project logProject = project;
+                    ProgressMonitorDialog dialog = new ProgressMonitorDialog(Display.getDefault().getActiveShell());
+                    Exception ex[] = new Exception[1];
+                    IRunnableWithProgress runnable = new IRunnableWithProgress() {
 
-                repositoryFactory.logOnProject(project, new NullProgressMonitor());
+                        @Override
+                        public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
+                            try {
+                                repositoryFactory.logOnProject(logProject, monitor);
+                            } catch (Exception e) {
+                                ex[0] = e;
+                            }
+                        }
+                    };
+                    try {
+                        dialog.run(true, false, runnable);
+                    } catch (InvocationTargetException | InterruptedException e) {
+                        ExceptionHandler.process(e);
+                    }
+                    if (ex[0] != null) {
+                        throw ex[0];
+                    }
+                }
             } catch (final PersistenceException e) {
                 if (e instanceof OperationCancelException) {
                     Display.getDefault().syncExec(new Runnable() {
@@ -537,6 +565,9 @@ public class RepositoryService implements IRepositoryService, IRepositoryContext
                 repositoryFactory.logOffProject();
                 LoginHelper.isAutoLogonFailed = true;
             } catch (JSONException e) {
+                ExceptionHandler.process(e);
+                LoginHelper.isAutoLogonFailed = true;
+            } catch (Exception e) {
                 ExceptionHandler.process(e);
                 LoginHelper.isAutoLogonFailed = true;
             }
