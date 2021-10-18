@@ -16,6 +16,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.InputStreamReader;
 import java.net.URI;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.EnumSet;
@@ -160,30 +161,20 @@ public class TaCoKitCarFeature extends AbstractExtraFeature implements ITaCoKitC
     private String getJavaCMD() {
         String javacmd = "java";
         String vm = System.getProperty(EclipseCommandLine.PROP_VM);
-        if (!Platform.getOS().equals(Platform.OS_MACOSX)) {
-            if (!StringUtils.isBlank(vm)) {
-                if (!vm.endsWith(javacmd)) {
-                    String shareLib = "server" + File.separator;
-                    if (Platform.getOS().equals(Platform.OS_WIN32)) {
-                        shareLib += "jvm.dll";
-                        if (StringUtils.endsWith(vm, shareLib)) {
-                            vm = StringUtils.removeEnd(vm, shareLib);
-                        }
-                    } else {
-                        shareLib += "jvm.so";
-                        if (StringUtils.endsWith(vm, shareLib)) {
-                            vm = StringUtils.removeEnd(vm, shareLib);
-                        }
-                    }
-
-                    if (!vm.endsWith(File.separator)) {
-                        vm += File.separator;
-                    }
-                    vm += javacmd;
+        if (!Platform.getOS().equals(Platform.OS_MACOSX) && !StringUtils.isBlank(vm)) {
+            if (!vm.endsWith(javacmd)) {
+                ExceptionHandler.log("vm: " + vm);
+                if (vm.endsWith(".dll") || vm.endsWith(".so")) {
+                    vm = Paths.get(vm).getParent().getParent().getParent().resolve("bin").toFile().getAbsolutePath();
                 }
-                vm = StringUtils.wrap(vm, "\"");
-                return vm;
+
+                if (!vm.endsWith(File.separator)) {
+                    vm = vm + File.separator;
+                }
+
+                vm = vm + javacmd;
             }
+            return vm;
         }
         return javacmd;
     }
@@ -197,7 +188,7 @@ public class TaCoKitCarFeature extends AbstractExtraFeature implements ITaCoKitC
         String javaCMD = this.getJavaCMD();
         cmds.add(javaCMD);
         cmds.add("-jar");
-        cmds.add(StringUtils.wrap(tckCarPath, "\""));
+        cmds.add(tckCarPath);
         
         if (isDeployCommand) {
             File m2Folder =this.getM2RepositoryPath();
@@ -205,11 +196,17 @@ public class TaCoKitCarFeature extends AbstractExtraFeature implements ITaCoKitC
             commandType = "maven-deploy";
         }
         cmds.add(commandType);
-        cmds.add(StringUtils.wrap(installationPath, "\""));
+        cmds.add(installationPath);
 
         ExceptionHandler.log("tck install command line: " + cmds);
-        Process exec = Runtime.getRuntime().exec(cmds.toArray(new String[0]));
         
+        Process exec = null;
+        try {
+            exec = Runtime.getRuntime().exec(cmds.toArray(new String[0]));
+        } catch (Exception e) {
+            ExceptionHandler.process(e);
+            throw e;
+        }
         while (exec.isAlive()) {
             try {
                 TaCoKitUtil.checkMonitor(progress);
