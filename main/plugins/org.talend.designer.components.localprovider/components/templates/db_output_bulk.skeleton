@@ -45,7 +45,7 @@ public class CLASS {
     public static final String EXASOL = "Exasol_id";
     public static final String SAPHANA = "saphana_id";
 	public static final String DELTALAKE = "databricks_delta_lake_id";
-    private static Map<String, Manager> managerMap = new HashMap<String, Manager>();
+    private Map<String, Manager> managerMap = new HashMap<String, Manager>();
     public class Column {
         IMetadataColumn column;
         String name;
