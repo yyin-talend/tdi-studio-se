@@ -15,7 +15,10 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 public final class HttpClient {
+    static Logger logger = LoggerFactory.getLogger(HttpClient.class.getName());
 
     private final static int TEMPORARY_REDIRECT = 307;
     private final static int PERMANENT_REDIRECT = 308;
@@ -32,6 +35,7 @@ public final class HttpClient {
 
     public HttpResponse call(AtomicInteger atomicInteger, Function<HttpResponse, Boolean> acceptRedirect) throws IOException, InterruptedException {
         final HttpURLConnection conn = buildUrl(requestHttpContext);
+        logger.info("HTTPCLIENT : request method : " + conn.getRequestMethod());
 
         if ("POST".equals(conn.getRequestMethod())) {
             conn.setDoOutput(true);
@@ -51,6 +55,8 @@ public final class HttpClient {
     private HttpResponse followRedirect(RequestHttpContext queryContext, HttpResponse response, AtomicInteger nbRedirect, Function<HttpResponse, Boolean> acceptRedirect) throws IOException, InterruptedException {
         final int nbR = nbRedirect.decrementAndGet();
         final int status = response.getStatus();
+        logger.info("HTTPCLIENT : followRedirect / status : " + status);
+        logger.info("HTTPCLIENT : followRedirect / nbredirect : " + nbR);
 
         boolean redirect = false;
         if (status != HttpURLConnection.HTTP_OK && ((status == HttpURLConnection.HTTP_MOVED_TEMP
@@ -58,10 +64,10 @@ public final class HttpClient {
                 || status == TEMPORARY_REDIRECT || status == PERMANENT_REDIRECT))) {
             redirect = true;
         }
+        logger.info("HTTPCLIENT : followRedirect / redirect ? " + redirect);
 
-
-        //final HttpHeaders headers = resp.headers();
         final Optional<String> location = response.getFirstValueHeader("location");
+        logger.info("HTTPCLIENT : followRedirect / location ? " + location);
 
 
         if (!redirect || !location.isPresent() || nbR <= 0) {

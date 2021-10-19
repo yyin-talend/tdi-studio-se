@@ -10,12 +10,15 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 public final class HttpResponse {
+    static Logger logger = LoggerFactory.getLogger(HttpResponse.class.getName());
     private int status;
     private Map<String, List<String>> headers;
     private String body;
 
-    private Optional<String> code = null;//Optional.empty();
+    private Optional<String> code = null;
 
     public static HttpResponse fromHttpUrlConnection(HttpURLConnection conn) throws IOException {
         final int status = conn.getResponseCode();
@@ -24,8 +27,15 @@ public final class HttpResponse {
         HttpResponse context = new HttpResponse(status);
         context.setHeaders(respHeaders);
 
+        logger.info("CREATE HTTPRESPONSE : " + status);
+        respHeaders.entrySet().stream().map((Map.Entry<String, List<String>> e) ->
+                e.getKey() + " : " + e.getValue().stream().collect(Collectors.joining(" / "))
+        ).forEach((String e) -> logger.info("\theader : " + e));
         try(BufferedReader in = new BufferedReader(new InputStreamReader(conn.getInputStream(), "UTF-8"))){
             final String body = in.lines().collect(Collectors.joining("\n"));
+            logger.info("\tbody : begin ----------------------------------------");
+            logger.info("\t" + body);
+            logger.info("\tbody : end ------------------------------------------");
             context.setBody(body);
         }
 
@@ -77,17 +87,20 @@ public final class HttpResponse {
     }
 
     public Optional<String> getFirstValueHeader(String key) {
+        logger.info("HTTPRESPONSE : getFirstValueHeader of " + key);
         final Optional<List<String>> values = getAllValuesHeader(key);
         if(!values.isPresent()){
+            logger.info("HTTPRESPONSE : getFirstValueHeader is empty!");
             return Optional.empty();
         }
 
-        final List<String> ss = values.get();
-        if(ss.size() <= 0){
+        final List<String> v = values.get();
+        logger.info("HTTPRESPONSE : getFirstValueHeader get value \"" + v + "\"");
+        if (v.size() <= 0) {
             return Optional.empty();
         }
 
-        return Optional.ofNullable(ss.get(0));
+        return Optional.ofNullable(v.get(0));
     }
 
     public String getBody() {
@@ -104,14 +117,23 @@ public final class HttpResponse {
      */
     private Optional<String> _extractCode(){
         final Optional<String> optLocation = this.getFirstValueHeader("Location");
+        logger.info("HTTPRESPONSE - 'Location' header present ? " + optLocation.isPresent());
         if (!optLocation.isPresent()) {
             return Optional.empty();
         }
-        final String[] split = optLocation.get().split("&|\\?");
+        final String optLocationValue = optLocation.get();
+        logger.info("HTTPRESPONSE - 'Location' header = " + optLocationValue);
+
+        final String[] split = optLocationValue.split("&|\\?");
+
+        logger.info("HTTPRESPONSE : Location split result:");
+        Arrays.asList(split).stream().forEach(e -> logger.info("\t" + e));
         final Optional<String> optCode = Arrays.stream(split).filter(e -> e.startsWith("code=")).findFirst();
 
         if (optCode.isPresent()) {
-            String code = optCode.get().substring(5);
+            final String optCodeValue = optCode.get();
+            String code = optCodeValue.substring(5);
+            logger.info("HTTPRESPONSE retrieved code \"" + optCodeValue + "\" => " + code);
             return Optional.ofNullable(code);
         }
 

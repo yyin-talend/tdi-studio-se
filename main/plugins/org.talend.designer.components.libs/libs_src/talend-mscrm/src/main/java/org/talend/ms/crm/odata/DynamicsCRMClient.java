@@ -76,10 +76,15 @@ import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * Client for accessing Dynamics CRM Online using the Web API
  */
 public class DynamicsCRMClient implements IHttpClientFactoryObserver {
+
+    static Logger logger = LoggerFactory.getLogger(DynamicsCRMClient.class.getName());
 
     private static final String NAMESPAVE = "Microsoft.Dynamics.CRM";
     private static final String LOOKUP_NAME_PREFIX = "_";
@@ -115,6 +120,10 @@ public class DynamicsCRMClient implements IHttpClientFactoryObserver {
 
     public DynamicsCRMClient(ClientConfiguration clientConfiguration, String serviceRootURL, String entitySet)
             throws AuthenticationException {
+
+	System.out.println("mscrm 20211019a patched library.");
+	logger.info("mscrm 20211019a patched library.");
+
         this.clientConfiguration = clientConfiguration;
 
         this.serviceRootURL = serviceRootURL;
