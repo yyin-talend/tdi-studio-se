@@ -1392,11 +1392,17 @@ public class LoginProjectPage extends AbstractLoginActionPage {
                 fillConnectionsList(new NullProgressMonitor());
                 boolean forceRefresh = hasAuthException;
                 ConnectionBean connection = getConnection();
-                if (connection != null && !LoginHelper.isRemotesConnection(connection)) {
-                    /**
-                     * In case user delete project in manage connection dialog
-                     */
-                    forceRefresh = true;
+                if (connection != null) {
+                    if (!LoginHelper.isRemotesConnection(connection)) {
+                        /**
+                         * In case user delete project in manage connection dialog
+                         */
+                        forceRefresh = true;
+                    }
+
+                    if (LoginHelper.isRemotesConnection(connection) && !isWorkSpaceSame()) {
+                        forceRefresh = true;
+                    }
                 }
                 onConnectionSelected(new NullProgressMonitor(), forceRefresh);
             } else {
