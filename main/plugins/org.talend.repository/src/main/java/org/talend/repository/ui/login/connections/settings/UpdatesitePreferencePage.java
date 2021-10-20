@@ -191,7 +191,7 @@ public class UpdatesitePreferencePage extends PreferencePage {
         if (this.isControlCreated()) {
             try {
                 UpdateSiteConfig config = p2Service.getUpdateSiteConfig(new NullProgressMonitor());
-                if (config.isReleaseEditable()) {
+                if (config.isReleaseEditable() && config.isUpdateEditable()) {
                     NullProgressMonitor monitor = new NullProgressMonitor();
                     config.resetToDefault(monitor);
                     URI release = config.getRelease(monitor);
@@ -205,7 +205,7 @@ public class UpdatesitePreferencePage extends PreferencePage {
                     updateUriText.setText(updateStr.toString());
                 } else {
                     // normally it should be a dead code
-                    throw new Exception("Can't reset to default values. since they are readonly.");
+                    throw new Exception(Messages.getString("UpdatesitePreferencePage.err.reset.readonly"));
                 }
             } catch (Exception e) {
                 ExceptionMessageDialog.openError(null, Messages.getString("UpdatesitePreferencePage.err.title"),
