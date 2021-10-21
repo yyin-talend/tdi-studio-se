@@ -2,7 +2,7 @@
 <feature
       id="org.talend.studio.components.tcompv0.jira.feature"
       label="Jira"
-      version="8.0.1.qualifier">
+      version="8.0.1">
 
    <description url="http://www.example.com/description">
       Jira component
