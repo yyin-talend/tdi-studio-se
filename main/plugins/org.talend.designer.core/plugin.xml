@@ -957,5 +957,11 @@
                 id="org.talend.designer.core.model.analysistask.ChildJobMissingAnalysisTask"
                 name="ChildJobMissingAnalysisTask">
           </analysisTask>
+          <analysisTask
+                class="org.talend.designer.core.model.analysistask.UnresolvedRoutineDependencyAnalysisTask"
+                description="Check beans/routines missing dependencies"
+                id="org.talend.designer.core.model.analysistask.UnresolvedRoutineDependencyAnalysisTask"
+                name="UnresolvedRoutineDependencyAnalysisTask">
+          </analysisTask>
        </extension>
 </plugin>
