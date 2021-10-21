@@ -168,7 +168,7 @@ public abstract class DemosImportTest {
 		tdqLibrariesRuleSqlPath = new Path("/TDQ_Libraries/Rules/SQL");
 		tdqLibrariesPatternPath = new Path("/TDQ_Libraries/Patterns");
 		routesItemPath = new Path("/routes/");
-		routeResourcePath = new Path("/route_resources/");
+		routeResourcePath = new Path("/resources/");
 		servicesItemPath = new Path("/services/");
 
 		mdmDatacontainerPath = new Path("/MDM/datacontainer/");

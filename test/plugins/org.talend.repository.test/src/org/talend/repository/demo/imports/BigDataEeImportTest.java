@@ -68,13 +68,6 @@ public class BigDataEeImportTest extends DemosImportTest {
 		Assert.assertTrue(currentJobItemsSize > 0);
 		Assert.assertEquals(demoJobItemFiles.size(), currentJobItemsSize);
 
-		// test the hadoop items under BigDataDemo_ee.zip
-		int currentMrItemsSize = ProxyRepositoryFactory.getInstance().getAll(ERepositoryObjectType.PROCESS_MR).size();
-		List<File> demoMrItemsFiles = getDemoItemFileList(rootPath + File.separator + processMrPath);
-		Assert.assertTrue(demoMrItemsFiles.size() > 0);
-		Assert.assertTrue(currentMrItemsSize > 0);
-		Assert.assertEquals(demoMrItemsFiles.size(), currentMrItemsSize);
-
 		// test the context items under BigDataDemo_ee.zip
 		int currentContextItemsSize = ProxyRepositoryFactory.getInstance().getAll(ERepositoryObjectType.CONTEXT).size();
 		List<File> demoContextItemsFiles = getDemoItemFileList(rootPath + File.separator + contextItemPath);
@@ -106,7 +99,6 @@ public class BigDataEeImportTest extends DemosImportTest {
 	protected Map<String, String> getCollectFolderMap(String rootPath) {
 		Map<String, String> map = super.getCollectFolderMap(rootPath);
 		map.put(rootPath + File.separator + processItemPath, FileConstants.ITEM_EXTENSION);
-		map.put(rootPath + File.separator + processMrPath, FileConstants.ITEM_EXTENSION);
 		map.put(rootPath + File.separator + contextItemPath, FileConstants.ITEM_EXTENSION);
 		map.put(rootPath + File.separator + connectionItemPath, FileConstants.ITEM_EXTENSION);
 		map.put(rootPath + File.separator + documentionPath, FileConstants.ITEM_EXTENSION);
