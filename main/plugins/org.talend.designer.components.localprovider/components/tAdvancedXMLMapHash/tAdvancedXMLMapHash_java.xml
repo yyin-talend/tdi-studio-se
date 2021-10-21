@@ -47,8 +47,8 @@
     <IMPORTS>
       <IMPORT
         NAME="Advanced_Persistent_Lookup"
-        MODULE="advancedPersistentLookupLib-1.2.jar" MVN="mvn:org.talend.libraries/advancedPersistentLookupLib-1.2/6.0.0" 
-        UrlPath="platform:/plugin/org.talend.libraries.persist.lookup/lib/advancedPersistentLookupLib-1.2.jar" 
+        MODULE="advancedPersistentLookupLib-1.3.jar" MVN="mvn:org.talend.libraries/advancedPersistentLookupLib-1.3/6.0.0" 
+        UrlPath="platform:/plugin/org.talend.libraries.persist.lookup/lib/advancedPersistentLookupLib-1.3.jar" 
         REQUIRED="true"
       />
       <IMPORT
@@ -56,11 +56,6 @@
         MODULE="commons-collections-3.2.2.jar" MVN="mvn:commons-collections/commons-collections/3.2.2"  UrlPath="platform:/plugin/org.talend.libraries.apache.common/lib/commons-collections-3.2.2.jar"
         REQUIRED="true"
         BundleID=""
-      />
-      <IMPORT
-        NAME="Jboss"
-        MODULE="jboss-serialization.jar" MVN="mvn:org.talend.libraries/jboss-serialization/6.0.0"  UrlPath="platform:/plugin/org.talend.libraries.jboss/lib/jboss-serialization.jar"
-        REQUIRED="true"
       />
       <IMPORT
         NAME="Trove"
