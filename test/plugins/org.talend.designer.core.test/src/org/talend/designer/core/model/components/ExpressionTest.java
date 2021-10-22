@@ -302,7 +302,7 @@ public class ExpressionTest {
         IElementParameter sparkApiVersion = mock(IElementParameter.class);
         when(sparkApiVersion.getValue()).thenReturn("");
         IElementParameter distributionParameter = mock(IElementParameter.class);
-        when(distributionParameter.getValue()).thenReturn("");
+        when(distributionParameter.getValue()).thenReturn("SPARK");
         IElementParameter supportedVersionParameter = mock(IElementParameter.class);
         when(supportedVersionParameter.getValue()).thenReturn("");
 
@@ -313,9 +313,9 @@ public class ExpressionTest {
         when(node.getElementParameter("SPARK_API_VERSION")).thenReturn(sparkApiVersion);
         when(node.getElementParameter("DISTRIBUTION")).thenReturn(distributionParameter);
         when(node.getElementParameter("SUPPORTED_SPARK_VERSION")).thenReturn(supportedVersionParameter);
-
+        
         ElementParameter currentParam = mock(ElementParameter.class);
         when(currentParam.getElement()).thenReturn(node);
-        assertTrue(Expression.evaluateSparkVersion("SPARK_VERSION ge 'SPARK_3_0_x'", null, currentParam));
+        assertTrue(Expression.evaluateSparkVersion("SPARK_VERSION ge 'SPARK_3_0'", null, currentParam));
     }
 }
