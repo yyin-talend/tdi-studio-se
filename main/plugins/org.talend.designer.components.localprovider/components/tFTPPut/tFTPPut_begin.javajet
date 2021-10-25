@@ -312,9 +312,14 @@ globalMap.put("<%=cid%>_ERROR_MESSAGE",e.getMessage());
 %>
 			if(!cwdSuccess_<%=cid %>){
 				String[] dirsTree_<%=cid %> = remotedir_<%=cid %>.split("/");
+				if (remotedir_<%=cid %>.startsWith("/")) {
+				    ftp_<%=cid %>.changeWorkingDirectory("/"); // go to root path if remote is absolute.
+				}
 				for (String dir: dirsTree_<%=cid %>) {
-					ftp_<%=cid %>.makeDirectory(dir);
-					ftp_<%=cid %>.changeWorkingDirectory(dir);
+				    if (dir != null && !dir.isEmpty()) {
+					    ftp_<%=cid %>.makeDirectory(dir);
+					    ftp_<%=cid %>.changeWorkingDirectory(dir);
+					}
 				}
 				ftp_<%=cid %>.changeWorkingDirectory(rootDir_<%=cid %>);
 				cwdSuccess_<%=cid %> = ftp_<%=cid %>.changeWorkingDirectory(remotedir_<%=cid %>);
