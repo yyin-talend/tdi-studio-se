@@ -143,7 +143,7 @@ public class TaCoKitCarFeature extends AbstractExtraFeature implements ITaCoKitC
                 if (!needRestart() && isAutoReloadAfterInstalled()) {
                     // if studio need to restart, then no need to reload here
                     String log = ITaCoKitService.getInstance().reload(progress);
-                    ExceptionHandler.log(log);
+                    ExceptionHandler.logDebug(log);
                 }
             } else {
                 status = new Status(IStatus.ERROR, TaCoKitConst.BUNDLE_ID,
@@ -163,7 +163,7 @@ public class TaCoKitCarFeature extends AbstractExtraFeature implements ITaCoKitC
         String vm = System.getProperty(EclipseCommandLine.PROP_VM);
         if (!Platform.getOS().equals(Platform.OS_MACOSX) && !StringUtils.isBlank(vm)) {
             if (!vm.endsWith(javacmd)) {
-                ExceptionHandler.log("vm: " + vm);
+                ExceptionHandler.logDebug("vm: " + vm);
                 if (vm.endsWith(".dll") || vm.endsWith(".so")) {
                     vm = Paths.get(vm).getParent().getParent().getParent().resolve("bin").toFile().getAbsolutePath();
                 }
@@ -183,7 +183,7 @@ public class TaCoKitCarFeature extends AbstractExtraFeature implements ITaCoKitC
     public boolean install(IProgressMonitor progress) throws Exception {
         String tckCarPath = getCar(progress).getCarFile().getAbsolutePath();
         String installationPath = URIUtil.toFile(URIUtil.toURI(Platform.getInstallLocation().getURL())).getAbsolutePath();
-        String commandType = " studio-deploy ";
+        String commandType = "studio-deploy";
         List<String> cmds = new ArrayList<String>();
         String javaCMD = this.getJavaCMD();
         cmds.add(javaCMD);
@@ -198,7 +198,7 @@ public class TaCoKitCarFeature extends AbstractExtraFeature implements ITaCoKitC
         cmds.add(commandType);
         cmds.add(installationPath);
 
-        ExceptionHandler.log("tck install command line: " + cmds);
+        ExceptionHandler.logDebug("tck install command line: " + cmds);
         
         Process exec = null;
         try {
