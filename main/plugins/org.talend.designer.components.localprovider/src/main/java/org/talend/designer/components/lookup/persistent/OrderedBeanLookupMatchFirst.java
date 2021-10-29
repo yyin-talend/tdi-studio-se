@@ -116,6 +116,9 @@ public class OrderedBeanLookupMatchFirst<B extends Comparable<B> & IPersistableL
                         } else {
                             previousValuesSize = currentValuesSize;
                             localSkip += currentValuesSize;
+                            if (currentValuesSize > 0) {
+                                countBeansToSkip++;
+                            }
                         }
 
                         break;
