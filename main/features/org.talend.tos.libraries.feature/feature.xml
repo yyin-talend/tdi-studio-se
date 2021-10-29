@@ -43,7 +43,6 @@
   <plugin id="org.talend.libraries.palo" download-size="0" install-size="0" version="0.0.0"/>
   <plugin id="org.talend.libraries.persist.lookup" download-size="0" install-size="0" version="0.0.0" unpack="false"/>
   <plugin id="org.talend.libraries.salesforce" download-size="0" install-size="0" version="0.0.0"/>
-  <plugin id="org.talend.libraries.servlet" download-size="0" install-size="0" version="0.0.0"/>
   <plugin id="org.talend.libraries.slf4j" download-size="0" install-size="0" version="0.0.0"/>
   <plugin id="org.talend.libraries.xml" download-size="0" install-size="0" version="0.0.0"/>
   <plugin id="org.talend.libraries.zmq" download-size="0" install-size="0" version="0.0.0"/>
