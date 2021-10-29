@@ -182,6 +182,8 @@ public class PersistentSortedLookupManager<B extends IPersistableComparableLooku
     public void put(B bean) throws IOException {
     	if(!init) {
     		USE_JBOSS_IMPLEMENTATION = bean.supportMarshaller();
+    		skipBytesEnabled = ! USE_JBOSS_IMPLEMENTATION;
+    		init = true;
     	}
 
         // if (bufferBeanIndex == 0 && fileIndex == 0) {
