@@ -161,7 +161,7 @@ import org.talend.repository.model.IProxyRepositoryFactory;
 /**
  * DOC yzhang class global comment. Detailled comment <br/>
  *
- * $Id: talend-code-templates.xml 1 2006-09-29 17:06:40 +0000 (鏄熸湡浜�, 29 涔濇湀 2006) yzhang $
+ * $Id: talend-code-templates.xml 1 2006-09-29 17:06:40 +0000 (é�„ç†¸æ¹¡æµœï¿½, 29 æ¶”æ¿‡æ¹€ 2006) yzhang $
  *
  */
 
@@ -1041,7 +1041,7 @@ public abstract class AbstractElementPropertySectionController implements Proper
      *
      * Container of original properties of Control. <br/>
      *
-     * $Id: DynamicTabbedPropertySection.java 865 2006-12-06 06:14:57 +0000 (鏄熸湡涓�, 06 鍗佷簩鏈� 2006) bqian $
+     * $Id: DynamicTabbedPropertySection.java 865 2006-12-06 06:14:57 +0000 (é�„ç†¸æ¹¡æ¶“ï¿½, 06 é�—ä½·ç°©é�ˆï¿½ 2006) bqian $
      *
      */
     class ControlProperties {
@@ -1070,7 +1070,7 @@ public abstract class AbstractElementPropertySectionController implements Proper
      *
      * @author amaumont
      *
-     * $Id: DynamicTabbedPropertySection.java 865 2006-12-06 06:14:57 +0000 (鏄熸湡涓�, 06 鍗佷簩鏈� 2006) bqian $
+     * $Id: DynamicTabbedPropertySection.java 865 2006-12-06 06:14:57 +0000 (é�„ç†¸æ¹¡æ¶“ï¿½, 06 é�—ä½·ç°©é�ˆï¿½ 2006) bqian $
      *
      */
     public class UndoRedoHelper {
@@ -1503,14 +1503,6 @@ public abstract class AbstractElementPropertySectionController implements Proper
             }
             String dbVersionName = EDatabaseVersion4Drivers.getDbVersionName(type, driverName);
             connParameters.setDbVersion(dbVersionName);
-            if (EDatabaseVersion4Drivers.VERTICA_5_1.getVersionValue().equals(dbVersionName)
-                    || EDatabaseVersion4Drivers.VERTICA_6.getVersionValue().equals(dbVersionName)
-                    || EDatabaseVersion4Drivers.VERTICA_6_1_X.getVersionValue().equals(dbVersionName)
-                    || EDatabaseVersion4Drivers.VERTICA_7.getVersionValue().equals(dbVersionName) 
-                    || EDatabaseVersion4Drivers.VERTICA_7_1_X.getVersionValue().equals(dbVersionName)) {
-                driverClass = EDatabase4DriverClassName.VERTICA2.getDriverClass();
-            }
-
             connParameters.setDriverClass(TalendTextUtils.removeQuotes(driverClass));
 
             if (driverClass != null && !"".equals(driverClass)
@@ -1759,16 +1751,6 @@ public abstract class AbstractElementPropertySectionController implements Proper
             connParameters.setUrl(url);
             String driverClass = TalendTextUtils.removeQuotesIfExist(getParameterValueWithContext(element,
                     EConnectionParameterName.DRIVER_CLASS.getName(), context, basePropertyParameter));
-            if (element != null) {
-                String dbVersion = getValueFromRepositoryName(element, "DB_VERSION");
-                if (EDatabaseVersion4Drivers.VERTICA_6.getVersionValue().equals(dbVersion)
-                        || EDatabaseVersion4Drivers.VERTICA_5_1.getVersionValue().equals(dbVersion)
-                        || EDatabaseVersion4Drivers.VERTICA_6_1_X.getVersionValue().equals(dbVersion)
-                        || EDatabaseVersion4Drivers.VERTICA_7.getVersionValue().equals(dbVersion) 
-                        || EDatabaseVersion4Drivers.VERTICA_7_1_X.getVersionValue().equals(dbVersion)) {
-                    driverClass = EDatabase4DriverClassName.VERTICA2.getDriverClass();
-                }
-            }
             if (EDatabaseTypeName.GENERAL_JDBC.getDisplayName().equals(dbType)) {
                 connParameters.setDriverClass(driverClass);// tJDBCSCDELT
             } else {

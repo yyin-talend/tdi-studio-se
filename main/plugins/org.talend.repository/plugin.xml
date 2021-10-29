@@ -1636,14 +1636,6 @@
         <projecttask
               beforeLogon="false"
               breaks="5.1.1"
-              class="org.talend.repository.model.migration.ChangeAS400DBVersionMigrationTask"
-              id="org.talend.repository.model.migration.ChangeAS400DBVersionMigrationTask"
-              name="Change AS400 DBVersion"
-              version="5.1.2">
-        </projecttask>
-        <projecttask
-              beforeLogon="false"
-              breaks="5.1.1"
               class="org.talend.repository.model.migration.MigratetFileOutputDelimitedAndtFileInputDelimitedMigrationTask"
               description="for bug TDI13497"
               id="org.talend.repository.model.migration.MigratetFileOutputDelimitedAndtFileInputDelimitedMigrationTask"
@@ -2275,14 +2267,6 @@
               class="org.talend.repository.model.migration.EncryptPasswordInProjectSettingsMigrationTask"
               id="org.talend.repository.model.migration.EncryptPasswordInProjectSettingsMigrationTask"
               name="Encrypt passwords in new password fields of project settings implicit context load and stats logs"
-              version="5.4.3">
-        </projecttask>
-         <projecttask
-              beforeLogon="false"
-              breaks="5.4.1"
-              class="org.talend.repository.model.migration.UpdateDbVersionForVerticaMigrationTask"
-              id="org.talend.repository.model.migration.UpdateDbVersionForVerticaMigrationTask"
-              name="UpdateDbVersionForVerticaMigrationTask"
               version="5.4.3">
         </projecttask>
         <projecttask
