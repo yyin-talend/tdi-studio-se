@@ -27683,8 +27683,7 @@
                 <IMPORT
                     NAME="jasypt-1.9.2"
                     MODULE="jasypt-1.9.2.jar"
-                    MVN="mvn:org.talend.libraries/jasypt-1.9.2/6.0.0"
-                    UrlPath="platform:/plugin/org.talend.libraries.apache.cxf/lib/jasypt-1.9.2.jar"
+                    MVN="mvn:org.jasypt/jasypt/1.9.2"
                     REQUIRED_IF="(AUTH_TYPE == 'ON_PREMISE') AND (MS_CRM_VERSION == 'CRM_2015')" />
                 <IMPORT
                     NAME="jaxb-core-2.2.11"
