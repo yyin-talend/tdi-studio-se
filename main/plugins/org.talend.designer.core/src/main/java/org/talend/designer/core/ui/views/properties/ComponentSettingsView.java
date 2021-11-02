@@ -621,16 +621,9 @@ public class ComponentSettingsView extends ViewPart implements IComponentSetting
                             isMRProcess = true;
                         }
                     }
-                    boolean isStormProcess = false;
                     process = ((Connection) elem).getSource().getProcess();
-                    if (process instanceof IProcess2) {
-                        IProcess2 process2 = (IProcess2) process;
-                        if (ComponentCategory.CATEGORY_4_STORM.getName().equals(process2.getComponentsType())) {
-                            isStormProcess = true;
-                        }
-                    }
                     // mrjob and stormjob not add breakpoint
-                    if (!isStormProcess && !isMRProcess) {
+                    if (!isMRProcess) {
                         list.add(EComponentCategory.BREAKPOINT);
                     }
 
