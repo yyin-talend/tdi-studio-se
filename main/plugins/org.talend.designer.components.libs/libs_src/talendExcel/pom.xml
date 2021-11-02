@@ -4,11 +4,19 @@
 
 	<groupId>org.talend.components</groupId>
 	<artifactId>talendExcel</artifactId>
-	<version>1.12-20210908</version>
+	<version>1.13-20211020</version>
 	<packaging>jar</packaging>
 
 	<name>talendExcel</name>
 	<url>http://maven.apache.org</url>
+
+	<licenses>
+		<license>
+			<name>Apache License, Version 2.0</name>
+			<url>https://www.talendforge.org/modules/licenses/APACHE_v2.txt</url>
+			<distribution>may be downloaded from the Maven repository</distribution>
+		</license>
+	</licenses>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>

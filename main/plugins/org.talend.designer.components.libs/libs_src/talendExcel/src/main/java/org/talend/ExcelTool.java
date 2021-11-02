@@ -1,6 +1,11 @@
 package org.talend;
 
-import com.monitorjbl.xlsx.StreamingReader;
+import java.io.*;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+
 import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.poifs.crypt.EncryptionInfo;
 import org.apache.poi.poifs.crypt.EncryptionMode;
@@ -13,11 +18,7 @@ import org.apache.poi.xssf.usermodel.XSSFFont;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbookType;
 
-import java.io.*;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
+import com.monitorjbl.xlsx.StreamingReader;
 
 public class ExcelTool {
 
@@ -165,11 +166,10 @@ public class ExcelTool {
         if (this.streamingAppend) {
             wb = new SXSSFWorkbook(rowAccessWindowSize);
 
-            Workbook preWorkbookForAppend = null;
-            try {
-                preWorkbookForAppend = StreamingReader.builder()
-                        .rowCacheSize(100)
-                        .bufferSize(4096).password(password).open(new File(fileName));
+            try (InputStream fis = new FileInputStream(fileName);
+                 Workbook preWorkbookForAppend =
+                     StreamingReader.builder().rowCacheSize(100).bufferSize(4096)
+                         .password(password).open(fis)) {
 
                 Iterator<Sheet> sheets = preWorkbookForAppend.sheetIterator();
                 while (sheets.hasNext()) {
@@ -246,33 +246,29 @@ public class ExcelTool {
                     }
                 }
 
-                if(sheet  == null) {
+                if (sheet == null) {
                     sheet = wb.createSheet(sheetName);
                 }
-            } finally {
-                if (preWorkbookForAppend != null) {
-                    preWorkbookForAppend.close();
-                }
             }
-
             return;
         }
 
         // if use file instread of streaming, will throw an exception, TODO check why
-        InputStream inp = new FileInputStream(fileName);
-        wb = WorkbookFactory.create(inp, password);
-        sheet = wb.getSheet(sheetName);
-        if (sheet != null) {
-            if (appendSheet) {
-                if (sheet.getLastRowNum() != 0 || sheet.getRow(0) != null) {
-                    curY = sheet.getLastRowNum() + 1;
+        try (InputStream inp = new FileInputStream(fileName)) {
+            wb = WorkbookFactory.create(inp, password);
+            sheet = wb.getSheet(sheetName);
+            if (sheet != null) {
+                if (appendSheet) {
+                    if (sheet.getLastRowNum() != 0 || sheet.getRow(0) != null) {
+                        curY = sheet.getLastRowNum() + 1;
+                    }
+                } else {
+                    wb.removeSheetAt(wb.getSheetIndex(sheetName));
+                    sheet = wb.createSheet(sheetName);
                 }
             } else {
-                wb.removeSheetAt(wb.getSheetIndex(sheetName));
                 sheet = wb.createSheet(sheetName);
             }
-        } else {
-            sheet = wb.createSheet(sheetName);
         }
     }
 
@@ -286,9 +282,10 @@ public class ExcelTool {
 
     private void initPreXlsx(String fileName) throws Exception {
         // if use file instread of streaming, will throw an exception, TODO check why
-        InputStream preIns = new FileInputStream(fileName);
-        preWb = WorkbookFactory.create(preIns, password);
-        preSheet = preWb.getSheet(sheetName);
+        try (InputStream preIns = new FileInputStream(fileName)) {
+            preWb = WorkbookFactory.create(preIns, password);
+            preSheet = preWb.getSheet(sheetName);
+        }
     }
 
     public void setFont(String fontName) {
@@ -522,16 +519,23 @@ public class ExcelTool {
     public void writeExcel(OutputStream outputStream) throws Exception {
         try {
             wb.write(outputStream);
-            wb.close();
-            if (preWb != null) {
-                preWb.close();
-            }
         } finally {
-            if (existedOriginToClone != null) {
-                existedOriginToClone = null;
-            }
-            if (outputStream != null) {
-                outputStream.close();
+            try {
+                wb.close();
+            } finally {
+                try {
+                    if (preWb != null) {
+                        preWb.close();
+                    }
+                } finally {
+                    // close at the beginning to avoid additional try-finally block
+                    if (existedOriginToClone != null) {
+                        existedOriginToClone = null;
+                    }
+                    if (outputStream != null) {
+                        outputStream.close();
+                    }
+                }
             }
         }
     }
@@ -560,12 +564,15 @@ public class ExcelTool {
                 fs.writeFilesystem(fileOutput);
             }
         } finally {
-            if(existedOriginToClone!=null) {
-                existedOriginToClone = null;
-            }
-            wb.close();
-            if(preWb != null){
-                preWb.close();
+            try {
+                wb.close();
+            } finally {
+                if (existedOriginToClone != null) {
+                    existedOriginToClone = null;
+                }
+                if (preWb != null) {
+                    preWb.close();
+                }
             }
         }
     }
