@@ -820,12 +820,12 @@ if(("false").equals(ElementParameterParser.getValue(node,"__CSV_OPTION__"))) {
                                 fileToDelete_<%=cid%>.delete();
                             }
                             <%}%>
-                            if (resourceMap.get("outWriter_for_" + <%=fileName %>) == null) {
+                            if (resourceMap.get("outWriter_for_" + (<%=fileName %>)) == null) {
                                 out<%=cid%> = new routines.system.BufferedOutput(new java.io.OutputStreamWriter(
                                     new java.io.FileOutputStream(fileName_<%=cid%>, <%=isAppend%>), <%=encoding%>));
-                                resourceMap.put("outWriter_for_" + <%=fileName %>, out<%=cid%>);
+                                resourceMap.put("outWriter_for_" + (<%=fileName %>), out<%=cid%>);
                             } else {
-                                out<%=cid%> = (java.io.Writer) resourceMap.get("outWriter_for_" + <%=fileName %>);
+                                out<%=cid%> = (java.io.Writer) resourceMap.get("outWriter_for_" + (<%=fileName %>));
                             }
                             java.io.StringWriter strWriter<%=cid%> = new java.io.StringWriter();
                             CsvWriter<%=cid%> = new com.talend.csv.CSVWriter(strWriter<%=cid%>);
