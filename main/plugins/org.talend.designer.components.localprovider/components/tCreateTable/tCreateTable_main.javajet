@@ -98,6 +98,7 @@ abstract class Manager {
     public String closeConnection() {
         StringBuilder javaCode = new StringBuilder();
         javaCode.append("if(conn_" + cid + " != null && !conn_" + cid + ".isClosed()) {\r\n");
+        javaCode.append("conn_" + cid + ".commit();\r\n");
         javaCode.append("conn_" + cid + ".close();\r\n");
         javaCode.append("}\r\n");
         return javaCode.toString();
@@ -596,6 +597,7 @@ class HSQLDBManager extends Manager {
         javaCode.append("if(conn_" + cid + " != null && !conn_" + cid + ".isClosed()) {\r\n");
         javaCode.append("java.sql.Statement stmtClose_" + cid + " = conn_" + cid + ".createStatement();\r\n");
         javaCode.append("stmtClose_" + cid + ".execute(\"SHUTDOWN\");\r\n");
+        javaCode.append("conn_" + cid + ".commit();\r\n");
         javaCode.append("conn_" + cid + ".close();\r\n");
         javaCode.append("}\r\n");
         return javaCode.toString();
@@ -2690,10 +2692,15 @@ if(columnList != null && columnList.size() > 0) {
                 <%
             }
         }
-        log4jCodeGenerateUtil.close_begin();
+        if(!useExistingConnection) {
+        	log4jCodeGenerateUtil.close_begin();
+        }
         %>
         <%=manager.closeConnection()%>
-        <%log4jCodeGenerateUtil.close_end();%>
+        <%
+        if(!useExistingConnection) {
+        	log4jCodeGenerateUtil.close_end();
+        }%>
         globalMap.put("<%=cid%>_QUERY", "<%=manager.getCreateTableSQL(columnList)%>");        
     } catch(java.lang.Exception e) {
         globalMap.put("<%=cid%>_ERROR_MESSAGE",e.getMessage());
