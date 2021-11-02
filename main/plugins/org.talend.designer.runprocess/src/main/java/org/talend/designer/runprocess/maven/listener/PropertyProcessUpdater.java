@@ -42,6 +42,9 @@ public class PropertyProcessUpdater {
     }
 
     public static void updateRouteCode(String originalObjectName) {
+        if (ERepositoryObjectType.PROCESS_ROUTE == null) {
+            return;
+        }
         RepositoryNode repNode =
                 ProjectRepositoryNode.getInstance().getRootRepositoryNode(ERepositoryObjectType.PROCESS_ROUTE);
 

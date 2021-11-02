@@ -27538,10 +27538,10 @@
                 <IMPORT NAME="axis2-transport-http" MODULE="axis2-transport-http-1.6.3.jar" MVN="mvn:org.apache.axis2/axis2-transport-http/1.6.3" REQUIRED_IF="((AUTH_TYPE == 'ON_PREMISE') AND (MS_CRM_VERSION == 'CRM_2011')) OR (API_VERSION=='API_2007')"/>
                 <IMPORT NAME="axis2-transport-local" MODULE="axis2-transport-local-1.6.3.jar" MVN="mvn:org.apache.axis2/axis2-transport-local/1.6.3" REQUIRED_IF="((AUTH_TYPE == 'ON_PREMISE') AND (MS_CRM_VERSION == 'CRM_2011')) OR (API_VERSION=='API_2007')"/>
                 <IMPORT NAME="commons-codec-1.14" MODULE="commons-codec-1.14.jar" MVN="mvn:commons-codec/commons-codec/1.14" REQUIRED_IF="((AUTH_TYPE == 'ON_PREMISE') AND (MS_CRM_VERSION == 'CRM_2011')) OR (API_VERSION=='API_2007')"/>
-                <IMPORT NAME="commons-httpclient" MODULE="commons-httpclient-3.1.jar" MVN="mvn:commons-httpclient/commons-httpclient/3.1"  UrlPath="platform:/plugin/org.talend.libraries.apache.http/lib/commons-httpclient-3.1.jar" REQUIRED_IF="((AUTH_TYPE == 'ON_PREMISE') AND (MS_CRM_VERSION == 'CRM_2011')) OR (API_VERSION=='API_2007')"/>
+                <IMPORT NAME="commons-httpclient" MODULE="commons-httpclient-3.1.jar" MVN="mvn:commons-httpclient/commons-httpclient/3.1" REQUIRED_IF="((AUTH_TYPE == 'ON_PREMISE') AND (MS_CRM_VERSION == 'CRM_2011')) OR (API_VERSION=='API_2007')"/>
                 <IMPORT NAME="commons-logging" MODULE="commons-logging-1.1.1.jar" MVN="mvn:org.talend.libraries/commons-logging-1.1.1/6.0.0"  UrlPath="platform:/base/plugins/org.apache.commons.logging_1.1.1.v201101211721.jar" REQUIRED_IF="((AUTH_TYPE == 'ON_PREMISE') AND (MS_CRM_VERSION == 'CRM_2011')) OR (API_VERSION=='API_2007')"/>
-                <IMPORT NAME="httpcore" MODULE="httpcore-4.2.1.jar" MVN="mvn:org.talend.libraries/httpcore-4.2.1/6.0.0"  UrlPath="platform:/plugin/org.talend.libraries.apache.http/lib/httpcore-4.2.1.jar" REQUIRED_IF="((AUTH_TYPE == 'ON_PREMISE') AND (MS_CRM_VERSION == 'CRM_2011')) OR (API_VERSION=='API_2007')"/>
-                <IMPORT NAME="mail" MODULE="mail-1.4.7.jar" MVN="mvn:javax.mail/mail/1.4.7" REQUIRED_IF="((AUTH_TYPE == 'ON_PREMISE') AND (MS_CRM_VERSION == 'CRM_2011')) OR (API_VERSION=='API_2007')"/>
+                <IMPORT NAME="httpcore" MODULE="httpcore-4.2.1.jar" MVN="mvn:org.apache.httpcomponents/httpcore/4.2.1" REQUIRED_IF="((AUTH_TYPE == 'ON_PREMISE') AND (MS_CRM_VERSION == 'CRM_2011')) OR (API_VERSION=='API_2007')"/>
+                <IMPORT NAME="mail" MODULE="javax.mail-1.6.2.jar" MVN="mvn:com.sun.mail/javax.mail/1.6.2" REQUIRED_IF="((AUTH_TYPE == 'ON_PREMISE') AND (MS_CRM_VERSION == 'CRM_2011')) OR (API_VERSION=='API_2007')"/>
                 <IMPORT NAME="neethi" MODULE="neethi-3.0.1.jar" MVN="mvn:org.talend.libraries/neethi-3.0.1/6.0.0"  UrlPath="platform:/plugin/org.talend.libraries.apache.axis2/lib/neethi-3.0.1.jar" REQUIRED_IF="((AUTH_TYPE == 'ON_PREMISE') AND (MS_CRM_VERSION == 'CRM_2011')) OR (API_VERSION=='API_2007')"/>
                 <IMPORT NAME="WSDL4J-1_6_3" MODULE="wsdl4j-1.6.3.jar" MVN="mvn:wsdl4j/wsdl4j/1.6.3"  BundleID="org.apache.servicemix.bundles.wsdl4j" REQUIRED_IF="((AUTH_TYPE == 'ON_PREMISE') AND (MS_CRM_VERSION == 'CRM_2011')) OR (API_VERSION=='API_2007')"/>
                 <IMPORT NAME="xmlbeans" MODULE="xmlbeans-2.3.0.jar" MVN="mvn:org.talend.libraries/xmlbeans-2.3.0/6.0.0"  UrlPath="platform:/plugin/org.talend.libraries.apache.xml/lib/xmlbeans-2.3.0.jar" REQUIRED_IF="((AUTH_TYPE == 'ON_PREMISE') AND (MS_CRM_VERSION == 'CRM_2011')) OR (API_VERSION=='API_2007')"/>
@@ -27558,7 +27558,7 @@
                 <IMPORT NAME="jcifs" MODULE="jcifs-1.3.0.jar" MVN="mvn:org.talend.libraries/jcifs-1.3.0/6.0.0"  REQUIRED_IF="((AUTH_TYPE == 'ON_PREMISE') AND (MS_CRM_VERSION == 'CRM_2011')) OR (API_VERSION=='API_2007')" />
                 <!-- 2011 -->
                 <!-- crm client -->
-                <IMPORT NAME="talend-mscrm" MODULE="talend-mscrm-3.8-20210707.jar" MVN="mvn:org.talend.components/talend-mscrm/3.8-20210707" REQUIRED_IF="(((AUTH_TYPE=='ONLINE') AND (API_VERSION=='API_2011' OR API_VERSION =='API_2016_ODATA' OR API_VERSION =='API_2018_ODATA')) OR ((AUTH_TYPE=='ON_PREMISE') AND (MS_CRM_VERSION == 'CRM_2016' OR MS_CRM_VERSION == 'CRM_2018')))" />
+                <IMPORT NAME="talend-mscrm" MODULE="talend-mscrm-3.9-20210713.jar" MVN="mvn:org.talend.components/talend-mscrm/3.9-20210713" REQUIRED_IF="(((AUTH_TYPE=='ONLINE') AND (API_VERSION=='API_2011' OR API_VERSION =='API_2016_ODATA' OR API_VERSION =='API_2018_ODATA')) OR ((AUTH_TYPE=='ON_PREMISE') AND (MS_CRM_VERSION == 'CRM_2016' OR MS_CRM_VERSION == 'CRM_2018')))" />
                 <!-- axis2 1.7.4 -->
                 <IMPORT NAME="activation-1.1" MODULE="activation-1.1.jar" MVN="mvn:org.talend.libraries/activation-1.1/6.0.0"  UrlPath="platform:/plugin/org.talend.libraries.apache.axis2/lib/activation-1.1.jar" REQUIRED_IF="(AUTH_TYPE=='ONLINE') AND (API_VERSION=='API_2011')" />
                 <IMPORT NAME="axiom-api-1.2.20" MODULE="axiom-api-1.2.20.jar" MVN="mvn:org.talend.libraries/axiom-api-1.2.20/6.0.0"  REQUIRED_IF="(AUTH_TYPE=='ONLINE') AND (API_VERSION=='API_2011')" />
@@ -27576,7 +27576,7 @@
                 <IMPORT NAME="wstx-asl-3.2.9" MODULE="wstx-asl-3.2.9.jar" MVN="mvn:org.talend.libraries/wstx-asl-3.2.9/6.0.0"  UrlPath="platform:/plugin/org.talend.libraries.apache.axis2/lib/wstx-asl-3.2.9.jar" REQUIRED_IF="(AUTH_TYPE=='ONLINE') AND (API_VERSION=='API_2011')" />
                 <IMPORT NAME="xmlbeans-2.6.0" MODULE="xmlbeans-2.6.0.jar" MVN="mvn:org.talend.libraries/xmlbeans-2.6.0/6.0.0"  UrlPath="platform:/plugin/org.talend.libraries.apache.xml/lib/xmlbeans-2.6.0.jar" REQUIRED_IF="(AUTH_TYPE=='ONLINE') AND (API_VERSION=='API_2011')" />
                 <IMPORT NAME="xmlschema-core-2.2.1" MODULE="xmlschema-core-2.2.1.jar" MVN="mvn:org.apache.ws.xmlschema/xmlschema-core/2.2.1" REQUIRED_IF="(AUTH_TYPE=='ONLINE') AND (API_VERSION=='API_2011')"/>
-                <IMPORT NAME="commons-httpclient-3.1" MODULE="commons-httpclient-3.1.jar" MVN="mvn:commons-httpclient/commons-httpclient/3.1"  UrlPath="platform:/plugin/org.talend.libraries.apache.http/lib/commons-httpclient-3.1.jar" REQUIRED_IF="(AUTH_TYPE=='ONLINE') AND (API_VERSION=='API_2011')"/>
+                <IMPORT NAME="commons-httpclient-3.1" MODULE="commons-httpclient-3.1.jar" MVN="mvn:commons-httpclient/commons-httpclient/3.1" REQUIRED_IF="(AUTH_TYPE=='ONLINE') AND (API_VERSION=='API_2011')"/>
                 <IMPORT NAME="commons-fileupload-1.3.1" MODULE="commons-fileupload-1.3.1.jar" MVN="mvn:org.talend.libraries/commons-fileupload-1.3.1/6.0.0"  REQUIRED_IF="(AUTH_TYPE=='ONLINE') AND (API_VERSION=='API_2011')" />
                 <IMPORT NAME="addressing-1.6.2" MODULE="addressing-1.6.2.jar" MVN="mvn:org.talend.libraries/addressing-1.6.2/6.0.0"  UrlPath="platform:/plugin/org.talend.libraries.apache.axis2/lib/addressing-1.6.2.jar" REQUIRED_IF="(AUTH_TYPE=='ONLINE') AND (API_VERSION=='API_2011')" />
                 <IMPORT NAME="addressing" MODULE="addressing-1.6.2.mar" MVN="mvn:org.talend.libraries/addressing-1.6.2/6.0.0"  UrlPath="platform:/plugin/org.talend.libraries.apache.axis2/lib/addressing-1.6.2.mar" REQUIRED_IF="(AUTH_TYPE=='ONLINE') AND (API_VERSION=='API_2011')" />
@@ -27804,9 +27804,9 @@
                 MVN="mvn:org.talend.libraries/aalto-xml-0.9.10/6.4.0"
                 REQUIRED_IF="(((AUTH_TYPE=='ONLINE') AND (API_VERSION=='API_2011' OR API_VERSION=='API_2016_ODATA' OR API_VERSION=='API_2018_ODATA')) OR ((AUTH_TYPE=='ON_PREMISE') AND (MS_CRM_VERSION == 'CRM_2016' OR MS_CRM_VERSION == 'CRM_2018')))" />
             <IMPORT
-                NAME="adal4j-1.1.1-20191012"
-                MODULE="adal4j-1.1.1-20191012.jar"
-                MVN="mvn:com.microsoft.azure/adal4j/1.1.1-20191012"
+                NAME="adal4j-1.6.4-20210713"
+                MODULE="adal4j-1.6.4-20210713.jar"
+                MVN="mvn:com.microsoft.azure/adal4j/1.6.4-20210713"
                 REQUIRED_IF="(((AUTH_TYPE=='ONLINE') AND (API_VERSION=='API_2011' OR API_VERSION=='API_2016_ODATA' OR API_VERSION=='API_2018_ODATA')) OR ((AUTH_TYPE=='ON_PREMISE') AND (MS_CRM_VERSION == 'CRM_2016' OR MS_CRM_VERSION == 'CRM_2018')))" />
             <IMPORT
                 NAME="commons-codec-1.14"
@@ -27815,9 +27815,8 @@
                 REQUIRED_IF="(((AUTH_TYPE=='ONLINE') AND (API_VERSION=='API_2011' OR API_VERSION=='API_2016_ODATA' OR API_VERSION=='API_2018_ODATA')) OR ((AUTH_TYPE=='ON_PREMISE') AND (MS_CRM_VERSION == 'CRM_2016' OR MS_CRM_VERSION == 'CRM_2018')))" />
             <IMPORT
                 NAME="apache-commons-io"
-                MODULE="commons-io-2.4.jar"
-                MVN="mvn:commons-io/commons-io/2.4"
-                UrlPath="platform:/plugin/org.talend.libraries.apache.common/lib/commons-io-2.4.jar"
+                MODULE="commons-io-2.8.0.jar"
+                MVN="mvn:commons-io/commons-io/2.8.0"
                 REQUIRED_IF="(((AUTH_TYPE=='ONLINE') AND (API_VERSION=='API_2011' OR API_VERSION=='API_2016_ODATA' OR API_VERSION=='API_2018_ODATA')) OR ((AUTH_TYPE=='ON_PREMISE') AND (MS_CRM_VERSION == 'CRM_2016' OR MS_CRM_VERSION == 'CRM_2018')))" />
             <IMPORT
                 NAME="commons-lang3-3.10.jar"
@@ -27825,9 +27824,9 @@
                 MVN="mvn:org.apache.commons/commons-lang3/3.10"
                 REQUIRED_IF="(((AUTH_TYPE=='ONLINE') AND (API_VERSION=='API_2011' OR API_VERSION=='API_2016_ODATA' OR API_VERSION=='API_2018_ODATA')) OR ((AUTH_TYPE=='ON_PREMISE') AND (MS_CRM_VERSION == 'CRM_2016' OR MS_CRM_VERSION == 'CRM_2018')))" />
             <IMPORT
-                NAME="gson-2.3.1"
-                MODULE="gson-2.3.1.jar"
-                MVN="mvn:org.talend.libraries/gson-2.3.1/6.1.0"
+                NAME="gson-2.8.6"
+                MODULE="gson-2.8.6.jar"
+                MVN="mvn:com.google.code.gson/gson/2.8.6"
                 REQUIRED_IF="(((AUTH_TYPE=='ONLINE') AND (API_VERSION=='API_2011' OR API_VERSION=='API_2016_ODATA' OR API_VERSION=='API_2018_ODATA')) OR ((AUTH_TYPE=='ON_PREMISE') AND (MS_CRM_VERSION == 'CRM_2016' OR MS_CRM_VERSION == 'CRM_2018')))" />
             <IMPORT
                 NAME="commons-logging"
@@ -27871,19 +27870,19 @@
                 MVN="mvn:net.minidev/accessors-smart/2.4.7"
                 REQUIRED_IF="(((AUTH_TYPE=='ONLINE') AND (API_VERSION=='API_2011' OR API_VERSION=='API_2016_ODATA' OR API_VERSION=='API_2018_ODATA')) OR ((AUTH_TYPE=='ON_PREMISE') AND (MS_CRM_VERSION == 'CRM_2016' OR MS_CRM_VERSION == 'CRM_2018')))" />
             <IMPORT
-                NAME="mail-1.4.7"
-                MODULE="mail-1.4.7.jar"
-                MVN="mvn:javax.mail/mail/1.4.7"
+                NAME="javax.mail"
+                MODULE="javax.mail-1.6.2.jar"
+                MVN="mvn:com.sun.mail/javax.mail/1.6.2"
                 REQUIRED_IF="(((AUTH_TYPE=='ONLINE') AND (API_VERSION=='API_2011' OR API_VERSION=='API_2016_ODATA' OR API_VERSION=='API_2018_ODATA')) OR ((AUTH_TYPE=='ON_PREMISE') AND (MS_CRM_VERSION == 'CRM_2016' OR MS_CRM_VERSION == 'CRM_2018')))" />
             <IMPORT
-                NAME="nimbus-jose-jwt-3.1.2"
-                MODULE="nimbus-jose-jwt-3.1.2.jar"
-                MVN="mvn:org.talend.libraries/nimbus-jose-jwt-3.1.2/6.4.0"
+                NAME="nimbus-jose-jwt"
+                MODULE="nimbus-jose-jwt-8.11.jar"
+                MVN="mvn:com.nimbusds/nimbus-jose-jwt/8.11"
                 REQUIRED_IF="(((AUTH_TYPE=='ONLINE') AND (API_VERSION=='API_2011' OR API_VERSION=='API_2016_ODATA' OR API_VERSION=='API_2018_ODATA')) OR ((AUTH_TYPE=='ON_PREMISE') AND (MS_CRM_VERSION == 'CRM_2016' OR MS_CRM_VERSION == 'CRM_2018')))" />
             <IMPORT
-                NAME="oauth2-oidc-sdk-4.5"
-                MODULE="oauth2-oidc-sdk-4.5.jar"
-                MVN="mvn:org.talend.libraries/oauth2-oidc-sdk-4.5/6.4.0"
+                NAME="oauth2-oidc-sdk"
+                MODULE="oauth2-oidc-sdk-6.5.jar"
+                MVN="mvn:com.nimbusds/oauth2-oidc-sdk/6.5"
                 REQUIRED_IF="(((AUTH_TYPE=='ONLINE') AND (API_VERSION=='API_2011' OR API_VERSION=='API_2016_ODATA' OR API_VERSION=='API_2018_ODATA')) OR ((AUTH_TYPE=='ON_PREMISE') AND (MS_CRM_VERSION == 'CRM_2016' OR MS_CRM_VERSION == 'CRM_2018')))" />
             <IMPORT
                 NAME="odata-client-core-4.7.1"
@@ -27906,9 +27905,9 @@
                 MVN="mvn:org.apache.olingo/odata-commons-core/4.7.1"
                 REQUIRED_IF="(((AUTH_TYPE=='ONLINE') AND (API_VERSION=='API_2011' OR API_VERSION=='API_2016_ODATA' OR API_VERSION=='API_2018_ODATA')) OR ((AUTH_TYPE=='ON_PREMISE') AND (MS_CRM_VERSION == 'CRM_2016' OR MS_CRM_VERSION == 'CRM_2018')))" />
             <IMPORT
-                NAME="slf4j-api-1.7.12"
-                MODULE="slf4j-api-1.7.12.jar"
-                MVN="mvn:org.talend.libraries/slf4j-api-1.7.12/6.0.0"
+                NAME="slf4j-api-1.7.25.jar"
+                MODULE="slf4j-api-1.7.25.jar"
+                MVN="mvn:org.slf4j/slf4j-api/1.7.25"
                 REQUIRED_IF="(((AUTH_TYPE=='ONLINE') AND (API_VERSION=='API_2011' OR API_VERSION=='API_2016_ODATA' OR API_VERSION=='API_2018_ODATA')) OR ((AUTH_TYPE=='ON_PREMISE') AND (MS_CRM_VERSION == 'CRM_2016' OR MS_CRM_VERSION == 'CRM_2018')))" />
             <IMPORT
                 NAME="slf4j-simple-1.7.2"

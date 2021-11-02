@@ -29,12 +29,7 @@
                 <artifactItem>
                   <groupId>org.talend.libraries</groupId>
                   <artifactId>talend-codegen-utils</artifactId>
-                  <version>0.30.0</version>
-                </artifactItem>
-                <artifactItem>
-                  <groupId>org.talend.libraries</groupId>
-                  <artifactId>checkArchive-1.1-20190917</artifactId>
-                  <version>6.0.0</version>
+                  <version>0.31.0</version>
                 </artifactItem>
               </artifactItems>
             </configuration>
@@ -51,7 +46,12 @@
                 <artifactItem>
                   <groupId>org.talend.components</groupId>
                   <artifactId>talendzip</artifactId>
-                  <version>1.1-20201120</version>
+                  <version>1.2-20210901</version>
+                </artifactItem>
+                <artifactItem>
+                  <groupId>org.talend.components</groupId>
+                  <artifactId>checkArchive</artifactId>
+                  <version>1.2-20210901</version>
                 </artifactItem>
                 <artifactItem>
                   <groupId>org.talend.components</groupId>

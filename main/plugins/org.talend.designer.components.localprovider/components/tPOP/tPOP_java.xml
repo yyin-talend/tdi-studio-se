@@ -178,7 +178,7 @@
 
   <CODEGENERATION>
     <IMPORTS>
-      <IMPORT NAME="JavaMail" MODULE="mail.jar" MVN="mvn:org.talend.libraries/mail/6.0.0"  UrlPath="platform:/plugin/org.talend.libraries.apache.axis2/lib/mail.jar" REQUIRED="true" />
+      <IMPORT NAME="JavaMail" MODULE="javax.mail-1.6.2.jar" MVN="mvn:com.sun.mail/javax.mail/1.6.2" REQUIRED="true" />
       <IMPORT NAME="JAF" MODULE="activation.jar" MVN="mvn:org.talend.libraries/activation/6.0.0"  UrlPath="platform:/plugin/org.talend.libraries.apache.axis2/lib/activation.jar" REQUIRED="true" />
     </IMPORTS>
   </CODEGENERATION>

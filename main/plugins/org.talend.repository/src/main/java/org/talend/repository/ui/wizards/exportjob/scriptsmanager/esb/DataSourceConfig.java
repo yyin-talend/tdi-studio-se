@@ -40,7 +40,7 @@ import org.talend.utils.json.JSONObject;
  */
 public class DataSourceConfig {
 
-    private static final String TRUN_JOB = "tRunJob"; //$NON-NLS-1$
+	private static final String TRUN_JOB = "tRunJob"; //$NON-NLS-1$
 
     private static final Set<String> PROCESSES_SUB_JOB = new HashSet<>();
 
@@ -72,11 +72,36 @@ public class DataSourceConfig {
 //            getDatasourceAliasesFrom(node, aliases, "SPECIFY_DATASOURCE_ALIAS", "DATASOURCE_ALIAS");
 //            getDatasourceAliasesFrom(node, aliases, "useDataSource", "dataSource");
 //        }
-
+        
+        getJobletAliases(processItem, aliases);
         getAliases(processItem.getId(), aliases);
         return aliases;
     }
+    
+    private static void getJobletAliases(IProcess process, Collection<String> ds) {
+        String dataSourceAlias = null;
+        boolean specifyDataSourceAlias = false;
 
+        for (Iterator<?> e = process.getGeneratingNodes().iterator(); e.hasNext();) {
+            INode node = (INode) e.next();
+
+            for (Iterator<?> iterator = node.getElementParameters().iterator(); iterator.hasNext();) {
+            	IElementParameter elementParameter = (IElementParameter)iterator.next();
+                if (StringUtils.equals(elementParameter.getName(), "SPECIFY_DATASOURCE_ALIAS")) {
+                    if ((boolean) elementParameter.getValue())
+                        specifyDataSourceAlias = true;
+                } else if (StringUtils.equals(elementParameter.getName(), "DATASOURCE_ALIAS")) {
+                    dataSourceAlias = (String) elementParameter.getValue();
+                }
+            }
+
+            if (specifyDataSourceAlias) {
+                ds.add(dataSourceAlias);
+                specifyDataSourceAlias = false;
+            }
+        }
+    }
+    
     /**
      * DOC sunchaoqun Comment method "getAliases".
      * 
@@ -134,7 +159,7 @@ public class DataSourceConfig {
                         value = TalendQuoteUtils.removeQuotes(result.trim());
                     }
 
-                    if (useDS && StringUtils.isNotBlank(value)) {
+                    if (useDS && StringUtils.isNotBlank(value) && StringUtils.isNotBlank(value.replace("\"", ""))) {
                         ds.add(value);
                     }
                 }

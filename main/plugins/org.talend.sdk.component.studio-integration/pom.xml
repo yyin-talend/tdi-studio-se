@@ -14,7 +14,7 @@
   <description>Studio integration of the Talend Component Kit framework.</description>
 
   <properties>
-    <component-runtime.version>1.34.1</component-runtime.version>
+    <component-runtime.version>1.37.0</component-runtime.version>
     <commons-lang3.version>3.11</commons-lang3.version>
     <mockito.version>2.23.0</mockito.version>
     <oro.version>2.0.8</oro.version>
@@ -24,8 +24,8 @@
     <commons-lang.version>2.6</commons-lang.version>
     <junit5.version>5.7.0</junit5.version>
     <commons-cli.version>1.4</commons-cli.version>
-    <slf4j.version>1.7.28</slf4j.version>
-    <xbean.version>4.18</xbean.version>
+    <slf4j.version>1.7.32</slf4j.version>
+    <xbean.version>4.20</xbean.version>
   </properties>
 
   <dependencyManagement>

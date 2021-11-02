@@ -22,15 +22,16 @@ imports="
 	boolean usePrepareStatement = "true".equals(ElementParameterParser.getValue(node,"__USE_PREPAREDSTATEMENT__"));
 	dbRowBeginUtil.beforeComponentProcess(node);
 	log4jCodeGenerateUtil = dbRowBeginUtil.log4jCodeGenerateUtil;
+
 %>
 	java.sql.Connection conn_<%=cid%> = null;
 	String query_<%=cid %> = "";
 	boolean whetherReject_<%=cid%> = false;
-<%
-    dbRowBeginUtil.createConnection(node);
-%>
-    resourceMap.put("conn_<%=cid%>", conn_<%=cid%>);
-<%
+    <%
+        dbRowBeginUtil.createConnection(node);
+    %>
+        resourceMap.put("conn_<%=cid%>", conn_<%=cid%>);
+    <%
     dbRowBeginUtil.setCommit(node);
 
     if (usePrepareStatement ) {
