@@ -2,7 +2,7 @@
 <feature
       id="org.talend.studio.components.tcompv0.googledrive.feature"
       label="Google Drive"
-      version="8.0.1">
+      version="8.0.1.qualifier">
 
    <description url="http://www.example.com/description">
       Google drive component

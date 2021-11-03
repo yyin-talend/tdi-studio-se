@@ -2,7 +2,7 @@
 <feature
       id="org.talend.studio.components.tcompv0.netsuite.feature"
       label="Netsuite"
-      version="8.0.1">
+      version="8.0.1.qualifier">
 
    <description url="http://www.example.com/description">
       Netsuite
