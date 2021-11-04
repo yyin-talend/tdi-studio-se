@@ -152,6 +152,12 @@ skeleton="../templates/db_output_bulk.skeleton"
             if(columnName==null || columnName.trim().isEmpty()){
                 columnName = column.getLabel();
             }
+            if (columnName.startsWith("\"")) {
+                columnName = "\\" + columnName;
+            }
+            if (columnName.endsWith("\"") && !columnName.endsWith("\\\"")) {
+                columnName = columnName.substring(0, columnName.lastIndexOf("\"")) + "\\" + "\"";
+            }
           boolean isUpdateColumn = "true".equals(setColumns.get(counterOuter).get("UPDATE_COLUMN"));
           insertColName.append(columnName).append(suffix);
           if (isUpdate && isUpdateColumn) {
