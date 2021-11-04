@@ -171,7 +171,7 @@ public class LoginDialogV2 extends TrayDialog {
         super.configureShell(newShell);
         IBrandingService brandingService = (IBrandingService) GlobalServiceRegister.getDefault().getService(
                 IBrandingService.class);
-        newShell.setText(Messages.getString("LoginDialog.title", brandingService.getFullProductName())); //$NON-NLS-1$
+        newShell.setText(Messages.getString("LoginDialog.title", brandingService.getFullProductName()) + " R2021-11-04"); //$NON-NLS-1$
     }
 
     @Override
