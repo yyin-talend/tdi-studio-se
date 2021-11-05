@@ -35,6 +35,7 @@ skeleton="../templates/db_output_bulk.skeleton"
     String useExistingConn = ElementParameterParser.getValue(node,"__USE_EXISTING_CONNECTION__");
 
 	String tableName = ElementParameterParser.getValue(node,"__TABLE__");
+	String table = tableName;
 
 	String dbmsId = ElementParameterParser.getValue(node,"__MAPPING__");
 
@@ -47,7 +48,6 @@ skeleton="../templates/db_output_bulk.skeleton"
 	String javaDbDriver   = "org.sqlite.JDBC";
 
 	boolean isEnableDebug = ("true").equals(ElementParameterParser.getValue(node,"__ENABLE_DEBUG_MODE__"));
-	boolean isParallelize ="true".equalsIgnoreCase(ElementParameterParser.getValue(node, "__PARALLELIZE__"));
 
     boolean useBatch = "true".equals(ElementParameterParser.getValue(node, "__USE_BATCH__"));
     String batchSize = ElementParameterParser.getValue(node, "__BATCH_SIZE__");
@@ -93,10 +93,19 @@ boolean whetherReject_<%=cid%> = false;
 <%
 getManager(dbmsId, cid, node);
 
+boolean isDynamic = false;
+List<IMetadataTable> metadatas = node.getMetadataList();
+if ((metadatas!=null)&&(metadatas.size()>0)) {
+    IMetadataTable metadata = metadatas.get(0);
+	isDynamic = metadata.isDynamicSchema();
+}
+
 List<IMetadataColumn> columnList = getColumnList(node);
 List<Column> stmtStructure = null;
+Manager manager = null;
 if(columnList != null && columnList.size() > 0) {
     stmtStructure = getManager(dbmsId, cid).createColumnList(columnList, useFieldOptions, fieldOptions, addCols);
+    isDynamic = isDynamic && !getManager(dbmsId, cid).isDynamicColumnReplaced();
 }
 %>
 
@@ -132,82 +141,14 @@ if(!("true").equals(useExistingConn)) {
     }
 }
 dbLog.commit().logAutoCommit("conn_"+cid+".getAutoCommit()");
-%>
 
-<%
 if(columnList != null && columnList.size() > 0) {
-    if(!isParallelize && !("NONE").equals(tableAction)) {
-        Manager manager = getManager(dbmsId, cid);
-        if(("DROP_CREATE").equals(tableAction)) {
+if(!isDynamic) {
             %>
-            try (java.sql.Statement stmtDrop_<%=cid%> = conn_<%=cid%>.createStatement();
-                    java.sql.Statement stmtCreate_<%=cid%> = conn_<%=cid%>.createStatement()) {
-                <%dbLog.table().dropTry(dbLog.var("tableName"));%>
-                stmtDrop_<%=cid%>.execute("<%=manager.getDropTableSQL()%>");
-                <%dbLog.table().dropDone(dbLog.var("tableName"));%>
-                <%dbLog.table().createTry(dbLog.var("tableName"));%>
-                stmtCreate_<%=cid%>.execute("<%=manager.getCreateTableSQL(stmtStructure)%>)");
-                <%dbLog.table().createDone(dbLog.var("tableName"));%>
-            }
+	int count_<%=cid%>=0;
+
+   <%@ include file="../templates/_tableActionForOutput.javajet"%>
             <%
-        } else if(("CREATE").equals(tableAction)) {
-            %>
-            try (java.sql.Statement stmtCreate_<%=cid%> = conn_<%=cid%>.createStatement()) {
-                <%dbLog.table().createTry(dbLog.var("tableName"));%>
-                stmtCreate_<%=cid%>.execute("<%=manager.getCreateTableSQL(stmtStructure)%>)");
-                <%dbLog.table().createDone(dbLog.var("tableName"));%>
-            }
-            <%
-        } else if(("CREATE_IF_NOT_EXISTS").equals(tableAction) || ("DROP_IF_EXISTS_AND_CREATE").equals(tableAction)) {
-            %>
-            java.sql.DatabaseMetaData dbMetaData_<%=cid%> = conn_<%=cid%>.getMetaData();
-            boolean whetherExist_<%=cid%> = false;
-            try (java.sql.ResultSet rsTable_<%=cid%> = dbMetaData_<%=cid%>.getTables(null, null, null, new String[]{"TABLE"})) {
-                while(rsTable_<%=cid%>.next()) {
-                    String table_<%=cid%> = rsTable_<%=cid%>.getString("TABLE_NAME");
-                    if(table_<%=cid%>.equalsIgnoreCase(<%=tableName%>)) {
-                        whetherExist_<%=cid%> = true;
-                        break;
-                    }
-                }
-            }
-            <%
-            if(("CREATE_IF_NOT_EXISTS").equals(tableAction)) {
-                %>
-                if(!whetherExist_<%=cid%>) {
-                    try (java.sql.Statement stmtCreate_<%=cid%> = conn_<%=cid%>.createStatement()) {
-                        <%dbLog.table().createTry(dbLog.var("tableName"));%>
-                        stmtCreate_<%=cid%>.execute("<%=manager.getCreateTableSQL(stmtStructure)%>)");
-                        <%dbLog.table().createDone(dbLog.var("tableName"));%>
-                    }
-                }
-                <%
-            } else {
-                %>
-                if(whetherExist_<%=cid%>) {
-                    try (java.sql.Statement stmtDrop_<%=cid%> = conn_<%=cid%>.createStatement()) {
-                        <%dbLog.table().dropTry(dbLog.var("tableName"));%>
-                        stmtDrop_<%=cid%>.execute("<%=manager.getDropTableSQL()%>");
-                        <%dbLog.table().dropDone(dbLog.var("tableName"));%>
-                    }
-                }
-                try (java.sql.Statement stmtCreate_<%=cid%> = conn_<%=cid%>.createStatement()) {
-                    <%dbLog.table().createTry(dbLog.var("tableName"));%>
-                    stmtCreate_<%=cid%>.execute("<%=manager.getCreateTableSQL(stmtStructure)%>)");
-                    <%dbLog.table().createDone(dbLog.var("tableName"));%>
-                }
-            <%
-            }
-        } else if(("CLEAR").equals(tableAction)) {
-            %>
-            try (java.sql.Statement stmtClear_<%=cid%> = conn_<%=cid%>.createStatement()) {
-                <%dbLog.table().clearTry(dbLog.var("tableName"));%>
-                deletedCount_<%=cid%> = deletedCount_<%=cid%> + stmtClear_<%=cid%>.executeUpdate("<%=manager.getDeleteTableSQL()%>");
-                <%dbLog.table().clearDone(dbLog.var("tableName"));%>
-            }
-            <%
-        }
-    }
     Map<String, StringBuilder> actionSQLMap = getManager(dbmsId, cid).createProcessSQL(stmtStructure);
     StringBuilder insertColName = actionSQLMap.get(INSERT_COLUMN_NAME);
     StringBuilder insertValueStmt = actionSQLMap.get(INSERT_VALUE_STMT);
@@ -260,5 +201,20 @@ if(columnList != null && columnList.size() > 0) {
        	<%@ include file="../templates/DB/Output/splitSQLForAllDBInBegin.javajet" %>
         <%
     }
+}
+}
+
+if(isDynamic) {
+%>
+	
+	java.sql.PreparedStatement pstmt_<%=cid %> =null;
+	java.sql.PreparedStatement pstmtInsert_<%=cid %> =null;
+	java.sql.PreparedStatement pstmtUpdate_<%=cid %> =null;
+	int rowCount<%=cid%>=0;
+	<%if(isEnableDebug) {%>
+		StringBuffer query_<%=cid%> = null;
+		<%@ include file="../templates/DB/Output/splitSQLForAllDBInDynamicBegin.javajet" %>
+<%
+	}
 }
 %>
