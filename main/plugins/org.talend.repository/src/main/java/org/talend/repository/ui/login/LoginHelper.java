@@ -67,6 +67,7 @@ import org.talend.core.repository.model.IRepositoryFactory;
 import org.talend.core.repository.model.ProxyRepositoryFactory;
 import org.talend.core.repository.model.RepositoryFactoryProvider;
 import org.talend.core.runtime.CoreRuntimePlugin;
+import org.talend.core.service.IStudioLiteP2Service;
 import org.talend.core.services.ICoreTisService;
 import org.talend.core.services.IGITProviderService;
 import org.talend.core.ui.branding.IBrandingConfiguration;
@@ -577,6 +578,10 @@ public class LoginHelper {
                 try {
                     factory.logOnProject(project, monitor);
                 } catch (LoginException e) {
+                    if (IStudioLiteP2Service.RESULT_CANCEL == e.getErrCode()) {
+                        CommonExceptionHandler.process(e);
+                        throw new InterruptedException(e.getMessage());
+                    }
                     throw new InvocationTargetException(e);
                 } catch (PersistenceException e) {
                     throw new InvocationTargetException(e);
