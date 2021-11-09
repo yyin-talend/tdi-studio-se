@@ -963,5 +963,11 @@
                 id="org.talend.designer.core.model.analysistask.UnresolvedRoutineDependencyAnalysisTask"
                 name="UnresolvedRoutineDependencyAnalysisTask">
           </analysisTask>
+          <analysisTask
+                class="org.talend.designer.core.model.analysistask.UnresolvedComponentsDependenciesAnalysisTask"
+                description="Check missing components dependencies"
+                id="org.talend.designer.core.model.analysistask.UnresolvedComponentsDependenciesAnalysisTask"
+                name="UnresolvedComponentsDependenciesAnalysisTask">
+          </analysisTask>
        </extension>
 </plugin>
