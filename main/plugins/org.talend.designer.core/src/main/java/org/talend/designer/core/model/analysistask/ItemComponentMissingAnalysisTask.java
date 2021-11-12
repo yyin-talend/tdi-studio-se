@@ -26,6 +26,7 @@ import org.talend.core.GlobalServiceRegister;
 import org.talend.core.model.components.ComponentCategory;
 import org.talend.core.model.components.IComponent;
 import org.talend.core.model.properties.Item;
+import org.talend.core.model.properties.JobletProcessItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.ui.ITestContainerCoreService;
 import org.talend.core.ui.component.ComponentsFactoryProvider;
@@ -49,7 +50,8 @@ public class ItemComponentMissingAnalysisTask extends AbstractItemAnalysisTask{
             return null;
         }
         List<AnalysisReportRecorder> recordList = new ArrayList<AnalysisReportRecorder>();
-        ComponentCategory componentCategory = ComponentCategory.getComponentCategoryFromItem(item);
+        boolean isJoblet = item instanceof JobletProcessItem;
+        ComponentCategory componentCategory = ComponentCategory.getComponentCategoryFromItem(item, isJoblet);
         ERepositoryObjectType itemType = ERepositoryObjectType.getItemType(item);
         if (ERepositoryObjectType.TEST_CONTAINER != null && ERepositoryObjectType.TEST_CONTAINER.equals(itemType)
                 && GlobalServiceRegister.getDefault().isServiceRegistered(ITestContainerCoreService.class)) {

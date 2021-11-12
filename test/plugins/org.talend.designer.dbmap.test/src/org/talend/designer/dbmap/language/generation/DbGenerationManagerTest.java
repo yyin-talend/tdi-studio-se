@@ -141,17 +141,68 @@ public class DbGenerationManagerTest extends DbGenerationManagerTestHelper {
         dbMapComponent4SubQuery = null;
         sourceComponent = null;
         targetComponent = null;
+        dbMapComponentDelimited = null;
     }
 
     @Test
     public void testInitExpression() {
     	checkValue("t1.\\\"id\\\"", extMapEntry);
-        
         ExternalDbMapEntry extMapEntry2 = new ExternalDbMapEntry("multiple", "t1.id + t1.name");
         tableEntries.add(extMapEntry2);
         checkValue("t1.\\\"id\\\" + t1.\\\"name\\\"", extMapEntry2);
         
         testWithQuote();
+    }
+    
+    @Test
+    public void testInitExpressionDelimitedIdentifiers() {
+        //when DelimitedIdentifiers true
+        dbManager.setUseDelimitedIdentifiers(true);
+        checkSnowFlakeValue("t1.\\\"id\\\"",extMapEntry);
+        checkMysqlValue("t1.`id`",extMapEntry);
+        //when DelimitedIdentifiers false
+        dbManager.setUseDelimitedIdentifiers(false);
+        checkSnowFlakeValue("t1.id",extMapEntry);
+        checkMysqlValue("t1.id",extMapEntry);
+    }
+    private void checkSnowFlakeValue(String expression, ExternalDbMapEntry entry) {
+        dbMapComponentDelimited = new DbMapComponent();
+        ElementParameter param = new ElementParameter(dbMapComponent);
+        param.setFieldType(EParameterFieldType.MAPPING_TYPE);
+        param.setName(EParameterName.MAPPING.getName());
+        param.setValue("snowflake_id");
+        ((List<IElementParameter>) dbMapComponentDelimited.getElementParameters()).add(param);
+        
+        List<IConnection> incomingConnections = new ArrayList<IConnection>();
+        String[] columns = new String[] { "id",  "name"};
+        String[] labels = new String[] { "id",  "name"};
+        incomingConnections.add(createConnection("t1", "t1", labels, columns));
+        dbMapComponentDelimited.setIncomingConnections(incomingConnections);
+
+        if (dbMapComponentDelimited.getElementParameters() == null) {
+            dbMapComponentDelimited.setElementParameters(Collections.EMPTY_LIST);
+        }
+        Assert.assertEquals(expression, dbManager.initExpression(dbMapComponentDelimited, entry));
+    }
+    
+    private void checkMysqlValue(String expression, ExternalDbMapEntry entry) {
+        dbMapComponentDelimited = new DbMapComponent();
+        ElementParameter param = new ElementParameter(dbMapComponent);
+        param.setFieldType(EParameterFieldType.MAPPING_TYPE);
+        param.setName(EParameterName.MAPPING.getName());
+        param.setValue("mysql_id");
+        ((List<IElementParameter>) dbMapComponentDelimited.getElementParameters()).add(param);
+        
+        List<IConnection> incomingConnections = new ArrayList<IConnection>();
+        String[] columns = new String[] { "id",  "name"};
+        String[] labels = new String[] { "id",  "name"};
+        incomingConnections.add(createConnection("t1", "t1", labels, columns));
+        dbMapComponentDelimited.setIncomingConnections(incomingConnections);
+
+        if (dbMapComponentDelimited.getElementParameters() == null) {
+            dbMapComponentDelimited.setElementParameters(Collections.EMPTY_LIST);
+        }
+        Assert.assertEquals(expression, dbManager.initExpression(dbMapComponentDelimited, entry));
     }
     
     @Test
@@ -1537,7 +1588,7 @@ public class DbGenerationManagerTest extends DbGenerationManagerTestHelper {
         //
         param = new ElementParameter(output);
         param.setName("USE_DIFFERENT_TABLE"); //$NON-NLS-1$
-        param.setValue("true"); //$NON-NLS-1$
+        param.setValue(true);
         paraList.add(param);
         //
         param = new ElementParameter(output);
@@ -1578,7 +1629,7 @@ public class DbGenerationManagerTest extends DbGenerationManagerTestHelper {
         lookupTableContext.setValue("lookupTable");
         lookupTableContext.setType("String");
         String query = dbManager.buildSqlSelect(dbMapComponent, schema + "." + outTable1);
-        String expectedQuery = "\"UPDATE dbo.tar\n" + "SET tarColumn = A.id,\n" + "tarColumn1 = A.name\n"
+        String expectedQuery = "\"UPDATE ABC\n" + "SET tarColumn = A.id,\n" + "tarColumn1 = A.name\n"
                 + "FROM\n \" +dbo+\".\"+src1+ \" A INNER JOIN  \" +dbo+\".\"+src2+ \" B " + "ON(" + "  B.id = A.id )\"";
         assertEquals(expectedQuery, query);
     }
@@ -1672,7 +1723,7 @@ public class DbGenerationManagerTest extends DbGenerationManagerTestHelper {
         //
         param = new ElementParameter(output);
         param.setName("USE_DIFFERENT_TABLE"); //$NON-NLS-1$
-        param.setValue("true"); //$NON-NLS-1$
+        param.setValue(true);
         paraList.add(param);
         //
         param = new ElementParameter(output);
@@ -1713,7 +1764,7 @@ public class DbGenerationManagerTest extends DbGenerationManagerTestHelper {
         lookupTableContext.setValue("lookupTable");
         lookupTableContext.setType("String");
         String query = dbManager.buildSqlSelect(dbMapComponent, schema + "." + outTable1);
-        String expectedQuery = "\"UPDATE dbo.tar\n" + "SET tarColumn = A.id,\n" + "tarColumn1 = A.name\n"
+        String expectedQuery = "\"UPDATE ABC A\n" + "SET tarColumn = A.id,\n" + "tarColumn1 = A.name\n"
                 + "FROM\n \" +dbo+\".\"+src1+ \" A INNER JOIN  \" +dbo+\".\"+src2+ \" B " + "ON(" + "  B.id = A.id )\"";
         assertEquals(expectedQuery, query);
     }
@@ -1807,7 +1858,7 @@ public class DbGenerationManagerTest extends DbGenerationManagerTestHelper {
         //
         param = new ElementParameter(output);
         param.setName("USE_DIFFERENT_TABLE"); //$NON-NLS-1$
-        param.setValue("false"); //$NON-NLS-1$
+        param.setValue(false);
         paraList.add(param);
         //
         param = new ElementParameter(output);

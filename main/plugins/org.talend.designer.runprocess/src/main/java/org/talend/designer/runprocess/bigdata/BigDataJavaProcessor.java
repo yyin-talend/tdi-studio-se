@@ -36,6 +36,8 @@ import org.talend.core.model.process.ProcessUtils;
 import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.model.properties.Property;
 import org.talend.core.model.repository.ERepositoryObjectType;
+import org.talend.core.runtime.maven.MavenArtifact;
+import org.talend.core.runtime.maven.MavenConstants;
 import org.talend.core.runtime.maven.MavenUrlHelper;
 import org.talend.core.runtime.process.ITalendProcessJavaProject;
 import org.talend.core.runtime.process.LastGenerationInfo;
@@ -43,7 +45,9 @@ import org.talend.core.runtime.process.TalendProcessOptionConstants;
 import org.talend.core.runtime.repository.build.IMavenPomCreator;
 import org.talend.designer.core.utils.BigDataJobUtil;
 import org.talend.designer.core.utils.JavaProcessUtil;
+import org.talend.designer.maven.model.TalendMavenConstants;
 import org.talend.designer.maven.tools.creator.CreateMavenJobPom;
+import org.talend.designer.maven.utils.PomIdsHelper;
 import org.talend.designer.maven.utils.PomUtil;
 import org.talend.designer.runprocess.IBigDataProcessor;
 import org.talend.designer.runprocess.ProcessorConstants;
@@ -284,22 +288,10 @@ public abstract class BigDataJavaProcessor extends MavenJavaProcessor implements
             }
         } else {
             if (needAllLibJars) {
-                // In a local mode,we must append the routines/beans/udfs jars which are located in the target
-                // directory.
-                ITalendProcessJavaProject routineProject = TalendJavaProjectManager
-                        .getTalendCodeJavaProject(ERepositoryObjectType.ROUTINES);
-                IFile routinesJar = routineProject.getTargetFolder().getFile(
-                        JavaUtils.ROUTINE_JAR_NAME + "-" + PomUtil.getDefaultMavenVersion() + FileExtensions.JAR_FILE_SUFFIX); //$NON-NLS-1$
-                libJars.append(routinesJar.getLocation().toPortableString() + ","); //$NON-NLS-1$
-
+                libJars.append(getCodesClassPath(ERepositoryObjectType.ROUTINES));
                 if (ProcessUtils.isRequiredBeans(process)) {
-                    ITalendProcessJavaProject beansProject = TalendJavaProjectManager
-                            .getTalendCodeJavaProject(ERepositoryObjectType.BEANS);
-                    IFile beansJar = beansProject.getTargetFolder().getFile(
-                            JavaUtils.BEANS_JAR_NAME + "-" + PomUtil.getDefaultMavenVersion() + FileExtensions.JAR_FILE_SUFFIX); //$NON-NLS-1$
-                    libJars.append(beansJar.getLocation().toPortableString() + ","); //$NON-NLS-1$
+                    libJars.append(getCodesClassPath(ERepositoryObjectType.BEANS));
                 }
-
                 getCodesJarClassPaths(getProperty().getItem()).forEach(s -> libJars.append(s).append(",")); //$NON-NLS-1$
             }
 
@@ -308,6 +300,35 @@ public abstract class BigDataJavaProcessor extends MavenJavaProcessor implements
         }
         list.add(libJars.toString());
         return list;
+    }
+
+    private String getCodesClassPath(ERepositoryObjectType type) {
+        String jarName;
+        String baseName;
+        String artifactId;
+        if (ERepositoryObjectType.ROUTINES == type) {
+            jarName = JavaUtils.ROUTINE_JAR_NAME;
+            baseName = TalendMavenConstants.DEFAULT_CODE;
+            artifactId = TalendMavenConstants.DEFAULT_ROUTINES_ARTIFACT_ID;
+        } else {
+            jarName = JavaUtils.BEANS_JAR_NAME;
+            baseName = TalendMavenConstants.DEFAULT_BEAN;
+            artifactId = TalendMavenConstants.DEFAULT_BEANS_ARTIFACT_ID;
+        }
+        // In a local mode, get routines/beans jars in the target directory.
+        ITalendProcessJavaProject routineProject = TalendJavaProjectManager.getTalendCodeJavaProject(type);
+        IFile routinesJar = routineProject.getTargetFolder()
+                .getFile(jarName + "-" + PomUtil.getDefaultMavenVersion() + FileExtensions.JAR_FILE_SUFFIX); //$NON-NLS-1$
+        if (routinesJar.exists()) {
+            return routinesJar.getLocation().toPortableString() + ","; //$NON-NLS-1$
+        }
+        // get jar from m2
+        MavenArtifact artifact = new MavenArtifact();
+        artifact.setGroupId(PomIdsHelper.getCodesGroupId(baseName));
+        artifact.setArtifactId(artifactId);
+        artifact.setVersion(PomIdsHelper.getCodesVersion());
+        artifact.setType(MavenConstants.TYPE_JAR);
+        return PomUtil.getArtifactFullPath(artifact) + ","; //$NON-NLS-1$
     }
 
     protected String makeUpClassPathString() {

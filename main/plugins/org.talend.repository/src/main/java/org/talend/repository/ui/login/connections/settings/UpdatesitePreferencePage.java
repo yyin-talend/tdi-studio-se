@@ -12,9 +12,7 @@
 // ============================================================================
 package org.talend.repository.ui.login.connections.settings;
 
-import java.io.File;
 import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.stream.Collectors;
@@ -23,10 +21,10 @@ import org.apache.commons.lang3.StringUtils;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.jface.preference.PreferencePage;
+import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
-import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
@@ -34,6 +32,9 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 import org.talend.commons.exception.ExceptionHandler;
+import org.talend.commons.ui.runtime.exception.ExceptionMessageDialog;
+import org.talend.commons.ui.runtime.image.EImage;
+import org.talend.commons.ui.runtime.image.ImageProvider;
 import org.talend.core.service.IStudioLiteP2Service;
 import org.talend.core.service.IStudioLiteP2Service.UpdateSiteConfig;
 import org.talend.repository.i18n.Messages;
@@ -49,49 +50,66 @@ public class UpdatesitePreferencePage extends PreferencePage {
 
     private Text updateUriText;
 
+    private Composite warningPanel;
+
     @Override
     protected Control createContents(Composite parent) {
-        Composite panel = new Composite(parent, SWT.NONE);
-        GridData data = new GridData(GridData.FILL_BOTH);
-        data.horizontalSpan = 2;
-        panel.setLayoutData(data);
+        this.setTitle(Messages.getString("UpdatesitePreferencePage.title"));
 
-        FillLayout layout = new FillLayout();
-        layout.marginHeight = 5;
-        layout.marginWidth = 10;
-        panel.setLayout(layout);
+        Composite panel = new Composite(parent, SWT.None);
+        panel.setLayoutData(new GridData(GridData.FILL_BOTH));
 
-        Composite composite = new Composite(panel, SWT.NONE);
-        GridLayout compLayout = new GridLayout(2, false);
-        compLayout.marginHeight = 0;
-        compLayout.marginWidth = 0;
-        composite.setLayout(compLayout);
+        GridLayout panelLayout = new GridLayout(2, false);
+        panelLayout.horizontalSpacing = 10;
+        panelLayout.verticalSpacing = 5;
+        panel.setLayout(panelLayout);
 
-        Label releaseLabel = new Label(composite, SWT.NONE);
-        releaseLabel.setText(Messages.getString("UpdatesitePreferencePage.releaseUrl"));
-        GridData gd = new GridData(SWT.LEFT, SWT.CENTER, false, false);
+        Label releaseLabel = new Label(panel, SWT.NONE);
+        releaseLabel.setText(Messages.getString("UpdatesitePreferencePage.base"));
+        GridData gd = new GridData();
         releaseLabel.setLayoutData(gd);
 
-        releaseUriText = new Text(composite, SWT.BORDER);
-        gd = new GridData(SWT.FILL, SWT.CENTER, true, false);
+        releaseUriText = new Text(panel, SWT.BORDER);
+        gd = new GridData(GridData.FILL_HORIZONTAL);
         releaseUriText.setLayoutData(gd);
 
-        Label updateLabel = new Label(composite, SWT.NONE);
-        updateLabel.setText(Messages.getString("UpdatesitePreferencePage.updateUrl"));
-        gd = new GridData(SWT.LEFT, SWT.CENTER, false, false);
+        Label updateLabel = new Label(panel, SWT.NONE);
+        updateLabel.setText(Messages.getString("UpdatesitePreferencePage.update"));
+        gd = new GridData();
         updateLabel.setLayoutData(gd);
 
-        updateUriText = new Text(composite, SWT.BORDER);
-        gd = new GridData(SWT.FILL, SWT.CENTER, true, false);
+        updateUriText = new Text(panel, SWT.BORDER);
+        gd = new GridData(GridData.FILL_HORIZONTAL);
         updateUriText.setLayoutData(gd);
+
+        Label placeHolder = new Label(panel, SWT.None);
+        gd = new GridData();
+        placeHolder.setLayoutData(gd);
+
+        warningPanel = new Composite(panel, SWT.None);
+        gd = new GridData(GridData.GRAB_HORIZONTAL);
+        warningPanel.setLayoutData(gd);
+        warningPanel.setLayout(new GridLayout(2, false));
+
+        Label warningImg = new Label(warningPanel, SWT.None);
+        gd = new GridData(GridData.VERTICAL_ALIGN_BEGINNING);
+        warningImg.setLayoutData(gd);
+        warningImg.setImage(ImageProvider.getImage(EImage.WARNING_ICON));
+        Label warningDesc = new Label(warningPanel, SWT.WRAP);
+        warningDesc.setText(Messages.getString("UpdatesitePreferencePage.warn.onPremUpdateSetup"));
+        warningDesc.setFont(JFaceResources.getFontRegistry().getBold(JFaceResources.DEFAULT_FONT));
+        gd = new GridData(GridData.VERTICAL_ALIGN_BEGINNING | GridData.FILL_HORIZONTAL);
+        gd.widthHint = 600;
+        warningDesc.setLayoutData(gd);
 
         init();
         addListener();
-        return parent;
+        return panel;
     }
 
     private void init() {
         try {
+            warningPanel.setVisible(false);
             IProgressMonitor monitor = new NullProgressMonitor();
             UpdateSiteConfig config = p2Service.getUpdateSiteConfig(new NullProgressMonitor());
             URI release = config.getRelease(monitor);
@@ -145,7 +163,7 @@ public class UpdatesitePreferencePage extends PreferencePage {
                 UpdateSiteConfig config = p2Service.getUpdateSiteConfig(new NullProgressMonitor());
                 if (config.isReleaseEditable()) {
                     String release = releaseUriText.getText();
-                    config.setRelease(monitor, StringUtils.isBlank(release) ? null : toUri(release.trim()));
+                    config.setRelease(monitor, StringUtils.isBlank(release) ? null : p2Service.toURI(release.trim()));
                 }
                 if (config.isUpdateEditable()) {
                     String update = updateUriText.getText();
@@ -155,40 +173,44 @@ public class UpdatesitePreferencePage extends PreferencePage {
                         Collection<URI> updates = new ArrayList<>();
                         String[] splits = update.split(",");
                         for (String split : splits) {
-                            updates.add(toUri(split.trim()));
+                            updates.add(p2Service.toURI(split.trim()));
                         }
                         config.setUpdates(monitor, updates);
                     }
                 }
             } catch (Exception e) {
-                ExceptionHandler.process(e);
+                ExceptionMessageDialog.openError(null, Messages.getString("UpdatesitePreferencePage.err.title"),
+                        e.getLocalizedMessage(), e);
             }
         }
         return super.performOk();
     }
 
-    private URI toUri(String path) throws Exception {
-        URI uri = null;
-        try {
-            uri = new URI(path);
-        } catch (URISyntaxException e) {
-            if (path.contains("\\")) {
-                try {
-                    uri = new File(path).toURI();
-                } catch (Exception ex) {
-                    throw e;
-                }
-            } else {
-                throw e;
-            }
-        }
-        return uri;
-    }
-
     @Override
     protected void performDefaults() {
         if (this.isControlCreated()) {
-            // TODO using talend offical?
+            try {
+                UpdateSiteConfig config = p2Service.getUpdateSiteConfig(new NullProgressMonitor());
+                if (config.isReleaseEditable() && config.isUpdateEditable()) {
+                    NullProgressMonitor monitor = new NullProgressMonitor();
+                    config.resetToDefault(monitor);
+                    URI release = config.getRelease(monitor);
+                    releaseUriText.setText(release == null ? "" : release.toString());
+                    Collection<URI> updates = config.getUpdates(monitor);
+                    StringBuilder updateStr = new StringBuilder();
+                    if (updates != null && !updates.isEmpty()) {
+                        updateStr.append(
+                                String.join(",", updates.stream().map(uri -> uri.toString()).collect(Collectors.toList())));
+                    }
+                    updateUriText.setText(updateStr.toString());
+                } else {
+                    // normally it should be a dead code
+                    throw new Exception(Messages.getString("UpdatesitePreferencePage.err.reset.readonly"));
+                }
+            } catch (Exception e) {
+                ExceptionMessageDialog.openError(null, Messages.getString("UpdatesitePreferencePage.err.title"),
+                        e.getLocalizedMessage(), e);
+            }
         }
         super.performDefaults();
     }
@@ -200,12 +222,25 @@ public class UpdatesitePreferencePage extends PreferencePage {
 
     private boolean validate() {
         this.setErrorMessage(null);
-        if (StringUtils.equals(releaseUriText.getText().trim(), updateUriText.getText().trim())
-                && StringUtils.isNotBlank(releaseUriText.getText())) {
-            this.setErrorMessage(Messages.getString("UpdatesitePreferencePage.err.releaseAndUpdateShouldBeDiff"));
+        checkUpdateUriSettings();
+        String releaseUriStr = releaseUriText.getText().trim();
+        if (StringUtils.isBlank(releaseUriStr)) {
+            this.setErrorMessage(Messages.getString("UpdatesitePreferencePage.err.baseCantEmpty"));
+            return false;
+        } else if (StringUtils.equals(releaseUriStr, updateUriText.getText().trim())) {
+            this.setErrorMessage(Messages.getString("UpdatesitePreferencePage.err.baseAndUpdateShouldBeDiff"));
             return false;
         } else {
             return true;
+        }
+    }
+
+    private void checkUpdateUriSettings() {
+        String updateUriStr = updateUriText.getText().trim();
+        if (StringUtils.isBlank(updateUriStr)) {
+            warningPanel.setVisible(true);
+        } else {
+            warningPanel.setVisible(false);
         }
     }
 

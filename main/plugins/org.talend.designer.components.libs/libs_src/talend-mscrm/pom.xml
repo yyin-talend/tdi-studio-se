@@ -3,11 +3,19 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.talend.components</groupId>
 	<artifactId>talend-mscrm</artifactId>
-	<version>3.9-20210713</version>
+	<version>3.10-20211021</version>
 	<packaging>jar</packaging>
-	
+
 	<name>talend-mscrm</name>
-	
+
+	<licenses>
+		<license>
+			<name>Apache License, Version 2.0</name>
+			<url>https://www.talendforge.org/modules/licenses/APACHE_v2.txt</url>
+			<distribution>may be downloaded from the Maven repository</distribution>
+		</license>
+	</licenses>
+
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<talend.nexus.url>https://artifacts-oss.talend.com</talend.nexus.url>
@@ -18,7 +26,7 @@
 		<httpclient.version>4.5.13</httpclient.version>
 		<httpcore.version>4.4.13</httpcore.version>
 		<junit.version>4.13.2</junit.version>
-		<adal4j.version>1.6.4-20210713</adal4j.version>
+		<adal4j.version>1.6.4-20211021</adal4j.version>
 		<jackson.version>2.11.4</jackson.version>
 
 		<!-- plugin's versions -->

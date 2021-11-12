@@ -52,7 +52,8 @@ imports="
 		    String alias = ElementParameterParser.getValue(node, "__DATASOURCE_ALIAS__");
 %>
 	java.util.Map<String, routines.system.TalendDataSource> dataSources_<%=cid%> = (java.util.Map<String, routines.system.TalendDataSource>) globalMap.get(KEY_DB_DATASOURCES);
-	if (dataSources_<%=cid%> == null && !(<%=alias%> != null && <%=alias%>.replaceAll("\\s+","").length() > 0)) {
+	boolean inOSGi = routines.system.BundleUtils.inOSGi();
+	if (!(inOSGi && dataSources_<%=cid%> != null && <%=alias%> != null && <%=alias%>.replaceAll("\\s+","").length() > 0)) {
 <%
 		}
 %>

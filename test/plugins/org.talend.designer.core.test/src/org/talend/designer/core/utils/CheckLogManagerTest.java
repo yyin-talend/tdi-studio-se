@@ -50,7 +50,7 @@ public class CheckLogManagerTest {
             BigDataNode sparkConfigurationNode = new BigDataNode(sparkConfigurationComponent, SPARK_CONFIGURATION + "_1");
             sparkConfigurationNode.setSubProcessStart(true);
             sparkConfigurationNode.setActivate(true);
-            sparkConfigurationNode.getElementParameter("SPARK_LOCAL_VERSION").setValue("SPARK_2_4_0");
+            // sparkConfigurationNode.getElementParameter("SPARK_LOCAL_VERSION").setValue("SPARK_2_4_0");
             nodes.add(sparkConfigurationNode);
 
             ElementParameter storageConfigurationParam = createElementParameter(node, "STORAGE_CONFIGURATION",

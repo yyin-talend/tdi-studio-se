@@ -11,9 +11,6 @@
 	<packaging>eclipse-plugin</packaging>
 	<properties>
 		<compGroup>org.talend.components</compGroup>
-		<compArtifact>components-netsuite-runtime_2014_2</compArtifact>
-		<compArtifact16>components-netsuite-runtime_2016_2</compArtifact16>
-		<compArtifact18>components-netsuite-runtime_2018_2</compArtifact18>
 		<compArtifact19>components-netsuite-runtime_2019_2</compArtifact19>
 	</properties>
 	<dependencyManagement>
@@ -52,21 +49,6 @@
 		</dependencies>
 	</dependencyManagement>
 	<dependencies>
-		<dependency>
-			<groupId>${compGroup}</groupId>
-			<artifactId>${compArtifact}</artifactId>
-			<version>${components.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>${compGroup}</groupId>
-			<artifactId>${compArtifact16}</artifactId>
-			<version>${components.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>${compGroup}</groupId>
-			<artifactId>${compArtifact18}</artifactId>
-			<version>${components.version}</version>
-		</dependency>
 		<dependency>
 			<groupId>${compGroup}</groupId>
 			<artifactId>${compArtifact19}</artifactId>
@@ -135,18 +117,6 @@
 						<replacement>
 							<token>@@COMP_GROUP@@</token>
 							<value>${compGroup}</value>
-						</replacement>
-						<replacement>
-							<token>@@COMP_ARTIFACT@@</token>
-							<value>${compArtifact}</value>
-						</replacement>
-						<replacement>
-							<token>@@COMP_ARTIFACT_16@@</token>
-							<value>${compArtifact16}</value>
-						</replacement>
-						<replacement>
-							<token>@@COMP_ARTIFACT_18@@</token>
-							<value>${compArtifact18}</value>
 						</replacement>
 						<replacement>
 							<token>@@COMP_ARTIFACT_19@@</token>

@@ -299,7 +299,12 @@ public class ExportItemWizardPage extends WizardPage {
                 }
             }
             TimeMeasure.step(this.getClass().getSimpleName(), "finished to collect nodes"); //$NON-NLS-1$
-            exportItemsTreeViewer.setCheckedElements(nodes.toArray());
+            //TUP-31974 for eclipse upgrade
+            //exportItemsTreeViewer.setCheckedElements(nodes.toArray());
+            exportItemsTreeViewer.setAllChecked(false);
+            for (Object tocheck : nodes) {
+                exportItemsTreeViewer.setChecked(tocheck, true);
+            }
             TimeMeasure.step(this.getClass().getSimpleName(), "finished to check nodes"); //$NON-NLS-1$
         }
     }
@@ -570,6 +575,7 @@ public class ExportItemWizardPage extends WizardPage {
 
                 Set toselect = new HashSet();
                 if (event.getChecked()) {
+                	exportItemsTreeViewer.expandToLevel(event.getElement(), 3);
                     initcheckedNodes.add(event.getElement());
 
                     checkedDependency.addAll(beanDependencies);
@@ -578,7 +584,7 @@ public class ExportItemWizardPage extends WizardPage {
                         for (Object obj : beanDependencies) {
                             ERepositoryObjectType objectType = getObjectType(obj);
                             expandRoot(objectType);
-                            expandParent(exportItemsTreeViewer, obj, objectType);
+                            //expandParent(exportItemsTreeViewer, obj, objectType);
                             checkElement(obj, toselect);
                         }
                     }
@@ -612,7 +618,9 @@ public class ExportItemWizardPage extends WizardPage {
                     uncheckedNodes.addAll(beanDependencies);
                 }
                 if (exportDependencies.getSelection()) {
-                    exportDependencies.notifyListeners(SWT.Selection, new Event());
+                	Event e = new Event();
+                	e.data = "treecheck";
+                    exportDependencies.notifyListeners(SWT.Selection, e);
                     return;
                 }
             }
@@ -995,7 +1003,7 @@ public class ExportItemWizardPage extends WizardPage {
                         if (exportDependencies == null || exportDependencies.isDisposed()) return;
                         for (Object obj : allNode) {
                             ERepositoryObjectType objectType = getObjectType(obj);
-                            if (exportDependencies.getSelection()) {
+                            if (exportDependencies.getSelection() && e.data == null) {
                                 expandRoot(objectType);
                                 expandParent(exportItemsTreeViewer, obj, objectType);
                             }
@@ -1010,7 +1018,12 @@ public class ExportItemWizardPage extends WizardPage {
                                 }
                             }
                         } else {
-                            exportItemsTreeViewer.setCheckedElements(toselect.toArray());
+                        	//TUP-31974 for eclipse upgrade
+                        	//exportItemsTreeViewer.setCheckedElements(toselect.toArray());
+                        	exportItemsTreeViewer.setAllChecked(false);
+                        	for (Object tocheck : toselect) {
+                                exportItemsTreeViewer.setChecked(tocheck, true);
+                            }
                         }
                         if (!exportDependencies.getSelection()) {
                             for (Object unchecked : uncheckedNodes) {

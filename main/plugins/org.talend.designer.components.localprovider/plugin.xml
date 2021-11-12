@@ -1516,13 +1516,6 @@
     	</libraryNeeded>
 
     	<libraryNeeded
-	   		context="plugin:org.talend.libraries.servlet"
-        	id="servlet-api-2.5-20081211.jar"
-         	name="servlet-api-2.5-20081211.jar" mvn_uri="mvn:org.mortbay.jetty/servlet-api/2.5-20081211"
-         	uripath="platform:/plugin/org.talend.libraries.servlet/lib/servlet-api-2.5-20081211.jar">
-    	</libraryNeeded>
-
-    	<libraryNeeded
 	   		context="plugin:org.talend.libraries.guava"
         	id="guava-13.0.1.jar"
          	name="guava-13.0.1.jar" mvn_uri="mvn:org.talend.libraries/guava-13.0.1/6.0.0"

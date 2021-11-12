@@ -61,6 +61,7 @@ import org.eclipse.ui.navigator.CommonNavigator;
 import org.eclipse.ui.navigator.CommonViewer;
 import org.talend.commons.exception.BusinessException;
 import org.talend.commons.exception.ExceptionHandler;
+import org.talend.commons.exception.LoginException;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.ui.runtime.image.EImage;
 import org.talend.commons.ui.runtime.image.ImageProvider;
@@ -604,6 +605,7 @@ public class ProjectRefSettingPage extends ProjectSettingPage {
             RepositoryWorkUnit repositoryWorkUnit = new RepositoryWorkUnit(
                     Messages.getString("ReferenceProjectSetupPage.TaskApplyReferenceSetting")) { //$NON-NLS-1$
 
+                @Override
                 public void run() throws PersistenceException {
                     IWorkspaceRunnable workspaceRunnable = new IWorkspaceRunnable() {
 
@@ -719,6 +721,7 @@ public class ProjectRefSettingPage extends ProjectSettingPage {
         AProgressMonitorDialogWithCancel<Boolean> dialog = new AProgressMonitorDialogWithCancel<Boolean>(
                 Display.getCurrent().getActiveShell()) {
 
+            @Override
             protected Boolean runWithCancel(IProgressMonitor monitor) throws Throwable {
                 return checkCycleReference(projectRefMap);
             }
@@ -815,7 +818,16 @@ public class ProjectRefSettingPage extends ProjectSettingPage {
                     newReferenceSetting);
         }
         monitor.subTask(Messages.getString("RepoReferenceProjectSetupAction.TaskLogon", switchProject.getLabel())); //$NON-NLS-1$
-        ProxyRepositoryFactory.getInstance().logOnProject(switchProject, monitor);
+        try {
+            ProxyRepositoryFactory.getInstance().logOnProject(switchProject, monitor);
+        } catch (LoginException e) {
+            if (LoginException.RESTART.equals(e.getKey())) {
+                Display.getDefault().asyncExec(() -> PlatformUI.getWorkbench().restart());
+                return;
+            } else {
+                throw e;
+            }
+        }
         monitor.worked(7);
         refreshNavigatorView();
         monitor.worked(1);

@@ -174,9 +174,6 @@ public class NewProcessWizard extends Wizard {
             List<RoutinesParameterType> dependenciesInPreference = RoutinesUtil.createDependenciesInPreference();
             parameterType.getRoutinesParameter().addAll(dependenciesInPreference);
             process.setParameters(parameterType);
-            if(processItem instanceof CamelProcessItemImpl) {
-            	MavenVersionUtils.put(process, TalendProcessArgumentConstant.ARG_BUILD_TYPE, "ROUTE");
-            }
             processItem.setProcess(process);
             repositoryFactory.create(processItem, mainPage.getDestinationPath());
         } catch (PersistenceException e) {

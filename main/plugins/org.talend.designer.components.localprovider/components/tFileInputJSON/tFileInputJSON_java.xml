@@ -150,6 +150,10 @@
 			REQUIRED="true" REPOSITORY_VALUE="ENCODING">
 			<DEFAULT>"UTF-8"</DEFAULT>
 		</PARAMETER>
+
+		<PARAMETER NAME="USE_NASHORN" FIELD="CHECK" NUM_ROW="35" SHOW_IF="(READ_BY == 'JSONPATH_WITHOUTPUT_LOOP')">
+			<DEFAULT>false</DEFAULT>
+		</PARAMETER>
 	</ADVANCED_PARAMETERS>
 
 	<CODEGENERATION>
@@ -192,6 +196,13 @@
                 REQUIRED_IF="(READ_BY == 'JSONPATH')" BundleID="" />
             <IMPORT NAME="slf4j-log4j12-1.7.5.jar" MODULE="slf4j-log4j12-1.7.5.jar" MVN="mvn:org.talend.libraries/slf4j-log4j12-1.7.5/6.0.0"  UrlPath="platform:/plugin/org.talend.libraries.slf4j/lib/slf4j-log4j12-1.7.5.jar"
                 REQUIRED_IF="(READ_BY == 'JSONPATH')" BundleID="" />
+
+			<!-- nashorn for Java 15 and later -->
+			<IMPORT NAME="nashorn-core-15.3.jar" MODULE="nashorn-core-15.3.jar" MVN="mvn:org.openjdk.nashorn/nashorn-core/15.3" REQUIRED_IF="(USE_NASHORN == 'true') AND (READ_BY == 'JSONPATH_WITHOUTPUT_LOOP')"/>
+			<IMPORT NAME="asm-9.1.jar" MODULE="asm-9.1.jar" MVN="mvn:org.ow2.asm/asm/9.1" REQUIRED_IF="(USE_NASHORN == 'true') AND (READ_BY == 'JSONPATH_WITHOUTPUT_LOOP')"/>
+			<IMPORT NAME="asm-commons-9.1.jar" MODULE="asm-commons-9.1.jar" MVN="mvn:org.ow2.asm/asm-commons/9.1" REQUIRED_IF="(USE_NASHORN == 'true') AND (READ_BY == 'JSONPATH_WITHOUTPUT_LOOP')"/>
+			<IMPORT NAME="asm-tree-9.1.jar" MODULE="asm-tree-9.1.jar" MVN="mvn:org.ow2.asm/asm-tree/9.1" REQUIRED_IF="(USE_NASHORN == 'true') AND (READ_BY == 'JSONPATH_WITHOUTPUT_LOOP')"/>
+			<IMPORT NAME="asm-util-9.1.jar" MODULE="asm-util-9.1.jar" MVN="mvn:org.ow2.asm/asm-util/9.1" REQUIRED_IF="(USE_NASHORN == 'true') AND (READ_BY == 'JSONPATH_WITHOUTPUT_LOOP')"/>
 		</IMPORTS>
 	</CODEGENERATION>
 

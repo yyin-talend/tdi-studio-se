@@ -313,6 +313,9 @@ public final class Expression {
         if (simpleExpression.contains("SPARK_VERSION[")) { //$NON-NLS-1$
             return evaluateSparkVersion(simpleExpression, listParam, currentParam);
         }
+        if (simpleExpression.contains("SPARK_MODE") && simpleExpression.contains("LINK@")) { //$NON-NLS-1$
+            return evaluateSparkMode(simpleExpression, listParam, currentParam);
+        }
 
         if (simpleExpression.contains(CONTAINS)) {
             return evaluateContains(simpleExpression, listParam);
@@ -859,6 +862,28 @@ public final class Expression {
             }
         }
 
+        return false;
+    }
+    
+    private static boolean evaluateSparkMode(String simpleExpression, List<? extends IElementParameter> listParam,
+            ElementParameter currentParam) {
+        
+        INode node = retrieveNodeElementFromParameter(currentParam, listParam);
+        INode sparkNode;
+        if (node.getProcess().getNodesOfType("tSparkConfiguration") != null) {
+        	sparkNode = node.getProcess().getNodesOfType("tSparkConfiguration").get(0);
+        	IElementParameter sparkMode = sparkNode.getElementParameter("SPARK_MODE");
+            if (sparkMode == null) {
+                return false;
+            }
+            String sparkModeValue = sparkMode.getValue().toString();
+            String toEvaluate = simpleExpression.substring(simpleExpression.indexOf("'") + 1, simpleExpression.lastIndexOf("'"));
+            if (simpleExpression.contains("!=")) {
+            	return !sparkModeValue.equals(toEvaluate);
+            } else {
+            	return sparkModeValue.equals(toEvaluate);
+            }
+        }
         return false;
     }
 

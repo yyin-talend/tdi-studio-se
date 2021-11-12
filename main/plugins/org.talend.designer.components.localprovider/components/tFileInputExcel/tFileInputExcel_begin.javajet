@@ -101,21 +101,24 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 						<%}%>){
 								continue;
 							}
+						int row_length_<%=cid %>;
 						<%
 						if(!version07){
 						%>
-							int colsLen_<%=cid %> = row_<%= cid %>.length-start_column_<%=cid %>;
+							row_length_<%=cid %> = row_<%= cid %>.length;
 						<%
 						}else if(!eventMode){
 						%>
-		    				int colsLen_<%=cid %> =  row_<%= cid %>.getLastCellNum()-start_column_<%= cid %>;
+							row_length_<%=cid %> = row_<%= cid %>.getLastCellNum();
 		    			<%
 		    			}else{
 		    			%>
-		    				int colsLen_<%=cid %> = row_<%= cid %>.size()-start_column_<%= cid %>;
+							row_length_<%=cid %> = row_<%= cid %>.size();
 		    			<%
 		    			}
 		    			%>
+		    			int temp_last_<%=cid %>=(end_column_<%=cid %> >= 0 && end_column_<%=cid %> < row_length_<%= cid %> ) ? end_column_<%=cid %> : row_length_<%= cid %>;
+		    			int colsLen_<%=cid %> = temp_last_<%=cid %>-start_column_<%= cid %>;
 		    			dynamic_column_count_<%=cid%> = colsLen_<%=cid %>-<%=colLen-1%>;
 		    			for (int i = <%=dynamic_index-1%> + start_column_<%= cid %>; i < colsLen_<%=cid %>-<%=colLen-dynamic_index%> + start_column_<%= cid %>; i++) {
 					    	routines.system.DynamicMetadata dynamicMetadata_<%=cid%> = new routines.system.DynamicMetadata();

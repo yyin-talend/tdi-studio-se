@@ -230,7 +230,7 @@
                         allowMultiple="false"
                         category="org.talend.core.root"
                         class="org.talend.designer.core.ui.hierarchy.JobHierarchyViewPart"
-                        icon="platform:/plugin/org.eclipse.jdt.ui/icons/full/eview16/class_hi.gif"
+                        icon="icons/class_hi.gif"
                         id="org.talend.designer.core.ui.hierarchy.JobHierarchyViewPart"
                         name="%jobHierarchyView">
                   </view>
@@ -956,6 +956,18 @@
                 description="Check if there exist child job missing"
                 id="org.talend.designer.core.model.analysistask.ChildJobMissingAnalysisTask"
                 name="ChildJobMissingAnalysisTask">
+          </analysisTask>
+          <analysisTask
+                class="org.talend.designer.core.model.analysistask.UnresolvedRoutineDependencyAnalysisTask"
+                description="Check beans/routines missing dependencies"
+                id="org.talend.designer.core.model.analysistask.UnresolvedRoutineDependencyAnalysisTask"
+                name="UnresolvedRoutineDependencyAnalysisTask">
+          </analysisTask>
+          <analysisTask
+                class="org.talend.designer.core.model.analysistask.UnresolvedComponentsDependenciesAnalysisTask"
+                description="Check missing components dependencies"
+                id="org.talend.designer.core.model.analysistask.UnresolvedComponentsDependenciesAnalysisTask"
+                name="UnresolvedComponentsDependenciesAnalysisTask">
           </analysisTask>
        </extension>
 </plugin>

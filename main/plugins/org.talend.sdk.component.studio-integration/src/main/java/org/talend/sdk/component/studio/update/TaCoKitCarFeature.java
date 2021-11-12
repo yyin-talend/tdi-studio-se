@@ -16,6 +16,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.InputStreamReader;
 import java.net.URI;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.EnumSet;
@@ -36,6 +37,7 @@ import org.eclipse.m2e.core.MavenPlugin;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.runtime.service.ITaCoKitService;
 import org.talend.commons.utils.resource.FileExtensions;
+import org.talend.commons.utils.system.EclipseCommandLine;
 import org.talend.core.runtime.maven.MavenUrlHelper;
 import org.talend.core.runtime.projectsetting.IProjectSettingTemplateConstants;
 import org.talend.sdk.component.studio.i18n.Messages;
@@ -141,7 +143,7 @@ public class TaCoKitCarFeature extends AbstractExtraFeature implements ITaCoKitC
                 if (!needRestart() && isAutoReloadAfterInstalled()) {
                     // if studio need to restart, then no need to reload here
                     String log = ITaCoKitService.getInstance().reload(progress);
-                    ExceptionHandler.log(log);
+                    ExceptionHandler.logDebug(log);
                 }
             } else {
                 status = new Status(IStatus.ERROR, TaCoKitConst.BUNDLE_ID,
@@ -155,41 +157,56 @@ public class TaCoKitCarFeature extends AbstractExtraFeature implements ITaCoKitC
         }
         return status;
     }
+    
+    private String getJavaCMD() {
+        String javacmd = "java";
+        String vm = System.getProperty(EclipseCommandLine.PROP_VM);
+        if (!Platform.getOS().equals(Platform.OS_MACOSX) && !StringUtils.isBlank(vm)) {
+            if (!vm.endsWith(javacmd)) {
+                ExceptionHandler.logDebug("vm: " + vm);
+                if (vm.endsWith(".dll") || vm.endsWith(".so")) {
+                    vm = Paths.get(vm).getParent().getParent().getParent().resolve("bin").toFile().getAbsolutePath();
+                }
+
+                if (!vm.endsWith(File.separator)) {
+                    vm = vm + File.separator;
+                }
+
+                vm = vm + javacmd;
+            }
+            return vm;
+        }
+        return javacmd;
+    }
 
     @SuppressWarnings("nls")
     public boolean install(IProgressMonitor progress) throws Exception {
         String tckCarPath = getCar(progress).getCarFile().getAbsolutePath();
         String installationPath = URIUtil.toFile(URIUtil.toURI(Platform.getInstallLocation().getURL())).getAbsolutePath();
-        String commandType = " studio-deploy ";
-        StringBuilder commandBuilder = new StringBuilder();
-        commandBuilder.append("java -jar "); //$NON-NLS-1$
-        commandBuilder.append(StringUtils.wrap(tckCarPath, "\"")); //$NON-NLS-1$
+        String commandType = "studio-deploy";
+        List<String> cmds = new ArrayList<String>();
+        String javaCMD = this.getJavaCMD();
+        cmds.add(javaCMD);
+        cmds.add("-jar");
+        cmds.add(tckCarPath);
+        
         if (isDeployCommand) {
             File m2Folder =this.getM2RepositoryPath();
             installationPath = m2Folder.getAbsolutePath();
-            commandType = " maven-deploy ";
+            commandType = "maven-deploy";
         }
-        commandBuilder.append(commandType); //$NON-NLS-1$
-        commandBuilder.append(StringUtils.wrap(installationPath, "\"")); //$NON-NLS-1$
-        String command = commandBuilder.toString();
+        cmds.add(commandType);
+        cmds.add(installationPath);
 
-        String osName = System.getProperty("os.name"); //$NON-NLS-1$
-        String[] cmd = new String[3];
-        if (osName.startsWith("Windows")) { //$NON-NLS-1$
-            cmd[0] = "cmd.exe"; //$NON-NLS-1$
-            cmd[1] = "/C"; //$NON-NLS-1$
-            cmd[2] = command;
-        } else if (osName.startsWith("Mac")) { //$NON-NLS-1$
-            cmd[0] = "/bin/bash"; //$NON-NLS-1$
-            cmd[1] = "-c"; //$NON-NLS-1$
-            cmd[2] = command;
-        } else {
-            // linux
-            cmd[0] = "/bin/bash"; //$NON-NLS-1$
-            cmd[1] = "-c"; //$NON-NLS-1$
-            cmd[2] = command;
+        ExceptionHandler.logDebug("tck install command line: " + cmds);
+        
+        Process exec = null;
+        try {
+            exec = Runtime.getRuntime().exec(cmds.toArray(new String[0]));
+        } catch (Exception e) {
+            ExceptionHandler.process(e);
+            throw e;
         }
-        Process exec = Runtime.getRuntime().exec(cmd);
         while (exec.isAlive()) {
             try {
                 TaCoKitUtil.checkMonitor(progress);
@@ -208,7 +225,7 @@ public class TaCoKitCarFeature extends AbstractExtraFeature implements ITaCoKitC
                         }
                     }
                 } catch (Exception e1) {
-                    ExceptionHandler.process(e);
+                    ExceptionHandler.process(e1);
                 }
                 if (alreadyInstalled) {
                     return true;
@@ -220,7 +237,9 @@ public class TaCoKitCarFeature extends AbstractExtraFeature implements ITaCoKitC
         }
         int exitValue = exec.exitValue();
         if (exitValue != 0) {
-            throw new Exception(getErrorMessage(exec));
+            Exception e = new Exception(getErrorMessage(exec));
+            ExceptionHandler.process(e);
+            throw e;
         }
         return true;
     }
