@@ -12,9 +12,6 @@
  <extension
        point="org.eclipse.ui.startup">
     <startup
-          class="org.talend.designer.core.DesignerCorePreparation">
-    </startup>
-    <startup
           class="org.talend.designer.core.ui.editor.ProcessShowJobStartup">
     </startup>
  </extension>
