@@ -241,6 +241,19 @@ public class CLASS {
         public void setDynamic(boolean isDynamic) {
             this.isDynamic = isDynamic;
         }
+
+        public String getWrappedColumnName(String lProtectedChar, String rProtectedChar) {
+            String wrappedColumnName = getColumnName();
+            if (!lProtectedChar.equals("\\\"") && wrappedColumnName.startsWith("\"")) {
+                wrappedColumnName = "\\" + wrappedColumnName;
+            }
+
+            if (!rProtectedChar.equals("\\\"") && wrappedColumnName.endsWith("\"") && !wrappedColumnName.endsWith("\\\"")) {
+                wrappedColumnName = wrappedColumnName.substring(0, wrappedColumnName.lastIndexOf("\"")) + "\\" + "\"";
+            }
+
+            return lProtectedChar + wrappedColumnName + rProtectedChar;
+        }
     }
         
     public Column getColumn(IMetadataColumn column) {
@@ -336,7 +349,7 @@ public class CLASS {
                     List<Column> replacedColumns = column.getReplacement();
                     if (column.isKey()) {
                         for (Column replacedColumn : replacedColumns) {
-                            pkList.add(getLProtectedChar(replacedColumn.getColumnName()) + replacedColumn.getColumnName() + getRProtectedChar(replacedColumn.getColumnName()));
+                            pkList.add(replacedColumn.getWrappedColumnName(getLProtectedChar(replacedColumn.getColumnName()), getRProtectedChar(replacedColumn.getColumnName())));
                         }
                     }
                     int replacedCount = 0;
@@ -344,7 +357,7 @@ public class CLASS {
                         if (count == columnList.size() - 1 && replacedCount == replacedColumns.size() - 1) {
                             ending = "";
                         }
-                        createSQL.append(getLProtectedChar(replacedColumn.getColumnName()) + replacedColumn.getColumnName() + getRProtectedChar(replacedColumn.getColumnName()) + " ");
+                        createSQL.append(replacedColumn.getWrappedColumnName(getLProtectedChar(replacedColumn.getColumnName()), getRProtectedChar(replacedColumn.getColumnName())) + " ");
                         createSQL.append(replacedColumn.getDataType() + ending);
                         replacedCount++;
                     }
@@ -354,15 +367,15 @@ public class CLASS {
                     }
                     
                     if (column.isAddCol()) {
-                        createSQL.append(getLProtectedChar( column.getColumnName() ) + column.getColumnName() + getRProtectedChar( column.getColumnName() ) + " ");
+                        createSQL.append(column.getWrappedColumnName(getLProtectedChar(column.getColumnName()), getRProtectedChar(column.getColumnName())) + " ");
                         createSQL.append(column.getDataType() + ending);
                     } else if(column.isDynamic()) {
                         createSQL.append(" {TALEND_DYNAMIC_COLUMN} ").append(ending);
                     } else {
                         if (column.isKey()) {
-                            pkList.add(getLProtectedChar( column.getColumnName() ) + column.getColumnName() + getRProtectedChar( column.getColumnName() ));
+                            pkList.add(column.getWrappedColumnName(getLProtectedChar(column.getColumnName()), getRProtectedChar(column.getColumnName())));
                         }
-                        createSQL.append(getLProtectedChar( column.getColumnName() ) + column.getColumnName() + getRProtectedChar( column.getColumnName() ) + " ");
+                        createSQL.append(column.getWrappedColumnName(getLProtectedChar(column.getColumnName()), getRProtectedChar(column.getColumnName())) + " ");
                         String dataType = null;
                         if (column.getColumn().getType() == null || column.getColumn().getType().trim().equals("")) {
                             dataType = mappingType.getDefaultSelectedDbType(column.getColumn().getTalendType());
@@ -456,7 +469,7 @@ public class CLASS {
                         if(column.isAutoIncrement()) {
                             // move the autoincrease key column to the first index in the primary defination. Otherwise, it will throw exception
                             if(MYSQL.equalsIgnoreCase(getDBMSId()) || SINGLESTORE.equalsIgnoreCase(getDBMSId())) {
-                                String columnStr = getLProtectedChar( column.getColumnName() ) + column.getColumnName() + getRProtectedChar( column.getColumnName() );
+                                String columnStr = column.getWrappedColumnName(getLProtectedChar(column.getColumnName()), getRProtectedChar(column.getColumnName()));
                                 int index = pkList.indexOf(columnStr);
                                 if(index !=-1){
                                     for (int i=index;i>0;i--) {
