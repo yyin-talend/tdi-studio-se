@@ -12,6 +12,7 @@
 	<properties>
 		<compGroup>org.talend.components</compGroup>
 		<compArtifact19>components-netsuite-runtime_2019_2</compArtifact19>
+		<tycho.buildtimestamp.format>${timestamp}</tycho.buildtimestamp.format>
 	</properties>
 	<dependencyManagement>
 		<dependencies>
