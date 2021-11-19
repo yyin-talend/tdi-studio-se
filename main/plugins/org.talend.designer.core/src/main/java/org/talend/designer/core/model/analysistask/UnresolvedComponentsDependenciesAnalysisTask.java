@@ -81,7 +81,7 @@ public class UnresolvedComponentsDependenciesAnalysisTask extends AbstractItemAn
                         for (Object v : p.getElementValue()) {
                             ElementValueType ev = (ElementValueType) v;
                             String mvnDep = ev.getValue();
-                            if (mvnDep != null && !StringUtils.isEmpty(mvnDep)) {
+                            if (mvnDep != null && !StringUtils.isEmpty(mvnDep) && "JAR_NAME".equalsIgnoreCase(ev.getElementRef())) {
 	                            ModuleNeeded module = ModuleNeeded.newInstance(null, mvnDep, null, true);
 	                            if (isMissingDependency(module.getModuleName())) {
 	                            	recordList.add(new AnalysisReportRecorder(this, item, SeverityOption.CRITICAL,
