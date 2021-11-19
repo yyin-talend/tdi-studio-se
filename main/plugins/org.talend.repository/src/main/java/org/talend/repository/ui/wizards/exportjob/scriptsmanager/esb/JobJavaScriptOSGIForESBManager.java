@@ -107,6 +107,7 @@ import org.talend.repository.RepositoryPlugin;
 import org.talend.repository.documentation.ExportFileResource;
 import org.talend.repository.ui.wizards.exportjob.scriptsmanager.JobJavaScriptsManager;
 import org.talend.repository.utils.EmfModelUtils;
+import org.talend.repository.utils.EsbConfigUtils;
 import org.talend.repository.utils.TemplateProcessor;
 
 import aQute.bnd.header.Parameters;
@@ -229,8 +230,22 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
         }
         complianceParameter = " -" + complianceLevel + " -maxProblems 100000 -nowarn";
         
-        try (InputStream is = RepositoryPlugin.getDefault().getBundle().getEntry("/resources/osgi-exclude.properties") //$NON-NLS-1$
-                .openStream()) {
+        File propFile = null;
+        File esbConfigurationLocation = EsbConfigUtils.getEclipseEsbFolder();
+
+        if (esbConfigurationLocation != null && esbConfigurationLocation.exists() && esbConfigurationLocation.isDirectory()) {
+            propFile = new File(esbConfigurationLocation.getAbsolutePath(), OSGI_EXCLUDE_PROP_FILENAME);
+        }
+
+        InputStream is = null;
+        try {
+            if (propFile != null && propFile.exists() && propFile.isFile()) {
+                is = new FileInputStream(propFile);
+            } else {
+                is = RepositoryPlugin.getDefault().getBundle().getEntry("/resources/" + OSGI_EXCLUDE_PROP_FILENAME)
+                        .openStream();
+            }
+            
             final Properties p = new Properties();
             p.load(is);
             for (Enumeration<?> e = p.propertyNames(); e.hasMoreElements();) {
