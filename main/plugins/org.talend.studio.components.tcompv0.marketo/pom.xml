@@ -12,6 +12,7 @@
 	<properties>
 		<compGroup>org.talend.components</compGroup>
 		<compArtifact>components-marketo-runtime</compArtifact>
+		<tycho.buildtimestamp.format>${timestamp}</tycho.buildtimestamp.format>
 	</properties>
 	<dependencyManagement>
 		<dependencies>
