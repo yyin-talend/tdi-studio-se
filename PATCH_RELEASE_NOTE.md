@@ -5,12 +5,12 @@ product:
 - https://talend.poolparty.biz/coretaxonomy/23
 ---
 
-# TPS-4009
+# TPS-5011
 
 | Info             | Value |
 | ---------------- | ---------------- |
-| Patch Name       | Patch\_20211118_TPS-5011\_v1-7.2.1 |
-| Release Date     | 2021-11-18 |
+| Patch Name       | Patch\_20211119_TPS-5011\_v1-7.2.1 |
+| Release Date     | 2021-11-19 |
 | Target Version   | 20190620_1446-V7.2.1 |
 | Product affected | Talend Studio |
 
@@ -65,4 +65,4 @@ The following files are installed by this patch:
 
 - {Talend\_Studio\_path}/plugins/org.talend.designer.components.localprovider_7.2.1.20190614_0309/components/tMicrosoftCrmInput/tMicrosoftCrmInput_java.xml
 - {Talend\_Studio\_path}/plugins/org.talend.designer.components.localprovider_7.2.1.20190614_0309/components/tMicrosoftCrmOutput/tMicrosoftCrmOutput_java.xml
-- {Talend\_Studio\_path}/plugins/org.talend.libraries.crm_7.2.1.20190614_0309/lib/talend-mscrm-3.4-20200330.jar
+- {Talend\_Studio\_path}/plugins/org.talend.libraries.crm_7.2.1.20181018_1137/lib/talend-mscrm-3.4-20200330.jar
