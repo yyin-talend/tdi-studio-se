@@ -9,8 +9,8 @@ product:
 
 | Info             | Value |
 | ---------------- | ---------------- |
-| Patch Name       | Patch\_20211122_TPS-5011\_v1-7.2.1 |
-| Release Date     | 2021-11-22 |
+| Patch Name       | Patch\_20211123_TPS-5011\_v1-7.2.1 |
+| Release Date     | 2021-11-23 |
 | Target Version   | 20190620_1446-V7.2.1 |
 | Product affected | Talend Studio |
 
