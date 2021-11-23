@@ -1273,7 +1273,7 @@ globalMap.put("<%=cid%>_ERROR_MESSAGE",e.getMessage());
 						}
                             <%dbLog.batch().executeDone(dbLog.str(dataAction));%>
 				    	rowsToCommitCount_<%=cid%> += countSum_<%=cid%>;
-				    	<%if (("INSERT").equals(dataAction)) || ("UPSERT").equals(dataAction)) {
+				    	<%if (("INSERT").equals(dataAction) || ("UPSERT").equals(dataAction)) {
 				    	%>
 				    		insertedCount_<%=cid%> += countSum_<%=cid%>;
 				    	<%
@@ -1313,7 +1313,7 @@ globalMap.put("<%=cid%>_ERROR_MESSAGE",e_<%=cid%>.getMessage());
 							countSum_<%=cid%> += (countEach_<%=cid%> < 0 ? 0 : countEach_<%=cid%>);
 						}
 						rowsToCommitCount_<%=cid%> += countSum_<%=cid%>;
-						<%if (("INSERT").equals(dataAction)) || ("UPSERT").equals(dataAction)) {
+						<%if (("INSERT").equals(dataAction) || ("UPSERT").equals(dataAction)) {
 				    	%>
 				    		insertedCount_<%=cid%> += countSum_<%=cid%>;
 				    	<%
@@ -1352,7 +1352,7 @@ globalMap.put("<%=cid%>_ERROR_MESSAGE",e_<%=cid%>.getMessage());
 						}
                             <%dbLog.batch().executeDone(dbLog.str(dataAction));%>
             	    	rowsToCommitCount_<%=cid%> += countSum_<%=cid%>;
-            	    	<%if (("INSERT").equals(dataAction)) || ("UPSERT").equals(dataAction)) {
+            	    	<%if (("INSERT").equals(dataAction) || ("UPSERT").equals(dataAction)) {
             	    	%>
             	    		insertedCount_<%=cid%> += countSum_<%=cid%>;
             	    	<%
@@ -1392,7 +1392,7 @@ globalMap.put("<%=cid%>_ERROR_MESSAGE",e_<%=cid%>.getMessage());
 						countSum_<%=cid%> += (countEach_<%=cid%> < 0 ? 0 : countEach_<%=cid%>);
 					}
 					rowsToCommitCount_<%=cid%> += countSum_<%=cid%>;
-					<%if (("INSERT").equals(dataAction)) || ("UPSERT").equals(dataAction)) {
+					<%if (("INSERT").equals(dataAction) || ("UPSERT").equals(dataAction)) {
 			    	%>
 			    		insertedCount_<%=cid%> += countSum_<%=cid%>;
 			    	<%
