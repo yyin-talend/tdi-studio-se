@@ -18,6 +18,7 @@ import java.util.Map;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.runtime.IPath;
+import org.eclipse.emf.ecore.EObject;
 import org.talend.commons.CommonsPlugin;
 import org.talend.core.model.process.INode;
 import org.talend.core.model.process.IProcess2;
@@ -62,7 +63,7 @@ public class StandardJobOSGiBundleBuildProvider extends RepositoryObjectTypeBuil
             IProcess2 process = (IProcess2) object;
             for (INode node : process.getGraphicalNodes()) {
                 if (node.isActivate() && BuildJobConstants.esbComponents.contains(node.getComponent().getName())) {
-                    fixDefaultBuildType(property);
+//                    fixDefaultBuildType(property);
                     return true;
                 }
             }
@@ -78,7 +79,7 @@ public class StandardJobOSGiBundleBuildProvider extends RepositoryObjectTypeBuil
             for (Object node : processItem.getProcess().getNode()) {
                 NodeType nodeType = (NodeType) node;
                 if (BuildJobConstants.esbComponents.contains(nodeType.getComponentName())) {
-                    fixDefaultBuildType(property);
+//                    fixDefaultBuildType(property);
                     return true;
                 }
             }
