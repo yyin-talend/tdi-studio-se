@@ -379,7 +379,7 @@ globalMap.put("<%=cid%>_ERROR_MESSAGE",e.getMessage());
             throws IllegalStateException, IOException, java.io.FileNotFoundException {
 
             chdir(remoteDirectory);
-            String[] nameLists = ftpClient.listNames(".");
+            String[] nameLists = ftpClient.listNames();
             if(nameLists != null){
                 for (String fileName : nameLists) {
                     if (fileName.matches(maskStr)) {
