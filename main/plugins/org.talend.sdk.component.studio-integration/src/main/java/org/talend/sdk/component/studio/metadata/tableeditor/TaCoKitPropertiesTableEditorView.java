@@ -13,8 +13,10 @@
 package org.talend.sdk.component.studio.metadata.tableeditor;
 
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.commons.lang3.StringUtils;
 import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.jface.viewers.ComboBoxCellEditor;
 import org.eclipse.swt.custom.CCombo;
@@ -46,7 +48,47 @@ public class TaCoKitPropertiesTableEditorView<B> extends PropertiesTableEditorVi
         Object returnedValue = null;
         if (cellEditorTypedValue != null && cellEditorTypedValue instanceof Integer) {
             int index = (Integer) cellEditorTypedValue;
+            ComboBoxCellEditor cbc = ((ComboBoxCellEditor) cellEditor);
+            CCombo combo = (CCombo) cbc.getControl();
+            String val = null;
+
+            if (combo.getEditable() && !StringUtils.isBlank(combo.getText())) {
+                val = String.valueOf(combo.getText());
+            }
+
+            int rowNumber = ((Table) combo.getParent()).getSelectionIndex();
+
+            Map<String, String> svs = new HashMap<String, String>();
+
+            if (currentParam.getListItemsValue() != null && currentParam.getListItemsValue().length > 0) {
+                for (Object o : currentParam.getListItemsValue()) {
+                    svs.put(String.valueOf(o), String.valueOf(o));
+                }
+            }
+
+            if (!StringUtils.isEmpty(val)) {
+                svs.put(val, val);
+            }
+
+            if (!svs.isEmpty()) {
+                TaCoKitUtil.updateElementParameter(currentParam, svs);
+            }
+
+            String[] listToDisplay = getItemsToDisplay(element, currentParam, rowNumber);
+            if (listToDisplay != null && listToDisplay.length > 0 && !Arrays.equals(listToDisplay, cbc.getItems())) {
+                ((ComboBoxCellEditor) cellEditor).setItems(listToDisplay);
+            }
+
             String[] namesSet = ((CCombo) cellEditor.getControl()).getItems();
+            if (val != null) {
+                for (int i = 0; i < namesSet.length; i++) {
+                    if (StringUtils.equals(namesSet[i], val)) {
+                        index = i;
+                        break;
+                    }
+                }
+            }
+
             if (namesSet.length > 0 && index > -1 && index < namesSet.length) {
                 returnedValue = namesSet[index];
             } else {
@@ -72,9 +114,13 @@ public class TaCoKitPropertiesTableEditorView<B> extends PropertiesTableEditorVi
             IElementParameter currentParam, CellEditor cellEditor, String currentKey, Object originalTypedValue) {
         CCombo combo = (CCombo) cellEditor.getControl();
         int rowNumber = ((Table) combo.getParent()).getSelectionIndex();
-        TaCoKitUtil.updateElementParameter(element, currentParam, rowNumber);
+        ComboBoxCellEditor cbc = ((ComboBoxCellEditor) cellEditor);
+
+        String val = String.valueOf(originalTypedValue);
+
+        TaCoKitUtil.updateElementParameter(element, currentParam, rowNumber, val);
         String[] listToDisplay = getItemsToDisplay(element, currentParam, rowNumber);
-        if (!Arrays.equals(listToDisplay, ((ComboBoxCellEditor) cellEditor).getItems())) {
+        if (!Arrays.equals(listToDisplay, cbc.getItems())) {
             ((ComboBoxCellEditor) cellEditor).setItems(listToDisplay);
         }
         Object returnedValue = 0;
