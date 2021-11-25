@@ -698,7 +698,7 @@ public class TaCoKitUtil {
         return null;
     }
 
-    public static void updateElementParameter(final IElement element, final IElementParameter param, int rowNumber) {
+    public static void updateElementParameter(final IElement element, final IElementParameter param, int rowNumber, String newValue) {
         if (param instanceof ValueSelectionParameter) {
             ValueSelectionParameter vsParam = ((ValueSelectionParameter) param);
             Map<String, String> suggestedValues = new LinkedHashMap<>();
@@ -707,14 +707,21 @@ public class TaCoKitUtil {
             if (!action.isMissingRequired()) {
                 suggestedValues = vsParam.getSuggestionValues();
             }
-            param.setListItemsDisplayCodeName(suggestedValues.keySet().toArray(new String[suggestedValues.size()]));
-            param.setListItemsValue(suggestedValues.keySet().toArray(new String[suggestedValues.size()]));
-            param.setListItemsDisplayName(suggestedValues.keySet().toArray(new String[suggestedValues.size()]));
-            param.setListItemsNotShowIf(new String[suggestedValues.size()]);
-            param.setListItemsShowIf(new String[suggestedValues.size()]);
+            if (!StringUtils.isEmpty(newValue)) {
+                suggestedValues.put(newValue, newValue);
+            }
+            updateElementParameter(param, suggestedValues);
         }
     }
 
+    public static void updateElementParameter(final IElementParameter param, Map<String, String> suggestedValues) {
+        param.setListItemsDisplayCodeName(suggestedValues.keySet().toArray(new String[suggestedValues.size()]));
+        param.setListItemsValue(suggestedValues.keySet().toArray(new String[suggestedValues.size()]));
+        param.setListItemsDisplayName(suggestedValues.keySet().toArray(new String[suggestedValues.size()]));
+        param.setListItemsNotShowIf(new String[suggestedValues.size()]);
+        param.setListItemsShowIf(new String[suggestedValues.size()]);
+    }
+    
     public static void fillDefaultItemsList(final IElementParameter param, Object value) {
         if (param instanceof ValueSelectionParameter) {
             List<String> itemsList = new ArrayList<String>();

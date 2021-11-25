@@ -220,7 +220,9 @@ public class PropertiesTableEditorView<B> extends AbstractPropertiesTableEditorV
                 case TACOKIT_VALUE_SELECTION:
                     final ComboBoxCellEditor cellEditor = new ComboBoxCellEditor(table, currentParam.getListItemsDisplayName());
                     final IElementParameter copyOfTmpParam = currentParam;
-                    ((CCombo) cellEditor.getControl()).setEditable(false);
+                    boolean editable = (EParameterFieldType.TACOKIT_VALUE_SELECTION == currentParam.getFieldType()) ? true
+                            : false;
+                    ((CCombo) cellEditor.getControl()).setEditable(editable);
                     ((CCombo) cellEditor.getControl())
                             .setEnabled(!(param.isRepositoryValueUsed() || param.isReadOnly() || currentParam.isReadOnly()));
                     column.setCellEditor(cellEditor, new CellEditorValueAdapter() {
