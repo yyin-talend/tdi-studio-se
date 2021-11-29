@@ -494,9 +494,8 @@ public class LoginHelper {
                  * Auto login, means there should be local repository
                  */
                 branches = getProjectBranches(lastUsedProject, true);
-            } catch (JSONException e) {                         
-                // TODO Auto-generated catch block
-                e.printStackTrace();
+            } catch (Exception e) {
+                org.talend.commons.exception.ExceptionHandler.process(e);
             }
             if (branches == null || branches.isEmpty()) {
                 return false;
@@ -860,7 +859,7 @@ public class LoginHelper {
      * @return
      * @throws JSONException
      */
-    public List<String> getProjectBranches(Project p, boolean onlyLocalIfPossible) throws JSONException {
+    public List<String> getProjectBranches(Project p, boolean onlyLocalIfPossible) throws Exception {
         IRepositoryService repositoryService = GlobalServiceRegister.getDefault()
                 .getService(IRepositoryService.class);
         if (repositoryService != null) {

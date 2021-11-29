@@ -382,8 +382,18 @@ public class LoginProjectPage extends AbstractLoginActionPage {
                         return Status.CANCEL_STATUS;
                     }
                     projectBranches.addAll(loginHelper.getProjectBranches(currentProjectSettings, !forceRefreshBranch));
-                } catch (JSONException e) {
+                } catch (Exception e) {
                     ExceptionHandler.process(e);
+                    Display.getDefault().asyncExec(() -> {
+                        if (monitor.isCanceled()) {
+                            return;
+                        }
+                        String msg = e.getLocalizedMessage();
+                        if (StringUtils.isBlank(msg)) {
+                            msg = Messages.getString("LoginProjectPage.ex.msg");
+                        }
+                        ExceptionMessageDialog.openError(null, Messages.getString("LoginProjectPage.ex.title"), msg, e);
+                    });
                 }
                 if (monitor.isCanceled() || Thread.currentThread().isInterrupted()) {
                     return Status.CANCEL_STATUS;
