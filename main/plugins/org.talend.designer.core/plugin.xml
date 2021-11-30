@@ -966,5 +966,11 @@
                 id="org.talend.designer.core.model.analysistask.UnresolvedComponentsDependenciesAnalysisTask"
                 name="UnresolvedComponentsDependenciesAnalysisTask">
           </analysisTask>
+           <analysisTask
+                class="org.talend.designer.core.model.analysistask.CustomComponentsDepRiskAnalysisTask"
+                description="Check custom componets and their dependencies are up-do-date"
+                id="org.talend.designer.core.model.analysistask.CustomComponentsDepRiskAnalysisTask"
+                name="CustomComponentsDepRiskAnalysisTask">
+          </analysisTask>
        </extension>
 </plugin>
