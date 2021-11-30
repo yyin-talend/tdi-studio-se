@@ -173,6 +173,9 @@ int nb_file_<%=cid%> = 0;
 		String rootDir_<%=cid %> = c_<%=cid %>.pwd();
 		String remotedir_<%=cid %> = (<%=remotedir %>).replaceAll("\\\\", "/");
 		String[] dirsTree_<%=cid %> = remotedir_<%=cid %>.split("/");
+		if (remotedir_<%=cid %>.startsWith("/")) {
+		    c_<%=cid %>.cd("/"); // go to root path if remote is absolute.
+		}
 		for (String dir: dirsTree_<%=cid %>) {
 			if (dir.isEmpty()) continue;
 
