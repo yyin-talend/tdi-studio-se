@@ -1,6 +1,7 @@
 package org.talend.designer.core.model.analysistask;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -11,11 +12,10 @@ import org.talend.analysistask.AbstractItemAnalysisTask;
 import org.talend.analysistask.AnalysisReportRecorder;
 import org.talend.analysistask.AnalysisReportRecorder.SeverityOption;
 import org.talend.camel.core.model.camelProperties.CamelProcessItem;
-import org.talend.core.GlobalServiceRegister;
 import org.talend.core.model.components.IComponent;
 import org.talend.core.model.properties.Item;
+import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
-import org.talend.core.runtime.services.IGenericService;
 import org.talend.core.ui.component.ComponentsFactoryProvider;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.model.utils.emf.talendfile.ProcessType;
@@ -30,40 +30,47 @@ public class CustomComponentsDepRiskAnalysisTask  extends AbstractItemAnalysisTa
     @Override
     public List<AnalysisReportRecorder> execute(Item item) {
 
-        Set<IComponent> components = ComponentsFactoryProvider.getInstance().getComponents();
-        List<String> loadedCustomComponentsNameList = new ArrayList<String>();
-        components.forEach(component ->  loadedCustomComponentsNameList.add(component.getName()));
+        if(item instanceof CamelProcessItem) {
+            Set<String> customComponents = new HashSet<String>();
+            List<AnalysisReportRecorder> recordList = new ArrayList<AnalysisReportRecorder>();
+            List<String> loadedCustomComponentsNameList = new ArrayList<String>();
+            EList<NodeTypeImpl> nodeList = null;
 
-        IGenericService genericService = GlobalServiceRegister.getDefault().getService(
-                IGenericService.class);
-        List<Map<String, String>> allLoadedomponentsInfo = genericService.getAllGenericComponentsInfo();
-        List<String> allLoadedComponentsNameList = new ArrayList<String>();
-        for(Map<String, String> component : allLoadedomponentsInfo) {
-            allLoadedComponentsNameList.add(component.get("Name"));
-        }
+            Set<IComponent> components = ComponentsFactoryProvider.getInstance().getComponents();
+            components.forEach(component ->  loadedCustomComponentsNameList.add(component.getName()));
 
-        ProcessType processType = ((CamelProcessItem) item).getProcess();
-        EList<NodeTypeImpl> nodeList = processType.getNode();
+            List<IComponent> loadedCustomComponents = ComponentsFactoryProvider.getInstance().getCustomComponents();
+            loadedCustomComponents.forEach(component ->  loadedCustomComponentsNameList.add(component.getName()));
 
-        List<AnalysisReportRecorder> recordList = new ArrayList<AnalysisReportRecorder>();
-        for(NodeTypeImpl node : nodeList) {
-            String componentName = node.getComponentName();
-            if(loadedCustomComponentsNameList.contains(componentName) 
-                    || !allLoadedComponentsNameList.contains(componentName)) {
-                
+
+            ProcessType processType = ((CamelProcessItem) item).getProcess();
+            nodeList = processType.getNode();
+
+            if(null != nodeList) {
+                for(NodeTypeImpl node : nodeList) {
+                    String componentName = node.getComponentName();
+                    if(!loadedCustomComponentsNameList.contains(componentName)) {
+                        customComponents.add(componentName);
+                    }
+                }
+            }
+
+            for(String customComponent : customComponents) {
                 recordList.add(new AnalysisReportRecorder(this, item, SeverityOption.CRITICAL,
                         Messages.getString("CustomComponent.updateComponentAndDependencies", 
-                        componentName, componentName)));
+                                customComponent)));
             }
-        }
 
-        return recordList;
+            return recordList;
+        }
+        return null;
     }
 
     @Override
     public Set<ERepositoryObjectType> getRepositoryObjectTypeScope() {
         Set<ERepositoryObjectType> types = new HashSet<ERepositoryObjectType>();
-        types.addAll(ERepositoryObjectType.getAllTypesOfCodes());
+        types.addAll(ERepositoryObjectType.getAllTypesOfProcess());
+        types.addAll(ERepositoryObjectType.getAllTypesOfProcess2());
         return types;
     }
 }
