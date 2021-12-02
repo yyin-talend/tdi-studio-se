@@ -43,32 +43,27 @@ public class CustomComponentsDepRiskAnalysisTask  extends AbstractItemAnalysisTa
         for(Object nodeObject : processType.getNode()) {
             NodeType nodeType = (NodeType) nodeObject;
             if(loadedCustomComponentsTypes.contains(nodeType.getComponentName())) {
-                for (Object o : nodeType.getElementParameter()) {
-                    ElementParameterType t = (ElementParameterType) o;
-                    if ("UNIQUE_NAME".equals(t.getName())) {
-                        String compnentNameVal = t.getValue();
-                        if (compnentNameVal != null) {
-                            recordList.add(new AnalysisReportRecorder(this, item, SeverityOption.WARNING,
-                                    Messages.getString("CustomComponent.updateComponentAndDependencies",
-                                            compnentNameVal, nodeType.getComponentName())));
-                        }
-                    }
-                }
+                recordList.add(prepareMessage(item, nodeType));
             }else if(!loadedAllComponentsTypes.contains(nodeType.getComponentName())){
-                for (Object o : nodeType.getElementParameter()) {
-                    ElementParameterType t = (ElementParameterType) o;
-                    if ("UNIQUE_NAME".equals(t.getName())) {
-                        String compnentNameVal = t.getValue();
-                        if (compnentNameVal != null) {
-                            recordList.add(new AnalysisReportRecorder(this, item, SeverityOption.WARNING,
-                                    Messages.getString("CustomComponent.updateComponentAndDependencies",
-                                            compnentNameVal, nodeType.getComponentName())));
-                        }
-                    }
-                }
+                recordList.add(prepareMessage(item, nodeType));
             }
         }
         return recordList;
+    }
+
+    private AnalysisReportRecorder prepareMessage(Item item, NodeType nodeType) {
+        for (Object o : nodeType.getElementParameter()) {
+            ElementParameterType t = (ElementParameterType) o;
+            if ("UNIQUE_NAME".equals(t.getName())) {
+                String compnentNameVal = t.getValue();
+                if (compnentNameVal != null) {
+                    return new AnalysisReportRecorder(this, item, SeverityOption.WARNING,
+                            Messages.getString("CustomComponent.updateComponentAndDependencies",
+                                    compnentNameVal, nodeType.getComponentName()));
+                }
+            }
+        }
+        return null;
     }
 
     @Override
