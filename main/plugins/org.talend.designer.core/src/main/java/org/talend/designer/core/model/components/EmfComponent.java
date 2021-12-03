@@ -1556,7 +1556,7 @@ public class EmfComponent extends AbstractBasicComponent {
                             }
                             importType.setMRREQUIRED(group.isMrRequired());
                             ModulesNeededProvider.collectModuleNeeded(node.getComponent().getName(), importType,
-                                    componentHadoopDistributionImportNeedsList);
+                                    componentHadoopDistributionImportNeedsList, hc.getDistribution());
                         }
                     }
                 }
@@ -1672,7 +1672,8 @@ public class EmfComponent extends AbstractBasicComponent {
                         importType.setMRREQUIRED(versionModule.moduleGrop.isMrRequired());
                         importType.setREQUIREDIF(versionModule.getModuleRequiredIf().getConditionString());
                         ModulesNeededProvider.collectModuleNeeded(node.getComponent() != null ? node.getComponent().getName()
-                                : "", importType, hadoopDistributionImportNeedsList); //$NON-NLS-1$
+                                : "", importType, hadoopDistributionImportNeedsList, //$NON-NLS-1$
+                                versionModule.distributionVersion.getVersion());
                     }
                 }
 
