@@ -27683,8 +27683,7 @@
                 <IMPORT
                     NAME="jasypt-1.9.2"
                     MODULE="jasypt-1.9.2.jar"
-                    MVN="mvn:org.talend.libraries/jasypt-1.9.2/6.0.0"
-                    UrlPath="platform:/plugin/org.talend.libraries.apache.cxf/lib/jasypt-1.9.2.jar"
+                    MVN="mvn:org.jasypt/jasypt/1.9.2"
                     REQUIRED_IF="(AUTH_TYPE == 'ON_PREMISE') AND (MS_CRM_VERSION == 'CRM_2015')" />
                 <IMPORT
                     NAME="jaxb-core-2.2.11"
@@ -27902,9 +27901,9 @@
                 MVN="mvn:org.apache.olingo/odata-commons-core/4.7.1"
                 REQUIRED_IF="(((AUTH_TYPE=='ONLINE') AND (API_VERSION=='API_2011' OR API_VERSION=='API_2016_ODATA' OR API_VERSION=='API_2018_ODATA')) OR ((AUTH_TYPE=='ON_PREMISE') AND (MS_CRM_VERSION == 'CRM_2016' OR MS_CRM_VERSION == 'CRM_2018')))" />
             <IMPORT
-                NAME="slf4j-api-1.7.25.jar"
-                MODULE="slf4j-api-1.7.25.jar"
-                MVN="mvn:org.slf4j/slf4j-api/1.7.25"
+                NAME="slf4j-api-1.7.29.jar"
+                MODULE="slf4j-api-1.7.29.jar"
+                MVN="mvn:org.slf4j/slf4j-api/1.7.29"
                 REQUIRED_IF="(((AUTH_TYPE=='ONLINE') AND (API_VERSION=='API_2011' OR API_VERSION=='API_2016_ODATA' OR API_VERSION=='API_2018_ODATA')) OR ((AUTH_TYPE=='ON_PREMISE') AND (MS_CRM_VERSION == 'CRM_2016' OR MS_CRM_VERSION == 'CRM_2018')))" />
             <IMPORT
                 NAME="slf4j-simple-1.7.2"

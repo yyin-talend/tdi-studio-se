@@ -241,7 +241,7 @@ public class JobSettingsView extends ViewPart implements IJobSettingsView, ISele
     }
 
     private IRepositoryViewObject retrieveBusiness(IEditorPart businessPart) {
-        if (CorePlugin.getDefault().getDiagramModelService().isBusinessDiagramEditor(businessPart)) {
+        if (CorePlugin.getDefault().getDiagramModelService() != null && CorePlugin.getDefault().getDiagramModelService().isBusinessDiagramEditor(businessPart)) {
             IRepositoryViewObject lastVersion = null;
             selectedModel = CorePlugin.getDefault().getDiagramModelService().getBusinessEditorSelection(
                     PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getActiveEditor());
@@ -272,6 +272,7 @@ public class JobSettingsView extends ViewPart implements IJobSettingsView, ISele
         final int style = SWT.H_SCROLL | SWT.V_SCROLL | SWT.NO_FOCUS;
         IDynamicProperty dynamicComposite = null;
 
+        IDiagramModelService diagramModelService = CorePlugin.getDefault().getDiagramModelService();
         if (EComponentCategory.EXTRA.equals(category)) {
             // achen modify to fix bug 0006241
             Process process = getElement();
@@ -312,14 +313,20 @@ public class JobSettingsView extends ViewPart implements IJobSettingsView, ISele
             dynamicComposite = gitUIService.createProcessGitHistoryComposite(parent, this, tabFactory.getWidgetFactory(),
                     (IRepositoryViewObject) data);
         } else if (EComponentCategory.APPEARANCE.equals(category)) {
-            dynamicComposite = (IDynamicProperty) CorePlugin.getDefault().getDiagramModelService()
-                    .getBusinessAppearanceComposite(parent, SWT.NONE, tabFactory.getWidgetFactory(), selectedModel);
+            if(diagramModelService != null) {
+                dynamicComposite = (IDynamicProperty) diagramModelService
+                        .getBusinessAppearanceComposite(parent, SWT.NONE, tabFactory.getWidgetFactory(), selectedModel);
+            }
         } else if (EComponentCategory.RULERS_AND_GRID.equals(category)) {
-            dynamicComposite = (IDynamicProperty) CorePlugin.getDefault().getDiagramModelService()
-                    .getBusinessRulersAndGridComposite(parent, SWT.NONE, tabFactory.getWidgetFactory(), null);
+            if(diagramModelService != null) {
+                dynamicComposite = (IDynamicProperty) diagramModelService
+                        .getBusinessRulersAndGridComposite(parent, SWT.NONE, tabFactory.getWidgetFactory(), null);
+            }
         } else if (EComponentCategory.ASSIGNMENT.equals(category)) {
-            dynamicComposite = (IDynamicProperty) CorePlugin.getDefault().getDiagramModelService()
-                    .getBusinessAssignmentComposite(parent, SWT.NONE, tabFactory.getWidgetFactory(), selectedModel);
+            if(diagramModelService != null) {
+                dynamicComposite = (IDynamicProperty) diagramModelService
+                        .getBusinessAssignmentComposite(parent, SWT.NONE, tabFactory.getWidgetFactory(), selectedModel);
+            }
         } else if (EComponentCategory.DEPLOYMENT.equals(category)) {
             dynamicComposite = new DeploymentComposite(parent, SWT.NONE, tabFactory.getWidgetFactory(),
                     (IRepositoryViewObject) data);
@@ -369,7 +376,9 @@ public class JobSettingsView extends ViewPart implements IJobSettingsView, ISele
                 }
             }
         } else {
-            BusinessType type = CorePlugin.getDefault().getDiagramModelService().getBusinessModelType(obj);
+            BusinessType type = CorePlugin.getDefault().getDiagramModelService() != null
+                    ? CorePlugin.getDefault().getDiagramModelService().getBusinessModelType(obj)
+                    : null;
             if (BusinessType.NOTE.equals(type) || BusinessType.SHAP.equals(type) || BusinessType.CONNECTION.equals(type)) {
                 categories = getCategories(obj);
             } else {
@@ -620,7 +629,9 @@ public class JobSettingsView extends ViewPart implements IJobSettingsView, ISele
                 }
             }
         } else {
-            BusinessType type = CorePlugin.getDefault().getDiagramModelService().getBusinessModelType(obj);
+            BusinessType type = CorePlugin.getDefault().getDiagramModelService() != null
+                    ? CorePlugin.getDefault().getDiagramModelService().getBusinessModelType(obj)
+                    : null;
             if (BusinessType.SHAP.equals(type) || BusinessType.CONNECTION.equals(type)) {
                 category.add(EComponentCategory.APPEARANCE);
                 category.add(EComponentCategory.ASSIGNMENT);
@@ -898,7 +909,8 @@ public class JobSettingsView extends ViewPart implements IJobSettingsView, ISele
         if (dc instanceof ProcessVersionComposite) {
             return ((ProcessVersionComposite) dc).getSelection();
 
-        } else if (CorePlugin.getDefault().getDiagramModelService().isInstanceOfBusinessAssignmentComposite(dc)) {
+        } else if (CorePlugin.getDefault().getDiagramModelService() != null
+                && CorePlugin.getDefault().getDiagramModelService().isInstanceOfBusinessAssignmentComposite(dc)) {
             IRepositoryView repositoryView = RepositoryManagerHelper.findRepositoryView();
             if (repositoryView != null) {
                 return repositoryView.getViewer().getSelection();

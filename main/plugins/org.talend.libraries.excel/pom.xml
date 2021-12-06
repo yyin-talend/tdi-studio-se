@@ -73,7 +73,7 @@
 							<stripVersion>false</stripVersion>
 							<outputDirectory>${project.basedir}/lib</outputDirectory>
 							<artifactItems>
-								<artifactItem>
+                                <artifactItem>
                                     <groupId>${talend.groupid}</groupId>
                                     <artifactId>simpleexcel</artifactId>
                                     <version>2.5-20201119</version>
@@ -82,11 +82,6 @@
                                     <groupId>${talend.groupid}</groupId>
                                     <artifactId>talendMsgMailUtil</artifactId>
                                     <version>1.2-20201022</version>
-                                </artifactItem>
-                                <artifactItem>
-                                    <groupId>${talend.groupid}</groupId>
-                                    <artifactId>talendExcel</artifactId>
-                                    <version>1.12-20210908</version>
                                 </artifactItem>
 							</artifactItems>
 						</configuration>

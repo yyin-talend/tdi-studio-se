@@ -69,7 +69,7 @@ abstract public class TCKComponentInstallerTask extends BaseComponentInstallerTa
                 if (carDir.isDirectory()) {
                     File[] cars = carDir.listFiles();
 
-                    ExceptionHandler.log("Files found: " + Arrays.toString(cars));
+                    ExceptionHandler.logDebug("Files found: " + Arrays.toString(cars));
 
                     LOGGER.info("Files found: {}", Arrays.toString(cars));
 
@@ -78,12 +78,12 @@ abstract public class TCKComponentInstallerTask extends BaseComponentInstallerTa
                 }
 
             } catch (IOException e) {
-                ExceptionHandler.log("Can't find car file");
+                ExceptionHandler.logDebug("Can't find car file");
                 ExceptionHandler.process(e);
                 LOGGER.error("Can't find car file", e);
             }
         }
-        ExceptionHandler.log("Can't find car file from folder " + carDir);
+        ExceptionHandler.logDebug("Can't find car file from folder " + carDir);
         LOGGER.error("Can't find car file from folder {}", carDir);
         return null;
     }
@@ -92,7 +92,7 @@ abstract public class TCKComponentInstallerTask extends BaseComponentInstallerTa
     public boolean needInstall() {
 
         if (this.updateTck()) {
-            ExceptionHandler.log("System property: " + SYS_PROP_TCK + " is true");
+            ExceptionHandler.logDebug("System property: " + SYS_PROP_TCK + " is true");
             LOGGER.info("System property: {} is true", SYS_PROP_TCK);
             return true;
         }
@@ -105,7 +105,7 @@ abstract public class TCKComponentInstallerTask extends BaseComponentInstallerTa
             for (ComponentGAV gav : tcompv1Gavs) {
                 File jarFile = librairesManagerService.resolveStatusLocally(gav.toMavenUri());
                 if (jarFile == null) {
-                    ExceptionHandler.log("Component: " + gav.toString() + " was not installed");
+                    ExceptionHandler.logDebug("Component: " + gav.toString() + " was not installed");
                     LOGGER.info("Component: {} was not installed", gav.toString());
                     toInstall = true;
                     break;
@@ -114,7 +114,7 @@ abstract public class TCKComponentInstallerTask extends BaseComponentInstallerTa
         }
 
         if (toInstall) {
-            ExceptionHandler.log("Component: " + Arrays.toString(tcompv1Gavs.toArray()) + " is going to be installed");
+            ExceptionHandler.logDebug("Component: " + Arrays.toString(tcompv1Gavs.toArray()) + " is going to be installed");
             LOGGER.info("Component: {} is going to be installed", Arrays.toString(tcompv1Gavs.toArray()));
         }
         return toInstall;
@@ -135,7 +135,7 @@ abstract public class TCKComponentInstallerTask extends BaseComponentInstallerTa
             Set<File> files = new HashSet<File>();
             List<File> carFiles = getCarFiles();
             if (carFiles != null) {
-                ExceptionHandler.log("Car file: " + Arrays.toString(carFiles.toArray()) + " was added");
+                ExceptionHandler.logDebug("Car file: " + Arrays.toString(carFiles.toArray()) + " was added");
                 LOGGER.info("Car file: {} was added", Arrays.toString(carFiles.toArray()));
                 files.addAll(carFiles);
             }
@@ -145,30 +145,30 @@ abstract public class TCKComponentInstallerTask extends BaseComponentInstallerTa
                     for (File carFile : carFiles) {
                         IStatus stat = result.getInstalledStatus().get(carFile);
                         if (stat == null) {
-                            ExceptionHandler.log("Skipped to install car: " + carFile);
+                            ExceptionHandler.logDebug("Skipped to install car: " + carFile);
                             LOGGER.info("Skipped to install car: {}", carFile);
                         } else if (stat.getCode() == IStatus.OK) {
                             installed = true;
-                            ExceptionHandler.log("TCK Component installed: " + carFile);
+                            ExceptionHandler.logDebug("TCK Component installed: " + carFile);
                             LOGGER.info("TCK Component installed: {}", carFile);
                         } else {
-                            ExceptionHandler.log("TCK Component installed: " + carFile);
+                            ExceptionHandler.logDebug("TCK Component installed: " + carFile);
                             LOGGER.error("Failed to install car: {}", carFile);
                         }
                     }
 
                     if (installed) {
-                        ExceptionHandler.log("TCK Component installed: " + Arrays.toString(carFiles.toArray()));
+                        ExceptionHandler.logDebug("TCK Component installed: " + Arrays.toString(carFiles.toArray()));
                         LOGGER.info("TCK Component installed: {}", Arrays.toString(carFiles.toArray()));
                     }
 
                 } catch (Exception e) {
-                    ExceptionHandler.log("Failed to install car: " + Arrays.toString(carFiles.toArray()));
+                    ExceptionHandler.logDebug("Failed to install car: " + Arrays.toString(carFiles.toArray()));
                     ExceptionHandler.process(e);
                     LOGGER.error("Failed to install car: {}", Arrays.toString(carFiles.toArray()), e);
                 }
             } else {
-                ExceptionHandler.log("No car files");
+                ExceptionHandler.logDebug("No car files");
                 LOGGER.info("No car files");
             }
         }

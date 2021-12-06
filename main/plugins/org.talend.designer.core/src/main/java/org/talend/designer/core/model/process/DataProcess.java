@@ -3336,36 +3336,63 @@ public class DataProcess implements IGeneratingProcess {
                 if (bdDataNode != null && addedConfDataNode != null && bdDataNode.isActivate()
                         && addedConfDataNode.isActivate()) {
                     INode startNode = bdDataNode.getSubProcessStartNode(true);
-                    if (Optional.ofNullable(startNode).map(n -> n.getComponent()).map(c -> c.getName())
-                            .map(n -> "tPrejob".equals(n)).orElse(false)) {
-                        IConnection conn = null;
-                        try {
-                            conn = findConnection2InsertHadoopConf(startNode, bdDataNode, new HashSet<>());
-                        } catch (Throwable e) {
-                            ExceptionHandler.process(e);
-                        }
-                        if (conn instanceof AbstractConnection) {
-                            INode relinkNode = conn.getTarget();
-                            if (relinkNode instanceof AbstractNode) {
-                                ((AbstractConnection) conn).setTarget(addedConfDataNode);
+                    List<? extends IConnection> inConns = bdDataNode.getIncomingConnections(EConnectionType.ON_SUBJOB_OK);
+                    if (inConns == null) {
+                        inConns = new ArrayList<Connection>();
+                    }
+                    boolean onSubjobOkbeforeBDNode = inConns.size() > 0;
+                    if (onSubjobOkbeforeBDNode) {
+                        ((AbstractConnection) inConns.get(0)).setTarget(addedConfDataNode);
+                        IConnection connection = (IConnection) inConns.get(0);
+                        bdDataNode.getIncomingConnections().remove(connection);
+                        ((List<IConnection>) addedConfDataNode.getIncomingConnections()).add(connection);
 
-                                addedConfDataNode.setStart(false);
-                                addedConfDataNode.setSubProcessStart(relinkNode.isSubProcessStart());
-                                addedConfDataNode.setDesignSubjobStartNode(null);
+                        addedConfDataNode.setStart(false);
+                        addedConfDataNode.setSubProcessStart(true);
+                        addedConfDataNode.setDesignSubjobStartNode(null);
 
-                                DataConnection onCompOkConn = new DataConnection();
-                                onCompOkConn.setActivate(true);
-                                onCompOkConn.setLineStyle(EConnectionType.ON_COMPONENT_OK);
-                                onCompOkConn.setTraceConnection(false);
-                                onCompOkConn
-                                        .setName("after_" + addedConfDataNode.getUniqueName() + "_" + relinkNode.getUniqueName()); //$NON-NLS-1$ //$NON-NLS-2$
-                                onCompOkConn.setSource(addedConfDataNode);
-                                onCompOkConn.setTarget(relinkNode);
-                                onCompOkConn.setConnectorName(EConnectionType.ON_COMPONENT_OK.getName());
+                        DataConnection onCompOkConn = new DataConnection();
+                        onCompOkConn.setActivate(true);
+                        onCompOkConn.setLineStyle(EConnectionType.ON_COMPONENT_OK);
+                        onCompOkConn.setTraceConnection(false);
+                        onCompOkConn.setName("after_" + addedConfDataNode.getUniqueName() + "_" + bdDataNode.getUniqueName()); //$NON-NLS-1$ //$NON-NLS-2$
+                        onCompOkConn.setSource(addedConfDataNode);
+                        onCompOkConn.setTarget(bdDataNode);
+                        onCompOkConn.setConnectorName(EConnectionType.ON_COMPONENT_OK.getName());
 
-                                ((AbstractNode) relinkNode).setSubProcessStart(true);
-                                ((AbstractNode) relinkNode).setDesignSubjobStartNode(null);
-                                createDataConnection(addedConfDataNode, (AbstractNode) relinkNode, onCompOkConn, null);
+                        createDataConnection(addedConfDataNode, (AbstractNode) bdDataNode, onCompOkConn, null);
+                    } else {
+                        if (Optional.ofNullable(startNode).map(n -> n.getComponent()).map(c -> c.getName())
+                                .map(n -> "tPrejob".equals(n)).orElse(false)) {
+                            IConnection conn = null;
+                            try {
+                                conn = findConnection2InsertHadoopConf(startNode, bdDataNode, new HashSet<>());
+                            } catch (Throwable e) {
+                                ExceptionHandler.process(e);
+                            }
+                            if (conn instanceof AbstractConnection) {
+                                INode relinkNode = conn.getTarget();
+                                if (relinkNode instanceof AbstractNode) {
+                                    ((AbstractConnection) conn).setTarget(addedConfDataNode);
+
+                                    addedConfDataNode.setStart(false);
+                                    addedConfDataNode.setSubProcessStart(relinkNode.isSubProcessStart());
+                                    addedConfDataNode.setDesignSubjobStartNode(null);
+
+                                    DataConnection onCompOkConn = new DataConnection();
+                                    onCompOkConn.setActivate(true);
+                                    onCompOkConn.setLineStyle(EConnectionType.ON_COMPONENT_OK);
+                                    onCompOkConn.setTraceConnection(false);
+                                    onCompOkConn.setName(
+                                            "after_" + addedConfDataNode.getUniqueName() + "_" + relinkNode.getUniqueName()); //$NON-NLS-1$ //$NON-NLS-2$
+                                    onCompOkConn.setSource(addedConfDataNode);
+                                    onCompOkConn.setTarget(relinkNode);
+                                    onCompOkConn.setConnectorName(EConnectionType.ON_COMPONENT_OK.getName());
+
+                                    ((AbstractNode) relinkNode).setSubProcessStart(true);
+                                    ((AbstractNode) relinkNode).setDesignSubjobStartNode(null);
+                                    createDataConnection(addedConfDataNode, (AbstractNode) relinkNode, onCompOkConn, null);
+                                }
                             }
                         }
                     }
