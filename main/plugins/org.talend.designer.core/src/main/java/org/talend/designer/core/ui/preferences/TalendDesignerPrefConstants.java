@@ -89,8 +89,4 @@ public class TalendDesignerPrefConstants {
     public static final String NOT_SHOW_WARNING_WHEN_DELETE_LINK_WITH_JOBLETTRIGGERLINKCOMPONENT = "not_show_warning_when_delete_link_with_joblettriggerlinkcomponent"; //$NON-NLS-1$
 
     public static final String PALETTE_SETTINGS_RECENTLY_USED_LIST_SIZE = "paletteSettingsRecentlyUsedListSize"; //$NON-NLS-1$
-
-    public static final String PALETTE_SETTINGS_SEARCH_FROM_HELP = "paletteSettingsSearchFromHelp"; //$NON-NLS-1$
-
-    public static final String PALETTE_SETTINGS_SEARCH_RESULT_LIMIT_FROM_HELP = "paletteSettingsSearchResultLimitFromHelp"; //$NON-NLS-1$
 }
