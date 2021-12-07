@@ -1556,7 +1556,7 @@ public class EmfComponent extends AbstractBasicComponent {
                             }
                             importType.setMRREQUIRED(group.isMrRequired());
                             ModulesNeededProvider.collectModuleNeeded(node.getComponent().getName(), importType,
-                                    componentHadoopDistributionImportNeedsList, hc.getDistribution());
+                                    componentHadoopDistributionImportNeedsList, hc.getVersion());
                         }
                     }
                 }
