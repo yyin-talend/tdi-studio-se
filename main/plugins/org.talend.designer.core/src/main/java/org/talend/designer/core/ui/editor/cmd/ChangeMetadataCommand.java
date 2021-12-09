@@ -703,7 +703,7 @@ public class ChangeMetadataCommand extends Command {
     private void updateComponentSchema(INode selectedNode, IMetadataTable table) {
         IGenericWizardService wizardService = null;
         if (GlobalServiceRegister.getDefault().isServiceRegistered(IGenericWizardService.class)) {
-            wizardService = (IGenericWizardService) GlobalServiceRegister.getDefault().getService(IGenericWizardService.class);
+            wizardService = GlobalServiceRegister.getDefault().getService(IGenericWizardService.class);
         }
         if (wizardService != null) {
             wizardService.updateComponentSchema(selectedNode, table);
@@ -892,6 +892,10 @@ public class ChangeMetadataCommand extends Command {
                 dbTableElementField = curNode.getElementParameter(EConnectionParameterName.GENERIC_TABLENAME.getDisplayName());
             }
             changeTableNameParameter(newdbTableName, olddbTableName, uniqueName, dbTableElementField);
+            if (((Node) curNode).getComponent().getName().startsWith("tSAPADSO")) { //$NON-NLS-1$
+                IElementParameter serviceNameElementField = curNode.getElementParameter("SERVICE_NAME"); //$NON-NLS-1$
+                changeTableNameParameter(newdbTableName, olddbTableName, uniqueName, serviceNameElementField);
+            }
             if (((Node) curNode).isELTComponent()) {
                 IElementParameter eltTablename = curNode.getElementParameter("ELT_TABLE_NAME"); //$NON-NLS-1$
                 changeTableNameParameter(newdbTableName, olddbTableName, uniqueName, eltTablename);
