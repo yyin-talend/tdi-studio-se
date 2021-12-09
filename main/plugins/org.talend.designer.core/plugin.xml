@@ -966,11 +966,17 @@
                 id="org.talend.designer.core.model.analysistask.UnresolvedComponentsDependenciesAnalysisTask"
                 name="UnresolvedComponentsDependenciesAnalysisTask">
           </analysisTask>
-           <analysisTask
+          <analysisTask
+                class="org.talend.designer.core.model.analysistask.DuplicatedRouteIdUsageAnalysisTask"
+                description="Check duplicated routeid usage"
+                id="org.talend.designer.core.model.analysistask.DuplicatedRouteIdUsageAnalysisTask"
+                name="DuplicatedRouteIdUsageAnalysisTask">
+          </analysisTask>
+		  <analysisTask
                 class="org.talend.designer.core.model.analysistask.CustomComponentsDepRiskAnalysisTask"
                 description="Check if custom components are used"
                 id="org.talend.designer.core.model.analysistask.CustomComponentsDepRiskAnalysisTask"
                 name="CustomComponentsDepRiskAnalysisTask">
-          </analysisTask>
+		  </analysisTask
        </extension>
 </plugin>
