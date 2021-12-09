@@ -9,6 +9,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
+import java.util.function.Function;
 import java.util.regex.Pattern;
 
 import org.eclipse.emf.common.util.EList;
@@ -43,6 +44,10 @@ public final class TaCoKitNode {
             Arrays.asList(EParameterName.UNIQUE_NAME.getName(), EParameterName.ACTIVATE.getName(), TACOKIT_COMPONENT_ID));
 
     public TaCoKitNode(final NodeTypeImpl node) {
+        this(node, Lookups.service()::getDetailById);
+    }
+
+    TaCoKitNode(final NodeTypeImpl node, Function<String, ComponentDetail> detailsGetter) {
         Objects.requireNonNull(node, "Node should not be null");
         if (!isTacokit(node)) {
             throw new IllegalArgumentException("It is not Tacokit node " + node.getComponentName());
@@ -50,7 +55,7 @@ public final class TaCoKitNode {
         this.node = node;
         final String componentId = getComponentId(node).orElseThrow(() ->
                 new IllegalStateException("No component detail for " + node.getComponentName()));
-        this.detail = Lookups.service().getDetailById(componentId);
+        this.detail = detailsGetter.apply(componentId);
     }
 
     public String getId() {

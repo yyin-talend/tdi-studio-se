@@ -24,6 +24,7 @@ import java.lang.reflect.Proxy;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
+import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
 import org.talend.core.GlobalServiceRegister;
@@ -137,7 +138,8 @@ public final class Lookups {
     }
 
     private static <T> T lookup(final Class<T> type) {
-        final BundleContext context = Platform.getBundle(TaCoKitConst.BUNDLE_ID).getBundleContext();
+        final Bundle bundle = Platform.getBundle(TaCoKitConst.BUNDLE_ID);
+        final BundleContext context = bundle.getBundleContext();
         final ServiceReference<T> clientRef = context.getServiceReference(type);
         return context.getService(clientRef);
     }
