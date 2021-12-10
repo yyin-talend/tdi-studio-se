@@ -14,10 +14,11 @@ import java.util.regex.Pattern;
 import org.eclipse.emf.common.util.EList;
 import org.talend.core.model.process.EParameterFieldType;
 import org.talend.designer.core.model.components.EParameterName;
+import org.talend.designer.core.model.utils.emf.talendfile.ElementParameterType;
 import org.talend.designer.core.model.utils.emf.talendfile.ElementValueType;
 import org.talend.designer.core.model.utils.emf.talendfile.impl.ElementParameterTypeImpl;
-import org.talend.designer.core.model.utils.emf.talendfile.impl.ElementValueTypeImpl;
 import org.talend.designer.core.model.utils.emf.talendfile.impl.NodeTypeImpl;
+import org.talend.designer.core.model.utils.emf.talendfile.impl.TalendFileFactoryImpl;
 import org.talend.sdk.component.server.front.model.ComponentDetail;
 import org.talend.sdk.component.server.front.model.SimplePropertyDefinition;
 import org.talend.sdk.component.studio.Lookups;
@@ -133,7 +134,7 @@ public final class TaCoKitNode {
                 .filter(e -> (isComponentProperty(e.getKey()) && !(Pattern.compile("(\\[)\\d+(\\])").matcher(e.getKey()).find())))
                 .forEach(e -> node.getElementParameter().add(createParameter(e.getKey(), e.getValue())));
         properties.entrySet().stream().filter(e -> e.getKey().endsWith(VersionParameter.VERSION_SUFFIX)).forEach(e -> {
-            final ElementParameterTypeImpl parameter = new ElementParameter();
+            final ElementParameterType parameter = TalendFileFactoryImpl.init().createElementParameterType();
             parameter.setName(e.getKey());
             parameter.setValue(e.getValue());
             parameter.setField(EParameterFieldType.TECHNICAL.getName());
@@ -150,7 +151,7 @@ public final class TaCoKitNode {
         String paramName = paramKey.substring(0, paramKey.indexOf("["));
         String elemRef = paramKey.substring(0, paramKey.indexOf("[") + 1) + paramKey.substring(paramKey.indexOf("]"));
         int paramIndex = Integer.parseInt(paramKey.substring(paramKey.indexOf("[") + 1, paramKey.indexOf("]")));
-        ElementParameterTypeImpl sameNameParam = null;
+        ElementParameterType sameNameParam = null;
         for (ElementParameterTypeImpl param : tableFieldParamList) {
             if (param.getName().equals(paramName)) {
                 sameNameParam = param;
@@ -181,19 +182,19 @@ public final class TaCoKitNode {
             }
         }
         if (sameNameParam == null) {
-            sameNameParam = new ElementParameter();
+            sameNameParam = TalendFileFactoryImpl.init().createElementParameterType();
             sameNameParam.setName(paramName);
             sameNameParam.setField(EParameterFieldType.TABLE.name());
-            tableFieldParamList.add(sameNameParam);
+            tableFieldParamList.add((ElementParameterTypeImpl) sameNameParam);
         }
-        ElementValueType elementValueType = new ElementValueType();
+        ElementValueType elementValueType = TalendFileFactoryImpl.init().createElementValueType();
         elementValueType.setElementRef(elemRef);
         elementValueType.setValue(paramValue);    
         sameNameParam.getElementValue().add(elementValueType);        
     }
 
-    private ElementParameterTypeImpl createParameter(final String name, final String value) {
-        final ElementParameterTypeImpl parameter = new ElementParameter();
+    private ElementParameterType createParameter(final String name, final String value) {
+        final ElementParameterType parameter = TalendFileFactoryImpl.init().createElementParameterType();
         parameter.setName(name);
         parameter.setValue(value);
         parameter.setField(getPropertyType(name));
@@ -247,28 +248,4 @@ public final class TaCoKitNode {
         }
         return Optional.empty();
     }
-
-    /**
-     * This class extends ElementParameterTypeImpl to allow instance creation
-     */
-    private static class ElementParameter extends ElementParameterTypeImpl {
-
-        /**
-         * Extends super class constructor visibility
-         */
-        public ElementParameter() {
-            super();
-        }
-    }
-    
-    private static class ElementValueType extends ElementValueTypeImpl {
-
-        /**
-         * Extends super class constructor visibility
-         */
-        public ElementValueType() {
-            super();
-        }
-    }
-
 }
