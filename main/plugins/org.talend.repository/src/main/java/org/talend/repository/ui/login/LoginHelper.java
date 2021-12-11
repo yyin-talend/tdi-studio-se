@@ -620,7 +620,19 @@ public class LoginHelper {
                 LoginHelper.isRestart = true;
                 return true;
             } else {
-                MessageBoxExceptionHandler.process(e.getTargetException(), getUsableShell());
+                if (e.getTargetException() != null && e.getTargetException().getCause() instanceof LoginException
+                        && ((LoginException) e.getTargetException().getCause())
+                                .getErrCode() == IStudioLiteP2Service.RESULT_CANCEL) {
+                    org.talend.commons.exception.ExceptionHandler.process(e);
+                } else {
+                    Display.getDefault().syncExec(new Runnable() {
+
+                        @Override
+                        public void run() {
+                            MessageBoxExceptionHandler.showMessage(e, shell);
+                        }
+                    });                   
+                }            
             }
             factory.getRepositoryContext().setProject(null);
             // } else {

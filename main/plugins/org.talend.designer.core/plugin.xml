@@ -966,5 +966,11 @@
                 id="org.talend.designer.core.model.analysistask.UnresolvedComponentsDependenciesAnalysisTask"
                 name="UnresolvedComponentsDependenciesAnalysisTask">
           </analysisTask>
+          <analysisTask
+                class="org.talend.designer.core.model.analysistask.DuplicatedRouteIdUsageAnalysisTask"
+                description="Check duplicated routeid usage"
+                id="org.talend.designer.core.model.analysistask.DuplicatedRouteIdUsageAnalysisTask"
+                name="DuplicatedRouteIdUsageAnalysisTask">
+          </analysisTask>
        </extension>
 </plugin>

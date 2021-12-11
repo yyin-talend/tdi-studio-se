@@ -265,6 +265,8 @@ public class EmfComponent extends AbstractBasicComponent {
 
     // weak ref used so that memory is not used by a static HashMap instance
     private static SoftReference<Map> optionMapSoftRef;
+    
+    private static final String PROP_LOAD_DYNAMIC_DISTRIBUTION_MODULE = "studio.dynamic.distribution.modules.load";
 
     private AbstractComponentsProvider provider;
 
@@ -1744,7 +1746,7 @@ public class EmfComponent extends AbstractBasicComponent {
             notShowIfVersion = new String[versionsList.size()];
 
             int index = 0;
-
+            
             Iterator<DistributionVersion> versionIter = versionsList.iterator();
             while (versionIter.hasNext()) {
                 DistributionVersion that = versionIter.next();
@@ -3238,131 +3240,191 @@ public class EmfComponent extends AbstractBasicComponent {
     }
 
     private void addHadoopDistributionModuleNeededList(INode node, List<ModuleNeeded> moduleNeededList) {
-        if (node == null) {
-            return;
-        }
-        String value = getDistributionVersion(node, hadoopDistributionParamName);
-        if (value != null) {
-            List<ModuleNeeded> cachedModuleNeededList = Collections.EMPTY_LIST;
-            DistributionVersion dv = null;
-            for (Map.Entry<DistributionVersion, List<ModuleNeeded>> entry : distributionModuleNeededMap.entrySet()) {
-                DistributionVersion key = entry.getKey();
-                if (value.equals(key.getVersion())) {
-                    dv = key;
-                    cachedModuleNeededList = entry.getValue();
-                    break;
-                }
+        ExceptionHandler.logDebug("addHadoopDistributionModuleNeededList, node: " + node);
+        if (node != null) {
+            String value = null;
+            try {
+                value = getDistributionVersion(node, hadoopDistributionParamName);
+            } catch (Exception e) {
+                ExceptionHandler.process(e);
             }
-            if (cachedModuleNeededList == null) {
-                /**
-                 * Means not added yet, retrieve and add it
-                 */
-                cachedModuleNeededList = new LinkedList<>();
-                if (dv instanceof DynamicDistributionVersion) {
-                    try {
-                        IDynamicDistributionTemplate distributionTemplate = ((DynamicDistributionVersion) dv)
-                                .getDistributionTemplate();
-                        if (!distributionTemplate.isPluginExtensionsRegisted()) {
-                            distributionTemplate.registPluginExtensions();
-                        }
-                    } catch (Exception e) {
-                        ExceptionHandler.process(e);
+            if (value != null) {
+                List<ModuleNeeded> cachedModuleNeededList = Collections.EMPTY_LIST;
+                DistributionVersion dv = null;
+                for (Map.Entry<DistributionVersion, List<ModuleNeeded>> entry : distributionModuleNeededMap.entrySet()) {
+                    DistributionVersion key = entry.getKey();
+                    if (value.equals(key.getVersion())) {
+                        dv = key;
+                        cachedModuleNeededList = entry.getValue();
+                        break;
                     }
                 }
-                for (DistributionVersionModule versionModule : dv.getVersionModules()) {
-                    IMPORTType importType = ComponentFactory.eINSTANCE.createIMPORTType();
-                    importType.setMODULEGROUP(versionModule.moduleGroup.getModuleName());
-                    importType.setMRREQUIRED(versionModule.moduleGroup.isMrRequired());
-                    importType.setREQUIREDIF(versionModule.getModuleRequiredIf().getConditionString());
-                    ModulesNeededProvider.collectModuleNeeded(node.getComponent() != null ? node.getComponent().getName() : "", //$NON-NLS-1$
-                            importType, cachedModuleNeededList);
+                if (cachedModuleNeededList == null) {
+                    /**
+                     * Means not added yet, retrieve and add it
+                     */
+                    cachedModuleNeededList = new LinkedList<>();
+                    loadHadoopDistributionModules(dv, node.getComponent().getName(), moduleNeededList, cachedModuleNeededList);
+                } else {
+                    /**
+                     * Means already added
+                     */
                 }
-                distributionModuleNeededMap.put(dv, cachedModuleNeededList);
-                moduleNeededList.addAll(cachedModuleNeededList);
-            } else {
-                /**
-                 * Means already added
-                 */
+            }
+            
+            if (Boolean.getBoolean(PROP_LOAD_DYNAMIC_DISTRIBUTION_MODULE)) {
+
+                for (Map.Entry<DistributionVersion, List<ModuleNeeded>> entry : distributionModuleNeededMap.entrySet()) {
+                    DistributionVersion key = entry.getKey();
+                    List<ModuleNeeded> cachedModuleNeededList = entry.getValue();
+                    if (cachedModuleNeededList == null) {
+                        /**
+                         * Means not added yet, retrieve and add it
+                         */
+                        cachedModuleNeededList = new LinkedList<>();
+                        loadHadoopDistributionModules(key, node.getComponent().getName(), moduleNeededList, cachedModuleNeededList);
+                    }
+                }
             }
         }
     }
+    
+    private void loadHadoopDistributionModules(DistributionVersion dv, String compName, List<ModuleNeeded> moduleNeededList,List<ModuleNeeded> cachedModuleNeededList) {
+        if (dv instanceof DynamicDistributionVersion) {
+            try {
+                IDynamicDistributionTemplate distributionTemplate = ((DynamicDistributionVersion) dv).getDistributionTemplate();
+                if (!distributionTemplate.isPluginExtensionsRegisted()) {
+                    distributionTemplate.registPluginExtensions();
+                }
+            } catch (Exception e) {
+                ExceptionHandler.process(e);
+            }
+        }
+        for (DistributionVersionModule versionModule : dv.getVersionModules()) {
+            IMPORTType importType = ComponentFactory.eINSTANCE.createIMPORTType();
+            importType.setMODULEGROUP(versionModule.moduleGroup.getModuleName());
+            importType.setMRREQUIRED(versionModule.moduleGroup.isMrRequired());
+            importType.setREQUIREDIF(versionModule.getModuleRequiredIf().getConditionString());
+            ModulesNeededProvider
+                    .collectModuleNeeded(compName, // $NON-NLS-1$
+                            importType, cachedModuleNeededList, versionModule.distributionVersion.getVersion());
+        }
+        distributionModuleNeededMap.put(dv, cachedModuleNeededList);
+        moduleNeededList.addAll(cachedModuleNeededList);
+        ExceptionHandler.logDebug("addHadoopDistributionModuleNeededList, size of cachedModuleNeededList: " + cachedModuleNeededList.size());
+    }
 
     private void addHadoopLibModuleNeededList(INode node, List<ModuleNeeded> moduleNeededList) {
-        if (node == null) {
-            return;
-        }
-        String value = getDistributionVersion(node, hadoopLibParamName);
-        if (value != null) {
-            List<ModuleNeeded> cachedModuleNeededList = Collections.EMPTY_LIST;
-            HadoopComponent hc = null;
-            for (Map.Entry<HadoopComponent, List<ModuleNeeded>> entry : hadoopLibModuleNeededMap.entrySet()) {
-                HadoopComponent key = entry.getKey();
-                if (value.equals(key.getVersion())) {
-                    hc = key;
+        ExceptionHandler.logDebug("addHadoopDistributionModuleNeededList, node: " + node);
+        if (node != null) {
+            String value = null;
+            try {
+                value = getDistributionVersion(node, hadoopLibParamName);
+            } catch (Exception e) {
+                ExceptionHandler.process(e);
+            }
+            if (value != null) {
+                List<ModuleNeeded> cachedModuleNeededList = Collections.EMPTY_LIST;
+                HadoopComponent hc = null;
+                for (Map.Entry<HadoopComponent, List<ModuleNeeded>> entry : hadoopLibModuleNeededMap.entrySet()) {
+                    HadoopComponent key = entry.getKey();
+                    if (value.equals(key.getVersion())) {
+                        hc = key;
+                        cachedModuleNeededList = entry.getValue();
+                        break;
+                    }
+                }
+                if (cachedModuleNeededList == null) {
+                    /**
+                     * means not added yet, retrieve and add it
+                     */
+                    cachedModuleNeededList = new LinkedList<>();
+                    loadHadoopLibDynamicModules(hc, node.getComponent().getName(), moduleNeededList, cachedModuleNeededList);
+                } else {
+                    /**
+                     * means already added
+                     */
+                }
+            }
+            
+            if (Boolean.getBoolean(PROP_LOAD_DYNAMIC_DISTRIBUTION_MODULE)) {
+                List<ModuleNeeded> cachedModuleNeededList = null;
+                for (Map.Entry<HadoopComponent, List<ModuleNeeded>> entry : hadoopLibModuleNeededMap.entrySet()) {
                     cachedModuleNeededList = entry.getValue();
-                    break;
-                }
-            }
-            if (cachedModuleNeededList == null) {
-                /**
-                 * means not added yet, retrieve and add it
-                 */
-                cachedModuleNeededList = new LinkedList<>();
-                try {
-                    if (hc instanceof AbstractDynamicDistributionTemplate) {
-                        AbstractDynamicDistributionTemplate ddt = (AbstractDynamicDistributionTemplate) hc;
-                        if (!ddt.isPluginExtensionsRegisted()) {
-                            ddt.registPluginExtensions();
-                        }
-                    }
-                } catch (Exception e) {
-                    ExceptionHandler.process(e);
-                }
-                Set<DistributionModuleGroup> nodeModuleGroups = hc.getModuleGroups(hadoopLibParamName,
-                        node.getComponent().getName());
-                if (nodeModuleGroups != null) {
-                    Iterator<DistributionModuleGroup> moduleGroups = nodeModuleGroups.iterator();
-                    while (moduleGroups.hasNext()) {
-                        DistributionModuleGroup group = moduleGroups.next();
-                        IMPORTType importType = ComponentFactory.eINSTANCE.createIMPORTType();
-                        importType.setMODULEGROUP(group.getModuleName());
-
-                        ComponentCondition condition = group.getRequiredIf();
-                        if (condition != null) {
-                            importType.setREQUIREDIF(new NestedComponentCondition(condition).getConditionString());
-                        }
-                        importType.setMRREQUIRED(group.isMrRequired());
-                        ModulesNeededProvider.collectModuleNeeded(node.getComponent().getName(), importType,
-                                cachedModuleNeededList);
+                    if (cachedModuleNeededList == null) {
+                        /**
+                         * means not added yet, retrieve and add it
+                         */
+                        cachedModuleNeededList = new LinkedList<>();
+                        
+                        loadHadoopLibDynamicModules(entry.getKey(), node.getComponent().getName(), moduleNeededList, cachedModuleNeededList);
                     }
                 }
-                hadoopLibModuleNeededMap.put(hc, cachedModuleNeededList);
-                moduleNeededList.addAll(cachedModuleNeededList);
-            } else {
-                /**
-                 * means already added
-                 */
             }
         }
+    }
+    
+    private void loadHadoopLibDynamicModules(HadoopComponent hc, String compName, List<ModuleNeeded> moduleNeededList, List<ModuleNeeded> cachedModuleNeededList) {
+        try {
+            if (hc instanceof AbstractDynamicDistributionTemplate) {
+                AbstractDynamicDistributionTemplate ddt = (AbstractDynamicDistributionTemplate) hc;
+                if (!ddt.isPluginExtensionsRegisted()) {
+                    ddt.registPluginExtensions();
+                }
+            }
+        } catch (Exception e) {
+            ExceptionHandler.process(e);
+        }
+        Set<DistributionModuleGroup> nodeModuleGroups = hc.getModuleGroups(hadoopLibParamName, compName);
+        if (nodeModuleGroups != null) {
+            Iterator<DistributionModuleGroup> moduleGroups = nodeModuleGroups.iterator();
+            while (moduleGroups.hasNext()) {
+                DistributionModuleGroup group = moduleGroups.next();
+                IMPORTType importType = ComponentFactory.eINSTANCE.createIMPORTType();
+                importType.setMODULEGROUP(group.getModuleName());
+
+                ComponentCondition condition = group.getRequiredIf();
+                if (condition != null) {
+                    importType.setREQUIREDIF(new NestedComponentCondition(condition).getConditionString());
+                }
+                importType.setMRREQUIRED(group.isMrRequired());
+                ModulesNeededProvider.collectModuleNeeded(compName, importType, cachedModuleNeededList, hc.getVersion());
+            }
+        }
+        hadoopLibModuleNeededMap.put(hc, cachedModuleNeededList);
+        moduleNeededList.addAll(cachedModuleNeededList);
+        ExceptionHandler.logDebug("addHadoopLibModuleNeededList, size of cachedModuleNeededList: " + cachedModuleNeededList.size());
+    }
+    
+    private boolean loadDynamicDistributionModules() {
+        return areHadoopDistribsLoaded || Boolean.getBoolean(PROP_LOAD_DYNAMIC_DISTRIBUTION_MODULE);
+    }
+    
+    private boolean loadDynamicLibsDistributionModules() {
+        return areHadoopLibsLoaded || Boolean.getBoolean(PROP_LOAD_DYNAMIC_DISTRIBUTION_MODULE);
     }
 
     @Override
     public List<ModuleNeeded> getModulesNeeded(INode node) {
         if (componentImportNeedsList != null && componentImportNeedsList.size() > 0) {
-            if (areHadoopDistribsLoaded) {
+            if (loadDynamicDistributionModules()) {
                 try {
                     addHadoopDistributionModuleNeededList(node, componentImportNeedsList);
                 } catch (Exception e) {
                     ExceptionHandler.process(e);
                 }
+                
             }
-            if (areHadoopLibsLoaded) {
+            
+            if (loadDynamicLibsDistributionModules()) {
+                                
                 try {
                     addHadoopLibModuleNeededList(node, componentImportNeedsList);
                 } catch (Exception e) {
                     ExceptionHandler.process(e);
                 }
             }
+            
             return componentImportNeedsList;
         }
 
@@ -3449,10 +3511,11 @@ public class EmfComponent extends AbstractBasicComponent {
             componentImportNeedsList.add(componentImportNeeds);
         }
 
-        if (areHadoopDistribsLoaded) {
+        if (loadDynamicDistributionModules()) {
             addHadoopDistributionModuleNeededList(node, componentImportNeedsList);
         }
-        if (areHadoopLibsLoaded) {
+        
+        if(loadDynamicLibsDistributionModules()) {
             addHadoopLibModuleNeededList(node, componentImportNeedsList);
         }
 
