@@ -3,9 +3,11 @@ package org.talend.repository.model.migration;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.List;
 
 import org.eclipse.emf.common.util.EList;
 import org.talend.commons.exception.ExceptionHandler;
+import org.talend.core.language.ECodeLanguage;
 import org.talend.core.model.components.ComponentUtilities;
 import org.talend.core.model.components.ModifyComponentsAction;
 import org.talend.core.model.components.conversions.IComponentConversion;
@@ -23,11 +25,13 @@ public class ApplySecurityAfterAdvancedKafkaProperties extends AbstractJobMigrat
     private static final String KAFKA_INPUT = "tKafkaInput";
     private static final String KAFKA_OUTPUT = "tKafkaOutput";
     private static final String KAFKA_CONNECTION = "tKafkaConnection";
+    private static final String SET_KEYSTORE = "tSetKeystore";
 
     // Properties
     private static final String USE_EXISTING_CONNECTION = "USE_EXISTING_CONNECTION";
     private static final String CONNECTION = "CONNECTION";
     private static final String USE_HTTPS = "USE_HTTPS";
+    private static final String HTTPS_SETTING = "HTTPS_SETTING";
     private static final String USE_KRB = "USE_KRB";
     private static final String APPLY_SECURITY_PROPERTIES_AFTER_ADVANCED = "APPLY_SECURITY_PROPERTIES_AFTER_ADVANCED";
 
@@ -39,22 +43,27 @@ public class ApplySecurityAfterAdvancedKafkaProperties extends AbstractJobMigrat
 
     @Override
     public ExecutionResult execute(Item item) {
-        final ProcessType processType = getProcessType(item);
+        ProcessType processType = getProcessType(item);
 
-        try {
-            IComponentFilter kafkaInputFilter = new NameComponentFilter(KAFKA_INPUT);
-            ModifyComponentsAction.searchAndModify(item, processType, kafkaInputFilter,
-                    Arrays.<IComponentConversion> asList(new KafkaComponentConversion(processType)));
-
-            IComponentFilter kafkaOutputFilter = new NameComponentFilter(KAFKA_OUTPUT);
-            ModifyComponentsAction.searchAndModify(item, processType, kafkaOutputFilter,
-                    Arrays.<IComponentConversion> asList(new KafkaComponentConversion(processType)));
-
-            return ExecutionResult.SUCCESS_NO_ALERT;
-        } catch (Exception e) {
-            ExceptionHandler.process(e);
-            return ExecutionResult.FAILURE;
+        if (getProject().getLanguage() != ECodeLanguage.JAVA || processType == null) {
+            return ExecutionResult.NOTHING_TO_DO;
         }
+
+        List<String> filterList = Arrays.asList(KAFKA_INPUT, KAFKA_OUTPUT);
+        IComponentConversion componentConversion = new KafkaComponentConversion(processType);
+
+        for (String componentName: filterList) {
+            IComponentFilter filter = new NameComponentFilter(componentName);
+            try {
+                ModifyComponentsAction.searchAndModify(item, processType, filter,
+                        Arrays.<IComponentConversion> asList(componentConversion));
+            } catch (Exception e) {
+                ExceptionHandler.process(e);
+                return ExecutionResult.FAILURE;
+            }
+        }
+
+        return ExecutionResult.SUCCESS_NO_ALERT;
     }
 
     private NodeType searchNodeTypeByUniqueName(ProcessType processType, String componentName, String uniqueName) {
@@ -66,7 +75,7 @@ public class ApplySecurityAfterAdvancedKafkaProperties extends AbstractJobMigrat
         for (NodeType node : nodes) {
             if (node != null && componentName.equals(node.getComponentName())) {
                 ElementParameterType uniqueNameParam = ComponentUtilities.getNodeProperty(node, "UNIQUE_NAME");
-                if (uniqueNameParam != null && uniqueNameParam.getValue().equals(uniqueName)) {
+                if (uniqueNameParam != null && uniqueName.equals(uniqueNameParam.getValue())) {
                     searchNode = node;
                     break;
                 }
@@ -101,12 +110,20 @@ public class ApplySecurityAfterAdvancedKafkaProperties extends AbstractJobMigrat
                 }
             }
 
+            boolean hasHttpsProperties = false;
             ElementParameterType useHttps = ComponentUtilities.getNodeProperty(connectionPropertiesNode, USE_HTTPS);
+            if (useHttps != null && "true".equalsIgnoreCase(useHttps.getValue())) {
+                ElementParameterType httpsSetting = ComponentUtilities.getNodeProperty(connectionPropertiesNode, HTTPS_SETTING);
+                if (httpsSetting != null) {
+                    NodeType httpsSettingNode = searchNodeTypeByUniqueName(processType, SET_KEYSTORE, httpsSetting.getValue());
+                    hasHttpsProperties = httpsSettingNode != null;
+                }
+            }
+
             ElementParameterType useKrb = ComponentUtilities.getNodeProperty(connectionPropertiesNode, USE_KRB);
+            boolean hasKrbProperties = useKrb != null && "true".equalsIgnoreCase(useKrb.getValue());
 
-            if ((useHttps != null && "true".equalsIgnoreCase(useHttps.getValue()))
-                    || (useKrb != null && "true".equalsIgnoreCase(useKrb.getValue()))) {
-
+            if (hasHttpsProperties || hasKrbProperties) {
                 if (ComponentUtilities.getNodeProperty(node, APPLY_SECURITY_PROPERTIES_AFTER_ADVANCED) == null) {
                     ComponentUtilities.addNodeProperty(node, APPLY_SECURITY_PROPERTIES_AFTER_ADVANCED, "CHECK");
                     ComponentUtilities.getNodeProperty(node, APPLY_SECURITY_PROPERTIES_AFTER_ADVANCED).setValue("true");
