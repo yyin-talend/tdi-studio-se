@@ -3723,10 +3723,10 @@
     
        <libraryNeeded
         context="plugin:org.talend.libraries.apache"
-        id="log4j-to-slf4j-2.13.2.jar"
-        name="log4j-to-slf4j-2.13.2.jar"
-        mvn_uri="mvn:org.apache.logging.log4j/log4j-to-slf4j/2.13.2"
-        uripath="platform:/plugin/org.talend.libraries.apache/lib/log4j-to-slf4j-2.13.2.jar">
+        id="log4j-to-slf4j-2.15.0.jar"
+        name="log4j-to-slf4j-2.15.0.jar"
+        mvn_uri="mvn:org.apache.logging.log4j/log4j-to-slf4j/2.15.0"
+        uripath="platform:/plugin/org.talend.libraries.apache/lib/log4j-to-slf4j-2.15.0.jar">
       </libraryNeeded>
     
       <libraryNeeded
@@ -3747,50 +3747,50 @@
     
       <libraryNeeded
         context="plugin:org.talend.libraries.apache"
-        id="log4j-core-2.13.2.jar"
-        name="log4j-core-2.13.2.jar"
-        mvn_uri="mvn:org.apache.logging.log4j/log4j-core/2.13.2"
-        uripath="platform:/plugin/org.talend.libraries.apache/lib/log4j-core-2.13.2.jar">
+        id="log4j-core-2.15.0.jar"
+        name="log4j-core-2.15.0.jar"
+        mvn_uri="mvn:org.apache.logging.log4j/log4j-core/2.15.0"
+        uripath="platform:/plugin/org.talend.libraries.apache/lib/log4j-core-2.15.0.jar">
       </libraryNeeded>
     
       <libraryNeeded
         context="plugin:org.talend.libraries.apache"
-        id="log4j-api-2.13.2.jar"
-        name="log4j-api-2.13.2.jar"
-        mvn_uri="mvn:org.apache.logging.log4j/log4j-api/2.13.2"
-        uripath="platform:/plugin/org.talend.libraries.apache/lib/log4j-api-2.13.2.jar">
+        id="log4j-api-2.15.0.jar"
+        name="log4j-api-2.15.0.jar"
+        mvn_uri="mvn:org.apache.logging.log4j/log4j-api/2.15.0"
+        uripath="platform:/plugin/org.talend.libraries.apache/lib/log4j-api-2.15.0.jar">
       </libraryNeeded>
     
       <libraryNeeded
         context="plugin:org.talend.libraries.apache"
-        id="log4j-slf4j-impl-2.13.2.jar"
-        name="log4j-slf4j-impl-2.13.2.jar"
-        mvn_uri="mvn:org.apache.logging.log4j/log4j-slf4j-impl/2.13.2"
-        uripath="platform:/plugin/org.talend.libraries.apache/lib/log4j-slf4j-impl-2.13.2.jar">
+        id="log4j-slf4j-impl-2.15.0.jar"
+        name="log4j-slf4j-impl-2.15.0.jar"
+        mvn_uri="mvn:org.apache.logging.log4j/log4j-slf4j-impl/2.15.0"
+        uripath="platform:/plugin/org.talend.libraries.apache/lib/log4j-slf4j-impl-2.15.0.jar">
       </libraryNeeded>
     
       <libraryNeeded
         context="plugin:org.talend.libraries.apache"
-        id="log4j-jul-2.13.2.jar"
-        name="log4j-jul-2.13.2.jar"
-        mvn_uri="mvn:org.apache.logging.log4j/log4j-jul/2.13.2"
-        uripath="platform:/plugin/org.talend.libraries.apache/lib/log4j-jul-2.13.2.jar">
+        id="log4j-jul-2.15.0.jar"
+        name="log4j-jul-2.15.0.jar"
+        mvn_uri="mvn:org.apache.logging.log4j/log4j-jul/2.15.0"
+        uripath="platform:/plugin/org.talend.libraries.apache/lib/log4j-jul-2.15.0.jar">
       </libraryNeeded>
     
       <libraryNeeded
         context="plugin:org.talend.libraries.apache"
-        id="log4j-jcl-2.13.2.jar"
-        name="log4j-jcl-2.13.2.jar"
-        mvn_uri="mvn:org.apache.logging.log4j/log4j-jcl/2.13.2"
-        uripath="platform:/plugin/org.talend.libraries.apache/lib/log4j-jcl-2.13.2.jar">
+        id="log4j-jcl-2.15.0.jar"
+        name="log4j-jcl-2.15.0.jar"
+        mvn_uri="mvn:org.apache.logging.log4j/log4j-jcl/2.15.0"
+        uripath="platform:/plugin/org.talend.libraries.apache/lib/log4j-jcl-2.15.0.jar">
       </libraryNeeded>  
       
       <libraryNeeded
         context="plugin:org.talend.libraries.apache"
-        id="log4j-1.2-api-2.13.2.jar"
-        name="log4j-1.2-api-2.13.2.jar"
-        mvn_uri="mvn:org.apache.logging.log4j/log4j-1.2-api/2.13.2"
-        uripath="platform:/plugin/org.talend.libraries.apache/lib/log4j-1.2-api-2.13.2.jar">
+        id="log4j-1.2-api-2.15.0.jar"
+        name="log4j-1.2-api-2.15.0.jar"
+        mvn_uri="mvn:org.apache.logging.log4j/log4j-1.2-api/2.15.0"
+        uripath="platform:/plugin/org.talend.libraries.apache/lib/log4j-1.2-api-2.15.0.jar">
       </libraryNeeded>
       
       <libraryNeeded
