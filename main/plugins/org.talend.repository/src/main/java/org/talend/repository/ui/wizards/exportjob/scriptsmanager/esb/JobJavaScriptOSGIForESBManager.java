@@ -126,39 +126,7 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
 
     private boolean ENABLE_CACHE = StringUtils.equals(System.getProperty("enable.manifest.cache", "false"), "true");
 
-    @SuppressWarnings("serial")
-    private static final Collection<String> EXCLUDED_MODULES = new ArrayList<String>() {
-
-        {
-            File propFile = null;
-            File esbConfigurationLocation = EsbConfigUtils.getEclipseEsbFolder();
-
-            if (esbConfigurationLocation != null && esbConfigurationLocation.exists() && esbConfigurationLocation.isDirectory()) {
-                propFile = new File(esbConfigurationLocation.getAbsolutePath(), OSGI_EXCLUDE_PROP_FILENAME);
-            }
-
-            InputStream is = null;
-            try {
-                if (propFile != null && propFile.exists() && propFile.isFile()) {
-                    is = new FileInputStream(propFile);
-                } else {
-                    is = RepositoryPlugin.getDefault().getBundle().getEntry("/resources/" + OSGI_EXCLUDE_PROP_FILENAME)
-                            .openStream();
-                }
-
-                if (is != null) {
-                    final Properties p = new Properties();
-                    p.load(is);
-                    for (Enumeration<?> e = p.propertyNames(); e.hasMoreElements();) {
-                        add((String) e.nextElement());
-                    }
-                }
-            } catch (IOException e) {
-                RepositoryPlugin.getDefault().getLog()
-                        .log(new Status(Status.ERROR, RepositoryPlugin.PLUGIN_ID, "Unable to load OSGi excludes", e));
-            }
-        }
-    };
+    private static final Collection<String> EXCLUDED_MODULES = new ArrayList<String>(); 
 
     private Bundle esbBundle = Platform.getBundle(PluginChecker.ESBSE_PLUGIN_ID);
 
@@ -257,8 +225,22 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
         }
         complianceParameter = " -" + complianceLevel + " -maxProblems 100000 -nowarn";
         
-        try (InputStream is = RepositoryPlugin.getDefault().getBundle().getEntry("/resources/osgi-exclude.properties") //$NON-NLS-1$
-                .openStream()) {
+        File propFile = null;
+        File esbConfigurationLocation = EsbConfigUtils.getEclipseEsbFolder();
+
+        if (esbConfigurationLocation != null && esbConfigurationLocation.exists() && esbConfigurationLocation.isDirectory()) {
+            propFile = new File(esbConfigurationLocation.getAbsolutePath(), OSGI_EXCLUDE_PROP_FILENAME);
+        }
+
+        InputStream is = null;
+        try {
+            if (propFile != null && propFile.exists() && propFile.isFile()) {
+                is = new FileInputStream(propFile);
+            } else {
+                is = RepositoryPlugin.getDefault().getBundle().getEntry("/resources/" + OSGI_EXCLUDE_PROP_FILENAME)
+                        .openStream();
+            }
+      
             final Properties p = new Properties();
             p.load(is);
             for (Enumeration<?> e = p.propertyNames(); e.hasMoreElements();) {
