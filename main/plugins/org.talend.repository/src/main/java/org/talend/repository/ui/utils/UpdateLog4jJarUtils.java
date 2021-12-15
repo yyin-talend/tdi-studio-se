@@ -25,7 +25,7 @@ import org.talend.librariesmanager.model.ModulesNeededProvider;
 
 public class UpdateLog4jJarUtils {
 
-    private static final String LOG4J_VERSION = "2.15.0";
+    private static final String LOG4J_VERSION = "2.16.0";
     
     private static final String SLF4J_VERSION = "1.7.29";
 
