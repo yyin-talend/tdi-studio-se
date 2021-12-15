@@ -52,10 +52,11 @@ public class ApplySecurityAfterAdvancedKafkaProperties extends AbstractJobMigrat
         List<String> filterList = Arrays.asList(KAFKA_INPUT, KAFKA_OUTPUT);
         IComponentConversion componentConversion = new KafkaComponentConversion(processType);
 
+        boolean modified = false;
         for (String componentName: filterList) {
             IComponentFilter filter = new NameComponentFilter(componentName);
             try {
-                ModifyComponentsAction.searchAndModify(item, processType, filter,
+                modified |= ModifyComponentsAction.searchAndModify(item, processType, filter,
                         Arrays.<IComponentConversion> asList(componentConversion));
             } catch (Exception e) {
                 ExceptionHandler.process(e);
@@ -63,7 +64,11 @@ public class ApplySecurityAfterAdvancedKafkaProperties extends AbstractJobMigrat
             }
         }
 
-        return ExecutionResult.SUCCESS_NO_ALERT;
+        if (modified) {
+            return ExecutionResult.SUCCESS_NO_ALERT;
+        } else {
+            return ExecutionResult.NOTHING_TO_DO;
+        }
     }
 
     private NodeType searchNodeTypeByUniqueName(ProcessType processType, String componentName, String uniqueName) {
