@@ -1097,21 +1097,12 @@ globalMap.put("<%=cid%>_ERROR_MESSAGE",e.getMessage());
 							dynamic_index = i;
 							%>
 							dynamic_<%=cid %>.clearColumnValues();
-							int fieldCount_<%=cid %> = 0;
-							if(row_<%= cid %>!=null){
-								fieldCount_<%=cid %> = row_<%= cid %>.getLastCellNum()-row_<%= cid %>.getFirstCellNum()+1;
-							}
 							dynamic_column_count_<%=cid%> = dynamic_<%=cid %>.getColumnCount();
 							for (int i = 0; i < dynamic_column_count_<%=cid%> ; i++) {
-								if ((<%=dynamic_index%>+i) <= fieldCount_<%=cid %>){
-									if(temp_row_<%= cid %>[<%=dynamic_index%>+i]<%=(isTrimAll || (!trimSelects.isEmpty() && ("true").equals(trimSelects.get(i).get("TRIM"))))?".trim()":"" %>.length() < 1){
+								if(temp_row_<%= cid %>[<%=dynamic_index%>+i]<%=(isTrimAll || (!trimSelects.isEmpty() && ("true").equals(trimSelects.get(i).get("TRIM"))))?".trim()":"" %>.length() < 1){
 										emptyColumnCount_<%= cid %>++;
-									}
-									dynamic_<%=cid %>.addColumnValue(temp_row_<%= cid %>[<%=dynamic_index%>+i]<%=(isTrimAll || (!trimSelects.isEmpty() && ("true").equals(trimSelects.get(i).get("TRIM"))))?".trim()":"" %>);
-								}else{
-									dynamic_<%=cid %>.addColumnValue("");
-									emptyColumnCount_<%= cid %>++;
 								}
+								dynamic_<%=cid %>.addColumnValue(temp_row_<%= cid %>[<%=dynamic_index%>+i]<%=(isTrimAll || (!trimSelects.isEmpty() && ("true").equals(trimSelects.get(i).get("TRIM"))))?".trim()":"" %>);
 							}
 							<%=firstConnName %>.<%=column.getLabel() %> =dynamic_<%=cid %>;
 						<%
