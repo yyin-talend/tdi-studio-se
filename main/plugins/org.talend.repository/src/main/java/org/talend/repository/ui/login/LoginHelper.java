@@ -494,9 +494,8 @@ public class LoginHelper {
                  * Auto login, means there should be local repository
                  */
                 branches = getProjectBranches(lastUsedProject, true);
-            } catch (JSONException e) {                         
-                // TODO Auto-generated catch block
-                e.printStackTrace();
+            } catch (Exception e) {
+                org.talend.commons.exception.ExceptionHandler.process(e);
             }
             if (branches == null || branches.isEmpty()) {
                 return false;
@@ -621,7 +620,19 @@ public class LoginHelper {
                 LoginHelper.isRestart = true;
                 return true;
             } else {
-                MessageBoxExceptionHandler.process(e.getTargetException(), getUsableShell());
+                if (e.getTargetException() != null && e.getTargetException().getCause() instanceof LoginException
+                        && ((LoginException) e.getTargetException().getCause())
+                                .getErrCode() == IStudioLiteP2Service.RESULT_CANCEL) {
+                    org.talend.commons.exception.ExceptionHandler.process(e);
+                } else {
+                    Display.getDefault().syncExec(new Runnable() {
+
+                        @Override
+                        public void run() {
+                            MessageBoxExceptionHandler.showMessage(e, shell);
+                        }
+                    });                   
+                }            
             }
             factory.getRepositoryContext().setProject(null);
             // } else {
@@ -860,7 +871,7 @@ public class LoginHelper {
      * @return
      * @throws JSONException
      */
-    public List<String> getProjectBranches(Project p, boolean onlyLocalIfPossible) throws JSONException {
+    public List<String> getProjectBranches(Project p, boolean onlyLocalIfPossible) throws Exception {
         IRepositoryService repositoryService = GlobalServiceRegister.getDefault()
                 .getService(IRepositoryService.class);
         if (repositoryService != null) {

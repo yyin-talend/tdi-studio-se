@@ -51,7 +51,6 @@ import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.talend.commons.CommonsPlugin;
 import org.talend.commons.exception.BusinessException;
-import org.talend.commons.exception.CommonExceptionHandler;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.exception.InformException;
 import org.talend.commons.exception.LoginException;
@@ -889,18 +888,14 @@ public class RepositoryService implements IRepositoryService, IRepositoryContext
     }
 
     @Override
-    public List<String> getProjectBranch(Project project, boolean onlyLocalIfPossible) {
+    public List<String> getProjectBranch(Project project, boolean onlyLocalIfPossible) throws Exception {
         List<String> branchesList = new ArrayList<String>();
         if (!isInitedProviderService) {
             initProviderService();
         }
         if (project != null) {
-            try {
-                if (!project.isLocal() && gitProviderService != null && gitProviderService.isGITProject(project)) {
-                    branchesList.addAll(Arrays.asList(gitProviderService.getBranchList(project, onlyLocalIfPossible)));
-                }
-            } catch (PersistenceException e) {
-                CommonExceptionHandler.process(e);
+            if (!project.isLocal() && gitProviderService != null && gitProviderService.isGITProject(project)) {
+                branchesList.addAll(Arrays.asList(gitProviderService.getBranchList(project, onlyLocalIfPossible)));
             }
         }
         return branchesList;

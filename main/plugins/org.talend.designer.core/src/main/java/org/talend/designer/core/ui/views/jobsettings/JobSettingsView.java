@@ -108,6 +108,10 @@ public class JobSettingsView extends ViewPart implements IJobSettingsView, ISele
     public static final String VIEW_NAME_STREAMING = "Streaming"; //$NON-NLS-1$
 
     public static final String VIEW_NAME_BATCH = "Batch"; //$NON-NLS-1$
+    
+    public static final String VIEW_NAME_ROUTE = "Route "; //$NON-NLS-1$
+    
+    public static final String VIEW_NAME_ROUTELET = "Routelet "; //$NON-NLS-1$
 
     public static final String MODEL = "Model"; //$NON-NLS-1$
 
@@ -478,6 +482,15 @@ public class JobSettingsView extends ViewPart implements IJobSettingsView, ISele
         if (element instanceof IProcess && AbstractProcessProvider.isExtensionProcessForJoblet((IProcess) element)) {
             viewName = VIEW_NAME_JOBLET;
         }
+        
+        if (process!= null && ComponentCategory.CATEGORY_4_CAMEL.getName().equals(process.getComponentsType())) {
+			if (ERepositoryObjectType.PROCESS_ROUTELET != null && ERepositoryObjectType.PROCESS_ROUTELET
+					.equals(ERepositoryObjectType.getItemType(process.getProperty().getItem()))) {
+        		viewName = VIEW_NAME_ROUTELET;
+        	} else {
+        		viewName = VIEW_NAME_ROUTE;
+        	}
+        } 
 
         if (type != null) {
             viewName = type;
@@ -505,7 +518,14 @@ public class JobSettingsView extends ViewPart implements IJobSettingsView, ISele
                     icon = ImageProvider.getImage(EJobSettingImage.PROCESS_SPARK_STREAMING_ICON_X16);
                 } else if (ComponentCategory.CATEGORY_4_STORM.getName().equals(process.getComponentsType())) {
                     icon = ImageProvider.getImage(EJobSettingImage.PROCESS_STORM_ICON_X16);
-                }
+                } else if (ComponentCategory.CATEGORY_4_CAMEL.getName().equals(process.getComponentsType())) {
+					if (ERepositoryObjectType.PROCESS_ROUTELET != null && ERepositoryObjectType.PROCESS_ROUTELET
+							.equals(ERepositoryObjectType.getItemType(process.getProperty().getItem()))) {
+						icon = ImageProvider.getImage(ECoreImage.ROUTELET_ICON);
+					} else {
+						icon = ImageProvider.getImage(ECoreImage.ROUTES_ICON);
+					}
+                } 
             }
         }
         tabFactory.setTitle(title, icon);
@@ -711,7 +731,11 @@ public class JobSettingsView extends ViewPart implements IJobSettingsView, ISele
                         title = title.substring(VIEW_NAME_JOBLET.length() + 1);
                     } else if (title.startsWith(getViewNameLable())) {
                         title = title.substring(getViewNameLable().length() + 1);
-
+                    // remove "Route" or "Routelet" from title
+                    } else if (title.startsWith(VIEW_NAME_ROUTE)) {
+                    	title = title.substring(VIEW_NAME_ROUTE.length());
+                    } else if (title.startsWith(VIEW_NAME_ROUTELET)) {
+                    	title = title.substring(VIEW_NAME_ROUTELET.length());
                     }
 
                     setElement(element, title, null);

@@ -28,7 +28,7 @@ skeleton="../templates/db_output_bulk.skeleton"
     boolean isLog4jEnabled = ("true").equals(ElementParameterParser.getValue(node.getProcess(), "__LOG4J_ACTIVATE__"));
     String cid = node.getUniqueName();
 
-    String dbtable = null;
+    String tableName = null;
     String dbschema = ElementParameterParser.getValue(node,"__ELT_SCHEMA_NAME__");
     String uniqueNameConnection = null;
     INode previousNode = null;
@@ -50,7 +50,7 @@ skeleton="../templates/db_output_bulk.skeleton"
         IConnection connection = connections.get(0);
         previousNode = connection.getSource();
         String previousComponentName = previousNode.getUniqueName();
-        dbtable = connection.getName();
+        tableName = connection.getName();
         uniqueNameConnection = connection.getUniqueName();
 
         %>
@@ -58,17 +58,13 @@ skeleton="../templates/db_output_bulk.skeleton"
         selectQueryColumnsName_<%=cid %> = (String) globalMap.get("<%=previousComponentName%>"+"QUERY_COLUMNS_NAME"+"<%=uniqueNameConnection%>");
         <%
     }
-     String tableName=null;
-     if(useDifferentTable){
-          tableName=differenttable;
-     }else{
-          if(isTableNameVariable){
-              tableName=dbtable;
-          }else{
-              tableName="\""+dbtable +"\"";
-          }
-     }
-    %>
+
+     if(useDifferentTable) {
+          tableName = differenttable;
+     } else if (!isTableNameVariable) {
+          tableName = "\"" + tableName + "\"";
+     }%>
+
     String dbschema_<%=cid%> = <%=dbschema%>;
     if(dbschema_<%=cid%> != null && dbschema_<%=cid%>.trim().length() > 0) {
         tableName_<%=cid%> = <%=dbschema%> + "." + <%=tableName%>;
@@ -155,6 +151,12 @@ skeleton="../templates/db_output_bulk.skeleton"
             String columnName = column.getOriginalDbColumnName();
             if(columnName==null || columnName.trim().isEmpty()){
                 columnName = column.getLabel();
+            }
+            if (columnName.startsWith("\"")) {
+                columnName = "\\" + columnName;
+            }
+            if (columnName.endsWith("\"") && !columnName.endsWith("\\\"")) {
+                columnName = columnName.substring(0, columnName.lastIndexOf("\"")) + "\\" + "\"";
             }
           boolean isUpdateColumn = "true".equals(setColumns.get(counterOuter).get("UPDATE_COLUMN"));
           insertColName.append(columnName).append(suffix);
@@ -267,7 +269,7 @@ skeleton="../templates/db_output_bulk.skeleton"
         <%
     }
 
-    if(dbtable != null && columnList != null){
+    if(tableName != null && columnList != null){
     
         {//use the block to limit the code scope for table action
             Manager manager = null;
@@ -276,8 +278,7 @@ skeleton="../templates/db_output_bulk.skeleton"
 
             List<Column> stmtStructure = getELTManager(dbmsId, cid, node).createColumnList(columnList, false, null, null);
 
-            String table = useDifferentTable ? differenttable : ("\""+dbtable +"\"");
-
+            String table = tableName;
             dbLog = new DBLogUtil(node);
             %>
             <%@ include file="../templates/_tableActionForELT.javajet"%>

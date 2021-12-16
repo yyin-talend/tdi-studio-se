@@ -34,7 +34,9 @@ import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
+import java.util.MissingResourceException;
 import java.util.Optional;
 import java.util.Properties;
 import java.util.Set;
@@ -55,6 +57,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.emf.common.util.EList;
+import org.eclipse.jdt.internal.compiler.batch.Main;
 import org.osgi.framework.Bundle;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.exception.PersistenceException;
@@ -104,6 +107,7 @@ import org.talend.repository.RepositoryPlugin;
 import org.talend.repository.documentation.ExportFileResource;
 import org.talend.repository.ui.wizards.exportjob.scriptsmanager.JobJavaScriptsManager;
 import org.talend.repository.utils.EmfModelUtils;
+import org.talend.repository.utils.EsbConfigUtils;
 import org.talend.repository.utils.TemplateProcessor;
 
 import aQute.bnd.header.Parameters;
@@ -226,8 +230,22 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
         }
         complianceParameter = " -" + complianceLevel + " -maxProblems 100000 -nowarn";
         
-        try (InputStream is = RepositoryPlugin.getDefault().getBundle().getEntry("/resources/osgi-exclude.properties") //$NON-NLS-1$
-                .openStream()) {
+        File propFile = null;
+        File esbConfigurationLocation = EsbConfigUtils.getEclipseEsbFolder();
+
+        if (esbConfigurationLocation != null && esbConfigurationLocation.exists() && esbConfigurationLocation.isDirectory()) {
+            propFile = new File(esbConfigurationLocation.getAbsolutePath(), OSGI_EXCLUDE_PROP_FILENAME);
+        }
+
+        InputStream is = null;
+        try {
+            if (propFile != null && propFile.exists() && propFile.isFile()) {
+                is = new FileInputStream(propFile);
+            } else {
+                is = RepositoryPlugin.getDefault().getBundle().getEntry("/resources/" + OSGI_EXCLUDE_PROP_FILENAME)
+                        .openStream();
+            }
+            
             final Properties p = new Properties();
             p.load(is);
             for (Enumeration<?> e = p.propertyNames(); e.hasMoreElements();) {
@@ -1373,8 +1391,9 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         ByteArrayOutputStream err = new ByteArrayOutputStream();
         try {
-            org.eclipse.jdt.core.compiler.batch.BatchCompiler.compile(src.concat(complianceParameter), new PrintWriter(out),
-                    new PrintWriter(err), null);
+            Compiler c = new Compiler(new PrintWriter(out), new PrintWriter(err));
+            c.compile(Locale.forLanguageTag("und"), c.tokenize(src.concat(complianceParameter)));
+           
             String errString = new String(err.toByteArray());
             String[] errBlocks = errString.split(COMPILER_LOG_DELIMITER);
             String reg = COMPILER_LOG_REGEX;
@@ -1408,5 +1427,28 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
             map.put(module.getModuleName(), module.getMavenUri());
         }
         return map;
+    }
+    
+    @SuppressWarnings("restriction")
+    private class Compiler extends org.eclipse.jdt.internal.compiler.batch.Main {
+
+        public boolean compile(Locale locale, String[] commandLineArguments) {
+            relocalize(locale);
+            return super.compile(commandLineArguments);
+    	}
+    	
+        private void relocalize(Locale locale) {
+            this.compilerLocale = locale;
+            try {
+                this.bundle = ResourceBundleFactory.getBundle(locale);
+	        } catch(MissingResourceException e) {
+	            System.out.println("Missing resource : " + Main.bundleName.replace('.', '/') + ".properties for locale " + locale); //$NON-NLS-1$//$NON-NLS-2$
+	            throw e;
+	        }
+        }
+    	
+    	public Compiler (PrintWriter outWriter, PrintWriter errWriter) {
+            super(outWriter, errWriter, false, null, null);
+    	}
     }
 }

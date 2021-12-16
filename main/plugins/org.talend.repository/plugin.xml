@@ -3686,6 +3686,15 @@
                name="AddHourFormatToBigqueryBulkOutput"
                version="7.3.1">
         </projecttask>
+        <projecttask
+              beforeLogon="false"
+              breaks="8.0.0"
+              class="org.talend.repository.model.migration.ChangeConnectionType4tSAPADSOInput"
+              description="Keep SAP Hana JDBC connection for the old job with tSAPADSOInput"
+              id="org.talend.repository.model.migration.ChangeConnectionType4tSAPADSOInput"
+              name="ChangeConnectionType4tSAPADSOInput"
+              version="8.0.1">
+        </projecttask>
    </extension>
 
    <extension
@@ -3714,10 +3723,10 @@
     
        <libraryNeeded
         context="plugin:org.talend.libraries.apache"
-        id="log4j-to-slf4j-2.13.2.jar"
-        name="log4j-to-slf4j-2.13.2.jar"
-        mvn_uri="mvn:org.apache.logging.log4j/log4j-to-slf4j/2.13.2"
-        uripath="platform:/plugin/org.talend.libraries.apache/lib/log4j-to-slf4j-2.13.2.jar">
+        id="log4j-to-slf4j-2.16.0.jar"
+        name="log4j-to-slf4j-2.16.0.jar"
+        mvn_uri="mvn:org.apache.logging.log4j/log4j-to-slf4j/2.16.0"
+        uripath="platform:/plugin/org.talend.libraries.apache/lib/log4j-to-slf4j-2.16.0.jar">
       </libraryNeeded>
     
       <libraryNeeded
@@ -3738,50 +3747,50 @@
     
       <libraryNeeded
         context="plugin:org.talend.libraries.apache"
-        id="log4j-core-2.13.2.jar"
-        name="log4j-core-2.13.2.jar"
-        mvn_uri="mvn:org.apache.logging.log4j/log4j-core/2.13.2"
-        uripath="platform:/plugin/org.talend.libraries.apache/lib/log4j-core-2.13.2.jar">
+        id="log4j-core-2.16.0.jar"
+        name="log4j-core-2.16.0.jar"
+        mvn_uri="mvn:org.apache.logging.log4j/log4j-core/2.16.0"
+        uripath="platform:/plugin/org.talend.libraries.apache/lib/log4j-core-2.16.0.jar">
       </libraryNeeded>
     
       <libraryNeeded
         context="plugin:org.talend.libraries.apache"
-        id="log4j-api-2.13.2.jar"
-        name="log4j-api-2.13.2.jar"
-        mvn_uri="mvn:org.apache.logging.log4j/log4j-api/2.13.2"
-        uripath="platform:/plugin/org.talend.libraries.apache/lib/log4j-api-2.13.2.jar">
+        id="log4j-api-2.16.0.jar"
+        name="log4j-api-2.16.0.jar"
+        mvn_uri="mvn:org.apache.logging.log4j/log4j-api/2.16.0"
+        uripath="platform:/plugin/org.talend.libraries.apache/lib/log4j-api-2.16.0.jar">
       </libraryNeeded>
     
       <libraryNeeded
         context="plugin:org.talend.libraries.apache"
-        id="log4j-slf4j-impl-2.13.2.jar"
-        name="log4j-slf4j-impl-2.13.2.jar"
-        mvn_uri="mvn:org.apache.logging.log4j/log4j-slf4j-impl/2.13.2"
-        uripath="platform:/plugin/org.talend.libraries.apache/lib/log4j-slf4j-impl-2.13.2.jar">
+        id="log4j-slf4j-impl-2.16.0.jar"
+        name="log4j-slf4j-impl-2.16.0.jar"
+        mvn_uri="mvn:org.apache.logging.log4j/log4j-slf4j-impl/2.16.0"
+        uripath="platform:/plugin/org.talend.libraries.apache/lib/log4j-slf4j-impl-2.16.0.jar">
       </libraryNeeded>
     
       <libraryNeeded
         context="plugin:org.talend.libraries.apache"
-        id="log4j-jul-2.13.2.jar"
-        name="log4j-jul-2.13.2.jar"
-        mvn_uri="mvn:org.apache.logging.log4j/log4j-jul/2.13.2"
-        uripath="platform:/plugin/org.talend.libraries.apache/lib/log4j-jul-2.13.2.jar">
+        id="log4j-jul-2.16.0.jar"
+        name="log4j-jul-2.16.0.jar"
+        mvn_uri="mvn:org.apache.logging.log4j/log4j-jul/2.16.0"
+        uripath="platform:/plugin/org.talend.libraries.apache/lib/log4j-jul-2.16.0.jar">
       </libraryNeeded>
     
       <libraryNeeded
         context="plugin:org.talend.libraries.apache"
-        id="log4j-jcl-2.13.2.jar"
-        name="log4j-jcl-2.13.2.jar"
-        mvn_uri="mvn:org.apache.logging.log4j/log4j-jcl/2.13.2"
-        uripath="platform:/plugin/org.talend.libraries.apache/lib/log4j-jcl-2.13.2.jar">
+        id="log4j-jcl-2.16.0.jar"
+        name="log4j-jcl-2.16.0.jar"
+        mvn_uri="mvn:org.apache.logging.log4j/log4j-jcl/2.16.0"
+        uripath="platform:/plugin/org.talend.libraries.apache/lib/log4j-jcl-2.16.0.jar">
       </libraryNeeded>  
       
       <libraryNeeded
         context="plugin:org.talend.libraries.apache"
-        id="log4j-1.2-api-2.13.2.jar"
-        name="log4j-1.2-api-2.13.2.jar"
-        mvn_uri="mvn:org.apache.logging.log4j/log4j-1.2-api/2.13.2"
-        uripath="platform:/plugin/org.talend.libraries.apache/lib/log4j-1.2-api-2.13.2.jar">
+        id="log4j-1.2-api-2.16.0.jar"
+        name="log4j-1.2-api-2.16.0.jar"
+        mvn_uri="mvn:org.apache.logging.log4j/log4j-1.2-api/2.16.0"
+        uripath="platform:/plugin/org.talend.libraries.apache/lib/log4j-1.2-api-2.16.0.jar">
       </libraryNeeded>
       
       <libraryNeeded
