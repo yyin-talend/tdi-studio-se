@@ -30,6 +30,8 @@ import org.talend.commons.exception.CommonExceptionHandler;
 import org.talend.commons.utils.generation.JavaUtils;
 import org.talend.commons.utils.resource.FileExtensions;
 import org.talend.core.model.general.ModuleNeeded;
+import org.talend.core.model.process.Element;
+import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.IProcess;
 import org.talend.core.model.process.IProcess2;
 import org.talend.core.model.process.ProcessUtils;
@@ -43,6 +45,7 @@ import org.talend.core.runtime.process.ITalendProcessJavaProject;
 import org.talend.core.runtime.process.LastGenerationInfo;
 import org.talend.core.runtime.process.TalendProcessOptionConstants;
 import org.talend.core.runtime.repository.build.IMavenPomCreator;
+import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.utils.BigDataJobUtil;
 import org.talend.designer.core.utils.JavaProcessUtil;
 import org.talend.designer.maven.model.TalendMavenConstants;
@@ -64,6 +67,8 @@ public abstract class BigDataJavaProcessor extends MavenJavaProcessor implements
 
     protected String windowsAddition, unixAddition;
 
+    IProcess process;
+    
     /**
      * DOC rdubois BigDataJavaProcessor constructor comment.
      *
@@ -73,6 +78,19 @@ public abstract class BigDataJavaProcessor extends MavenJavaProcessor implements
      */
     public BigDataJavaProcessor(IProcess process, Property property, boolean filenameFromLabel) {
         super(process, property, filenameFromLabel);
+        this.process = process;
+        BigDataJobUtil bdUtil = new BigDataJobUtil(process);
+        if (bdUtil.isSparkWithHDInsight() || bdUtil.isSparkWithSynapse()) {
+            Element e = (Element) process;
+            IElementParameter paramActivate = e.getElementParameter(EParameterName.LOG4J_ACTIVATE.getName());
+            if (paramActivate != null) {
+                paramActivate.setValue(false);
+            }
+            IElementParameter paramRunActivate = e.getElementParameter(EParameterName.LOG4J_RUN_ACTIVATE.getName());
+            if (paramRunActivate != null) {
+                paramRunActivate.setValue(false);
+            }
+        }
     }
 
     protected abstract JobScriptsManager createJobScriptsManager(ProcessItem processItem,
