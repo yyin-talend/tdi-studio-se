@@ -94,6 +94,21 @@ public class BigDataJobUtil {
         }
         return isSparkWithHDInsight;
     }
+    
+    public boolean isSparkWithSynapse() {
+        boolean isSparkWithSynapse = false;
+        if (isBDJobWithFramework(ERepositoryObjectType.PROCESS_MR, HadoopConstants.FRAMEWORK_SPARK)
+                || isBDJobWithFramework(ERepositoryObjectType.PROCESS_STORM, HadoopConstants.FRAMEWORK_SPARKSTREAMING)) {
+            List<? extends IElementParameter> parameters = process.getElementParametersWithChildrens();
+            for (IElementParameter pt : parameters) {
+                if (pt.getName().equals("DISTRIBUTION") //$NON-NLS-1$
+                        && EHadoopDistributions.AZURE_SYNAPSE.getName().equals(pt.getValue())) {
+                    isSparkWithSynapse = true;
+                }
+            }
+        }
+        return isSparkWithSynapse;
+    }
 
     public boolean isMRWithHDInsight() {
         Boolean isMRWithHDInsight = false;
