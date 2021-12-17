@@ -244,12 +244,14 @@ public class CLASS {
 
         public String getWrappedColumnName(String lProtectedChar, String rProtectedChar) {
             String wrappedColumnName = getColumnName();
-            if (!lProtectedChar.equals("\\\"") && wrappedColumnName.startsWith("\"")) {
-                wrappedColumnName = "\\" + wrappedColumnName;
-            }
+            if (!isDynamic()) {
+                if (!lProtectedChar.equals("\\\"") && wrappedColumnName.startsWith("\"")) {
+                    wrappedColumnName = "\\" + wrappedColumnName;
+                }
 
-            if (!rProtectedChar.equals("\\\"") && wrappedColumnName.endsWith("\"") && !wrappedColumnName.endsWith("\\\"")) {
-                wrappedColumnName = wrappedColumnName.substring(0, wrappedColumnName.lastIndexOf("\"")) + "\\" + "\"";
+                if (!rProtectedChar.equals("\\\"") && wrappedColumnName.endsWith("\"") && !wrappedColumnName.endsWith("\\\"")) {
+                    wrappedColumnName = wrappedColumnName.substring(0, wrappedColumnName.lastIndexOf("\"")) + "\\" + "\"";
+                }
             }
 
             return lProtectedChar + wrappedColumnName + rProtectedChar;
@@ -349,7 +351,7 @@ public class CLASS {
                     List<Column> replacedColumns = column.getReplacement();
                     if (column.isKey()) {
                         for (Column replacedColumn : replacedColumns) {
-                            pkList.add(replacedColumn.getWrappedColumnName(getLProtectedChar(replacedColumn.getColumnName()), getRProtectedChar(replacedColumn.getColumnName())));
+                            pkList.add(getLProtectedChar(replacedColumn.getColumnName()) + replacedColumn.getColumnName() + getRProtectedChar(replacedColumn.getColumnName()));
                         }
                     }
                     int replacedCount = 0;
@@ -357,7 +359,7 @@ public class CLASS {
                         if (count == columnList.size() - 1 && replacedCount == replacedColumns.size() - 1) {
                             ending = "";
                         }
-                        createSQL.append(replacedColumn.getWrappedColumnName(getLProtectedChar(replacedColumn.getColumnName()), getRProtectedChar(replacedColumn.getColumnName())) + " ");
+                        createSQL.append(getLProtectedChar(replacedColumn.getColumnName()) + replacedColumn.getColumnName() + getRProtectedChar(replacedColumn.getColumnName()) + " ");
                         createSQL.append(replacedColumn.getDataType() + ending);
                         replacedCount++;
                     }
@@ -367,7 +369,7 @@ public class CLASS {
                     }
                     
                     if (column.isAddCol()) {
-                        createSQL.append(column.getWrappedColumnName(getLProtectedChar(column.getColumnName()), getRProtectedChar(column.getColumnName())) + " ");
+                        createSQL.append(getLProtectedChar( column.getColumnName() ) + column.getColumnName() + getRProtectedChar( column.getColumnName() ) + " ");
                         createSQL.append(column.getDataType() + ending);
                     } else if(column.isDynamic()) {
                         createSQL.append(" {TALEND_DYNAMIC_COLUMN} ").append(ending);
