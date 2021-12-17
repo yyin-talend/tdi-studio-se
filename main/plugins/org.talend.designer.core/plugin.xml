@@ -977,6 +977,6 @@
                 description="Check if custom components are used"
                 id="org.talend.designer.core.model.analysistask.CustomComponentsDepRiskAnalysisTask"
                 name="CustomComponentsDepRiskAnalysisTask">
-		  </analysisTask
+          </analysisTask>
        </extension>
 </plugin>
