@@ -806,11 +806,13 @@ public class DbGenerationManagerTest extends DbGenerationManagerTestHelper {
 
         // Snowflake
         dbMapComponent = new DbMapComponent();
+        List<ElementParameter> paramList = new ArrayList<>();
         ElementParameter param = new ElementParameter(dbMapComponent);
         param.setFieldType(EParameterFieldType.MAPPING_TYPE);
         param.setName(EParameterName.MAPPING.getName());
         param.setValue("snowflake_id");
-        ((List<IElementParameter>) dbMapComponent.getElementParameters()).add(param);
+        paramList.add(param);
+        dbMapComponent.setElementParameters(paramList);
 
         List<IMetadataTable> metadataList = new ArrayList<IMetadataTable>();
 
@@ -941,11 +943,13 @@ public class DbGenerationManagerTest extends DbGenerationManagerTestHelper {
 
         // Snowflake
         dbMapComponent = new DbMapComponent();
+        List<ElementParameter> paramList = new ArrayList<>();
         ElementParameter param = new ElementParameter(dbMapComponent);
         param.setFieldType(EParameterFieldType.MAPPING_TYPE);
         param.setName(EParameterName.MAPPING.getName());
         param.setValue("snowflake_id");
-        ((List<IElementParameter>) dbMapComponent.getElementParameters()).add(param);
+        paramList.add(param);
+        dbMapComponent.setElementParameters(paramList);
 
         List<IMetadataTable> metadataList = new ArrayList<IMetadataTable>();
 
@@ -1076,11 +1080,13 @@ public class DbGenerationManagerTest extends DbGenerationManagerTestHelper {
 
         // Snowflake
         dbMapComponent = new DbMapComponent();
+        List<ElementParameter> paramList = new ArrayList<>();
         ElementParameter param = new ElementParameter(dbMapComponent);
         param.setFieldType(EParameterFieldType.MAPPING_TYPE);
         param.setName(EParameterName.MAPPING.getName());
         param.setValue("snowflake_id");
-        ((List<IElementParameter>) dbMapComponent.getElementParameters()).add(param);
+        paramList.add(param);
+        dbMapComponent.setElementParameters(paramList);
 
         List<IMetadataTable> metadataList = new ArrayList<IMetadataTable>();
 
