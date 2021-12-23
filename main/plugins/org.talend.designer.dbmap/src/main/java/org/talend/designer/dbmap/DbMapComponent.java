@@ -76,6 +76,7 @@ import org.talend.designer.dbmap.utils.problems.ProblemsAnalyser;
  *
  * $Id: MapperComponent.java 1782 2007-02-03 07:57:38Z bqian $
  *
+ *
  */
 public class DbMapComponent extends AbstractMapComponent {
 
@@ -87,6 +88,7 @@ public class DbMapComponent extends AbstractMapComponent {
 
     private DbGenerationManager generationManager;
 
+    
     /**
      * DOC amaumont MapperComponent constructor comment.
      */
