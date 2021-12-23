@@ -159,7 +159,36 @@ globalMap.put("<%=cid%>_ERROR_MESSAGE",te.getMessage());
 								this.currentComponent = te.getCurrentComponent();
 							} catch (java.lang.Error error) {
 								this.lastError = error;
+							} finally {
+								cleanResource();
 							}
+						}
+						
+						private void cleanResource() {
+							<%
+							String processName = org.talend.core.model.utils.JavaResourcesHelper.getSimpleClassName(node.getProcess());
+							boolean tRESTRequestLoopExists = false;
+							boolean tHMapExists = false;
+							boolean tHMapOutExists = false;  
+							for(INode oneNode : node.getProcess().getGeneratingNodes()) {
+								if("tRESTRequestLoop".equals(oneNode.getComponent().getName())) {
+									tRESTRequestLoopExists = true;
+								} else if("tHMap".equals(oneNode.getComponent().getName())) {
+									tHMapExists = true;
+								} else if("tHMapOut".equals(oneNode.getComponent().getName())) {
+									tHMapOutExists = true;
+								}
+							}
+							
+							//the logic is that : if current thread(now we treat it as a thread as we use start method directly) is over, should no meaning to keep the entry with the key which starts with thread id
+							if(tRESTRequestLoopExists && (tHMapExists || tHMapOutExists)) {
+							%>
+						
+							<%=processName%>.this.globalMap.entrySet().removeIf(entry -> entry.getKey().startsWith(Thread.currentThread().getId()+"_tHMap"));
+						
+							<%
+							}
+							%>
 						}
 					}
 					<%if(!storeFlow){%>
@@ -167,6 +196,7 @@ globalMap.put("<%=cid%>_ERROR_MESSAGE",te.getMessage());
 					<%} else {%>
 						ThreadXMLField_<%=cid%> txf_<%=cid%> = new ThreadXMLField_<%=cid%>(listGroupby_<%=cid%>, flows_<%=cid%>);
 					<%}%>
+					//TODO consider to use single thread(or other?) thread pool in global instead of it, as this can't process the case in one loop, too many thread create/stop, cost resources
 					txf_<%=cid%>.start();
 				<%
 				}else{
