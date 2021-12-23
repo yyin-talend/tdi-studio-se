@@ -747,7 +747,7 @@ public class Component extends AbstractBasicComponent {
             param.setFieldType(EParameterFieldType.CHECK);
             param.setCategory(EComponentCategory.ADVANCED);
             param.setNumRow(200);
-            param.setShow(true);
+            param.setShow(defaultParalelize);
             param.setDefaultValue(param.getValue());
             listParam.add(param);
 

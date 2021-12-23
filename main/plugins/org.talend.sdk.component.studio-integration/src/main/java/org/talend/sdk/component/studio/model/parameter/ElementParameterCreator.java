@@ -631,15 +631,16 @@ public class ElementParameterCreator {
      */
     private void addParallelizeParameter() {
         if (isCamelCategory()) {
+            boolean readonly = true;
             final ElementParameter parameter = new ElementParameter(node);
-            parameter.setReadOnly(true);
+            parameter.setReadOnly(readonly);
             parameter.setName(EParameterName.PARALLELIZE.getName());
             parameter.setValue(Boolean.FALSE);
             parameter.setDisplayName(EParameterName.PARALLELIZE.getDisplayName());
             parameter.setFieldType(EParameterFieldType.CHECK);
             parameter.setCategory(ADVANCED);
             parameter.setNumRow(200);
-            parameter.setShow(true);
+            parameter.setShow(!readonly);
             parameter.setDefaultValue(parameter.getValue());
             parameters.add(parameter);
         }
