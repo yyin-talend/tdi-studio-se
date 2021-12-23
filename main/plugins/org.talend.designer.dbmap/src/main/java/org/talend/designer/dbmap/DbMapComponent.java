@@ -87,6 +87,7 @@ public class DbMapComponent extends AbstractMapComponent {
 
     private DbGenerationManager generationManager;
 
+    
     /**
      * DOC amaumont MapperComponent constructor comment.
      */
