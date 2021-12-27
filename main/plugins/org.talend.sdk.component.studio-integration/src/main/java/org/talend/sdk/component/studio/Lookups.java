@@ -45,7 +45,7 @@ import org.talend.sdk.component.studio.service.UiActionsThreadPool;
 import org.talend.sdk.component.studio.ui.composite.TaCoKitComposite;
 import org.talend.sdk.component.studio.ui.composite.problemmanager.ComponentViewProblemManager;
 import org.talend.sdk.component.studio.util.TaCoKitConst;
-import org.talend.sdk.component.studio.websocket.WebSocketClient;
+import org.talend.sdk.component.studio.websocket.ServicesClient;
 
 public final class Lookups {
 
@@ -122,8 +122,8 @@ public final class Lookups {
         }
     }
 
-    public static WebSocketClient client() {
-        return lookup(WebSocketClient.class);
+    public static ServicesClient client() {
+        return lookup(ServicesClient.class);
     }
 
     public static ComponentService service() {
@@ -146,6 +146,9 @@ public final class Lookups {
     private static <T> T lookup(final Class<T> type) {
         final BundleContext context = Platform.getBundle(TaCoKitConst.BUNDLE_ID).getBundleContext();
         final ServiceReference<T> clientRef = context.getServiceReference(type);
+        if (clientRef == null) {
+            throw new IllegalArgumentException("Can't find service reference for class '" + type.getName() + "'");
+        }
         return context.getService(clientRef);
     }
 

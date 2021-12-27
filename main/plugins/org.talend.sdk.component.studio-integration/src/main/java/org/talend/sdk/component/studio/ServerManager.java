@@ -25,11 +25,13 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Function;
 
 import org.apache.commons.lang3.concurrent.BasicThreadFactory;
+import org.apache.log4j.Level;
 import org.apache.tomcat.websocket.Constants;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
 import org.osgi.framework.ServiceRegistration;
 import org.talend.commons.CommonsPlugin;
+import org.talend.commons.exception.CommonExceptionHandler;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.utils.VersionUtils;
 import org.talend.core.nexus.TalendMavenResolver;
@@ -42,7 +44,8 @@ import org.talend.sdk.component.studio.service.ComponentService;
 import org.talend.sdk.component.studio.service.Configuration;
 import org.talend.sdk.component.studio.service.UiActionsThreadPool;
 import org.talend.sdk.component.studio.util.TaCoKitUtil;
-import org.talend.sdk.component.studio.websocket.WebSocketClient;
+import org.talend.sdk.component.studio.websocket.ServicesClient;
+import org.talend.sdk.component.studio.websocket.WebSocketClientImpl;
 
 public class ServerManager {
 
@@ -52,7 +55,9 @@ public class ServerManager {
 
     private final Collection<ServiceRegistration<?>> services = new ArrayList<>();
 
-    private WebSocketClient client;
+    private ServicesClient client;
+
+    private WebSocketClientImpl socketClient;
 
     private Runnable reset;
 
@@ -128,18 +133,20 @@ public class ServerManager {
             manager = new ProcessManager(GAV.INSTANCE.getGroupId(), mvnResolverImpl);
             manager.start();
 
-            client = new WebSocketClient("ws://", String.valueOf(manager.getPort()), "/websocket/v1",
+            this.socketClient = new WebSocketClientImpl("ws://", String.valueOf(manager.getPort()), "/websocket/v1",
                     Long.getLong("talend.component.websocket.client.timeout", Constants.IO_TIMEOUT_MS_DEFAULT));
-            client.setSynch(() -> {
+            this.client = new ServicesClient(socketClient);
+            socketClient.setSynch(() -> {
                 manager.waitForServer(() -> {
-                    client.setServerHost(manager.getServerAddress());
-                    client.v1().healthCheck();
+                    socketClient.setServerHost(manager.getServerAddress());
+                    this.client.v1().healthCheck();
                 });
-                client.setServerHost(manager.getServerAddress());
+                socketClient.setServerHost(manager.getServerAddress());
             });
 
+
             services.add(ctx.registerService(ProcessManager.class.getName(), manager, new Hashtable<>()));
-            services.add(ctx.registerService(WebSocketClient.class.getName(), client, new Hashtable<>()));
+            services.add(ctx.registerService(ServicesClient.class.getName(), client, new Hashtable<>()));
             services.add(ctx.registerService(ComponentService.class.getName(), new ComponentService(mvnResolverImpl),
                     new Hashtable<>()));
             services.add(ctx.registerService(TaCoKitCache.class.getName(), new TaCoKitCache(), new Hashtable<>()));
@@ -156,6 +163,7 @@ public class ServerManager {
 
             starting.set(false);
         } catch (Throwable ex) {
+            CommonExceptionHandler.process(ex, Level.ERROR);
             try {
                 doStop();
             } catch (Exception e) {

@@ -30,11 +30,11 @@ import org.talend.sdk.component.server.front.model.ComponentDetail;
 import org.talend.sdk.component.server.front.model.ComponentIndex;
 import org.talend.sdk.component.studio.Lookups;
 import org.talend.sdk.component.studio.service.ComponentService;
-import org.talend.sdk.component.studio.websocket.WebSocketClient;
+import org.talend.sdk.component.studio.websocket.ServicesClient;
 
 public class WizardRegistry {
 
-    private final WebSocketClient.V1Component client;
+    private final ServicesClient.V1Component client;
 
     private final Constructor<ERepositoryObjectType> eRepositoryObjectTypeConstructor;
 

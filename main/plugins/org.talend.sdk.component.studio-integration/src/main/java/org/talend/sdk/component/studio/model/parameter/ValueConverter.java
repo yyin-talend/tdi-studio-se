@@ -61,7 +61,7 @@ public final class ValueConverter {
             record = trimCurlyBrackets(record);
             String[] entries = record.split(",\\s?");Map<String, Object> element = new HashMap<String, Object>();
             for (String entry : entries) {
-                String[] keyValue = entry.split("(:|=)");
+                String[] keyValue = entry.split("(:|=)", 2);
                 String key = keyValue[0];
                 String value = keyValue[1];
                 element.put(key, value);

@@ -37,7 +37,7 @@ import org.talend.core.model.process.IContextParameter;
 import org.talend.designer.core.ui.editor.properties.controllers.uidialog.OpenContextChooseComboDialog;
 import org.talend.sdk.component.studio.Lookups;
 import org.talend.sdk.component.studio.model.parameter.TableActionParameter;
-import org.talend.sdk.component.studio.websocket.WebSocketClient.V1Action;
+import org.talend.sdk.component.studio.websocket.ServicesClient.V1Action;
 
 public class Action<T> {
 

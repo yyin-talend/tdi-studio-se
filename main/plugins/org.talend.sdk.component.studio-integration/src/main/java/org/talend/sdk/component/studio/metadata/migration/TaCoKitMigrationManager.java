@@ -30,8 +30,8 @@ import org.talend.sdk.component.studio.exception.UserCancelledException;
 import org.talend.sdk.component.studio.i18n.Messages;
 import org.talend.sdk.component.studio.metadata.model.TaCoKitConfigurationModel;
 import org.talend.sdk.component.studio.model.update.TaCoKitUpdateManager;
-import org.talend.sdk.component.studio.websocket.WebSocketClient.V1Component;
-import org.talend.sdk.component.studio.websocket.WebSocketClient.V1ConfigurationType;
+import org.talend.sdk.component.studio.websocket.ServicesClient.V1Component;
+import org.talend.sdk.component.studio.websocket.ServicesClient.V1ConfigurationType;
 import org.talend.sdk.studio.process.TaCoKitNode;
 
 /**

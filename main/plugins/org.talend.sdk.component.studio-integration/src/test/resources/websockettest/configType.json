@@ -1,0 +1,936 @@
+{
+  "nodes": {
+    "cmVzdCNSRVNUI2RhdGFzZXQjRGF0YXNldA": {
+      "actions": [],
+      "configurationType": "dataset",
+      "displayName": "Batch",
+      "edges": [],
+      "id": "cmVzdCNSRVNUI2RhdGFzZXQjRGF0YXNldA",
+      "name": "Dataset",
+      "parentId": "cmVzdCNSRVNUI2RhdGFzdG9yZSNEYXRhc3RvcmU",
+      "properties": [
+        {
+          "displayName": "",
+          "metadata": {
+            "ui::gridlayout::Advanced::value": "datastore|completePayload|maxRedirect|only_same_host|force_302_redirect|jsonForceDouble",
+            "ui::gridlayout::Main::value": "datastore|resource|methodType|format|hasHeaders|headers|hasQueryParams|queryParams|hasPathParams|pathParams|hasBody|body",
+            "documentation::value": "Dataset configuration.",
+            "configurationtype::name": "Dataset",
+            "configurationtype::type": "dataset",
+            "definition::parameter::index": "0"
+          },
+          "name": "configuration",
+          "path": "configuration",
+          "placeholder": "configuration",
+          "type": "OBJECT"
+        },
+        {
+          "displayName": "Body",
+          "metadata": {
+            "ui::gridlayout::Main::value": "type|textValue|jsonValue|xmlValue|params",
+            "condition::if::target": "hasBody",
+            "documentation::value": "Request body.",
+            "condition::if::evaluationStrategy": "DEFAULT",
+            "condition::if::value": "true",
+            "condition::if::negate": "false"
+          },
+          "name": "body",
+          "path": "configuration.body",
+          "placeholder": "body",
+          "type": "OBJECT"
+        },
+        {
+          "displayName": "JSON",
+          "metadata": {
+            "condition::if::target": "type",
+            "ui::code::value": "json",
+            "documentation::value": "JSON content of the body.",
+            "condition::if::evaluationStrategy": "DEFAULT",
+            "condition::if::value": "JSON",
+            "condition::if::negate": "false"
+          },
+          "name": "jsonValue",
+          "path": "configuration.body.jsonValue",
+          "placeholder": "{}",
+          "type": "STRING"
+        },
+        {
+          "defaultValue": "[]",
+          "displayName": "Body parameters",
+          "metadata": {
+            "ui::gridlayout::Main::value": "key,value",
+            "condition::if::target": "type",
+            "documentation::value": "Body parameters.",
+            "condition::if::evaluationStrategy": "DEFAULT",
+            "condition::if::value": "FORM_DATA,X_WWW_FORM_URLENCODED",
+            "condition::if::negate": "false"
+          },
+          "name": "params",
+          "path": "configuration.body.params",
+          "placeholder": "params",
+          "type": "ARRAY"
+        },
+        {
+          "displayName": "Name",
+          "metadata": {
+            "documentation::value": "Name of the parameter."
+          },
+          "name": "key",
+          "path": "configuration.body.params[].key",
+          "placeholder": "key",
+          "type": "STRING",
+          "validation": {
+            "required": true
+          }
+        },
+        {
+          "displayName": "Value",
+          "metadata": {
+            "documentation::value": "Value of the parameter."
+          },
+          "name": "value",
+          "path": "configuration.body.params[].value",
+          "placeholder": "value",
+          "type": "STRING"
+        },
+        {
+          "displayName": "Text",
+          "metadata": {
+            "ui::textarea": "true",
+            "condition::if::target": "type",
+            "documentation::value": "TExt content of the body.",
+            "condition::if::evaluationStrategy": "DEFAULT",
+            "condition::if::value": "TEXT",
+            "condition::if::negate": "false"
+          },
+          "name": "textValue",
+          "path": "configuration.body.textValue",
+          "placeholder": "",
+          "type": "STRING"
+        },
+        {
+          "defaultValue": "TEXT",
+          "displayName": "Body type",
+          "metadata": {
+            "documentation::value": "Type of the request body."
+          },
+          "name": "type",
+          "path": "configuration.body.type",
+          "placeholder": "type",
+          "proposalDisplayNames": {
+            "TEXT": "Text",
+            "JSON": "JSON",
+            "XML": "XML",
+            "FORM_DATA": "Form data",
+            "X_WWW_FORM_URLENCODED": "x-www-form-urlencoded"
+          },
+          "type": "ENUM",
+          "validation": {
+            "enumValues": [
+              "TEXT",
+              "JSON",
+              "XML",
+              "FORM_DATA",
+              "X_WWW_FORM_URLENCODED"
+            ]
+          }
+        },
+        {
+          "displayName": "XML",
+          "metadata": {
+            "condition::if::target": "type",
+            "ui::code::value": "xml",
+            "documentation::value": "XML content of the body.",
+            "condition::if::evaluationStrategy": "DEFAULT",
+            "condition::if::value": "XML",
+            "condition::if::negate": "false"
+          },
+          "name": "xmlValue",
+          "path": "configuration.body.xmlValue",
+          "placeholder": "<xml></xml>",
+          "type": "STRING"
+        },
+        {
+          "defaultValue": "false",
+          "displayName": "Get status and headers",
+          "metadata": {
+            "documentation::value": "Return complete payload as a record."
+          },
+          "name": "completePayload",
+          "path": "configuration.completePayload",
+          "placeholder": "completePayload",
+          "type": "BOOLEAN"
+        },
+        {
+          "displayName": "",
+          "metadata": {
+            "ui::gridlayout::Advanced::value": "connectionTimeout|readTimeout",
+            "ui::gridlayout::Main::value": "base|authentication|dep|deps",
+            "documentation::value": "Identification of the REST API.",
+            "configurationtype::name": "Datastore",
+            "configurationtype::type": "datastore"
+          },
+          "name": "datastore",
+          "path": "configuration.datastore",
+          "placeholder": "datastore",
+          "type": "OBJECT"
+        },
+        {
+          "displayName": "Authentication",
+          "metadata": {
+            "ui::gridlayout::Main::value": "type|basic|bearerToken",
+            "documentation::value": "Authentication configuration."
+          },
+          "name": "authentication",
+          "path": "configuration.datastore.authentication",
+          "placeholder": "authentication",
+          "type": "OBJECT",
+          "validation": {
+            "required": true
+          }
+        },
+        {
+          "displayName": "",
+          "metadata": {
+            "ui::gridlayout::Main::value": "username,password",
+            "condition::if::target": "type",
+            "documentation::value": "Login/password authentication.",
+            "condition::if::evaluationStrategy": "DEFAULT",
+            "condition::if::value": "Basic,Digest",
+            "condition::if::negate": "false"
+          },
+          "name": "basic",
+          "path": "configuration.datastore.authentication.basic",
+          "placeholder": "basic",
+          "type": "OBJECT"
+        },
+        {
+          "displayName": "Password",
+          "metadata": {
+            "documentation::value": "Password for authentication.",
+            "ui::credential": "true"
+          },
+          "name": "password",
+          "path": "configuration.datastore.authentication.basic.password",
+          "placeholder": "",
+          "type": "STRING"
+        },
+        {
+          "displayName": "Username",
+          "metadata": {
+            "documentation::value": "Username for authentication."
+          },
+          "name": "username",
+          "path": "configuration.datastore.authentication.basic.username",
+          "placeholder": "",
+          "type": "STRING"
+        },
+        {
+          "displayName": "Bearer access token",
+          "metadata": {
+            "condition::if::target": "type",
+            "documentation::value": "Bearer token.",
+            "ui::credential": "true",
+            "condition::if::evaluationStrategy": "DEFAULT",
+            "condition::if::value": "Bearer",
+            "condition::if::negate": "false"
+          },
+          "name": "bearerToken",
+          "path": "configuration.datastore.authentication.bearerToken",
+          "placeholder": "",
+          "type": "STRING"
+        },
+        {
+          "defaultValue": "NoAuth",
+          "displayName": "Authentication type",
+          "metadata": {
+            "documentation::value": "Request authentication type."
+          },
+          "name": "type",
+          "path": "configuration.datastore.authentication.type",
+          "placeholder": "Authentication type",
+          "proposalDisplayNames": {
+            "NoAuth": "No authentication",
+            "Basic": "Basic",
+            "Digest": "Digest",
+            "Bearer": "Bearer token"
+          },
+          "type": "ENUM",
+          "validation": {
+            "enumValues": [
+              "NoAuth",
+              "Basic",
+              "Digest",
+              "Bearer"
+            ]
+          }
+        },
+        {
+          "defaultValue": "",
+          "displayName": "Base URL",
+          "metadata": {
+            "documentation::value": "URL base of the request."
+          },
+          "name": "base",
+          "path": "configuration.datastore.base",
+          "placeholder": "https://www.restapi.org",
+          "type": "STRING",
+          "validation": {
+            "pattern": "^https?://.+$",
+            "required": true
+          }
+        },
+        {
+          "defaultValue": "30000",
+          "displayName": "Connection timeout (ms)",
+          "metadata": {
+            "ui::defaultvalue::value": "30000",
+            "documentation::value": "Connection timeout (ms)."
+          },
+          "name": "connectionTimeout",
+          "path": "configuration.datastore.connectionTimeout",
+          "placeholder": "30000",
+          "type": "NUMBER",
+          "validation": {
+            "min": 0,
+            "required": true
+          }
+        },
+        {
+          "displayName": "dep",
+          "metadata": {
+            "dependencies::connector": "family",
+            "documentation::value": "One deps."
+          },
+          "name": "dep",
+          "path": "configuration.datastore.dep",
+          "placeholder": "",
+          "type": "OBJECT"
+        },
+        {
+          "displayName": "family",
+          "metadata": {},
+          "name": "family",
+          "path": "configuration.datastore.dep.family",
+          "placeholder": "",
+          "type": "STRING"
+        },
+        {
+          "displayName": "mavenReferences",
+          "metadata": {},
+          "name": "mavenReferences",
+          "path": "configuration.datastore.dep.mavenReferences",
+          "placeholder": "",
+          "type": "STRING"
+        },
+        {
+          "displayName": "name",
+          "metadata": {},
+          "name": "name",
+          "path": "configuration.datastore.dep.name",
+          "placeholder": "",
+          "type": "STRING"
+        },
+        {
+          "defaultValue": "[]",
+          "displayName": "deps",
+          "metadata": {
+            "dependencies::connector": "family",
+            "documentation::value": "Several deps."
+          },
+          "name": "deps",
+          "path": "configuration.datastore.deps",
+          "placeholder": "",
+          "type": "ARRAY"
+        },
+        {
+          "displayName": "family",
+          "metadata": {},
+          "name": "family",
+          "path": "configuration.datastore.deps[].family",
+          "placeholder": "",
+          "type": "STRING"
+        },
+        {
+          "displayName": "mavenReferences",
+          "metadata": {},
+          "name": "mavenReferences",
+          "path": "configuration.datastore.deps[].mavenReferences",
+          "placeholder": "",
+          "type": "STRING"
+        },
+        {
+          "displayName": "name",
+          "metadata": {},
+          "name": "name",
+          "path": "configuration.datastore.deps[].name",
+          "placeholder": "",
+          "type": "STRING"
+        },
+        {
+          "defaultValue": "120000",
+          "displayName": "Read timeout (ms)",
+          "metadata": {
+            "ui::defaultvalue::value": "120000",
+            "documentation::value": "Read timeout (ms)."
+          },
+          "name": "readTimeout",
+          "path": "configuration.datastore.readTimeout",
+          "placeholder": "120000",
+          "type": "NUMBER",
+          "validation": {
+            "min": 0,
+            "required": true
+          }
+        },
+        {
+          "defaultValue": "false",
+          "displayName": "Force GET method for 302 redirection",
+          "metadata": {
+            "ui::defaultvalue::value": "false",
+            "condition::if::target": "maxRedirect",
+            "documentation::value": "Force a GET on a 302 redirection.",
+            "condition::if::evaluationStrategy": "DEFAULT",
+            "condition::if::value": "0",
+            "condition::if::negate": "true"
+          },
+          "name": "force_302_redirect",
+          "path": "configuration.force_302_redirect",
+          "placeholder": "force_302_redirect",
+          "type": "BOOLEAN"
+        },
+        {
+          "defaultValue": "RAW_TEXT",
+          "displayName": "Answer body format",
+          "metadata": {
+            "documentation::value": "Format of the body's answer."
+          },
+          "name": "format",
+          "path": "configuration.format",
+          "placeholder": "",
+          "proposalDisplayNames": {
+            "RAW_TEXT": "Text",
+            "JSON": "JSON"
+          },
+          "type": "ENUM",
+          "validation": {
+            "enumValues": [
+              "RAW_TEXT",
+              "JSON"
+            ],
+            "required": true
+          }
+        },
+        {
+          "defaultValue": "false",
+          "displayName": "Define body",
+          "metadata": {
+            "documentation::value": "Activate to define the body."
+          },
+          "name": "hasBody",
+          "path": "configuration.hasBody",
+          "placeholder": "hasBody",
+          "type": "BOOLEAN"
+        },
+        {
+          "defaultValue": "false",
+          "displayName": "Set header",
+          "metadata": {
+            "documentation::value": "Activate to define headers."
+          },
+          "name": "hasHeaders",
+          "path": "configuration.hasHeaders",
+          "placeholder": "hasHeaders",
+          "type": "BOOLEAN"
+        },
+        {
+          "defaultValue": "false",
+          "displayName": "Set path parameters",
+          "metadata": {
+            "documentation::value": "Activate to define URL path parameters."
+          },
+          "name": "hasPathParams",
+          "path": "configuration.hasPathParams",
+          "placeholder": "hasPathParams",
+          "type": "BOOLEAN"
+        },
+        {
+          "defaultValue": "false",
+          "displayName": "Set URL parameters",
+          "metadata": {
+            "documentation::value": "Activate to define query parameters."
+          },
+          "name": "hasQueryParams",
+          "path": "configuration.hasQueryParams",
+          "placeholder": "hasQueryParams",
+          "type": "BOOLEAN"
+        },
+        {
+          "defaultValue": "[{\"key\":\"\",\"value\":\"\"}]",
+          "displayName": "Headers",
+          "metadata": {
+            "ui::gridlayout::Main::value": "key,value",
+            "condition::if::target": "hasHeaders",
+            "documentation::value": "Query headers.",
+            "condition::if::evaluationStrategy": "DEFAULT",
+            "condition::if::value": "true",
+            "condition::if::negate": "false"
+          },
+          "name": "headers",
+          "path": "configuration.headers",
+          "placeholder": "headers",
+          "type": "ARRAY"
+        },
+        {
+          "defaultValue": "",
+          "displayName": "Name",
+          "metadata": {
+            "documentation::value": "Name of the parameter."
+          },
+          "name": "key",
+          "path": "configuration.headers[].key",
+          "placeholder": "key",
+          "type": "STRING",
+          "validation": {
+            "required": true
+          }
+        },
+        {
+          "defaultValue": "",
+          "displayName": "Value",
+          "metadata": {
+            "documentation::value": "Value of the parameter."
+          },
+          "name": "value",
+          "path": "configuration.headers[].value",
+          "placeholder": "value",
+          "type": "STRING"
+        },
+        {
+          "defaultValue": "true",
+          "displayName": "Force all JSON numbers to double when parsing the answer body.",
+          "metadata": {
+            "ui::defaultvalue::value": "true",
+            "condition::if::target": "format",
+            "documentation::value": "If answer body type is JSON, infer numbers type or force all to double.",
+            "condition::if::evaluationStrategy": "DEFAULT",
+            "condition::if::value": "JSON",
+            "condition::if::negate": "false"
+          },
+          "name": "jsonForceDouble",
+          "path": "configuration.jsonForceDouble",
+          "placeholder": "",
+          "type": "BOOLEAN"
+        },
+        {
+          "defaultValue": "3",
+          "displayName": "Maximum number of redirects",
+          "metadata": {
+            "ui::defaultvalue::value": "3",
+            "documentation::value": "How many redirection are supported ? (-1 for infinite)."
+          },
+          "name": "maxRedirect",
+          "path": "configuration.maxRedirect",
+          "placeholder": "3",
+          "type": "NUMBER",
+          "validation": {
+            "min": -1,
+            "required": true
+          }
+        },
+        {
+          "displayName": "HTTP method",
+          "metadata": {
+            "ui::defaultvalue::value": "GET",
+            "documentation::value": "The HTTP verb to use."
+          },
+          "name": "methodType",
+          "path": "configuration.methodType",
+          "placeholder": "",
+          "proposalDisplayNames": {
+            "GET": "GET",
+            "POST": "POST",
+            "HEAD": "HEAD",
+            "OPTIONS": "Options",
+            "PUT": "PUT",
+            "DELETE": "DELETE",
+            "TRACE": "Trace"
+          },
+          "type": "ENUM",
+          "validation": {
+            "enumValues": [
+              "GET",
+              "POST",
+              "HEAD",
+              "OPTIONS",
+              "PUT",
+              "DELETE",
+              "TRACE"
+            ],
+            "required": true
+          }
+        },
+        {
+          "defaultValue": "false",
+          "displayName": "Redirect only on same host",
+          "metadata": {
+            "ui::defaultvalue::value": "false",
+            "condition::if::target": "maxRedirect",
+            "documentation::value": "Redirect only if same host.",
+            "condition::if::evaluationStrategy": "DEFAULT",
+            "condition::if::value": "0",
+            "condition::if::negate": "true"
+          },
+          "name": "only_same_host",
+          "path": "configuration.only_same_host",
+          "placeholder": "only_same_host",
+          "type": "BOOLEAN"
+        },
+        {
+          "defaultValue": "[{\"key\":\"\",\"value\":\"\"}]",
+          "displayName": "Parameters",
+          "metadata": {
+            "ui::gridlayout::Main::value": "key,value",
+            "condition::if::target": "hasPathParams",
+            "documentation::value": "Path parameters.",
+            "condition::if::evaluationStrategy": "DEFAULT",
+            "condition::if::value": "true",
+            "condition::if::negate": "false"
+          },
+          "name": "pathParams",
+          "path": "configuration.pathParams",
+          "placeholder": "pathParams",
+          "type": "ARRAY"
+        },
+        {
+          "defaultValue": "",
+          "displayName": "Name",
+          "metadata": {
+            "documentation::value": "Name of the parameter."
+          },
+          "name": "key",
+          "path": "configuration.pathParams[].key",
+          "placeholder": "key",
+          "type": "STRING",
+          "validation": {
+            "required": true
+          }
+        },
+        {
+          "defaultValue": "",
+          "displayName": "Value",
+          "metadata": {
+            "documentation::value": "Value of the parameter."
+          },
+          "name": "value",
+          "path": "configuration.pathParams[].value",
+          "placeholder": "value",
+          "type": "STRING"
+        },
+        {
+          "defaultValue": "[{\"key\":\"\",\"value\":\"\"}]",
+          "displayName": "Query parameters",
+          "metadata": {
+            "ui::gridlayout::Main::value": "key,value",
+            "condition::if::target": "hasQueryParams",
+            "documentation::value": "Query parameters.",
+            "condition::if::evaluationStrategy": "DEFAULT",
+            "condition::if::value": "true",
+            "condition::if::negate": "false"
+          },
+          "name": "queryParams",
+          "path": "configuration.queryParams",
+          "placeholder": "queryParams",
+          "type": "ARRAY"
+        },
+        {
+          "defaultValue": "",
+          "displayName": "Name",
+          "metadata": {
+            "documentation::value": "Name of the parameter."
+          },
+          "name": "key",
+          "path": "configuration.queryParams[].key",
+          "placeholder": "key",
+          "type": "STRING",
+          "validation": {
+            "required": true
+          }
+        },
+        {
+          "defaultValue": "",
+          "displayName": "Value",
+          "metadata": {
+            "documentation::value": "Value of the parameter."
+          },
+          "name": "value",
+          "path": "configuration.queryParams[].value",
+          "placeholder": "value",
+          "type": "STRING"
+        },
+        {
+          "defaultValue": "",
+          "displayName": "Resource",
+          "metadata": {
+            "documentation::value": "End of url to complete base url of the datastore."
+          },
+          "name": "resource",
+          "path": "configuration.resource",
+          "placeholder": "/get",
+          "type": "STRING",
+          "validation": {
+            "required": true
+          }
+        }
+      ],
+      "version": -1
+    },
+    "cmVzdCNSRVNU": {
+      "displayName": "REST",
+      "edges": [
+        "cmVzdCNSRVNUI2RhdGFzdG9yZSNEYXRhc3RvcmU"
+      ],
+      "id": "cmVzdCNSRVNU",
+      "name": "REST",
+      "properties": [],
+      "version": 0
+    },
+    "cmVzdCNSRVNUI2RhdGFzdG9yZSNEYXRhc3RvcmU": {
+      "actions": [],
+      "configurationType": "datastore",
+      "displayName": "REST",
+      "edges": [
+        "cmVzdCNSRVNUI2RhdGFzZXQjRGF0YXNldA"
+      ],
+      "id": "cmVzdCNSRVNUI2RhdGFzdG9yZSNEYXRhc3RvcmU",
+      "name": "Datastore",
+      "parentId": "cmVzdCNSRVNU",
+      "properties": [
+        {
+          "displayName": "",
+          "metadata": {
+            "ui::gridlayout::Advanced::value": "connectionTimeout|readTimeout",
+            "ui::gridlayout::Main::value": "base|authentication|dep|deps",
+            "documentation::value": "Identification of the REST API.",
+            "configurationtype::name": "Datastore",
+            "configurationtype::type": "datastore",
+            "definition::parameter::index": "0"
+          },
+          "name": "configuration",
+          "path": "configuration",
+          "placeholder": "configuration",
+          "type": "OBJECT"
+        },
+        {
+          "displayName": "Authentication",
+          "metadata": {
+            "ui::gridlayout::Main::value": "type|basic|bearerToken",
+            "documentation::value": "Authentication configuration."
+          },
+          "name": "authentication",
+          "path": "configuration.authentication",
+          "placeholder": "authentication",
+          "type": "OBJECT",
+          "validation": {
+            "required": true
+          }
+        },
+        {
+          "displayName": "",
+          "metadata": {
+            "ui::gridlayout::Main::value": "username,password",
+            "condition::if::target": "type",
+            "documentation::value": "Login/password authentication.",
+            "condition::if::evaluationStrategy": "DEFAULT",
+            "condition::if::value": "Basic,Digest",
+            "condition::if::negate": "false"
+          },
+          "name": "basic",
+          "path": "configuration.authentication.basic",
+          "placeholder": "basic",
+          "type": "OBJECT"
+        },
+        {
+          "displayName": "Password",
+          "metadata": {
+            "documentation::value": "Password for authentication.",
+            "ui::credential": "true"
+          },
+          "name": "password",
+          "path": "configuration.authentication.basic.password",
+          "placeholder": "",
+          "type": "STRING"
+        },
+        {
+          "displayName": "Username",
+          "metadata": {
+            "documentation::value": "Username for authentication."
+          },
+          "name": "username",
+          "path": "configuration.authentication.basic.username",
+          "placeholder": "",
+          "type": "STRING"
+        },
+        {
+          "displayName": "Bearer access token",
+          "metadata": {
+            "condition::if::target": "type",
+            "documentation::value": "Bearer token.",
+            "ui::credential": "true",
+            "condition::if::evaluationStrategy": "DEFAULT",
+            "condition::if::value": "Bearer",
+            "condition::if::negate": "false"
+          },
+          "name": "bearerToken",
+          "path": "configuration.authentication.bearerToken",
+          "placeholder": "",
+          "type": "STRING"
+        },
+        {
+          "defaultValue": "NoAuth",
+          "displayName": "Authentication type",
+          "metadata": {
+            "documentation::value": "Request authentication type."
+          },
+          "name": "type",
+          "path": "configuration.authentication.type",
+          "placeholder": "Authentication type",
+          "proposalDisplayNames": {
+            "NoAuth": "No authentication",
+            "Basic": "Basic",
+            "Digest": "Digest",
+            "Bearer": "Bearer token"
+          },
+          "type": "ENUM",
+          "validation": {
+            "enumValues": [
+              "NoAuth",
+              "Basic",
+              "Digest",
+              "Bearer"
+            ]
+          }
+        },
+        {
+          "defaultValue": "",
+          "displayName": "Base URL",
+          "metadata": {
+            "documentation::value": "URL base of the request."
+          },
+          "name": "base",
+          "path": "configuration.base",
+          "placeholder": "https://www.restapi.org",
+          "type": "STRING",
+          "validation": {
+            "pattern": "^https?://.+$",
+            "required": true
+          }
+        },
+        {
+          "defaultValue": "30000",
+          "displayName": "Connection timeout (ms)",
+          "metadata": {
+            "ui::defaultvalue::value": "30000",
+            "documentation::value": "Connection timeout (ms)."
+          },
+          "name": "connectionTimeout",
+          "path": "configuration.connectionTimeout",
+          "placeholder": "30000",
+          "type": "NUMBER",
+          "validation": {
+            "min": 0,
+            "required": true
+          }
+        },
+        {
+          "displayName": "dep",
+          "metadata": {
+            "dependencies::connector": "family",
+            "documentation::value": "One deps."
+          },
+          "name": "dep",
+          "path": "configuration.dep",
+          "placeholder": "",
+          "type": "OBJECT"
+        },
+        {
+          "displayName": "family",
+          "metadata": {},
+          "name": "family",
+          "path": "configuration.dep.family",
+          "placeholder": "",
+          "type": "STRING"
+        },
+        {
+          "displayName": "mavenReferences",
+          "metadata": {},
+          "name": "mavenReferences",
+          "path": "configuration.dep.mavenReferences",
+          "placeholder": "",
+          "type": "STRING"
+        },
+        {
+          "displayName": "name",
+          "metadata": {},
+          "name": "name",
+          "path": "configuration.dep.name",
+          "placeholder": "",
+          "type": "STRING"
+        },
+        {
+          "defaultValue": "[]",
+          "displayName": "deps",
+          "metadata": {
+            "dependencies::connector": "family",
+            "documentation::value": "Several deps."
+          },
+          "name": "deps",
+          "path": "configuration.deps",
+          "placeholder": "",
+          "type": "ARRAY"
+        },
+        {
+          "displayName": "family",
+          "metadata": {},
+          "name": "family",
+          "path": "configuration.deps[].family",
+          "placeholder": "",
+          "type": "STRING"
+        },
+        {
+          "displayName": "mavenReferences",
+          "metadata": {},
+          "name": "mavenReferences",
+          "path": "configuration.deps[].mavenReferences",
+          "placeholder": "",
+          "type": "STRING"
+        },
+        {
+          "displayName": "name",
+          "metadata": {},
+          "name": "name",
+          "path": "configuration.deps[].name",
+          "placeholder": "",
+          "type": "STRING"
+        },
+        {
+          "defaultValue": "120000",
+          "displayName": "Read timeout (ms)",
+          "metadata": {
+            "ui::defaultvalue::value": "120000",
+            "documentation::value": "Read timeout (ms)."
+          },
+          "name": "readTimeout",
+          "path": "configuration.readTimeout",
+          "placeholder": "120000",
+          "type": "NUMBER",
+          "validation": {
+            "min": 0,
+            "required": true
+          }
+        }
+      ],
+      "version": 1
+    }
+  }
+}

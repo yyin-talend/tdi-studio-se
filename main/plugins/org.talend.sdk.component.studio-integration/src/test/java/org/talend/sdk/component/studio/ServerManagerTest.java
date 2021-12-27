@@ -67,7 +67,8 @@ import org.talend.sdk.component.server.front.model.ComponentIndices;
 import org.talend.sdk.component.server.front.model.ConfigTypeNodes;
 import org.talend.sdk.component.studio.mvn.Mvn;
 import org.talend.sdk.component.studio.util.TaCoKitConst;
-import org.talend.sdk.component.studio.websocket.WebSocketClient;
+import org.talend.sdk.component.studio.websocket.ServicesClient;
+import org.talend.sdk.component.studio.websocket.WebSocketClientImpl;
 
 class ServerManagerTest {
 
@@ -147,7 +148,8 @@ class ServerManagerTest {
     }
 
     private void assertClient(final int port) {
-        try (WebSocketClient client = new WebSocketClient("ws://", String.valueOf(port), "/websocket/v1", 600000)) {
+        try (final ServicesClient.WebSocketClient socketClient = new WebSocketClientImpl("ws://", String.valueOf(port), "/websocket/v1", 600000);
+             final ServicesClient client = new ServicesClient(socketClient)) {
             // we loop since we reuse the same session so we must ensure this reuse works
             for (int i = 0; i < 2; i++) {
                 // simple endpoint
@@ -180,18 +182,18 @@ class ServerManagerTest {
         }
     }
 
-    private void assertIcons(final WebSocketClient client, final String compId, final String familyId) {
-        final WebSocketClient.V1Component component = client.v1().component();
+    private void assertIcons(final ServicesClient client, final String compId, final String familyId) {
+        final ServicesClient.V1Component component = client.v1().component();
         try {
             component.icon(compId);
-        } catch (final WebSocketClient.ClientException ce) {
+        } catch (final ServicesClient.ClientException ce) {
             assertNotNull(ce.getErrorPayload());
             assertEquals(ICON_MISSING, ce.getErrorPayload().getCode());
             assertEquals("No icon for identifier: " + compId, ce.getErrorPayload().getDescription());
         }
         try {
             component.familyIcon(familyId);
-        } catch (final WebSocketClient.ClientException ce) {
+        } catch (final ServicesClient.ClientException ce) {
             assertNotNull(ce.getErrorPayload());
             assertEquals(ICON_MISSING, ce.getErrorPayload().getCode());
             assertEquals("No icon for family identifier: " + familyId, ce.getErrorPayload().getDescription());

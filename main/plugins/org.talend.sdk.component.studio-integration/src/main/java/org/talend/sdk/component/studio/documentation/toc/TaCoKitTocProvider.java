@@ -34,7 +34,7 @@ import org.talend.sdk.component.studio.i18n.Messages;
 import org.talend.sdk.component.studio.lang.Pair;
 import org.talend.sdk.component.studio.util.TaCoKitConst;
 import org.talend.sdk.component.studio.util.TaCoKitUtil;
-import org.talend.sdk.component.studio.websocket.WebSocketClient;
+import org.talend.sdk.component.studio.websocket.ServicesClient;
 
 public class TaCoKitTocProvider extends AbstractTocProvider {
 
@@ -58,7 +58,7 @@ public class TaCoKitTocProvider extends AbstractTocProvider {
         if(contributions != null) {
             return contributions;
         }
-        final WebSocketClient client = Lookups.client();
+        final ServicesClient client = Lookups.client();
         // we need to get the locale from display language. We might have a "en_US"/"en-US" or something different
         // as an incoming locale String
         final Locale expLocale = Locales.fromLanguagePresentation(language);

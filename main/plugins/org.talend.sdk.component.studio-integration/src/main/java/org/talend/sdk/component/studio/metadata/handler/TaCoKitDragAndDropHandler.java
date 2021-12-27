@@ -59,7 +59,7 @@ import org.talend.sdk.component.studio.metadata.node.ITaCoKitRepositoryNode;
 import org.talend.sdk.component.studio.model.parameter.PropertyDefinitionDecorator;
 import org.talend.sdk.component.studio.util.TaCoKitConst;
 import org.talend.sdk.component.studio.util.TaCoKitUtil;
-import org.talend.sdk.component.studio.websocket.WebSocketClient.V1Component;
+import org.talend.sdk.component.studio.websocket.ServicesClient.V1Component;
 import org.talend.sdk.studio.process.TaCoKitNode;
 
 public class TaCoKitDragAndDropHandler extends AbstractDragAndDropServiceHandler {

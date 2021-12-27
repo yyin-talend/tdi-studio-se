@@ -45,6 +45,19 @@ class ValueConverterTest {
     }
 
     @Test
+    void toTable() {
+        final String table = "[{key1=value:11, key2=value12}, {key1=\"value::21\", key2=\"xx:value22\"}]";
+        final List<Map<String, Object>> converted = ValueConverter.toTable(table);
+        Assertions.assertEquals(2, converted.size());
+
+        Assertions.assertEquals("value:11", converted.get(0).get("key1"));
+        Assertions.assertEquals("value12", converted.get(0).get("key2"));
+
+        Assertions.assertEquals("\"value::21\"", converted.get(1).get("key1"));
+        Assertions.assertEquals("\"xx:value22\"", converted.get(1).get("key2"));
+    }
+
+    @Test
     void testToTableNull() {
         ArrayList<Map<String, Object>> empty = new ArrayList<>();
         List<Map<String, Object>> actual = ValueConverter.toTable(null);
