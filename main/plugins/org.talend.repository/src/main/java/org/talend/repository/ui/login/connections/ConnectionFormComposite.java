@@ -382,7 +382,7 @@ public class ConnectionFormComposite extends Composite {
             errorMsg = Messages.getString("connections.form.emptyField.repository"); //$NON-NLS-1$
         } else if (valid && getTextName().length() == 0) {
             errorMsg = Messages.getString("connections.form.emptyField.connname"); //$NON-NLS-1$
-        } else if (valid && getUser().length() == 0) {
+        } else if (valid && (getUser().length() == 0 && !isCloud)) {
             errorMsg = Messages.getString("connections.form.emptyField.username"); //$NON-NLS-1$
             toActiveDynamicButtons(false);
         } else if (valid && isLocalConnection() && !Pattern.matches(RepositoryConstants.MAIL_PATTERN, getUser())) {
@@ -517,6 +517,9 @@ public class ConnectionFormComposite extends Composite {
                 password = ""; //$NON-NLS-1$
                 passwordText.setBackground(LoginDialogV2.GREY_COLOR);
             }
+            boolean hideUserField = !enablePasswordField && enableTokenField;
+            hideControl(userLabel, hideUserField, false);
+            hideControl(userText, hideUserField, false);
             hideControl(passwordLabel, !enablePasswordField, false);
             hideControl(passwordText, !enablePasswordField, false);
             passwordText.getParent().layout();
