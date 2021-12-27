@@ -42,7 +42,8 @@ import org.talend.sdk.component.studio.service.ComponentService;
 import org.talend.sdk.component.studio.service.Configuration;
 import org.talend.sdk.component.studio.service.UiActionsThreadPool;
 import org.talend.sdk.component.studio.util.TaCoKitUtil;
-import org.talend.sdk.component.studio.websocket.WebSocketClient;
+import org.talend.sdk.component.studio.websocket.ServicesClient;
+import org.talend.sdk.component.studio.websocket.WebSocketClientImpl;
 
 public class ServerManager {
 
@@ -52,7 +53,7 @@ public class ServerManager {
 
     private final Collection<ServiceRegistration<?>> services = new ArrayList<>();
 
-    private WebSocketClient client;
+    private ServicesClient client;
 
     private Runnable reset;
 
@@ -128,18 +129,20 @@ public class ServerManager {
             manager = new ProcessManager(GAV.INSTANCE.getGroupId(), mvnResolverImpl);
             manager.start();
 
-            client = new WebSocketClient("ws://", String.valueOf(manager.getPort()), "/websocket/v1",
+            final WebSocketClientImpl socketClient = new WebSocketClientImpl("ws://", String.valueOf(manager.getPort()), "/websocket/v1",
                     Long.getLong("talend.component.websocket.client.timeout", Constants.IO_TIMEOUT_MS_DEFAULT));
-            client.setSynch(() -> {
+            this.client = new ServicesClient(socketClient);
+            socketClient.setSynch(() -> {
                 manager.waitForServer(() -> {
-                    client.setServerHost(manager.getServerAddress());
-                    client.v1().healthCheck();
+                    socketClient.setServerHost(manager.getServerAddress());
+                    this.client.v1().healthCheck();
                 });
-                client.setServerHost(manager.getServerAddress());
+                socketClient.setServerHost(manager.getServerAddress());
             });
 
+
             services.add(ctx.registerService(ProcessManager.class.getName(), manager, new Hashtable<>()));
-            services.add(ctx.registerService(WebSocketClient.class.getName(), client, new Hashtable<>()));
+            services.add(ctx.registerService(ServicesClient.class.getName(), client, new Hashtable<>()));
             services.add(ctx.registerService(ComponentService.class.getName(), new ComponentService(mvnResolverImpl),
                     new Hashtable<>()));
             services.add(ctx.registerService(TaCoKitCache.class.getName(), new TaCoKitCache(), new Hashtable<>()));

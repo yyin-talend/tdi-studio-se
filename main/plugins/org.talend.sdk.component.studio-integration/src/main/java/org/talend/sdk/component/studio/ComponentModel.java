@@ -21,19 +21,9 @@ import static org.talend.sdk.component.studio.model.ReturnVariables.AFTER;
 import static org.talend.sdk.component.studio.model.ReturnVariables.RETURN_ERROR_MESSAGE;
 import static org.talend.sdk.component.studio.model.ReturnVariables.RETURN_TOTAL_RECORD_COUNT;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.talend.commons.CommonsPlugin;
@@ -71,8 +61,7 @@ import org.talend.sdk.component.studio.enums.ETaCoKitComponentType;
 import org.talend.sdk.component.studio.metadata.migration.TaCoKitMigrationManager;
 import org.talend.sdk.component.studio.model.connector.ConnectorCreatorFactory;
 import org.talend.sdk.component.studio.model.connector.TaCoKitNodeConnector;
-import org.talend.sdk.component.studio.model.parameter.ElementParameterCreator;
-import org.talend.sdk.component.studio.model.parameter.Metadatas;
+import org.talend.sdk.component.studio.model.parameter.*;
 import org.talend.sdk.component.studio.mvn.Mvn;
 import org.talend.sdk.component.studio.service.ComponentService;
 import org.talend.sdk.component.studio.util.TaCoKitConst;
@@ -431,40 +420,112 @@ public class ComponentModel extends AbstractBasicComponent implements IAdditiona
                         }
                     }
 
-                    final Map<String, ?> componentDependencies = !Lookups.configuration().isActive() ? null : Lookups.client().v1().component().dependencies(detail.getId().getId());
-                    if (componentDependencies != null && componentDependencies.containsKey("dependencies")) {
-                        final Collection<String> coordinates = Collection.class.cast(Map.class
-                                .cast(Map.class.cast(componentDependencies.get("dependencies")).values().iterator().next())
-                                .get("dependencies"));
-                        
-                        if (coordinates != null) {
-                            modulesNeeded.addAll(coordinates.stream()
-                                    .map(coordinate -> new ModuleNeeded(getName(), "", true, Mvn.locationToMvn(coordinate).replace(MavenConstants.LOCAL_RESOLUTION_URL + '!', "")))
-                                    .collect(Collectors.toList()));
-                            //TODO fix this, this is wrong here as coordinates is a list object, not string, it's on purpose?
-                            if (coordinates.contains("org.apache.beam") || coordinates.contains(":beam-sdks-java-io")) {
-                                modulesNeeded.addAll(dependencies
-                                        .getBeam()
-                                        .stream()
-                                        .map(s -> new ModuleNeeded(getName(), "", true, s))
-                                        .collect(toList()));
-                            }
-                            
-                            String content = coordinates.toString();
-                            if(content.contains("org.scala-lang") && !content.contains(":scala-library:")) {
-                                //we can't add this dependency to connector as spark/beam class conflict for TPD, so add here as provided by platform like spark/beam
-                                modulesNeeded.add(new ModuleNeeded(getName(), "", true, "mvn:org.scala-lang/scala-library/2.12.12"));
-                            }
-                        }
-                    }
+                    final List<ModuleNeeded> componentsDeps = this.componentDependencies(dependencies, detail.getId());
+                    modulesNeeded.addAll(componentsDeps);
 
                     // We're assuming that pluginLocation has format of groupId:artifactId:version
                     final String location = index.getId().getPluginLocation().trim();
                     modulesNeeded.add(new ModuleNeeded(getName(), "", true, Mvn.locationToMvn(location).replace(MavenConstants.LOCAL_RESOLUTION_URL + '!', "")));
+
+                    // Add dependencies of a connector use by this connector
+                    final List<String> connectors = iNode.getElementParameters()
+                            .stream()
+                            .filter(TaCoKitElementParameter.class::isInstance)
+                            .map(TaCoKitElementParameter.class::cast)
+                            .filter(this::containsExtraDependencies) // contains a dependency to another tck connector.
+                            .map(TaCoKitElementParameter::getValue) // family name of dependents connector.
+                            .filter(Objects::nonNull)
+                            .map(Object::toString)
+                            .collect(toList());
+
+                    connectors.stream()
+                            .map(this::extractComponent) // family name to Component Detail
+                            .filter(Objects::nonNull)
+                            .map((final ComponentDetail connectorDetails) -> this.connectorDependencies(dependencies, connectorDetails.getId()))
+                            .forEach(this.modulesNeeded::addAll);
                 }
             }
         }
         return new ArrayList<>(modulesNeeded);
+    }
+
+    private ComponentDetail extractComponent(final String name) {
+        return Lookups.service().getDetail(name).orElse(null);
+    }
+
+    /**
+     * Metadata "dependencies::connector" means that a connector is a dependency of another.
+     * dependencies should contains dependencies of this connector plus the connector itself.
+     * @param dependencies : additional dependencies if needed (beam ...)
+     * @param componentId : id of dependency connector.
+     * @return all dependencies.
+     */
+    private List<ModuleNeeded> connectorDependencies(final ComponentService.Dependencies dependencies,
+                                                     final ComponentId componentId) {
+        // sub dependencies of connector.
+        final List<ModuleNeeded> modules = new ArrayList<>(30);
+        modules.addAll(this.componentDependencies(dependencies, componentId));
+
+        // connectors itself.
+        final String componentMavenLocation = Mvn.locationToMvn(componentId.getPluginLocation());
+        final ModuleNeeded connectorDep = this.moduleDependency(componentMavenLocation);
+        modules.add(connectorDep);
+
+        return modules;
+    }
+
+    private List<ModuleNeeded> componentDependencies(final ComponentService.Dependencies dependencies,
+                                                     final ComponentId componentId) {
+        final Map<String, ?> componentDependencies = !Lookups.configuration().isActive() ? null : Lookups.client().v1().component().dependencies(componentId.getId());
+        if (componentDependencies != null && componentDependencies.containsKey("dependencies")) {
+            final Collection<String> coordinates = Collection.class.cast(Map.class
+                    .cast(Map.class.cast(componentDependencies.get("dependencies")).values().iterator().next())
+                    .get("dependencies"));
+
+            if (coordinates != null) {
+                final Stream<String> directDependencies = coordinates.stream()
+                        .map(Mvn::locationToMvn)
+                        .map((String gav) -> gav.replace(MavenConstants.LOCAL_RESOLUTION_URL + '!', ""));
+
+                //TODO fix this, this is wrong here as coordinates is a list object, not string, it's on purpose?
+                final Stream<String> beamDependencies;
+                if (coordinates.contains("org.apache.beam") || coordinates.contains(":beam-sdks-java-io")) {
+                    beamDependencies = dependencies.getBeam().stream();
+                }
+                else {
+                    beamDependencies = Stream.empty();
+                }
+
+                final Stream<String> scalaDependencies;
+                String content = coordinates.toString();
+                if(content.contains("org.scala-lang") && !content.contains(":scala-library:")) {
+                    //we can't add this dependency to connector as spark/beam class conflict for TPD, so add here as provided by platform like spark/beam
+                    scalaDependencies = Stream.of("mvn:org.scala-lang/scala-library/2.12.12");
+                }
+                else {
+                    scalaDependencies =  Stream.empty();
+                }
+                return Stream.concat(Stream.concat(directDependencies, beamDependencies), scalaDependencies)
+                        .map(this::moduleDependency)
+                        .collect(Collectors.toList());
+            }
+        }
+        return Collections.emptyList();
+    }
+
+    private ModuleNeeded moduleDependency(final String gav) {
+        return new ModuleNeeded(getName(), "", true, gav);
+    }
+
+    private boolean containsExtraDependencies(final TaCoKitElementParameter parameter) {
+        Optional<Map<String, String>> metadata = Optional.ofNullable(parameter)
+                .map(TaCoKitElementParameter::getPropertyNode)
+                .map(PropertyNode::getProperty)
+                .map(PropertyDefinitionDecorator::getMetadata);
+
+        return metadata != null
+                && metadata.isPresent()
+                && metadata.get().containsKey("dependencies::connector");
     }
 
     protected boolean hasTcomp0Component(final INode iNode) {

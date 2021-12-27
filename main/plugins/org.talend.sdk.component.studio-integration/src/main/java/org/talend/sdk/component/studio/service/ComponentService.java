@@ -51,7 +51,7 @@ import org.talend.sdk.component.studio.Lookups;
 import org.talend.sdk.component.studio.model.parameter.Metadatas;
 import org.talend.sdk.component.studio.mvn.Mvn;
 import org.talend.sdk.component.studio.util.TaCoKitUtil;
-import org.talend.sdk.component.studio.websocket.WebSocketClient.V1Component;
+import org.talend.sdk.component.studio.websocket.ServicesClient.V1Component;
 
 public class ComponentService {
 

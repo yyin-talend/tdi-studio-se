@@ -26,8 +26,8 @@ import org.talend.sdk.component.server.front.model.DocumentationContent;
 import org.talend.sdk.component.server.front.model.ErrorDictionary;
 import org.talend.sdk.component.studio.Lookups;
 import org.talend.sdk.component.studio.i18n.Messages;
-import org.talend.sdk.component.studio.websocket.WebSocketClient;
-import org.talend.sdk.component.studio.websocket.WebSocketClient.ClientException;
+import org.talend.sdk.component.studio.websocket.ServicesClient;
+import org.talend.sdk.component.studio.websocket.ServicesClient.ClientException;
 
 public class TaCoKitHelpContentProducer implements IHelpContentProducer {
 
@@ -41,7 +41,7 @@ public class TaCoKitHelpContentProducer implements IHelpContentProducer {
     @Override
     public InputStream getInputStream(String pluginId, String href, Locale locale) {
         String id = href;
-        final WebSocketClient client = Lookups.client();
+        final ServicesClient client = Lookups.client();
         int index = id.lastIndexOf(".html");
         if (index != -1) {
             id = id.substring(0, index);

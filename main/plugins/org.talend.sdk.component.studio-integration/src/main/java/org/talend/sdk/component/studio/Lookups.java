@@ -45,7 +45,7 @@ import org.talend.sdk.component.studio.service.UiActionsThreadPool;
 import org.talend.sdk.component.studio.ui.composite.TaCoKitComposite;
 import org.talend.sdk.component.studio.ui.composite.problemmanager.ComponentViewProblemManager;
 import org.talend.sdk.component.studio.util.TaCoKitConst;
-import org.talend.sdk.component.studio.websocket.WebSocketClient;
+import org.talend.sdk.component.studio.websocket.ServicesClient;
 
 public final class Lookups {
 
@@ -122,8 +122,8 @@ public final class Lookups {
         }
     }
 
-    public static WebSocketClient client() {
-        return lookup(WebSocketClient.class);
+    public static ServicesClient client() {
+        return lookup(ServicesClient.class);
     }
 
     public static ComponentService service() {

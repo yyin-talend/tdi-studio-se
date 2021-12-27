@@ -47,7 +47,7 @@ import org.talend.sdk.component.studio.lang.Pair;
 import org.talend.sdk.component.studio.service.ComponentService;
 import org.talend.sdk.component.studio.util.TaCoKitConst;
 import org.talend.sdk.component.studio.util.TaCokitImageUtil;
-import org.talend.sdk.component.studio.websocket.WebSocketClient;
+import org.talend.sdk.component.studio.websocket.ServicesClient;
 
 // note: for now we load the component on the server but
 // we can use the mojo generating the meta later
@@ -66,7 +66,7 @@ public class TaCoKitGenericProvider implements IGenericProvider {
             return;
         }
 
-        final WebSocketClient client = Lookups.client();
+        final ServicesClient client = Lookups.client();
         Stream<Pair<ComponentIndex, ComponentDetail>> details = client.v1().component().details(Locale.getDefault().getLanguage());
         final ConfigTypeNodes configTypes = client.v1().configurationType().getRepositoryModel(true);
 

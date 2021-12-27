@@ -36,14 +36,14 @@ import org.talend.sdk.component.studio.documentation.toc.TaCoKitTopic;
 import org.talend.sdk.component.studio.lang.Pair;
 import org.talend.sdk.component.studio.util.TaCoKitConst;
 import org.talend.sdk.component.studio.util.TaCoKitUtil;
-import org.talend.sdk.component.studio.websocket.WebSocketClient;
+import org.talend.sdk.component.studio.websocket.ServicesClient;
 
 public class TaCoKitContextProvider extends AbstractContextProvider {
 
     @Override
     public IContext getContext(final String pluginId, final String contextName) {
         final Locale expLocale = Locales.fromLanguagePresentation(contextName);
-        final WebSocketClient client = Lookups.client();
+        final ServicesClient client = Lookups.client();
         //pluginId consists of two parts - plugin name and full component name and locale after the "."
         //we will need to parse it to get the correct value of related topics.
         final String fullComponentName = getFullComponentName(pluginId);
