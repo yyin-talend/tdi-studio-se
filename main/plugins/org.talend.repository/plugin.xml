@@ -3695,6 +3695,15 @@
               name="ChangeConnectionType4tSAPADSOInput"
               version="8.0.1">
         </projecttask>
+        <projecttask
+               beforeLogon="false"
+               breaks="8.0.0"
+               class="org.talend.repository.model.migration.ApplySecurityAfterAdvancedKafkaProperties"
+               description="Apply security properties after advanced Kafka properties for tKafkaInput and tKafkaOutput"
+               id="org.talend.repository.model.migration.ApplySecurityAfterAdvancedKafkaProperties"
+               name="ApplySecurityAfterAdvancedKafkaProperties"
+               version="8.0.1">
+        </projecttask>
    </extension>
 
    <extension
