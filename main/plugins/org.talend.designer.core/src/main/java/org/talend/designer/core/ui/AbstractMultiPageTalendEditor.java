@@ -40,12 +40,9 @@ import org.eclipse.core.runtime.IExtension;
 import org.eclipse.core.runtime.IExtensionPoint;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.PlatformObject;
 import org.eclipse.core.runtime.RegistryFactory;
-import org.eclipse.core.runtime.Status;
-import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.notify.impl.AdapterImpl;
 import org.eclipse.gef.EditPart;
@@ -130,7 +127,6 @@ import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.model.repository.IRepositoryWorkUnitListener;
 import org.talend.core.model.repository.job.JobResourceManager;
 import org.talend.core.model.routines.RoutinesUtil;
-import org.talend.core.model.utils.AccessingEmfJob;
 import org.talend.core.repository.constants.Constant;
 import org.talend.core.repository.model.ProxyRepositoryFactory;
 import org.talend.core.repository.ui.editor.RepositoryEditorInput;
@@ -178,7 +174,6 @@ import org.talend.designer.core.ui.editor.outline.NodeTreeEditPart;
 import org.talend.designer.core.ui.editor.process.Process;
 import org.talend.designer.core.ui.editor.process.ProcessPart;
 import org.talend.designer.core.ui.editor.subjobcontainer.SubjobContainerPart;
-import org.talend.designer.core.ui.preferences.TalendDesignerPrefConstants;
 import org.talend.designer.core.ui.views.contexts.ContextsView;
 import org.talend.designer.core.ui.views.jobsettings.JobSettingsView;
 import org.talend.designer.core.ui.views.problems.Problems;
@@ -1030,10 +1025,6 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
                 ExceptionHandler.process(pie);
             }
         }
-
-        if (DesignerPlugin.getDefault().getPreferenceStore().getBoolean(TalendDesignerPrefConstants.GENERATE_CODE_WHEN_OPEN_JOB)) {
-            generateCode();
-        }
     }
 
     // create jobscript editor
@@ -1101,35 +1092,6 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
             ExceptionHandler.process(e);
         } catch (CoreException e) {
             ExceptionHandler.process(e);
-        }
-    }
-
-    /**
-     * DOC bqian Comment method "generateCode".
-     */
-    protected void generateCode() {
-        final IProcess2 process = getProcess();
-        if (!(process.getProperty().getItem() instanceof ProcessItem)) { // shouldn't work for joblet
-            return;
-        }
-        if (process.getGeneratingNodes().size() != 0) {
-            Job job = new AccessingEmfJob("Generating code") { //$NON-NLS-1$
-
-                @Override
-                protected IStatus doRun(IProgressMonitor monitor) {
-                    try {
-                        ProcessorUtilities.generateCode(process, process.getContextManager().getDefaultContext(), false, false,
-                                true, ProcessorUtilities.GENERATE_WITH_FIRST_CHILD);
-                    } catch (ProcessorException e) {
-                        ExceptionHandler.process(e);
-                    }
-
-                    return Status.OK_STATUS;
-                }
-            };
-            job.setUser(true);
-            job.setPriority(Job.BUILD);
-            job.schedule(); // start as soon as possible
         }
     }
 
