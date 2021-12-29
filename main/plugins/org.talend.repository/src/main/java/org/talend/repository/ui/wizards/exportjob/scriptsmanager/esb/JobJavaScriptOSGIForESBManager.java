@@ -1015,6 +1015,17 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
                 requireBundle = "tesb-xacml-rt"; //$NON-NLS-1$
             }
         }
+
+        // https://jira.talendforge.org/browse/APPINT-34077
+        if (ERepositoryObjectType.getType(processItem.getProperty()).equals(ERepositoryObjectType.PROCESS)) {
+            for (JobInfo subjobInfo : ProcessorUtilities.getChildrenJobInfo(processItem)) {
+                if (EmfModelUtils.getComponentByName(subjobInfo.getProcessItem(), "tESBConsumer") != null) { //$NON-NLS-1$
+                    importPackages.add("org.apache.cxf.databinding"); //$NON-NLS-1$
+                    break;
+                }
+            }
+        }
+
         if (ERepositoryObjectType.PROCESS_MR == ERepositoryObjectType.getItemType(processItem)) {
             importPackages.add("org.talend.cloud"); //$NON-NLS-1$
         }
