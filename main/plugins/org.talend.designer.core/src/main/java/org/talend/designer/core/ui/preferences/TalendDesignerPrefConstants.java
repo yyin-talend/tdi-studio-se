@@ -76,8 +76,6 @@ public class TalendDesignerPrefConstants {
 
     public static final String DISPLAY_SUBJOBS = "displaySubjobs"; //$NON-NLS-1$
 
-    public static final String GENERATE_CODE_WHEN_OPEN_JOB = "generateCodeWhenOpenJob"; //$NON-NLS-1$
-
     public static final String CHECK_ONLY_LAST_VERSION = "checkOnlyLastVersion"; //$NON-NLS-1$
 
     public static final String PROPAGATE_CONTEXT_VARIABLE = "propagateContextVariable"; //$NON-NLS-1$
