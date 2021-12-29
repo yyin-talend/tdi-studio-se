@@ -32,6 +32,8 @@ public class TaCoKitConst {
 
     public static final String GUESS_SCHEMA_COMPONENT_NAME = "tTaCoKitGuessSchema"; //$NON-NLS-1$
 
+    public static final String BASE64_PREFIX = "base64://"; //$NON-NLS-1$
+
     //TODO remove it and replace by TACOKIT_COMPONENT_PLUGIN_NAME
     /**
      * DON'T modify the value, otherwise please also modify it in tTaCoKitGuessSchema_begin.javajet

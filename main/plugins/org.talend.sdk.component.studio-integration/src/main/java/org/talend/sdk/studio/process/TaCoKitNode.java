@@ -1,7 +1,11 @@
 package org.talend.sdk.studio.process;
 
+import static java.nio.charset.StandardCharsets.UTF_8;
+import static org.talend.sdk.component.studio.util.TaCoKitConst.BASE64_PREFIX;
+
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Base64;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -14,7 +18,6 @@ import java.util.regex.Pattern;
 import org.eclipse.emf.common.util.EList;
 import org.talend.core.model.process.EParameterFieldType;
 import org.talend.designer.core.model.components.EParameterName;
-import org.talend.designer.core.model.utils.emf.talendfile.ElementValueType;
 import org.talend.designer.core.model.utils.emf.talendfile.impl.ElementParameterTypeImpl;
 import org.talend.designer.core.model.utils.emf.talendfile.impl.ElementValueTypeImpl;
 import org.talend.designer.core.model.utils.emf.talendfile.impl.NodeTypeImpl;
@@ -77,7 +80,9 @@ public final class TaCoKitNode {
                     addTableElementValue(properties, parameter);
                 } else if (!EParameterFieldType.TECHNICAL.name().equals(parameter.getField())
                         || parameter.getName().endsWith(VersionParameter.VERSION_SUFFIX)) {
-                    properties.put(parameter.getName(), parameter.getValue());
+                    // we encode anything that may be escaped to avoid jsonb transform errors
+                    final String value = Base64.getUrlEncoder().encodeToString(parameter.getValue().getBytes(UTF_8));
+                    properties.put(parameter.getName(), BASE64_PREFIX + value);
                 }
             }
         }
@@ -95,7 +100,7 @@ public final class TaCoKitNode {
                     ElementValueType eValue = (ElementValueType) value;
                     if (keySet.contains(eValue.getElementRef())) {
                         keySet.clear();
-                        index ++;
+                        index++;
                     } else {
                         keySet.add(eValue.getElementRef());
                     }
@@ -118,7 +123,7 @@ public final class TaCoKitNode {
         }
         return null;
     }
-    
+
     private boolean isComponentProperty(final String name) {
         return detail.getProperties().stream().anyMatch(property -> property.getPath().equals(name));
     }
@@ -130,7 +135,8 @@ public final class TaCoKitNode {
         node.getElementParameter().clear();
         node.getElementParameter().addAll(noMigration);
         properties.entrySet().stream()
-                .filter(e -> (isComponentProperty(e.getKey()) && !(Pattern.compile("(\\[)\\d+(\\])").matcher(e.getKey()).find())))
+                .filter(e -> (isComponentProperty(e.getKey()) && !(Pattern.compile("(\\[)\\d+(\\])").matcher(e.getKey())
+                        .find())))
                 .forEach(e -> node.getElementParameter().add(createParameter(e.getKey(), e.getValue())));
         properties.entrySet().stream().filter(e -> e.getKey().endsWith(VersionParameter.VERSION_SUFFIX)).forEach(e -> {
             final ElementParameterTypeImpl parameter = new ElementParameter();
@@ -157,12 +163,12 @@ public final class TaCoKitNode {
                 List list = param.getElementValue();
                 Set<String> keySet = new HashSet<String>();
                 int index = 0, i = 0;
-                for (; i < list.size();) {
+                for (; i < list.size(); ) {
                     ElementValueType eValue = (ElementValueType) list.get(i);
                     if (paramIndex == index) {
                         break;
                     } else if (keySet.contains(eValue.getElementRef())) {
-                        index ++;
+                        index++;
                         keySet.clear();
                     } else {
                         keySet.add(eValue.getElementRef());
@@ -188,8 +194,8 @@ public final class TaCoKitNode {
         }
         ElementValueType elementValueType = new ElementValueType();
         elementValueType.setElementRef(elemRef);
-        elementValueType.setValue(paramValue);    
-        sameNameParam.getElementValue().add(elementValueType);        
+        elementValueType.setValue(paramValue);
+        sameNameParam.getElementValue().add(elementValueType);
     }
 
     private ElementParameterTypeImpl createParameter(final String name, final String value) {
@@ -219,7 +225,7 @@ public final class TaCoKitNode {
         }
         return list;
     }
-    
+
     private List<ElementParameterTypeImpl> getParametersExcludedFromMigration() {
         List<ElementParameterTypeImpl> technical = new ArrayList<>();
         for (final Object elem : node.getElementParameter()) {
@@ -260,7 +266,7 @@ public final class TaCoKitNode {
             super();
         }
     }
-    
+
     private static class ElementValueType extends ElementValueTypeImpl {
 
         /**
