@@ -470,6 +470,11 @@ public class RunProcessService implements IRunProcessService {
     }
 
     @Override
+    public void clearAllBuildCaches() {
+        delegateService.clearAllBuildCaches();
+    }
+
+    @Override
     public void batchDeleteAllVersionTalendJobProject(List<String> idList) {
         delegateService.batchDeleteAllVersionTalendJobProject(idList);
     }
