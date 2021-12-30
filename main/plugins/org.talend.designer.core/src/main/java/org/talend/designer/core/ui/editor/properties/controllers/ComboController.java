@@ -74,7 +74,8 @@ import org.talend.repository.model.IProxyRepositoryFactory;
 /**
  * DOC yzhang class global comment. Detailled comment <br/>
  *
- * $Id: ComboController.java 1 2006-12-12 涓嬪崍01:58:48 +0000 (涓嬪崍01:58:48) yzhang $
+ * $Id: ComboController.java 1 2006-12-12 æ¶“å¬ªå´�01:58:48 +0000
+ * (æ¶“å¬ªå´�01:58:48) yzhang $
  *
  */
 public class ComboController extends AbstractElementPropertySectionController {
@@ -563,11 +564,30 @@ public class ComboController extends AbstractElementPropertySectionController {
             if (isPatternList || isRule) {
                 combo.setText("".equals(strValue) ? (String) value : strValue);
             } else {
+                String comboValue = "";
                 if (!StringUtils.isEmpty(strValue)) {
-                    combo.setText(strValue);
+                    comboValue = strValue;
                 } else {
-                    combo.setText((String) value);
+                    comboValue = (String) value;
                 }
+                boolean isRepositoryValueUsed = param.isRepositoryValueUsed();
+                String repositoryValue = param.getRepositoryValue();
+                if (!isRepositoryValueUsed && StringUtils.isBlank(repositoryValue) && paramItems != null
+                        && paramItems.length > 0) {
+
+                    String newValue = (String) paramItems[0];
+
+                    for (int i = 0; i < paramItems.length; i++) {
+                        if (StringUtils.isNotBlank((String) comboValue)
+                                && StringUtils.equals((String) comboValue, paramItems[i])) {
+                            newValue = paramItems[i];
+                            break;
+                        }
+                    }
+
+                    comboValue = newValue;
+                }
+                combo.setText(comboValue);
             }
 
             combo.setVisible(true);
