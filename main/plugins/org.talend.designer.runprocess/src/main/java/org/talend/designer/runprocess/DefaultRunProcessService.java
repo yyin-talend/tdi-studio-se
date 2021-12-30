@@ -823,6 +823,11 @@ public class DefaultRunProcessService implements IRunProcessService {
     }
 
     @Override
+    public void clearAllBuildCaches() {
+        BuildCacheManager.getInstance().clearAllCaches();
+    }
+
+    @Override
     public void batchDeleteAllVersionTalendJobProject(List<String> idList) {
         TalendJavaProjectManager.batchDeleteAllVersionTalendJobProject(idList);
     }
