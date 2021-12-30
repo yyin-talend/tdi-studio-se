@@ -523,7 +523,8 @@ public class RunProcessContext {
         checkTraces();
 
         if (ProcessContextComposite.promptConfirmLauch(shell, getSelectedContext(), process)) {
-            if (getSelectedTargetExecutionConfig() == null || !getSelectedTargetExecutionConfig().isRemote()) {
+            boolean isRemoteRun = getSelectedTargetExecutionConfig() != null && getSelectedTargetExecutionConfig().isRemote();
+            if (!isRemoteRun) {
                 // tos run to collect
                 IPreferenceStore preferenceStore = RunProcessPlugin.getDefault().getPreferenceStore();
                 int num = preferenceStore.getInt(RunProcessTokenCollector.TOS_COUNT_RUNS.getPrefKey());
@@ -592,30 +593,32 @@ public class RunProcessContext {
                             TimeMeasure.display =
                                     TimeMeasure.displaySteps = TimeMeasure.measureActive = CommonsPlugin.isDebugMode();
                         }
-                        final String generateCodeId = "Generate job source codes and compile before run"; //$NON-NLS-1$
-                        TimeMeasure.begin(generateCodeId);
-                        try {
-                            BuildCacheManager.getInstance().clearCurrentCache();
-                            ProcessorUtilities.resetExportConfig();
-                            ProcessorUtilities
-                                    .generateCode(processor, process, context,
-                                            getStatisticsPort() != IProcessor.NO_STATISTICS,
-                                            getTracesPort() != IProcessor.NO_TRACES
-                                                    && (isMemoryRunning ? true : hasConnectionTrace()),
-                                            true, progressMonitor);
-                        } catch (Throwable e) {
-                            BuildCacheManager.getInstance().performBuildFailure();
-                            PomUtil.restorePomFile(processor.getTalendJavaProject());
-                            // catch any Exception or Error to kill the process,
-                            // see bug 0003567
-                            running = true;
-                            MessageBoxExceptionHandler.process(e, Display.getDefault().getActiveShell());
-                            kill();
-                            return;
-                        } finally {
-                            progressMonitor.done();
+                        if (!isRemoteRun) {
+	                        final String generateCodeId = "Generate job source codes and compile before run"; //$NON-NLS-1$
+	                        TimeMeasure.begin(generateCodeId);
+	                        try {
+	                            BuildCacheManager.getInstance().clearCurrentCache();
+	                            ProcessorUtilities.resetExportConfig();
+	                            ProcessorUtilities
+	                                    .generateCode(processor, process, context,
+	                                            getStatisticsPort() != IProcessor.NO_STATISTICS,
+	                                            getTracesPort() != IProcessor.NO_TRACES
+	                                                    && (isMemoryRunning ? true : hasConnectionTrace()),
+	                                            true, progressMonitor);
+	                        } catch (Throwable e) {
+	                            BuildCacheManager.getInstance().performBuildFailure();
+	                            PomUtil.restorePomFile(processor.getTalendJavaProject());
+	                            // catch any Exception or Error to kill the process,
+	                            // see bug 0003567
+	                            running = true;
+	                            MessageBoxExceptionHandler.process(e, Display.getDefault().getActiveShell());
+	                            kill();
+	                            return;
+	                        } finally {
+	                            progressMonitor.done();
+	                        }
+	                        TimeMeasure.end(generateCodeId);
                         }
-                        TimeMeasure.end(generateCodeId);
                         // if active before, not disable and active still.
                         if (!oldMeasureActived) {
                             TimeMeasure.display = TimeMeasure.displaySteps = TimeMeasure.measureActive = false;
