@@ -363,15 +363,15 @@
             REQUIRED_IF="USE_EXISTING_CONNECTION == 'false'"
         />
         <IMPORT
-            NAME="jackson-core-asl-1.9.15-TALEND"
-            MODULE="jackson-core-asl-1.9.15-TALEND.jar"
-            MVN="mvn:org.codehaus.jackson/jackson-core-asl/1.9.15-TALEND"
+            NAME="jackson-core-asl-1.9.16-TALEND"
+            MODULE="jackson-core-asl-1.9.16-TALEND.jar"
+            MVN="mvn:org.codehaus.jackson/jackson-core-asl/1.9.16-TALEND"
             REQUIRED_IF="USE_EXISTING_CONNECTION == 'false'"
         />
         <IMPORT
-            NAME="jackson-mapper-asl-1.9.15-TALEND"
-            MODULE="jackson-mapper-asl-1.9.15-TALEND.jar"
-            MVN="mvn:org.codehaus.jackson/jackson-mapper-asl/1.9.15-TALEND"
+            NAME="jackson-mapper-asl-1.9.16-TALEND"
+            MODULE="jackson-mapper-asl-1.9.16-TALEND.jar"
+            MVN="mvn:org.codehaus.jackson/jackson-mapper-asl/1.9.16-TALEND"
             REQUIRED_IF="USE_EXISTING_CONNECTION == 'false'"
         />
         <IMPORT
