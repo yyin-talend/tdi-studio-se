@@ -20,6 +20,7 @@ String cid = node.getUniqueName();
 String xmlFile = ElementParameterParser.getValue(node, "__XML_FILE__");
 String xslFile = ElementParameterParser.getValue(node, "__XSLT_FILE__");
 String outputFile = ElementParameterParser.getValue(node, "__OUTPUT_FILE__");
+boolean cacheSource 	= "true".equals(ElementParameterParser.getValue(node, "__CACHE_SOURCE__"));
 
  boolean overrideXml 	= "true".equals(ElementParameterParser.getValue(node, "__OVERRIDE_INPUT_XML_FILE__"));
  boolean overrideXsl 	= "true".equals(ElementParameterParser.getValue(node, "__OVERRIDE_INPUT_XSL_FILE__"));
@@ -117,7 +118,12 @@ if(outConns!=null ){
 	if(xmlFile_<%=cid%> instanceof java.io.InputStream){
 		xmlSource<%=cid%> = new javax.xml.transform.stream.StreamSource( (java.io.InputStream)xmlFile_<%=cid%>);	
 	} else {
-		xmlSource<%=cid%> = new javax.xml.transform.stream.StreamSource(new java.io.File((String) xmlFile_<%=cid%>));
+	    <%if(cacheSource){%>
+	            final byte[] xmlBytes_<%=cid%> = org.apache.commons.io.FileUtils.readFileToByteArray(new java.io.File((String) xmlFile_<%=cid%>));
+		        xmlSource<%=cid%> = new javax.xml.transform.stream.StreamSource( new java.io.ByteArrayInputStream ( xmlBytes_<%=cid%>) );
+	<%}else{%>
+		    xmlSource<%=cid%> = new javax.xml.transform.stream.StreamSource(new java.io.File((String) xmlFile_<%=cid%>));
+    <%}%>
 	}
 <%} else {%>
 		xmlSource<%=cid%> = new javax.xml.transform.stream.StreamSource( new java.io.StringBufferInputStream ( <%=inConnName%>.<%=xmlCol%>) );
