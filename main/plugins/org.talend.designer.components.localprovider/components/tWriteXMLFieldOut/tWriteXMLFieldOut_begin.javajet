@@ -1,6 +1,7 @@
 <%@ jet
 imports="
     org.talend.core.model.process.INode 
+	org.talend.core.model.process.IProcess
     org.talend.core.model.process.ElementParameterParser
     org.talend.designer.codegen.config.CodeGeneratorArgument
     org.talend.core.model.metadata.IMetadataTable
@@ -13,7 +14,7 @@ imports="
 	org.talend.core.model.utils.NodeUtil
 "
 %>
-//tWriteXMLFieldOut_begin
+
 <%
 CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 INode node = (INode)codeGenArgument.getArgument();
@@ -166,11 +167,12 @@ globalMap.put("<%=cid%>_ERROR_MESSAGE",te.getMessage());
 						
 						private void cleanResource() {
 							<%
-							String processName = org.talend.core.model.utils.JavaResourcesHelper.getSimpleClassName(node.getProcess());
+							IProcess process = node.getProcess();
+							String processName = org.talend.core.model.utils.JavaResourcesHelper.getSimpleClassName(process);
 							boolean tRESTRequestLoopExists = false;
 							boolean tHMapExists = false;
 							boolean tHMapOutExists = false;  
-							for(INode oneNode : node.getProcess().getGeneratingNodes()) {
+							for(INode oneNode : process.getGeneratingNodes()) {
 								if("tRESTRequestLoop".equals(oneNode.getComponent().getName())) {
 									tRESTRequestLoopExists = true;
 								} else if("tHMap".equals(oneNode.getComponent().getName())) {
