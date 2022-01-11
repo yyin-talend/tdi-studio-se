@@ -1263,7 +1263,9 @@ public class Node extends Element implements IGraphicalNode {
      */
     @Override
     public String getLabel() {
-        return label;
+		if (label == null)
+			label = this.getUniqueName();
+		return label;
     }
 
     /**
