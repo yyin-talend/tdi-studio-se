@@ -1,7 +1,7 @@
 <%@ jet
 imports="
     org.talend.core.model.process.INode 
-	org.talend.core.model.process.IProcess
+    org.talend.core.model.process.IProcess
     org.talend.core.model.process.ElementParameterParser
     org.talend.designer.codegen.config.CodeGeneratorArgument
     org.talend.core.model.metadata.IMetadataTable
