@@ -18,9 +18,8 @@ import java.net.URL;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import java.util.regex.Pattern;
 
-import org.eclipse.core.resources.IResource;
-import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.swt.SWT;
@@ -41,6 +40,7 @@ import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.metadata.managment.ui.wizard.AbstractNamedWizardPage;
 import org.talend.metadata.managment.ui.wizard.PropertiesWizardPage;
+import org.talend.repository.model.RepositoryConstants;
 import org.talend.repository.resource.i18n.Messages;
 
 /**
@@ -152,8 +152,11 @@ public class NewRouteResourceWizardPage extends PropertiesWizardPage {
 
 		String trimName = nameText.getText().trim();
 		//Check name is a valid file name
-		nameStatus = ResourcesPlugin.getWorkspace().validateName(trimName, IResource.FILE);
-		if(!nameStatus.isOK()){
+		if (nameText.getText().length() == 0) {
+		        nameStatus = createStatus(IStatus.ERROR, Messages.getString("NewRouteResourceWizardPage.nameEmpty")); //$NON-NLS-1$
+		} else if (!Pattern.matches(RepositoryConstants.getPattern(getRepositoryObjectType()), trimName)
+					|| trimName.contains(" ")) { //$NON-NLS-1$
+			nameStatus = createStatus(IStatus.ERROR, Messages.getString("NewRouteResourceWizardPage.NameFormatError"));
 			updatePageStatus();
 			return;
 		} else {
