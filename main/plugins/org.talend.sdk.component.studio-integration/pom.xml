@@ -25,6 +25,7 @@
     <commons-cli.version>1.4</commons-cli.version>
     <slf4j.version>1.7.32</slf4j.version>
     <xbean.version>4.18</xbean.version>
+    <tomcat.version>9.0.54</tomcat.version>
   </properties>
 
   <dependencyManagement>
@@ -98,10 +99,12 @@
     <dependency> <!-- needed by tomcat-websocket -->
       <groupId>org.apache.tomcat</groupId>
       <artifactId>tomcat-api</artifactId>
+      <version>${tomcat.version}</version>
     </dependency>
     <dependency>
       <groupId>org.apache.tomcat</groupId>
       <artifactId>tomcat-websocket</artifactId>
+      <version>${tomcat.version}</version>
     </dependency>
     <dependency>
       <groupId>org.apache.geronimo.specs</groupId>
