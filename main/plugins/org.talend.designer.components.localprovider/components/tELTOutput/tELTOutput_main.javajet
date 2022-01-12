@@ -44,6 +44,8 @@ skeleton="../templates/db_output_bulk.skeleton"
     String select_query_<%=cid %> = null;
     String tableName_<%=cid%> = null;
     String selectQueryColumnsName_<%=cid %> = null;
+    String query_<%=cid%> = null;
+
     <%
     List<IConnection> connections = (List<IConnection>) node.getIncomingConnections();
     if(connections != null && connections.size() > 0 && connections.get(0) != null) {
@@ -77,53 +79,58 @@ skeleton="../templates/db_output_bulk.skeleton"
     String jdbcUrl  = null;
     String dbuser = null;
     boolean useExistingConn = false;
+    boolean dryRun = false;
     if(previousNode != null) {
-        driverClass = ElementParameterParser.getValue(previousNode, "__DRIVER_CLASS__");
-        jdbcUrl = ElementParameterParser.getValue(previousNode, "__URL__");
-        dbuser = ElementParameterParser.getValue(previousNode, "__USER__");
-        useExistingConn = ("true").equals(ElementParameterParser.getValue(previousNode, "__USE_EXISTING_CONNECTION__"));
+        dryRun = ("true").equals(ElementParameterParser.getValue(previousNode, "__DRY_RUN__"));
+        if(!dryRun){
+            driverClass = ElementParameterParser.getValue(previousNode, "__DRIVER_CLASS__");
+            jdbcUrl = ElementParameterParser.getValue(previousNode, "__URL__");
+            dbuser = ElementParameterParser.getValue(previousNode, "__USER__");
+            useExistingConn = ("true").equals(ElementParameterParser.getValue(previousNode, "__USE_EXISTING_CONNECTION__"));
+        }
     }
+
     boolean useWhereTable = ("true").equals(ElementParameterParser.getValue(node, "__USE_WHERE_CONDITIONS_TABLE__"));
 	String whereClause = ElementParameterParser.getValue(node, "__WHERE_CLAUSE__");
 	List<Map<String, String>> whereConditions = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__WHERE_CONDITIONS_TABLE__");
     %>
     String dbUser_<%=cid %> = null;
-    <%
-    if(useExistingConn) {
-        String connection = ElementParameterParser.getValue(previousNode, "__CONNECTION__");
-        INode connNode=NodeUtil.getNodeByUniqueName(previousNode.getProcess(),connection);
-        String conn = "conn_" + connection;
-        String username = "username_" + connection;
-        String connectionKey=null;
-        if("tSnowflakeConnection".equals(connNode.getComponent().getName())){
-           connectionKey=connection+"_connection";
-        }else{
+<%
+    if(!dryRun){
+        if(useExistingConn) {
+           String connection = ElementParameterParser.getValue(previousNode, "__CONNECTION__");
+           INode connNode=NodeUtil.getNodeByUniqueName(previousNode.getProcess(),connection);
+           String conn = "conn_" + connection;
+           String username = "username_" + connection;
+           String connectionKey=null;
+           if("tSnowflakeConnection".equals(connNode.getComponent().getName())){
+              connectionKey=connection+"_connection";
+           }else{
               connectionKey=conn;
+           }
+%>
+           java.sql.Connection conn_<%=cid%> = (java.sql.Connection)globalMap.get("<%=connectionKey%>");
+           dbUser_<%=cid %> = (String)globalMap.get("<%=username%>");
+<%
+           log4jCodeGenerateUtil.useExistConnection(node);
+        } else {
+%>
+           String driverClass_<%=cid%> = <%=driverClass %>;
+           java.lang.Class.forName(driverClass_<%=cid%>);
+           String url_<%=cid %> = <%=jdbcUrl %>;
+           dbUser_<%=cid %> = <%=dbuser%>;
+<%
+           String passwordFieldName = "__PASS__";
+%>
+
+           <%@ include file="@{org.talend.designer.components.localprovider}/components/templates/eltpassword.javajet"%>
+           String dbPwd_<%=cid %> = decryptedPassword_<%=cid%>;
+           java.sql.Connection conn_<%=cid%> = null;
+<%
+           log4jCodeGenerateUtil.debugConnectionParams(node);
+            log4jCodeGenerateUtil.connect(node);
         }
-        %>
-        java.sql.Connection conn_<%=cid%> = (java.sql.Connection)globalMap.get("<%=connectionKey%>");
-        dbUser_<%=cid %> = (String)globalMap.get("<%=username%>");
-        <%
-        log4jCodeGenerateUtil.useExistConnection(node);
-    } else {
-        %>
-        String driverClass_<%=cid%> = <%=driverClass %>;
-        java.lang.Class.forName(driverClass_<%=cid%>);
-        String url_<%=cid %> = <%=jdbcUrl %>;
-        dbUser_<%=cid %> = <%=dbuser%>;
-        <%
-        String passwordFieldName = "__PASS__";
-        %>
-
-        <%@ include file="@{org.talend.designer.components.localprovider}/components/templates/eltpassword.javajet"%>
-        String dbPwd_<%=cid %> = decryptedPassword_<%=cid%>;
-        java.sql.Connection conn_<%=cid%> = null;
-        <%
-        log4jCodeGenerateUtil.debugConnectionParams(node);
-        log4jCodeGenerateUtil.connect(node);
-        
     }
-
     List<IMetadataColumn> columnList = null;
 
     List<IMetadataTable> metadatas = node.getMetadataList();
@@ -178,6 +185,9 @@ skeleton="../templates/db_output_bulk.skeleton"
             String insertQuery_<%=cid %> = "INSERT INTO "+tableName_<%=cid%>+"(<%=insertColName.toString()%>)  ("+select_query_<%=cid %>+")";
 <%
             }
+%>
+            query_<%=cid %> = insertQuery_<%=cid %>;
+<%
         } else if (("UPDATE").equals(dataAction)){
 %>
         	boolean useAnd_<%=cid %> = false;
@@ -236,6 +246,7 @@ skeleton="../templates/db_output_bulk.skeleton"
 			if(useAnd_<%=cid %>) {
 				updateQuery_<%=cid %>.append(")");
 			}
+			query_<%=cid %> = updateQuery_<%=cid %>.toString();
 <%
     	} else if (("DELETE").equals(dataAction)){
 %>
@@ -259,6 +270,9 @@ skeleton="../templates/db_output_bulk.skeleton"
 					}
 				}
 			}
+%>
+			query_<%=cid %> = deleteQuery_<%=cid %>.toString();
+<%
     	}
 %>
 
@@ -270,21 +284,24 @@ skeleton="../templates/db_output_bulk.skeleton"
     }
 
     if(tableName != null && columnList != null){
-    
+
         {//use the block to limit the code scope for table action
             Manager manager = null;
-            
+
             String tableAction = ElementParameterParser.getValue(node,"__TABLE_ACTION__");
 
             List<Column> stmtStructure = getELTManager(dbmsId, cid, node).createColumnList(columnList, false, null, null);
 
             String table = tableName;
             dbLog = new DBLogUtil(node);
+            if(!dryRun){
             %>
+
             <%@ include file="../templates/_tableActionForELT.javajet"%>
             <%
+            }
         }
-
+        if(!dryRun){
         if(("INSERT").equals(dataAction)){
         %>
         System.out.println("Inserting with : \n" + insertQuery_<%=cid %> + "\n");
@@ -316,12 +333,13 @@ skeleton="../templates/db_output_bulk.skeleton"
     	pstmt_<%=cid %>.close();
 		<%
 		}
+		}
 	}
 	// END
 	%>
 
     <%
-    if(!useExistingConn) {
+    if(!dryRun && !useExistingConn) {
     %>
         if(conn_<%=cid%> != null && !conn_<%=cid%>.isClosed()) {
             <%log4jCodeGenerateUtil.close(node);%>
@@ -334,8 +352,9 @@ skeleton="../templates/db_output_bulk.skeleton"
     globalMap.put("<%=cid %>_NB_LINE_UPDATED",nb_line_updated_<%=cid%>);
     globalMap.put("<%=cid %>_NB_LINE_INSERTED",nb_line_inserted_<%=cid%>);
     globalMap.put("<%=cid %>_NB_LINE_DELETED",nb_line_deleted_<%=cid%>);
+    globalMap.put("<%=cid %>_QUERY",query_<%=cid%>);
     <%
-    if(isLog4jEnabled){
+    if(!dryRun && isLog4jEnabled){
         Map<String,String> actionMap=new java.util.HashMap<String,String>();
         actionMap.put("INSERT","inserted");
         actionMap.put("UPDATE","updated");
