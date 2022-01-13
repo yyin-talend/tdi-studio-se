@@ -201,7 +201,7 @@
 					
 					String sourceNodeComponent = source.getComponent().getName();
 				%>
-					,"<%=con.getUniqueName()%>","<%=sourceNodeId%>",<%=sourceNodeLabel%>,"<%=sourceNodeComponent%>","<%=node.getUniqueName()%>",<%=targetNodeLabel%>,"<%=node.getComponent().getName()%>"
+					,"<%=con.getUniqueName()%>","<%=sourceNodeId%>","<%=sourceNodeLabel%>","<%=sourceNodeComponent%>","<%=node.getUniqueName()%>","<%=targetNodeLabel%>","<%=node.getComponent().getName()%>"
 				<%}%>
 			)) {
 				<%=subprocessName4Catcher %>Process(globalMap);
@@ -234,7 +234,7 @@
 							
 							String sourceNodeComponent = source.getComponent().getName();
 						%>
-							,"<%=con.getUniqueName()%>","<%=sourceNodeId%>",<%=sourceNodeLabel%>,"<%=sourceNodeComponent%>","<%=node.getUniqueName()%>",<%=targetNodeLabel%>,"<%=node.getComponent().getName()%>"
+							,"<%=con.getUniqueName()%>","<%=sourceNodeId%>","<%=sourceNodeLabel%>","<%=sourceNodeComponent%>","<%=node.getUniqueName()%>","<%=targetNodeLabel%>","<%=node.getComponent().getName()%>"
 						<%}%>
 						)) {
 							<%=subprocessName4Catcher %>Process(globalMap);
@@ -259,7 +259,7 @@
 							String sourceNodeComponent = source.getComponent().getName();
 							
 							if(con.getUniqueName().equals((String)codeGenArgument.getIncomingName())){%>
-							,"<%=con.getUniqueName()%>","<%=sourceNodeId%>",<%=sourceNodeLabel%>,"<%=sourceNodeComponent%>","<%=node.getUniqueName()%>",<%=targetNodeLabel%>,"<%=node.getComponent().getName()%>"
+							,"<%=con.getUniqueName()%>","<%=sourceNodeId%>","<%=sourceNodeLabel%>","<%=sourceNodeComponent%>","<%=node.getUniqueName()%>","<%=targetNodeLabel%>","<%=node.getComponent().getName()%>"
 							<%}
 						}%>
 					)) {
@@ -292,7 +292,7 @@
 									String sourceNodeComponent = source.getComponent().getName();
 							
 									if(con.getUniqueName().equals((String)codeGenArgument.getIncomingName())){%>
-									,"<%=con.getUniqueName()%>","<%=sourceNodeId%>",<%=sourceNodeLabel%>,"<%=sourceNodeComponent%>","<%=node.getUniqueName()%>",<%=targetNodeLabel%>,"<%=node.getComponent().getName()%>"
+									,"<%=con.getUniqueName()%>","<%=sourceNodeId%>","<%=sourceNodeLabel%>","<%=sourceNodeComponent%>","<%=node.getUniqueName()%>","<%=targetNodeLabel%>","<%=node.getComponent().getName()%>"
 									<%}
 								}%>
 							)) {
@@ -425,7 +425,7 @@
 				String nodeLabel = NodeUtil.getLabel(node);
 			%>
 			if(enableLogStash) {
-				<%=jobStructureCatcher.getUniqueName() %>.addCM("<%=node.getUniqueName()%>", <%=nodeLabel%>, "<%=node.getComponent().getName()%>");
+				<%=jobStructureCatcher.getUniqueName() %>.addCM("<%=node.getUniqueName()%>", "<%=nodeLabel%>", "<%=node.getComponent().getName()%>");
 				<%=jobStructureCatcher.getDesignSubjobStartNode().getUniqueName() %>Process(globalMap);
 			}
 			<%
