@@ -148,8 +148,6 @@ public class JavaProcessUtil {
         List<IClasspathAdjuster> classPathAdjusters = ClasspathAdjusterProvider.getClasspathAdjuster();
         // add for TDQ-19814 to add a runtime dependency when generate code and get the module in the javajet
         for (IClasspathAdjuster adjuster : classPathAdjusters) {
-            adjuster.initialize();
-            adjuster.collectInfo(process, modulesNeededSet);
             modulesNeededSet = adjuster.adjustPomGeneration(process, modulesNeededSet);
         }
         return modulesNeededSet;
