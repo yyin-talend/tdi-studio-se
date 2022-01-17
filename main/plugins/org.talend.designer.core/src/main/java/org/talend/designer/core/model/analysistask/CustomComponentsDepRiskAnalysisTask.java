@@ -8,7 +8,7 @@ import java.util.Set;
 import org.talend.analysistask.AbstractItemAnalysisTask;
 import org.talend.analysistask.AnalysisReportRecorder;
 import org.talend.analysistask.AnalysisReportRecorder.SeverityOption;
-import org.talend.core.i18n.Messages;
+import org.talend.designer.core.i18n.Messages;
 import org.talend.core.model.components.IComponent;
 import org.talend.core.model.properties.Item;
 import org.talend.core.model.repository.ERepositoryObjectType;
