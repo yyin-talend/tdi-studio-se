@@ -553,6 +553,8 @@ public class DataProcess implements IGeneratingProcess {
             uniqueName = prefix + uniqueName;
         }
         dataNode.setUniqueName(uniqueName);
+        //TUP-27184:Pass the label to DataNode from GraphicNode since it may be different from unique name.
+        dataNode.setLabel(graphicalNode.getLabel());
         dataNode.setSubProcessStart(graphicalNode.isSubProcessStart());
         dataNode.setThereLinkWithHash(graphicalNode.isThereLinkWithHash());
         dataNode.setHasConditionalOutputs(graphicalNode.hasConditionalOutputs());
@@ -889,6 +891,8 @@ public class DataProcess implements IGeneratingProcess {
 
         for (IMultipleComponentItem curItem : itemList) {
             String uniqueName = graphicalNode.getUniqueName() + "_" + curItem.getName(); //$NON-NLS-1$
+            //TUP-27184, Pass the label to multiple components since it may be different from unique name.
+            String label = graphicalNode.getLabel() + "_" + curItem.getName();
             IComponentsFactory componentsFactory = ComponentsFactoryProvider.getInstance();
             String currentComponent = curItem.getComponent();
             IComponent component = componentsFactory.get(currentComponent, process.getComponentsType());
@@ -902,6 +906,8 @@ public class DataProcess implements IGeneratingProcess {
             AbstractNode curNode;
             if (component.getPluginExtension() == null) {
                 curNode = new DataNode(component, uniqueName);
+                //TUP-27184, Pass the label to multiple components
+                curNode.setLabel(label);
             } else {
                 // mapper
                 curNode = (AbstractNode) ExternalNodesFactory.getInstance(component.getPluginExtension());
@@ -921,6 +927,8 @@ public class DataProcess implements IGeneratingProcess {
                 curNode.setListConnector(graphicalNode.getListConnector());
                 copyElementParametersValue(graphicalNode, curNode);
                 curNode.setUniqueName(uniqueName);
+                //TUP-27184, Pass the label to multiple components
+                curNode.setLabel(label);
                 curNode.setSubProcessStart(graphicalNode.isSubProcessStart());
                 curNode.setThereLinkWithHash(graphicalNode.isThereLinkWithHash());
                 curNode.setHasConditionalOutputs(graphicalNode.hasConditionalOutputs());
@@ -3512,6 +3520,9 @@ public class DataProcess implements IGeneratingProcess {
 
         copyElementParametersValue(node, newGraphicalNode);
         newGraphicalNode.setDummy(node.isDummy());
+		// TUP-27184: Clone the label to new GraphicNode. Although it has been
+		// cloned in element parameter, it was not recalculated when creating DataNode.
+		newGraphicalNode.setLabel(node.getLabel());
 
         ValidationRulesUtil.createRejectConnector(newGraphicalNode);
         ValidationRulesUtil.updateRejectMetatable(newGraphicalNode, node);

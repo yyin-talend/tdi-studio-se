@@ -130,9 +130,22 @@
 
   </PARAMETERS>
   
+  <ADVANCED_PARAMETERS>
+    <PARAMETER
+      NAME="CACHE_SOURCE"
+      FIELD="CHECK"
+      NUM_ROW="10"
+      >
+      <DEFAULT>false</DEFAULT>
+    </PARAMETER>
+  </ADVANCED_PARAMETERS>
+  
 	<CODEGENERATION>
 		<IMPORTS>
 			<IMPORT NAME="SAXON-HE" MODULE="Saxon-HE-10.6.jar" MVN="mvn:net.sf.saxon/Saxon-HE/10.6"  REQUIRED="true" />
+			<IMPORT NAME="apache-commons-io"
+                    MODULE="commons-io-2.8.0.jar" MVN="mvn:commons-io/commons-io/2.8.0" 
+               		REQUIRED_IF="CACHE_SOURCE == 'true'" />
 		</IMPORTS>
 	</CODEGENERATION>
 	

@@ -72,6 +72,8 @@ import org.talend.designer.core.model.utils.emf.talendfile.RoutinesParameterType
 import org.talend.designer.core.model.utils.emf.talendfile.impl.ElementParameterTypeImpl;
 import org.talend.designer.core.ui.editor.process.Process;
 import org.talend.designer.maven.utils.MavenVersionHelper;
+import org.talend.designer.runprocess.ClasspathAdjusterProvider;
+import org.talend.designer.runprocess.IClasspathAdjuster;
 import org.talend.designer.runprocess.IProcessor;
 import org.talend.designer.runprocess.IRunProcessService;
 import org.talend.designer.runprocess.ItemCacheManager;
@@ -142,7 +144,13 @@ public class JavaProcessUtil {
         }
 
         UpdateLog4jJarUtils.addLog4jToModuleList(modulesNeeded, Log4jPrefsSettingManager.getInstance().isSelectLog4j2(), process);
-        return new HashSet<ModuleNeeded>(modulesNeeded);
+        Set<ModuleNeeded> modulesNeededSet = new HashSet<ModuleNeeded>(modulesNeeded);
+        List<IClasspathAdjuster> classPathAdjusters = ClasspathAdjusterProvider.getClasspathAdjuster();
+        // add for TDQ-19814 to add a runtime dependency when generate code and get the module in the javajet
+        for (IClasspathAdjuster adjuster : classPathAdjusters) {
+            modulesNeededSet = adjuster.adjustPomGeneration(process, modulesNeededSet);
+        }
+        return modulesNeededSet;
     }
 
     // for MapReduce job, if the jar on Xml don't set MRREQUIRED="true", shouldn't add it to

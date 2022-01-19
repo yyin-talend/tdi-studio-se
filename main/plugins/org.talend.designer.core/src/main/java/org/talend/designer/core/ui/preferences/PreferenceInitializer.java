@@ -103,7 +103,6 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer {
         store.setDefault(TalendDesignerPrefConstants.VIEW_OPTIONS, "default"); //$NON-NLS-1$
         store.setDefault(TalendDesignerPrefConstants.DISPLAY_SUBJOBS, true);
         store.setDefault(TalendDesignerPrefConstants.COMPONENT_ASSIST, true);
-        store.setDefault(TalendDesignerPrefConstants.GENERATE_CODE_WHEN_OPEN_JOB, false);
         // When updating jobs or joblets, check only the last version, and checked by default
         store.setDefault(TalendDesignerPrefConstants.CHECK_ONLY_LAST_VERSION, true);
 

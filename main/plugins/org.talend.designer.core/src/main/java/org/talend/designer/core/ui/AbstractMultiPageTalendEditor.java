@@ -129,7 +129,6 @@ import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.model.repository.IRepositoryWorkUnitListener;
 import org.talend.core.model.repository.job.JobResourceManager;
 import org.talend.core.model.routines.RoutinesUtil;
-import org.talend.core.model.utils.AccessingEmfJob;
 import org.talend.core.repository.constants.Constant;
 import org.talend.core.repository.model.ProxyRepositoryFactory;
 import org.talend.core.repository.ui.editor.RepositoryEditorInput;
@@ -176,7 +175,6 @@ import org.talend.designer.core.ui.editor.outline.NodeTreeEditPart;
 import org.talend.designer.core.ui.editor.process.Process;
 import org.talend.designer.core.ui.editor.process.ProcessPart;
 import org.talend.designer.core.ui.editor.subjobcontainer.SubjobContainerPart;
-import org.talend.designer.core.ui.preferences.TalendDesignerPrefConstants;
 import org.talend.designer.core.ui.views.contexts.ContextsView;
 import org.talend.designer.core.ui.views.jobsettings.JobSettingsView;
 import org.talend.designer.core.ui.views.problems.Problems;
@@ -1013,10 +1011,6 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
                 ExceptionHandler.process(pie);
             }
         }
-
-        if (DesignerPlugin.getDefault().getPreferenceStore().getBoolean(TalendDesignerPrefConstants.GENERATE_CODE_WHEN_OPEN_JOB)) {
-            generateCode();
-        }
     }
 
     // create jobscript editor
@@ -1084,35 +1078,6 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
             ExceptionHandler.process(e);
         } catch (CoreException e) {
             ExceptionHandler.process(e);
-        }
-    }
-
-    /**
-     * DOC bqian Comment method "generateCode".
-     */
-    protected void generateCode() {
-        final IProcess2 process = getProcess();
-        if (!(process.getProperty().getItem() instanceof ProcessItem)) { // shouldn't work for joblet
-            return;
-        }
-        if (process.getGeneratingNodes().size() != 0) {
-            Job job = new AccessingEmfJob("Generating code") { //$NON-NLS-1$
-
-                @Override
-                protected IStatus doRun(IProgressMonitor monitor) {
-                    try {
-                        ProcessorUtilities.generateCode(process, process.getContextManager().getDefaultContext(), false, false,
-                                true, ProcessorUtilities.GENERATE_WITH_FIRST_CHILD);
-                    } catch (ProcessorException e) {
-                        ExceptionHandler.process(e);
-                    }
-
-                    return Status.OK_STATUS;
-                }
-            };
-            job.setUser(true);
-            job.setPriority(Job.BUILD);
-            job.schedule(); // start as soon as possible
         }
     }
 
@@ -1449,20 +1414,36 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
             }
         }
         // if some code has been generated already, for the editor we should need only the main job, not the childs.
-        try {
-            boolean lastGeneratedWithStats = ProcessorUtilities.getLastGeneratedWithStats(process.getId());
-            boolean lastGeneratedWithTrace = ProcessorUtilities.getLastGeneratedWithTrace(process.getId());
+        boolean codeGenerated = processor.isCodeGenerated();
+        Job job = new Job("Generating code") {
 
-            if (processor.isCodeGenerated()) {
-                ProcessorUtilities.generateCode(process, process.getContextManager().getDefaultContext(), lastGeneratedWithStats,
-                        lastGeneratedWithTrace, true, ProcessorUtilities.GENERATE_MAIN_ONLY);
-            } else {
-                ProcessorUtilities.generateCode(process, process.getContextManager().getDefaultContext(), lastGeneratedWithStats,
-                        lastGeneratedWithTrace, true, ProcessorUtilities.GENERATE_WITH_FIRST_CHILD);
+            @Override
+            protected IStatus run(IProgressMonitor monitor) {
+                Display.getDefault().syncExec(() -> {
+                    try {
+                        monitor.beginTask("Generating code", IProgressMonitor.UNKNOWN);
+                        boolean lastGeneratedWithStats = ProcessorUtilities.getLastGeneratedWithStats(process.getId());
+                        boolean lastGeneratedWithTrace = ProcessorUtilities.getLastGeneratedWithTrace(process.getId());
+
+                        if (codeGenerated) {
+                            ProcessorUtilities.generateCode(process, process.getContextManager().getDefaultContext(),
+                                    lastGeneratedWithStats, lastGeneratedWithTrace, true, ProcessorUtilities.GENERATE_MAIN_ONLY,
+                                    monitor);
+                        } else {
+                            ProcessorUtilities.generateCode(process, process.getContextManager().getDefaultContext(),
+                                    lastGeneratedWithStats, lastGeneratedWithTrace, true,
+                                    ProcessorUtilities.GENERATE_WITH_FIRST_CHILD, monitor);
+                        }
+                    } catch (ProcessorException e) {
+                        ExceptionHandler.process(e);
+                    }
+                });
+                return Status.OK_STATUS;
             }
-        } catch (ProcessorException e) {
-            ExceptionHandler.process(e);
-        }
+        };
+        job.setUser(false);
+        job.setPriority(Job.INTERACTIVE);
+        job.schedule();
     }
 
     /**

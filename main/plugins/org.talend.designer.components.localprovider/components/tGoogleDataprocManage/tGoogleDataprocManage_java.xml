@@ -411,9 +411,9 @@
 			<IMPORT NAME="jackson-core"
 				MODULE="jackson-core-2.9.9.jar" MVN="mvn:com.fasterxml.jackson.core/jackson-core/2.9.9" REQUIRED="true"/>
 			<IMPORT NAME="jackson-core-asl"
-				MODULE="jackson-core-asl-1.9.5-TALEND.jar" MVN="mvn:org.codehaus.jackson/jackson-core-asl/1.9.15-TALEND" REQUIRED="true"/>
+				MODULE="jackson-core-asl-1.9.16-TALEND.jar" MVN="mvn:org.codehaus.jackson/jackson-core-asl/1.9.16-TALEND" REQUIRED="true"/>
 			<IMPORT NAME="jackson-mapper-asl"
-				MODULE="jackson-mapper-asl-1.9.5-TALEND.jar" MVN="mvn:org.codehaus.jackson/jackson-mapper-asl/1.9.15-TALEND" REQUIRED="true"/>
+				MODULE="jackson-mapper-asl-1.9.16-TALEND.jar" MVN="mvn:org.codehaus.jackson/jackson-mapper-asl/1.9.16-TALEND" REQUIRED="true"/>
 			<IMPORT NAME="commons-lang"
 				MODULE="commons-lang-2.6.jar" MVN="mvn:commons-lang/commons-lang/2.6" REQUIRED="true"/>
 
