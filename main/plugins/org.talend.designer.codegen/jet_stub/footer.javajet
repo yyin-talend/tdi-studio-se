@@ -651,15 +651,15 @@
 %>
         boolean inOSGi = routines.system.BundleUtils.inOSGi();
 
-        if (inOSGi) {
-            java.util.Dictionary<String, Object> jobProperties = routines.system.BundleUtils.getJobProperties(jobName);
-
-            if (jobProperties != null && jobProperties.get("context") != null) {
-                contextStr = (String)jobProperties.get("context");
-            }
-        }
-
         try {
+            java.util.Dictionary<String, Object> jobProperties = null;
+            if (inOSGi) {
+                jobProperties = routines.system.BundleUtils.getJobProperties(jobName);
+    
+                if (jobProperties != null && jobProperties.get("context") != null) {
+                    contextStr = (String)jobProperties.get("context");
+                }
+            }
             //call job/subjob with an existing context, like: --context=production. if without this parameter, there will use the default context instead.
             java.io.InputStream inContext = <%=className%>.class.getClassLoader().getResourceAsStream("<%=jobClassPackageFolder%>/contexts/" + contextStr + ".properties");
             if (inContext == null) {
@@ -669,8 +669,17 @@
                 try {
                     //defaultProps is in order to keep the original context value
                     if(context != null && context.isEmpty()) {
-	                defaultProps.load(inContext);
-	                context = new ContextProperties(defaultProps);
+    	                defaultProps.load(inContext);
+    	                if (inOSGi && jobProperties != null) {
+                             java.util.Enumeration<String> keys = jobProperties.keys();
+                             while (keys.hasMoreElements()) {
+                                 String propKey = keys.nextElement();
+                                 if (defaultProps.containsKey(propKey)) {
+                                     defaultProps.put(propKey, (String) jobProperties.get(propKey));
+                                 }
+                             }
+    	                }
+    	                context = new ContextProperties(defaultProps);
                     }
                 } finally {
                     inContext.close();
