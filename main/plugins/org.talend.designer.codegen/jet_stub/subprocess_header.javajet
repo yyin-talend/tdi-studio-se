@@ -20,6 +20,7 @@
 		org.talend.core.model.process.IHashConfiguration
 		org.talend.core.model.process.IHashableColumn
 		org.talend.core.model.utils.NodeUtil
+		org.talend.core.model.utils.TalendTextUtils
 	"
 	class="SubProcessHeader"
 	skeleton="subprocess_header_java.skeleton"
@@ -183,6 +184,48 @@ public static class <%=conn.getName() %>Struct<%=templateOrigin %> implements ro
 				public <%= typeToGenerate %> get<%=column.getLabel().substring(0, 1).toUpperCase()%><%=column.getLabel().substring(1)%> () {
 					return this.<%=column.getLabel()%>;
 				}
+
+				public Boolean <%=column.getLabel()%>IsNullable(){
+				    return <%=column.isNullable()%>;
+				}
+				public Boolean <%=column.getLabel()%>IsKey(){
+				    return <%=column.isKey()%>;
+				}
+				public Integer <%=column.getLabel()%>Length(){
+				    return <%=column.getLength()%>;
+				}
+				public Integer <%=column.getLabel()%>Precision(){
+				    return <%=column.getPrecision()%>;
+				}
+				public String <%=column.getLabel()%>Default(){
+				<% if (column.getDefault() == null) { %>
+					return null;
+				<% } else { %>
+					return "<%=TalendTextUtils.escapeJavaText(TalendTextUtils.removeQuotes(column.getDefault()))%>";
+				<% } %>
+				}
+				public String <%=column.getLabel()%>Comment(){
+				<% if (column.getComment() == null) { %>
+				    return null;
+				<% } else { %>
+				    return "<%=TalendTextUtils.escapeJavaText(TalendTextUtils.removeQuotes(column.getComment()))%>";
+				<% } %>
+				}
+				public String <%=column.getLabel()%>Pattern(){
+				<% if (column.getPattern() == null) { %>
+				    return null;
+				<% } else { %>
+					return "<%=TalendTextUtils.escapeJavaText(TalendTextUtils.removeQuotes(column.getPattern()))%>";
+				<% } %>
+				}
+				public String <%=column.getLabel()%>OriginalDbColumnName(){
+				<% if (column.getOriginalDbColumnName() == null) { %>
+				    return null;
+				<% } else { %>
+					return "<%=TalendTextUtils.escapeJavaText(TalendTextUtils.removeQuotes(column.getOriginalDbColumnName()))%>";
+				<% } %>
+				}
+
 				<%
 				if((conn.getLineStyle() == EConnectionType.FLOW_REF) && conn.getTarget().getUniqueName().startsWith("tXMLMap") && "id_Document".equals(javaType.getId())) {
 				%>
