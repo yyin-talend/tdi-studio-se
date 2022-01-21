@@ -62,6 +62,7 @@ import org.talend.core.runtime.process.ITalendProcessJavaProject;
 import org.talend.core.runtime.process.LastGenerationInfo;
 import org.talend.core.runtime.process.TalendProcessOptionConstants;
 import org.talend.core.ui.ITestContainerProviderService;
+import org.talend.core.utils.BitwiseOptionUtils;
 import org.talend.designer.core.IDesignerCoreService;
 import org.talend.designer.maven.model.MavenSystemFolders;
 import org.talend.designer.maven.model.TalendMavenConstants;
@@ -681,7 +682,9 @@ public class TalendJavaProjectManager {
 
     private static void generatePom(Item item, int option, IProcessor processor) throws Exception {
         if (processor instanceof MavenJavaProcessor) {
-            LastGenerationInfo.getInstance().clearCaches();
+			if (!BitwiseOptionUtils.containOption(option, TalendProcessOptionConstants.GENERATE_POM_NOT_CLEAR_CACHE)) {
+				LastGenerationInfo.getInstance().clearCaches();
+			}
             // Gen poms only
             ((MavenJavaProcessor) processor).generatePom(option);
         }
