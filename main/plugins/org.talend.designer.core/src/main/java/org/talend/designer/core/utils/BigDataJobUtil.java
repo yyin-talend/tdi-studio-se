@@ -110,6 +110,21 @@ public class BigDataJobUtil {
         return isSparkWithSynapse;
     }
 
+    public boolean isSparkWithGoogleDataProc() {
+        boolean isSparkWithGoogleDataProc = false;
+        if (isBDJobWithFramework(ERepositoryObjectType.PROCESS_MR, HadoopConstants.FRAMEWORK_SPARK)
+                || isBDJobWithFramework(ERepositoryObjectType.PROCESS_STORM, HadoopConstants.FRAMEWORK_SPARKSTREAMING)) {
+            List<? extends IElementParameter> parameters = process.getElementParametersWithChildrens();
+            for (IElementParameter pt : parameters) {
+                if (pt.getName().equals("DISTRIBUTION") //$NON-NLS-1$
+                        && EHadoopDistributions.GOOGLE_CLOUD_DATAPROC.getName().equals(pt.getValue())) {
+                    isSparkWithGoogleDataProc = true;
+                }
+            }
+        }
+        return isSparkWithGoogleDataProc;
+    }
+
     public boolean isMRWithHDInsight() {
         Boolean isMRWithHDInsight = false;
         if (process != null) {
