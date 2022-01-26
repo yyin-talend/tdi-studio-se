@@ -298,7 +298,9 @@ if(columnList != null && columnList.size()>0) {
             <%
         }%>
         String insert_<%=cid%> = sb_<%=cid%>.toString();
-        log.debug("<%=cid%> - Executing the query: " + insert_<%=cid%>);
+        
+        <%dbLog.data().sqlExecuteTry("insert_"+cid);%>
+        
 	    <%
 	    boolean usingStatsLogs = cid.equals("talendLogs_DB") || cid.equals("talendStats_DB") || cid.equals("talendMeter_DB");
 	    if(!usingStatsLogs) {
