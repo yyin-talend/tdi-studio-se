@@ -209,7 +209,9 @@ skeleton="../templates/db_output_bulk.skeleton"
                 <%
             }%>
             String insert_<%=cid%> = sb_<%=cid%>.toString();
-            log.debug("<%=cid%> - Executing the query: " + insert_<%=cid%>);
+            
+            <%dbLog.data().sqlExecuteTry("insert_"+cid);%>
+            
             <%
         }
 
