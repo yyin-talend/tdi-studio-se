@@ -265,7 +265,7 @@ public class EmfComponent extends AbstractBasicComponent {
 
     // weak ref used so that memory is not used by a static HashMap instance
     private static SoftReference<Map> optionMapSoftRef;
-    
+
     private static final String PROP_LOAD_DYNAMIC_DISTRIBUTION_MODULE = "studio.dynamic.distribution.modules.load";
 
     private AbstractComponentsProvider provider;
@@ -1746,7 +1746,7 @@ public class EmfComponent extends AbstractBasicComponent {
             notShowIfVersion = new String[versionsList.size()];
 
             int index = 0;
-            
+
             Iterator<DistributionVersion> versionIter = versionsList.iterator();
             while (versionIter.hasNext()) {
                 DistributionVersion that = versionIter.next();
@@ -3207,6 +3207,10 @@ public class EmfComponent extends AbstractBasicComponent {
             List<? extends INode> nodes = process.getNodesOfType("tSparkConfiguration");
             if (nodes != null && !nodes.isEmpty()) {
                 node = nodes.get(0);
+                // As we are changing the node to tSparkConfiguration we need to change compType accordingly.
+                // This is compatible also with Spark streaming jobs because compType.getVersionParameter() returns the
+                // same in batch and streaming
+                compType = ComponentType.SPARKBATCH;
             }
         }
         IElementParameter hdElemParam = node.getElementParameter(compType.getVersionParameter());
@@ -3271,7 +3275,7 @@ public class EmfComponent extends AbstractBasicComponent {
                      */
                 }
             }
-            
+
             if (Boolean.getBoolean(PROP_LOAD_DYNAMIC_DISTRIBUTION_MODULE)) {
 
                 for (Map.Entry<DistributionVersion, List<ModuleNeeded>> entry : distributionModuleNeededMap.entrySet()) {
@@ -3288,7 +3292,7 @@ public class EmfComponent extends AbstractBasicComponent {
             }
         }
     }
-    
+
     private void loadHadoopDistributionModules(DistributionVersion dv, String compName, List<ModuleNeeded> moduleNeededList,List<ModuleNeeded> cachedModuleNeededList) {
         if (dv instanceof DynamicDistributionVersion) {
             try {
@@ -3306,8 +3310,8 @@ public class EmfComponent extends AbstractBasicComponent {
             importType.setMRREQUIRED(versionModule.moduleGroup.isMrRequired());
             importType.setREQUIREDIF(versionModule.getModuleRequiredIf().getConditionString());
             ModulesNeededProvider
-                    .collectModuleNeeded(compName, // $NON-NLS-1$
-                            importType, cachedModuleNeededList, versionModule.distributionVersion.getVersion());
+            .collectModuleNeeded(compName, // $NON-NLS-1$
+                    importType, cachedModuleNeededList, versionModule.distributionVersion.getVersion());
         }
         distributionModuleNeededMap.put(dv, cachedModuleNeededList);
         moduleNeededList.addAll(cachedModuleNeededList);
@@ -3346,7 +3350,7 @@ public class EmfComponent extends AbstractBasicComponent {
                      */
                 }
             }
-            
+
             if (Boolean.getBoolean(PROP_LOAD_DYNAMIC_DISTRIBUTION_MODULE)) {
                 List<ModuleNeeded> cachedModuleNeededList = null;
                 for (Map.Entry<HadoopComponent, List<ModuleNeeded>> entry : hadoopLibModuleNeededMap.entrySet()) {
@@ -3356,14 +3360,14 @@ public class EmfComponent extends AbstractBasicComponent {
                          * means not added yet, retrieve and add it
                          */
                         cachedModuleNeededList = new LinkedList<>();
-                        
+
                         loadHadoopLibDynamicModules(entry.getKey(), node.getComponent().getName(), moduleNeededList, cachedModuleNeededList);
                     }
                 }
             }
         }
     }
-    
+
     private void loadHadoopLibDynamicModules(HadoopComponent hc, String compName, List<ModuleNeeded> moduleNeededList, List<ModuleNeeded> cachedModuleNeededList) {
         try {
             if (hc instanceof AbstractDynamicDistributionTemplate) {
@@ -3395,11 +3399,11 @@ public class EmfComponent extends AbstractBasicComponent {
         moduleNeededList.addAll(cachedModuleNeededList);
         ExceptionHandler.logDebug("addHadoopLibModuleNeededList, size of cachedModuleNeededList: " + cachedModuleNeededList.size());
     }
-    
+
     private boolean loadDynamicDistributionModules() {
         return areHadoopDistribsLoaded || Boolean.getBoolean(PROP_LOAD_DYNAMIC_DISTRIBUTION_MODULE);
     }
-    
+
     private boolean loadDynamicLibsDistributionModules() {
         return areHadoopLibsLoaded || Boolean.getBoolean(PROP_LOAD_DYNAMIC_DISTRIBUTION_MODULE);
     }
@@ -3413,18 +3417,18 @@ public class EmfComponent extends AbstractBasicComponent {
                 } catch (Exception e) {
                     ExceptionHandler.process(e);
                 }
-                
+
             }
-            
+
             if (loadDynamicLibsDistributionModules()) {
-                                
+
                 try {
                     addHadoopLibModuleNeededList(node, componentImportNeedsList);
                 } catch (Exception e) {
                     ExceptionHandler.process(e);
                 }
             }
-            
+
             return componentImportNeedsList;
         }
 
@@ -3514,7 +3518,7 @@ public class EmfComponent extends AbstractBasicComponent {
         if (loadDynamicDistributionModules()) {
             addHadoopDistributionModuleNeededList(node, componentImportNeedsList);
         }
-        
+
         if(loadDynamicLibsDistributionModules()) {
             addHadoopLibModuleNeededList(node, componentImportNeedsList);
         }
