@@ -157,11 +157,13 @@ public class ExcelReader implements Callable {
                 }
             }
             XSSFReader r = new XSSFReader(pkg);
-
+            InputStream workbookXml = r.getWorkbookData();
+            CTWorkbook ctWorkbook = CTWorkbook.Factory.parse(workbookXml);
+            boolean isDate1904 = ctWorkbook.getWorkbookPr().getDate1904();
             StylesTable styles = r.getStylesTable();
             ReadOnlySharedStringsTable strings = new ReadOnlySharedStringsTable(pkg, includePhoneticRuns);
             sheetContentsHandler = new DefaultTalendSheetContentsHandler(cache);
-            DataFormatter formatter = new DataFormatter();
+            DataFormatter formatter = new DataFormatter(true, isDate1904);
             boolean formulasNotResults = false;
 
             XMLReader parser = XMLReaderFactory.createXMLReader();
