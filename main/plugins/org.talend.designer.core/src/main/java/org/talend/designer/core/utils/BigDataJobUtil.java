@@ -1,6 +1,6 @@
 // ============================================================================
 //
-// Copyright (C) 2006-2019 Talend Inc. - www.talend.com
+// Copyright (C) 2006-2021 Talend Inc. - www.talend.com
 //
 // This source code is available under agreement available at
 // %InstallDIR%\features\org.talend.rcp.branding.%PRODUCTNAME%\%PRODUCTNAME%license.txt
@@ -12,20 +12,12 @@
 // ============================================================================
 package org.talend.designer.core.utils;
 
-import java.io.File;
-import java.io.IOException;
-import java.net.URL;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
-import org.eclipse.core.runtime.FileLocator;
-import org.eclipse.core.runtime.Path;
-import org.eclipse.core.runtime.Platform;
-import org.osgi.framework.Bundle;
-import org.talend.commons.exception.ExceptionHandler;
 import org.talend.core.hadoop.HadoopConstants;
 import org.talend.core.hadoop.version.EHadoopDistributions;
 import org.talend.core.model.general.ModuleNeeded;
@@ -73,23 +65,10 @@ public class BigDataJobUtil {
         if (isBDJobWithFramework(ERepositoryObjectType.PROCESS_MR, HadoopConstants.FRAMEWORK_SPARK)
                 || isBDJobWithFramework(ERepositoryObjectType.PROCESS_STORM, HadoopConstants.FRAMEWORK_SPARKSTREAMING)) {
             List<? extends IElementParameter> parameters = process.getElementParametersWithChildrens();
-            boolean modeParameterVisited = false;
             for (IElementParameter pt : parameters) {
-                if (pt.getName().equals("SPARK_LOCAL_MODE")) { //$NON-NLS-1$
-                    modeParameterVisited = true;
-                    if ("true".equals(pt.getValue())) { //$NON-NLS-1$
-                        isSparkWithHDInsight = false;
-                        break;
-                    }
-                }
                 if (pt.getName().equals("DISTRIBUTION") //$NON-NLS-1$
                         && EHadoopDistributions.MICROSOFT_HD_INSIGHT.getName().equals(pt.getValue())) {
                     isSparkWithHDInsight = true;
-                    // If the SPARK_LOCAL_MODE parameter already have been processed and if we continue to loop,
-                    // that means we are not in a LOCAL mode context. We can break the loop.
-                    if (modeParameterVisited) {
-                        break;
-                    }
                 }
             }
         }
@@ -110,16 +89,18 @@ public class BigDataJobUtil {
         }
         return isSparkWithSynapse;
     }
-
+    
     public boolean isSparkWithGoogleDataProc() {
         boolean isSparkWithGoogleDataProc = false;
         if (isBDJobWithFramework(ERepositoryObjectType.PROCESS_MR, HadoopConstants.FRAMEWORK_SPARK)
                 || isBDJobWithFramework(ERepositoryObjectType.PROCESS_STORM, HadoopConstants.FRAMEWORK_SPARKSTREAMING)) {
-           
-                if (SparkBatchConstant.SPARK_MODE_PARAMETER == "DATAPROC") {
+            List<? extends IElementParameter> parameters = process.getElementParametersWithChildrens();
+            for (IElementParameter pt : parameters) {
+                if (pt.getName().equals("DISTRIBUTION") //$NON-NLS-1$
+                        && EHadoopDistributions.GOOGLE_CLOUD_DATAPROC.getName().equals(pt.getValue())) {
                     isSparkWithGoogleDataProc = true;
                 }
-            
+            }
         }
         return isSparkWithGoogleDataProc;
     }
@@ -183,7 +164,7 @@ public class BigDataJobUtil {
                     String value = String.valueOf(pt.getValue());
                     if ("MICROSOFT_HD_INSIGHT".equals(value) //$NON-NLS-1$
                             || "GOOGLE_CLOUD_DATAPROC".equals(value) //$NON-NLS-1$
-                            || "CLOUDERA_ALTUS".equals(value) || "DATABRICKS".equals(value) || "QUBOLE".equals(value)) { //$NON-NLS-1$
+                            || "DATABRICKS".equals(value)) { //$NON-NLS-1$
                         return true;
                     }
                 }
@@ -232,32 +213,6 @@ public class BigDataJobUtil {
                 } else {
                     currentModule.setExcluded(true);
                 }
-            }
-        }
-        // only left is: isBDJobWithFramework(ERepositoryObjectType.PROCESS_STORM, HadoopConstants.FRAMEWORK_STORM))
-        // which must be true
-
-        Set<String> stormJarNames = new HashSet<>();
-        try {
-            // from org.talend.libraries.apache.storm/lib
-            Bundle bundle = Platform.getBundle("org.talend.libraries.apache.storm"); //$NON-NLS-1$
-            if (bundle != null) {
-                URL stormLibUrl = FileLocator.toFileURL(FileLocator.find(bundle, new Path("lib"), null)); //$NON-NLS-1$
-                if (stormLibUrl != null) {
-                    File file = new File(stormLibUrl.getFile());
-                    File[] jars = file.listFiles();
-                    for (File f : jars) {
-                        stormJarNames.add(f.getName());
-                    }
-                }
-            }
-        } catch (IOException e) {
-            ExceptionHandler.process(e);
-        }
-
-        for (ModuleNeeded currentModule : modulesNeeded) {
-            if (stormJarNames.contains(currentModule.getModuleName())) {
-                excludedModules.add(currentModule);
             }
         }
 
