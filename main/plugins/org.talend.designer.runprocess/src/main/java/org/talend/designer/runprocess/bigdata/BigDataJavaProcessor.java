@@ -29,6 +29,7 @@ import org.eclipse.core.runtime.Platform;
 import org.talend.commons.exception.CommonExceptionHandler;
 import org.talend.commons.utils.generation.JavaUtils;
 import org.talend.commons.utils.resource.FileExtensions;
+import org.talend.core.GlobalServiceRegister;
 import org.talend.core.model.general.ModuleNeeded;
 import org.talend.core.model.process.Element;
 import org.talend.core.model.process.IElementParameter;
@@ -59,6 +60,7 @@ import org.talend.designer.runprocess.ProcessorUtilities;
 import org.talend.designer.runprocess.java.JavaProcessorUtilities;
 import org.talend.designer.runprocess.java.TalendJavaProjectManager;
 import org.talend.designer.runprocess.maven.MavenJavaProcessor;
+import org.talend.repository.model.IRepositoryService;
 import org.talend.repository.ui.utils.UpdateLog4jJarUtils;
 import org.talend.repository.ui.wizards.exportjob.scriptsmanager.JobScriptsManager;
 import org.talend.repository.ui.wizards.exportjob.scriptsmanager.JobScriptsManager.ExportChoice;
@@ -80,7 +82,7 @@ public abstract class BigDataJavaProcessor extends MavenJavaProcessor implements
         super(process, property, filenameFromLabel);
         this.process = process;
         BigDataJobUtil bdUtil = new BigDataJobUtil(process);
-        if (bdUtil.isSparkWithHDInsight() || bdUtil.isSparkWithSynapse()) {
+        if (isLog4j2() && (bdUtil.isSparkWithHDInsight() || bdUtil.isSparkWithSynapse() || bdUtil.isSparkWithGoogleDataProc())) {
             Element e = (Element) process;
             IElementParameter paramActivate = e.getElementParameter(EParameterName.LOG4J_ACTIVATE.getName());
             if (paramActivate != null) {
@@ -93,6 +95,14 @@ public abstract class BigDataJavaProcessor extends MavenJavaProcessor implements
         }
     }
 
+    private static boolean isLog4j2() {
+        if (GlobalServiceRegister.getDefault().isServiceRegistered(IRepositoryService.class)) {
+            IRepositoryService service = GlobalServiceRegister.getDefault().getService(IRepositoryService.class);
+            return service.isProjectLevelLog4j2();
+        }
+        return false;
+    }
+    
     protected abstract JobScriptsManager createJobScriptsManager(ProcessItem processItem,
             Map<ExportChoice, Object> exportChoiceMap);
 
