@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.dialogs.TrayDialog;
 import org.eclipse.jface.fieldassist.IContentProposal;
@@ -2177,6 +2178,12 @@ public abstract class DataMapTableView extends Composite implements IDataMapTabl
             public void focusLost(FocusEvent e) {
                 expressionEditorTextSelectionBeforeFocusLost = expressionTextEditor.getSelection();
                 lastExpressionEditorTextWhichLostFocus = expressionTextEditor;
+                if (Platform.OS_LINUX.equals(Platform.getOS())) {
+                    tableViewerCreator.getModifiedObjectInfo().getCurrentModifiedBean();
+                    if (tableViewerCreator.getModifiedObjectInfo().getCurrentModifiedBean() != null) {
+                        cellEditor.fireApplyEditorValue();
+                    }
+                }
             }
 
         });
@@ -3642,8 +3649,8 @@ public abstract class DataMapTableView extends Composite implements IDataMapTabl
         String name = values[1];
 
         try {
-            IProxyRepositoryFactory factory = ((IProxyRepositoryService) GlobalServiceRegister.getDefault().getService(
-                    IProxyRepositoryService.class)).getProxyRepositoryFactory();
+            IProxyRepositoryFactory factory = GlobalServiceRegister.getDefault().getService(
+                    IProxyRepositoryService.class).getProxyRepositoryFactory();
             IRepositoryViewObject object = factory.getLastVersion(itemId);
             if (object == null) {
                 return null;
