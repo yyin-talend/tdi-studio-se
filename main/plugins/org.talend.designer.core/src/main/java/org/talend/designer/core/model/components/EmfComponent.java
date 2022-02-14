@@ -1890,6 +1890,7 @@ public class EmfComponent extends AbstractBasicComponent {
                 newParam.setGroupDisplayName(parentParam.getGroupDisplayName());
                 newParam.setDefaultValues(sparkModesDefaultValues);
                 newParam.setRepositoryValue(SparkBatchConstant.SPARK_MODE_PARAMETER);
+                listParam.add(newParam);
                 
                 // Dataproc RuntimeVersion for universal
                 String[] dataprocRuntimeVersionLabels = DataprocRuntimeVersion.getAvailableRuntimeAndSparkVersion().stream().map(x -> x.getRuntimeVersion())
