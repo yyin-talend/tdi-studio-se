@@ -209,4 +209,8 @@ globalMap.put("<%=cid%>_ERROR_MESSAGE",e_<%=cid%>.getMessage());
 		globalMap.put("<%=cid %>_NB_FILE",nb_file_<%=cid%>);
 		globalMap.put("<%=cid %>_ERROR_MESSAGE",e_<%=cid%>.getMessage());
 		throw e_<%=cid%>;
+	}finally {
+		if(session_<%=cid%> != null) {
+			session_<%=cid%>.close();
+		}
 	}
