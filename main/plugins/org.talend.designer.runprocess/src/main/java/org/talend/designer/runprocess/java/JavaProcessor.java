@@ -1300,7 +1300,7 @@ public class JavaProcessor extends AbstractJavaProcessor implements IJavaBreakpo
 
     protected String getCommand() {
         // init java interpreter
-        if (isExportConfig() || isRunAsExport()) {
+        if (isExportConfig() || (isRunAsExport() && !CommonsPlugin.isHeadless())) {
             return JavaUtils.JAVA_APP_NAME;
         }
         String command;
