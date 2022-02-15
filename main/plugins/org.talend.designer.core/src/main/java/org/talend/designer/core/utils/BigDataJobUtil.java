@@ -25,7 +25,6 @@ import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.IProcess;
 import org.talend.core.model.process.IProcess2;
 import org.talend.core.model.repository.ERepositoryObjectType;
-import org.talend.hadoop.distribution.constants.SparkBatchConstant;
 
 /**
  * created by nrousseau on Mar 24, 2018 Detailled comment
@@ -96,8 +95,8 @@ public class BigDataJobUtil {
                 || isBDJobWithFramework(ERepositoryObjectType.PROCESS_STORM, HadoopConstants.FRAMEWORK_SPARKSTREAMING)) {
             List<? extends IElementParameter> parameters = process.getElementParametersWithChildrens();
             for (IElementParameter pt : parameters) {
-                if (pt.getName().equals("DISTRIBUTION") //$NON-NLS-1$
-                        && EHadoopDistributions.GOOGLE_CLOUD_DATAPROC.getName().equals(pt.getValue())) {
+            	if (HadoopConstants.SPARK_MODE.equals(pt.getName())
+                        && HadoopConstants.SPARK_MODE_DATAPROC.equals(pt.getValue())) {
                     isSparkWithGoogleDataProc = true;
                 }
             }
