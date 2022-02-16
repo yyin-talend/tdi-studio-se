@@ -25,6 +25,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import org.apache.commons.lang3.StringUtils;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.talend.commons.CommonsPlugin;
 import org.talend.commons.exception.ExceptionHandler;
@@ -447,25 +448,34 @@ public class ComponentModel extends AbstractBasicComponent implements IAdditiona
                     .filter(Objects::nonNull)
                     .distinct()
                     .collect(toList());
-
+            
+            Set<ModuleNeeded> extractComponent = new HashSet<ModuleNeeded>();
             connectors.stream()
-                    .flatMap((PropertyNode p) -> this.extractComponent(p, iNode)) // family name to Component Detail
+                    .flatMap((PropertyNode p) -> this.extractComponent(p, iNode, extractComponent)) // family name to Component Detail
                     .filter(Objects::nonNull)
                     .map((final ComponentDetail connectorDetails) -> this.connectorDependencies(dependencies, connectorDetails.getId()))
                     .forEach(modules::addAll);
+            modules.addAll(extractComponent);
+            
         }
         return modules;
     }
 
-    private Stream<ComponentDetail> extractComponent(final PropertyNode property, final INode node) {
-        return this.extractComponentRef(property, node)
+    private Stream<ComponentDetail> extractComponent(final PropertyNode property, final INode node, final Set<ModuleNeeded> extractComponent) {
+        return this.extractComponentRef(property, node, extractComponent)
                 .map((final ComponentReference ref) -> {
                     final String connectorRef = ref.getFamily() + ref.getName();
+                    if (!StringUtils.isEmpty(ref.getMavenReferences())) {
+                        ModuleNeeded module = new ModuleNeeded(ref.getFamily(), ref.getName(), null,  true);
+                        module.setMavenUri(ref.getMavenReferences());
+                        module.setTCKConnector(true);
+                        extractComponent.add(module);
+                    }
                     return Lookups.service().getDetail(connectorRef).orElse(null);
                 });
     }
 
-    private Stream<ComponentReference> extractComponentRef(final PropertyNode property, final INode node) {
+    private Stream<ComponentReference> extractComponentRef(final PropertyNode property, final INode node, final Set<ModuleNeeded> extractComponent) {
         return ComponentReferenceFinder.getFinder(property)
                 .find(property, node);
     }
