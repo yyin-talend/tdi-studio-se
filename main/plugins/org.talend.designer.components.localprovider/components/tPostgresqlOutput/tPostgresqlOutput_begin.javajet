@@ -280,10 +280,16 @@ if(columnList != null && columnList.size()>0) {
             java.lang.StringBuilder primaryKeysSB = new java.lang.StringBuilder();
             java.lang.StringBuilder updateColumnSB = new java.lang.StringBuilder();
             for(Column column : stmtStructure) {
+                String columnName = column.getColumnName();
+                if (column.isReplaced()) {
+                    for (Column replacedColumn : column.getReplacement()) {
+                        columnName = replacedColumn.getColumnName();
+                    }
+                }
                 if (column.isKey()) {
-                    primaryKeysSB.append("\\\"").append(column.getColumnName()).append("\\\"").append(",");
+                    primaryKeysSB.append("\\\"").append(columnName).append("\\\"").append(",");
                 } else {
-                    updateColumnSB.append("\\\"").append(column.getColumnName()).append("\\\"").append(" = EXCLUDED.").append("\\\"").append(column.getColumnName()).append("\\\"").append(",");
+                    updateColumnSB.append("\\\"").append(columnName).append("\\\"").append(" = EXCLUDED.").append("\\\"").append(columnName).append("\\\"").append(",");
                 }
             }
             String primaryKeys = primaryKeysSB.toString();
