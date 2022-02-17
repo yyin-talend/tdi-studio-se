@@ -1914,6 +1914,30 @@ public class EmfComponent extends AbstractBasicComponent {
                 newParam.setShow(true);
                 newParam.setGroup(xmlParam.getGROUP());
                 listParam.add(newParam);
+                
+             // Dataproc RuntimeVersion for universal
+                String[] dataprocRuntimeVersionLabels = DataprocRuntimeVersion.getAvailableRuntimeAndSparkVersion().stream().map(x -> x.getRuntimeVersion())
+                        .collect(Collectors.toList()).toArray(new String[0]);
+                String[] dataprocRuntimeVersionDisplayConditions = DataprocRuntimeVersion.getAvailableRuntimeAndSparkVersion().stream()
+                		.map(x -> "(SPARK_VERSION=='"+x.getSparkVersion()+"')")
+                        .collect(Collectors.toList()).toArray(new String[0]);
+
+                newParam = new ElementParameter(node);
+                newParam.setCategory(EComponentCategory.BASIC);
+                newParam.setName(SparkBatchConstant.DATAPROC_RUNTIME_VERSION);
+                newParam.setDisplayName(SparkBatchConstant.getName(SparkBatchConstant.DATAPROC_RUNTIME_VERSION));
+                newParam.setShowIf(DataprocRuntimeVersion.showIfCondition);
+                newParam.setListItemsDisplayName(dataprocRuntimeVersionLabels);
+                newParam.setListItemsDisplayCodeName(dataprocRuntimeVersionLabels);
+                newParam.setListItemsValue(dataprocRuntimeVersionLabels);
+                newParam.setListItemsShowIf(dataprocRuntimeVersionDisplayConditions);
+                newParam.setListItemsNotShowIf(new String[DataprocRuntimeVersion.getAvailableRuntimeAndSparkVersion().size()]);
+                newParam.setNumRow(xmlParam.getNUMROW() + 1);
+                newParam.setFieldType(EParameterFieldType.CLOSED_LIST);
+                newParam.setShow(true);
+                newParam.setGroup(xmlParam.getGROUP());
+
+                listParam.add(newParam);
             }
         }
     }
