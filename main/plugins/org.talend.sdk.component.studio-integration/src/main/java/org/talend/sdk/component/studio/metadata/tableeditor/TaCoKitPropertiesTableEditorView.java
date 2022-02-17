@@ -14,6 +14,7 @@ package org.talend.sdk.component.studio.metadata.tableeditor;
 
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
@@ -52,13 +53,15 @@ public class TaCoKitPropertiesTableEditorView<B> extends PropertiesTableEditorVi
             CCombo combo = (CCombo) cbc.getControl();
             String val = null;
 
+            boolean needUpdateListItem = false;
             if (combo.getEditable() && !StringUtils.isBlank(combo.getText())) {
                 val = String.valueOf(combo.getText());
+                needUpdateListItem = true;
             }
 
             int rowNumber = ((Table) combo.getParent()).getSelectionIndex();
 
-            Map<String, String> svs = new HashMap<String, String>();
+            Map<String, String> svs = new LinkedHashMap<String, String>();
 
             if (currentParam.getListItemsValue() != null && currentParam.getListItemsValue().length > 0) {
                 for (Object o : currentParam.getListItemsValue()) {
@@ -70,7 +73,7 @@ public class TaCoKitPropertiesTableEditorView<B> extends PropertiesTableEditorVi
                 svs.put(val, val);
             }
 
-            if (!svs.isEmpty()) {
+            if (!svs.isEmpty() && needUpdateListItem) {
                 TaCoKitUtil.updateElementParameter(currentParam, svs);
             }
 
