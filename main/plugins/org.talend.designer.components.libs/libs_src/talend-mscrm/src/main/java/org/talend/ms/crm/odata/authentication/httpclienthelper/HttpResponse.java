@@ -15,7 +15,7 @@ public final class HttpResponse {
     private Map<String, List<String>> headers;
     private String body;
 
-    private Optional<String> code = null;//Optional.empty();
+    private Optional<String> code = null;
 
     public static HttpResponse fromHttpUrlConnection(HttpURLConnection conn) throws IOException {
         final int status = conn.getResponseCode();
@@ -82,12 +82,12 @@ public final class HttpResponse {
             return Optional.empty();
         }
 
-        final List<String> ss = values.get();
-        if(ss.size() <= 0){
+        final List<String> v = values.get();
+        if (v.size() <= 0) {
             return Optional.empty();
         }
 
-        return Optional.ofNullable(ss.get(0));
+        return Optional.ofNullable(v.get(0));
     }
 
     public String getBody() {
@@ -107,11 +107,13 @@ public final class HttpResponse {
         if (!optLocation.isPresent()) {
             return Optional.empty();
         }
-        final String[] split = optLocation.get().split("&|\\?");
-        final Optional<String> optCode = Arrays.stream(split).filter(e -> e.startsWith("code=")).findFirst();
+        final String optLocationValue = optLocation.get();
+        final String[] split = optLocationValue.split("&|\\?");
 
+        final Optional<String> optCode = Arrays.stream(split).filter(e -> e.startsWith("code=")).findFirst();
         if (optCode.isPresent()) {
-            String code = optCode.get().substring(5);
+            final String optCodeValue = optCode.get();
+            String code = optCodeValue.substring(5);
             return Optional.ofNullable(code);
         }
 
