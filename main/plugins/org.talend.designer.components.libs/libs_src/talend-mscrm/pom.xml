@@ -3,10 +3,17 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.talend.components</groupId>
 	<artifactId>talend-mscrm</artifactId>
-	<version>3.9-20210713</version>
+	<version>3.11-20220124</version>
 	<packaging>jar</packaging>
 	
 	<name>talend-mscrm</name>
+	<licenses>
+		<license>
+			<name>Apache License, Version 2.0</name>
+			<url>https://www.talendforge.org/modules/licenses/APACHE_v2.txt</url>
+			<distribution>may be downloaded from the Maven repository</distribution>
+		</license>
+	</licenses>
 	
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>

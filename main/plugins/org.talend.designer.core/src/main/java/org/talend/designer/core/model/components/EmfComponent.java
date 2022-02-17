@@ -1893,9 +1893,15 @@ public class EmfComponent extends AbstractBasicComponent {
                 newParam.setRepositoryValue(SparkBatchConstant.SPARK_MODE_PARAMETER);
                 listParam.add(newParam);
                 
-             // databricksRuntimeVersion for universal
+               // databricksRuntimeVersion for universal
                 String[] databricksRuntimeVersionLabels = DatabricksRuntimeVersion.getAvailableRuntimeAndSparkVersion().stream().map(x -> x.getRuntimeVersion())
                 collect(Collectors.toList()).toArray(new String[0]);
+                String[] databricksRuntimeVersionDisplayConditions = DatabricksRuntimeVersion.getAvailableRuntimeAndSparkVersion().stream()
+                		.map(x -> "(SPARK_VERSION=='"+x.getSparkVersion()+"')")
+                        .collect(Collectors.toList()).toArray(new String[0]);
+                // databricksRuntimeVersion for universal
+                String[] databricksRuntimeVersionLabels = DatabricksRuntimeVersion.getAvailableRuntimeAndSparkVersion().stream().map(x -> x.getRuntimeVersion())
+                        .collect(Collectors.toList()).toArray(new String[0]);
                 String[] databricksRuntimeVersionDisplayConditions = DatabricksRuntimeVersion.getAvailableRuntimeAndSparkVersion().stream()
                 		.map(x -> "(SPARK_VERSION=='"+x.getSparkVersion()+"')")
                         .collect(Collectors.toList()).toArray(new String[0]);
@@ -1936,7 +1942,6 @@ public class EmfComponent extends AbstractBasicComponent {
                 newParam.setFieldType(EParameterFieldType.CLOSED_LIST);
                 newParam.setShow(true);
                 newParam.setGroup(xmlParam.getGROUP());
-                
                 listParam.add(newParam);
             }
         }

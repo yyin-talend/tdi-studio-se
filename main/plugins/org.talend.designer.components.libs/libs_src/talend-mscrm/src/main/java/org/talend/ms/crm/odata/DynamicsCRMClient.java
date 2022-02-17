@@ -116,11 +116,8 @@ public class DynamicsCRMClient implements IHttpClientFactoryObserver {
     public DynamicsCRMClient(ClientConfiguration clientConfiguration, String serviceRootURL, String entitySet)
             throws AuthenticationException {
         this.clientConfiguration = clientConfiguration;
-
         this.serviceRootURL = serviceRootURL;
-
         this.entitySet = entitySet;
-
         init();
     }
 
