@@ -150,6 +150,7 @@ import org.talend.hadoop.distribution.condition.NestedComponentCondition;
 import org.talend.hadoop.distribution.condition.SimpleComponentCondition;
 import org.talend.hadoop.distribution.constants.SparkBatchConstant;
 import org.talend.hadoop.distribution.constants.apache.ESparkMode;
+import org.talend.hadoop.distribution.constants.databricks.DatabricksRuntimeVersion;
 import org.talend.hadoop.distribution.dynamic.template.AbstractDynamicDistributionTemplate;
 import org.talend.hadoop.distribution.dynamic.template.IDynamicDistributionTemplate;
 import org.talend.hadoop.distribution.helper.DistributionsManager;
@@ -1890,6 +1891,28 @@ public class EmfComponent extends AbstractBasicComponent {
                 newParam.setGroupDisplayName(parentParam.getGroupDisplayName());
                 newParam.setDefaultValues(sparkModesDefaultValues);
                 newParam.setRepositoryValue(SparkBatchConstant.SPARK_MODE_PARAMETER);
+                listParam.add(newParam);
+                
+             // databricksRuntimeVersion for universal
+                String[] databricksRuntimeVersionLabels = DatabricksRuntimeVersion.getAvailableRuntimeAndSparkVersion().stream().map(x -> x.getRuntimeVersion())
+                collect(Collectors.toList()).toArray(new String[0]);
+                String[] databricksRuntimeVersionDisplayConditions = DatabricksRuntimeVersion.getAvailableRuntimeAndSparkVersion().stream()
+                		.map(x -> "(SPARK_VERSION=='"+x.getSparkVersion()+"')")
+                        .collect(Collectors.toList()).toArray(new String[0]);
+                newParam = new ElementParameter(node);
+                newParam.setCategory(EComponentCategory.BASIC);
+                newParam.setName(SparkBatchConstant.DATABRICKS_RUNTIME_VERSION);
+                newParam.setDisplayName(SparkBatchConstant.getName(SparkBatchConstant.DATABRICKS_RUNTIME_VERSION));
+                newParam.setShowIf(DatabricksRuntimeVersion.showIfCondition);
+                newParam.setListItemsDisplayName(databricksRuntimeVersionLabels);
+                newParam.setListItemsDisplayCodeName(databricksRuntimeVersionLabels);
+                newParam.setListItemsValue(databricksRuntimeVersionLabels);
+                newParam.setListItemsShowIf(databricksRuntimeVersionDisplayConditions);
+                newParam.setListItemsNotShowIf(new String[DatabricksRuntimeVersion.getAvailableRuntimeAndSparkVersion().size()]);
+                newParam.setNumRow(xmlParam.getNUMROW() + 1);
+                newParam.setFieldType(EParameterFieldType.CLOSED_LIST);
+                newParam.setShow(true);
+                newParam.setGroup(xmlParam.getGROUP());
                 listParam.add(newParam);
                 
                 // Dataproc RuntimeVersion for universal
