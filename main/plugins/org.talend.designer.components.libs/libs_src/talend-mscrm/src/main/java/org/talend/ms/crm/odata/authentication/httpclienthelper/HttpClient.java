@@ -60,7 +60,6 @@ public final class HttpClient {
         }
 
 
-        //final HttpHeaders headers = resp.headers();
         final Optional<String> location = response.getFirstValueHeader("location");
 
 
