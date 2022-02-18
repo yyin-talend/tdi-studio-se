@@ -35,6 +35,7 @@ import org.talend.core.model.process.IGenericProvider;
 import org.talend.core.prefs.ITalendCorePrefConstants;
 import org.talend.core.ui.component.ComponentsFactoryProvider;
 import org.talend.designer.core.model.components.EmfComponent;
+import org.talend.librariesmanager.model.ExternalTCKConnectorDataProvider;
 import org.talend.repository.ProjectManager;
 import org.talend.sdk.component.server.front.model.ActionItem;
 import org.talend.sdk.component.server.front.model.ActionList;
@@ -94,6 +95,7 @@ public class TaCoKitGenericProvider implements IGenericProvider {
                 ComponentIndex index = pair.getFirst();
                 ComponentDetail detail = pair.getSecond();
                 ImageDescriptor imageDesc = null;
+
                 try {
                     if (!isHeadless) {
                         imageDesc = service.toEclipseIcon(index.getIcon());
@@ -104,20 +106,24 @@ public class TaCoKitGenericProvider implements IGenericProvider {
                 if (imageDesc == null) {
                     imageDesc = ComponentService.DEFAULT_IMAGE;
                 }
-                ComponentModel componentModel = new ComponentModel(index, detail, configTypes, imageDesc, reportPath, isCatcherAvailable);
-                components.add(componentModel);
+                
+                if (!ExternalTCKConnectorDataProvider.getIntance().isNeedHide(index.getFamilyDisplayName())) {
+                    ComponentModel componentModel = new ComponentModel(index, detail, configTypes, imageDesc, reportPath, isCatcherAvailable);
+                    components.add(componentModel);
 
-                if (ETaCoKitComponentType.input.equals(componentModel.getTaCoKitComponentType())) {
-                    ActionList actionList = Lookups.taCoKitCache().getActionList(index.getFamilyDisplayName());
-                    IComponent connectionModel = createConnectionComponent(index, detail, configTypes, reportPath, isCatcherAvailable, createdConnectionFamiliySet, actionList);
-                    if (connectionModel != null) {
-                        components.add(connectionModel);
-                    }
-                    IComponent closeModel = createCloseConnectionComponent(index, detail, configTypes, reportPath, isCatcherAvailable, createdCloseFamiliySet, actionList);
-                    if (closeModel != null) {
-                        components.add(closeModel);
+                    if (ETaCoKitComponentType.input.equals(componentModel.getTaCoKitComponentType())) {
+                        ActionList actionList = Lookups.taCoKitCache().getActionList(index.getFamilyDisplayName());
+                        IComponent connectionModel = createConnectionComponent(index, detail, configTypes, reportPath, isCatcherAvailable, createdConnectionFamiliySet, actionList);
+                        if (connectionModel != null) {
+                            components.add(connectionModel);
+                        }
+                        IComponent closeModel = createCloseConnectionComponent(index, detail, configTypes, reportPath, isCatcherAvailable, createdCloseFamiliySet, actionList);
+                        if (closeModel != null) {
+                            components.add(closeModel);
+                        }
                     }
                 }
+
             });
         }
     }

@@ -467,6 +467,7 @@ public class ComponentModel extends AbstractBasicComponent implements IAdditiona
                     final String connectorRef = ref.getFamily() + ref.getName();
                     if (!StringUtils.isEmpty(ref.getMavenReferences())) {
                         ModuleNeeded module = new ModuleNeeded(ref.getFamily(), ref.getName(), null,  true);
+                        module.setFamily(ref.getFamily());
                         module.setMavenUri(ref.getMavenReferences());
                         module.setTCKConnector(true);
                         extractComponent.add(module);
