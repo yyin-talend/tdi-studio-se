@@ -54,6 +54,7 @@ import org.talend.core.runtime.maven.MavenConstants;
 import org.talend.core.ui.component.ComponentsFactoryProvider;
 import org.talend.designer.core.model.utils.emf.talendfile.NodeType;
 import org.talend.designer.core.utils.UnifiedComponentUtil;
+import org.talend.librariesmanager.model.ExternalTCKConnectorDataProvider;
 import org.talend.repository.ProjectManager;
 import org.talend.sdk.component.server.front.model.ActionItem;
 import org.talend.sdk.component.server.front.model.ActionList;
@@ -270,6 +271,9 @@ public class TaCoKitUtil {
                 String parentId = node.getParentId();
                 String configType = node.getConfigurationType();
                 if (StringUtils.isNotBlank(parentId) || StringUtils.isNotBlank(configType)) {
+                    continue;
+                }
+                if (ExternalTCKConnectorDataProvider.getIntance().isHidenConnector(node.getDisplayName())) {
                     continue;
                 }
                 filteredNodes.add(node);

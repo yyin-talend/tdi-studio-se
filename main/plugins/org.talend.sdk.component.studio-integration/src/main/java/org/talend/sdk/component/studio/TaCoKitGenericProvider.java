@@ -107,7 +107,7 @@ public class TaCoKitGenericProvider implements IGenericProvider {
                     imageDesc = ComponentService.DEFAULT_IMAGE;
                 }
                 
-                if (!ExternalTCKConnectorDataProvider.getIntance().isNeedHide(index.getFamilyDisplayName())) {
+                if (!ExternalTCKConnectorDataProvider.getIntance().isHidenConnector(index.getFamilyDisplayName())) {
                     ComponentModel componentModel = new ComponentModel(index, detail, configTypes, imageDesc, reportPath, isCatcherAvailable);
                     components.add(componentModel);
 
