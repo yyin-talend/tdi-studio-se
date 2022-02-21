@@ -220,13 +220,12 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
                 complianceLevel = "1.7";
             } else if (javaVersion.startsWith("1.8")) {
                 complianceLevel = "1.8";
-            } else if (javaVersion.startsWith("9")) {
-                complianceLevel = "9";
-            } else if (javaVersion.startsWith("10")) {
-                complianceLevel = "10";
-            } else if (javaVersion.startsWith("11")) {
-                complianceLevel = "11";
-            }
+            } else {
+                Matcher m = Pattern.compile("([0-9]+).*").matcher(javaVersion);
+                if (m.find()) {
+                    complianceLevel = m.group(1);
+                }
+    	    }
         }
         complianceParameter = " -" + complianceLevel + " -maxProblems 100000 -nowarn";
         

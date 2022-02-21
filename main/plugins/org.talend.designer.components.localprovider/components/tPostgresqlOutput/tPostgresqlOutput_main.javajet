@@ -189,6 +189,22 @@ skeleton="../templates/db_output_bulk.skeleton"
             if (("UPSERT").equals(dataAction)) {%>
                 java.lang.StringBuilder dynamicPrimaryKeysSB_<%=cid%> = new java.lang.StringBuilder();
                 java.lang.StringBuilder dynamicUpdateColumnSB_<%=cid%> = new java.lang.StringBuilder();
+				<%for(Column column : stmtStructure) {
+					if (!column.isDynamic()) {
+                        String columnName = column.getColumnName();
+                        if (column.isReplaced()) {
+                            for (Column replacedColumn : column.getReplacement()) {
+                                columnName = replacedColumn.getColumnName();
+                            }
+                        }
+						if(column.isKey()) {%>
+							dynamicPrimaryKeysSB_<%=cid%>.append("\"").append("<%=columnName%>").append("\"").append(",");
+						<%} else {%>
+							dynamicUpdateColumnSB_<%=cid%>.append("\"").append("<%=columnName%>").append("\"").append(" = EXCLUDED.").append("\"")
+								.append("<%=columnName%>").append("\"").append(",");
+						<%}
+					}
+				}%>
                 for (int x_<%=cid%> = 0; x_<%=cid%> < dynamic_<%=cid%>.getColumnCount(); x_<%=cid%>++) {
                     routines.system.DynamicMetadata column_<%=cid%> = dynamic_<%=cid%>.getColumnMetadata(x_<%=cid%>);
                     if(column_<%=cid%>.isKey()) {
