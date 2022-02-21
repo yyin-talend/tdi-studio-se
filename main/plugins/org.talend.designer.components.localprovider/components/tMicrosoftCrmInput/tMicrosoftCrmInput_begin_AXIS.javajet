@@ -59,7 +59,7 @@ if ((metadatas != null) && (metadatas.size() > 0)) {
 			<%
 			if(!isAPI2011 || ("ON_PREMISE").equals(authType)){
 				if(("ON_PREMISE").equals(authType)){%>
-					org.apache.commons.httpclient.auth.AuthPolicy.registerAuthScheme(org.apache.commons.httpclient.auth.AuthPolicy.NTLM, org.talend.mscrm.login.ntlm.JCIFS_NTLMScheme.class);
+					org.apache.http.client.params.AuthPolicy.registerAuthScheme(org.apache.commons.httpclient.auth.AuthPolicy.NTLM, org.talend.mscrm.login.ntlm.JCIFS_NTLMScheme.class);
 
 					com.microsoft.crm4.webserviceTest.CrmServiceStub service_<%=cid%> = new com.microsoft.crm4.webserviceTest.CrmServiceStub(<%=endpointURL%>);
 					org.apache.axis2.client.Options options_<%=cid%> = service_<%=cid%>._getServiceClient().getOptions();
