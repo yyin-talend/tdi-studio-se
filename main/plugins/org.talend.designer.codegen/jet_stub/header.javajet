@@ -385,12 +385,40 @@ public <%=JavaTypesManager.getTypeToGenerate(ctxParam.getType(),true)%> get<%=Ch
 
 <%
 	INode jobCatcherNode = null;
+
+	//one matched component or part, one thread
+	//why not computed by cpu or resource : please image this case : 
+	//loop==>(input==>(twritexmlfield A)==>(twritexmlfield B)==>(twritexmlfield C)==>output), dead lock as cycle dependency and only one thead in thread pool
+	//maybe newCachedThreadPool is a better idea,  but that have risk for creating more threads, then more memory for TDI-47230
+	//why not generate thread pool object in subprocess scope : 
+	// 1: major reason : difficult to control the var scope, somewhere can't access it, then compiler issue
+	// 2: we may need this thread pool for bigger scope, not only for twritexmlfield/twritejsonfield in future
+	// 3: we don't suppose this thread pool cost big resource after all tasks done, so we can shutdown it more later,
+	//		for example, most time, user will use less than 3 twritexmlfield in one job, then 3 threads thread pool, we can close them in job finish code part, 
+	//		not a big cost to keep that. And of course, we best to start&clean it in subprocess finish, but that's risk of 1 above.
+	int threadPoolSize = 0;
 	for (INode nodeInProcess : processNodes) {
 		String componentName = nodeInProcess.getComponent().getName();
-		if("tJobStructureCatcher".equals(componentName)) {
+
+		if(jobCatcherNode==null && "tJobStructureCatcher".equals(componentName)) {
 			jobCatcherNode = nodeInProcess;
-			break;
+			continue;
 		}
+
+		if(!nodeInProcess.isActivate()) continue;
+		
+		if("tWriteXMLFieldOut".equals(componentName)) {
+			IConnection nextMergeConn = NodeUtil.getNextMergeConnection(nodeInProcess);
+			if(nextMergeConn == null || nextMergeConn.getInputId()==1){
+				threadPoolSize++;
+			}
+		}
+	}
+
+	if(threadPoolSize>0) {
+%>
+private final java.util.concurrent.ExecutorService es = java.util.concurrent.Executors.newCachedThreadPool();
+<%
 	}
 	
 	boolean enableLogStash = !Boolean.getBoolean("deactivate_extended_component_log") && (jobCatcherNode!=null);
