@@ -514,17 +514,29 @@
 				}
 				org.apache.logging.log4j.core.config.Configurator.setLevel(org.apache.logging.log4j.LogManager.getRootLogger().getName(), log.getLevel());
 				<%}%>
-    	    }
-        	log.info("TalendJob: '<%=codeGenArgument.getJobName()%>' - Start.");
-    	<%}%>
-    	
-    	<%
-    	INode jobCatcherNode = null;
+			}
+			log.info("TalendJob: '<%=codeGenArgument.getJobName()%>' - Start.");
+		<%}%>
+		
+		<%
+		INode jobCatcherNode = null;
+		
+		int threadPoolSize = 0;
 		for (INode nodeInProcess : process.getGeneratingNodes()) {
 			String componentName = nodeInProcess.getComponent().getName();
-			if("tJobStructureCatcher".equals(componentName)) {
+
+			if(jobCatcherNode==null && "tJobStructureCatcher".equals(componentName)) {
 				jobCatcherNode = nodeInProcess;
-				break;
+				continue;
+			}
+
+			if(!nodeInProcess.isActivate()) continue;
+			
+			if("tWriteXMLFieldOut".equals(componentName)) {
+				IConnection nextMergeConn = NodeUtil.getNextMergeConnection(nodeInProcess);
+				if(nextMergeConn == null || nextMergeConn.getInputId()==1){
+					threadPoolSize++;
+				}
 			}
 		}
 		
@@ -1198,6 +1210,25 @@ this.globalResumeTicket = true;//to run tPostJob
 	        } catch (java.lang.Exception e) {
 	            e.printStackTrace();
 	        }
+        }
+<%
+    }
+
+    if(threadPoolSize>0) {
+%>
+        es.shutdown();
+        <%//shutdownNow should never be executed, only for safe%>
+        try {
+            if(!es.awaitTermination(60, java.util.concurrent.TimeUnit.SECONDS)) {
+                es.shutdownNow();
+                if(!es.awaitTermination(60, java.util.concurrent.TimeUnit.SECONDS)) {
+
+                }
+            }
+        } catch (java.lang.InterruptedException ie) {
+            es.shutdownNow();
+        } catch (java.lang.Exception e) {
+
         }
 <%
     }
