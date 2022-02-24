@@ -91,7 +91,7 @@ public class GenericDragAndDropHandler extends AbstractDragAndDropServiceHandler
             Map<Object, Object> contextMap) {
         if (value != null && canHandle(connection)) {
             if (GlobalServiceRegister.getDefault().isServiceRegistered(IGenericWizardService.class)) {
-                IGenericWizardService wizardService = (IGenericWizardService) GlobalServiceRegister.getDefault()
+                IGenericWizardService wizardService = GlobalServiceRegister.getDefault()
                         .getService(IGenericWizardService.class);
                 if (wizardService != null && wizardService.isGenericConnection(connection)) {
                     List<ComponentProperties> componentPropertiesList = wizardService.getAllComponentProperties(connection,
@@ -154,6 +154,7 @@ public class GenericDragAndDropHandler extends AbstractDragAndDropServiceHandler
         if (ContextParameterUtils.isContextMode(connection, value)) {
             return pass;
         }
+        pass = TalendQuoteUtils.checkStringQuotationMarks(pass);
         return TalendQuoteUtils.addQuotesIfNotExist(pass);
     }
 
@@ -258,7 +259,7 @@ public class GenericDragAndDropHandler extends AbstractDragAndDropServiceHandler
         if (((ConnectionItem) item).getConnection().getCompProperties() == null) {
             return neededComponents;
         }
-        IComponentsService service = (IComponentsService) GlobalServiceRegister.getDefault().getService(IComponentsService.class);
+        IComponentsService service = GlobalServiceRegister.getDefault().getService(IComponentsService.class);
         Collection<IComponent> components = service.getComponentsFactory().readComponents();
         for (IComponent component : components) {
             if (EComponentType.GENERIC.equals(component.getComponentType())) {
@@ -284,7 +285,7 @@ public class GenericDragAndDropHandler extends AbstractDragAndDropServiceHandler
             }
             IGenericDBService dbService = null;
             if (GlobalServiceRegister.getDefault().isServiceRegistered(IGenericDBService.class)) {
-                dbService = (IGenericDBService) GlobalServiceRegister.getDefault().getService(IGenericDBService.class);
+                dbService = GlobalServiceRegister.getDefault().getService(IGenericDBService.class);
             }
             if (dbService != null && dbService.getExtraTypes().contains(parent.getObjectType())) {
                 return true;
