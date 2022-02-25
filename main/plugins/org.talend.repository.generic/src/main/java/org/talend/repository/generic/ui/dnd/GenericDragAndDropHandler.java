@@ -18,6 +18,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang3.StringEscapeUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.components.api.component.ComponentDefinition;
@@ -154,8 +155,7 @@ public class GenericDragAndDropHandler extends AbstractDragAndDropServiceHandler
         if (ContextParameterUtils.isContextMode(connection, value)) {
             return pass;
         }
-        pass = TalendQuoteUtils.checkStringQuotationMarks(pass);
-        return TalendQuoteUtils.addQuotesIfNotExist(pass);
+        return TalendQuoteUtils.addQuotesIfNotExist(StringEscapeUtils.escapeJava(pass));
     }
 
     private Object getPropertiesValue(Connection connection, Properties properties, String value) {
