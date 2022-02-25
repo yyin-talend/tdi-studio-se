@@ -150,12 +150,12 @@ public class GenericDragAndDropHandler extends AbstractDragAndDropServiceHandler
         return null;
     }
 
-    private String getPassword(Connection connection, String value) {
+    public static String getPassword(Connection connection, String value) {
         String pass = connection.getValue(value, false);
         if (ContextParameterUtils.isContextMode(connection, value)) {
             return pass;
         }
-        return TalendQuoteUtils.addQuotesIfNotExist(StringEscapeUtils.escapeJava(pass));
+        return TalendQuoteUtils.addQuotes(pass);
     }
 
     private Object getPropertiesValue(Connection connection, Properties properties, String value) {
