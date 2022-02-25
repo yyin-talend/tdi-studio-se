@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.avro.Schema;
+import org.apache.commons.lang3.StringEscapeUtils;
 import org.talend.core.model.process.IContext;
 import org.talend.core.model.process.IContextManager;
 import org.talend.core.model.process.INode;
@@ -23,6 +24,7 @@ import org.talend.core.model.process.IProcess;
 import org.talend.core.model.utils.ContextParameterUtils;
 import org.talend.core.runtime.evaluator.AbstractPropertyValueEvaluator;
 import org.talend.core.runtime.util.GenericTypeUtils;
+import org.talend.core.utils.TalendQuoteUtils;
 import org.talend.daikon.properties.property.Property;
 
 /**
@@ -85,9 +87,23 @@ public class ComponentContextPropertyValueEvaluator extends AbstractPropertyValu
                 } else {
                     stringStoredValue = simpleConvertResult;
                 }
+                if (GenericTypeUtils.isStringType(property)) {
+                    String val = String.valueOf(stringStoredValue);
+                    if (property.isFlag(Property.Flags.ENCRYPT)) {
+                        return val;
+                    }
+                }
             }
         } else if (storedValue instanceof List) {
             return storedValue;
+        }
+        if (GenericTypeUtils.isStringType(property)) {
+
+            String val = String.valueOf(stringStoredValue);
+
+            if (property.isFlag(Property.Flags.ENCRYPT)) {
+                return TalendQuoteUtils.removeQuotes(StringEscapeUtils.unescapeJava(val));
+            }
         }
         return getTypedValue(property, storedValue, stringStoredValue);
     }
