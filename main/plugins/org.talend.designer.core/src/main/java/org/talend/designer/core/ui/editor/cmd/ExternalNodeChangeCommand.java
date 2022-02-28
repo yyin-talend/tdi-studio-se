@@ -170,7 +170,7 @@ public class ExternalNodeChangeCommand extends Command {
         setLabel(Messages.getString("ExternalNodeChangeCommand.modifaicationFrom") + node.getUniqueName()); //$NON-NLS-1$
     }
 
-    private boolean needChangeSchemaType(Connection connection, IMetadataTable repositoryMetadata) {
+    protected boolean needChangeSchemaType(IConnection connection, IMetadataTable repositoryMetadata) {
         EConnectionType lineStyle = connection.getLineStyle();
         String connectorName = connection.getConnectorName();
         IMetadataTable metadataTable = connection.getMetadataTable();
