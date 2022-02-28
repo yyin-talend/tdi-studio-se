@@ -803,7 +803,7 @@
                         		    		<%
                         		    	} else {
                         		    		if("java.util.Date".equals(typeToGenerate)) {%>
-                        		    		    <%= tableName %>HashKey.<%= aKeysNames[iKeyName] %> = <%= aKeysValues[iKeyName] %> == null ? null : new java.util.Date((<%= aKeysValues[iKeyName] %>).getTime());
+                        		    		    <%= tableName %>HashKey.<%= aKeysNames[iKeyName] %> = <%= aKeysValues[iKeyName] %> == null ? null : new java.util.Date(<%= aKeysValues[iKeyName] %>.getTime());
                         		    		<%
                         		    		}else {
 	                        		    	%>
