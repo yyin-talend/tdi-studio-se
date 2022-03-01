@@ -45,7 +45,6 @@ public class CLASS {
     public static final String EXASOL = "Exasol_id";
     public static final String SAPHANA = "saphana_id";
 	public static final String DELTALAKE = "databricks_delta_lake_id";
-    private Map<String, Manager> managerMap = new HashMap<String, Manager>();
     public class Column {
         IMetadataColumn column;
         String name;
@@ -4998,145 +4997,135 @@ public class CLASS {
     }
     
     public Manager getELTManager(String dbmsId, String cid) {
-        Manager manager = managerMap.get(dbmsId + cid);
-        if(manager == null) {
-            if(dbmsId.equalsIgnoreCase(AS400)) {
-                manager = new AS400ELTManager(cid);
-            } else if(dbmsId.equalsIgnoreCase(ACCESS)) {
-                manager = new AccessELTManager(cid);
-            } else if(dbmsId.equalsIgnoreCase(DB2)) {
-                manager = new DB2ELTManager(cid);
-            } else if(dbmsId.equalsIgnoreCase(FIREBIRD)) {
-                manager = new FirebirdELTManager(cid);
-            } else if(dbmsId.equalsIgnoreCase(HSQLDB)) {
-                manager = new HSQLDBELTManager(cid);
-            } else if(dbmsId.equalsIgnoreCase(HIVE)) {
-                manager = new HiveELTManager(cid);
-            } else if(dbmsId.equalsIgnoreCase(INFORMIX)) {
-                manager = new InformixELTManager(cid);
-            } else if(dbmsId.equalsIgnoreCase(INGRES)) {
-                manager = new IngresELTManager(cid);         
-            } else if(dbmsId.equalsIgnoreCase(VECTORWISE)) {
-                manager = new VectorWiseELTManager(cid);
-            } else if(dbmsId.equalsIgnoreCase(INTERBASE)) {
-                manager = new InterbaseELTManager(cid);
-            } else if(dbmsId.equalsIgnoreCase(JAVADB)) {
-                manager = new JavaDBELTManager(cid);
-            } else if(dbmsId.equalsIgnoreCase(MAXDB)) {
-                manager = new MaxDBELTManager(cid);
-            } else if(dbmsId.equalsIgnoreCase(MSSQL)) {
-                manager = new MSSQLELTManager(cid);
-            } else if(dbmsId.equalsIgnoreCase(MYSQL) || dbmsId.equalsIgnoreCase(SINGLESTORE)) {
-                manager = new MysqlELTManager(cid);
-            } else if(dbmsId.equalsIgnoreCase(NETEZZA)) {
-                manager = new NetezzaELTManager(cid);
-            } else if(dbmsId.equalsIgnoreCase(ORACLE)) {
-                manager = new OracleELTManager(cid);
-            } else if(dbmsId.equalsIgnoreCase(POSTGREPLUS)) {
-                manager = new PostgrePlusELTManager(cid);
-            } else if(dbmsId.equalsIgnoreCase(GREENPLUM)) {
-                manager = new GreenplumELTManager(cid);
-            } else if(dbmsId.equalsIgnoreCase(POSTGRESQL)) {
-                manager = new PostgreELTManager(cid);
-            } else if(dbmsId.equalsIgnoreCase(REDSHIFT)) {
-                manager = new RedshiftELTManager(cid);
-            } else if(dbmsId.equalsIgnoreCase(SQLITE)) {
-                manager = new SQLiteELTManager(cid);
-            } else if(dbmsId.equalsIgnoreCase(SYBASE)) {
-                manager = new SybaseELTManager(cid);
-            } else if(dbmsId.equalsIgnoreCase(TERADATA)) {
-                manager = new TeradataELTManager(cid);
-            } else if(dbmsId.equalsIgnoreCase(VERTICA)) {
-                manager = new VerticaELTManager(cid);
-            } else if(dbmsId.equalsIgnoreCase(EXASOL)) {
-                manager = new ExasolELTManager(cid);
-            } else if(dbmsId.equalsIgnoreCase(SAPHANA)) {
-                manager = new SAPHanaELTManager(cid);
-            } else if(dbmsId.equalsIgnoreCase(SNOWFLAKE)) {
-                manager = new SnowflakeELTManager(cid);
-            } else {
-                manager = new UnDefinedManager(cid);
-                ((UnDefinedManager)manager).setDBMSId(dbmsId);
-            }
+        if(dbmsId.equalsIgnoreCase(AS400)) {
+            manager = new AS400ELTManager(cid);
+        } else if(dbmsId.equalsIgnoreCase(ACCESS)) {
+            manager = new AccessELTManager(cid);
+        } else if(dbmsId.equalsIgnoreCase(DB2)) {
+            manager = new DB2ELTManager(cid);
+        } else if(dbmsId.equalsIgnoreCase(FIREBIRD)) {
+            manager = new FirebirdELTManager(cid);
+        } else if(dbmsId.equalsIgnoreCase(HSQLDB)) {
+            manager = new HSQLDBELTManager(cid);
+        } else if(dbmsId.equalsIgnoreCase(HIVE)) {
+            manager = new HiveELTManager(cid);
+        } else if(dbmsId.equalsIgnoreCase(INFORMIX)) {
+            manager = new InformixELTManager(cid);
+        } else if(dbmsId.equalsIgnoreCase(INGRES)) {
+            manager = new IngresELTManager(cid);         
+        } else if(dbmsId.equalsIgnoreCase(VECTORWISE)) {
+            manager = new VectorWiseELTManager(cid);
+        } else if(dbmsId.equalsIgnoreCase(INTERBASE)) {
+            manager = new InterbaseELTManager(cid);
+        } else if(dbmsId.equalsIgnoreCase(JAVADB)) {
+            manager = new JavaDBELTManager(cid);
+        } else if(dbmsId.equalsIgnoreCase(MAXDB)) {
+            manager = new MaxDBELTManager(cid);
+        } else if(dbmsId.equalsIgnoreCase(MSSQL)) {
+            manager = new MSSQLELTManager(cid);
+        } else if(dbmsId.equalsIgnoreCase(MYSQL) || dbmsId.equalsIgnoreCase(SINGLESTORE)) {
+            manager = new MysqlELTManager(cid);
+        } else if(dbmsId.equalsIgnoreCase(NETEZZA)) {
+            manager = new NetezzaELTManager(cid);
+        } else if(dbmsId.equalsIgnoreCase(ORACLE)) {
+            manager = new OracleELTManager(cid);
+        } else if(dbmsId.equalsIgnoreCase(POSTGREPLUS)) {
+            manager = new PostgrePlusELTManager(cid);
+        } else if(dbmsId.equalsIgnoreCase(GREENPLUM)) {
+            manager = new GreenplumELTManager(cid);
+        } else if(dbmsId.equalsIgnoreCase(POSTGRESQL)) {
+            manager = new PostgreELTManager(cid);
+        } else if(dbmsId.equalsIgnoreCase(REDSHIFT)) {
+            manager = new RedshiftELTManager(cid);
+        } else if(dbmsId.equalsIgnoreCase(SQLITE)) {
+            manager = new SQLiteELTManager(cid);
+        } else if(dbmsId.equalsIgnoreCase(SYBASE)) {
+            manager = new SybaseELTManager(cid);
+        } else if(dbmsId.equalsIgnoreCase(TERADATA)) {
+            manager = new TeradataELTManager(cid);
+        } else if(dbmsId.equalsIgnoreCase(VERTICA)) {
+            manager = new VerticaELTManager(cid);
+        } else if(dbmsId.equalsIgnoreCase(EXASOL)) {
+            manager = new ExasolELTManager(cid);
+        } else if(dbmsId.equalsIgnoreCase(SAPHANA)) {
+            manager = new SAPHanaELTManager(cid);
+        } else if(dbmsId.equalsIgnoreCase(SNOWFLAKE)) {
+            manager = new SnowflakeELTManager(cid);
+        } else {
+            manager = new UnDefinedManager(cid);
+            ((UnDefinedManager)manager).setDBMSId(dbmsId);
         }
-        managerMap.put(dbmsId + cid, manager);
-        return manager;
     }
     /////////////////////////////////////////////////////////////////////////////////////
     //ELT part end
     
     public Manager getManager(String dbmsId, String cid) {
-        Manager manager = managerMap.get(dbmsId + cid);
-        if(manager == null) {
-            if(dbmsId.equalsIgnoreCase(AS400)) {
-                manager = new AS400Manager(cid);
-            } else if(dbmsId.equalsIgnoreCase(ACCESS)) {
-                manager = new AccessManager(cid);
-            } else if(dbmsId.equalsIgnoreCase(DB2)) {
-                manager = new DB2Manager(cid);
-            } else if(dbmsId.equalsIgnoreCase(FIREBIRD)) {
-                manager = new FirebirdManager(cid);
-            } else if(dbmsId.equalsIgnoreCase(HSQLDB)) {
-                manager = new HSQLDBManager(cid);
-            } else if(dbmsId.equalsIgnoreCase(HIVE)) {
-                manager = new HiveManager(cid);
-            } else if(dbmsId.equalsIgnoreCase(INFORMIX)) {
-                manager = new InformixManager(cid);
-            } else if(dbmsId.equalsIgnoreCase(INGRES)) {
-                manager = new IngresManager(cid);         
-            } else if(dbmsId.equalsIgnoreCase(VECTORWISE)) {
-                manager = new VectorWiseManager(cid);
-            } else if(dbmsId.equalsIgnoreCase(INTERBASE)) {
-                manager = new InterbaseManager(cid);
-            } else if(dbmsId.equalsIgnoreCase(JAVADB)) {
-                manager = new JavaDBManager(cid);
-            } else if(dbmsId.equalsIgnoreCase(MAXDB)) {
-                manager = new MaxDBManager(cid);
-            } else if(dbmsId.equalsIgnoreCase(MSSQL)) {
-                if(cid != null && cid.indexOf("tAzureSynapseBulkExec") > -1){
-                    manager = new AzureSynapseManager(cid);
-                }else{
-                    manager = new MSSQLManager(cid); 
-                }
-            } else if(dbmsId.equalsIgnoreCase(MYSQL) || dbmsId.equalsIgnoreCase(SINGLESTORE)) {
-                manager = new MysqlManager(cid);
-            } else if(dbmsId.equalsIgnoreCase(NETEZZA)) {
-                manager = new NetezzaManager(cid);
-            } else if(dbmsId.equalsIgnoreCase(ORACLE)) {
-                manager = new OracleManager(cid);
-            } else if(dbmsId.equalsIgnoreCase(POSTGREPLUS)) {
-                manager = new PostgrePlusManager(cid);
-            } else if(dbmsId.equalsIgnoreCase(GREENPLUM)) {
-                manager = new GreenplumManager(cid);
-            } else if(dbmsId.equalsIgnoreCase(POSTGRESQL)) {
-                manager = new PostgreManager(cid);
-            } else if(dbmsId.equalsIgnoreCase(REDSHIFT)) {
-                manager = new RedshiftManager(cid);
-            } else if(dbmsId.equalsIgnoreCase(SQLITE)) {
-                manager = new SQLiteManager(cid);
-            } else if(dbmsId.equalsIgnoreCase(SYBASE)) {
-                manager = new SybaseManager(cid);
-            } else if(dbmsId.equalsIgnoreCase(TERADATA)) {
-                manager = new TeradataManager(cid);
-            } else if(dbmsId.equalsIgnoreCase(VERTICA)) {
-                manager = new VerticaManager(cid);
-            } else if(dbmsId.equalsIgnoreCase(ODBC)) {
-                manager = new ODBCManager(cid);
-            } else if(dbmsId.equalsIgnoreCase(JDBC)) {
-                manager = new JDBCManager(cid);
-            } else if(dbmsId.equalsIgnoreCase(EXASOL)) {
-                manager = new ExasolManager(cid);
-            } else if(dbmsId.equalsIgnoreCase(SAPHANA)) {
-                manager = new SAPHanaManager(cid);
-            } else if(dbmsId.equalsIgnoreCase(SNOWFLAKE)) {
-                manager = new SnowflakeManager(cid);
-            } else {
-                manager = new UnDefinedManager(cid);
-                ((UnDefinedManager)manager).setDBMSId(dbmsId);
+        if(dbmsId.equalsIgnoreCase(AS400)) {
+            manager = new AS400Manager(cid);
+        } else if(dbmsId.equalsIgnoreCase(ACCESS)) {
+            manager = new AccessManager(cid);
+        } else if(dbmsId.equalsIgnoreCase(DB2)) {
+            manager = new DB2Manager(cid);
+        } else if(dbmsId.equalsIgnoreCase(FIREBIRD)) {
+            manager = new FirebirdManager(cid);
+        } else if(dbmsId.equalsIgnoreCase(HSQLDB)) {
+            manager = new HSQLDBManager(cid);
+        } else if(dbmsId.equalsIgnoreCase(HIVE)) {
+            manager = new HiveManager(cid);
+        } else if(dbmsId.equalsIgnoreCase(INFORMIX)) {
+            manager = new InformixManager(cid);
+        } else if(dbmsId.equalsIgnoreCase(INGRES)) {
+            manager = new IngresManager(cid);         
+        } else if(dbmsId.equalsIgnoreCase(VECTORWISE)) {
+            manager = new VectorWiseManager(cid);
+        } else if(dbmsId.equalsIgnoreCase(INTERBASE)) {
+            manager = new InterbaseManager(cid);
+        } else if(dbmsId.equalsIgnoreCase(JAVADB)) {
+            manager = new JavaDBManager(cid);
+        } else if(dbmsId.equalsIgnoreCase(MAXDB)) {
+            manager = new MaxDBManager(cid);
+        } else if(dbmsId.equalsIgnoreCase(MSSQL)) {
+            if(cid != null && cid.indexOf("tAzureSynapseBulkExec") > -1){
+                manager = new AzureSynapseManager(cid);
+            }else{
+                manager = new MSSQLManager(cid); 
             }
+        } else if(dbmsId.equalsIgnoreCase(MYSQL) || dbmsId.equalsIgnoreCase(SINGLESTORE)) {
+            manager = new MysqlManager(cid);
+        } else if(dbmsId.equalsIgnoreCase(NETEZZA)) {
+            manager = new NetezzaManager(cid);
+        } else if(dbmsId.equalsIgnoreCase(ORACLE)) {
+            manager = new OracleManager(cid);
+        } else if(dbmsId.equalsIgnoreCase(POSTGREPLUS)) {
+            manager = new PostgrePlusManager(cid);
+        } else if(dbmsId.equalsIgnoreCase(GREENPLUM)) {
+            manager = new GreenplumManager(cid);
+        } else if(dbmsId.equalsIgnoreCase(POSTGRESQL)) {
+            manager = new PostgreManager(cid);
+        } else if(dbmsId.equalsIgnoreCase(REDSHIFT)) {
+            manager = new RedshiftManager(cid);
+        } else if(dbmsId.equalsIgnoreCase(SQLITE)) {
+            manager = new SQLiteManager(cid);
+        } else if(dbmsId.equalsIgnoreCase(SYBASE)) {
+            manager = new SybaseManager(cid);
+        } else if(dbmsId.equalsIgnoreCase(TERADATA)) {
+            manager = new TeradataManager(cid);
+        } else if(dbmsId.equalsIgnoreCase(VERTICA)) {
+            manager = new VerticaManager(cid);
+        } else if(dbmsId.equalsIgnoreCase(ODBC)) {
+            manager = new ODBCManager(cid);
+        } else if(dbmsId.equalsIgnoreCase(JDBC)) {
+            manager = new JDBCManager(cid);
+        } else if(dbmsId.equalsIgnoreCase(EXASOL)) {
+            manager = new ExasolManager(cid);
+        } else if(dbmsId.equalsIgnoreCase(SAPHANA)) {
+            manager = new SAPHanaManager(cid);
+        } else if(dbmsId.equalsIgnoreCase(SNOWFLAKE)) {
+            manager = new SnowflakeManager(cid);
+        } else {
+            manager = new UnDefinedManager(cid);
+            ((UnDefinedManager)manager).setDBMSId(dbmsId);
         }
-        managerMap.put(dbmsId + cid, manager);
-        return manager;
     }
     
     
