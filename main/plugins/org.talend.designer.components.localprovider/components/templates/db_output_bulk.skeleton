@@ -4997,6 +4997,8 @@ public class CLASS {
     }
     
     public Manager getELTManager(String dbmsId, String cid) {
+        Manager manager = null;
+        
         if(dbmsId.equalsIgnoreCase(AS400)) {
             manager = new AS400ELTManager(cid);
         } else if(dbmsId.equalsIgnoreCase(ACCESS)) {
@@ -5055,11 +5057,15 @@ public class CLASS {
             manager = new UnDefinedManager(cid);
             ((UnDefinedManager)manager).setDBMSId(dbmsId);
         }
+        
+        return manager;
     }
     /////////////////////////////////////////////////////////////////////////////////////
     //ELT part end
     
     public Manager getManager(String dbmsId, String cid) {
+        Manager manager = null;
+        
         if(dbmsId.equalsIgnoreCase(AS400)) {
             manager = new AS400Manager(cid);
         } else if(dbmsId.equalsIgnoreCase(ACCESS)) {
@@ -5126,6 +5132,8 @@ public class CLASS {
             manager = new UnDefinedManager(cid);
             ((UnDefinedManager)manager).setDBMSId(dbmsId);
         }
+        
+        return manager;
     }
     
     
