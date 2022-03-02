@@ -60,12 +60,13 @@ public class ClientConfigurationFactory {
     }
 
     public final static ClientConfiguration buildOAuthPremiseClientConfiguration(String userName, String password, String authoryEndpoint,
-                                                                                 String serviceAPI, String clientId, String redirectUrl, String forcedResource) {
+                                                                                 String serviceAPI, String clientId, String clientSecret, String redirectUrl, String forcedResource) {
         ClientConfiguration clientConfiguration = new ClientConfiguration(AuthStrategyEnum.OAUTH_PREMISE);
         clientConfiguration.setUserName(userName);
         clientConfiguration.setPassword(password);
         clientConfiguration.setAuthoryEndpoint(authoryEndpoint);
         clientConfiguration.setClientId(clientId);
+        clientConfiguration.setClientSecret(clientSecret);
         clientConfiguration.setRedirectURL(redirectUrl);
         clientConfiguration.setServiceAPI(serviceAPI);
         clientConfiguration.setForceResource(forcedResource);

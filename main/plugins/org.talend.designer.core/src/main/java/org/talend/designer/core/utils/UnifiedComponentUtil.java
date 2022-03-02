@@ -28,7 +28,6 @@ import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
 import org.talend.components.api.properties.ComponentProperties;
 import org.talend.core.GlobalServiceRegister;
-import org.talend.core.database.EDatabaseTypeName;
 import org.talend.core.model.components.IComponent;
 import org.talend.core.model.components.IComponentsHandler;
 import org.talend.core.model.components.IComponentsService;
@@ -138,7 +137,7 @@ public class UnifiedComponentUtil {
             for (IComponent component : componentList) {
                 String databaseName = service.getUnifiedCompDisplayName(service.getDelegateComponent(component),
                         component.getName());
-                if (!isDatabaseMatch(dbTypeName, databaseName)) {
+                if (StringUtils.isNotBlank(databaseName) && !databaseName.equals(dbTypeName)) {
                     continue;
                 }
                 if (isAdditionalJDBC(databaseName)) {
@@ -189,19 +188,6 @@ public class UnifiedComponentUtil {
             return filtedList;
         }
         return componentList;
-    }
-
-    private static boolean isDatabaseMatch(String dbTypeName, String unifiedCompDisplayName) {
-        if (StringUtils.isBlank(dbTypeName) || StringUtils.isBlank(unifiedCompDisplayName)) {
-            return false;
-        }
-        boolean isMatch = StringUtils.isNotBlank(unifiedCompDisplayName) && unifiedCompDisplayName.equals(dbTypeName);
-        EDatabaseTypeName databaseType = EDatabaseTypeName.getTypeFromDbType(dbTypeName);
-        if (databaseType != null && (databaseType.getDbType().equals(unifiedCompDisplayName)
-                || databaseType.getDisplayName().equals(unifiedCompDisplayName))) {
-            isMatch = true;
-        }
-        return isMatch;
     }
 
     public static IComponent getEmfComponent(IComponentName setting, IComponent selectedComponent) {
