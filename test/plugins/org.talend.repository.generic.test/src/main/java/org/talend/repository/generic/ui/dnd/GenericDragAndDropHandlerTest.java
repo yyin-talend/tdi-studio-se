@@ -18,10 +18,12 @@ import static org.mockito.Mockito.*;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.talend.components.api.properties.ComponentProperties;
 import org.talend.core.model.metadata.builder.connection.Connection;
+import org.talend.core.model.metadata.builder.connection.ConnectionFactory;
 import org.talend.core.model.utils.AbstractDragAndDropServiceHandler;
 import org.talend.repository.generic.model.genericMetadata.GenericConnection;
 
@@ -31,8 +33,16 @@ import org.talend.repository.generic.model.genericMetadata.GenericConnection;
  */
 public class GenericDragAndDropHandlerTest {
 
+    private Connection conn = null;
+
     @Before
     public void setUp() throws Exception {
+        conn = ConnectionFactory.eINSTANCE.createConnection();
+    }
+
+    @After
+    public void tearDown() throws Exception {
+        conn = null;
     }
 
     @Test
@@ -59,5 +69,43 @@ public class GenericDragAndDropHandlerTest {
         // when(ComponentsUtils.getAllValuedProperties(mockComponentProperties)).thenReturn(propertyValues);
         //        isGenericRepositoryValue = genericDragAndDropHandler.isGenericRepositoryValue(connection, "QueryMode");//$NON-NLS-1$
         // assertEquals(true, isGenericRepositoryValue);
+    }
+    
+    @Test
+    public void testGetPassword1() {
+        String pwd = GenericDragAndDropHandler.getPassword(conn, "TestPassword");
+        assertEquals("\"TestPassword\"", pwd); //$NON-NLS-1$
+    }
+
+    @Test
+    public void testGetPassword2() {
+        String pwd = GenericDragAndDropHandler.getPassword(conn, "\"TestPassword\"");
+        assertEquals("\"\\\"TestPassword\\\"\"", pwd); //$NON-NLS-1$
+    }
+
+    @Test
+    public void testGetPassword3() {
+        String pwd = GenericDragAndDropHandler.getPassword(conn, "\"\"TestPassword\"\"");
+        assertEquals("\"\\\"\\\"TestPassword\\\"\\\"\"", pwd); //$NON-NLS-1$
+    }
+
+    @Test
+    public void testGetPassword4() {
+        String pwd = GenericDragAndDropHandler.getPassword(conn, "\"TestPassword");
+        assertEquals("\"\\\"TestPassword\"", pwd); //$NON-NLS-1$
+    }
+
+    @Test
+    public void testGetPassword5() {
+        String pwd = GenericDragAndDropHandler.getPassword(conn, "TestPassword\"");
+        assertEquals("\"TestPassword\\\"\"", pwd); //$NON-NLS-1$
+    }
+
+    @Test
+    public void testGetPassword6() {
+        conn.setContextMode(true);
+        String pwd = GenericDragAndDropHandler.getPassword(conn, "context.pwd");
+        conn.setContextMode(false);
+        assertEquals("context.pwd", pwd); //$NON-NLS-1$
     }
 }
