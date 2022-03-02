@@ -405,7 +405,7 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
         Set<ModuleNeeded> neededModules = LastGenerationInfo.getInstance().getModulesNeededWithSubjobPerJob(processId,
                 processVersion);
         for (ModuleNeeded module : neededModules) {
-            if (isCompiledLib(module)) {
+            if (isCompiledLib(module) || isRESTRequestNeededLibs(module)) {
                 addModuleNeededsInMap(getCompiledModules(), processId, processVersion, module);
             } else if (isRequireBundleLib(module)) {
                 addModuleNeededsInMap(getRequireBundleModules(), processId, processVersion, module);
@@ -413,6 +413,10 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
                 addModuleNeededsInMap(getExcludedModules(), processId, processVersion, module);
             }
         }
+    }
+
+    private boolean isRESTRequestNeededLibs(ModuleNeeded module) {
+        return module.getModuleName().startsWith("delight-rhino-sandbox") || module.getModuleName().startsWith("rhino");
     }
 
     @Override
