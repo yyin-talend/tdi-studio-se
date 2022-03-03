@@ -399,6 +399,7 @@ public <%=JavaTypesManager.getTypeToGenerate(ctxParam.getType(),true)%> get<%=Ch
 	int threadPoolSize = 0;
 	boolean tHMapExists = false;
 	boolean tHMapOutExists = false;
+	boolean tRESTRequestLoopExists = false;
 	for (INode nodeInProcess : processNodes) {
 		String componentName = nodeInProcess.getComponent().getName();
 
@@ -418,6 +419,11 @@ public <%=JavaTypesManager.getTypeToGenerate(ctxParam.getType(),true)%> get<%=Ch
 			tHMapOutExists = true;
 			continue;
 		}
+
+		if("tRESTRequestLoop".equals(componentName)) {
+			tRESTRequestLoopExists = true;
+			continue;
+		}
 		
 		if("tWriteXMLFieldOut".equals(componentName)) {
 			IConnection nextMergeConn = NodeUtil.getNextMergeConnection(nodeInProcess);
@@ -428,13 +434,51 @@ public <%=JavaTypesManager.getTypeToGenerate(ctxParam.getType(),true)%> get<%=Ch
 	}
 
 	if(threadPoolSize>0) {
+		if(tRESTRequestLoopExists) {//miscroservice
+%>
+			private class DaemonThreadFactory implements java.util.concurrent.ThreadFactory {
+				java.util.concurrent.ThreadFactory factory = java.util.concurrent.Executors.defaultThreadFactory();
+				
+				public java.lang.Thread newThread(java.lang.Runnable r) {
+					java.lang.Thread t = factory.newThread(r);
+					t.setDaemon(true);
+					return t;
+				}
+			}
+<%
+		}
+
 		if(tHMapExists || tHMapOutExists) {
 %>
-private final java.util.concurrent.ExecutorService es = java.util.concurrent.Executors.newFixedThreadPool(<%=threadPoolSize%>);
+private final java.util.concurrent.ExecutorService es = java.util.concurrent.Executors.newFixedThreadPool(<%=threadPoolSize%> <%if(tRESTRequestLoopExists) {%>,new DaemonThreadFactory()<%}%>);
 <%
 		} else {
 %>
-private final java.util.concurrent.ExecutorService es = java.util.concurrent.Executors.newCachedThreadPool();
+private final java.util.concurrent.ExecutorService es = java.util.concurrent.Executors.newCachedThreadPool(<%if(tRESTRequestLoopExists) {%>new DaemonThreadFactory()<%}%>);
+<%
+		}
+
+		if(tRESTRequestLoopExists) {//miscroservice
+%>
+		{
+			java.lang.Runtime.getRuntime().addShutdownHook(new java.lang.Thread() {
+				public void run() {
+					es.shutdown();
+					try {
+						if(!es.awaitTermination(60, java.util.concurrent.TimeUnit.SECONDS)) {
+							es.shutdownNow();
+							if(!es.awaitTermination(60, java.util.concurrent.TimeUnit.SECONDS)) {
+
+							}
+						}
+					} catch (java.lang.InterruptedException ie) {
+						es.shutdownNow();
+					} catch (java.lang.Exception e) {
+
+					}
+				}
+			});
+		}
 <%
 		}
 	}

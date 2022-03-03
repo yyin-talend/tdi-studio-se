@@ -522,6 +522,7 @@
 		INode jobCatcherNode = null;
 		
 		int threadPoolSize = 0;
+		boolean tRESTRequestLoopExists = false;
 		for (INode nodeInProcess : process.getGeneratingNodes()) {
 			String componentName = nodeInProcess.getComponent().getName();
 
@@ -531,6 +532,11 @@
 			}
 
 			if(!nodeInProcess.isActivate()) continue;
+
+			if("tRESTRequestLoop".equals(componentName)) {
+				tRESTRequestLoopExists = true;
+				continue;
+			}
 			
 			if("tWriteXMLFieldOut".equals(componentName)) {
 				IConnection nextMergeConn = NodeUtil.getNextMergeConnection(nodeInProcess);
@@ -1214,7 +1220,8 @@ this.globalResumeTicket = true;//to run tPostJob
 <%
     }
 
-    if(threadPoolSize>0) {
+    //tRESTRequest may appear in microservice, the code may be called before call submit(task) method, so can't shutdown it here
+    if(!tRESTRequestLoopExists && threadPoolSize>0) {
 %>
         es.shutdown();
         <%//shutdownNow should never be executed, only for safe%>
