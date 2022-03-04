@@ -375,7 +375,7 @@
 			<IMPORT NAME="opencensus-contrib-http-util"
 				MODULE="opencensus-contrib-http-util-0.21.0.jar" MVN="mvn:io.opencensus/opencensus-contrib-http-util/0.21.0" REQUIRED="true"/>
 			<IMPORT NAME="protobuf-java"
-				MODULE="protobuf-java-3.6.1.jar" MVN="mvn:com.google.protobuf/protobuf-java/3.6.1" REQUIRED="true"/>
+				MODULE="protobuf-java-3.19.2.jar" MVN="mvn:com.google.protobuf/protobuf-java/3.19.2" REQUIRED="true"/>
 			<IMPORT NAME="transaction-api"
 				MODULE="transaction-api-1.1.jar" MVN="mvn:javax.transaction/transaction-api/1.1" REQUIRED="true"/>
 			<IMPORT NAME="xpp3"
