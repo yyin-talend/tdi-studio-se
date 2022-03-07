@@ -39,6 +39,7 @@ import org.talend.commons.utils.generation.JavaUtils;
 import org.talend.commons.utils.resource.FileExtensions;
 import org.talend.core.CorePlugin;
 import org.talend.core.GlobalServiceRegister;
+import org.talend.core.ITDQComponentService;
 import org.talend.core.hadoop.IHadoopClusterService;
 import org.talend.core.hadoop.repository.HadoopRepositoryUtil;
 import org.talend.core.language.ECodeLanguage;
@@ -145,10 +146,13 @@ public class JavaProcessUtil {
 
         UpdateLog4jJarUtils.addLog4jToModuleList(modulesNeeded, Log4jPrefsSettingManager.getInstance().isSelectLog4j2(), process);
         Set<ModuleNeeded> modulesNeededSet = new HashSet<ModuleNeeded>(modulesNeeded);
-        List<IClasspathAdjuster> classPathAdjusters = ClasspathAdjusterProvider.getClasspathAdjuster();
-        // add for TDQ-19814 to add a runtime dependency when generate code and get the module in the javajet
-        for (IClasspathAdjuster adjuster : classPathAdjusters) {
-            modulesNeededSet = adjuster.adjustPomGeneration(process, modulesNeededSet);
+        // Execute the code only TDQ feature exist
+        if (GlobalServiceRegister.getDefault().isServiceRegistered(ITDQComponentService.class)) {
+            List<IClasspathAdjuster> classPathAdjusters = ClasspathAdjusterProvider.getClasspathAdjuster();
+            // add for TDQ-19814 to add a runtime dependency when generate code and get the module in the javajet
+            for (IClasspathAdjuster adjuster : classPathAdjusters) {
+                modulesNeededSet = adjuster.adjustPomGeneration(process, modulesNeededSet);
+            }
         }
         return modulesNeededSet;
     }
