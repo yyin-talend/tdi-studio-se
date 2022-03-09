@@ -584,38 +584,60 @@ if (sftp) { // *** sftp *** //
 			String path = ftpClient.printWorkingDirectory();
 			org.apache.commons.net.ftp.FTPFile[] ftpFiles = null;
 			ftpFiles = ftpClient.listFiles();
+			            String[] nameLists = null;
+            try {
+                 nameLists = ftpClient.listNames();
+            } catch (IOException e) {
+                 e.printStackTrace();
+            }
+            if( nameLists!=null && (ftpFiles == null || ftpFiles.length == 0)){
+            	//if the file is folder, catch the FTPException and recur
+                for (String ftpFileName : nameLists){
+                try{
+                    downloadFile(localDirectory + "/" + ftpFileName,ftpFileName);
+                } catch (IOException e) {
+            		<%if(isLog4jEnabled){%>
+            			log.warn("<%=cid%> - " + e.getMessage());
+            		<%}%>
+                  	java.io.File localFile = new java.io.File(localDirectory + "/" + ftpFileName);
 
-			for (org.apache.commons.net.ftp.FTPFile ftpFile : ftpFiles) {
+                    if (!localFile.exists()) {
+                    	localFile.mkdir();
+                    }
+            	    getAllFiles(path + "/" + ftpFileName, localDirectory + "/" + ftpFileName);
+                  	chdir(remoteDirectory);
+            	}
+            	}
+            }else{
+                for (org.apache.commons.net.ftp.FTPFile ftpFile : ftpFiles) {
 
-				if (ftpFile.isDirectory()) {
+                    if (ftpFile.isDirectory()) {
 
-					if ((!(".").equals(ftpFile.getName())) && (!("..").equals(ftpFile.getName()))) {
-						java.io.File localFile = new java.io.File(localDirectory + "/" + ftpFile.getName());
+                        if ((!(".").equals(ftpFile.getName())) && (!("..").equals(ftpFile.getName()))) {
+                            java.io.File localFile = new java.io.File(localDirectory + "/" + ftpFile.getName());
 
-						if (!localFile.exists()) {
-							localFile.mkdir();
-						}
-						getAllFiles(path + "/" + ftpFile.getName(), localDirectory + "/" + ftpFile.getName());
-						chdir(path);
-					}
-				} else if (!ftpFile.isSymbolicLink()) {
-					downloadFile(localDirectory + "/" + ftpFile.getName(),ftpFile.getName());
-				}
+                            if (!localFile.exists()) {
+                                localFile.mkdir();
+                            }
+                            getAllFiles(path + "/" + ftpFile.getName(), localDirectory + "/" + ftpFile.getName());
+                            chdir(path);
+                        }
+                    } else if (!ftpFile.isSymbolicLink()) {
+                        downloadFile(localDirectory + "/" + ftpFile.getName(),ftpFile.getName());
+                    }
+                }
 			}
+
+
 		}
 
 		public void getFiles(String remoteDirectory, String localDirectory, String maskStr) 
 		throws IllegalStateException, IOException, java.io.FileNotFoundException {
 
 			chdir(remoteDirectory);
-			org.apache.commons.net.ftp.FTPFile[] ftpFiles = null;
-			ftpFiles = ftpClient.listFiles(".");
-
-			for(org.apache.commons.net.ftp.FTPFile ftpFile : ftpFiles) {
-
-				if (ftpFile.isFile()) {
-					String fileName = ftpFile.getName();
-
+            String[] nameLists = ftpClient.listNames("");
+            if(nameLists != null){
+                for (String fileName : nameLists) {
 					if (fileName.matches(maskStr)) {
 						downloadFile(localDirectory + "/" + fileName,fileName);
 					}
@@ -623,12 +645,12 @@ if (sftp) { // *** sftp *** //
 			}
 		}
 
-		public void chdir(String path) 
-		throws IllegalStateException, IOException {
-			if (!".".equals(path)) {
-				ftpClient.changeWorkingDirectory(path);
-			}
-		}
+        public boolean chdir(String path) throws IllegalStateException, IOException {
+            if (!".".equals(path)) {
+                return ftpClient.changeWorkingDirectory(path);
+            }
+            return true;
+        }
 
 		public String pwd() 
 		throws IllegalStateException, IOException {
@@ -638,11 +660,15 @@ if (sftp) { // *** sftp *** //
 		private void downloadFile(String localFileName, String remoteFileName) 
 		throws IllegalStateException, java.io.FileNotFoundException, IOException {
 			try (java.io.FileOutputStream localFos = new java.io.FileOutputStream(localFileName)) {
-				ftpClient.retrieveFile(remoteFileName, localFos);
+				boolean status = ftpClient.retrieveFile(remoteFileName, localFos);
+                        if(status){
 				<%if(isLog4jEnabled){%>
 					log.debug("<%=cid%> - Downloaded file " + (count +1) +  " : '" + remoteFileName + "' successfully.");
 				<%}%>
 				count++;
+				}else{
+                            globalMap.put("<%=cid %>_CURRENT_STATUS", "File transfer fail.");
+                        }
 			}
 		}
 	}
