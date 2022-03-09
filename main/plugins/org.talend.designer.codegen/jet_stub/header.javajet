@@ -343,6 +343,10 @@ public <%=JavaTypesManager.getTypeToGenerate(ctxParam.getType(),true)%> get<%=Ch
 	public Integer errorCode = null;
 	private String currentComponent = "";
 	<%
+	// is necessary? avoid some compiler issue as var name not found? TODO consider remove it, also the currentComponent above
+	%>
+	private String currentComponentLabel =  null;
+	<%
 	//tParallelize will wrap globalMap with synchronizedMap
 	if(isRunInMultiThread || NodeUtil.containsMultiThreadComponent(process)){
 	%>
@@ -597,7 +601,10 @@ private class TalendException extends Exception {
 
 	private java.util.Map<String, Object> globalMap = null;
 	private Exception e = null;
+	
 	private String currentComponent = null;
+	private String currentComponentLabel =  null;
+	
 	private String virtualComponentName = null;
 	
 	public void setVirtualComponentName (String virtualComponentName){
@@ -608,6 +615,11 @@ private class TalendException extends Exception {
 		this.currentComponent= errorComponent;
 		this.globalMap = globalMap;
 		this.e = e;
+	}
+	
+	private TalendException(Exception e, String errorComponent, String errorComponentLabel, final java.util.Map<String, Object> globalMap) {
+		this(e, errorComponent, globalMap);
+		this.currentComponentLabel = errorComponentLabel;
 	}
 
 	public Exception getException() {
@@ -668,6 +680,15 @@ private class TalendException extends Exception {
 <%
 		boolean needCatchTalendException = false;
 		
+		if(enableLogStash) {
+%>
+		if(enableLogStash) {
+			<%=jobCatcherNode.getUniqueName() %>.addJobExceptionMessage(currentComponent, currentComponentLabel, null, e);
+			<%=jobCatcherNode.getDesignSubjobStartNode().getUniqueName() %>Process(globalMap);
+		}
+<%
+		}
+		
 		if (process.getNodesOfType("tLogCatcher").size() > 0) {
 			List<INode> logCatchers = (List<INode>)process.getNodesOfType("tLogCatcher");
 			for (INode logCatcher : logCatchers) {
@@ -678,7 +699,7 @@ private class TalendException extends Exception {
 <%
 				}
 			}
-
+			
 			INode virtualNCatchNode = null;
 			boolean hasRealCatchNode = false;
 			for (INode logCatcher : logCatchers) {
