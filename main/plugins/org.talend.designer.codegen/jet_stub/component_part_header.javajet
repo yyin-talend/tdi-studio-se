@@ -137,6 +137,17 @@
 	}
 	%>
 	currentComponent="<%=node.getUniqueName() %>";
+	
+	<%
+	String currentLabel = ElementParameterParser.getValue(node, "__LABEL__");
+	if(currentLabel==null || "".equals(currentLabel) || "__UNIQUE_NAME__".equals(currentLabel)) {
+		//not generate the unnecessary statement if label is default one
+	} else {
+	%>
+		currentComponentLabel="<%=NodeUtil.getLabel(node)%>";
+	<%
+	}
+	%>
 
 	<%
 	connSet =  new HashSet<IConnection>();
