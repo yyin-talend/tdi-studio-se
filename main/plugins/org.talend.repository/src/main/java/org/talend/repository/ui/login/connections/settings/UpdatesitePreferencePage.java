@@ -25,19 +25,27 @@ import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
+import org.eclipse.swt.layout.FillLayout;
+import org.eclipse.swt.layout.FormAttachment;
+import org.eclipse.swt.layout.FormData;
+import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
+import org.eclipse.ui.PlatformUI;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.ui.runtime.exception.ExceptionMessageDialog;
 import org.talend.commons.ui.runtime.image.EImage;
 import org.talend.commons.ui.runtime.image.ImageProvider;
+import org.talend.core.model.general.ConnectionBean;
 import org.talend.core.service.IStudioLiteP2Service;
 import org.talend.core.service.IStudioLiteP2Service.UpdateSiteConfig;
 import org.talend.repository.i18n.Messages;
+import org.talend.repository.ui.login.LoginHelper;
 
 /**
  * DOC cmeng class global comment. Detailled comment
@@ -50,43 +58,108 @@ public class UpdatesitePreferencePage extends PreferencePage {
 
     private Text updateUriText;
 
+    private Text remoteReleaseUriText;
+
+    private Text remoteUpdateUriText;
+
     private Composite warningPanel;
 
     @Override
     protected Control createContents(Composite parent) {
         this.setTitle(Messages.getString("UpdatesitePreferencePage.title"));
 
-        Composite panel = new Composite(parent, SWT.None);
-        panel.setLayoutData(new GridData(GridData.FILL_BOTH));
+        Composite panel = new Composite(parent, SWT.NONE);
+        panel.setLayout(new FormLayout());
 
-        GridLayout panelLayout = new GridLayout(2, false);
+        Group remoteGroup = null;
+        GridLayout panelLayout = null;
+        FormData fd = null;
+        GridData gd = null;
+        ConnectionBean curConnection = LoginHelper.getInstance().getCurrentSelectedConnBean();
+        if (PlatformUI.isWorkbenchRunning() && LoginHelper.isCloudConnection(curConnection)) {
+            remoteGroup = new Group(panel, SWT.NONE);
+            remoteGroup.setText(Messages.getString("UpdatesitePreferencePage.group.remote", curConnection.getName()));
+            fd = new FormData();
+            fd.top = new FormAttachment(0);
+            fd.left = new FormAttachment(0);
+            fd.right = new FormAttachment(100);
+            remoteGroup.setLayoutData(fd);
+            remoteGroup.setLayout(new FillLayout());
+
+            Composite RemoteSettingsPanel = new Composite(remoteGroup, SWT.NONE);
+            RemoteSettingsPanel.setLayoutData(new GridData(GridData.FILL_BOTH));
+
+            panelLayout = new GridLayout(2, false);
+            panelLayout.horizontalSpacing = 10;
+            panelLayout.verticalSpacing = 5;
+            RemoteSettingsPanel.setLayout(panelLayout);
+
+            Label remoteReleaseLabel = new Label(RemoteSettingsPanel, SWT.NONE);
+            remoteReleaseLabel.setText(Messages.getString("UpdatesitePreferencePage.base"));
+            gd = new GridData();
+            remoteReleaseLabel.setLayoutData(gd);
+
+            remoteReleaseUriText = new Text(RemoteSettingsPanel, SWT.BORDER);
+            remoteReleaseUriText.setEditable(false);
+            gd = new GridData(GridData.FILL_HORIZONTAL);
+            remoteReleaseUriText.setLayoutData(gd);
+
+            Label remoteUpdateLabel = new Label(RemoteSettingsPanel, SWT.NONE);
+            remoteUpdateLabel.setText(Messages.getString("UpdatesitePreferencePage.update"));
+            gd = new GridData();
+            remoteUpdateLabel.setLayoutData(gd);
+
+            remoteUpdateUriText = new Text(RemoteSettingsPanel, SWT.BORDER);
+            remoteUpdateUriText.setEditable(false);
+            gd = new GridData(GridData.FILL_HORIZONTAL);
+            remoteUpdateUriText.setLayoutData(gd);
+        }
+
+        Group localGroup = new Group(panel, SWT.NONE);
+        localGroup.setText(Messages.getString("UpdatesitePreferencePage.group.local"));
+        fd = new FormData();
+        if (remoteGroup != null) {
+            fd.top = new FormAttachment(remoteGroup, 10, SWT.BOTTOM);
+        } else {
+            fd.top = new FormAttachment(0);
+        }
+        fd.left = new FormAttachment(0);
+        fd.right = new FormAttachment(100);
+        fd.bottom = new FormAttachment(100);
+        localGroup.setLayoutData(fd);
+        localGroup.setLayout(new FillLayout());
+
+        Composite localSettingsPanel = new Composite(localGroup, SWT.None);
+        localSettingsPanel.setLayoutData(new GridData(GridData.FILL_BOTH));
+
+        panelLayout = new GridLayout(2, false);
         panelLayout.horizontalSpacing = 10;
         panelLayout.verticalSpacing = 5;
-        panel.setLayout(panelLayout);
+        localSettingsPanel.setLayout(panelLayout);
 
-        Label releaseLabel = new Label(panel, SWT.NONE);
+        Label releaseLabel = new Label(localSettingsPanel, SWT.NONE);
         releaseLabel.setText(Messages.getString("UpdatesitePreferencePage.base"));
-        GridData gd = new GridData();
+        gd = new GridData();
         releaseLabel.setLayoutData(gd);
 
-        releaseUriText = new Text(panel, SWT.BORDER);
+        releaseUriText = new Text(localSettingsPanel, SWT.BORDER);
         gd = new GridData(GridData.FILL_HORIZONTAL);
         releaseUriText.setLayoutData(gd);
 
-        Label updateLabel = new Label(panel, SWT.NONE);
+        Label updateLabel = new Label(localSettingsPanel, SWT.NONE);
         updateLabel.setText(Messages.getString("UpdatesitePreferencePage.update"));
         gd = new GridData();
         updateLabel.setLayoutData(gd);
 
-        updateUriText = new Text(panel, SWT.BORDER);
+        updateUriText = new Text(localSettingsPanel, SWT.BORDER);
         gd = new GridData(GridData.FILL_HORIZONTAL);
         updateUriText.setLayoutData(gd);
 
-        Label placeHolder = new Label(panel, SWT.None);
+        Label placeHolder = new Label(localSettingsPanel, SWT.None);
         gd = new GridData();
         placeHolder.setLayoutData(gd);
 
-        warningPanel = new Composite(panel, SWT.None);
+        warningPanel = new Composite(localSettingsPanel, SWT.None);
         gd = new GridData(GridData.GRAB_HORIZONTAL);
         warningPanel.setLayoutData(gd);
         warningPanel.setLayout(new GridLayout(2, false));
@@ -112,13 +185,18 @@ public class UpdatesitePreferencePage extends PreferencePage {
             warningPanel.setVisible(false);
             IProgressMonitor monitor = new NullProgressMonitor();
             UpdateSiteConfig config = p2Service.getUpdateSiteConfig(new NullProgressMonitor());
-            URI release = config.getRelease(monitor);
+            URI release = config.getLocalRelease(monitor);
             releaseUriText.setText(release == null ? "" : release.toString());
             releaseUriText.setEditable(config.isReleaseEditable());
             if (!config.isReleaseEditable()) {
                 releaseUriText.setToolTipText(Messages.getString("UpdatesitePreferencePage.tooltip.cantEdit"));
             }
-            Collection<URI> updates = config.getUpdates(monitor);
+            if (remoteReleaseUriText != null) {
+                String tmcRelease = config.getTmcRelease(monitor);
+                remoteReleaseUriText.setText(tmcRelease);
+            }
+
+            Collection<URI> updates = config.getLocalUpdates(monitor);
             StringBuilder updateStr = new StringBuilder();
             if (updates != null && !updates.isEmpty()) {
                 for (String uri : updates.stream().map(uri -> uri.toString()).collect(Collectors.toList())) {
@@ -132,6 +210,10 @@ public class UpdatesitePreferencePage extends PreferencePage {
             updateUriText.setEditable(config.isUpdateEditable());
             if (!config.isUpdateEditable()) {
                 updateUriText.setToolTipText(Messages.getString("UpdatesitePreferencePage.tooltip.cantEdit"));
+            }
+            if (remoteUpdateUriText != null) {
+                String tmcUpdate = config.getTmcUpdate(monitor);
+                remoteUpdateUriText.setText(tmcUpdate);
             }
         } catch (Exception e) {
             ExceptionHandler.process(e);
@@ -163,19 +245,19 @@ public class UpdatesitePreferencePage extends PreferencePage {
                 UpdateSiteConfig config = p2Service.getUpdateSiteConfig(new NullProgressMonitor());
                 if (config.isReleaseEditable()) {
                     String release = releaseUriText.getText();
-                    config.setRelease(monitor, StringUtils.isBlank(release) ? null : p2Service.toURI(release.trim()));
+                    config.setLocalRelease(monitor, StringUtils.isBlank(release) ? null : p2Service.toURI(release.trim()));
                 }
                 if (config.isUpdateEditable()) {
                     String update = updateUriText.getText();
                     if (StringUtils.isBlank(update)) {
-                        config.setUpdates(monitor, null);
+                        config.setLocalUpdates(monitor, null);
                     } else {
                         Collection<URI> updates = new ArrayList<>();
                         String[] splits = update.split(",");
                         for (String split : splits) {
                             updates.add(p2Service.toURI(split.trim()));
                         }
-                        config.setUpdates(monitor, updates);
+                        config.setLocalUpdates(monitor, updates);
                     }
                 }
             } catch (Exception e) {
@@ -194,9 +276,9 @@ public class UpdatesitePreferencePage extends PreferencePage {
                 if (config.isReleaseEditable() && config.isUpdateEditable()) {
                     NullProgressMonitor monitor = new NullProgressMonitor();
                     config.resetToDefault(monitor);
-                    URI release = config.getRelease(monitor);
+                    URI release = config.getLocalRelease(monitor);
                     releaseUriText.setText(release == null ? "" : release.toString());
-                    Collection<URI> updates = config.getUpdates(monitor);
+                    Collection<URI> updates = config.getLocalUpdates(monitor);
                     StringBuilder updateStr = new StringBuilder();
                     if (updates != null && !updates.isEmpty()) {
                         updateStr.append(

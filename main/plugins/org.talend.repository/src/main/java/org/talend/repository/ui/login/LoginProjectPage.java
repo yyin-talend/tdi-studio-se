@@ -106,6 +106,7 @@ import org.talend.core.repository.services.ILoginConnectionService;
 import org.talend.core.repository.utils.ProjectHelper;
 import org.talend.core.runtime.CoreRuntimePlugin;
 import org.talend.core.runtime.util.SharedStudioUtils;
+import org.talend.core.service.IStudioLiteP2Service;
 import org.talend.core.services.ICoreTisService;
 import org.talend.core.ui.TalendBrowserLaunchHelper;
 import org.talend.core.ui.branding.IBrandingService;
@@ -492,6 +493,13 @@ public class LoginProjectPage extends AbstractLoginActionPage {
         }
         this.backgroundUpdateChecker = createUpdateCheckerJob();
         this.backgroundUpdateChecker.schedule();
+    }
+
+    private void cancelUpdateCheckerJob() {
+        if (this.backgroundUpdateChecker != null) {
+            this.backgroundUpdateChecker.cancel();
+            Optional.ofNullable(backgroundUpdateChecker.getThread()).ifPresent(t -> t.interrupt());
+        }
     }
 
     private Job createUpdateCheckerJob() {
@@ -1175,6 +1183,9 @@ public class LoginProjectPage extends AbstractLoginActionPage {
                 finishButton.setEnabled(false);
                 Project project = getProject();
                 if (project != null) {
+                    if (LoginHelper.isCloudConnection(getConnection())) {
+                        scheduleUpdateCheckerJob();
+                    }
                     selectedProjectBeforeRefresh = project.getLabel();
 
                     // last used project will be saved when click finish
@@ -2604,7 +2615,15 @@ public class LoginProjectPage extends AbstractLoginActionPage {
             }
             scheduleRetrieveProjectsJob();
             if (LoginHelper.isRemotesConnection(connection)) {
-                scheduleUpdateCheckerJob();
+                if (!LoginHelper.isCloudConnection(connection)) {
+                    scheduleUpdateCheckerJob();
+                }
+            } else {
+                IStudioLiteP2Service p2Service = IStudioLiteP2Service.get();
+                if (p2Service != null) {
+                    cancelUpdateCheckerJob();
+                    p2Service.setupTmcUpdate(new NullProgressMonitor(), null, null);
+                }
             }
         } catch (Exception e) {
             CommonExceptionHandler.process(e);
