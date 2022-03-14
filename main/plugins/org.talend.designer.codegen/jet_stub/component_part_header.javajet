@@ -161,7 +161,7 @@
 			//not generate the unnecessary statement if label is default one
 		} else {
 		%>
-			currentComponentLabel="<%=NodeUtil.getLabel(node)%>";
+			cLabel="<%=NodeUtil.getLabel(node)%>";
 		<%
 		}
 	}
