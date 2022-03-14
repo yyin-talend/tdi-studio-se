@@ -281,6 +281,7 @@
      <IMPORTS>
         <IMPORT NAME="Driver-Redshift" MODULE="redshift-jdbc42-2.1.0.3.jar" MVN="mvn:com.amazon.redshift/redshift-jdbc42/2.1.0.3" REQUIRED="true" />
         <IMPORT NAME="aws-java-sdk-1.11.848.jar" MODULE="aws-java-sdk-1.11.848.jar" MVN="mvn:com.amazonaws/aws-java-sdk/1.11.848" REQUIRED_IF="(JDBC_URL == 'SSO') AND (USE_EXISTING_CONNECTION == 'false')" />
+        <IMPORT NAME="aws-java-sdk-redshift-internal-1.12.x.jar" MODULE="aws-java-sdk-redshift-internal-1.12.x.jar" MVN="mvn:com.amazonaws/aws-java-sdk-redshift-internal/1.12.x" REQUIRED_IF="(JDBC_URL == 'SSO') AND (USE_EXISTING_CONNECTION == 'false')" />
         <IMPORT NAME="commons-logging-1.2.jar" MODULE="commons-logging-1.2.jar" MVN="mvn:commons-logging/commons-logging/1.2" REQUIRED_IF="(JDBC_URL == 'SSO') AND (USE_EXISTING_CONNECTION == 'false')" />
         <IMPORT NAME="jackson-databind-2.11.4.jar" MODULE="jackson-databind-2.11.4.jar" MVN="mvn:com.fasterxml.jackson.core/jackson-databind/2.11.4" REQUIRED_IF="(JDBC_URL == 'SSO') AND (USE_EXISTING_CONNECTION == 'false')" />
         <IMPORT NAME="jackson-core-2.11.4.jar" MODULE="jackson-core-2.11.4.jar" MVN="mvn:com.fasterxml.jackson.core/jackson-core/2.11.4" REQUIRED_IF="(JDBC_URL == 'SSO') AND (USE_EXISTING_CONNECTION == 'false')" />
