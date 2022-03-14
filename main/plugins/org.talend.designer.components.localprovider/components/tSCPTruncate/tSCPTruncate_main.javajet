@@ -47,8 +47,8 @@ imports="
             throw se_<%=cid%>;
             	}
 			}
-            org.apache.sshd.client.scp.ScpClientCreator instance_<%=cid%> = org.talend.components.talendscp.TalendScpClientCreator.INSTANCE;
-            org.apache.sshd.client.scp.ScpClient scp_<%=cid%> = instance_<%=cid%>.createScpClient(session_<%=cid%>);
+            org.apache.sshd.scp.client.ScpClientCreator instance_<%=cid%> = org.talend.components.talendscp.TalendScpClientCreator.INSTANCE;
+            org.apache.sshd.scp.client.ScpClient scp_<%=cid%> = instance_<%=cid%>.createScpClient(session_<%=cid%>);
 
     String[] destFileNames_<%=cid%> = new String[]{
      <%
@@ -69,7 +69,7 @@ imports="
                java.nio.file.attribute.PosixFilePermission.OWNER_WRITE,
                java.nio.file.attribute.PosixFilePermission.GROUP_READ,
                java.nio.file.attribute.PosixFilePermission.OTHERS_READ);
-               scp_<%=cid%>.upload(new byte[0],<%=remotedir%>+"/"+destFile_<%=cid %>,posixFilePermissions,new org.apache.sshd.common.scp.ScpTimestamp(System.nanoTime(),System.nanoTime()));
+               scp_<%=cid%>.upload(new byte[0],<%=remotedir%>+"/"+destFile_<%=cid %>,posixFilePermissions,new org.apache.sshd.scp.common.helpers.ScpTimestampCommandDetails(java.nio.file.attribute.FileTime.fromMillis(System.currentTimeMillis()),java.nio.file.attribute.FileTime.fromMillis(System.currentTimeMillis())));
                nb_file_<%=cid%> ++;
             globalMap.put("<%=cid %>_STATUS", "File truncate OK.");
         }
