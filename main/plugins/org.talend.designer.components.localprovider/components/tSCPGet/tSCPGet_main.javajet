@@ -47,8 +47,8 @@ imports="
                             throw se_<%=cid%>;
                         }
                     }
-                                       org.apache.sshd.client.scp.ScpClientCreator instance_<%=cid%> = org.talend.components.talendscp.TalendScpClientCreator.INSTANCE;
-                                       org.apache.sshd.client.scp.ScpClient scp_<%=cid%> = instance_<%=cid%>.createScpClient(session_<%=cid%>);
+                                       org.apache.sshd.scp.client.ScpClientCreator instance_<%=cid%> = org.talend.components.talendscp.TalendScpClientCreator.INSTANCE;
+                                       org.apache.sshd.scp.client.ScpClient scp_<%=cid%> = instance_<%=cid%>.createScpClient(session_<%=cid%>);
 
 
 	String[] sourceFileNames_<%=cid%> = new String[]{

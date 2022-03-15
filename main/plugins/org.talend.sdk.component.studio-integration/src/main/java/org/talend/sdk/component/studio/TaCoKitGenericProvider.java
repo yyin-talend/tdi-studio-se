@@ -35,7 +35,6 @@ import org.talend.core.model.process.IGenericProvider;
 import org.talend.core.prefs.ITalendCorePrefConstants;
 import org.talend.core.ui.component.ComponentsFactoryProvider;
 import org.talend.designer.core.model.components.EmfComponent;
-import org.talend.librariesmanager.model.ExternalTCKConnectorDataProvider;
 import org.talend.repository.ProjectManager;
 import org.talend.sdk.component.server.front.model.ActionItem;
 import org.talend.sdk.component.server.front.model.ActionList;
@@ -85,8 +84,8 @@ public class TaCoKitGenericProvider implements IGenericProvider {
                 return ComponentModel.class.isInstance(component);
             });
 
-            final String reportPath =
-                    CorePlugin.getDefault().getPluginPreferences().getString(ITalendCorePrefConstants.IREPORT_PATH);
+            final String reportPath = CorePlugin.getDefault().getPluginPreferences()
+                    .getString(ITalendCorePrefConstants.IREPORT_PATH);
             final boolean isCatcherAvailable = components.stream()
                     .anyMatch(comp -> comp != null && comp.getName().equals(EmfComponent.TSTATCATCHER_NAME)
                             && ComponentCategory.CATEGORY_4_DI.getName().equals(comp.getPaletteType()));
@@ -106,21 +105,22 @@ public class TaCoKitGenericProvider implements IGenericProvider {
                 if (imageDesc == null) {
                     imageDesc = ComponentService.DEFAULT_IMAGE;
                 }
-                
-                if (!ExternalTCKConnectorDataProvider.getIntance().isHidenConnector(index.getFamilyDisplayName())) {
-                    ComponentModel componentModel = new ComponentModel(index, detail, configTypes, imageDesc, reportPath, isCatcherAvailable);
-                    components.add(componentModel);
 
-                    if (ETaCoKitComponentType.input.equals(componentModel.getTaCoKitComponentType())) {
-                        ActionList actionList = Lookups.taCoKitCache().getActionList(index.getFamilyDisplayName());
-                        IComponent connectionModel = createConnectionComponent(index, detail, configTypes, reportPath, isCatcherAvailable, createdConnectionFamiliySet, actionList);
-                        if (connectionModel != null) {
-                            components.add(connectionModel);
-                        }
-                        IComponent closeModel = createCloseConnectionComponent(index, detail, configTypes, reportPath, isCatcherAvailable, createdCloseFamiliySet, actionList);
-                        if (closeModel != null) {
-                            components.add(closeModel);
-                        }
+                ComponentModel componentModel = new ComponentModel(index, detail, configTypes, imageDesc, reportPath,
+                        isCatcherAvailable);
+                components.add(componentModel);
+
+                if (!createdConnectionFamiliySet.contains(index.getId().getFamily())) {
+                    ActionList actionList = Lookups.taCoKitCache().getActionList(index.getFamilyDisplayName());
+                    IComponent connectionModel = createConnectionComponent(index, detail, configTypes, reportPath,
+                            isCatcherAvailable, createdConnectionFamiliySet, actionList);
+                    if (connectionModel != null) {
+                        components.add(connectionModel);
+                    }
+                    IComponent closeModel = createCloseConnectionComponent(index, detail, configTypes, reportPath,
+                            isCatcherAvailable, createdCloseFamiliySet, actionList);
+                    if (closeModel != null) {
+                        components.add(closeModel);
                     }
                 }
 

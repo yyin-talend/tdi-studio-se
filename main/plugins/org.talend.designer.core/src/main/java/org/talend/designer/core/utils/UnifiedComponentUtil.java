@@ -28,6 +28,7 @@ import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
 import org.talend.components.api.properties.ComponentProperties;
 import org.talend.core.GlobalServiceRegister;
+import org.talend.core.database.EDatabaseTypeName;
 import org.talend.core.model.components.IComponent;
 import org.talend.core.model.components.IComponentsHandler;
 import org.talend.core.model.components.IComponentsService;
@@ -137,9 +138,14 @@ public class UnifiedComponentUtil {
             for (IComponent component : componentList) {
                 String databaseName = service.getUnifiedCompDisplayName(service.getDelegateComponent(component),
                         component.getName());
-                if (StringUtils.isNotBlank(databaseName) && !databaseName.equals(dbTypeName)) {
+                if (StringUtils.isNotBlank(databaseName) && !databaseName.equals(dbTypeName)
+                        && (!EDatabaseTypeName.SYBASEASE.getDisplayName().equals(dbTypeName)
+                                || !EDatabaseTypeName.SYBASEASE.getXmlName().equals(databaseName))) {
+                    // sybase can be dbType as database
+                    // org.talend.designer.unifiedcomponent.unifier.sybase.SybaseComponentsUnifier
                     continue;
                 }
+
                 if (isAdditionalJDBC(databaseName)) {
                     String compKey = StringUtils.deleteWhitespace(databaseName);
                     boolean unsupport = UnifiedComponentUtil.isUnsupportedComponent(
