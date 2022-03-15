@@ -54,7 +54,6 @@ import org.talend.core.runtime.maven.MavenConstants;
 import org.talend.core.ui.component.ComponentsFactoryProvider;
 import org.talend.designer.core.model.utils.emf.talendfile.NodeType;
 import org.talend.designer.core.utils.UnifiedComponentUtil;
-import org.talend.librariesmanager.model.ExternalTCKConnectorDataProvider;
 import org.talend.repository.ProjectManager;
 import org.talend.sdk.component.server.front.model.ActionItem;
 import org.talend.sdk.component.server.front.model.ActionList;
