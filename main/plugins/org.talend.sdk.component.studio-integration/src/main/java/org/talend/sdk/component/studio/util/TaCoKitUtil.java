@@ -272,9 +272,6 @@ public class TaCoKitUtil {
                 if (StringUtils.isNotBlank(parentId) || StringUtils.isNotBlank(configType)) {
                     continue;
                 }
-                if (ExternalTCKConnectorDataProvider.getIntance().isHidenConnector(node.getDisplayName())) {
-                    continue;
-                }
                 filteredNodes.add(node);
             }
         }
