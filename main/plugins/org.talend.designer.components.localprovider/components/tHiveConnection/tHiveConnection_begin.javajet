@@ -27,7 +27,7 @@ imports="
 %>
         <%@ include file="@{org.talend.designer.components.localprovider}/components/tHiveConnection/tHiveConnection_azure.javajet"%>
 <%
-    } else if (hiveDistrib.isGoogleDataprocDistribution()) { // Connection through Dataproc api
+    } else if (hiveDistrib.doSupportUniversalDataprocMode()) { // Connection through Dataproc api
 %>
         <%@ include file="@{org.talend.designer.components.localprovider}/components/tHiveConnection/tHiveConnection_dataproc.javajet"%>
 <%
