@@ -50,7 +50,7 @@ public class UpdateLog4jJarUtils {
     public static final String[] MODULES_NEED_ADDED_BACK = { "log4j-jcl-"+LOG4J_VERSION+".jar", "log4j-jul-"+LOG4J_VERSION+".jar",
             "log4j-slf4j-impl-"+LOG4J_VERSION+".jar", "log4j-api-"+LOG4J_VERSION+".jar", "log4j-core-"+LOG4J_VERSION+".jar",
             "jcl-over-slf4j-"+SLF4J_VERSION+".jar",
-            "jul-to-slf4j-"+SLF4J_VERSION+".jar", "log4j-to-slf4j-"+LOG4J_VERSION+".jar", "slf4j-log4j12-"+SLF4J_VERSION+".jar", "log4j-1.2.17.jar",
+            "jul-to-slf4j-"+SLF4J_VERSION+".jar", "log4j-to-slf4j-"+LOG4J_VERSION+".jar", "slf4j-log4j12-"+SLF4J_VERSION+".jar", "reload4j-1.2.19.jar",
             "log4j-1.2-api-"+LOG4J_VERSION+".jar" };
 
     private static void addBackJars(Collection<String> moduleNeededList, boolean isSelectLog4j2, List<String> modulesUsedBefore,
@@ -68,7 +68,7 @@ public class UpdateLog4jJarUtils {
                 if (module.matches("log4j-jul-\\d+\\.\\d+\\.\\d+\\.jar")) { //$NON-NLS-1$
                     usedlog4jJulBefore = true;
                 }
-                if (module.matches("log4j-\\d+\\.\\d+\\.\\d+\\.jar")) { //$NON-NLS-1$
+                if (module.matches("log4j-\\d+\\.\\d+\\.\\d+\\.jar")||module.matches("reload4j-\\d+\\.\\d+\\.\\d+\\.jar")) { //$NON-NLS-1$
                     usedlog4j1JarBefore = true;
                 }
                 if (module.matches("slf4j-api-\\d+\\.\\d+\\.\\d+\\.jar")) {//$NON-NLS-1$
@@ -114,7 +114,7 @@ public class UpdateLog4jJarUtils {
 
             moduleNeededList.add("log4j-to-slf4j-"+LOG4J_VERSION+".jar");//$NON-NLS-1$
             moduleNeededList.add("slf4j-log4j12-"+SLF4J_VERSION+".jar");//$NON-NLS-1$
-            moduleNeededList.add("log4j-1.2.17.jar");//$NON-NLS-1$
+            moduleNeededList.add("reload4j-1.2.19.jar");//$NON-NLS-1$
         }
         if (usedSlf4jApiJarBefore) {
             moduleNeededList.add("slf4j-api-"+SLF4J_VERSION+".jar");
@@ -136,7 +136,7 @@ public class UpdateLog4jJarUtils {
                 if (module.getModuleName().matches("log4j-jul-\\d+\\.\\d+\\.\\d+\\.jar")) { //$NON-NLS-1$
                     usedlog4jJulBefore = true;
                 }
-                if (module.getModuleName().matches("log4j-\\d+\\.\\d+\\.\\d+\\.jar")) { //$NON-NLS-1$
+                if (module.getModuleName().matches("log4j-\\d+\\.\\d+\\.\\d+\\.jar")||module.getModuleName().matches("reload4j-\\d+\\.\\d+\\.\\d+\\.jar")) { //$NON-NLS-1$
 
                     usedlog4j1JarBefore = true;
                 }
@@ -195,7 +195,7 @@ public class UpdateLog4jJarUtils {
             slf4jLog4j12.setMavenUri("mvn:org.slf4j/slf4j-log4j12/"+SLF4J_VERSION);//$NON-NLS-1$
             moduleNeededList.add(slf4jLog4j12);
             ModuleNeeded log4j = new ModuleNeeded("log4j", "log4j-1.2.17.jar", null, true); //$NON-NLS-1$ //$NON-NLS-2$
-            log4j.setMavenUri("mvn:log4j/log4j/1.2.17");//$NON-NLS-1$
+            log4j.setMavenUri("mvn:ch.qos.reload4j/reload4j/1.2.17");//$NON-NLS-1$
             moduleNeededList.add(log4j);
         }
         if (usedSlf4jApiJarBefore) {
@@ -324,7 +324,7 @@ public class UpdateLog4jJarUtils {
 
     public static final String[] NEEDREMOVEMODULES = { "jcl-over-slf4j-\\d+\\.\\d+\\.\\d+\\.jar", //$NON-NLS-1$
             "log4j-to-slf4j-\\d+\\.\\d+\\.\\d+\\.jar", //$NON-NLS-1$ //$NON-NLS-2$
-            "log4j-to-slf4j-\\d+\\.\\d+\\.\\d+\\.jar", "slf4j-log4j12-\\d+\\.\\d+\\.\\d+\\.jar", "log4j-\\d+\\.\\d+\\.\\d+\\.jar", //$NON-NLS-1$//$NON-NLS-2$//$NON-NLS-3$
+            "log4j-to-slf4j-\\d+\\.\\d+\\.\\d+\\.jar", "slf4j-log4j12-\\d+\\.\\d+\\.\\d+\\.jar","reload4j-\\d+\\.\\d+\\.\\d+\\.jar", "log4j-\\d+\\.\\d+\\.\\d+\\.jar", //$NON-NLS-1$//$NON-NLS-2$//$NON-NLS-3$
             "log4j-jcl-\\d+\\.\\d+\\.\\d+\\.jar", "log4j-jul-\\d+\\.\\d+\\.\\d+\\.jar", //$NON-NLS-1$//$NON-NLS-2$
             "log4j-slf4j-impl-\\d+\\.\\d+\\.\\d+\\.jar", "log4j-1.2-api-\\d+\\.\\d+\\.\\d+\\.jar", //$NON-NLS-1$//$NON-NLS-2$
             "log4j-core-\\d+\\.\\d+\\.\\d+\\.jar", "log4j-api-\\d+\\.\\d+\\.\\d+\\.jar", //$NON-NLS-1$//$NON-NLS-2$
