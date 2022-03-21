@@ -692,12 +692,12 @@
 				
 			<!-- DATAPROC DEPENDENCIES -->
 			<IMPORT NAME="talend-bigdata-launcher-dataproc-2.4.6.jar" MODULE="talend-bigdata-launcher-dataproc-2.4.6.jar"
-				MVN="org.talend.bigdata.libs/talend-bigdata-launcher-dataproc/2.4.6"
-				REQUIRED="true" />
+				MVN="mvn:org.talend.bigdata.libs/talend-bigdata-launcher-dataproc/2.4.6"
+				REQUIRED_IF="(DISTRIB[DISTRIBUTION, HIVE_VERSION].doSupportUniversalDataprocMode[] AND DISTRIBUTION!='CUSTOM')" />
 			
 			<IMPORT NAME="talend-bigdata-launcher-core-2.4.6.jar" MODULE="talend-bigdata-launcher-core-2.4.6.jar"
 				MVN="mvn:org.talend.bigdata.libs/talend-bigdata-launcher-core/2.4.6"
-				REQUIRED="true" />
+				REQUIRED_IF="(DISTRIB[DISTRIBUTION, HIVE_VERSION].doSupportUniversalDataprocMode[] AND DISTRIBUTION!='CUSTOM')" />
 		</IMPORTS>
 	</CODEGENERATION>
 
