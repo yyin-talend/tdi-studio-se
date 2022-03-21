@@ -21,7 +21,20 @@ import static org.talend.sdk.component.studio.model.ReturnVariables.AFTER;
 import static org.talend.sdk.component.studio.model.ReturnVariables.RETURN_ERROR_MESSAGE;
 import static org.talend.sdk.component.studio.model.ReturnVariables.RETURN_TOTAL_RECORD_COUNT;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -29,6 +42,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.talend.commons.CommonsPlugin;
 import org.talend.commons.exception.ExceptionHandler;
+import org.talend.core.GlobalServiceRegister;
 import org.talend.core.PluginChecker;
 import org.talend.core.model.components.ComponentCategory;
 import org.talend.core.model.components.EComponentType;
@@ -38,6 +52,7 @@ import org.talend.core.model.metadata.types.JavaTypesManager;
 import org.talend.core.model.process.EConnectionType;
 import org.talend.core.model.process.IConnection;
 import org.talend.core.model.process.IConnectionCategory;
+import org.talend.core.model.process.IDataPrepLookupService;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.INode;
 import org.talend.core.model.process.INodeConnector;
@@ -64,7 +79,12 @@ import org.talend.sdk.component.studio.enums.ETaCoKitComponentType;
 import org.talend.sdk.component.studio.metadata.migration.TaCoKitMigrationManager;
 import org.talend.sdk.component.studio.model.connector.ConnectorCreatorFactory;
 import org.talend.sdk.component.studio.model.connector.TaCoKitNodeConnector;
-import org.talend.sdk.component.studio.model.parameter.*;
+import org.talend.sdk.component.studio.model.parameter.ElementParameterCreator;
+import org.talend.sdk.component.studio.model.parameter.Metadatas;
+import org.talend.sdk.component.studio.model.parameter.PropertyDefinitionDecorator;
+import org.talend.sdk.component.studio.model.parameter.PropertyNode;
+import org.talend.sdk.component.studio.model.parameter.TaCoKitElementParameter;
+import org.talend.sdk.component.studio.model.parameter.TableElementParameter;
 import org.talend.sdk.component.studio.mvn.Mvn;
 import org.talend.sdk.component.studio.service.ComponentService;
 import org.talend.sdk.component.studio.util.TaCoKitConst;
@@ -455,8 +475,17 @@ public class ComponentModel extends AbstractBasicComponent implements IAdditiona
                     .filter(Objects::nonNull)
                     .map((final ComponentDetail connectorDetails) -> this.connectorDependencies(dependencies, connectorDetails.getId()))
                     .forEach(modules::addAll);
-            modules.addAll(extractComponent);
             
+            if (GlobalServiceRegister.getDefault().isServiceRegistered(IDataPrepLookupService.class)) {
+                IDataPrepLookupService service = GlobalServiceRegister.getDefault().getService(IDataPrepLookupService.class);
+                Set<ModuleNeeded> extractDependencies = new HashSet<ModuleNeeded>();
+                for (ModuleNeeded module : extractComponent) {
+                    extractDependencies.addAll(service.getLookupModuleNeeded(module));
+                }
+                modules.addAll(extractDependencies); // extractDependencies contains connector. (we may change connector's version in case it not existed on m2)
+            } else {
+                modules.addAll(extractComponent);
+            }          
         }
         return modules;
     }

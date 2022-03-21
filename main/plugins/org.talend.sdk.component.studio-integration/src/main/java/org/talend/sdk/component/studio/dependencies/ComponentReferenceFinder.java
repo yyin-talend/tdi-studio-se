@@ -58,23 +58,22 @@ public interface ComponentReferenceFinder {
             if (values instanceof List) {
                 for (Object value : (List) values) {
                     if (value instanceof Map) {
-                        final String family = this.extract((Map) value, "family");
-                        final String name = this.extract((Map) value, "name");
-                        final String mavenReferences = this.extract((Map) value, "mavenReferences");
-
-                        details.add(new ComponentReference(family, name, mavenReferences));
+                        Map map = (Map)value;
+                        for (Object key : map.keySet()) {
+                            String family= null, name = null, mavenReferences = null;
+                            if (key.toString().endsWith(".family")) {
+                                family = (String)map.get(key);
+                            } else if (key.toString().endsWith(".name")) {
+                                name = (String)map.get(key);
+                            }  else if (key.toString().endsWith(".mavenReferences")) {
+                                mavenReferences = (String)map.get(key);
+                            }                           
+                            details.add(new ComponentReference(family, name, mavenReferences));                
+                        }
                     }
                 }
             }
             return details.stream();
-        }
-
-        private String extract(Map values, String name) {
-            final Object value = ((Map) values).get('"' + name + '"');
-            if (!(value instanceof String)) {
-                return null;
-            }
-            return ((String) value).substring(1, ((String) value).length() - 1);
         }
     }
 }
