@@ -66,6 +66,7 @@ import org.talend.designer.codegen.model.CodeGeneratorEmittersPoolFactory;
 import org.talend.designer.codegen.model.CodeGeneratorInternalTemplatesFactoryProvider;
 import org.talend.designer.codegen.proxy.JetProxy;
 import org.talend.designer.core.generic.model.Component;
+import org.talend.designer.core.model.components.DummyComponent;
 import org.talend.designer.runprocess.ProcessorUtilities;
 
 /**
@@ -111,6 +112,8 @@ public class CodeGenerator implements ICodeGenerator {
     private static final long INIT_PAUSE = 1000; // 1s
 
     private static final boolean DEBUG = false;
+
+    private static final boolean ERROR_ON_COMPONENT_MISSING = Boolean.getBoolean("error.on.component.missing");
 
     /**
      * Constructor : use the process and laguage to initialize internal components.
@@ -845,6 +848,16 @@ public class CodeGenerator implements ICodeGenerator {
             IComponentFileNaming componentFileNaming = ComponentsFactoryProvider.getFileNamingInstance();
 
             IComponent component = node.getComponent();
+            if (component instanceof DummyComponent) {
+                if (((DummyComponent) component).isMissingComponent()) {
+                    if (ERROR_ON_COMPONENT_MISSING) {
+                        throw new CodeGeneratorException("Component is missing: " + component.getName());
+                    }
+                    if (ECodePart.BEGIN.equals(part)) {
+                        log.warn("Component is missing: " + component.getName());
+                    }
+                }
+            }
             // some code unification to handle all component types the same way.
             String templateURI = component.getTemplateFolder() + TemplateUtil.DIR_SEP
                     + componentFileNaming.getJetFileName(component.getTemplateNamePrefix(), language.getExtension(), part);
