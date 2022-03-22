@@ -15,6 +15,7 @@ package org.talend.designer.runprocess.bigdata;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -29,6 +30,7 @@ import org.eclipse.core.runtime.Platform;
 import org.talend.commons.exception.CommonExceptionHandler;
 import org.talend.commons.utils.generation.JavaUtils;
 import org.talend.commons.utils.resource.FileExtensions;
+import org.talend.core.CorePlugin;
 import org.talend.core.model.general.ModuleNeeded;
 import org.talend.core.model.process.IProcess;
 import org.talend.core.model.process.IProcess2;
@@ -42,6 +44,7 @@ import org.talend.core.runtime.process.ITalendProcessJavaProject;
 import org.talend.core.runtime.process.LastGenerationInfo;
 import org.talend.core.runtime.process.TalendProcessOptionConstants;
 import org.talend.core.runtime.repository.build.IMavenPomCreator;
+import org.talend.designer.core.IDesignerCoreService;
 import org.talend.designer.core.utils.BigDataJobUtil;
 import org.talend.designer.maven.tools.creator.CreateMavenJobPom;
 import org.talend.designer.maven.utils.PomUtil;
@@ -231,6 +234,10 @@ public abstract class BigDataJavaProcessor extends MavenJavaProcessor implements
                 needAllLibJars = false;
             }
         }
+
+        // to fix TBD-13677, add all jars required by subjobs
+        libNames.addAll(getAllJarsRequiredBySubjob());
+
         if (libNames != null && libNames.size() > 0 && needAllLibJars) {
             Iterator<String> itLibNames = libNames.iterator();
             while (itLibNames.hasNext()) {
@@ -286,6 +293,26 @@ public abstract class BigDataJavaProcessor extends MavenJavaProcessor implements
         }
         list.add(libJars.toString());
         return list;
+    }
+
+    protected Collection<? extends String> getAllJarsRequiredBySubjob() {
+        Set<String> jars = new HashSet<String>();
+        IDesignerCoreService service = CorePlugin.getDefault().getDesignerCoreService();
+        if (service != null) {
+            Set<JobInfo> jobInfos = getBuildChildrenJobs();
+            Iterator<JobInfo> itJobInfos = jobInfos.iterator();
+            while (itJobInfos.hasNext()) {
+                JobInfo itJobInfo = itJobInfos.next();
+                IProcess child = service.getProcessFromItem(itJobInfo.getProcessItem());
+                Set<ModuleNeeded> neededLibraries = JavaProcessorUtilities.getNeededModulesForProcess(child, TalendProcessOptionConstants.MODULES_DEFAULT);
+                Iterator<ModuleNeeded> itNeededLibs = neededLibraries.iterator();
+                while (itNeededLibs.hasNext()) {
+                    ModuleNeeded moduleNeeded = itNeededLibs.next();
+                    jars.add(moduleNeeded.getModuleName());
+                }
+            }
+        }
+        return jars;
     }
 
     /**
