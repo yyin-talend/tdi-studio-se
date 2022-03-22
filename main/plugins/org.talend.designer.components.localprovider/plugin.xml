@@ -147,7 +147,7 @@
         </libraryNeeded>
         <libraryNeeded
             id="reload4j-1.2.19.jar"
-            NAME="reload4j-1.2.19" mvn_uri="mvn:ch.qos.reload4j/reload4j/1.2.19"
+            name="reload4j-1.2.19" mvn_uri="mvn:ch.qos.reload4j/reload4j/1.2.19"
             context="plugin:org.talend.libraries.apache">
         </libraryNeeded>
         <libraryNeeded
