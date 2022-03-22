@@ -476,7 +476,7 @@ public class ComponentModel extends AbstractBasicComponent implements IAdditiona
                     .map((final ComponentDetail connectorDetails) -> this.connectorDependencies(dependencies, connectorDetails.getId()))
                     .forEach(modules::addAll);
             
-            if (GlobalServiceRegister.getDefault().isServiceRegistered(IDataPrepLookupService.class)) {
+           if (GlobalServiceRegister.getDefault().isServiceRegistered(IDataPrepLookupService.class)) {
                 IDataPrepLookupService service = GlobalServiceRegister.getDefault().getService(IDataPrepLookupService.class);
                 Set<ModuleNeeded> extractDependencies = new HashSet<ModuleNeeded>();
                 for (ModuleNeeded module : extractComponent) {
@@ -495,10 +495,7 @@ public class ComponentModel extends AbstractBasicComponent implements IAdditiona
                 .map((final ComponentReference ref) -> {
                     final String connectorRef = ref.getFamily() + ref.getName();
                     if (!StringUtils.isEmpty(ref.getMavenReferences())) {
-                        ModuleNeeded module = new ModuleNeeded(ref.getFamily(), ref.getName(), null,  true);
-                        //module.setFamily(ref.getFamily());
-                        module.setMavenUri(ref.getMavenReferences());
-                       // module.setTCKConnector(true);
+                        ModuleNeeded module = new ModuleNeeded(ref.getFamily() == null? "" : ref.getFamily(), ref.getName() == null ? "" : ref.getName(), true, ref.getMavenReferences());
                         extractComponent.add(module);
                     }
                     return Lookups.service().getDetail(connectorRef).orElse(null);
