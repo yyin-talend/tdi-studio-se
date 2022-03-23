@@ -4,6 +4,7 @@ imports="
 			org.talend.core.model.process.ElementParameterParser 
 			org.talend.designer.codegen.config.CodeGeneratorArgument
 			java.util.List
+			java.util.Map
 			java.util.ArrayList
 		" 
 %>
@@ -53,11 +54,10 @@ imports="
 <%
 		}
 
-		public void createConnection(INode node) {
+		public void newConnection(INode node) {
         				     if(driveVersion == 2 && !useStringProperties){
         				     List<Map<String, String>> properties = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__ENTRY_PROPERTIES__");
                 %>
-
                             java.util.Properties properties_<%=cid%> = new java.util.Properties();
                                             properties_<%=cid%>.setProperty("user",dbUser_<%=cid%>);
                                             properties_<%=cid%>.setProperty("password",dbPwd_<%=cid%>);
