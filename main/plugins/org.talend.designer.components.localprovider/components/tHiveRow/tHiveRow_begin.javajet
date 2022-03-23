@@ -231,7 +231,7 @@ imports="
 	    }
 	}
 
-	if(!hiveDistrib.useCloudLauncher()) {
+	if(!hiveDistrib.useCloudLauncher() && !hiveDistrib.doSupportUniversalDataprocMode()) {
 		if (usePrepareStatement) {
 		%>
 			java.sql.PreparedStatement pstmt_<%=cid %> = conn_<%=cid%>.prepareStatement(<%=dbquery%>);

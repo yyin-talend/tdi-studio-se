@@ -88,7 +88,7 @@ if(hiveDistrib.isExecutedThroughWebHCat()) {
 %>
 	}
 <%
-} else if (hiveDistrib.isGoogleDataprocDistribution()) {
+} else if (hiveDistrib.doSupportUniversalDataprocMode()) {
     if(isLog4jEnabled) {
 %>
         log.debug("Query for <%=cid%>: " + query_<%=cid %>.replace("';'", "'\\;'") + ";");
