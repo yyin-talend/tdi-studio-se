@@ -3714,6 +3714,15 @@
                version="8.0.1">
 
         </projecttask>
+		<projecttask
+               beforeLogon="false"
+               breaks="8.0.0"
+               class="org.talend.repository.model.migration.RedshiftVersion2MigrationTask"
+               description="Change the Driver version to V1 for old Redshift job"
+               id="org.talend.repository.model.migration.RedshiftVersion2MigrationTask"
+               name="RedshiftVersion2MigrationTask"
+               version="8.0.1">
+        </projecttask>
    </extension>
 
    <extension
