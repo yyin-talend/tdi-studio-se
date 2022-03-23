@@ -182,7 +182,7 @@
     <PARAMETER
       NAME="SCHEMA_FLOW"
       FIELD="SCHEMA_TYPE"
-      NUM_ROW="20"
+      NUM_ROW="25"
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
@@ -191,7 +191,7 @@
       NAME="SCHEMA_REJECT"
       FIELD="SCHEMA_TYPE"
       REQUIRED="true"
-      NUM_ROW="20"
+      NUM_ROW="25"
       CONTEXT="REJECT"
       SHOW="true">
       <TABLE READONLY="true">
@@ -203,7 +203,7 @@
 	<PARAMETER
       NAME="TABLE"
       FIELD="DBTABLE"
-      NUM_ROW="20"
+      NUM_ROW="25"
       LOG4J_ENABLED="false"
     >
       <DEFAULT>""</DEFAULT>

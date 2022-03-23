@@ -55,13 +55,13 @@ imports="
                              .append(<%=dbname%>);
 
                              <%
-            if((driveVersion == 2 && useStringProperties) || driveVersion == 1){
+            if( useStringProperties || driveVersion == 1){
                              %>
 
                              sbuilder_<%=cid%>.append("?loglevel=").append(<%=logLevel%>);
 <%
             }
-            if(useStringProperties && dbproperties != null && !"\"\"".equals(dbproperties) && !"".equals(dbproperties)) {
+            if((driveVersion == 1 || useStringProperties) && dbproperties != null && !"\"\"".equals(dbproperties) && !"".equals(dbproperties)) {
 %>
                 sbuilder_<%=cid%>.append("&").append(<%=dbproperties%>);
 <%
@@ -88,7 +88,7 @@ imports="
 
                 	conn_<%=cid%> = java.sql.DriverManager.getConnection(url_<%=cid%>,properties_<%=cid%>);
         <%
-                     }else if(driveVersion == 2){
+                     } else {
 
         %>
                      conn_<%=cid%> = java.sql.DriverManager.getConnection(url_<%=cid%>,dbUser_<%=cid%>,dbPwd_<%=cid%>);
