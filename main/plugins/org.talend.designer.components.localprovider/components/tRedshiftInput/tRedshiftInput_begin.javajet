@@ -83,9 +83,10 @@ imports="
 						%>
 						//<%=driveVersion%>  useStringProperties: <%=useStringProperties%>
 						<%
-						super.createConnection(node,2);//without connection
+
 
         				     if(driveVersion == 2 && !useStringProperties){
+        				     super.createConnection(node,2);//without connection
         				     List<Map<String, String>> properties = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__ENTRY_PROPERTIES__");
                 %>
 
