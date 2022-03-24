@@ -308,7 +308,10 @@ public abstract class BigDataJavaProcessor extends MavenJavaProcessor implements
                 Iterator<ModuleNeeded> itNeededLibs = neededLibraries.iterator();
                 while (itNeededLibs.hasNext()) {
                     ModuleNeeded moduleNeeded = itNeededLibs.next();
-                    jars.add(moduleNeeded.getModuleName());
+                    String moduleName = moduleNeeded.getModuleName();
+                    if (!moduleName.startsWith("job-audit")) { // remove job-audit-1.0.jar from the list
+                        jars.add(moduleName);
+                    }
                 }
             }
         }
