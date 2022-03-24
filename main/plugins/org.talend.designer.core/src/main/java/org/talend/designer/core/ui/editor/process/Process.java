@@ -2464,6 +2464,7 @@ public class Process extends Element implements IProcess2, IGEFProcess, ILastVer
 
     protected Node createDummyNode(NodeType nType, Hashtable<String, Node> nodesHashtable) {
         DummyComponent component = new DummyComponent(nType);
+        component.setMissingComponent(true);
         Node nc;
         nc = new Node(component, this);
         nc.setLocation(new Point(nType.getPosX(), nType.getPosY()));
