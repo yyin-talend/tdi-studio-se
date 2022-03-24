@@ -215,15 +215,9 @@
             <IMPORT NAME="azure-storage-1.2.0" MODULE="azure-storage-1.2.0.jar" MVN="mvn:org.talend.libraries/azure-storage-1.2.0/6.0.0" 
                 REQUIRED_IF="(USE_EXISTING_CONNECTION=='false') AND (DISTRIBUTION=='MICROSOFT_HD_INSIGHT') AND (DISTRIB[DISTRIBUTION, HIVE_VERSION].doSupportOldImportMode[])" />
 			<!-- #################### -->
-			
-			<!-- DATAPROC DEPENDENCIES -->
-			<IMPORT NAME="talend-bigdata-launcher-dataproc-2.4.6.jar" MODULE="talend-bigdata-launcher-dataproc-2.4.6.jar"
-				MVN="mvn:org.talend.bigdata.libs/talend-bigdata-launcher-dataproc/2.4.6"
-				REQUIRED_IF="(USE_EXISTING_CONNECTION=='false') AND (DISTRIB[DISTRIBUTION, HIVE_VERSION].doSupportUniversalDataprocMode[] AND DISTRIBUTION!='CUSTOM')" />
-			
-			<IMPORT NAME="talend-bigdata-launcher-core-2.4.6.jar" MODULE="talend-bigdata-launcher-core-2.4.6.jar"
-				MVN="mvn:org.talend.bigdata.libs/talend-bigdata-launcher-core/2.4.6"
-				REQUIRED_IF="(USE_EXISTING_CONNECTION=='false') AND (DISTRIB[DISTRIBUTION, HIVE_VERSION].doSupportUniversalDataprocMode[] AND DISTRIBUTION!='CUSTOM')" />
+			<!-- Dataproc 2.x -->
+			<IMPORT MODULE_GROUP="DATAPROC-LAUNCHER" 
+                    REQUIRED_IF="(USE_EXISTING_CONNECTION=='false) AND (DISTRIB[DISTRIBUTION, HIVE_VERSION].doSupportUniversalDataprocMode[] AND DISTRIBUTION!='CUSTOM')" REQUIRED="true"/>
 		</IMPORTS>
 	</CODEGENERATION>
 

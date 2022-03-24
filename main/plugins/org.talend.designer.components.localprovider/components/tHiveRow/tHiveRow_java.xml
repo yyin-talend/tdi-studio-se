@@ -845,15 +845,9 @@
 			<!-- Tez Server libraries for HDP_2_3 -->
 			<IMPORT MODULE_GROUP="TEZ-SERVER-LIB-HDP_2_3"
 				REQUIRED_IF="(DISTRIBUTION == 'HORTONWORKS') AND (HIVE_VERSION == 'HDP_2_3') AND (EXECUTION_ENGINE == 'tez') AND (TEZ_LIB == 'INSTALL')" />
-				
-			<!-- DATAPROC DEPENDENCIES -->
-			<IMPORT NAME="talend-bigdata-launcher-dataproc-2.4.6.jar" MODULE="talend-bigdata-launcher-dataproc-2.4.6.jar"
-				MVN="mvn:org.talend.bigdata.libs/talend-bigdata-launcher-dataproc/2.4.6"
-				REQUIRED_IF="(DISTRIB[DISTRIBUTION, HIVE_VERSION].doSupportUniversalDataprocMode[] AND DISTRIBUTION!='CUSTOM')" />
-			
-			<IMPORT NAME="talend-bigdata-launcher-core-2.4.6.jar" MODULE="talend-bigdata-launcher-core-2.4.6.jar"
-				MVN="mvn:org.talend.bigdata.libs/talend-bigdata-launcher-core/2.4.6"
-				REQUIRED_IF="(DISTRIB[DISTRIBUTION, HIVE_VERSION].doSupportUniversalDataprocMode[] AND DISTRIBUTION!='CUSTOM')" />	
+			<!-- Dataproc 2.x -->	
+			<IMPORT MODULE_GROUP="DATAPROC-LAUNCHER" 
+                REQUIRED_IF="(USE_EXISTING_CONNECTION=='false) AND (DISTRIB[DISTRIBUTION, HIVE_VERSION].doSupportUniversalDataprocMode[] AND DISTRIBUTION!='CUSTOM')" REQUIRED="true"/>	
 		</IMPORTS>
 	</CODEGENERATION>
 
