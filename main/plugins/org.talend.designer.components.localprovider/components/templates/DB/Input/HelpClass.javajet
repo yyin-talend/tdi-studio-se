@@ -47,7 +47,7 @@ imports="
 	    }
 	    
 		public void createConnection(INode node) {
-			this.createConnection(node, 1);
+			this.createConnection(node, true);
 		}
 
 		public void createConnection(INode node, boolean needUserAndPassword) {
