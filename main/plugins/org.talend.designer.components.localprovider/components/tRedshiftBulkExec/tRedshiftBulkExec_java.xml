@@ -40,7 +40,7 @@
 			GROUP="DB_CONFIG" />
 
 		<PARAMETER
-				NAME="DRIVER_VERSION"
+				NAME="_VERSION"
 				FIELD="CLOSED_LIST"
 				NUM_ROW="5"
 				GROUP="DB_CONFIG"
@@ -48,7 +48,7 @@
 				REPOSITORY_VALUE="DRIVER_VERSION">
 			<ITEMS DEFAULT="DRIVER_V2">
 				<ITEM NAME="DRIVER_V1" VALUE="DRIVER_V1" />
-				<ITEM NAME="DRIVER_V2" VALUE="DRIVER_V2" />
+				<ITEM NAME="DRIVER_V2" VALUE="DRIVER_VERSION" />
 			</ITEMS>
 		</PARAMETER>
 
@@ -460,8 +460,10 @@
 
 	<CODEGENERATION>
 		<IMPORTS>
-			<IMPORT NAME="Driver-Redshift" MODULE="redshift-jdbc42-2.1.0.3.jar" MVN="mvn:com.amazon.redshift/redshift-jdbc42/2.1.0.3"
-				REQUIRED="true" />
+			<IMPORT NAME="Driver-Redshift-V2" MODULE="redshift-jdbc42-2.1.0.3.jar" MVN="mvn:com.amazon.redshift/redshift-jdbc42/2.1.0.3"
+				REQUIRED="true" REQUIRED_IF="(DRIVER_VERSION == 'DRIVER_V2') AND (USE_EXISTING_CONNECTION == 'false')"/>
+			<IMPORT NAME="Driver-Redshift-V1" MODULE="redshift-jdbc42-no-awssdk-1.2.37.1061.jar" MVN="mvn:com.amazon.redshift/redshift-jdbc42-no-awssdk/1.2.37.1061"
+					REQUIRED_IF="(DRIVER_VERSION=='DRIVER_V1') and (USE_EXISTING_CONNECTION == 'false')" />
 			<IMPORT NAME="aws-java-sdk-1.11.848.jar" MODULE="aws-java-sdk-1.11.848.jar"
 				MVN="mvn:com.amazonaws/aws-java-sdk/1.11.848" 
 				REQUIRED_IF="(JDBC_URL == 'SSO') AND (USE_EXISTING_CONNECTION == 'false')" />
@@ -489,9 +491,6 @@
 			<IMPORT NAME="commons-codec-1.14.jar" MODULE="commons-codec-1.14.jar"
 				MVN="mvn:commons-codec/commons-codec/1.14"
 				REQUIRED="true" />
-			<IMPORT NAME="aws-java-sdk-redshift-internal-1.12.x.jar" MODULE="aws-java-sdk-redshift-internal-1.12.x.jar"
-				MVN="mvn:com.amazonaws/aws-java-sdk-redshift-internal/1.12.x" 
-				REQUIRED_IF="(JDBC_URL == 'SSO') AND (USE_EXISTING_CONNECTION == 'false')" />
 			<IMPORT NAME="aws-java-sdk-redshift-internal-1.12.x.jar" MODULE="aws-java-sdk-redshift-internal-1.12.x.jar"
 				MVN="mvn:com.amazonaws/aws-java-sdk-redshift-internal/1.12.x" 
 				REQUIRED_IF="(JDBC_URL == 'SSO') AND (USE_EXISTING_CONNECTION == 'false')" />
