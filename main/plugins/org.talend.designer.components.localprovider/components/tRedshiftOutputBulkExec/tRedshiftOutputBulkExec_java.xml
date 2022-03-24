@@ -675,8 +675,11 @@
 		</TEMPLATES>
 
 		<IMPORTS>
-			<IMPORT NAME="Driver-Redshift" MODULE="redshift-jdbc42-no-awssdk-1.2.37.1061.jar"
-				MVN="mvn:com.amazon.redshift/redshift-jdbc42-no-awssdk/1.2.37.1061" 
+			<IMPORT NAME="antlr4-runtime-4.8-1.jar" MODULE="antlr4-runtime-4.8-1.jar"
+				MVN="mvn:org.antlr/antlr4-runtime/4.8-1"
+				REQUIRED="true" />
+			<IMPORT NAME="Driver-Redshift" MODULE="redshift-jdbc42-no-awssdk-1.2.55.1083.jar"
+				MVN="mvn:com.amazon.redshift/redshift-jdbc42-no-awssdk/1.2.55.1083"
 				REQUIRED="true" />
 			<IMPORT NAME="aws-java-sdk-1.11.848.jar" MODULE="aws-java-sdk-1.11.848.jar"
 				MVN="mvn:com.amazonaws/aws-java-sdk/1.11.848"
