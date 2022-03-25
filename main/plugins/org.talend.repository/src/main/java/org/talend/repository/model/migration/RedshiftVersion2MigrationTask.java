@@ -31,15 +31,39 @@ public class RedshiftVersion2MigrationTask extends AbstractJobMigrationTask {
                 return;
             }
             if (ComponentUtilities.getNodeProperty(node, "DRIVER_VERSION") == null ) {
-                    ComponentUtilities.addNodeProperty(node, "DRIVER_VERSION", "CLOSED_LIST");//$NON-NLS-1$ //$NON-NLS-2$
-                    ComponentUtilities.getNodeProperty(node, "DRIVER_VERSION")
-                            .setValue("DRIVER_V1");//$NON-NLS-1$ //$NON-NLS-2$
+                ComponentUtilities.addNodeProperty(node, "DRIVER_VERSION", "CLOSED_LIST");//$NON-NLS-1$ //$NON-NLS-2$
+                ComponentUtilities.getNodeProperty(node, "DRIVER_VERSION")
+                        .setValue("DRIVER_V1");//$NON-NLS-1$ //$NON-NLS-2$
+
+            }
+
+        };
+
+        IComponentConversion createTableAction = node -> {
+            if (node == null) {
+                return;
+            }
+            if (ComponentUtilities.getNodeProperty(node, "REDSHIFT_DRIVER_VERSION") == null ) {
+                ComponentUtilities.addNodeProperty(node, "REDSHIFT_DRIVER_VERSION", "CLOSED_LIST");//$NON-NLS-1$ //$NON-NLS-2$
+                ComponentUtilities.getNodeProperty(node, "REDSHIFT_DRIVER_VERSION")
+                        .setValue("DRIVER_V1");//$NON-NLS-1$ //$NON-NLS-2$
 
             }
 
         };
 
         boolean modified = false;
+
+        IComponentFilter createTableFilter = new NameComponentFilter("tCreateTable");
+
+        try {
+            modified |= ModifyComponentsAction.searchAndModify(item, processType, createTableFilter, Arrays.asList(createTableAction));
+        } catch (PersistenceException e) {
+            ExceptionHandler.process(e);
+            return ExecutionResult.FAILURE;
+        }
+
+
 
         for (String name : compNames) {
             IComponentFilter filter = new NameComponentFilter(name);
