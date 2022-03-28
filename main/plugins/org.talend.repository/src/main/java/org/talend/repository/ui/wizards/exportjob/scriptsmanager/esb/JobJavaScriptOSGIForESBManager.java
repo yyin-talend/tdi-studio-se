@@ -643,6 +643,20 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
         return null;
     }
 
+    private static NodeType getRESTClientComponent(ProcessItem processItem) {
+        NodeType nodeType = EmfModelUtils.getComponentByName(processItem, "tRESTClient");
+        if (nodeType != null) {
+            return nodeType;
+        }
+        for (JobInfo subjobInfo : ProcessorUtilities.getChildrenJobInfo(processItem)) {
+            nodeType = EmfModelUtils.getComponentByName(subjobInfo.getProcessItem(), "tRESTClient");
+            if (nodeType != null) {
+                return nodeType;
+            }
+        }
+        return null;
+    }
+
     protected static String getPackageName(ProcessItem processItem) {
         return JavaResourcesHelper.getProjectFolderName(processItem)
                 + PACKAGE_SEPARATOR
@@ -1278,6 +1292,13 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
                     break;
                 }
             }
+        }
+
+        // https://jira.talendforge.org/browse/APPINT-34443
+        NodeType restClientComponent = getRESTClientComponent(processItem);
+        if (null != restClientComponent) {
+            importPackages.add("org.apache.cxf.endpoint");
+            importPackages.add("org.apache.cxf.service.model");
         }
 
         if (ERepositoryObjectType.PROCESS_MR == ERepositoryObjectType.getItemType(processItem)) {
