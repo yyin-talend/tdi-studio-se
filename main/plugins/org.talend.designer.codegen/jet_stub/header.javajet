@@ -345,7 +345,7 @@ public <%=JavaTypesManager.getTypeToGenerate(ctxParam.getType(),true)%> get<%=Ch
 	<%
 	// is necessary? avoid some compiler issue as var name not found? TODO consider remove it, also the currentComponent above
 	%>
-	private String currentComponentLabel =  null;
+	private String cLabel =  null;
 	<%
 	//tParallelize will wrap globalMap with synchronizedMap
 	if(isRunInMultiThread || NodeUtil.containsMultiThreadComponent(process)){
@@ -603,7 +603,7 @@ private class TalendException extends Exception {
 	private Exception e = null;
 	
 	private String currentComponent = null;
-	private String currentComponentLabel =  null;
+	private String cLabel =  null;
 	
 	private String virtualComponentName = null;
 	
@@ -619,7 +619,7 @@ private class TalendException extends Exception {
 	
 	private TalendException(Exception e, String errorComponent, String errorComponentLabel, final java.util.Map<String, Object> globalMap) {
 		this(e, errorComponent, globalMap);
-		this.currentComponentLabel = errorComponentLabel;
+		this.cLabel = errorComponentLabel;
 	}
 
 	public Exception getException() {
@@ -683,7 +683,7 @@ private class TalendException extends Exception {
 		if(enableLogStash) {
 %>
 		if(enableLogStash) {
-			<%=jobCatcherNode.getUniqueName() %>.addJobExceptionMessage(currentComponent, currentComponentLabel, null, e);
+			<%=jobCatcherNode.getUniqueName() %>.addJobExceptionMessage(currentComponent, cLabel, null, e);
 			<%=jobCatcherNode.getDesignSubjobStartNode().getUniqueName() %>Process(globalMap);
 		}
 <%

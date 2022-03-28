@@ -71,7 +71,7 @@
 								}
 							}					
 				            		            
-		                    TalendException te = new TalendException(e, currentComponent, currentComponentLabel, globalMap);
+		                    TalendException te = new TalendException(e, currentComponent, cLabel, globalMap);
 							<%
 							if(NodeUtil.hasVirtualComponent(subTree.getNodes())){
 							%>
