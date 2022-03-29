@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.talend.core.model.process.EParameterFieldType;
+import org.talend.designer.core.model.components.EParameterName;
 import org.talend.sdk.component.studio.model.parameter.ButtonParameter;
 import org.talend.sdk.component.studio.model.parameter.TaCoKitElementParameter;
 import org.talend.sdk.component.studio.model.parameter.TableElementParameter;
@@ -96,6 +97,9 @@ class UpdateCommand extends BaseAsyncAction<Object> {
                             table.setValueFromAction((List<Object>) value);
                         } else {
                             param.setValue(value);
+                        }
+                        if ("configuration.references.references".equals(param.getName())) { // TODO -- KK need to optimize this line
+                            param.getElement().getElementParameter(EParameterName.UPDATE_COMPONENTS.getName()).setValue(true);
                         }
                     }
                 }
