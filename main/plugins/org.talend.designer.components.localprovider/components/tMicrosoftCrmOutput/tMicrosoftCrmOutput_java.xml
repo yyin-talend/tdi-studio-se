@@ -38343,7 +38343,7 @@
             <IMPORT NAME="woden-impl-commons-1.0M9" MODULE="woden-impl-commons-1.0M9.jar" MVN="mvn:org.talend.libraries/woden-impl-commons-1.0M9/6.0.0"  UrlPath="platform:/plugin/org.talend.libraries.apache.axis2/lib/woden-impl-commons-1.0M9.jar" REQUIRED_IF="(AUTH_TYPE=='ONLINE') AND (API_VERSION=='API_2011')" />
             <IMPORT NAME="woden-impl-dom-1.0M9" MODULE="woden-impl-dom-1.0M9.jar" MVN="mvn:org.talend.libraries/woden-impl-dom-1.0M9/6.0.0"  UrlPath="platform:/plugin/org.talend.libraries.apache.axis2/lib/woden-impl-dom-1.0M9.jar" REQUIRED_IF="(AUTH_TYPE=='ONLINE') AND (API_VERSION=='API_2011')" />
             <!-- log4j -->
-            <IMPORT NAME="Driver-Commons-log4j-1.2.17" MODULE="log4j-1.2.17.jar" MVN="mvn:log4j/log4j/1.2.17"  UrlPath="platform:/plugin/org.talend.libraries.apache/lib/log4j-1.2.17.jar" REQUIRED="true" BundleID="" />
+            <IMPORT NAME="reload4j-1.2.19" MODULE="reload4j-1.2.19.jar" MVN="mvn:ch.qos.reload4j/reload4j/1.2.19" REQUIRED="true" BundleID="" />
             <!-- Jars for CRM 2015 CXF begin -->
             <IMPORT
                 NAME="commons-logging-1.1.1"
