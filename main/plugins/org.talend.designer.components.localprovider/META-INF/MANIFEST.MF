@@ -12,6 +12,7 @@ Require-Bundle: org.apache.commons.collections,
  org.talend.libraries.apache,
  org.talend.designer.codegen,
  org.talend.hadoop.distribution,
+ org.talend.spark.distribution.spark31x,
  org.eclipse.ui.workbench,
  org.talend.libraries.jboss;resolution:=optional,
  org.apache.log4j
