@@ -276,6 +276,11 @@ public class CLASS {
         public void setNode(INode node) {
            this.node = node;
         }
+		
+        protected String dbVersion = ""; // TDI-47560 currently dbVersion is used by OracleManager and SybaseManager
+        public void setDbVersion(String dbVersion){ // has to be set manually
+            this.dbVersion = dbVersion;  
+        }
         
         protected String cid;        
         protected abstract String getDBMSId();
@@ -2521,12 +2526,7 @@ public class CLASS {
                 return "\\\"";
             }
             return getRProtectedChar();
-        }  
-        private String dbVersion = "";
-        public void setDbVersion(String dbVersion){
-            this.dbVersion = dbVersion;  
         }
-        
         public String getUpdateBulkSQL(List<IMetadataColumn> columnList) {
             StringBuilder updateBulkSQL = new StringBuilder();
             StringBuilder updateSetStmt = new StringBuilder();
@@ -3351,7 +3351,7 @@ public class CLASS {
             } else {
                 return " null ";
             }
-        }        
+        }
         public String getUpdateBulkSQL(List<IMetadataColumn> columnList) {
             StringBuilder updateBulkSQL = new StringBuilder();
             StringBuilder updateSetStmt = new StringBuilder();
@@ -3478,9 +3478,13 @@ public class CLASS {
                 setStmt.append(prefix + cid + ".setNull(" + index + dynamic + ", java.sql.Types.TIMESTAMP);\r\n");
                 setStmt.append("}\r\n");
             } else if(typeToGenerate.equals("BigDecimal")){
-                if(column.getColumn().getPrecision()!=null && column.getColumn().getLength()!=null){
+                if(!"SYBSEIQ_16_SA".equals(dbVersion) && column.getColumn().getPrecision()!=null && column.getColumn().getLength()!=null){
                     setStmt.append("if(" + incomingConnName + "." + column.getName() + " != null) {\r\n");
-                    setStmt.append("((com.sybase.jdbc3.jdbc.SybPreparedStatement)"+prefix + cid + ").set" + typeToGenerate + "(" + index + dynamic + ", " + incomingConnName + "." + column.getName() +","+column.getColumn().getLength() +","+column.getColumn().getPrecision()+ ");\r\n");
+                    if("SYBSEIQ_16".equals(dbVersion)) {
+                        setStmt.append("((com.sybase.jdbc4.jdbc.SybPreparedStatement)"+prefix + cid + ").set" + typeToGenerate + "(" + index + dynamic + ", " + incomingConnName + "." + column.getName() +","+column.getColumn().getLength() +","+column.getColumn().getPrecision()+ ");\r\n");
+                    } else {
+                        setStmt.append("((com.sybase.jdbc3.jdbc.SybPreparedStatement)"+prefix + cid + ").set" + typeToGenerate + "(" + index + dynamic + ", " + incomingConnName + "." + column.getName() +","+column.getColumn().getLength() +","+column.getColumn().getPrecision()+ ");\r\n");
+                    }
                     setStmt.append("} else {\r\n");
                     setStmt.append(prefix + cid + ".set" + typeToGenerate + "(" + index + dynamic + ", " + incomingConnName + "." + column.getName() + ");\r\n");
                     setStmt.append("}\r\n");
