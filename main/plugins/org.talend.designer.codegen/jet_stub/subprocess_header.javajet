@@ -1641,7 +1641,7 @@ public void <%=subTree.getName() %>Process(final java.util.Map<String, Object> g
 
 				this.isRunning = true;
 				String currentComponent = "";
-				String currentComponentLabel = null;
+				String cLabel = null;
 				<%
 				   	if(NodeUtil.hasVirtualComponent(subTree.getNodes())){
 					   %>
@@ -1675,7 +1675,7 @@ public void <%=subTree.getName() %>Process(final java.util.Map<String, Object> g
 		int iterateLoop = 0;
 	<%}%>
 	String currentComponent = "";
-	String currentComponentLabel =  null;
+	String cLabel =  null;
 	java.util.Map<String, Object> resourceMap = new java.util.HashMap<String, Object>();
 
 	try {
