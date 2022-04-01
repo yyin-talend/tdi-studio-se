@@ -118,7 +118,7 @@ public final class Mvn {
                     .filter(s -> !s.endsWith(":test"))
                     .filter(s -> (acceptProvided && s.endsWith(":provided"))
                             || (!acceptProvided && (s.endsWith("compile") || s.endsWith("runtime"))))
-                    .filter(s -> !s.contains("log4j"))
+                    .filter(s -> !s.contains("log4j") && !s.contains("reload4j"))
                     .map(Mvn::locationToMvn)
                     .collect(toSet());
         }
