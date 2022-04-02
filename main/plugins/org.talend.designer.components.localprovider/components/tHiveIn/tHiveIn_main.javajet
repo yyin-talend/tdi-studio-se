@@ -95,7 +95,7 @@ bw_<%=cid%>.write("!set showHeader false\n");
 <%
         }
     }
-    if (hiveDistrib.isGoogleDataprocDistribution()) {
+    if (hiveDistrib.doSupportUniversalDataprocMode()) {
 %>
         <%@ include file="@{org.talend.designer.components.localprovider}/components/templates/Hive/GetDataprocConnection.javajet"%>
 <%
