@@ -501,7 +501,7 @@ public final class EMFRepositoryNodeManager {
             for (String string : tables) {
                 String tableName = string;
                 if (string.contains(".")) { //$NON-NLS-1$
-                    tableName = string.substring(string.indexOf(".") + 1).replaceAll("\\" + leftDbQuote, "") //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                    tableName = string.substring(string.lastIndexOf(".") + 1).replaceAll("\\" + leftDbQuote, "") //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
                             .replaceAll("\\" + rightDbQuote, "");
                 }
                 if (!tableNames.contains(tableName.trim())) {
