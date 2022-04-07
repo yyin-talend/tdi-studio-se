@@ -848,12 +848,19 @@ public class CodeGenerator implements ICodeGenerator {
             IComponent component = node.getComponent();
             if (component instanceof DummyComponent) {
                 if (((DummyComponent) component).isMissingComponent()) {
+                    String processName = "";
+                    try {
+                        IProcess proc = node.getProcess();
+                        processName = proc.getName() + " " + proc.getVersion();
+                    } catch (Exception e) {
+                        ExceptionHandler.process(e);
+                    }
                     if (IProcess.ERR_ON_COMPONENT_MISSING) {
-                        throw new CodeGeneratorException(Messages.getString("CodeGenerator.Component.NotFound",
+                        throw new CodeGeneratorException(Messages.getString("CodeGenerator.Components.NotFound", processName,
                                 component.getName(), IProcess.PROP_ERR_ON_COMPONENT_MISSING));
                     }
                     if (ECodePart.BEGIN.equals(part)) {
-                        log.warn(Messages.getString("CodeGenerator.Component.NotFound", component.getName(),
+                        log.warn(Messages.getString("CodeGenerator.Components.NotFound", processName, component.getName(),
                                 IProcess.PROP_ERR_ON_COMPONENT_MISSING));
                     }
                 }

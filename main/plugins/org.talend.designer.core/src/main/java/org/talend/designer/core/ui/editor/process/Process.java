@@ -2436,7 +2436,7 @@ public class Process extends Element implements IProcess2, IGEFProcess, ILastVer
         }
 
         if (!unloadedNode.isEmpty()) {
-            if (CommonsPlugin.isScriptCmdlineMode()) {
+            if (CommonsPlugin.isScriptCmdlineMode() && !CommonsPlugin.isDevMode()) {
                 if (ERR_ON_COMPONENT_MISSING) {
                     StringBuilder missingComps = new StringBuilder();
                     try {
@@ -2449,8 +2449,14 @@ public class Process extends Element implements IProcess2, IGEFProcess, ILastVer
                     } catch (Exception e) {
                         ExceptionHandler.process(e);
                     }
-                    PersistenceException ex = new PersistenceException(Messages.getString("Process.Component.NotFound",
-                            missingComps.toString(), "studio." + PROP_ERR_ON_COMPONENT_MISSING));
+                    String processName = "";
+                    try {
+                        processName = this.getLabel() + " " + this.getVersion();
+                    } catch (Exception e) {
+                        ExceptionHandler.process(e);
+                    }
+                    PersistenceException ex = new PersistenceException(Messages.getString("Process.Components.NotFound",
+                            processName, missingComps.toString(), "studio." + PROP_ERR_ON_COMPONENT_MISSING));
                     ExceptionHandler.process(ex);
                     // used for CI to catch the message
                     System.out.println("CI_MSG:EXIT");
