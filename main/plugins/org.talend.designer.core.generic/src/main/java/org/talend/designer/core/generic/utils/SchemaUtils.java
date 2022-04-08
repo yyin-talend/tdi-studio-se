@@ -46,6 +46,7 @@ import org.talend.cwm.helper.ConnectionHelper;
 import org.talend.cwm.helper.PackageHelper;
 import org.talend.cwm.helper.SchemaHelper;
 import org.talend.cwm.relational.RelationalFactory;
+import org.talend.daikon.avro.AvroNamesValidationHelper;
 import org.talend.daikon.properties.Properties;
 import org.talend.daikon.serialize.SerializerDeserializer;
 import org.talend.designer.core.generic.model.GenericElementParameter;
@@ -189,6 +190,7 @@ public class SchemaUtils {
         if (tableName == null || properties == null || schemaPropertyName == null) {
             return null;
         }
+
         boolean exist = false;
         List<orgomg.cwm.resource.relational.Schema> schemaList = new ArrayList<orgomg.cwm.resource.relational.Schema>();
         orgomg.cwm.resource.relational.Schema schema = (orgomg.cwm.resource.relational.Schema)
@@ -215,6 +217,7 @@ public class SchemaUtils {
         if (name == null || properties == null || schemaPropertyName == null) {
             return null;
         }
+
         IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
         MetadataTable metadataTable = ConnectionFactory.eINSTANCE.createMetadataTable();
         metadataTable.setId(factory.getNextId());
@@ -241,6 +244,14 @@ public class SchemaUtils {
         schemaPropertyTV.setValue(schemaPropertyName);
         metadataTable.getTaggedValue().add(schemaPropertyTV);
         return metadataTable;
+    }
+
+    public static MetadataTable createSchemaWithFakeName(String name, String fakeName, ComponentProperties properties, String schemaPropertyName) {
+        MetadataTable metadataTableWithFakeName = createSchema(fakeName, properties,schemaPropertyName);
+        metadataTableWithFakeName.setName(name);
+        metadataTableWithFakeName.setLabel(name);
+
+        return metadataTableWithFakeName;
     }
 
     private static void convertComponentSchemaIntoTalendSchema(Schema schema, MetadataTable metadataTable) {
