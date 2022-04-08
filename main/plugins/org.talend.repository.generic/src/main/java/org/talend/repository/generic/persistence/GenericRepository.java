@@ -25,6 +25,7 @@ import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.repository.model.ProxyRepositoryFactory;
 import org.talend.cwm.helper.PackageHelper;
 import org.talend.daikon.properties.service.Repository;
+import org.talend.daikon.avro.AvroNamesValidationHelper;
 import org.talend.designer.core.generic.constants.IGenericConstants;
 import org.talend.designer.core.generic.utils.ComponentsUtils;
 import org.talend.designer.core.generic.utils.SchemaUtils;
@@ -76,7 +77,12 @@ public class GenericRepository implements Repository<ComponentProperties> {
                     schemaProperty.setTaggedValue(IGenericConstants.REPOSITORY_VALUE, null);
                 }
 //                SchemaUtils.createCatalog(name, properties, connection, schemaPropertyName);
-                childElement = SchemaUtils.createSchema(name, properties, schemaPropertyName);
+                if (AvroNamesValidationHelper.isValidParameterName(name)) {
+                    childElement = SchemaUtils.createSchema(name, properties, schemaPropertyName);
+                } else {
+                    String fakeName = AvroNamesValidationHelper.getAvroCompatibleName(name);
+                    childElement = SchemaUtils.createSchemaWithFakeName(name, fakeName, properties, schemaPropertyName);
+                }
             }
             parentContainer.getOwnedElement().add(childElement);
             return repositoryLocation + IGenericConstants.REPOSITORY_LOCATION_SEPARATOR + name;
