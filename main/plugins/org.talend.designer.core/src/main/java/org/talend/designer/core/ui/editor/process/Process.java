@@ -2441,6 +2441,34 @@ public class Process extends Element implements IProcess2, IGEFProcess, ILastVer
         }
 
         if (!unloadedNode.isEmpty()) {
+            if (CommonsPlugin.isScriptCmdlineMode() && !CommonsPlugin.isDevMode()) {
+                if (ERR_ON_COMPONENT_MISSING) {
+                    StringBuilder missingComps = new StringBuilder();
+                    try {
+                        for (NodeType element : unloadedNode) {
+                            if (0 < missingComps.length()) {
+                                missingComps.append(", ");
+                            }
+                            missingComps.append(element.getComponentName());
+                        }
+                    } catch (Exception e) {
+                        ExceptionHandler.process(e);
+                    }
+                    String processName = "";
+                    try {
+                        processName = this.getLabel() + " " + this.getVersion();
+                    } catch (Exception e) {
+                        ExceptionHandler.process(e);
+                    }
+                    PersistenceException ex = new PersistenceException(Messages.getString("Process.Components.NotFound",
+                            processName, missingComps.toString(), "studio." + PROP_ERR_ON_COMPONENT_MISSING));
+                    ExceptionHandler.process(ex);
+                    // used for CI to catch the message
+                    System.out.println("CI_MSG:EXIT");
+                    System.exit(1);
+                    throw ex;
+                }
+            }
             for (NodeType element : unloadedNode) {
                 createDummyNode(element, nodesHashtable);
             }

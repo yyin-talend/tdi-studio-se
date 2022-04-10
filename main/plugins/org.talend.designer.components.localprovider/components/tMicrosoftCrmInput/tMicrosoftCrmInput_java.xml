@@ -137,7 +137,7 @@
             <DEFAULT>"51f81489-12ee-4a9e-aaae-a2591f45987d"</DEFAULT>
         </PARAMETER>
 
-        <PARAMETER NAME="CLIENT_SECRET" FIELD="TEXT" NUM_ROW="30" REQUIRED="false" SHOW_IF="((AUTH_TYPE=='ONLINE') AND (API_VERSION=='API_2016_ODATA' OR API_VERSION=='API_2018_ODATA') AND (ONLINE_REGISTERED_APP != 'NATIVE')) OR (AUTH_TYPE=='ON_PREMISE' AND MS_CRM_VERSION=='CRM_2016' AND PREMISE_AUTH=='OAUTH')">
+        <PARAMETER NAME="CLIENT_SECRET" FIELD="PASSWORD" NUM_ROW="30" REQUIRED="false" SHOW_IF="((AUTH_TYPE=='ONLINE') AND (API_VERSION=='API_2016_ODATA' OR API_VERSION=='API_2018_ODATA') AND (ONLINE_REGISTERED_APP != 'NATIVE')) OR (AUTH_TYPE=='ON_PREMISE' AND MS_CRM_VERSION=='CRM_2016' AND PREMISE_AUTH=='OAUTH')">
             <DEFAULT>""</DEFAULT>
         </PARAMETER>
 
@@ -27591,7 +27591,7 @@
             <IMPORT NAME="javax.servlet-api-3.1.0" MODULE="javax.servlet-api-3.1.0.jar" MVN="mvn:javax.servlet/javax.servlet-api/3.1.0" REQUIRED_IF="((AUTH_TYPE == 'ON_PREMISE') AND (MS_CRM_VERSION == 'CRM_2011')) OR (API_VERSION=='API_2007')"/>
             <IMPORT NAME="javax.transaction-api-1.3" MODULE="javax.transaction-api-1.3.jar" MVN="mvn:javax.transaction/javax.transaction-api/1.3" REQUIRED_IF="((AUTH_TYPE == 'ON_PREMISE') AND (MS_CRM_VERSION == 'CRM_2011')) OR (API_VERSION=='API_2007')"/>
                 <!-- log4j -->
-                <IMPORT NAME="Driver-Commons-log4j-1.2.17" MODULE="log4j-1.2.17.jar" MVN="mvn:log4j/log4j/1.2.17"  UrlPath="platform:/plugin/org.talend.libraries.apache/lib/log4j-1.2.17.jar" REQUIRED="true" BundleID="" />
+                <IMPORT NAME="reload4j-1.2.19" MODULE="reload4j-1.2.19.jar" MVN="mvn:ch.qos.reload4j/reload4j/1.2.19" REQUIRED="true" BundleID="" />
                 <!-- Jars for CRM 2015 CXF begin -->
                 <IMPORT
                     NAME="commons-logging-1.1.1"
@@ -27605,84 +27605,84 @@
                     MVN="mvn:org.ow2.asm/asm/9.1"
                     REQUIRED_IF="(AUTH_TYPE == 'ON_PREMISE') AND (MS_CRM_VERSION == 'CRM_2015')" />
                 <IMPORT
-                    NAME="cxf-core-3.3.10"
-                    MODULE="cxf-core-3.3.10.jar"
-                    MVN="mvn:org.apache.cxf/cxf-core/3.3.10"
+                    NAME="cxf-core-3.4.4"
+                    MODULE="cxf-core-3.4.4.jar"
+                    MVN="mvn:org.apache.cxf/cxf-core/3.4.4"
                     REQUIRED_IF="(AUTH_TYPE == 'ON_PREMISE') AND (MS_CRM_VERSION == 'CRM_2015')" />
                 <IMPORT
-                    NAME="cxf-rt-bindings-soap-3.3.10"
-                    MODULE="cxf-rt-bindings-soap-3.3.10.jar"
-                    MVN="mvn:org.apache.cxf/cxf-rt-bindings-soap/3.3.10"
+                    NAME="cxf-rt-bindings-soap-3.4.4"
+                    MODULE="cxf-rt-bindings-soap-3.4.4.jar"
+                    MVN="mvn:org.apache.cxf/cxf-rt-bindings-soap/3.4.4"
                     REQUIRED_IF="(AUTH_TYPE == 'ON_PREMISE') AND (MS_CRM_VERSION == 'CRM_2015')" />
                 <IMPORT
-                    NAME="cxf-rt-bindings-xml-3.3.10"
-                    MODULE="cxf-rt-bindings-xml-3.3.10.jar"
-                    MVN="mvn:org.apache.cxf/cxf-rt-bindings-xml/3.3.10"
+                    NAME="cxf-rt-bindings-xml-3.4.4"
+                    MODULE="cxf-rt-bindings-xml-3.4.4.jar"
+                    MVN="mvn:org.apache.cxf/cxf-rt-bindings-xml/3.4.4"
                     REQUIRED_IF="(AUTH_TYPE == 'ON_PREMISE') AND (MS_CRM_VERSION == 'CRM_2015')" />
                 <IMPORT
-                    NAME="cxf-rt-databinding-jaxb-3.3.10"
-                    MODULE="cxf-rt-databinding-jaxb-3.3.10.jar"
-                    MVN="mvn:org.apache.cxf/cxf-rt-databinding-jaxb/3.3.10"
+                    NAME="cxf-rt-databinding-jaxb-3.4.4"
+                    MODULE="cxf-rt-databinding-jaxb-3.4.4.jar"
+                    MVN="mvn:org.apache.cxf/cxf-rt-databinding-jaxb/3.4.4"
                     REQUIRED_IF="(AUTH_TYPE == 'ON_PREMISE') AND (MS_CRM_VERSION == 'CRM_2015')" />
                 <IMPORT
-                    NAME="cxf-rt-frontend-jaxws-3.3.10"
-                    MODULE="cxf-rt-frontend-jaxws-3.3.10.jar"
-                    MVN="mvn:org.apache.cxf/cxf-rt-frontend-jaxws/3.3.10"
+                    NAME="cxf-rt-frontend-jaxws-3.4.4"
+                    MODULE="cxf-rt-frontend-jaxws-3.4.4.jar"
+                    MVN="mvn:org.apache.cxf/cxf-rt-frontend-jaxws/3.4.4"
                     REQUIRED_IF="(AUTH_TYPE == 'ON_PREMISE') AND (MS_CRM_VERSION == 'CRM_2015')" />
                 <IMPORT
-                    NAME="cxf-rt-frontend-simple-3.3.10"
-                    MODULE="cxf-rt-frontend-simple-3.3.10.jar"
-                    MVN="mvn:org.apache.cxf/cxf-rt-frontend-simple/3.3.10"
+                    NAME="cxf-rt-frontend-simple-3.4.4"
+                    MODULE="cxf-rt-frontend-simple-3.4.4.jar"
+                    MVN="mvn:org.apache.cxf/cxf-rt-frontend-simple/3.4.4"
                     REQUIRED_IF="(AUTH_TYPE == 'ON_PREMISE') AND (MS_CRM_VERSION == 'CRM_2015')" />
                 <IMPORT
-                    NAME="cxf-rt-security-3.3.10"
-                    MODULE="cxf-rt-security-3.3.10.jar"
-                    MVN="mvn:org.apache.cxf/cxf-rt-security/3.3.10"
+                    NAME="cxf-rt-security-3.4.4"
+                    MODULE="cxf-rt-security-3.4.4.jar"
+                    MVN="mvn:org.apache.cxf/cxf-rt-security/3.4.4"
                     REQUIRED_IF="(AUTH_TYPE == 'ON_PREMISE') AND (MS_CRM_VERSION == 'CRM_2015')" />
                 <IMPORT
-                    NAME="cxf-rt-transports-http-3.3.10"
-                    MODULE="cxf-rt-transports-http-3.3.10.jar"
-                    MVN="mvn:org.apache.cxf/cxf-rt-transports-http/3.3.10"
+                    NAME="cxf-rt-transports-http-3.4.4"
+                    MODULE="cxf-rt-transports-http-3.4.4.jar"
+                    MVN="mvn:org.apache.cxf/cxf-rt-transports-http/3.4.4"
                     REQUIRED_IF="(AUTH_TYPE == 'ON_PREMISE') AND (MS_CRM_VERSION == 'CRM_2015')" />
                 <IMPORT
-                    NAME="cxf-rt-ws-addr-3.3.10"
-                    MODULE="cxf-rt-ws-addr-3.3.10.jar"
-                    MVN="mvn:org.apache.cxf/cxf-rt-ws-addr/3.3.10"
+                    NAME="cxf-rt-ws-addr-3.4.4"
+                    MODULE="cxf-rt-ws-addr-3.4.4.jar"
+                    MVN="mvn:org.apache.cxf/cxf-rt-ws-addr/3.4.4"
                     REQUIRED_IF="(AUTH_TYPE == 'ON_PREMISE') AND (MS_CRM_VERSION == 'CRM_2015')" />
                 <IMPORT
-                    NAME="cxf-rt-ws-mex-3.3.10"
-                    MODULE="cxf-rt-ws-mex-3.3.10.jar"
-                    MVN="mvn:org.apache.cxf/cxf-rt-ws-mex/3.3.10"
+                    NAME="cxf-rt-ws-mex-3.4.4"
+                    MODULE="cxf-rt-ws-mex-3.4.4.jar"
+                    MVN="mvn:org.apache.cxf/cxf-rt-ws-mex/3.4.4"
                     REQUIRED_IF="(AUTH_TYPE == 'ON_PREMISE') AND (MS_CRM_VERSION == 'CRM_2015')" />
                 <IMPORT
-                    NAME="cxf-rt-ws-policy-3.3.10"
-                    MODULE="cxf-rt-ws-policy-3.3.10.jar"
-                    MVN="mvn:org.apache.cxf/cxf-rt-ws-policy/3.3.10"
+                    NAME="cxf-rt-ws-policy-3.4.4"
+                    MODULE="cxf-rt-ws-policy-3.4.4.jar"
+                    MVN="mvn:org.apache.cxf/cxf-rt-ws-policy/3.4.4"
                     REQUIRED_IF="(AUTH_TYPE == 'ON_PREMISE') AND (MS_CRM_VERSION == 'CRM_2015')" />
                 <IMPORT
-                    NAME="cxf-rt-ws-rm-3.3.10"
-                    MODULE="cxf-rt-ws-rm-3.3.10.jar"
-                    MVN="mvn:org.apache.cxf/cxf-rt-ws-rm/3.3.10"
+                    NAME="cxf-rt-ws-rm-3.4.4"
+                    MODULE="cxf-rt-ws-rm-3.4.4.jar"
+                    MVN="mvn:org.apache.cxf/cxf-rt-ws-rm/3.4.4"
                     REQUIRED_IF="(AUTH_TYPE == 'ON_PREMISE') AND (MS_CRM_VERSION == 'CRM_2015')" />
                 <IMPORT
-                    NAME="cxf-rt-ws-security-3.3.10"
-                    MODULE="cxf-rt-ws-security-3.3.10.jar"
-                    MVN="mvn:org.apache.cxf/cxf-rt-ws-security/3.3.10"
+                    NAME="cxf-rt-ws-security-3.4.4"
+                    MODULE="cxf-rt-ws-security-3.4.4.jar"
+                    MVN="mvn:org.apache.cxf/cxf-rt-ws-security/3.4.4"
                     REQUIRED_IF="(AUTH_TYPE == 'ON_PREMISE') AND (MS_CRM_VERSION == 'CRM_2015')" />
                 <IMPORT
-                    NAME="cxf-rt-security-saml-3.3.10"
-                    MODULE="cxf-rt-security-saml-3.3.10.jar"
-                    MVN="mvn:org.apache.cxf/cxf-rt-security-saml/3.3.10"
+                    NAME="cxf-rt-security-saml-3.4.4"
+                    MODULE="cxf-rt-security-saml-3.4.4.jar"
+                    MVN="mvn:org.apache.cxf/cxf-rt-security-saml/3.4.4"
                     REQUIRED_IF="(AUTH_TYPE == 'ON_PREMISE') AND (MS_CRM_VERSION == 'CRM_2015')" />
                 <IMPORT
-                    NAME="cxf-rt-wsdl-3.3.10"
-                    MODULE="cxf-rt-wsdl-3.3.10.jar"
-                    MVN="mvn:org.apache.cxf/cxf-rt-wsdl/3.3.10"
+                    NAME="cxf-rt-wsdl-3.4.4"
+                    MODULE="cxf-rt-wsdl-3.4.4.jar"
+                    MVN="mvn:org.apache.cxf/cxf-rt-wsdl/3.4.4"
                     REQUIRED_IF="(AUTH_TYPE == 'ON_PREMISE') AND (MS_CRM_VERSION == 'CRM_2015')" />
                 <IMPORT
-                    NAME="cxf-services-sts-core-3.3.10"
-                    MODULE="cxf-services-sts-core-3.3.10.jar"
-                    MVN="mvn:org.apache.cxf.services.sts/cxf-services-sts-core/3.3.10"
+                    NAME="cxf-services-sts-core-3.4.4"
+                    MODULE="cxf-services-sts-core-3.4.4.jar"
+                    MVN="mvn:org.apache.cxf.services.sts/cxf-services-sts-core/3.4.4"
                     REQUIRED_IF="(AUTH_TYPE == 'ON_PREMISE') AND (MS_CRM_VERSION == 'CRM_2015')" />
                 <IMPORT
                     NAME="ehcache-2.10.5"

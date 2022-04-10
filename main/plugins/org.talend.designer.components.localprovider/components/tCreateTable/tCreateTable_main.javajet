@@ -2729,10 +2729,13 @@ if(columnList != null && columnList.size() > 0) {
                 <%
             }
         }
-        log4jCodeGenerateUtil.close_begin();
+        if(!useExistingConnection){
+            log4jCodeGenerateUtil.close_begin();
+            %>
+            <%=manager.closeConnection()%>
+            <%log4jCodeGenerateUtil.close_end();
+        }
         %>
-        <%=manager.closeConnection()%>
-        <%log4jCodeGenerateUtil.close_end();%>
         globalMap.put("<%=cid%>_QUERY", "<%=manager.getCreateTableSQL(columnList)%>");        
     } catch(java.lang.Exception e) {
         globalMap.put("<%=cid%>_ERROR_MESSAGE",e.getMessage());

@@ -113,8 +113,6 @@ public class CodeGenerator implements ICodeGenerator {
 
     private static final boolean DEBUG = false;
 
-    private static final boolean ERROR_ON_COMPONENT_MISSING = Boolean.getBoolean("error.on.component.missing");
-
     /**
      * Constructor : use the process and laguage to initialize internal components.
      *
@@ -850,11 +848,20 @@ public class CodeGenerator implements ICodeGenerator {
             IComponent component = node.getComponent();
             if (component instanceof DummyComponent) {
                 if (((DummyComponent) component).isMissingComponent()) {
-                    if (ERROR_ON_COMPONENT_MISSING) {
-                        throw new CodeGeneratorException("Component is missing: " + component.getName());
+                    String processName = "";
+                    try {
+                        IProcess proc = node.getProcess();
+                        processName = proc.getName() + " " + proc.getVersion();
+                    } catch (Exception e) {
+                        ExceptionHandler.process(e);
+                    }
+                    if (IProcess.ERR_ON_COMPONENT_MISSING) {
+                        throw new CodeGeneratorException(Messages.getString("CodeGenerator.Components.NotFound", processName,
+                                component.getName(), IProcess.PROP_ERR_ON_COMPONENT_MISSING));
                     }
                     if (ECodePart.BEGIN.equals(part)) {
-                        log.warn("Component is missing: " + component.getName());
+                        log.warn(Messages.getString("CodeGenerator.Components.NotFound", processName, component.getName(),
+                                IProcess.PROP_ERR_ON_COMPONENT_MISSING));
                     }
                 }
             }

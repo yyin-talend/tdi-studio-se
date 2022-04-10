@@ -85,7 +85,7 @@
 	if(enableLogStash) {
 	%>
 		if(enableLogStash) {
-			<%=jobCatcherNode.getUniqueName() %>.addJobExceptionMessage(currentComponent, currentComponentLabel, <%=ElementParameterParser.getValue(node, "__MESSAGE__") %>, null);
+			<%=jobCatcherNode.getUniqueName() %>.addJobExceptionMessage(currentComponent, cLabel, <%=ElementParameterParser.getValue(node, "__MESSAGE__") %>, null);
 			<%=jobCatcherNode.getDesignSubjobStartNode().getUniqueName() %>Process(globalMap);
 		}
 	<%
@@ -101,7 +101,7 @@
 		if(enableLogStash) {
 		%>
 			if(enableLogStash) {
-				<%=jobCatcherNode.getUniqueName() %>.addJobExceptionMessage(currentComponent, currentComponentLabel, <%=ElementParameterParser.getValue(node, "__MESSAGE__") %>, e_<%=cid%>);
+				<%=jobCatcherNode.getUniqueName() %>.addJobExceptionMessage(currentComponent, cLabel, <%=ElementParameterParser.getValue(node, "__MESSAGE__") %>, e_<%=cid%>);
 				<%=jobCatcherNode.getDesignSubjobStartNode().getUniqueName() %>Process(globalMap);
 			}
 		<%
