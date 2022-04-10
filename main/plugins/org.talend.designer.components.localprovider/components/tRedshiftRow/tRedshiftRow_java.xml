@@ -165,6 +165,7 @@
               FIELD="CHECK"
               NUM_ROW="14"
               SHOW_IF="(USE_EXISTING_CONNECTION == 'false') AND (DRIVER_VERSION == 'DRIVER_V2')"
+              REPOSITORY_VALUE="USE_STRING_PROPERTIES"
               REQUIRED="true"
       >
       </PARAMETER>
