@@ -44,6 +44,7 @@ import org.talend.commons.ui.runtime.image.ImageProvider;
 import org.talend.core.model.general.ConnectionBean;
 import org.talend.core.service.IStudioLiteP2Service;
 import org.talend.core.service.IStudioLiteP2Service.UpdateSiteConfig;
+import org.talend.repository.ProjectManager;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.ui.login.LoginHelper;
 
@@ -78,7 +79,13 @@ public class UpdatesitePreferencePage extends PreferencePage {
         ConnectionBean curConnection = LoginHelper.getInstance().getCurrentSelectedConnBean();
         if (PlatformUI.isWorkbenchRunning() && LoginHelper.isCloudConnection(curConnection)) {
             remoteGroup = new Group(panel, SWT.NONE);
-            remoteGroup.setText(Messages.getString("UpdatesitePreferencePage.group.remote", curConnection.getName()));
+            String projectLabel = "";
+            try {
+                projectLabel = ProjectManager.getInstance().getCurrentProject().getLabel();
+            } catch (Exception e) {
+                ExceptionHandler.process(e);
+            }
+            remoteGroup.setText(Messages.getString("UpdatesitePreferencePage.group.remote", projectLabel));
             fd = new FormData();
             fd.top = new FormAttachment(0);
             fd.left = new FormAttachment(0);
