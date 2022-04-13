@@ -1422,7 +1422,7 @@ public class Process extends Element implements IProcess2, IGEFProcess, ILastVer
                             param.setCategory(EComponentCategory.TECHNICAL);
                             String fieldName = pType.getField();
                             if (isActiveDatabase && fieldName == null) {
-                            	fieldName = EParameterFieldType.TEXT.getName();
+                                fieldName = EParameterFieldType.CHECK.getName();
                             }
                             EParameterFieldType fieldType = null;
                             if (StringUtils.isNotBlank(fieldName)) {
