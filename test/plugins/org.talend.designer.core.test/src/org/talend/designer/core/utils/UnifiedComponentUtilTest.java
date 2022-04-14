@@ -133,8 +133,6 @@ public class UnifiedComponentUtilTest {
                     EDatabaseTypeName.SYBASEASE.getDisplayName());
             boolean componentExist = isComponentExist(filterUnifiedComponent, "tSybaseOutputBulkExec");
             assertTrue(componentExist);
-            componentExist = isComponentExist(filterUnifiedComponent, "tSybaseIQOutputBulkExec");
-            assertFalse(componentExist);
             componentExist = isComponentExist(filterUnifiedComponent, "tDBOutputBulkExec");
             assertTrue(componentExist);
         } finally {
