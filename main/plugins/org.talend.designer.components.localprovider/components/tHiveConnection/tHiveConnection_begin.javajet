@@ -13,7 +13,8 @@ imports="
 	String theDistribution = ElementParameterParser.getValue(theNode, "__DISTRIBUTION__");
 	String theVersion = ElementParameterParser.getValue(theNode, "__HIVE_VERSION__");
     boolean isLog4jEnabled = ("true").equals(ElementParameterParser.getValue(theNode.getProcess(), "__LOG4J_ACTIVATE__"));
-
+	
+	String connection = ElementParameterParser.getValue(theNode, "__CONNECTION_MODE__");
 	org.talend.hadoop.distribution.component.HiveComponent hiveDistrib = null;
 	try {
 		hiveDistrib = (org.talend.hadoop.distribution.component.HiveComponent) org.talend.hadoop.distribution.DistributionFactory.buildDistribution(theDistribution, theVersion);
@@ -27,7 +28,7 @@ imports="
 %>
         <%@ include file="@{org.talend.designer.components.localprovider}/components/tHiveConnection/tHiveConnection_azure.javajet"%>
 <%
-    } else if (hiveDistrib.doSupportUniversalDataprocMode()) { // Connection through Dataproc api
+    } else if("DATAPROC".equalsIgnoreCase(connection)) { // Connection through Dataproc api
 %>
         <%@ include file="@{org.talend.designer.components.localprovider}/components/tHiveConnection/tHiveConnection_dataproc.javajet"%>
 <%
