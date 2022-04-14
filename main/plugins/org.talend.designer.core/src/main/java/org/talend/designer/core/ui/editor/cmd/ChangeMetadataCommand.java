@@ -591,7 +591,7 @@ public class ChangeMetadataCommand extends Command {
                     }
                 }
                 if (GlobalServiceRegister.getDefault().isServiceRegistered(IDQComponentService.class)) {
-                    final IDQComponentService service = (IDQComponentService) GlobalServiceRegister
+                    final IDQComponentService service = GlobalServiceRegister
                             .getDefault()
                             .getService(IDQComponentService.class);
                     service.externalComponentInputMetadataChange(node, newInputMetadata, currentInputMetadata);
@@ -615,7 +615,7 @@ public class ChangeMetadataCommand extends Command {
             }
             if (GlobalServiceRegister.getDefault().isServiceRegistered(IDQComponentService.class)) {
                 final IDQComponentService service =
-                        (IDQComponentService) GlobalServiceRegister.getDefault().getService(IDQComponentService.class);
+                        GlobalServiceRegister.getDefault().getService(IDQComponentService.class);
                 service.externalComponentOutputMetadataChange(node, newOutputMetadata, currentOutputMetadata);
             }
             MetadataToolHelper.copyTable(newOutputMetadata, currentOutputMetadata);
@@ -906,6 +906,9 @@ public class ChangeMetadataCommand extends Command {
             changeTableNameParameter(newdbTableName, olddbTableName, uniqueName, dbTableElementField);
             if (((Node) curNode).getComponent().getName().startsWith("tSAPADSO")) { //$NON-NLS-1$
                 IElementParameter serviceNameElementField = curNode.getElementParameter("SERVICE_NAME"); //$NON-NLS-1$
+                if (((Node) curNode).getComponent().getName().startsWith("tSAPADSOOutput")) {//$NON-NLS-1$
+                    serviceNameElementField = curNode.getElementParameter("ADSO_NAME");//$NON-NLS-1$
+                }
                 changeTableNameParameter(newdbTableName, olddbTableName, uniqueName, serviceNameElementField);
             }
             if (((Node) curNode).isELTComponent()) {
