@@ -144,13 +144,12 @@ imports="
                     }else{
                         throw se_<%=cid%>;
                     }
-                }finally{
-                    session_<%=cid%>.close();
                 }
 
 
 
 		globalMap.put("conn_<%=cid%>",client_<%=cid%>);
+		globalMap.put("session_<%=cid%>",session_<%=cid%>);
 
 
 
