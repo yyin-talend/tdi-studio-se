@@ -137,7 +137,7 @@ public class UnifiedComponentUtil {
             for (IComponent component : componentList) {
                 String databaseName = service.getUnifiedCompDisplayName(service.getDelegateComponent(component),
                         component.getName());
-                if (StringUtils.isNotBlank(databaseName) && !databaseName.equals(dbTypeName)) {
+                if (("JDBC".equals(databaseName) || isAdditionalJDBC(databaseName)) && !dbTypeName.equals(databaseName)) {
                     continue;
                 }
                 if (isAdditionalJDBC(databaseName)) {
