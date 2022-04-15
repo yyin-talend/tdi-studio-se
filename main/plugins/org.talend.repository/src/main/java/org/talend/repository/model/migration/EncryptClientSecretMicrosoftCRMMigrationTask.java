@@ -39,7 +39,7 @@ public class EncryptClientSecretMicrosoftCRMMigrationTask extends AbstractJobMig
             public void transform(NodeType node) {
                 ElementParameterType client_secret = ComponentUtilities.getNodeProperty(node, "CLIENT_SECRET");
 
-                if ("TEXT".equals(client_secret.getField())) {
+                if (client_secret != null && "TEXT".equals(client_secret.getField())) {
                     client_secret.setField("PASSWORD");
 
                     try {
