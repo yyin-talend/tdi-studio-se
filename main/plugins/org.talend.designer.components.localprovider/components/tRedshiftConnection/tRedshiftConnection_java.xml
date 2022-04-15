@@ -129,6 +129,7 @@
               FIELD="CHECK"
               NUM_ROW="45"
               SHOW_IF="(DRIVER_VERSION == 'DRIVER_V2')"
+              REPOSITORY_VALUE="USE_STRING_PROPERTIES"
               REQUIRED="true"
       >
       </PARAMETER>
