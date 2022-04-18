@@ -71,29 +71,29 @@ if(hiveDistrib.isExecutedThroughWebHCat()) {
 	if(exitCode_<%=cid%> > 0) {
 		
 <%
-		if(("true").equals(dieOnError)) {
+                if(("true").equals(dieOnError)) {
 %>
-			throw new Exception("The Hive job failed. Please read the logs for more details");
+                    throw new Exception("The Hive job failed. Please read the logs for more details");
 <%
-		} else {
+                } else {
 %>
-			System.err.println("The Hive job failed. Please read the logs for more details");
+                    System.err.println("The Hive job failed. Please read the logs for more details");
 <%
-			if(isLog4jEnabled) {
+                    if(isLog4jEnabled) {
 %>
-				log.error("<%=cid%> - The Hive job failed. Please read the logs for more details");
+                        log.error("<%=cid%> - The Hive job failed. Please read the logs for more details");
 <%
-			}
-		}
+                    }
+                }
 %>
-	}
+            }
 <%
-} else if (hiveDistrib.doSupportUniversalDataprocMode()) {
-    if(isLog4jEnabled) {
+        } else if (theVersion.equals("DATAPROC")) { // dataproc
+            if(isLog4jEnabled) {
 %>
-        log.debug("Query for <%=cid%>: " + query_<%=cid %>.replace("';'", "'\\;'") + ";");
+                log.debug("Query for <%=cid%>: " + querySQL_<%=cid %>.replace("';'", "'\\;'") + ";");
 <%
-    }
+            }
 %>
     query_<%=cid %> = <%=dbquery%>;
     instance_<%=cid%>.addQuery(query_<%=cid %>.replace("';'", "'\\;'") + ";");

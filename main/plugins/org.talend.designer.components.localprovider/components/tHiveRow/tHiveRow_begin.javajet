@@ -53,7 +53,6 @@ imports="
         return "";
     }
     boolean isCustom = hiveDistrib instanceof org.talend.hadoop.distribution.custom.CustomDistribution;
-
 	if(hiveDistrib.isExecutedThroughWebHCat()) {
 		// Distribution: WebHCat
 %>
