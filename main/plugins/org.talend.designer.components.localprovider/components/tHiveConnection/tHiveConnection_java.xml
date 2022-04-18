@@ -699,10 +699,10 @@
 				
 			<!-- Dataproc 2.x -->	
 			<IMPORT MODULE_GROUP="DATAPROC-LAUNCHER-DI" 
-                    REQUIRED_IF="CONNECTION_MODE == 'DATAPROC'"/>
+                   REQUIRED_IF="CONNECTION_MODE == 'DATAPROC'"/>
              <!-- Spark universal 3.1.x -->	
 			<IMPORT MODULE_GROUP="UNIVERSAL-SPARK-3.1.X" 
-                    REQUIRED_IF="CONNECTION_MODE == 'STANDALONE'"/>       
+                   REQUIRED_IF="(CONNECTION_MODE=='STANDALONE') AND (DISTRIB[DISTRIBUTION, HIVE_VERSION].doSupportUniversalLocalMode[])" REQUIRED="true"/>
 		</IMPORTS>
 			
 	</CODEGENERATION>

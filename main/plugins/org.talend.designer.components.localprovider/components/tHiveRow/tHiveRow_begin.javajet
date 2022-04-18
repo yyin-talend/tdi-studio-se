@@ -94,7 +94,7 @@ imports="
 %>
         <%@ include file="@{org.talend.designer.components.localprovider}/components/templates/Hive/GetDataprocConnection.javajet"%>
 <%
-	} else {
+	} else if (theVersion.equals("STANDALONE")) {
 		// Distribution: other than WebHCat, Dataproc
 %>
 		<%@ include file="../templates/Hive/GetConnection.javajet"%>
@@ -231,7 +231,7 @@ imports="
 	    }
 	}
 
-	if(!hiveDistrib.useCloudLauncher() && !hiveDistrib.doSupportUniversalDataprocMode()) {
+	if(theVersion.equals("STANDALONE")) {
 		if (usePrepareStatement) {
 		%>
 			java.sql.PreparedStatement pstmt_<%=cid %> = conn_<%=cid%>.prepareStatement(<%=dbquery%>);
