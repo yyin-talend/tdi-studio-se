@@ -120,7 +120,7 @@ if(hiveDistrib.isExecutedThroughWebHCat()) {
 %>
     }
 <%
-} else { // normal mode
+} else if (theVersion.equals("STANDALONE"))  { // normal mode
 	List<Map<String, String>> prepareStatementParameters = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__SET_PREPAREDSTATEMENT_PARAMETERS__");  
 	
 	String incomingConnName = null;
