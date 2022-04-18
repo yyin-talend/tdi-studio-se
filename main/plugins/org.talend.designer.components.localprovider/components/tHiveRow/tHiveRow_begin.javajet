@@ -89,7 +89,7 @@ imports="
 			}
 <%
 		}
-    } else if(hiveDistrib.doSupportUniversalDataprocMode()) {
+    } else if (theVersion.equals("DATAPROC")) {
 		// Distribution: Google Dataproc
 %>
         <%@ include file="@{org.talend.designer.components.localprovider}/components/templates/Hive/GetDataprocConnection.javajet"%>
