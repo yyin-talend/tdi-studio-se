@@ -2441,7 +2441,7 @@ public class Process extends Element implements IProcess2, IGEFProcess, ILastVer
         }
 
         if (!unloadedNode.isEmpty()) {
-            if (CommonsPlugin.isScriptCmdlineMode() && !CommonsPlugin.isDevMode()) {
+            if (CommonsPlugin.isScriptCmdlineMode() && !CommonsPlugin.isDevMode() && !CommonsPlugin.isJunitWorking()) {
                 if (ERR_ON_COMPONENT_MISSING) {
                     StringBuilder missingComps = new StringBuilder();
                     try {
