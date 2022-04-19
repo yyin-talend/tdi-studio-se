@@ -216,10 +216,10 @@
 			<!-- #################### -->
 			<!-- Dataproc 2.x -->
 			<IMPORT MODULE_GROUP="DATAPROC-LAUNCHER" 
-                    REQUIRED_IF="(CONNECTION_MODE=='DATAPROC' AND DISTRIBUTION!='CUSTOM') AND USE_EXISTING_CONNECTION=='false'" REQUIRED="true"/>
+                    REQUIRED_IF="(CONNECTION_MODE=='DATAPROC') AND (USE_EXISTING_CONNECTION=='false')" REQUIRED="false"/>
             <!-- Spark universal 3.1.x -->
 			<IMPORT MODULE_GROUP="UNIVERSAL-SPARK-3.1.X" 
-                    REQUIRED_IF="(USE_EXISTING_CONNECTION=='false) AND (CONNECTION_MODE=='STANDALONE') AND (DISTRIB[DISTRIBUTION, HIVE_VERSION].doSupportUniversalLocalMode[])" REQUIRED="true"/>  
+                    REQUIRED_IF="(USE_EXISTING_CONNECTION=='false) AND (CONNECTION_MODE=='STANDALONE') AND (DISTRIB[DISTRIBUTION, HIVE_VERSION].doSupportUniversalLocalMode[])" REQUIRED="false"/>  
 		</IMPORTS>
 	</CODEGENERATION>
 
