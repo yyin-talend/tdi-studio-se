@@ -214,12 +214,13 @@
             <IMPORT NAME="azure-storage-1.2.0" MODULE="azure-storage-1.2.0.jar" MVN="mvn:org.talend.libraries/azure-storage-1.2.0/6.0.0" 
                 REQUIRED_IF="(USE_EXISTING_CONNECTION=='false') AND (DISTRIBUTION=='MICROSOFT_HD_INSIGHT') AND (DISTRIB[DISTRIBUTION, HIVE_VERSION].doSupportOldImportMode[])" />
 			<!-- #################### -->
-			<!-- Dataproc 2.x -->
+			
+			<!-- Dataproc 2.x -->	
 			<IMPORT MODULE_GROUP="DATAPROC-LAUNCHER-DI" 
-                    REQUIRED_IF="(CONNECTION_MODE=='DATAPROC') AND (USE_EXISTING_CONNECTION=='false') AND (DISTRIB[DISTRIBUTION, HIVE_VERSION].doSupportUniversalDataprocMode[])" REQUIRED="false"/>
-            <!-- Spark universal 3.1.x -->
+                   REQUIRED_IF="CONNECTION_MODE =='DATAPROC'" REQUIRED="false"/>
+             <!-- Spark universal 3.1.x -->	
 			<IMPORT MODULE_GROUP="UNIVERSAL-SPARK-3.1.X" 
-                    REQUIRED_IF="(USE_EXISTING_CONNECTION=='false) AND (CONNECTION_MODE=='STANDALONE') AND (DISTRIB[DISTRIBUTION, HIVE_VERSION].doSupportUniversalLocalMode[])" REQUIRED="false"/>  
+                   REQUIRED_IF="(CONNECTION_MODE=='STANDALONE') AND (DISTRIB[DISTRIBUTION, HIVE_VERSION].doSupportUniversalLocalMode[])" REQUIRED="false"/>
 		</IMPORTS>
 	</CODEGENERATION>
 
