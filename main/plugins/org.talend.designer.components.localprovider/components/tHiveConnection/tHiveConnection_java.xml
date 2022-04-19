@@ -698,11 +698,13 @@
 				REQUIRED_IF="(DISTRIB[DISTRIBUTION, HIVE_VERSION].doSupportUniversalDataprocMode[] AND DISTRIBUTION!='CUSTOM')" REQUIRED="true"/>
 				
 			<!-- Dataproc 2.x -->	
-			<IMPORT MODULE_GROUP="DATAPROC-LAUNCHER-DI" 
+			<IMPORT MODULE_GROUP="DATAPROC-LAUNCHER-DI"
+				   REQUIRED="false"
                    REQUIRED_IF="(CONNECTION_MODE == 'DATAPROC') AND (DISTRIB[DISTRIBUTION, HIVE_VERSION].doSupportUniversalDataprocMode[])"/>
              <!-- Spark universal 3.1.x -->	
 			<IMPORT MODULE_GROUP="UNIVERSAL-SPARK-3.1.X" 
-                   REQUIRED_IF="(CONNECTION_MODE=='STANDALONE') AND (DISTRIB[DISTRIBUTION, HIVE_VERSION].doSupportUniversalLocalMode[])" REQUIRED="true"/>
+				   REQUIRED="false"
+                   REQUIRED_IF="(CONNECTION_MODE=='STANDALONE') AND (DISTRIB[DISTRIBUTION, HIVE_VERSION].doSupportUniversalLocalMode[])"/>
 		</IMPORTS>
 			
 	</CODEGENERATION>
