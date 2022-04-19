@@ -86,10 +86,11 @@ public class UnifiedComponentUtilTest {
     }
 
     @Test
-    public void testFilterUnifiedComponent4Sybase() throws Exception {
+    public void testFilterUnifiedComponent4Filter() throws Exception {
         ProxyRepositoryFactory proxyRepositoryFactory = ProxyRepositoryFactory.getInstance();
         IRepositoryViewObject metadataRepObject = null;
         try {
+            // sybase
             Property metadataProperty = PropertiesFactory.eINSTANCE.createProperty();
             DatabaseConnectionItem metadataItem = PropertiesFactory.eINSTANCE.createDatabaseConnectionItem();
             ItemState metadataItemState = PropertiesFactory.eINSTANCE.createItemState();
@@ -134,6 +135,31 @@ public class UnifiedComponentUtilTest {
             boolean componentExist = isComponentExist(filterUnifiedComponent, "tSybaseOutputBulkExec");
             assertTrue(componentExist);
             componentExist = isComponentExist(filterUnifiedComponent, "tDBOutputBulkExec");
+            assertTrue(componentExist);
+
+            // redshift
+            connection.setDatabaseType(EDatabaseTypeName.REDSHIFT.getDisplayName());
+            proxyRepositoryFactory.save(metadataItem);
+            metadataRepObject = proxyRepositoryFactory.getSpecificVersion(metadataProperty.getId(), metadataProperty.getVersion(),
+                    true);
+            RepositoryNode metadataNode1 = new RepositoryNode(metadataRepObject, null, ENodeType.REPOSITORY_ELEMENT);
+            IComponentName rcSetting1 = RepositoryComponentManager.getSetting(metadataItem,
+                    ERepositoryObjectType.METADATA_CONNECTIONS);
+            List<IComponent> neededComponents1 = RepositoryComponentManager.filterNeededComponents(metadataItem, metadataNode1,
+                    ERepositoryObjectType.METADATA_CONNECTIONS, true, metadataRepObject.getProjectLabel());
+            RepositoryComponentSetting compsetting1 = new RepositoryComponentSetting();
+            compsetting1.setInputComponent(rcSetting1.getInputComponentName());
+            compsetting1.setOutputComponent(rcSetting1.getOutPutComponentName());
+            compsetting1.setDefaultComponent(rcSetting1.getDefaultComponentName());
+            List<IComponent> filterUnifiedComponent1 = UnifiedComponentUtil.filterUnifiedComponent(compsetting1,
+                    neededComponents1, EDatabaseTypeName.REDSHIFT.getDisplayName());
+            componentExist = isComponentExist(filterUnifiedComponent1, "tRedshiftInput");
+            assertTrue(componentExist);
+            componentExist = isComponentExist(filterUnifiedComponent1, "tRedshiftOutput");
+            assertTrue(componentExist);
+            componentExist = isComponentExist(filterUnifiedComponent1, "tDBInput");
+            assertTrue(componentExist);
+            componentExist = isComponentExist(filterUnifiedComponent1, "tDBOutput");
             assertTrue(componentExist);
         } finally {
             if (metadataRepObject != null) {
