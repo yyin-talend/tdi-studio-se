@@ -254,6 +254,14 @@ public class SchemaUtils {
         return metadataTableWithFakeName;
     }
 
+    public static IMetadataTable validateMetadataTableCompatibleWithAvro(IMetadataTable metadataTable) {
+        if (!AvroNamesValidationHelper.isValidParameterName(metadataTable.getLabel())) {
+            metadataTable.setLabel(AvroNamesValidationHelper.getAvroCompatibleName(metadataTable.getLabel()));
+        }
+
+        return metadataTable;
+    }
+
     private static void convertComponentSchemaIntoTalendSchema(Schema schema, MetadataTable metadataTable) {
         if (schema == null || metadataTable == null) {
             return;
