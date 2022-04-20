@@ -200,6 +200,7 @@ public class GenericWizardService implements IGenericWizardService {
 
     @Override
     public void updateComponentSchema(INode node, IMetadataTable metadataTable) {
+        metadataTable = SchemaUtils.validateMetadataTableCompatibleWithAvro(metadataTable);
         SchemaUtils.updateComponentSchema(node, metadataTable, Boolean.FALSE);
     }
 
@@ -276,11 +277,11 @@ public class GenericWizardService implements IGenericWizardService {
      * org.talend.core.runtime.services.IGenericWizardService#getAllComponentProperties(org.talend.core.model.metadata.
      * builder.connection.Connection, java.lang.String, boolean)
      */
+
     @Override
     public List<ComponentProperties> getAllComponentProperties(Connection connection, String tableLabel) {
         return getAllComponentProperties(connection, tableLabel, false);
     }
-
     @Override
     public ERepositoryObjectType getNewRepType(String oldRepTypeName) {
         return RepTypeMappingManager.getInstance().getNewRepType(oldRepTypeName);
@@ -480,5 +481,4 @@ public class GenericWizardService implements IGenericWizardService {
         }
         return null;
     }
-
 }
