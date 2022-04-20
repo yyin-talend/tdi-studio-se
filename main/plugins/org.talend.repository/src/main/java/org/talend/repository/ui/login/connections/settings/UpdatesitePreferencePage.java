@@ -25,12 +25,15 @@ import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Group;
@@ -63,22 +66,40 @@ public class UpdatesitePreferencePage extends PreferencePage {
 
     private Text remoteUpdateUriText;
 
+    private Button overwriteRemoteUpdateSettingsBtn;
+
+    private Composite panel;
+
+    private Composite remotePanel;
+
+    private Composite localPanel;
+
     private Composite warningPanel;
 
     @Override
     protected Control createContents(Composite parent) {
         this.setTitle(Messages.getString("UpdatesitePreferencePage.title"));
 
-        Composite panel = new Composite(parent, SWT.NONE);
+        panel = new Composite(parent, SWT.NONE);
         panel.setLayout(new FormLayout());
+
+        FormData fd = null;
+        remotePanel = new Composite(panel, SWT.NONE);
+        FormLayout formLayout = new FormLayout();
+        formLayout.marginBottom = 7;
+        remotePanel.setLayout(formLayout);
+        fd = new FormData();
+        fd.top = new FormAttachment(0);
+        fd.left = new FormAttachment(0);
+        fd.right = new FormAttachment(100);
+        remotePanel.setLayoutData(fd);
 
         Group remoteGroup = null;
         GridLayout panelLayout = null;
-        FormData fd = null;
         GridData gd = null;
         ConnectionBean curConnection = LoginHelper.getInstance().getCurrentSelectedConnBean();
         if (PlatformUI.isWorkbenchRunning() && LoginHelper.isCloudConnection(curConnection)) {
-            remoteGroup = new Group(panel, SWT.NONE);
+            remoteGroup = new Group(remotePanel, SWT.NONE);
             String projectLabel = "";
             try {
                 projectLabel = ProjectManager.getInstance().getCurrentProject().getLabel();
@@ -120,16 +141,30 @@ public class UpdatesitePreferencePage extends PreferencePage {
             remoteUpdateUriText.setEditable(false);
             gd = new GridData(GridData.FILL_HORIZONTAL);
             remoteUpdateUriText.setLayoutData(gd);
+
+            overwriteRemoteUpdateSettingsBtn = new Button(remotePanel, SWT.CHECK);
+            overwriteRemoteUpdateSettingsBtn
+                    .setText(Messages.getString("UpdatesitePreferencePage.btn.overwriteRemoteUpdateSettings"));
+            fd = new FormData();
+            fd.top = new FormAttachment(remoteGroup, 10, SWT.BOTTOM);
+            fd.left = new FormAttachment(0);
+            fd.right = new FormAttachment(100);
+            overwriteRemoteUpdateSettingsBtn.setLayoutData(fd);
         }
 
-        Group localGroup = new Group(panel, SWT.NONE);
+        localPanel = new Composite(panel, SWT.NONE);
+        localPanel.setLayout(new FormLayout());
+        fd = new FormData();
+        fd.top = new FormAttachment(remotePanel, 0, SWT.BOTTOM);
+        fd.left = new FormAttachment(0);
+        fd.right = new FormAttachment(100);
+        fd.bottom = new FormAttachment(100);
+        localPanel.setLayoutData(fd);
+
+        Group localGroup = new Group(localPanel, SWT.NONE);
         localGroup.setText(Messages.getString("UpdatesitePreferencePage.group.local"));
         fd = new FormData();
-        if (remoteGroup != null) {
-            fd.top = new FormAttachment(remoteGroup, 10, SWT.BOTTOM);
-        } else {
-            fd.top = new FormAttachment(0);
-        }
+        fd.top = new FormAttachment(0);
         fd.left = new FormAttachment(0);
         fd.right = new FormAttachment(100);
         fd.bottom = new FormAttachment(100);
@@ -203,6 +238,20 @@ public class UpdatesitePreferencePage extends PreferencePage {
                 remoteReleaseUriText.setText(tmcRelease);
             }
 
+            boolean overwriteTmcUpdateSettings = config.isOverwriteTmcUpdateSettings(monitor);
+            if (overwriteRemoteUpdateSettingsBtn != null) {
+                overwriteRemoteUpdateSettingsBtn.setSelection(overwriteTmcUpdateSettings);
+                localPanel.setVisible(overwriteTmcUpdateSettings);
+            }
+
+            boolean enableTmcUpdateSettings = config.isEnableTmcUpdateSettings(monitor);
+            FormData fd = (FormData) remotePanel.getLayoutData();
+            if (enableTmcUpdateSettings) {
+                fd.height = SWT.DEFAULT;
+            } else {
+                fd.height = 0;
+            }
+
             Collection<URI> updates = config.getLocalUpdates(monitor);
             StringBuilder updateStr = new StringBuilder();
             if (updates != null && !updates.isEmpty()) {
@@ -222,6 +271,8 @@ public class UpdatesitePreferencePage extends PreferencePage {
                 String tmcUpdate = config.getTmcUpdate(monitor);
                 remoteUpdateUriText.setText(tmcUpdate);
             }
+
+            panel.layout();
         } catch (Exception e) {
             ExceptionHandler.process(e);
         }
@@ -242,6 +293,20 @@ public class UpdatesitePreferencePage extends PreferencePage {
                 refresh();
             }
         });
+        if (overwriteRemoteUpdateSettingsBtn != null) {
+            overwriteRemoteUpdateSettingsBtn.addSelectionListener(new SelectionAdapter() {
+
+                @Override
+                public void widgetSelected(SelectionEvent e) {
+                    onOverwriteRemoteUpdateSettingsBtn(e);
+                }
+
+            });
+        }
+    }
+
+    private void onOverwriteRemoteUpdateSettingsBtn(SelectionEvent e) {
+        localPanel.setVisible(overwriteRemoteUpdateSettingsBtn.getSelection());
     }
 
     @Override
@@ -266,6 +331,9 @@ public class UpdatesitePreferencePage extends PreferencePage {
                         }
                         config.setLocalUpdates(monitor, updates);
                     }
+                }
+                if (overwriteRemoteUpdateSettingsBtn != null) {
+                    config.overwriteTmcUpdateSettings(monitor, overwriteRemoteUpdateSettingsBtn.getSelection());
                 }
             } catch (Exception e) {
                 ExceptionMessageDialog.openError(null, Messages.getString("UpdatesitePreferencePage.err.title"),
@@ -292,6 +360,10 @@ public class UpdatesitePreferencePage extends PreferencePage {
                                 String.join(",", updates.stream().map(uri -> uri.toString()).collect(Collectors.toList())));
                     }
                     updateUriText.setText(updateStr.toString());
+                    if (this.overwriteRemoteUpdateSettingsBtn != null) {
+                        this.overwriteRemoteUpdateSettingsBtn.setSelection(config.isOverwriteTmcUpdateSettings(monitor));
+                        onOverwriteRemoteUpdateSettingsBtn(null);
+                    }
                 } else {
                     // normally it should be a dead code
                     throw new Exception(Messages.getString("UpdatesitePreferencePage.err.reset.readonly"));
