@@ -93,7 +93,7 @@ imports="
 %>
         <%@ include file="@{org.talend.designer.components.localprovider}/components/templates/Hive/GetDataprocConnection.javajet"%>
 <%
-	} else if (theVersion.equals("STANDALONE")) {
+	} else {
 		// Distribution: other than WebHCat, Dataproc
 %>
 		<%@ include file="../templates/Hive/GetConnection.javajet"%>
