@@ -1422,7 +1422,7 @@ public class Process extends Element implements IProcess2, IGEFProcess, ILastVer
                             param.setCategory(EComponentCategory.TECHNICAL);
                             String fieldName = pType.getField();
                             if (isActiveDatabase && fieldName == null) {
-                            	fieldName = EParameterFieldType.TEXT.getName();
+                                fieldName = EParameterFieldType.CHECK.getName();
                             }
                             EParameterFieldType fieldType = null;
                             if (StringUtils.isNotBlank(fieldName)) {
@@ -2441,7 +2441,7 @@ public class Process extends Element implements IProcess2, IGEFProcess, ILastVer
         }
 
         if (!unloadedNode.isEmpty()) {
-            if (CommonsPlugin.isScriptCmdlineMode() && !CommonsPlugin.isDevMode()) {
+            if (CommonsPlugin.isScriptCmdlineMode() && !CommonsPlugin.isDevMode() && !CommonsPlugin.isJunitWorking()) {
                 if (ERR_ON_COMPONENT_MISSING) {
                     StringBuilder missingComps = new StringBuilder();
                     try {
