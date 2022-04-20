@@ -238,16 +238,16 @@ public class UpdatesitePreferencePage extends PreferencePage {
                 remoteReleaseUriText.setText(tmcRelease);
             }
 
-            boolean overwriteTmcUpdateSettings = config.isOverwriteTmcUpdateSettings(monitor);
-            if (overwriteRemoteUpdateSettingsBtn != null) {
-                overwriteRemoteUpdateSettingsBtn.setSelection(overwriteTmcUpdateSettings);
-                localPanel.setVisible(overwriteTmcUpdateSettings);
-            }
-
             boolean enableTmcUpdateSettings = config.isEnableTmcUpdateSettings(monitor);
             FormData fd = (FormData) remotePanel.getLayoutData();
             if (enableTmcUpdateSettings) {
                 fd.height = SWT.DEFAULT;
+
+                boolean overwriteTmcUpdateSettings = config.isOverwriteTmcUpdateSettings(monitor);
+                if (overwriteRemoteUpdateSettingsBtn != null) {
+                    overwriteRemoteUpdateSettingsBtn.setSelection(overwriteTmcUpdateSettings);
+                    localPanel.setVisible(overwriteTmcUpdateSettings);
+                }
             } else {
                 fd.height = 0;
             }
@@ -360,10 +360,10 @@ public class UpdatesitePreferencePage extends PreferencePage {
                                 String.join(",", updates.stream().map(uri -> uri.toString()).collect(Collectors.toList())));
                     }
                     updateUriText.setText(updateStr.toString());
-                    if (this.overwriteRemoteUpdateSettingsBtn != null) {
-                        this.overwriteRemoteUpdateSettingsBtn.setSelection(config.isOverwriteTmcUpdateSettings(monitor));
-                        onOverwriteRemoteUpdateSettingsBtn(null);
-                    }
+//                    if (this.overwriteRemoteUpdateSettingsBtn != null) {
+//                        this.overwriteRemoteUpdateSettingsBtn.setSelection(config.isOverwriteTmcUpdateSettings(monitor));
+//                        onOverwriteRemoteUpdateSettingsBtn(null);
+//                    }
                 } else {
                     // normally it should be a dead code
                     throw new Exception(Messages.getString("UpdatesitePreferencePage.err.reset.readonly"));
