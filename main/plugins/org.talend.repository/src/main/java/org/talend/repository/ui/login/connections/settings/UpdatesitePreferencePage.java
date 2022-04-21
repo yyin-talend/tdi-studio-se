@@ -233,16 +233,20 @@ public class UpdatesitePreferencePage extends PreferencePage {
             if (!config.isReleaseEditable()) {
                 releaseUriText.setToolTipText(Messages.getString("UpdatesitePreferencePage.tooltip.cantEdit"));
             }
-            if (remoteReleaseUriText != null) {
-                String tmcRelease = config.getTmcRelease(monitor);
-                remoteReleaseUriText.setText(tmcRelease);
-            }
 
             boolean enableTmcUpdateSettings = config.isEnableTmcUpdateSettings(monitor);
             FormData fd = (FormData) remotePanel.getLayoutData();
             if (enableTmcUpdateSettings) {
                 fd.height = SWT.DEFAULT;
 
+                if (remoteReleaseUriText != null) {
+                    String tmcRelease = config.getTmcRelease(monitor);
+                    remoteReleaseUriText.setText(tmcRelease);
+                }
+                if (remoteUpdateUriText != null) {
+                    String tmcUpdate = config.getTmcUpdate(monitor);
+                    remoteUpdateUriText.setText(tmcUpdate);
+                }
                 boolean overwriteTmcUpdateSettings = config.isOverwriteTmcUpdateSettings(monitor);
                 if (overwriteRemoteUpdateSettingsBtn != null) {
                     overwriteRemoteUpdateSettingsBtn.setSelection(overwriteTmcUpdateSettings);
@@ -266,10 +270,6 @@ public class UpdatesitePreferencePage extends PreferencePage {
             updateUriText.setEditable(config.isUpdateEditable());
             if (!config.isUpdateEditable()) {
                 updateUriText.setToolTipText(Messages.getString("UpdatesitePreferencePage.tooltip.cantEdit"));
-            }
-            if (remoteUpdateUriText != null) {
-                String tmcUpdate = config.getTmcUpdate(monitor);
-                remoteUpdateUriText.setText(tmcUpdate);
             }
 
             panel.layout();
