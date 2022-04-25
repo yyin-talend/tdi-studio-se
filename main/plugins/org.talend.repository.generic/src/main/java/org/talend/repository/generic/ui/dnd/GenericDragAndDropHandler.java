@@ -18,7 +18,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.lang3.StringEscapeUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.components.api.component.ComponentDefinition;
@@ -104,7 +103,7 @@ public class GenericDragAndDropHandler extends AbstractDragAndDropServiceHandler
         return null;
     }
 
-    private Object getGenericRepositoryValue(Connection connection, List<ComponentProperties> componentProperties, String value,
+    public Object getGenericRepositoryValue(Connection connection, List<ComponentProperties> componentProperties, String value,
             IMetadataTable table) {
         if (componentProperties != null && value != null) {
             if (EConnectionParameterName.USERNAME.getName().equals(value)) {
@@ -127,6 +126,9 @@ public class GenericDragAndDropHandler extends AbstractDragAndDropServiceHandler
                             if (paramValue != null) {
                                 if (property.getName().equals("password")) {
                                     return getPassword(connection, paramValue.toString());
+                                } else if (EConnectionParameterName.GENERIC_MAPPING_FILE.getDisplayName()
+                                        .equals(property.getName())) {
+                                    return paramValue.toString();
                                 }
                                 return getRepositoryValueOfStringType(connection, paramValue.toString());
                             } else {

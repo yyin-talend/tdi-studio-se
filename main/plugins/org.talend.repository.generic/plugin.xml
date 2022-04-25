@@ -171,5 +171,14 @@
               name="NewGenericWizardMigrationTask"
               version="6.2.0">
         </projecttask>
+        <projecttask
+              beforeLogon="false"
+              breaks="7.3.1"
+              class="org.talend.repository.generic.model.migration.ChangeDbmsIdMigrationTask"
+              description="Change DbmsId migration task"
+              id="org.talend.repository.generic.model.migration.ChangeDbmsIdMigrationTask"
+              name="ChangeDbmsIdMigrationTask"
+              version="7.3.1">
+        </projecttask>
    </extension>
 </plugin>
