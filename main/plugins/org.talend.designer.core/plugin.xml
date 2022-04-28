@@ -816,6 +816,20 @@
              title="%jobSettings">
        </page>
        <page
+            class="org.talend.designer.core.ui.projectsetting.SpringBootDefaultProjectSettingPage"
+            description="%ProjectSettingPage_SpringBootDesc"
+            id="projectsetting.SpringBoot"
+            order="0"
+            title="%ProjectSettingPage_SpringBoot">
+      </page>
+      <page
+            category="projectsetting.SpringBoot"
+            class="org.talend.designer.core.ui.projectsetting.SpringBootDefaultApplicationPropertiesSettingPage"
+            description="%ProjectSettingPage_SpringBootDefaultProperiesDesc"
+            id="projectsetting.SpringBoot.DefaultApplicationProperties"
+            title="%ProjectSettingPage_SpringBootDefaultProperies">
+      </page>
+       <page
              category="jobsettings"
              class="org.talend.designer.core.ui.projectsetting.StatLogsProjectSettingPage"
              id="jobsettings.statusAndLogs"
