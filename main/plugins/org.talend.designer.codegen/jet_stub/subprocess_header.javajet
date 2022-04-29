@@ -183,6 +183,32 @@ public static class <%=conn.getName() %>Struct<%=templateOrigin %> implements ro
 				public <%= typeToGenerate %> get<%=column.getLabel().substring(0, 1).toUpperCase()%><%=column.getLabel().substring(1)%> () {
 					return this.<%=column.getLabel()%>;
 				}
+
+				public Boolean <%=column.getLabel()%>IsNullable(){
+				    return <%=column.isNullable()%>;
+				}
+				public Boolean <%=column.getLabel()%>IsKey(){
+				    return <%=column.isKey()%>;
+				}
+				public Integer <%=column.getLabel()%>Length(){
+				    return <%=column.getLength()%>;
+				}
+				public Integer <%=column.getLabel()%>Precision(){
+				    return <%=column.getPrecision()%>;
+				}
+				public String <%=column.getLabel()%>Default(){
+				    return <%=column.getDefault() == null ? null : "\"" + column.getDefault() +"\"" %>;
+				}
+				public String <%=column.getLabel()%>Comment(){
+				    return "<%=column.getComment()%>";
+				}
+				public String <%=column.getLabel()%>Pattern(){
+				    return "<%=org.talend.core.model.utils.TalendTextUtils.removeQuotes(column.getPattern())%>";
+				}
+				public String <%=column.getLabel()%>OriginalDbColumnName(){
+				    return "<%=column.getOriginalDbColumnName()%>";
+				}
+
 				<%
 				if((conn.getLineStyle() == EConnectionType.FLOW_REF) && conn.getTarget().getUniqueName().startsWith("tXMLMap") && "id_Document".equals(javaType.getId())) {
 				%>
