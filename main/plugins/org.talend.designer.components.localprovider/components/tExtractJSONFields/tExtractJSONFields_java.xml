@@ -152,10 +152,6 @@
             REQUIRED="true" SHOW="false">
         <DEFAULT>100</DEFAULT>
     </PARAMETER>
-    <PARAMETER NAME="DESTINATION" FIELD="TEXT" RAW="true" NUM_ROW="20"
-            REQUIRED="true" SHOW="false">
-		<DEFAULT>tExtractJSONFields_1</DEFAULT>
-	</PARAMETER>
   </PARAMETERS>
 
 	<ADVANCED_PARAMETERS>

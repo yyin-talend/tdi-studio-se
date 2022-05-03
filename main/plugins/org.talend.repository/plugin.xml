@@ -3750,6 +3750,15 @@
                name="SetKeystoreKafkaMigrationTask"
                version="8.0.1">
         </projecttask>
+		<projecttask
+              beforeLogon="true"
+              breaks="8.0.1"
+              class="org.talend.repository.model.migration.RemoveDestinationPropertyExtractJSONFieldsMigrationTask"
+              description="Remove DESTINATION property from tExtractJSONFields"
+              id="org.talend.repository.model.migration.RemoveDestinationPropertyExtractJSONFieldsMigrationTask"
+              name="RemoveDestinationPropertyExtractJSONFieldsMigrationTask"
+              version="8.0.1">
+        </projecttask>
    </extension>
 
    <extension
