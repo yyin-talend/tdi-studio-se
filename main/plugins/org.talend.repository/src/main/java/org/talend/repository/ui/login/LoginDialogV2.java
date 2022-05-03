@@ -44,6 +44,7 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.talend.commons.exception.CommonExceptionHandler;
 import org.talend.commons.utils.system.EnvironmentUtils;
+import org.talend.configurator.common.connections.TokenServiceImpl;
 import org.talend.core.GlobalServiceRegister;
 import org.talend.core.model.general.ConnectionBean;
 import org.talend.core.model.general.Project;
@@ -274,6 +275,9 @@ public class LoginDialogV2 extends TrayDialog {
             loginPage = getFirstTimeStartupPageIfNeeded();
         }
 
+        if (loginPage == null && !TokenServiceImpl.getInstance().isTokenValid()) {
+            loginPage = new LoginWithCloudPage(base, this, SWT.NONE);
+        }
         if (loginPage == null) {
             loginPage = new LoginProjectPage(base, this, SWT.NONE);
         }
@@ -306,7 +310,7 @@ public class LoginDialogV2 extends TrayDialog {
                     || (storedConnections.size() == 1 && !LoginHelper.isRemotesConnection(storedConnections.get(0)) && LoginHelper
                             .isWorkspaceSame(storedConnections.get(0)))) {
                 // for local license case
-                loginPage = new LoginFirstTimeStartupActionPage(base, this, SWT.NONE);
+                loginPage = new LoginProjectPage(base, this, SWT.NONE);
             }
         }
         return loginPage;

@@ -188,12 +188,21 @@ public class LoginAgreementPage extends AbstractLoginActionPage {
         if (iNextPage == null) {
             iNextPage = loginDialog.getFirstTimeStartupPageIfNeeded();
             if (iNextPage == null) {
+                if (isShowSSOPage()) {
+                    iNextPage = new LoginWithCloudPage(getParent(), loginDialog, SWT.NONE);
+                }else {
+                    iNextPage = new LoginProjectPage(getParent(), loginDialog, SWT.NONE);
+                }
                 iNextPage = new LoginProjectPage(getParent(), loginDialog, SWT.NONE);
             }
             setNextPage(iNextPage);
         }
 
         return iNextPage;
+    }
+    
+    private boolean isShowSSOPage() {
+        return true; //TODO --KK
     }
 
     @Override

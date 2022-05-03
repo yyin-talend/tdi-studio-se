@@ -157,6 +157,8 @@ public class LoginProjectPage extends AbstractLoginActionPage {
     protected ComboViewer connectionsViewer;
 
     protected Button manageButton;
+    
+    protected Button switchLoginTypeButton;
 
     protected Composite projectOperationArea;
 
@@ -591,13 +593,23 @@ public class LoginProjectPage extends AbstractLoginActionPage {
         title = new Label(container, SWT.NONE);
         title.setFont(LoginDialogV2.fixedFont);
         title.setText(Messages.getString("LoginProjectPage.title")); //$NON-NLS-1$
+        
         connectionManageArea = new Composite(container, SWT.NONE);
         connectionsViewer = new ComboViewer(connectionManageArea, SWT.READ_ONLY);
         connectionsViewer.getControl().setFont(LoginDialogV2.fixedFont);
+        
         manageButton = new Button(connectionManageArea, SWT.NONE);
         manageButton.setFont(LoginDialogV2.fixedFont);
         manageButton.setBackground(backgroundBtnColor);
-        manageButton.setText(Messages.getString("LoginProjectPage.manage")); //$NON-NLS-1$
+        manageButton.setImage(ImageProvider.getImage(EImage.MANAGE_CONNECTION));
+        manageButton.setToolTipText(Messages.getString("LoginProjectPage.manage")); //$NON-NLS-1$
+        
+        switchLoginTypeButton =  new Button(connectionManageArea, SWT.NONE);
+        switchLoginTypeButton.setFont(LoginDialogV2.fixedFont);
+        switchLoginTypeButton.setBackground(backgroundBtnColor);
+        switchLoginTypeButton.setText("Switch sign in"); 
+        
+        
         // Project Operation Area
         projectOperationArea = new Composite(container, SWT.NONE);
         // Existing Project Area
@@ -704,7 +716,7 @@ public class LoginProjectPage extends AbstractLoginActionPage {
         formData.left = new FormAttachment(0, 0);
         formData.right = new FormAttachment(100, 0);
         connectionManageArea.setLayoutData(formData);
-        GridLayout gridLayout = new GridLayout(2, true);
+        GridLayout gridLayout = new GridLayout(3, false);
         gridLayout.horizontalSpacing = TAB_HORIZONTAL_PADDING_LEVEL_2;
         gridLayout.verticalSpacing = 0;
         gridLayout.marginHeight = 0;
@@ -716,8 +728,8 @@ public class LoginProjectPage extends AbstractLoginActionPage {
         // formData.right = new FormAttachment(100, 0);
         // formData.left = new FormAttachment(100, -1 * LoginDialogV2.getNewButtonSize(manageButton).x);
         // manageButton.setLayoutData(formData);
-        GridData gridData = new GridData(SWT.FILL, SWT.CENTER, true, true);
-        manageButton.setLayoutData(gridData);
+        GridData gridData = new GridData(SWT.BEGINNING, SWT.CENTER, false, true);
+        manageButton.setLayoutData(gridData);      
 
         // formData = new FormData();
         // formData.top = new FormAttachment(manageButton, 0, SWT.CENTER);
@@ -730,6 +742,8 @@ public class LoginProjectPage extends AbstractLoginActionPage {
         connectionsViewer.setContentProvider(ArrayContentProvider.getInstance());
         connectionsViewer.setLabelProvider(new ConnectionLabelProvider());
 
+        gridData = new GridData(SWT.END, SWT.CENTER, false, true);
+        switchLoginTypeButton.setLayoutData(gridData);
         /**
          * 2.3 Layout Project Operation Area
          */
@@ -1045,6 +1059,24 @@ public class LoginProjectPage extends AbstractLoginActionPage {
             @Override
             public void selectionChanged(SelectionChangedEvent event) {
                 onConnectionSelected(new NullProgressMonitor(), false);
+            }
+
+        });
+        
+        switchLoginTypeButton.addSelectionListener(new SelectionAdapter() {
+
+            @Override
+            public void widgetSelected(SelectionEvent e) {
+
+                if (getPreviousPage() == null) {
+                    AbstractActionPage page =  new LoginWithCloudPage(getParent(), loginDialog, SWT.NONE);
+                    setPreviousPage(page);
+                }
+                try {
+                    gotoPreviousPage();
+                } catch (Throwable e1) {
+                    CommonExceptionHandler.process(e1);
+                }
             }
 
         });
@@ -2801,4 +2833,6 @@ public class LoginProjectPage extends AbstractLoginActionPage {
 
         }.schedule();
     }
+    
+    
 }
