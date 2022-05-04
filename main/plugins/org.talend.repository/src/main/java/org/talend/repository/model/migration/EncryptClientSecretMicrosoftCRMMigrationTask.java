@@ -17,6 +17,7 @@ import org.talend.designer.core.model.utils.emf.talendfile.ProcessType;
 
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
 import java.util.GregorianCalendar;
 
@@ -52,19 +53,21 @@ public class EncryptClientSecretMicrosoftCRMMigrationTask extends AbstractJobMig
             }
         };
 
+        boolean modified = false;
+
         for (String componentName : componentsNameToAffect) {
             IComponentFilter componentFilter = new NameComponentFilter(componentName);
 
             try {
-                ModifyComponentsAction.searchAndModify(item, processType,
-                        componentFilter, Arrays.asList(encryptClientSecret));
+                modified = modified | ModifyComponentsAction.searchAndModify(item, processType,
+                        componentFilter, Collections.singletonList(encryptClientSecret));
             } catch (PersistenceException e) {
                 ExceptionHandler.process(e);
                 return ExecutionResult.FAILURE;
             }
         }
 
-        return ExecutionResult.SUCCESS_NO_ALERT;
+        return modified ? ExecutionResult.SUCCESS_NO_ALERT : ExecutionResult.NOTHING_TO_DO;
     }
 
     @Override
