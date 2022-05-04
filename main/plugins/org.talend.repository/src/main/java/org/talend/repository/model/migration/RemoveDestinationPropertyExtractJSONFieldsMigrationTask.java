@@ -44,14 +44,14 @@ public class RemoveDestinationPropertyExtractJSONFieldsMigrationTask extends Abs
         IComponentFilter componentFilter = new NameComponentFilter(componentNameToAffect);
 
         try {
-            ModifyComponentsAction.searchAndModify(item, processType,
+            boolean modified = ModifyComponentsAction.searchAndModify(item, processType,
                     componentFilter, Arrays.asList(removeDestinationProp));
+
+            return modified ? ExecutionResult.SUCCESS_NO_ALERT : ExecutionResult.NOTHING_TO_DO;
         } catch (PersistenceException e) {
             ExceptionHandler.process(e);
             return ExecutionResult.FAILURE;
         }
-
-        return ExecutionResult.SUCCESS_NO_ALERT;
     }
 
     @Override
