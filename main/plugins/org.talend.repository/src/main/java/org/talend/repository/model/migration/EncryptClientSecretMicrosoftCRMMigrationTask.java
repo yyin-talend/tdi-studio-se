@@ -58,7 +58,7 @@ public class EncryptClientSecretMicrosoftCRMMigrationTask extends AbstractJobMig
             IComponentFilter componentFilter = new NameComponentFilter(componentName);
 
             try {
-                modified = modified | ModifyComponentsAction.searchAndModify(item, processType,
+                modified |= ModifyComponentsAction.searchAndModify(item, processType,
                         componentFilter, Collections.singletonList(encryptClientSecret));
             } catch (PersistenceException e) {
                 ExceptionHandler.process(e);
