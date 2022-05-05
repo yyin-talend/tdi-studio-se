@@ -20,6 +20,7 @@
 		org.talend.core.model.process.IHashConfiguration
 		org.talend.core.model.process.IHashableColumn
 		org.talend.core.model.utils.NodeUtil
+		org.talend.core.model.utils.TalendTextUtils
 	"
 	class="SubProcessHeader"
 	skeleton="subprocess_header_java.skeleton"
@@ -197,16 +198,32 @@ public static class <%=conn.getName() %>Struct<%=templateOrigin %> implements ro
 				    return <%=column.getPrecision()%>;
 				}
 				public String <%=column.getLabel()%>Default(){
-				    return <%=column.getDefault() == null ? null : "\"" + column.getDefault() +"\"" %>;
+				<% if (column.getDefault() == null) { %>
+					return null;
+				<% } else { %>
+					return "<%=TalendTextUtils.escapeJavaText(TalendTextUtils.removeQuotes(column.getDefault()))%>";
+				<% } %>
 				}
 				public String <%=column.getLabel()%>Comment(){
-				    return "<%=column.getComment()%>";
+				<% if (column.getComment() == null) { %>
+				    return null;
+				<% } else { %>
+				    return "<%=TalendTextUtils.escapeJavaText(TalendTextUtils.removeQuotes(column.getComment()))%>";
+				<% } %>
 				}
 				public String <%=column.getLabel()%>Pattern(){
-				    return "<%=org.talend.core.model.utils.TalendTextUtils.removeQuotes(column.getPattern())%>";
+				<% if (column.getPattern() == null) { %>
+				    return null;
+				<% } else { %>
+					return "<%=TalendTextUtils.escapeJavaText(TalendTextUtils.removeQuotes(column.getPattern()))%>";
+				<% } %>
 				}
 				public String <%=column.getLabel()%>OriginalDbColumnName(){
-				    return "<%=column.getOriginalDbColumnName()%>";
+				<% if (column.getOriginalDbColumnName() == null) { %>
+				    return null;
+				<% } else { %>
+					return "<%=TalendTextUtils.escapeJavaText(TalendTextUtils.removeQuotes(column.getOriginalDbColumnName()))%>";
+				<% } %>
 				}
 
 				<%
