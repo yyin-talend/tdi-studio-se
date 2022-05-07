@@ -46,7 +46,7 @@ skeleton="../templates/db_output_bulk.skeleton"
 
     String dbmsId = ElementParameterParser.getValue(node,"__MAPPING__");
 
-    getManager(dbmsId, cid, node);//register the MSSQLManager
+    Manager manager = getManager(dbmsId, cid, node);//register the MSSQLManager
     
     String schemaList = ElementParameterParser.getValue(node,"__MANUAL_SCHEMA_LIST__");
     
@@ -159,7 +159,6 @@ skeleton="../templates/db_output_bulk.skeleton"
 <%
     List<IMetadataColumn> columnList = getColumnList(node);
     List<Column> stmtStructure = null;
-    Manager manager = null;
     boolean isDynamic = false;
     List<IMetadataTable> metadatas = node.getMetadataList();
     if ((metadatas!=null)&&(metadatas.size()>0)) {
@@ -167,7 +166,7 @@ skeleton="../templates/db_output_bulk.skeleton"
     
     }
     if(columnList != null && columnList.size() > 0) {
-        stmtStructure = getManager(dbmsId, cid).createColumnList(columnList, false, null, null);
+        stmtStructure = manager.createColumnList(columnList, false, null, null);
     }
 
 %>
@@ -331,7 +330,6 @@ skeleton="../templates/db_output_bulk.skeleton"
 %>
             int count_<%=cid%>=0;
 <%    
-            manager = getManager(dbmsId, cid);
             String ending="";
 %>
             //Create a database scoped credential using Azure Access Key
@@ -856,7 +854,6 @@ globalMap.put("<%=cid%>_ERROR_MESSAGE",e_<%=cid%>.getMessage());
     Integer maxErrors_<%=cid%> = <%=maxErrors%>;
     
 <%
-        manager = getManager(dbmsId, cid);
         String ending="";
         if(!"CSV".equals(fileType)){
         // stores the file type and compression method for the external data

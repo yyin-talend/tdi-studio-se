@@ -9,8 +9,6 @@ boolean convertToLowercase_tableAction = "true".equalsIgnoreCase(ElementParamete
 if (!isParallelize) {
 //end issue 0010346 Parallelization crash with "Drop table if exists and create"
 
-    manager = getManager(dbmsId, cid);
-    
     String ending="";
     
     //TODO need to remove it as it seems not useful now

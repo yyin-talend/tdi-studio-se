@@ -69,7 +69,7 @@ int insertedCount_<%=cid%> = 0;
 int rowsToCommitCount_<%=cid%>=0;
 int rejectedCount_<%=cid%> = 0;
 <%
-getManager(dbmsId, cid, node);
+Manager manager = getManager(dbmsId, cid, node);
 
 IConnection inputConn = null;
 String incomingConnName = null;
@@ -90,8 +90,8 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 List<IMetadataColumn> columnList = getColumnList(node);
 List<Column> stmtStructure = null;
 if(columnList != null && columnList.size() > 0) {
-    stmtStructure = getManager(dbmsId, cid).createColumnList(columnList, useFieldOptions, fieldOptions, addCols);
-	isDynamic = isDynamic && !getManager(dbmsId, cid).isDynamicColumnReplaced();
+    stmtStructure = manager.createColumnList(columnList, useFieldOptions, fieldOptions, addCols);
+	isDynamic = isDynamic && !manager.isDynamicColumnReplaced();
 
     if(convertToUppercase) {
         for(Column column : stmtStructure) {
@@ -227,11 +227,10 @@ if(!isDynamic) {
 int count_<%=cid%>=0;
 <%
 if(columnList != null && columnList.size() > 0) {
-       Manager manager = null;
     %>
     <%@ include file="../templates/_tableActionForOutput.javajet"%>
     <%
-    Map<String, StringBuilder> actionSQLMap = getManager(dbmsId, cid).createProcessSQL(stmtStructure);
+    Map<String, StringBuilder> actionSQLMap = manager.createProcessSQL(stmtStructure);
     StringBuilder insertColName = actionSQLMap.get(INSERT_COLUMN_NAME);
     StringBuilder insertValueStmt = actionSQLMap.get(INSERT_VALUE_STMT);
     StringBuilder updateSetStmt = actionSQLMap.get(UPDATE_SET_STMT);
@@ -383,11 +382,11 @@ for(String type : types) {
 <%
     	}
 %>
-		<%=getManager(dbmsId, cid).generateSetStmt(typeToGenerate, column, counter, incomingConnName, cid, actionType)%>
+		<%=manager.generateSetStmt(typeToGenerate, column, counter, incomingConnName, cid, actionType)%>
 <%
     	if(isEnableDebug) {
 %>
-    	<%=getManager(dbmsId, cid).retrieveSQL(typeToGenerate, column, incomingConnName, cid, "query_" , counter, splits)%>;
+    	<%=manager.retrieveSQL(typeToGenerate, column, incomingConnName, cid, "query_" , counter, splits)%>;
 <%
    		}
 

@@ -48,7 +48,7 @@ skeleton="../templates/db_output_bulk.skeleton"
 
     String dbmsId = ElementParameterParser.getValue(node,"__MAPPING__");
 
-    getManager(dbmsId, cid, node);//register the MSSQLManager
+    Manager manager = getManager(dbmsId, cid, node);//register the MSSQLManager
 
     String dataAction = ElementParameterParser.getValue(node,"__DATA_ACTION__");
 
@@ -115,7 +115,6 @@ java.util.Calendar calendar_datetimeoffset_<%=cid%> = java.util.Calendar.getInst
 <%
 List<IMetadataColumn> columnList = getColumnList(node);
 List<Column> stmtStructure = null;
-Manager manager = null;
 
 boolean isDynamic = false;
 List<IMetadataTable> metadatas = node.getMetadataList();
@@ -127,11 +126,11 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 if(columnList != null && columnList.size() > 0) {
 	boolean isParallelize ="true".equalsIgnoreCase(ElementParameterParser.getValue(node, "__PARALLELIZE__"));
 	if(isParallelize){
-	    stmtStructure = getManager(dbmsId, cid).createColumnList(columnList, useFieldOptions, fieldOptions, addCols);
+	    stmtStructure = manager.createColumnList(columnList, useFieldOptions, fieldOptions, addCols);
 	}else{
-	    stmtStructure = getManager(dbmsId, cid).createColumnList(columnList, useFieldOptions, fieldOptions, addCols, isSpecifyIdentityField, identityField, startValue, step);
+	    stmtStructure = manager.createColumnList(columnList, useFieldOptions, fieldOptions, addCols, isSpecifyIdentityField, identityField, startValue, step);
 	}
-    isDynamic = isDynamic && !getManager(dbmsId, cid).isDynamicColumnReplaced();
+    isDynamic = isDynamic && !manager.isDynamicColumnReplaced();
 }
 boolean isUseParallelize ="true".equalsIgnoreCase(ElementParameterParser.getValue(node, "__PARALLELIZE__"));
 boolean  isSpecifyIdentityKey = "true".equals(ElementParameterParser.getValue(node, "__SPECIFY_IDENTITY_FIELD__"));
@@ -139,7 +138,7 @@ if(isUseParallelize || identityInsert || (!"DROP_CREATE".equals(tableAction) && 
 	isSpecifyIdentityKey = false;
 }
 String identityKey = ElementParameterParser.getValue(node, "__IDENTITY_FIELD__");
-getManager(dbmsId, cid, node).setIsSpecifyIdentityKey(isSpecifyIdentityKey);
+manager.setIsSpecifyIdentityKey(isSpecifyIdentityKey);
 %>
 
 <%@ include file="@{org.talend.designer.components.localprovider}/components/templates/DB/Output/CheckKeysForUpdateAndDelete.javajet"%>
@@ -200,7 +199,7 @@ if(!isDynamic) {
 
    <%@ include file="../templates/_tableActionForOutput.javajet"%>
    <%
-    Map<String, StringBuilder> actionSQLMap = getManager(dbmsId, cid).createProcessSQL(stmtStructure);
+    Map<String, StringBuilder> actionSQLMap = manager.createProcessSQL(stmtStructure);
     StringBuilder insertColName = actionSQLMap.get(INSERT_COLUMN_NAME);
     StringBuilder insertValueStmt = actionSQLMap.get(INSERT_VALUE_STMT);
     StringBuilder updateSetStmt = actionSQLMap.get(UPDATE_SET_STMT);

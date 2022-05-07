@@ -58,7 +58,7 @@ String sequenceName = ElementParameterParser.getValue(node,"__SK_DB_SEQUENCE__")
 <%
 List<IMetadataColumn> columnList = getColumnList(node);
 if(columnList != null && columnList.size() > 0) {//Tag_A
-    List<Column> stmtStructure = getManager(dbmsId, cid).createColumnList(columnList, false, null, null, true, surrogateKey, 1, 1);
+    List<Column> stmtStructure = manager.createColumnList(columnList, false, null, null, true, surrogateKey, 1, 1);
     List<Map<String, String>> sourceKeys = (List<Map<String, String>>)ElementParameterParser.getObjectValue(node, "__SOURCE_KEYS__");
     boolean scdType1Enabled = "true".equals(ElementParameterParser.getValue(node, "__USE_L1__"));
     List<Map<String, String>> type1Attributes = new ArrayList<Map<String, String>>();

@@ -45,7 +45,7 @@ skeleton="../templates/db_output_bulk.skeleton"
     String commitEvery = ElementParameterParser.getValue(node, "__COMMIT_EVERY__");
 	
 	//feature:2880
-    getManager(dbmsId, cid, node);
+    Manager manager = getManager(dbmsId, cid, node);
     boolean whereSupportNull = ElementParameterParser.getValue(node, "__SUPPORT_NULL_WHERE__").equals("true");
 	
 	
@@ -80,7 +80,7 @@ skeleton="../templates/db_output_bulk.skeleton"
         }
     }
 	
-	List<Column> stmtStructure = getManager(dbmsId, cid).createColumnList(columnList, useFieldOptions, fieldOptions, addCols);
+	List<Column> stmtStructure = manager.createColumnList(columnList, useFieldOptions, fieldOptions, addCols);
 	
     ////////////////////////////////////////////////////////////
     List<Column> colStruct = new ArrayList();
@@ -122,11 +122,11 @@ skeleton="../templates/db_output_bulk.skeleton"
                 if(column.isInsertable()) {
                     String typeToGenerate = JavaTypesManager.getTypeToGenerate(column.getColumn().getTalendType(), column.getColumn().isNullable());
                     %>
-                    <%=getManager(dbmsId, cid).generateSetStmt(typeToGenerate, column, counter, incomingConnName, cid, NORMAL_TYPE)%>
+                    <%=manager.generateSetStmt(typeToGenerate, column, counter, incomingConnName, cid, NORMAL_TYPE)%>
                     <%
                     if(isEnableDebug) {
                         %>
-                        query_<%=cid%> = <%=getManager(dbmsId, cid).retrieveSQL(typeToGenerate, column, incomingConnName, cid, "query_" , counter, "insertSQLSplits_")%>;
+                        query_<%=cid%> = <%=manager.retrieveSQL(typeToGenerate, column, incomingConnName, cid, "query_" , counter, "insertSQLSplits_")%>;
                         <%
                     }
                     counter++;                        
@@ -188,11 +188,11 @@ globalMap.put("<%=cid%>_ERROR_MESSAGE",e.getMessage());
 					<% 
                     //#############for feature:2880 and 6980
                     if(whereSupportNull && column.getColumn().isNullable()) { %>
-                    	<%=getManager(dbmsId, cid, node).generateSetBooleanForNullableKeyStmt(column, counterCol, incomingConnName, cid, NORMAL_TYPE)%>
+                    	<%=manager.generateSetBooleanForNullableKeyStmt(column, counterCol, incomingConnName, cid, NORMAL_TYPE)%>
                     <%  
 					if(isEnableDebug) {
                         %>
-                        query_<%=cid%> = <%=getManager(dbmsId, cid).retrieveSQL(typeToGenerate, column, incomingConnName, cid, "query_" , counterCol, "updateSQLSplits_", "(("+incomingConnName+"."+column.getName()+"==null)?1:0)")%>;
+                        query_<%=cid%> = <%=manager.retrieveSQL(typeToGenerate, column, incomingConnName, cid, "query_" , counterCol, "updateSQLSplits_", "(("+incomingConnName+"."+column.getName()+"==null)?1:0)")%>;
                         <%
                     }
                     	counterCol++;
@@ -200,11 +200,11 @@ globalMap.put("<%=cid%>_ERROR_MESSAGE",e.getMessage());
                      //#############                      
                     %>  
                     
-                    <%=getManager(dbmsId, cid).generateSetStmt(typeToGenerate, column, counterCol, incomingConnName, cid, NORMAL_TYPE)%>
+                    <%=manager.generateSetStmt(typeToGenerate, column, counterCol, incomingConnName, cid, NORMAL_TYPE)%>
                     <%
                     if(isEnableDebug) {
                         %>
-                        query_<%=cid%> = <%=getManager(dbmsId, cid).retrieveSQL(typeToGenerate, column, incomingConnName, cid, "query_" , counterCol, "updateSQLSplits_")%>;
+                        query_<%=cid%> = <%=manager.retrieveSQL(typeToGenerate, column, incomingConnName, cid, "query_" , counterCol, "updateSQLSplits_")%>;
                         <%
                     }                    
                     counterCol++;                   
@@ -215,11 +215,11 @@ globalMap.put("<%=cid%>_ERROR_MESSAGE",e.getMessage());
                 if(column.isUpdateKey()) {
                     String typeToGenerate = JavaTypesManager.getTypeToGenerate(column.getColumn().getTalendType(), column.getColumn().isNullable());
                     %>
-                    <%=getManager(dbmsId, cid).generateSetStmt(typeToGenerate, column, counterCol, incomingConnName, cid, NORMAL_TYPE)%>
+                    <%=manager.generateSetStmt(typeToGenerate, column, counterCol, incomingConnName, cid, NORMAL_TYPE)%>
                     <%
                     if(isEnableDebug) {
                         %>
-                        query_<%=cid%> = <%=getManager(dbmsId, cid).retrieveSQL(typeToGenerate, column, incomingConnName, cid, "query_" , counterCol, "updateSQLSplits_")%>;
+                        query_<%=cid%> = <%=manager.retrieveSQL(typeToGenerate, column, incomingConnName, cid, "query_" , counterCol, "updateSQLSplits_")%>;
                         <%
                     }                    
                     counterCol++;
@@ -280,14 +280,14 @@ globalMap.put("<%=cid%>_ERROR_MESSAGE",e.getMessage());
 					<% 
                     //#############for feature:2880 and 6980
                     if(whereSupportNull && column.getColumn().isNullable()) { %>
-                    	<%=getManager(dbmsId, cid, node).generateSetBooleanForNullableKeyStmt(column, columnIndex, incomingConnName, cid, NORMAL_TYPE)%>
+                    	<%=manager.generateSetBooleanForNullableKeyStmt(column, columnIndex, incomingConnName, cid, NORMAL_TYPE)%>
                     <%  
                     	columnIndex++;
                        }
                      //#############                      
                     %>
                     
-                    <%=getManager(dbmsId, cid).generateSetStmt(typeToGenerate, column, columnIndex, incomingConnName, cid, NORMAL_TYPE)%>
+                    <%=manager.generateSetStmt(typeToGenerate, column, columnIndex, incomingConnName, cid, NORMAL_TYPE)%>
                     <%
                     columnIndex++;
                 }
@@ -307,11 +307,11 @@ globalMap.put("<%=cid%>_ERROR_MESSAGE",e.getMessage());
                     if(column.isUpdatable()) {
                         String typeToGenerate = JavaTypesManager.getTypeToGenerate(column.getColumn().getTalendType(), column.getColumn().isNullable());
                         %>
-                        <%=getManager(dbmsId, cid).generateSetStmt(typeToGenerate, column, counterCol, incomingConnName, cid, UPDATE_TYPE)%>
+                        <%=manager.generateSetStmt(typeToGenerate, column, counterCol, incomingConnName, cid, UPDATE_TYPE)%>
                         <%
                         if(isEnableDebug) {
                             %>
-                            query_<%=cid%> = <%=getManager(dbmsId, cid).retrieveSQL(typeToGenerate, column, incomingConnName, cid, "query_" , counterCol, "updateSQLSplits_")%>;
+                            query_<%=cid%> = <%=manager.retrieveSQL(typeToGenerate, column, incomingConnName, cid, "query_" , counterCol, "updateSQLSplits_")%>;
                             <%
                         }
                         counterCol++;
@@ -325,22 +325,22 @@ globalMap.put("<%=cid%>_ERROR_MESSAGE",e.getMessage());
                         <% 
 	                    //#############for feature:2880
 	                    if(whereSupportNull && column.getColumn().isNullable()) { %>
-	                    	<%=getManager(dbmsId, cid, node).generateSetBooleanForNullableKeyStmt(column, counterCol, incomingConnName, cid, UPDATE_TYPE)%>
+	                    	<%=manager.generateSetBooleanForNullableKeyStmt(column, counterCol, incomingConnName, cid, UPDATE_TYPE)%>
 	                    <%  
 		                     if(isEnableDebug) {
 	                        %>
-	                        query_<%=cid%> = <%=getManager(dbmsId, cid).retrieveSQL(typeToGenerate, column, incomingConnName, cid, "query_" , counterCol, "updateSQLSplits_", "(("+incomingConnName+"."+column.getName()+"==null)?1:0)")%>;
+	                        query_<%=cid%> = <%=manager.retrieveSQL(typeToGenerate, column, incomingConnName, cid, "query_" , counterCol, "updateSQLSplits_", "(("+incomingConnName+"."+column.getName()+"==null)?1:0)")%>;
 	                        <%
 	                    	} 
 	                    	counterCol++;
 	                       }
 	                     //#############                      
 	                    %>
-                        <%=getManager(dbmsId, cid).generateSetStmt(typeToGenerate, column, counterCol, incomingConnName, cid, UPDATE_TYPE)%>
+                        <%=manager.generateSetStmt(typeToGenerate, column, counterCol, incomingConnName, cid, UPDATE_TYPE)%>
                         <%
                         if(isEnableDebug) {
                             %>
-                            query_<%=cid%> = <%=getManager(dbmsId, cid).retrieveSQL(typeToGenerate, column, incomingConnName, cid, "query_" , counterCol, "updateSQLSplits_")%>;
+                            query_<%=cid%> = <%=manager.retrieveSQL(typeToGenerate, column, incomingConnName, cid, "query_" , counterCol, "updateSQLSplits_")%>;
                             <%
                         }
                         counterCol++;                   
@@ -401,11 +401,11 @@ globalMap.put("<%=cid%>_ERROR_MESSAGE",e.getMessage());
                     if(columnInsert.isInsertable()) {
                         String typeToGenerate = JavaTypesManager.getTypeToGenerate(columnInsert.getColumn().getTalendType(), columnInsert.getColumn().isNullable());
                         %>
-                        <%=getManager(dbmsId, cid).generateSetStmt(typeToGenerate, columnInsert, counterInsert, incomingConnName, cid, INSERT_TYPE)%>
+                        <%=manager.generateSetStmt(typeToGenerate, columnInsert, counterInsert, incomingConnName, cid, INSERT_TYPE)%>
                         <%
                         if(isEnableDebug) {
                             %>
-                            query_<%=cid%> = <%=getManager(dbmsId, cid).retrieveSQL(typeToGenerate, columnInsert, incomingConnName, cid, "query_" ,  counterInsert, "insertSQLSplits_")%>;
+                            query_<%=cid%> = <%=manager.retrieveSQL(typeToGenerate, columnInsert, incomingConnName, cid, "query_" ,  counterInsert, "insertSQLSplits_")%>;
                             <%
                         }
                         counterInsert++;
@@ -469,11 +469,11 @@ globalMap.put("<%=cid%>_ERROR_MESSAGE",e.getMessage());
                 if(columnUpdate.isUpdatable()) {
                     String typeToGenerate = JavaTypesManager.getTypeToGenerate(columnUpdate.getColumn().getTalendType(), columnUpdate.getColumn().isNullable());
                     %>
-                    <%=getManager(dbmsId, cid).generateSetStmt(typeToGenerate, columnUpdate, counterColUpdate, incomingConnName, cid, UPDATE_TYPE)%>
+                    <%=manager.generateSetStmt(typeToGenerate, columnUpdate, counterColUpdate, incomingConnName, cid, UPDATE_TYPE)%>
                     <%
                     if(isEnableDebug) {
                         %>
-                        query_<%=cid%> = <%=getManager(dbmsId, cid).retrieveSQL(typeToGenerate, columnUpdate, incomingConnName, cid, "query_" , counterColUpdate, "updateSQLSplits_")%>;
+                        query_<%=cid%> = <%=manager.retrieveSQL(typeToGenerate, columnUpdate, incomingConnName, cid, "query_" , counterColUpdate, "updateSQLSplits_")%>;
                         <%
                     }
                     counterColUpdate++;
@@ -488,22 +488,22 @@ globalMap.put("<%=cid%>_ERROR_MESSAGE",e.getMessage());
 					<% 
                     //#############for feature:2880 and 6980
                     if(whereSupportNull && columnUpdate.getColumn().isNullable()) { %>
-                    	<%=getManager(dbmsId, cid, node).generateSetBooleanForNullableKeyStmt(columnUpdate, counterColUpdate, incomingConnName, cid, UPDATE_TYPE)%>
+                    	<%=manager.generateSetBooleanForNullableKeyStmt(columnUpdate, counterColUpdate, incomingConnName, cid, UPDATE_TYPE)%>
                     <%  
 	                    if(isEnableDebug) {
 	                        %>
-	                        query_<%=cid%> = <%=getManager(dbmsId, cid).retrieveSQL(typeToGenerate, columnUpdate, incomingConnName, cid, "query_" , counterColUpdate, "updateSQLSplits_", "(("+incomingConnName+"."+columnUpdate.getName()+"==null)?1:0)")%>;
+	                        query_<%=cid%> = <%=manager.retrieveSQL(typeToGenerate, columnUpdate, incomingConnName, cid, "query_" , counterColUpdate, "updateSQLSplits_", "(("+incomingConnName+"."+columnUpdate.getName()+"==null)?1:0)")%>;
 	                        <%
 	                    	}
                     	counterColUpdate++;
                        }
                      //#############                      
                     %>
-                    <%=getManager(dbmsId, cid).generateSetStmt(typeToGenerate, columnUpdate, counterColUpdate, incomingConnName, cid, UPDATE_TYPE)%>
+                    <%=manager.generateSetStmt(typeToGenerate, columnUpdate, counterColUpdate, incomingConnName, cid, UPDATE_TYPE)%>
                     <%
                     if(isEnableDebug) {
                         %>
-                        query_<%=cid%> = <%=getManager(dbmsId, cid).retrieveSQL(typeToGenerate, columnUpdate, incomingConnName, cid, "query_" , counterColUpdate, "updateSQLSplits_")%>;
+                        query_<%=cid%> = <%=manager.retrieveSQL(typeToGenerate, columnUpdate, incomingConnName, cid, "query_" , counterColUpdate, "updateSQLSplits_")%>;
                         <%
                     }
                     counterColUpdate++;
@@ -569,11 +569,11 @@ globalMap.put("<%=cid%>_ERROR_MESSAGE",e.getMessage());
                      if(column.isInsertable()) {
                          String typeToGenerate = JavaTypesManager.getTypeToGenerate(column.getColumn().getTalendType(), column.getColumn().isNullable());
                          %>
-                         <%=getManager(dbmsId, cid).generateSetStmt(typeToGenerate, column, counter, incomingConnName, cid, INSERT_TYPE)%>
+                         <%=manager.generateSetStmt(typeToGenerate, column, counter, incomingConnName, cid, INSERT_TYPE)%>
                          <%
                          if(isEnableDebug) {
                              %>
-                             query_<%=cid%> = <%=getManager(dbmsId, cid).retrieveSQL(typeToGenerate, column, incomingConnName, cid, "query_" , counter, "insertSQLSplits_")%>;
+                             query_<%=cid%> = <%=manager.retrieveSQL(typeToGenerate, column, incomingConnName, cid, "query_" , counter, "insertSQLSplits_")%>;
                              <%
                          }
                          counter++;
@@ -639,11 +639,11 @@ globalMap.put("<%=cid%>_ERROR_MESSAGE",e.getMessage());
 					<% 
                     //#############for feature:2880 and 6980
                     if(whereSupportNull && column.getColumn().isNullable()) { %>
-                    	<%=getManager(dbmsId, cid, node).generateSetBooleanForNullableKeyStmt(column, keyCounter, incomingConnName, cid, NORMAL_TYPE)%>
+                    	<%=manager.generateSetBooleanForNullableKeyStmt(column, keyCounter, incomingConnName, cid, NORMAL_TYPE)%>
                     <%  
 	                    if(isEnableDebug) {
 	                        %>
-	                        query_<%=cid%> = <%=getManager(dbmsId, cid).retrieveSQL(typeToGenerate, column, incomingConnName, cid, "query_" , keyCounter, "deleteSQLSplits_", "(("+incomingConnName+"."+column.getName()+"==null)?1:0)")%>;
+	                        query_<%=cid%> = <%=manager.retrieveSQL(typeToGenerate, column, incomingConnName, cid, "query_" , keyCounter, "deleteSQLSplits_", "(("+incomingConnName+"."+column.getName()+"==null)?1:0)")%>;
 	                        <%
 	                    	}
                     	 keyCounter++;
@@ -651,11 +651,11 @@ globalMap.put("<%=cid%>_ERROR_MESSAGE",e.getMessage());
                      //#############                      
                     %>
                     
-                    <%=getManager(dbmsId, cid).generateSetStmt(typeToGenerate, column, keyCounter, incomingConnName, cid, NORMAL_TYPE)%>
+                    <%=manager.generateSetStmt(typeToGenerate, column, keyCounter, incomingConnName, cid, NORMAL_TYPE)%>
                     <%
                     if(isEnableDebug) {
                         %>
-                        query_<%=cid%> = <%=getManager(dbmsId, cid).retrieveSQL(typeToGenerate, column, incomingConnName, cid, "query_" , keyCounter, "deleteSQLSplits_")%>;
+                        query_<%=cid%> = <%=manager.retrieveSQL(typeToGenerate, column, incomingConnName, cid, "query_" , keyCounter, "deleteSQLSplits_")%>;
                         <%
                     }
                     keyCounter++;

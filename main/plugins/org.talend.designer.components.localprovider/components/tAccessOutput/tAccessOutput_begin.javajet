@@ -49,12 +49,12 @@ skeleton="../templates/db_output_bulk.skeleton"
 
 <%
 
-getManager(dbmsId, cid, node);
+Manager manager = getManager(dbmsId, cid, node);
 
 List<IMetadataColumn> columnList = getColumnList(node);
 List<Column> stmtStructure = null;
 if(columnList != null && columnList.size() > 0) {
-    stmtStructure = getManager(dbmsId, cid).createColumnList(columnList, useFieldOptions, fieldOptions, addCols);
+    stmtStructure = manager.createColumnList(columnList, useFieldOptions, fieldOptions, addCols);
 }
 %>
 
@@ -136,7 +136,6 @@ dbLog.commit().logAutoCommit("conn_"+cid+".getAutoCommit()");
 <%
 if(columnList != null && columnList.size()>0) {     
     if(!isParallelize && !("NONE").equals(tableAction)) {        
-        Manager manager = getManager(dbmsId, cid);
         if(("DROP_CREATE").equals(tableAction)) {
             %>
             try (java.sql.Statement stmtDrop_<%=cid%> = conn_<%=cid%>.createStatement();
@@ -207,7 +206,7 @@ if(columnList != null && columnList.size()>0) {
             <%
         }
     }
-    Map<String, StringBuilder> actionSQLMap = getManager(dbmsId, cid).createProcessSQL(stmtStructure);
+    Map<String, StringBuilder> actionSQLMap = manager.createProcessSQL(stmtStructure);
     StringBuilder insertColName = actionSQLMap.get(INSERT_COLUMN_NAME);   
     StringBuilder insertValueStmt = actionSQLMap.get(INSERT_VALUE_STMT);    
     StringBuilder updateSetStmt = actionSQLMap.get(UPDATE_SET_STMT);    

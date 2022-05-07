@@ -101,8 +101,8 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 List<IMetadataColumn> columnList = getColumnList(node);
 List<Column> stmtStructure = null;
 if(columnList != null && columnList.size() > 0) {
-    stmtStructure = getManager(dbmsId, cid).createColumnList(columnList, useFieldOptions, fieldOptions, addCols);
-    isDynamic = isDynamic && !getManager(dbmsId, cid).isDynamicColumnReplaced();
+    stmtStructure = manager.createColumnList(columnList, useFieldOptions, fieldOptions, addCols);
+    isDynamic = isDynamic && !manager.isDynamicColumnReplaced();
 }
 %>
 
@@ -322,7 +322,7 @@ if(columnList != null && columnList.size()>0) {
 %>
 	<%@ include file="../templates/_tableActionForOutput.javajet"%>
 <%
-    Map<String, StringBuilder> actionSQLMap = getManager(dbmsId, cid).createProcessSQL(stmtStructure);
+    Map<String, StringBuilder> actionSQLMap = manager.createProcessSQL(stmtStructure);
     StringBuilder insertColName = actionSQLMap.get(INSERT_COLUMN_NAME);
     StringBuilder insertValueStmt = actionSQLMap.get(INSERT_VALUE_STMT);
     StringBuilder updateSetStmt = actionSQLMap.get(UPDATE_SET_STMT);

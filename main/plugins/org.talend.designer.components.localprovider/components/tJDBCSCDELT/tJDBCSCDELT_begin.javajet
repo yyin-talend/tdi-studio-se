@@ -103,9 +103,9 @@ boolean autoIncrease = "AUTO_INCREMENT".equals(surrogateKeyType)&&surrogateKey!=
 
 List<Column> stmtStructure = null;
 if(autoIncrease) {
-	stmtStructure = getManager(dbmsId, cid).createColumnList(columnList, false, null, null, true, surrogateKey, 1, 1);
+	stmtStructure = manager.createColumnList(columnList, false, null, null, true, surrogateKey, 1, 1);
 } else {
-	stmtStructure = getManager(dbmsId, cid).createColumnList(columnList, false, null, null);
+	stmtStructure = manager.createColumnList(columnList, false, null, null);
 }
 
 boolean isDynamic = false;
