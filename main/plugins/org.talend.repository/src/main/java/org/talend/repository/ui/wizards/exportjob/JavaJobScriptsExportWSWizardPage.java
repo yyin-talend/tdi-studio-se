@@ -95,7 +95,8 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
         MSESB_IMAGE(Messages.getString("JavaJobScriptsExportWSWizardPage.MSESB_IMAGE"), false), //$NON-NLS-1$
         IMAGE(Messages.getString("JavaJobScriptsExportWSWizardPage.IMAGE"), false), //$NON-NLS-1$
         ROUTE(Messages.getString("JavaJobScriptsExportWSWizardPage.ROUTE"), false), //$NON-NLS-1$
-        SERVICE(Messages.getString("JavaJobScriptsExportWSWizardPage.SERVICE"), false); //$NON-NLS-1$
+        SERVICE(Messages.getString("JavaJobScriptsExportWSWizardPage.SERVICE"), false), //$NON-NLS-1$
+        ROUTE_CAMELK(Messages.getString("JavaJobScriptsExportWSWizardPage.ROUTE_CAMELK"), false); //$NON-NLS-1$
 
         public final String label;
 
