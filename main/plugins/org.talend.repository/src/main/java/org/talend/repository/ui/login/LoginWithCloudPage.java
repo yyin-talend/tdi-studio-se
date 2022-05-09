@@ -29,7 +29,7 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Link;
 import org.talend.commons.exception.ExceptionHandler;
-import org.talend.configurator.common.connections.CloudSSOLoginUtil;
+import org.talend.configurator.common.connections.CloudSignOnLoginUtil;
 import org.talend.configurator.common.connections.TokenMode;
 import org.talend.configurator.common.connections.TokenServiceImpl;
 import org.talend.configurator.common.utils.SignOnEventListener;
@@ -152,7 +152,7 @@ public class LoginWithCloudPage extends AbstractLoginActionPage implements SignO
             public void widgetSelected(SelectionEvent e) {
                 isSignOnCloud = true;
                 try {
-                    CloudSSOLoginUtil.signonCloud(LoginWithCloudPage.this);
+                    CloudSignOnLoginUtil.signonCloud(LoginWithCloudPage.this);
                 } catch (Exception e1) {
                     showError(e1);
                 }
@@ -220,7 +220,7 @@ public class LoginWithCloudPage extends AbstractLoginActionPage implements SignO
     public void loginStop(String clientID, String authCode) {
         errorManager.setInfoMessage("Still working on second step...");
         try {
-            TokenMode token = CloudSSOLoginUtil.getToken(clientID, authCode);
+            TokenMode token = CloudSignOnLoginUtil.getToken(clientID, authCode);
             TokenServiceImpl.getInstance().save(token);
             TokenServiceImpl.getInstance().start();          
         } catch (Exception e) {
