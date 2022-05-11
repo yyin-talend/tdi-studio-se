@@ -69,7 +69,7 @@ import org.talend.designer.codegen.ISQLPatternSynchronizer;
 import org.talend.designer.codegen.ITalendSynchronizer;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.ui.editor.ProcessEditorInput;
-import org.talend.designer.core.utils.BigDataJobUtil;
+import org.talend.designer.core.utils.RepositoryEditorUtils;
 import org.talend.expressionbuilder.ExpressionPersistance;
 import org.talend.repository.ProjectManager;
 import org.talend.repository.model.IProxyRepositoryFactory;
@@ -273,7 +273,7 @@ public class OpenExistVersionProcessWizard extends Wizard {
                         fileEditorInput.setRepositoryNode(node);
                         if (item instanceof ProcessItem) {
                             ERepositoryObjectType itemType = ERepositoryObjectType.getItemType(item);
-                            String editorId = BigDataJobUtil.getEditorId(itemType);
+                            String editorId = RepositoryEditorUtils.getEditorId(itemType);
                             page.openEditor(fileEditorInput, editorId, readonly);
                         } else if (item instanceof BusinessProcessItem) {
                             CorePlugin.getDefault().getDiagramModelService().openBusinessDiagramEditor(page, fileEditorInput);
@@ -306,7 +306,7 @@ public class OpenExistVersionProcessWizard extends Wizard {
             throws SystemException {
         if (item instanceof ProcessItem) {
             ProcessItem processItem = (ProcessItem) item;
-            RepositoryEditorInput fileEditorInput = BigDataJobUtil.getProcessItemEditorInput(item, readonly);
+            RepositoryEditorInput fileEditorInput = RepositoryEditorUtils.getProcessItemEditorInput(item, readonly);
             if (fileEditorInput == null) {
                 fileEditorInput = new ProcessEditorInput(processItem, true, false, readonly);
             }
