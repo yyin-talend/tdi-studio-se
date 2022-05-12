@@ -3733,7 +3733,6 @@
               version="8.0.1">
         </projecttask>
         <projecttask
-<<<<<<< HEAD
               beforeLogon="false"
               breaks="8.0.0"
               class="org.talend.repository.model.migration.AddUseScientificNotationCheckboxTWriteJSONField"
@@ -3752,8 +3751,6 @@
                version="8.0.1">
         </projecttask>
 		<projecttask
-=======
->>>>>>> 9a29e75d7e (fix(TDI-47879): tExtractJSONFields NB_LINE not updated)
               beforeLogon="true"
               breaks="8.0.1"
               class="org.talend.repository.model.migration.RemoveDestinationPropertyExtractJSONFieldsMigrationTask"
