@@ -26,6 +26,7 @@ import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.swt.widgets.Shell;
 import org.talend.core.language.ECodeLanguage;
 import org.talend.core.language.ICodeProblemsChecker;
 import org.talend.core.model.general.ModuleNeeded;
@@ -43,6 +44,7 @@ import org.talend.core.runtime.process.ITalendProcessJavaProject;
 import org.talend.core.runtime.projectsetting.ProjectPreferenceManager;
 import org.talend.designer.core.ui.action.SaveJobBeforeRunAction;
 import org.talend.designer.runprocess.i18n.Messages;
+import org.talend.designer.runprocess.ui.ProcessContextComposite;
 import org.talend.designer.runprocess.ui.actions.RunProcessAction;
 
 /**
@@ -401,7 +403,7 @@ public class RunProcessService implements IRunProcessService {
 
     @Override
     public IFolder getJavaProjectExternalResourcesFolder(IProcess process) {
-        return (IFolder) delegateService.getJavaProjectExternalResourcesFolder(process);
+        return delegateService.getJavaProjectExternalResourcesFolder(process);
     }
     
     @Override
@@ -566,6 +568,16 @@ public class RunProcessService implements IRunProcessService {
     @Override
     public void updateAllCodeCacheStatus(boolean isUpdated) {
         delegateService.updateAllCodeCacheStatus(isUpdated);
+    }
+
+    @Override
+    public IContext promptConfirmLauch(Shell shell, IProcess process) {
+        IContext context = process.getContextManager().getDefaultContext().clone();
+        boolean prompt = ProcessContextComposite.promptConfirmLauch(shell, context, process);
+        if (prompt) {
+            return context;
+        }
+        return null;
     }
 
 }

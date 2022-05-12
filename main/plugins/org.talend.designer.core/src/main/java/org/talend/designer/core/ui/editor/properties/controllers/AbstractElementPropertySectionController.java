@@ -335,8 +335,7 @@ public abstract class AbstractElementPropertySectionController implements Proper
                         // for jdbc parm driver jar
                         String value = "";
                         List list = (List) param.getValue();
-                        for (int i = 0; i < list.size(); i++) {
-                            Object object = list.get(i);
+                        for (Object object : list) {
                             if (object instanceof Map) {
                                 Map valueMap = (Map) object;
                                 if (valueMap.get("JAR_NAME") != null) {
@@ -393,8 +392,7 @@ public abstract class AbstractElementPropertySectionController implements Proper
                         // for jdbc parm driver jar
                         String value = "";
                         List list = (List) param.getValue();
-                        for (int i = 0; i < list.size(); i++) {
-                            Object object = list.get(i);
+                        for (Object object : list) {
                             if (object instanceof Map) {
                                 Map valueMap = (Map) object;
                                 if (valueMap.get("JAR_NAME") != null) {
@@ -444,8 +442,7 @@ public abstract class AbstractElementPropertySectionController implements Proper
                             // for jdbc parm driver jar
                             String value = "";
                             List list = (List) param.getValue();
-                            for (int i = 0; i < list.size(); i++) {
-                                Object object = list.get(i);
+                            for (Object object : list) {
                                 if (object instanceof Map) {
                                     Map valueMap = (Map) object;
                                     if (valueMap.get("JAR_NAME") != null) {
@@ -1229,8 +1226,7 @@ public abstract class AbstractElementPropertySectionController implements Proper
             public void dragOver(final DropTargetEvent event) {
                 if (TextTransfer.getInstance().isSupportedType(event.currentDataType)) {
                     propertyName = getParameterName(textControl);
-                    for (int i = 0; i < elem.getElementParameters().size(); i++) {
-                        IElementParameter param = elem.getElementParameters().get(i);
+                    for (IElementParameter param : elem.getElementParameters()) {
                         if (param.getName().equals(propertyName)) {
                             if (param.isReadOnly()) {
                                 event.detail = DND.ERROR_INVALID_DATA;
@@ -1806,6 +1802,9 @@ public abstract class AbstractElementPropertySectionController implements Proper
         		&& (connParameters.getSchema() == null || connParameters.getSchema().length() <= 0)) {
         	connParameters.setSchema(dbName);
         }
+        if (context != null) {
+            connParameters.setSelectContext(context.getName());
+        }
     }
 
     private String getParameterValueWithContext(IElement elem, String key, IContext context,
@@ -1840,8 +1839,7 @@ public abstract class AbstractElementPropertySectionController implements Proper
                 // for jdbc parm driver jars
                 String jarValues = "";
                 List list = (List) value;
-                for (int i = 0; i < list.size(); i++) {
-                    Object object = list.get(i);
+                for (Object object : list) {
                     if (object instanceof Map) {
                         Map valueMap = (Map) object;
                         if (valueMap.get("JAR_NAME") != null) {
@@ -2307,9 +2305,9 @@ public abstract class AbstractElementPropertySectionController implements Proper
                     metadataConnection.getDriverJarPath(), metadataConnection.getDbVersionString(),
                     metadataConnection.getAdditionalParams());
             if (list != null && list.size() > 0) {
-                for (int i = 0; i < list.size(); i++) {
-                    if (list.get(i) instanceof Connection) {
-                        connection = (java.sql.Connection) list.get(i);
+                for (Object element : list) {
+                    if (element instanceof Connection) {
+                        connection = (java.sql.Connection) element;
                     }
                 }
             }
@@ -2432,14 +2430,14 @@ public abstract class AbstractElementPropertySectionController implements Proper
      * @param propertyName
      * @param query
      */
-    protected String openSQLBuilder(String repositoryType, String propertyName, String query) {
+    protected String openSQLBuilder(String repositoryType, String propertyName, String query, IContext context) {
         if (repositoryType.equals(EmfComponent.BUILTIN)) {
             connParameters.setQuery(query, true);
             if (connParameters.isShowConfigParamDialog()) {
                 if (!isUseExistingConnection()) {
-                    initConnectionParametersWithContext(elem, part.getProcess().getContextManager().getDefaultContext());
+                    initConnectionParametersWithContext(elem, context);
                 } else {
-                    initConnectionParametersWithContext(connectionNode, part.getProcess().getContextManager().getDefaultContext());
+                    initConnectionParametersWithContext(connectionNode, context);
                 }
             }
             // add for bug TDI-20335

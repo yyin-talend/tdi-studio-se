@@ -81,6 +81,8 @@ public final class EMFRepositoryNodeManager {
 
     private String rightDbQuote;
 
+    private DatabaseConnection copyConnection;
+
     /**
      * qzhang EMFRepositoryNodeManager constructor comment.
      */
@@ -183,8 +185,13 @@ public final class EMFRepositoryNodeManager {
             try {
                 DatabaseConnection databaseConnection = (DatabaseConnection) SQLBuilderRepositoryNodeManager.getItem(root)
                         .getConnection();
-                iMetadataConnection = ConvertionHelper.convert(databaseConnection, false, selectedContext);
-                iMetadataConnection.setAdditionalParams(ConvertionHelper.convertAdditionalParameters(databaseConnection));
+                DatabaseConnection copyConnection = getCopyConnection();
+                if (copyConnection == null) {
+                    copyConnection = databaseConnection;
+                }
+                iMetadataConnection = ConvertionHelper.convert(copyConnection, false, selectedContext);
+                iMetadataConnection
+                        .setAdditionalParams(ConvertionHelper.convertAdditionalParameters(copyConnection));
                 dbMetaData = rnmanager.getDatabaseMetaData(iMetadataConnection);
             } catch (final Exception e) {
                 final String mainMsg = Messages.getString("EMFRepositoryNodeManager.DBConnection.Text"); //$NON-NLS-1$
@@ -677,4 +684,13 @@ public final class EMFRepositoryNodeManager {
         regexp = regexp.replace(")", "\\)"); //$NON-NLS-1$ //$NON-NLS-2$
         return regexp;
     }
+
+    public DatabaseConnection getCopyConnection() {
+        return this.copyConnection;
+    }
+
+    public void setCopyConnection(DatabaseConnection copyConnection) {
+        this.copyConnection = copyConnection;
+    }
+
 }

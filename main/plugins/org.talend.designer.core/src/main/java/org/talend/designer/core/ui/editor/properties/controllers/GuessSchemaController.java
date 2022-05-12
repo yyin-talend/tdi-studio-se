@@ -45,6 +45,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
+import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.views.properties.tabbed.ITabbedPropertyConstants;
 import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.commons.ui.swt.dialogs.ErrorDialogWithDetailAreaAndContinueButton;
@@ -97,6 +98,7 @@ import org.talend.designer.core.ui.editor.connections.TracesConnectionUtils;
 import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.properties.ConfigureConnParamDialog;
 import org.talend.designer.core.ui.editor.properties.controllers.uidialog.OpenContextChooseComboDialog;
+import org.talend.designer.runprocess.IRunProcessService;
 import org.talend.designer.runprocess.ProcessorException;
 import org.talend.metadata.managment.connection.manager.HiveConnectionManager;
 import org.talend.metadata.managment.connection.manager.ImpalaConnectionManager;
@@ -221,7 +223,16 @@ public class GuessSchemaController extends AbstractElementPropertySectionControl
         memoSQL = (String) elementParameterFromField.getValue();
         initConnectionParameters();
         if (this.connParameters != null && memoSQL != null) {
-            initConnectionParametersWithContext(elem, manager.getDefaultContext());
+            IContext selectContext = manager.getDefaultContext();
+            if (GlobalServiceRegister.getDefault().isServiceRegistered(IRunProcessService.class) && part != null) {
+                IRunProcessService service = GlobalServiceRegister.getDefault().getService(IRunProcessService.class);
+                Shell shell = PlatformUI.getWorkbench().getDisplay().getActiveShell();
+                selectContext = service.promptConfirmLauch(shell, part.getProcess());
+                if (selectContext == null) {
+                    return changeMetadataCommand;
+                }
+            }
+            initConnectionParametersWithContext(elem, selectContext);
             // runShadowProcess();
             if (LanguageManager.getCurrentLanguage() == ECodeLanguage.JAVA) {
                 useMockJob();
@@ -489,7 +500,7 @@ public class GuessSchemaController extends AbstractElementPropertySectionControl
                     if (dqRule != null) {
                         ITDQRuleService ruleService = null;
                         try {
-                            ruleService = (ITDQRuleService) GlobalServiceRegister.getDefault().getService(ITDQRuleService.class);
+                            ruleService = GlobalServiceRegister.getDefault().getService(ITDQRuleService.class);
                         } catch (RuntimeException e) {
                             // nothing to do
                         }
@@ -1052,7 +1063,7 @@ public class GuessSchemaController extends AbstractElementPropertySectionControl
                         initConnectionParameters();
                     }
 
-                    ISQLBuilderService service = (ISQLBuilderService) GlobalServiceRegister.getDefault().getService(
+                    ISQLBuilderService service = GlobalServiceRegister.getDefault().getService(
                             ISQLBuilderService.class);
                     DatabaseConnection connt = service.createConnection(connParameters);
                     IMetadataConnection iMetadataConnection = null;
