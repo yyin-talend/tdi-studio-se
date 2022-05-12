@@ -36,6 +36,7 @@ public class BuildJobConstants {
         oldBuildTypeMap.put(JobExportType.OSGI, "OSGI");
         oldBuildTypeMap.put(JobExportType.MSESB, "REST_MS");
         oldBuildTypeMap.put(JobExportType.MSESB_IMAGE, "REST_MS");
+        oldBuildTypeMap.put(JobExportType.ROUTE_CAMELK, "ROUTE_CAMELK");
 
         esbComponents = Collections.unmodifiableList(Arrays.asList("tRESTClient", "tRESTRequest", "tRESTResponse", "tESBConsumer",
                 "tESBProviderFault", "tESBProviderRequest", "tESBProviderResponse", "tRouteInput"));

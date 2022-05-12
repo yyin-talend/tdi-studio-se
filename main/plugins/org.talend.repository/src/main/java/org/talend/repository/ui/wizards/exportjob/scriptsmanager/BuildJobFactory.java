@@ -59,6 +59,8 @@ public class BuildJobFactory {
                 break; // continue
             case MSESB:
                 break; // continue
+            case ROUTE_CAMELK:
+                break; // continue
             default:
                 jobExportType = null; // try the first one by default
                 break;
@@ -98,6 +100,8 @@ public class BuildJobFactory {
                 if (repositoryObjectType == ERepositoryObjectType.PROCESS_ROUTE && "ROUTE_MICROSERVICE".equals(type)) {
                     esb = true;
                 } else if ("REST_MS".equals(type)) {
+                    esb = true;
+                } else if ("ROUTE_CAMELK".equals(type)) {
                     esb = true;
                 }else {
                     for (Object o : ((ProcessItem) processItem).getProcess().getNode()) {
