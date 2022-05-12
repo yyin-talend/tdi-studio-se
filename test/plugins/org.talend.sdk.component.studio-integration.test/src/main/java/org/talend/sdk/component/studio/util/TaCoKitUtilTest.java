@@ -20,22 +20,34 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.junit.Assert;
 import org.junit.Test;
+import org.mockito.Mockito;
+import org.talend.core.model.components.ComponentCategory;
+import org.talend.core.model.components.IComponent;
 import org.talend.core.model.process.BigDataNode;
 import org.talend.core.model.process.EComponentCategory;
 import org.talend.core.model.process.EParameterFieldType;
 import org.talend.core.model.process.IProcess;
 import org.talend.core.model.properties.PropertiesFactory;
+import org.talend.core.model.properties.Property;
+import org.talend.core.repository.model.ProxyRepositoryFactory;
+import org.talend.core.ui.component.ComponentsFactoryProvider;
 import org.talend.designer.core.model.components.DummyComponent;
 import org.talend.designer.core.model.components.ElementParameter;
+import org.talend.designer.core.model.process.DataProcess;
+import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.process.Process;
 import org.talend.sdk.component.server.front.model.ComponentId;
 import org.talend.sdk.component.server.front.model.ComponentIndex;
 import org.talend.sdk.component.server.front.model.SimplePropertyDefinition;
 import org.talend.sdk.component.studio.i18n.Messages;
+import org.talend.sdk.component.studio.model.action.SuggestionsAction;
+import org.talend.sdk.component.studio.model.parameter.ValueSelectionParameter;
 
 /**
  * created by hcyi on Oct 9, 2019 Detailled comment
@@ -170,5 +182,48 @@ public class TaCoKitUtilTest {
         List<SimplePropertyDefinition> propertyList = new ArrayList<SimplePropertyDefinition>();
         propertyList.add(p);
         assertEquals("configuration", TaCoKitUtil.getConfigurationPath(propertyList));
+    }
+
+    @Test
+    public void testSetupTacokitSuggestionValueConfiguration() {
+        Property property = PropertiesFactory.eINSTANCE.createProperty();
+        property.setId(ProxyRepositoryFactory.getInstance().getNextId());
+        Process process = new Process(property);
+        IComponent component = ComponentsFactoryProvider.getInstance().get("tLogRow", ComponentCategory.CATEGORY_4_DI.getName());
+        Node fakeNode = new Node(component, process);
+
+        ElementParameter parameter = new ElementParameter(fakeNode);
+        parameter.setTaggedValue("org.talend.sdk.component.source", "tacokit");
+        parameter.setFieldType(EParameterFieldType.TABLE);
+        List list = new ArrayList();
+        Map<String, String> row = new HashMap<String, String>();
+        row.put("configuration.dataSet.recordType", "Account");
+        row.put("configuration.searchCondition[0].field", "name");
+        row.put("configuration.searchCondition[0].operator", "List.anyOf");
+        row.put("configuration.searchCondition[0].searchValue", "test");
+        row.put("configuration.searchCondition[0].additionalSearchValue", "");
+        list.add(row);
+        parameter.setValue(list);
+        ValueSelectionParameter fieldParam = Mockito.mock(ValueSelectionParameter.class);
+        ValueSelectionParameter operatorParam = Mockito.mock(ValueSelectionParameter.class);
+        Map<String, String> suggestionValues = new HashMap<String, String>();
+        suggestionValues.put("name", "name_id");
+        suggestionValues.put("local", "local_id");
+        suggestionValues.put("balance", "balance_id");
+        SuggestionsAction action = new SuggestionsAction("test", "test");
+        Mockito.when(fieldParam.getSuggestionValues()).thenReturn(suggestionValues);
+        Mockito.when(fieldParam.getName()).thenReturn("configuration.searchCondition[0].field");
+        Mockito.when(fieldParam.getAction()).thenReturn(action);
+        Mockito.when(operatorParam.getSuggestionValues()).thenReturn(new HashMap<String, String>());
+        Mockito.when(operatorParam.getName()).thenReturn("configuration.searchCondition[0].operator");
+        Mockito.when(operatorParam.getAction()).thenReturn(action);
+        parameter.setListItemsValue(new Object[] { fieldParam, operatorParam });
+
+        DataProcess dataprocess = new DataProcess(process);
+        dataprocess.setupTacokitSuggestionValueConfiguration(parameter);
+        List resultList = (List) parameter.getValue();
+        Map resultMap = (Map) resultList.get(0);
+        assertEquals(resultMap.get("configuration.searchCondition[0].field"), "name_id");
+        assertEquals(resultMap.get("configuration.searchCondition[0].operator"), "List.anyOf");
     }
 }
