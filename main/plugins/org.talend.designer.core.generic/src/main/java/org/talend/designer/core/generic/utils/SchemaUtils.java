@@ -247,6 +247,7 @@ public class SchemaUtils {
         if (schema == null || metadataTable == null) {
             return;
         }
+        metadataTable.setLabel(schema.getName());
         for (Schema.Field field : schema.getFields()) {
             MetadataColumn metadataColumn = MetadataToolAvroHelper.convertFromAvro(field, metadataTable);
             metadataTable.getColumns().add(metadataColumn);
