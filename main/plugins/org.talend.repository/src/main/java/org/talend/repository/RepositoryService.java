@@ -31,7 +31,6 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.ResourcesPlugin;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
@@ -51,6 +50,7 @@ import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.talend.commons.CommonsPlugin;
 import org.talend.commons.exception.BusinessException;
+import org.talend.commons.exception.CommonExceptionHandler;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.exception.InformException;
 import org.talend.commons.exception.LoginException;
@@ -145,7 +145,6 @@ import org.talend.repository.ui.utils.ColumnNameValidator;
 import org.talend.repository.ui.utils.Log4jPrefsSettingManager;
 import org.talend.repository.ui.utils.UpdateLog4jJarUtils;
 import org.talend.repository.ui.views.IRepositoryView;
-import org.talend.utils.json.JSONException;
 import org.talend.utils.json.JSONObject;
 
 /**
@@ -545,29 +544,23 @@ public class RepositoryService implements IRepositoryService, IRepositoryContext
                     Display.getDefault().syncExec(() -> MessageDialog.openInformation(Display.getDefault().getActiveShell(),
                             Messages.getString("LoginDialog.logonDenyTitle"), e.getLocalizedMessage()));
                 } else {
-                    MessageBoxExceptionHandler.process(e, DisplayUtils.getDefaultShell(false));
+                    process(e);
                 }
                 repositoryFactory.logOffProject();
                 LoginHelper.isAutoLogonFailed = true;
             } catch (LoginException e) {
                 if (!LoginException.RESTART.equals(e.getKey())) {
-                    MessageBoxExceptionHandler.process(e, DisplayUtils.getDefaultShell(false));
+                    process(e);
                     repositoryFactory.logOffProject();
                 }
                 LoginHelper.isAutoLogonFailed = true;
             } catch (BusinessException e) {
-                MessageBoxExceptionHandler.process(e, DisplayUtils.getDefaultShell(false));
+                process(e);
                 repositoryFactory.logOffProject();
-                LoginHelper.isAutoLogonFailed = true;
-            } catch (CoreException e) {
-                MessageBoxExceptionHandler.process(e, DisplayUtils.getDefaultShell(false));
-                repositoryFactory.logOffProject();
-                LoginHelper.isAutoLogonFailed = true;
-            } catch (JSONException e) {
-                ExceptionHandler.process(e);
                 LoginHelper.isAutoLogonFailed = true;
             } catch (Exception e) {
-                ExceptionHandler.process(e);
+                process(e);
+                repositoryFactory.logOffProject();
                 LoginHelper.isAutoLogonFailed = true;
             }
 
@@ -578,6 +571,16 @@ public class RepositoryService implements IRepositoryService, IRepositoryContext
             return true;
         }
         return false;
+    }
+
+    private void process(Exception ex) {
+        CommonExceptionHandler.process(ex);
+
+        if (CommonsPlugin.isHeadless() || CommonsPlugin.isJUnitTest()) {
+            return;
+        }
+
+        MessageBoxExceptionHandler.showMessage(ex, DisplayUtils.getDefaultShell(false));
     }
 
     private String getAppArgValue(String arg, String defaultValue) {
