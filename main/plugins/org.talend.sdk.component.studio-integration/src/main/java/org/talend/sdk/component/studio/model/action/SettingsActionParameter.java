@@ -15,12 +15,14 @@
  */
 package org.talend.sdk.component.studio.model.action;
 
-import org.talend.sdk.component.studio.lang.Pair;
-import org.talend.sdk.component.studio.lang.Strings;
-import org.talend.sdk.component.studio.model.parameter.TaCoKitElementParameter;
-
 import java.util.Collection;
 import java.util.Collections;
+
+import org.apache.commons.text.StringEscapeUtils;
+import org.talend.core.model.process.EParameterFieldType;
+import org.talend.core.utils.TalendQuoteUtils;
+import org.talend.sdk.component.studio.lang.Pair;
+import org.talend.sdk.component.studio.model.parameter.TaCoKitElementParameter;
 
 /**
  * {@link IActionParameter} which is binded with ElementParameter.
@@ -36,11 +38,15 @@ public class SettingsActionParameter extends AbstractActionParameter {
         this.setting = setting;
     }
 
-    private String getValue(Object value) {
+    private String getValue(TaCoKitElementParameter parameter, Object value) {
         if (value == null) {
             return "";
         } else {
-            return Strings.removeQuotes(String.valueOf(value));
+            String removeQuotes = TalendQuoteUtils.removeQuotes(String.valueOf(value));
+            if (EParameterFieldType.isPassword(parameter.getFieldType())) {
+                removeQuotes = StringEscapeUtils.unescapeJava(removeQuotes);
+            }
+            return removeQuotes;
         }
     }
 
@@ -56,9 +62,9 @@ public class SettingsActionParameter extends AbstractActionParameter {
         final String key = getParameter();
         String value = null;
         if (isUseExistConnection(setting) && isDataStoreParameter(setting)) {
-            value = getValue(getParameterValueFromConnection(setting, setting.getName()));       
+            value = getValue(setting, getParameterValueFromConnection(setting, setting.getName()));
         } else {
-            value = getValue(setting.getStringValue());
+            value = getValue(setting, setting.getStringValue());
         }
         final Pair<String, String> parameter = new Pair<>(key, value);
         return Collections.singletonList(parameter);
