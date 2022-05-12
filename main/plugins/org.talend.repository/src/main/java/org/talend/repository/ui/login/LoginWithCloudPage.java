@@ -13,6 +13,7 @@
 package org.talend.repository.ui.login;
 
 import java.lang.reflect.InvocationTargetException;
+import java.security.NoSuchAlgorithmException;
 
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
@@ -34,6 +35,7 @@ import org.talend.configurator.common.connections.TokenMode;
 import org.talend.configurator.common.connections.TokenServiceImpl;
 import org.talend.configurator.common.utils.SignOnEventListener;
 import org.talend.license.gui.util.ConnectionUtil;
+import org.talend.license.gui.widget.SplitButton;
 import org.talend.repository.i18n.Messages;
 
 
@@ -54,11 +56,13 @@ public class LoginWithCloudPage extends AbstractLoginActionPage implements SignO
 
     protected String licenseString;
 
-    private Button signCloudButton;
+    private SplitButton  signCloudButton;
 
     private Button otherSignButton;
 
     private boolean isSignOnCloud = false;
+    
+    private String codeVerifier = CloudSignOnLoginUtil.generateCodeVerifier();
 
     public LoginWithCloudPage(Composite parent, LoginDialogV2 dialog, int style) {
         super(parent, dialog, style);
@@ -75,7 +79,7 @@ public class LoginWithCloudPage extends AbstractLoginActionPage implements SignO
         title.setFont(LoginDialogV2.fixedFont);
         title.setText("Get start with your Studio integration software"); //$NON-NLS-1$
 
-        signCloudButton = new Button(container, SWT.FLAT);
+        signCloudButton = new SplitButton(container, SWT.FLAT);
         signCloudButton.setFont(LoginDialogV2.fixedFont);
         signCloudButton.setText("Sign in with Talend Cloud");
 
@@ -213,18 +217,24 @@ public class LoginWithCloudPage extends AbstractLoginActionPage implements SignO
 
     @Override
     public void loginStart(String clientID) {
-        errorManager.setInfoMessage("Still working on first step..."); 
+        Display.getDefault().syncExec(() -> {
+            errorManager.setInfoMessage("Still working on first step...");
+        });
     }
 
     @Override
     public void loginStop(String clientID, String authCode) {
-        errorManager.setInfoMessage("Still working on second step...");
+        Display.getDefault().syncExec(() -> {
+            errorManager.setInfoMessage("Still working on second step...");
+        });       
         try {
-            TokenMode token = CloudSignOnLoginUtil.getToken(clientID, authCode);
+            TokenMode token = CloudSignOnLoginUtil.getToken(clientID, authCode, this.codeVerifier);
             TokenServiceImpl.getInstance().save(token);
             TokenServiceImpl.getInstance().start();          
         } catch (Exception e) {
-            errorManager.setErrMessage(e.getLocalizedMessage());
+            Display.getDefault().syncExec(() -> {
+                errorManager.setErrMessage(e.getLocalizedMessage());
+            });
             ExceptionHandler.process(e);
         }
         
@@ -232,7 +242,24 @@ public class LoginWithCloudPage extends AbstractLoginActionPage implements SignO
 
     @Override
     public void loginFailed(Exception ex) {
-        errorManager.setErrMessage(ex.getMessage());
-        
+        Display.getDefault().syncExec(() -> {
+            errorManager.setErrMessage(ex.getMessage());
+        });       
     }
+
+    @Override
+    public String getCodeChallenge() {
+        String codeChallenge = null;
+        try {
+            codeChallenge = CloudSignOnLoginUtil.getCodeChallenge(codeVerifier);
+        } catch (NoSuchAlgorithmException ex) {
+            Display.getDefault().syncExec(() -> {
+                errorManager.setErrMessage(ex.getLocalizedMessage());
+            });
+            ExceptionHandler.process(ex);
+        }
+        return codeChallenge;
+    }
+    
+    
 }
