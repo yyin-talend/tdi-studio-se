@@ -789,7 +789,11 @@ public abstract class AbstractElementPropertySectionController implements Proper
          */
         public void checkErrors(final Control control) {
             refreshNode();
-            IElementParameter elementParameter = elem.getElementParameter(getParameterName(control));
+            String parameterName = getParameterName(control);
+            if (StringUtils.isBlank(parameterName)) {
+                return;
+            }
+            IElementParameter elementParameter = elem.getElementParameter(parameterName);
 
             if (elementParameter.isReadOnly() || elementParameter.isNoCheck()) {
                 return;
@@ -1090,6 +1094,9 @@ public abstract class AbstractElementPropertySectionController implements Proper
                 @Override
                 public void addNewCommand(Control control) {
                     String name = getParameterName(control);
+                    if (StringUtils.isBlank(name)) {
+                        return;
+                    }
                     String text = ControlUtils.getText(control);
                     Command cmd = getTextCommandForHelper(name, text);
                     // getCommandStack().execute(cmd);
@@ -1101,6 +1108,9 @@ public abstract class AbstractElementPropertySectionController implements Proper
                     CommandStack commandStack = getCommandStack();
 
                     String name = getParameterName(control);
+                    if (StringUtils.isBlank(name)) {
+                        return;
+                    }
                     String text = ControlUtils.getText(control);
 
                     if (commandStack == null) {
@@ -1226,6 +1236,9 @@ public abstract class AbstractElementPropertySectionController implements Proper
             public void dragOver(final DropTargetEvent event) {
                 if (TextTransfer.getInstance().isSupportedType(event.currentDataType)) {
                     propertyName = getParameterName(textControl);
+                    if (StringUtils.isBlank(propertyName)) {
+                        return;
+                    }
                     for (IElementParameter param : elem.getElementParameters()) {
                         if (param.getName().equals(propertyName)) {
                             if (param.isReadOnly()) {
