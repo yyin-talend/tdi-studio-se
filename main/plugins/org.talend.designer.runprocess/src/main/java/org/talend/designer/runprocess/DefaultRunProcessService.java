@@ -43,6 +43,7 @@ import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.preference.IPersistentPreferenceStore;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.swt.widgets.Shell;
 import org.osgi.framework.Bundle;
 import org.osgi.service.prefs.Preferences;
 import org.talend.commons.exception.ExceptionHandler;
@@ -103,6 +104,7 @@ import org.talend.designer.runprocess.maven.listener.CodesJarChangeListener;
 import org.talend.designer.runprocess.prefs.RunProcessPrefsConstants;
 import org.talend.designer.runprocess.spark.SparkJavaProcessor;
 import org.talend.designer.runprocess.storm.StormJavaProcessor;
+import org.talend.designer.runprocess.ui.ProcessContextComposite;
 import org.talend.designer.runprocess.ui.views.ProcessView;
 import org.talend.librariesmanager.model.ModulesNeededProvider;
 import org.talend.repository.ProjectManager;
@@ -1066,6 +1068,16 @@ public class DefaultRunProcessService implements IRunProcessService {
     @Override
     public void updateAllCodeCacheStatus(boolean isUpdated) {
         CodeM2CacheManager.updateAllCacheStatus(false);
+    }
+
+    @Override
+    public IContext promptConfirmLauch(Shell shell, IProcess process) {
+        IContext context = process.getContextManager().getDefaultContext().clone();
+        boolean prompt = ProcessContextComposite.promptConfirmLauch(shell, context, process);
+        if (prompt) {
+            return context;
+        }
+        return null;
     }
 
 }

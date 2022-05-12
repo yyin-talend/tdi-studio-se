@@ -49,7 +49,7 @@ import org.talend.repository.model.IProxyRepositoryFactory;
  * Detailled comment
  *
  */
-public class BigDataJobUtilTest {
+public class RepositoryEditorUtilsTest {
 
     IProxyRepositoryFactory factory;
 
@@ -76,7 +76,7 @@ public class BigDataJobUtilTest {
         IRepositoryViewObject object_01 = createRepositoryObject4Process(label, id, "0.1");//$NON-NLS-1$
         repositoryObjects.add(object_01);
         Item item = object_01.getProperty().getItem();
-        RepositoryEditorInput fileEditorInput = BigDataJobUtil.getProcessItemEditorInput(item, false);
+        RepositoryEditorInput fileEditorInput = RepositoryEditorUtils.getProcessItemEditorInput(item, false);
         Assert.assertNotNull(fileEditorInput);
         Assert.assertEquals("org.talend.designer.core.ui.editor.ProcessEditorInput", fileEditorInput.getClass().getName()); //$NON-NLS-1$
     }
@@ -88,7 +88,7 @@ public class BigDataJobUtilTest {
         IRepositoryViewObject object_01 = createRepositoryObject4Joblet(label, id, "0.1");//$NON-NLS-1$
         repositoryObjects.add(object_01);
         Item item = object_01.getProperty().getItem();
-        RepositoryEditorInput fileEditorInput = BigDataJobUtil.getProcessItemEditorInput(item, false);
+        RepositoryEditorInput fileEditorInput = RepositoryEditorUtils.getProcessItemEditorInput(item, false);
         Assert.assertNotNull(fileEditorInput);
         Assert.assertEquals("org.talend.designer.joblet.ui.editor.JobletEditorInput", fileEditorInput.getClass().getName()); //$NON-NLS-1$
     }
