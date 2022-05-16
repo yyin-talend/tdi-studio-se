@@ -15,12 +15,12 @@ package org.talend.sdk.component.studio.service;
 import java.io.File;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Collection;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.NullProgressMonitor;
 import org.talend.commons.CommonsPlugin;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.runtime.service.ITaCoKitService;
@@ -32,9 +32,7 @@ import org.talend.sdk.component.server.front.model.ComponentDetail;
 import org.talend.sdk.component.studio.Lookups;
 import org.talend.sdk.component.studio.ServerManager;
 import org.talend.sdk.component.studio.metadata.TaCoKitCache;
-import org.talend.sdk.component.studio.model.action.SuggestionsAction;
 import org.talend.sdk.component.studio.model.parameter.PropertyDefinitionDecorator;
-import org.talend.sdk.component.studio.model.parameter.ValueSelectionParameter;
 import org.talend.sdk.component.studio.model.parameter.VersionParameter;
 import org.talend.sdk.component.studio.toolbar.ReloadAction;
 import org.talend.sdk.component.studio.util.TaCoKitUtil;
@@ -132,20 +130,5 @@ public class TaCoKitService implements ITaCoKitService {
             }
         }
         return false;
-    }
-
-    @Override
-    public Map<String, String> getParameterSuggestionValues(Object parameter, int rowNumber) {
-        Map<String, String> suggestionValues = new LinkedHashMap<String, String>();
-        if (parameter instanceof ValueSelectionParameter) {
-            ValueSelectionParameter vsParam = ((ValueSelectionParameter) parameter);
-            SuggestionsAction action = vsParam.getAction();
-            action.setRowNumber(rowNumber);
-            if (!action.isMissingRequired()) {
-                suggestionValues = vsParam.getSuggestionValues();
-            }
-        }
-        // Map <label,id>
-        return suggestionValues;
     }
 }
