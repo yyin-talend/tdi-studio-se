@@ -44,7 +44,6 @@ class MvnTest {
     private static final String GA = "io.netty:netty-codec-http";
 
 
-    @Test
     void locationToMvn() {
         assertEquals(MVN_GAVT, Mvn.locationToMvn(MVN_GAVT));
         assertEquals(MVN_GAVTC, Mvn.locationToMvn(MVN_GAVTC));
@@ -66,27 +65,22 @@ class MvnTest {
         assertEquals(MVN_URI_CONF + ext, need.getDefaultMavenURI());
     }
 
-    @Test
     void moduleNeededFromGAV() {
         assertNeededModule(Mvn.locationToMvn(GAV), "");
     }
 
-    @Test
     void moduleNeededFromGATV() {
         assertNeededModule(Mvn.locationToMvn(GATV), "");
     }
 
-    @Test
     void moduleNeededFromGATVS() {
         assertNeededModule(Mvn.locationToMvn(GATVS), "");
     }
 
-    @Test
     void moduleNeededFromGATCV() {
         assertNeededModule(Mvn.locationToMvn(GATCV), "/osx-x86_64");
     }
 
-    @Test
     void moduleNeededFromGATCVE() {
         assertNeededModule(Mvn.locationToMvn(GATCV + ":extra-param"), "/osx-x86_64");
     }
