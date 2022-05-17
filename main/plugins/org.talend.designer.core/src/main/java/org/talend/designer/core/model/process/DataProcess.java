@@ -32,6 +32,7 @@ import org.eclipse.emf.common.util.EMap;
 import org.eclipse.ui.IEditorPart;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.exception.PersistenceException;
+import org.talend.commons.runtime.service.ITaCoKitService;
 import org.talend.components.api.properties.ComponentProperties;
 import org.talend.components.api.properties.ComponentReferenceProperties;
 import org.talend.components.api.properties.VirtualComponentProperties;
@@ -230,6 +231,14 @@ public class DataProcess implements IGeneratingProcess {
                     // targetParam.setValue( sourceParam.getValue());
                     targetParam.setListItemsValue(ArrayUtils.clone(sourceParam.getListItemsValue()));
                     targetParam.setListItemsDisplayCodeName(sourceParam.getListItemsDisplayCodeName());
+                    try {
+                        IElementParameter familyParam = sourceElement.getElementParameter(EParameterName.FAMILY.getName());
+                        if (familyParam != null && "GoogleAnalytics".equals(familyParam.getValue())) {
+                            setupTacokitSuggestionValueConfiguration(targetParam);
+                        }
+                    } catch (Exception e) {
+                        ExceptionHandler.process(e);
+                    }
                 }
                 for (String name : targetParam.getChildParameters().keySet()) {
                     IElementParameter targetChildParam = targetParam.getChildParameters().get(name);
@@ -247,6 +256,51 @@ public class DataProcess implements IGeneratingProcess {
                 ElementParameter newParam = (ElementParameter) sourceParam.getClone();
                 List<IElementParameter> listParam = (List<IElementParameter>) targetElement.getElementParameters();
                 listParam.add(newParam);
+            }
+        }
+    }
+
+    public void setupTacokitSuggestionValueConfiguration(IElementParameter parameter) {
+        if (parameter instanceof ElementParameter) {
+            Object sourceName = ((ElementParameter) parameter).getTaggedValue("org.talend.sdk.component.source"); //$NON-NLS-1$
+            boolean isTacokit = "tacokit".equalsIgnoreCase(String.valueOf(sourceName)); //$NON-NLS-1$
+            ITaCoKitService taCoKitService = ITaCoKitService.getInstance();
+            if (!isTacokit || taCoKitService == null) {
+                return;
+            }
+            Object value = parameter.getValue();
+            if (value == null || value instanceof List && ((List) value).isEmpty()) {
+                return;
+            }
+            Object[] listItemsValue = parameter.getListItemsValue();
+            Set<String> valueSelectionColNames = new HashSet<String>();
+            for (Object itemObj : listItemsValue) {
+                if (taCoKitService.isValueSelectionParameter(itemObj) && itemObj instanceof ElementParameter) {
+                    ElementParameter itemParam = (ElementParameter) itemObj;
+                    valueSelectionColNames.add(itemParam.getName());
+                }
+            }
+
+            if (value instanceof List) {
+                for (Object row : (List) value) {
+                    if (row instanceof Map) {
+                        Map rowColumn = (Map) row;
+                        for (Object columnName : rowColumn.keySet()) {
+                            if (!valueSelectionColNames.contains(String.valueOf(columnName))) {
+                                continue;
+                            }
+
+                            String columnValue = String.valueOf(rowColumn.get(columnName));
+                            if (columnValue.contains("(") && columnValue.contains(")")) {
+                                String sugValueId = columnValue.substring(columnValue.lastIndexOf("(") + 1,
+                                        columnValue.lastIndexOf(")"));
+                                if (StringUtils.isNotBlank(sugValueId)) {
+                                    rowColumn.put(columnName, sugValueId);
+                                }
+                            }
+                        }
+                    }
+                }
             }
         }
     }

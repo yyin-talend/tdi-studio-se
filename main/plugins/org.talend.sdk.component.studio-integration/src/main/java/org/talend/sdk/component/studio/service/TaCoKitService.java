@@ -20,7 +20,6 @@ import java.util.Map;
 import java.util.Optional;
 
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.NullProgressMonitor;
 import org.talend.commons.CommonsPlugin;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.runtime.service.ITaCoKitService;
@@ -33,6 +32,7 @@ import org.talend.sdk.component.studio.Lookups;
 import org.talend.sdk.component.studio.ServerManager;
 import org.talend.sdk.component.studio.metadata.TaCoKitCache;
 import org.talend.sdk.component.studio.model.parameter.PropertyDefinitionDecorator;
+import org.talend.sdk.component.studio.model.parameter.ValueSelectionParameter;
 import org.talend.sdk.component.studio.model.parameter.VersionParameter;
 import org.talend.sdk.component.studio.toolbar.ReloadAction;
 import org.talend.sdk.component.studio.util.TaCoKitUtil;
@@ -130,5 +130,10 @@ public class TaCoKitService implements ITaCoKitService {
             }
         }
         return false;
+    }
+
+    @Override
+    public boolean isValueSelectionParameter(Object parameter) {
+        return (parameter instanceof ValueSelectionParameter);
     }
 }
