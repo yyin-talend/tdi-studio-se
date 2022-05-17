@@ -232,7 +232,10 @@ public class DataProcess implements IGeneratingProcess {
                     targetParam.setListItemsValue(ArrayUtils.clone(sourceParam.getListItemsValue()));
                     targetParam.setListItemsDisplayCodeName(sourceParam.getListItemsDisplayCodeName());
                     try {
-                        setupTacokitSuggestionValueConfiguration(targetParam);
+                        IElementParameter familyParam = sourceElement.getElementParameter(EParameterName.FAMILY.getName());
+                        if (familyParam != null && "GoogleAnalytics".equals(familyParam.getValue())) {
+                            setupTacokitSuggestionValueConfiguration(targetParam);
+                        }
                     } catch (Exception e) {
                         ExceptionHandler.process(e);
                     }
@@ -269,32 +272,30 @@ public class DataProcess implements IGeneratingProcess {
             if (value == null || value instanceof List && ((List) value).isEmpty()) {
                 return;
             }
-            Map<String, Map<String, String>> sugValuesMap = new HashMap<String, Map<String, String>>();
             Object[] listItemsValue = parameter.getListItemsValue();
+            Set<String> valueSelectionColNames = new HashSet<String>();
             for (Object itemObj : listItemsValue) {
-                Map<String, String> suggestionValues = null;
-                try {
-                    suggestionValues = taCoKitService.getParameterSuggestionValues(itemObj, 0);
-                } catch (Exception e) {
-                    ExceptionHandler.process(e);
-                }
-                if (suggestionValues != null && !suggestionValues.isEmpty() && itemObj instanceof ElementParameter) {
+                if (taCoKitService.isValueSelectionParameter(itemObj) && itemObj instanceof ElementParameter) {
                     ElementParameter itemParam = (ElementParameter) itemObj;
-                    sugValuesMap.put(itemParam.getName(), suggestionValues);
+                    valueSelectionColNames.add(itemParam.getName());
                 }
             }
+
             if (value instanceof List) {
                 for (Object row : (List) value) {
                     if (row instanceof Map) {
                         Map rowColumn = (Map) row;
                         for (Object columnName : rowColumn.keySet()) {
-                            Object columnValue = rowColumn.get(columnName);
-                            Map<String, String> sugValues = sugValuesMap.get(columnName);
-                            if (sugValues!=null) {
-                                //change to suggestion value item id
-                                String suggestionVlueId = sugValues.get(String.valueOf(columnValue));
-                                if (StringUtils.isNotBlank(suggestionVlueId)) {
-                                    rowColumn.put(columnName, suggestionVlueId);
+                            if (!valueSelectionColNames.contains(String.valueOf(columnName))) {
+                                continue;
+                            }
+
+                            String columnValue = String.valueOf(rowColumn.get(columnName));
+                            if (columnValue.contains("(") && columnValue.contains(")")) {
+                                String sugValueId = columnValue.substring(columnValue.lastIndexOf("(") + 1,
+                                        columnValue.lastIndexOf(")"));
+                                if (StringUtils.isNotBlank(sugValueId)) {
+                                    rowColumn.put(columnName, sugValueId);
                                 }
                             }
                         }

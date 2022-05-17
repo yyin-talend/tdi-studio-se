@@ -26,7 +26,6 @@ import java.util.Map;
 
 import org.junit.Assert;
 import org.junit.Test;
-import org.mockito.Mockito;
 import org.talend.core.model.components.ComponentCategory;
 import org.talend.core.model.components.IComponent;
 import org.talend.core.model.process.BigDataNode;
@@ -47,6 +46,7 @@ import org.talend.sdk.component.server.front.model.ComponentIndex;
 import org.talend.sdk.component.server.front.model.SimplePropertyDefinition;
 import org.talend.sdk.component.studio.i18n.Messages;
 import org.talend.sdk.component.studio.model.action.SuggestionsAction;
+import org.talend.sdk.component.studio.model.parameter.TextElementParameter;
 import org.talend.sdk.component.studio.model.parameter.ValueSelectionParameter;
 
 /**
@@ -198,32 +198,27 @@ public class TaCoKitUtilTest {
         List list = new ArrayList();
         Map<String, String> row = new HashMap<String, String>();
         row.put("configuration.dataSet.recordType", "Account");
-        row.put("configuration.searchCondition[0].field", "name");
+        row.put("configuration.searchCondition[0].field", "name (ga:name)");
         row.put("configuration.searchCondition[0].operator", "List.anyOf");
         row.put("configuration.searchCondition[0].searchValue", "test");
         row.put("configuration.searchCondition[0].additionalSearchValue", "");
         list.add(row);
         parameter.setValue(list);
-        ValueSelectionParameter fieldParam = Mockito.mock(ValueSelectionParameter.class);
-        ValueSelectionParameter operatorParam = Mockito.mock(ValueSelectionParameter.class);
-        Map<String, String> suggestionValues = new HashMap<String, String>();
-        suggestionValues.put("name", "name_id");
-        suggestionValues.put("local", "local_id");
-        suggestionValues.put("balance", "balance_id");
-        SuggestionsAction action = new SuggestionsAction("test", "test");
-        Mockito.when(fieldParam.getSuggestionValues()).thenReturn(suggestionValues);
-        Mockito.when(fieldParam.getName()).thenReturn("configuration.searchCondition[0].field");
-        Mockito.when(fieldParam.getAction()).thenReturn(action);
-        Mockito.when(operatorParam.getSuggestionValues()).thenReturn(new HashMap<String, String>());
-        Mockito.when(operatorParam.getName()).thenReturn("configuration.searchCondition[0].operator");
-        Mockito.when(operatorParam.getAction()).thenReturn(action);
-        parameter.setListItemsValue(new Object[] { fieldParam, operatorParam });
+        ValueSelectionParameter fieldParam = new ValueSelectionParameter(fakeNode, new SuggestionsAction("test", "test"));
+        fieldParam.setName("configuration.searchCondition[0].field");
+        ValueSelectionParameter operatorParam = new ValueSelectionParameter(fakeNode, new SuggestionsAction("test", "test"));
+        operatorParam.setName("configuration.searchCondition[0].operator");
+        TextElementParameter searchValueParam = new TextElementParameter(fakeNode);
+        searchValueParam.setName("configuration.searchCondition[0].searchValue");
+        TextElementParameter additionParam = new TextElementParameter(fakeNode);
+        additionParam.setName("configuration.searchCondition[0].additionalSearchValue");
+        parameter.setListItemsValue(new Object[] { fieldParam, operatorParam, searchValueParam, additionParam });
 
         DataProcess dataprocess = new DataProcess(process);
         dataprocess.setupTacokitSuggestionValueConfiguration(parameter);
         List resultList = (List) parameter.getValue();
         Map resultMap = (Map) resultList.get(0);
-        assertEquals(resultMap.get("configuration.searchCondition[0].field"), "name_id");
+        assertEquals(resultMap.get("configuration.searchCondition[0].field"), "ga:name");
         assertEquals(resultMap.get("configuration.searchCondition[0].operator"), "List.anyOf");
     }
 }
