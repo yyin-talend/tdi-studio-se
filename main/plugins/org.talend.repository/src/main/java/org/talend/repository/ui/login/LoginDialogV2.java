@@ -44,10 +44,10 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.talend.commons.exception.CommonExceptionHandler;
 import org.talend.commons.utils.system.EnvironmentUtils;
-import org.talend.configurator.common.connections.TokenServiceImpl;
 import org.talend.core.GlobalServiceRegister;
 import org.talend.core.model.general.ConnectionBean;
 import org.talend.core.model.general.Project;
+import org.talend.core.service.ICloudSignOnService;
 import org.talend.core.ui.branding.IBrandingConfiguration;
 import org.talend.core.ui.branding.IBrandingService;
 import org.talend.registration.license.LicenseManagement;
@@ -275,7 +275,7 @@ public class LoginDialogV2 extends TrayDialog {
             loginPage = getFirstTimeStartupPageIfNeeded();
         }
 
-        if (loginPage == null && !TokenServiceImpl.getInstance().isTokenValid()) {
+        if (loginPage == null && !ICloudSignOnService.get().isTokenValid()) {
             loginPage = new LoginWithCloudPage(base, this, SWT.NONE);
         }
         if (loginPage == null) {

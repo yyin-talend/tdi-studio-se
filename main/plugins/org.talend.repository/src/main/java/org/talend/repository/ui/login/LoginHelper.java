@@ -258,7 +258,7 @@ public class LoginHelper {
         }
         return isCloudUSConnection(connectionBean) || isCloudUSWestConnection(connectionBean)
                 || isCloudEUConnection(connectionBean) || isCloudAPACConnection(connectionBean)
-                || isCloudCustomConnection(connectionBean)|| isCloudAUSConnection(connectionBean);
+                || isCloudCustomConnection(connectionBean)|| isCloudAUSConnection(connectionBean) || isSSOCloudConnection(connectionBean);
     }
 
     public static boolean isCloudUSConnection(ConnectionBean connectionBean) {
@@ -301,6 +301,14 @@ public class LoginHelper {
             return false;
         }
         return RepositoryConstants.REPOSITORY_CLOUD_CUSTOM_ID.equals(connectionBean.getRepositoryId());
+    }
+    
+    public static boolean isSSOCloudConnection(ConnectionBean connectionBean) {
+        if (connectionBean == null) {
+            return false;
+        }
+        
+        return connectionBean.getConnectionToken() != null;
     }
 
     public static boolean isCloudRepository(String repositoryId) {

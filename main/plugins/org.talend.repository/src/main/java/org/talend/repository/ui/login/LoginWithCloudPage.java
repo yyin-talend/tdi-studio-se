@@ -18,6 +18,10 @@ import java.security.NoSuchAlgorithmException;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.preference.PreferenceDialog;
+import org.eclipse.jface.preference.PreferenceManager;
+import org.eclipse.jface.preference.PreferenceNode;
+import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -30,14 +34,13 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Link;
 import org.talend.commons.exception.ExceptionHandler;
-import org.talend.configurator.common.connections.CloudSignOnLoginUtil;
-import org.talend.configurator.common.connections.TokenMode;
-import org.talend.configurator.common.connections.TokenServiceImpl;
-import org.talend.configurator.common.utils.SignOnEventListener;
-import org.talend.license.gui.util.ConnectionUtil;
-import org.talend.license.gui.widget.SplitButton;
-import org.talend.repository.i18n.Messages;
+import org.talend.core.service.ICloudSignOnService;
 
+import org.talend.repository.i18n.Messages;
+import org.talend.repository.ui.login.connections.network.LoginNetworkPreferencePage;
+import org.talend.repository.ui.login.connections.network.proxy.LoginProxyPreferencePage;
+import org.talend.signon.util.TokenMode;
+import org.talend.signon.util.listener.*;
 
 
 public class LoginWithCloudPage extends AbstractLoginActionPage implements SignOnEventListener{
@@ -62,7 +65,7 @@ public class LoginWithCloudPage extends AbstractLoginActionPage implements SignO
 
     private boolean isSignOnCloud = false;
     
-    private String codeVerifier = CloudSignOnLoginUtil.generateCodeVerifier();
+    private String codeVerifier = ICloudSignOnService.get().generateCodeVerifier();
 
     public LoginWithCloudPage(Composite parent, LoginDialogV2 dialog, int style) {
         super(parent, dialog, style);
@@ -156,7 +159,7 @@ public class LoginWithCloudPage extends AbstractLoginActionPage implements SignO
             public void widgetSelected(SelectionEvent e) {
                 isSignOnCloud = true;
                 try {
-                    CloudSignOnLoginUtil.signonCloud(LoginWithCloudPage.this);
+                    ICloudSignOnService.get().signonCloud(LoginWithCloudPage.this);
                 } catch (Exception e1) {
                     showError(e1);
                 }
@@ -182,7 +185,7 @@ public class LoginWithCloudPage extends AbstractLoginActionPage implements SignO
 
             @Override
             public void widgetSelected(SelectionEvent e) {
-                ConnectionUtil.onNetworkSettingsClicked();
+                onNetworkSettingsClicked();
             }
 
         });
@@ -228,9 +231,9 @@ public class LoginWithCloudPage extends AbstractLoginActionPage implements SignO
             errorManager.setInfoMessage("Still working on second step...");
         });       
         try {
-            TokenMode token = CloudSignOnLoginUtil.getToken(clientID, authCode, this.codeVerifier);
-            TokenServiceImpl.getInstance().save(token);
-            TokenServiceImpl.getInstance().start();          
+            TokenMode token = ICloudSignOnService.get().getToken(authCode, this.codeVerifier);
+            token.setAdminURL(getAdminURL());
+            ICloudSignOnService.get().startHeartBeat(token);     
         } catch (Exception e) {
             Display.getDefault().syncExec(() -> {
                 errorManager.setErrMessage(e.getLocalizedMessage());
@@ -251,8 +254,8 @@ public class LoginWithCloudPage extends AbstractLoginActionPage implements SignO
     public String getCodeChallenge() {
         String codeChallenge = null;
         try {
-            codeChallenge = CloudSignOnLoginUtil.getCodeChallenge(codeVerifier);
-        } catch (NoSuchAlgorithmException ex) {
+            codeChallenge = ICloudSignOnService.get().getCodeChallenge(codeVerifier);
+        } catch (Exception ex) {
             Display.getDefault().syncExec(() -> {
                 errorManager.setErrMessage(ex.getLocalizedMessage());
             });
@@ -261,5 +264,25 @@ public class LoginWithCloudPage extends AbstractLoginActionPage implements SignO
         return codeChallenge;
     }
     
+    public String getAdminURL() {
+        return "https://tmc.int.cloud.talend.com/studio_cloud_connection";//TODO --KK
+    }
     
+    public static void onNetworkSettingsClicked() {
+        PreferenceDialog pd = new PreferenceDialog(Display.getDefault().getActiveShell(), new PreferenceManager());
+
+        LoginProxyPreferencePage prefPage = new LoginProxyPreferencePage();
+        prefPage.setTitle(Messages.getString("LoginProjectPage.networkSettings.proxy.title"));
+        pd.getPreferenceManager().addToRoot(new PreferenceNode("proxyPage", prefPage));
+
+        LoginNetworkPreferencePage networkPage = new LoginNetworkPreferencePage();
+        networkPage.setTitle(Messages.getString("LoginProjectPage.networkSettings.timeout.title"));
+        pd.getPreferenceManager().addToRoot(new PreferenceNode("timeoutPage", networkPage));
+
+        int open = pd.open();
+
+        if (Window.OK == open) {
+           // RestUtil.loadAuthenticator(); //TODO --KK
+        }
+    }
 }
