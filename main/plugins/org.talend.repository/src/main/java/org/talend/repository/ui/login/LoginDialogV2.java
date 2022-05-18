@@ -301,18 +301,24 @@ public class LoginDialogV2 extends TrayDialog {
             }
         }
 
-        // try to find if there are projects in workspace
-        Project[] projects = LoginHelper.getInstance().getProjects(LoginHelper.createDefaultLocalConnection());
-        if (projects == null || projects.length == 0) {
-            List<ConnectionBean> storedConnections = LoginHelper.getInstance().getStoredConnections();
-            if (storedConnections == null
-                    || storedConnections.isEmpty()
-                    || (storedConnections.size() == 1 && !LoginHelper.isRemotesConnection(storedConnections.get(0)) && LoginHelper
-                            .isWorkspaceSame(storedConnections.get(0)))) {
-                // for local license case
-                loginPage = new LoginProjectPage(base, this, SWT.NONE);
-            }
+        //TODO --KK
+        if (isShowSSOPage()) {
+            loginPage = new LoginWithCloudPage(base, this, SWT.NONE);
+        } else {
+            // try to find if there are projects in workspace
+          Project[] projects = LoginHelper.getInstance().getProjects(LoginHelper.createDefaultLocalConnection());
+          if (projects == null || projects.length == 0) {
+              List<ConnectionBean> storedConnections = LoginHelper.getInstance().getStoredConnections();
+              if (storedConnections == null
+                      || storedConnections.isEmpty()
+                      || (storedConnections.size() == 1 && !LoginHelper.isRemotesConnection(storedConnections.get(0)) && LoginHelper
+                              .isWorkspaceSame(storedConnections.get(0)))) {
+                  // for local license case
+                  loginPage = new LoginProjectPage(base, this, SWT.NONE);
+              }
+          } 
         }
+
         return loginPage;
     }
 
@@ -555,6 +561,10 @@ public class LoginDialogV2 extends TrayDialog {
             super.dispose();
         }
 
+    }
+    
+    protected boolean isShowSSOPage() {
+        return true; //TODO --KK
     }
 
 }

@@ -13,7 +13,7 @@
 package org.talend.repository.ui.login;
 
 import java.lang.reflect.InvocationTargetException;
-import java.security.NoSuchAlgorithmException;
+import java.util.List;
 
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
@@ -34,22 +34,18 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Link;
 import org.talend.commons.exception.ExceptionHandler;
+import org.talend.commons.utils.network.NetworkUtil;
+import org.talend.core.model.general.ConnectionBean;
 import org.talend.core.service.ICloudSignOnService;
-
 import org.talend.repository.i18n.Messages;
+import org.talend.repository.ui.login.connections.ConnectionUserPerReader;
 import org.talend.repository.ui.login.connections.network.LoginNetworkPreferencePage;
 import org.talend.repository.ui.login.connections.network.proxy.LoginProxyPreferencePage;
 import org.talend.signon.util.TokenMode;
-import org.talend.signon.util.listener.*;
+import org.talend.signon.util.listener.SignOnEventListener;
 
 
 public class LoginWithCloudPage extends AbstractLoginActionPage implements SignOnEventListener{
-
-    private static final Color COLOR_BLACK = new Color(null, 0, 0, 0);
-
-    private static final Color COLOR_RED = new Color(null, 240, 0, 0);
-
-    private static final String ERROR = "error"; //$NON-NLS-1$
 
     protected Label title;
 
@@ -213,12 +209,6 @@ public class LoginWithCloudPage extends AbstractLoginActionPage implements SignO
     }
 
     @Override
-    public AbstractActionPage getNextPage() {
-        AbstractActionPage iNextPage = new LoginProjectPage(getParent(), loginDialog, SWT.NONE);
-        return iNextPage;
-    }
-
-    @Override
     public void loginStart(String clientID) {
         Display.getDefault().syncExec(() -> {
             errorManager.setInfoMessage("Still working on first step...");
@@ -233,7 +223,15 @@ public class LoginWithCloudPage extends AbstractLoginActionPage implements SignO
         try {
             TokenMode token = ICloudSignOnService.get().getToken(authCode, this.codeVerifier);
             token.setAdminURL(getAdminURL());
-            ICloudSignOnService.get().startHeartBeat(token);     
+            token.setTokenUser(ICloudSignOnService.get().getTokenUser(getAdminURL(), token));
+            saveConnection(token);
+            Display.getDefault().syncExec(() -> {
+                try {
+                    this.gotoNextPage();
+                } catch (Throwable e) {
+                    ExceptionHandler.process(e);
+                }
+            });
         } catch (Exception e) {
             Display.getDefault().syncExec(() -> {
                 errorManager.setErrMessage(e.getLocalizedMessage());
@@ -241,6 +239,25 @@ public class LoginWithCloudPage extends AbstractLoginActionPage implements SignO
             ExceptionHandler.process(e);
         }
         
+    }
+    
+    private void saveConnection(TokenMode token) {
+        ConnectionUserPerReader reader = ConnectionUserPerReader.getInstance();
+        List<ConnectionBean> list = reader.readConnections();
+        ConnectionBean connection = null;
+        for (ConnectionBean bean: list) {
+            if (bean.getConnectionToken() != null && bean.getConnectionToken().isSameToken(token)) {
+                connection = bean; 
+                break;
+            }
+        }
+        
+        if (connection == null) {
+            connection = ConnectionBean.getDefaultCloudConnectionBean(token);
+            list.add(connection);
+        }
+        reader.saveConnections(list);
+        reader.saveLastConnectionBean(connection);
     }
 
     @Override
@@ -282,7 +299,19 @@ public class LoginWithCloudPage extends AbstractLoginActionPage implements SignO
         int open = pd.open();
 
         if (Window.OK == open) {
-           // RestUtil.loadAuthenticator(); //TODO --KK
+            NetworkUtil.loadAuthenticator(); 
         }
+    }
+    
+    @Override
+    public AbstractActionPage getNextPage() {
+        AbstractActionPage iNextPage = super.getNextPage();
+
+        if (iNextPage == null) {
+            iNextPage = new LoginProjectPage(getParent(), loginDialog, SWT.NONE);
+            setNextPage(iNextPage);
+        }
+
+        return iNextPage;
     }
 }
