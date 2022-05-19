@@ -209,14 +209,14 @@ public class LoginWithCloudPage extends AbstractLoginActionPage implements SignO
     }
 
     @Override
-    public void loginStart(String clientID) {
+    public void loginStart() {
         Display.getDefault().syncExec(() -> {
             errorManager.setInfoMessage("Still working on first step...");
         });
     }
 
     @Override
-    public void loginStop(String clientID, String authCode) {
+    public void loginStop(String authCode) {
         Display.getDefault().syncExec(() -> {
             errorManager.setInfoMessage("Still working on second step...");
         });       
