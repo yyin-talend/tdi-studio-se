@@ -13,7 +13,6 @@
 package org.talend.designer.core.ui.dialog;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.commons.text.StringEscapeUtils;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.ComboViewer;
@@ -283,8 +282,8 @@ public class PasswordDialog extends Dialog {
         String pwd = this.pwdText.getText();
         if (this.currentMode == Mode.PurePassword) {
             try {
-                pwd = StringEscapeUtils.unescapeJava(pwd);
-                pwd = TalendQuoteUtils.removeQuotesIfExist(pwd);
+                pwd = TalendQuoteUtils.removeQuotes(pwd);
+                pwd = TalendQuoteUtils.checkSlashAndRemoveQuotation(pwd);
             } catch (Exception e) {
                 ExceptionHandler.process(e);
             }
@@ -319,8 +318,7 @@ public class PasswordDialog extends Dialog {
     }
 
     private String escapePassword(String pwd) {
-        String escapePwd = StringEscapeUtils.escapeJava(pwd);
-        return TalendQuoteUtils.QUOTATION_MARK + escapePwd + TalendQuoteUtils.QUOTATION_MARK;
+        return TalendQuoteUtils.addQuotes(pwd);
     }
 
     private enum LineSeperatorStyle {
