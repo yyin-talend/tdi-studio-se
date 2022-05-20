@@ -17,44 +17,9 @@ imports="
 		java.util.HashSet
 		"
 %>
+<%@ include file="@{org.talend.designer.components.localprovider}/resources/hive_init.javajet"%>
+
 <%
-	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
-	INode node = (INode)codeGenArgument.getArgument();
-	final String cid = node.getUniqueName();
-	String processId = node.getProcess().getId();
-
-	String dbname = ElementParameterParser.getValue(node, "__DBNAME__");
-	boolean useParquet = "true".equals(ElementParameterParser.getValue(node,"__USE_PARQUET__"));
-	String dieOnError = ElementParameterParser.getValue(node, "__DIE_ON_ERROR__");
-	boolean isLog4jEnabled = "true".equals(org.talend.core.model.process.ElementParameterParser.getValue(node.getProcess(), "__LOG4J_ACTIVATE__"));
-
-	String dbquery= ElementParameterParser.getValue(node, "__QUERY__");
-	dbquery = org.talend.core.model.utils.NodeUtil.replaceCRLFInMEMO_SQL(dbquery);
-
-    String theDistribution = ElementParameterParser.getValue(node, "__DISTRIBUTION__");
-    String theVersion = ElementParameterParser.getValue(node, "__HIVE_VERSION__");
-    
-	final String studioVersion = org.talend.commons.utils.VersionUtils.getDisplayVersion();
-
-    if ("true".equals(ElementParameterParser.getValue(node,"__USE_EXISTING_CONNECTION__"))) { //with connection
-        String connection = ElementParameterParser.getValue(node, "__CONNECTION__");
-        for (INode pNode : node.getProcess().getNodesOfType("tHiveConnection")) {
-            if (connection!=null && connection.equals(pNode.getUniqueName())) {
-                theDistribution = ElementParameterParser.getValue(pNode, "__DISTRIBUTION__");
-                theVersion = ElementParameterParser.getValue(pNode, "__HIVE_VERSION__");
-            }
-        }
-    }
-	
-    org.talend.hadoop.distribution.component.HiveComponent hiveDistrib = null;
-    try {
-        hiveDistrib = (org.talend.hadoop.distribution.component.HiveComponent) org.talend.hadoop.distribution.DistributionFactory.buildDistribution(theDistribution, theVersion);
-    } catch (java.lang.Exception e) {
-        e.printStackTrace();
-        return "";
-    }
-    boolean isCustom = hiveDistrib instanceof org.talend.hadoop.distribution.custom.CustomDistribution;
-
     if (hiveDistrib.isExecutedThroughWebHCat()) {
 %>
 

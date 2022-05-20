@@ -9,53 +9,12 @@ imports="
 			java.util.Map
 		"
 %>
+
 <%@ include file="../templates/Log4j/Log4jDBConnUtil.javajet"%>
 
+<%@ include file="@{org.talend.designer.components.localprovider}/resources/hive_init.javajet"%>
+
 <%
-	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
-	INode node = (INode)codeGenArgument.getArgument();
-	boolean isLog4jEnabled = ("true").equals(ElementParameterParser.getValue(node.getProcess(), "__LOG4J_ACTIVATE__"));
-	String cid = node.getUniqueName();
-	String processId = node.getProcess().getId();
-
-	String dbhost = ElementParameterParser.getValue(node, "__HOST__");
-	String dbport = ElementParameterParser.getValue(node, "__PORT__");
-	String dbname= ElementParameterParser.getValue(node, "__DBNAME__");
-	String dbproperties = ElementParameterParser.getValue(node, "__PROPERTIES__");
-	String dbuser= ElementParameterParser.getValue(node, "__USER__");
-
-	String commitEvery = "0";//ElementParameterParser.getValue(node, "__COMMIT_EVERY__");//hive jdbc not support setAutoCommit
-	String dbquery= ElementParameterParser.getValue(node, "__QUERY__");
-	dbquery = org.talend.core.model.utils.NodeUtil.replaceCRLFInMEMO_SQL(dbquery);
-	boolean usePrepareStatement = "true".equals(ElementParameterParser.getValue(node,"__USE_PREPAREDSTATEMENT__"));
-
-	boolean useParquet = "true".equals(ElementParameterParser.getValue(node,"__USE_PARQUET__"));
-
-    String theDistribution = ElementParameterParser.getValue(node, "__DISTRIBUTION__");
-    String theVersion = ElementParameterParser.getValue(node, "__HIVE_VERSION__");
-	String connMode = ElementParameterParser.getValue(node, "__CONNECTION_MODE__");
-	
-	String encryptedToken = null;
-    if("true".equals(ElementParameterParser.getValue(node,"__USE_EXISTING_CONNECTION__"))) {
-        String connection = ElementParameterParser.getValue(node, "__CONNECTION__");
-        for (INode pNode : node.getProcess().getNodesOfType("tHiveConnection")) {
-            if(connection!=null && connection.equals(pNode.getUniqueName())) {
-                theDistribution = ElementParameterParser.getValue(pNode, "__DISTRIBUTION__");
-                theVersion = ElementParameterParser.getValue(pNode, "__HIVE_VERSION__");
-                connMode = ElementParameterParser.getValue(pNode, "__CONNECTION_MODE__");
-            }
-        }
-    }
-
-    org.talend.hadoop.distribution.component.HiveComponent hiveDistrib = null;
-    try {
-        hiveDistrib = (org.talend.hadoop.distribution.component.HiveComponent) org.talend.hadoop.distribution.DistributionFactory.buildDistribution(theDistribution, theVersion);
-    } catch (java.lang.Exception e) {
-        e.printStackTrace();
-        return "";
-    }
-    boolean isCustom = hiveDistrib instanceof org.talend.hadoop.distribution.custom.CustomDistribution;
-
 	if(hiveDistrib.isExecutedThroughWebHCat()) {
 		// Distribution: WebHCat
 %>

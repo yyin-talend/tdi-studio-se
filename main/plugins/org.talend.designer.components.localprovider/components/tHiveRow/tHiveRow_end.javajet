@@ -6,39 +6,9 @@ imports="
 		"
 %>
 
+<%@ include file="@{org.talend.designer.components.localprovider}/resources/hive_init.javajet"%>
+
 <%
-	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
-	INode node = (INode)codeGenArgument.getArgument();
-	boolean isLog4jEnabled = ("true").equals(ElementParameterParser.getValue(node.getProcess(), "__LOG4J_ACTIVATE__"));
-	String cid = node.getUniqueName();
-	String useExistingConn = ElementParameterParser.getValue(node,"__USE_EXISTING_CONNECTION__");
-	String commitEvery = "0"; ElementParameterParser.getValue(node, "__COMMIT_EVERY__");
-	boolean usePrepareStatement = "true".equals(ElementParameterParser.getValue(node,"__USE_PREPAREDSTATEMENT__"));
-	
-    String theDistribution = ElementParameterParser.getValue(node, "__DISTRIBUTION__");
-    String theVersion = ElementParameterParser.getValue(node, "__HIVE_VERSION__");
-	String connMode = ElementParameterParser.getValue(node, "__CONNECTION_MODE__");
-	
-    if("true".equals(ElementParameterParser.getValue(node,"__USE_EXISTING_CONNECTION__"))) {
-        String connection = ElementParameterParser.getValue(node, "__CONNECTION__");
-        for (INode pNode : node.getProcess().getNodesOfType("tHiveConnection")) {
-            if(connection!=null && connection.equals(pNode.getUniqueName())) {
-                theDistribution = ElementParameterParser.getValue(pNode, "__DISTRIBUTION__");
-                theVersion = ElementParameterParser.getValue(pNode, "__HIVE_VERSION__");
-                connMode = ElementParameterParser.getValue(pNode, "__CONNECTION_MODE__");
-            }
-        }
-    }
-
-    org.talend.hadoop.distribution.component.HiveComponent hiveDistrib = null;
-    try {
-        hiveDistrib = (org.talend.hadoop.distribution.component.HiveComponent) org.talend.hadoop.distribution.DistributionFactory.buildDistribution(theDistribution, theVersion);
-    } catch (java.lang.Exception e) {
-        e.printStackTrace();
-        return "";
-    }
-    boolean isCustom = hiveDistrib instanceof org.talend.hadoop.distribution.custom.CustomDistribution;
-
 	if(!hiveDistrib.useCloudLauncher() && !"DATAPROC".equalsIgnoreCase(connMode)) {
 		if (usePrepareStatement) {
 		%>
