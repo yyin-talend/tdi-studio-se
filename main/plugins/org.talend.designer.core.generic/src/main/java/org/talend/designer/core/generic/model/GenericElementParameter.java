@@ -568,6 +568,7 @@ public class GenericElementParameter extends ElementParameter implements IGeneri
         this.drivedByForm = drivedByForm;
     }
 
+    @Override
     public Property getProperty() {
         NamedThing content = widget.getContent();
         if (content instanceof Property) {
@@ -688,6 +689,23 @@ public class GenericElementParameter extends ElementParameter implements IGeneri
             return property.getTaggedValue(key);
         }
         return null;
+    }
+
+    @Override
+    public boolean isFromUpdateNodeCommand() {
+        Property property = getProperty();
+        if (property != null) {
+            return property.getTaggedValue("FROM_UPDATE_NODE_COMMAND") != null;
+        }
+        Properties properties = getProperties();
+        if (properties != null) {
+            for (NamedThing thing : properties.getProperties()) {
+                if (thing instanceof Property) {
+                    return ((Property) thing).getTaggedValue("FROM_UPDATE_NODE_COMMAND") != null;
+                }
+            }
+        }
+        return false;
     }
 
 }

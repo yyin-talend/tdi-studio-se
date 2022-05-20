@@ -334,7 +334,7 @@ public class UpdateNodeParameterCommand extends Command {
                                     repositoryValue, table, componentName, null);
                             if (objectValue == null || "".equals(objectValue)) {
                                 if (GlobalServiceRegister.getDefault().isServiceRegistered(IESBService.class)) {
-                                    IESBService service = (IESBService) GlobalServiceRegister.getDefault().getService(
+                                    IESBService service = GlobalServiceRegister.getDefault().getService(
                                             IESBService.class);
                                     if (service != null) {
                                         String propertyValue = (String) node
@@ -370,7 +370,7 @@ public class UpdateNodeParameterCommand extends Command {
                                     item = lastVersion.getProperty().getItem();
                                 }
                                 if (item != null && PluginChecker.isCDCPluginLoaded()) {
-                                    ICDCProviderService service = (ICDCProviderService) GlobalServiceRegister.getDefault()
+                                    ICDCProviderService service = GlobalServiceRegister.getDefault()
                                             .getService(ICDCProviderService.class);
                                     if (service != null) {
                                         try {
@@ -397,7 +397,7 @@ public class UpdateNodeParameterCommand extends Command {
                             }
 
                             if (GlobalServiceRegister.getDefault().isServiceRegistered(IJsonFileService.class)) {
-                                IJsonFileService jsonService = (IJsonFileService) GlobalServiceRegister.getDefault().getService(
+                                IJsonFileService jsonService = GlobalServiceRegister.getDefault().getService(
                                         IJsonFileService.class);
                                 boolean paramChanged = jsonService.changeFilePathFromRepository(connectionItem.getConnection(),
                                         param, node, objectValue);
@@ -559,6 +559,7 @@ public class UpdateNodeParameterCommand extends Command {
                                             }
                                         }
                                         property.setStoredValue(newValueList);
+                                        property.setTaggedValue("FROM_UPDATE_NODE_COMMAND", true);
                                         PropertyChangeCommand cmd = new PropertyChangeCommand(node, param.getName(),
                                                 objectValue);
                                         cmd.execute();
@@ -572,7 +573,7 @@ public class UpdateNodeParameterCommand extends Command {
                     // Added TDQ-11688 20170309 yyin
                     ITDQPatternService service = null;
                     if (GlobalServiceRegister.getDefault().isServiceRegistered(ITDQPatternService.class)) {
-                        service = (ITDQPatternService) GlobalServiceRegister.getDefault().getService(ITDQPatternService.class);
+                        service = GlobalServiceRegister.getDefault().getService(ITDQPatternService.class);
                     }
                     if (service != null && (service.isSinglePatternNode(node) || service.isMultiPatternNode(node))
                             && parameter != null && parameter instanceof IElementParameter) {
@@ -678,7 +679,7 @@ public class UpdateNodeParameterCommand extends Command {
                     if (result.getParameter() instanceof List) {
                         // for ebcdic
                         if (PluginChecker.isEBCDICPluginLoaded()) {
-                            IEBCDICProviderService service = (IEBCDICProviderService) GlobalServiceRegister.getDefault()
+                            IEBCDICProviderService service = GlobalServiceRegister.getDefault()
                                     .getService(IEBCDICProviderService.class);
                             if (service != null) {
                                 if (service.isEbcdicNode(node)) {
@@ -700,7 +701,7 @@ public class UpdateNodeParameterCommand extends Command {
 
                         // for tMap
                         if (GlobalServiceRegister.getDefault().isServiceRegistered(IDesignerMapperService.class)) {
-                            IDesignerMapperService service = (IDesignerMapperService) GlobalServiceRegister.getDefault()
+                            IDesignerMapperService service = GlobalServiceRegister.getDefault()
                                     .getService(IDesignerMapperService.class);
                             if (service != null && externalNode != null && externalNode.getExternalData() != null) {
                                 List<Object> parameter = (List<Object>) result.getParameter();
@@ -838,7 +839,7 @@ public class UpdateNodeParameterCommand extends Command {
                     String newSourceId = (String) parameter.get(2);
                     // for ebcdic
                     if (PluginChecker.isEBCDICPluginLoaded()) {
-                        IEBCDICProviderService service = (IEBCDICProviderService) GlobalServiceRegister.getDefault().getService(
+                        IEBCDICProviderService service = GlobalServiceRegister.getDefault().getService(
                                 IEBCDICProviderService.class);
                         if (service != null) {
                             if (service.isEbcdicNode(node)) {
@@ -872,7 +873,7 @@ public class UpdateNodeParameterCommand extends Command {
 
                     // for tmap
                     if (GlobalServiceRegister.getDefault().isServiceRegistered(IDesignerMapperService.class)) {
-                        IDesignerMapperService service = (IDesignerMapperService) GlobalServiceRegister.getDefault().getService(
+                        IDesignerMapperService service = GlobalServiceRegister.getDefault().getService(
                                 IDesignerMapperService.class);
                         if (service != null && externalNode != null && externalNode.getExternalData() != null) {
                             parameter = (List<Object>) result.getParameter();
@@ -961,7 +962,7 @@ public class UpdateNodeParameterCommand extends Command {
                 } else {
                     // for ebcdic
                     if (PluginChecker.isEBCDICPluginLoaded()) {
-                        IEBCDICProviderService service = (IEBCDICProviderService) GlobalServiceRegister.getDefault().getService(
+                        IEBCDICProviderService service = GlobalServiceRegister.getDefault().getService(
                                 IEBCDICProviderService.class);
                         if (service != null) {
                             if (service.isEbcdicNode(node)) {
@@ -978,7 +979,7 @@ public class UpdateNodeParameterCommand extends Command {
                     }
 
                     if (PluginChecker.isJobLetPluginLoaded()) {
-                        IJobletProviderService service = (IJobletProviderService) GlobalServiceRegister.getDefault().getService(
+                        IJobletProviderService service = GlobalServiceRegister.getDefault().getService(
                                 IJobletProviderService.class);
                         if (service != null && service.isJobletInOutComponent(node)) {
                             node.setPropertyValue(
@@ -1038,7 +1039,7 @@ public class UpdateNodeParameterCommand extends Command {
                     } else {
                         IGenericWizardService wizardService = null;
                         if (GlobalServiceRegister.getDefault().isServiceRegistered(IGenericWizardService.class)) {
-                            wizardService = (IGenericWizardService) GlobalServiceRegister.getDefault().getService(
+                            wizardService = GlobalServiceRegister.getDefault().getService(
                                     IGenericWizardService.class);
                         }
                         if (wizardService != null && wizardService.isGenericItem(item)) {
