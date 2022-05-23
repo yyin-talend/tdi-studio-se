@@ -1846,6 +1846,7 @@ public class LoginProjectPage extends AbstractLoginActionPage {
                 } else {
                     errorManager.setErrMessage(Messages.getString("LoginComposite.connectionEmpty")); //$NON-NLS-1$
                 }
+                errorManager.setInfoMessage("Patched");
             } catch (Exception e) {
                 ex[0] = e;
             } finally {
