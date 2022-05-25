@@ -82,8 +82,6 @@ public class Connection extends Element implements IConnection, IPerformance, IA
     private INode source;
 
     protected String name;
-    
-    protected String originalName;
 
     private ConnectionLabel label;
 
@@ -865,11 +863,6 @@ public class Connection extends Element implements IConnection, IPerformance, IA
     public String getName() {
         return name;
     }
-    
-    @Override
-    public String getOriginalName() {
-        return originalName;
-    }
 
     /**
      *
@@ -952,11 +945,6 @@ public class Connection extends Element implements IConnection, IPerformance, IA
         }
     }
 
-    @Override
-    public void setOriginalName(String orignalName) {
-        this.originalName = orignalName;
-    }
-    
     @Override
     public void updateName() {
         if (source == null) {
