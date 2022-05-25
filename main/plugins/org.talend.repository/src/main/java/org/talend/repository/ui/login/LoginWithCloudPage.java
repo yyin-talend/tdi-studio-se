@@ -223,6 +223,9 @@ public class LoginWithCloudPage extends AbstractLoginActionPage implements SignO
         try {
             TokenMode token = ICloudSignOnService.get().getToken(authCode, this.codeVerifier);
             token.setAdminURL(getAdminURL());
+            Display.getDefault().syncExec(() -> {
+                errorManager.setInfoMessage("Still working on third step...");
+            }); 
             token.setTokenUser(ICloudSignOnService.get().getTokenUser(getAdminURL(), token));
             saveConnection(token);
             Display.getDefault().syncExec(() -> {
@@ -250,8 +253,7 @@ public class LoginWithCloudPage extends AbstractLoginActionPage implements SignO
                 connection = bean; 
                 break;
             }
-        }
-        
+        }        
         if (connection == null) {
             connection = ConnectionBean.getDefaultCloudConnectionBean(token);
             list.add(connection);
