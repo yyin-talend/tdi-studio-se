@@ -275,7 +275,7 @@ public class LoginDialogV2 extends TrayDialog {
             loginPage = getFirstTimeStartupPageIfNeeded();
         }
 
-        if (loginPage == null && !ICloudSignOnService.get().isTokenValid()) {
+        if (loginPage == null && ICloudSignOnService.get() != null && !ICloudSignOnService.get().hasValidToken()) {
             loginPage = new LoginWithCloudPage(base, this, SWT.NONE);
         }
         if (loginPage == null) {

@@ -25,7 +25,6 @@ import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.widgets.Button;
@@ -222,12 +221,10 @@ public class LoginWithCloudPage extends AbstractLoginActionPage implements SignO
         });       
         try {
             TokenMode token = ICloudSignOnService.get().getToken(authCode, this.codeVerifier);
-            token.setAdminURL(getAdminURL());
             Display.getDefault().syncExec(() -> {
                 errorManager.setInfoMessage("Still working on third step...");
             }); 
-            token.setTokenUser(ICloudSignOnService.get().getTokenUser(getAdminURL(), token));
-            saveConnection(token);
+            saveConnection(token, getAdminURL(), ICloudSignOnService.get().getTokenUser(getAdminURL(), token));
             Display.getDefault().syncExec(() -> {
                 try {
                     this.gotoNextPage();
@@ -244,18 +241,21 @@ public class LoginWithCloudPage extends AbstractLoginActionPage implements SignO
         
     }
     
-    private void saveConnection(TokenMode token) {
+    private void saveConnection(TokenMode token, String adminURL, String user) {
         ConnectionUserPerReader reader = ConnectionUserPerReader.getInstance();
         List<ConnectionBean> list = reader.readConnections();
         ConnectionBean connection = null;
         for (ConnectionBean bean: list) {
-            if (bean.getConnectionToken() != null && bean.getConnectionToken().isSameToken(token)) {
+            if (adminURL.equals(bean.getUrl()) && user.equals(bean.getUser())) {
                 connection = bean; 
                 break;
             }
         }        
         if (connection == null) {
-            connection = ConnectionBean.getDefaultCloudConnectionBean(token);
+            connection = ConnectionBean.getDefaultCloudConnectionBean();
+            connection.setConnectionToken(token);
+            connection.setUrl(adminURL);
+            connection.setUser(user);
             list.add(connection);
         }
         reader.saveConnections(list);
