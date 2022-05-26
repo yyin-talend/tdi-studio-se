@@ -111,6 +111,7 @@ import org.talend.core.repository.model.repositoryObject.SalesforceModuleReposit
 import org.talend.core.repository.utils.ProjectHelper;
 import org.talend.core.repository.utils.RepositoryPathProvider;
 import org.talend.core.runtime.util.SharedStudioUtils;
+import org.talend.core.service.ICloudSignOnService;
 import org.talend.core.services.ICoreTisService;
 import org.talend.core.services.IGITProviderService;
 import org.talend.core.ui.branding.IBrandingService;
@@ -280,7 +281,23 @@ public class RepositoryService implements IRepositoryService, IRepositoryContext
     @Override
     public void openLoginDialog() {
         if (isloginDialogDisabled()) {
-            return;
+            boolean canSkip = true;
+            try {
+                if (ICloudSignOnService.get() != null && ICloudSignOnService.get().usingSSO()
+                        && ICloudSignOnService.get().hasValidToken()) {
+                    canSkip = false;
+                    ICloudSignOnService.get().startHeartBeat();
+                    canSkip = true;
+                    return;
+
+                }
+            } catch (Exception e) {
+                canSkip = false;
+                ExceptionHandler.process(e);
+            }
+            if (canSkip) {
+                return;
+            }
         }
 
         if (CorePlugin.getContext().getProperty(Context.REPOSITORY_CONTEXT_KEY) != null) {
