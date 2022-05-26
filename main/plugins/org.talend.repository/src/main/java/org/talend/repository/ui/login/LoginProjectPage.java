@@ -106,6 +106,7 @@ import org.talend.core.repository.services.ILoginConnectionService;
 import org.talend.core.repository.utils.ProjectHelper;
 import org.talend.core.runtime.CoreRuntimePlugin;
 import org.talend.core.runtime.util.SharedStudioUtils;
+import org.talend.core.service.ICloudSignOnService;
 import org.talend.core.services.ICoreTisService;
 import org.talend.core.ui.TalendBrowserLaunchHelper;
 import org.talend.core.ui.branding.IBrandingService;
@@ -126,7 +127,7 @@ import org.talend.utils.json.JSONObject;
 
 /**
  * created by cmeng on May 13, 2015 Detailled comment
- *
+ * 
  */
 public class LoginProjectPage extends AbstractLoginActionPage {
 
@@ -1394,9 +1395,17 @@ public class LoginProjectPage extends AbstractLoginActionPage {
             }
             // should save before login, since svn related codes will read them
             saveLastUsedProjectAndBranch();
+            if (ICloudSignOnService.get() != null && ICloudSignOnService.get().usingSSO()) {
+                try {
+                    ICloudSignOnService.get().startHeartBeat();
+                } catch (Exception e) {
+                    errorManager.setErrMessage(e.getLocalizedMessage());
+                    ExceptionHandler.process(e);
+                }
+            }   
             boolean isLogInOk = loginHelper.logIn(getConnection(), getProject(), errorManager);
             if (isLogInOk) {
-                LoginHelper.setAlwaysAskAtStartup(alwaysAsk.getSelection());
+                LoginHelper.setAlwaysAskAtStartup(alwaysAsk.getSelection());            
                 loginDialog.okPressed();
             } else {
                 fillUIProjectListWithBusyCursor();
@@ -2832,7 +2841,6 @@ public class LoginProjectPage extends AbstractLoginActionPage {
             }
 
         }.schedule();
-    }
-    
+    }  
     
 }

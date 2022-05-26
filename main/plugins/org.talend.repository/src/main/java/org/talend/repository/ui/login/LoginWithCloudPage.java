@@ -218,6 +218,7 @@ public class LoginWithCloudPage extends AbstractLoginActionPage implements SignO
     public void loginStop(String authCode) {
         Display.getDefault().syncExec(() -> {
             errorManager.setInfoMessage("Still working on second step...");
+            loginDialog.getShell().forceActive();
         });       
         try {
             TokenMode token = ICloudSignOnService.get().getToken(authCode, this.codeVerifier);
