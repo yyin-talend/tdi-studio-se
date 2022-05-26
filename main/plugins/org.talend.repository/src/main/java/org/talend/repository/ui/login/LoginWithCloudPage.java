@@ -227,6 +227,7 @@ public class LoginWithCloudPage extends AbstractLoginActionPage implements SignO
             saveConnection(token, getAdminURL(), ICloudSignOnService.get().getTokenUser(getAdminURL(), token));
             Display.getDefault().syncExec(() -> {
                 try {
+                    errorManager.clearAllMessages();
                     this.gotoNextPage();
                 } catch (Throwable e) {
                     ExceptionHandler.process(e);
@@ -250,7 +251,7 @@ public class LoginWithCloudPage extends AbstractLoginActionPage implements SignO
                 connection = bean; 
                 break;
             }
-        }        
+        } 
         if (connection == null) {
             connection = ConnectionBean.getDefaultCloudConnectionBean();
             connection.setConnectionToken(token);
