@@ -306,8 +306,7 @@ public class LoginHelper {
     public static boolean isSSOCloudConnection(ConnectionBean connectionBean) {
         if (connectionBean == null) {
             return false;
-        }
-        
+        }        
         return connectionBean.getConnectionToken() != null;
     }
 

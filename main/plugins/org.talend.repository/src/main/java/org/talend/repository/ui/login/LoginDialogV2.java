@@ -300,7 +300,6 @@ public class LoginDialogV2 extends TrayDialog {
             }
         }
 
-        //TODO --KK
         if (isShowSSOPage()) {
             loginPage = new LoginWithCloudPage(base, this, SWT.NONE);
         } else {
@@ -563,7 +562,7 @@ public class LoginDialogV2 extends TrayDialog {
     }
     
     protected boolean isShowSSOPage() {
-        return true; //TODO --KK
+        return true;
     }
 
 }

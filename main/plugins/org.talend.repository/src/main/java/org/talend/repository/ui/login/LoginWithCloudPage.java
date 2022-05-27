@@ -43,8 +43,7 @@ import org.talend.repository.ui.login.connections.network.proxy.LoginProxyPrefer
 import org.talend.signon.util.TokenMode;
 import org.talend.signon.util.listener.SignOnEventListener;
 
-
-public class LoginWithCloudPage extends AbstractLoginActionPage implements SignOnEventListener{
+public class LoginWithCloudPage extends AbstractLoginActionPage implements SignOnEventListener {
 
     protected Label title;
 
@@ -54,12 +53,12 @@ public class LoginWithCloudPage extends AbstractLoginActionPage implements SignO
 
     protected String licenseString;
 
-    private SplitButton  signCloudButton;
+    private SplitButton signCloudButton;
 
     private Button otherSignButton;
 
     private boolean isSignOnCloud = false;
-    
+
     private String codeVerifier = ICloudSignOnService.get().generateCodeVerifier();
 
     public LoginWithCloudPage(Composite parent, LoginDialogV2 dialog, int style) {
@@ -186,7 +185,6 @@ public class LoginWithCloudPage extends AbstractLoginActionPage implements SignO
         });
     }
 
-
     @Override
     public Object getCheckedErrors() {
         return null;
@@ -219,12 +217,12 @@ public class LoginWithCloudPage extends AbstractLoginActionPage implements SignO
         Display.getDefault().syncExec(() -> {
             errorManager.setInfoMessage("Still working on second step...");
             loginDialog.getShell().forceActive();
-        });       
+        });
         try {
             TokenMode token = ICloudSignOnService.get().getToken(authCode, this.codeVerifier);
             Display.getDefault().syncExec(() -> {
                 errorManager.setInfoMessage("Still working on third step...");
-            }); 
+            });
             saveConnection(token, getAdminURL(), ICloudSignOnService.get().getTokenUser(getAdminURL(), token));
             Display.getDefault().syncExec(() -> {
                 try {
@@ -240,19 +238,19 @@ public class LoginWithCloudPage extends AbstractLoginActionPage implements SignO
             });
             ExceptionHandler.process(e);
         }
-        
+
     }
-    
+
     private void saveConnection(TokenMode token, String adminURL, String user) {
         ConnectionUserPerReader reader = ConnectionUserPerReader.getInstance();
         List<ConnectionBean> list = reader.readConnections();
         ConnectionBean connection = null;
-        for (ConnectionBean bean: list) {
+        for (ConnectionBean bean : list) {
             if (adminURL.equals(bean.getUrl()) && user.equals(bean.getUser())) {
-                connection = bean; 
+                connection = bean;
                 break;
             }
-        } 
+        }
         if (connection == null) {
             connection = ConnectionBean.getDefaultCloudConnectionBean();
             connection.setConnectionToken(token);
@@ -268,14 +266,16 @@ public class LoginWithCloudPage extends AbstractLoginActionPage implements SignO
     public void loginFailed(Exception ex) {
         Display.getDefault().syncExec(() -> {
             errorManager.setErrMessage(ex.getMessage());
-        });       
+        });
     }
 
     @Override
     public String getCodeChallenge() {
         String codeChallenge = null;
         try {
-            codeChallenge = ICloudSignOnService.get().getCodeChallenge(codeVerifier);
+            if (ICloudSignOnService.get() != null) {
+                codeChallenge = ICloudSignOnService.get().getCodeChallenge(codeVerifier);
+            }
         } catch (Exception ex) {
             Display.getDefault().syncExec(() -> {
                 errorManager.setErrMessage(ex.getLocalizedMessage());
@@ -284,11 +284,11 @@ public class LoginWithCloudPage extends AbstractLoginActionPage implements SignO
         }
         return codeChallenge;
     }
-    
+
     public String getAdminURL() {
-        return "https://tmc.int.cloud.talend.com/studio_cloud_connection";//TODO --KK
+        return "https://tmc.int.cloud.talend.com/studio_cloud_connection";// TODO --KK
     }
-    
+
     public static void onNetworkSettingsClicked() {
         PreferenceDialog pd = new PreferenceDialog(Display.getDefault().getActiveShell(), new PreferenceManager());
 
@@ -301,12 +301,11 @@ public class LoginWithCloudPage extends AbstractLoginActionPage implements SignO
         pd.getPreferenceManager().addToRoot(new PreferenceNode("timeoutPage", networkPage));
 
         int open = pd.open();
-
         if (Window.OK == open) {
-            NetworkUtil.loadAuthenticator(); 
+            NetworkUtil.loadAuthenticator();
         }
     }
-    
+
     @Override
     public AbstractActionPage getNextPage() {
         AbstractActionPage iNextPage = super.getNextPage();
