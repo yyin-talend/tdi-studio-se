@@ -65,7 +65,6 @@ import org.talend.core.runtime.process.TalendProcessArgumentConstant;
 import org.talend.core.runtime.repository.build.BuildExportManager;
 import org.talend.core.service.ITransformService;
 import org.talend.core.ui.ITestContainerProviderService;
-import org.talend.designer.core.model.utils.emf.talendfile.ProcessType;
 import org.talend.designer.maven.model.TalendMavenConstants;
 import org.talend.designer.maven.tools.BuildCacheManager;
 import org.talend.designer.runprocess.IProcessor;
@@ -88,8 +87,8 @@ public class BuildJobHandler extends AbstractBuildJobHandler {
 
     public BuildJobHandler(ProcessItem processItem, String version, String contextName, Map<ExportChoice, Object> exportChoiceMap) {
         super(processItem, version, contextName, exportChoiceMap);
+        setProjectNameLowerCase(false);
 
-        setProjectNameLowerCase(true);
         ProcessorUtilities.setExportConfig(JavaUtils.JAVA_APP_NAME, null, null);
     }
 
@@ -194,7 +193,7 @@ public class BuildJobHandler extends AbstractBuildJobHandler {
         }
         argumentsMap.put(TalendProcessArgumentConstant.ARG_GENERATE_OPTION, generationOption);
         argumentsMap.put(TalendProcessArgumentConstant.ARG_NEED_JETTY_SERVER,
-                ProcessUtils.hasJettyEndpoint((ProcessType)processItem.getProcess()));
+                ProcessUtils.hasJettyEndpoint(processItem.getProcess()));
 
         BuildCacheManager.getInstance().clearCurrentCache();
 
@@ -213,7 +212,7 @@ public class BuildJobHandler extends AbstractBuildJobHandler {
             return;
         }
         if (GlobalServiceRegister.getDefault().isServiceRegistered(ITestContainerProviderService.class)) {
-            ITestContainerProviderService testContainerService = (ITestContainerProviderService) GlobalServiceRegister
+            ITestContainerProviderService testContainerService = GlobalServiceRegister
                     .getDefault().getService(ITestContainerProviderService.class);
             if (testContainerService != null) {
                 List<IFile> reports = new ArrayList<IFile>();
@@ -292,7 +291,7 @@ public class BuildJobHandler extends AbstractBuildJobHandler {
     private void addTDMDependencies(IFolder itemsFolder, List<Item> items) {
         ITransformService tdmService = null;
         if (GlobalServiceRegister.getDefault().isServiceRegistered(ITransformService.class)) {
-            tdmService = (ITransformService) GlobalServiceRegister.getDefault().getService(ITransformService.class);
+            tdmService = GlobalServiceRegister.getDefault().getService(ITransformService.class);
         }
         if (tdmService == null) {
             return;
@@ -378,7 +377,7 @@ public class BuildJobHandler extends AbstractBuildJobHandler {
 
     private void addDQDependencies(IFolder parentFolder, List<Item> items) throws Exception {
         if (GlobalServiceRegister.getDefault().isServiceRegistered(ITDQItemService.class)) {
-            ITDQItemService tdqItemService = (ITDQItemService) GlobalServiceRegister.getDefault().getService(
+            ITDQItemService tdqItemService = GlobalServiceRegister.getDefault().getService(
                     ITDQItemService.class);
             for (Item item : items) {
                 if (tdqItemService != null && tdqItemService.hasProcessItemDependencies(Arrays.asList(new Item[] { item }))) {
