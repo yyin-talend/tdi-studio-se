@@ -81,6 +81,7 @@ import org.talend.core.runtime.maven.MavenArtifact;
 import org.talend.core.runtime.maven.MavenConstants;
 import org.talend.core.runtime.process.ITalendProcessJavaProject;
 import org.talend.core.runtime.process.LastGenerationInfo;
+import org.talend.core.runtime.process.TalendProcessOptionConstants;
 import org.talend.core.runtime.repository.build.BuildExportManager;
 import org.talend.core.service.ITaCoKitDependencyService;
 import org.talend.core.ui.branding.IBrandingService;
@@ -1242,6 +1243,13 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
         return analyzer;
     }
 
+    private boolean usesMssql(ProcessItem processItem) {
+        IDesignerCoreService service = CorePlugin.getDefault().getDesignerCoreService();
+        return service.getProcessFromProcessItem(processItem, false)
+                .getNeededLibraries(TalendProcessOptionConstants.MODULES_DEFAULT).stream()
+                .anyMatch(lib -> lib.matches("mssql-jdbc.jar"));
+    }
+    
     protected void addOsgiDependencies(Analyzer analyzer, ExportFileResource libResource, ProcessItem processItem)
             throws IOException {
         analyzer.setProperty(Analyzer.EXPORT_SERVICE, "routines.system.api.TalendJob;name=" + processItem.getProperty().getLabel() + ";type=" + "job");
@@ -1305,7 +1313,10 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
             importPackages.add("org.talend.cloud"); //$NON-NLS-1$
         }
 
-
+        if(usesMssql(processItem)) {
+            importPackages.add("com.microsoft.sqlserver.jdbc");
+        }
+        
         if (requireBundle != null && !requireBundle.isEmpty()) {
             requireBundle += (", org.ops4j.pax.logging.pax-logging-api");
         } else {
