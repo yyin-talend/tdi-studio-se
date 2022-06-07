@@ -38465,10 +38465,9 @@
                 MVN="mvn:com.sun.xml.bind/jaxb-impl/2.2.11"
                 REQUIRED_IF="(AUTH_TYPE == 'ON_PREMISE') AND (MS_CRM_VERSION == 'CRM_2015')" />
             <IMPORT
-                NAME="jcl-over-slf4j-1.7.12"
-                MODULE="jcl-over-slf4j-1.7.12.jar"
-                MVN="mvn:org.talend.libraries/jcl-over-slf4j-1.7.12/6.0.0"
-                UrlPath="platform:/plugin/org.talend.libraries.apache.cxf/lib/jcl-over-slf4j-1.7.12.jar"
+                NAME="jcl-over-slf4j-1.7.29"
+                MODULE="jcl-over-slf4j-1.7.29.jar"
+                MVN="mvn:org.slf4j/jcl-over-slf4j/1.7.29"
                 REQUIRED_IF="(AUTH_TYPE == 'ON_PREMISE') AND (MS_CRM_VERSION == 'CRM_2015')" />
             <IMPORT
                 NAME="neethi-3.1.1"
@@ -38476,16 +38475,14 @@
                 MVN="mvn:org.apache.neethi/neethi/3.1.1"
                 REQUIRED_IF="(AUTH_TYPE == 'ON_PREMISE') AND (MS_CRM_VERSION == 'CRM_2015')" />
             <IMPORT
-                NAME="slf4j-api-1.7.12"
-                MODULE="slf4j-api-1.7.12.jar"
-                MVN="mvn:org.talend.libraries/slf4j-api-1.7.12/6.0.0"
-                UrlPath="platform:/plugin/org.talend.libraries.apache.cxf/lib/slf4j-api-1.7.12.jar"
+                NAME="slf4j-api-1.7.29"
+                MODULE="slf4j-api-1.7.29.jar"
+                MVN="mvn:org.slf4j/slf4j-api/1.7.29"
                 REQUIRED_IF="(AUTH_TYPE == 'ON_PREMISE') AND (MS_CRM_VERSION == 'CRM_2015')" />
             <IMPORT
-                NAME="slf4j-jdk14-1.7.12"
-                MODULE="slf4j-jdk14-1.7.12.jar"
-                MVN="mvn:org.talend.libraries/slf4j-jdk14-1.7.12/6.0.0"
-                UrlPath="platform:/plugin/org.talend.libraries.apache.cxf/lib/slf4j-jdk14-1.7.12.jar"
+                NAME="slf4j-jdk14-1.7.29"
+                MODULE="slf4j-jdk14-1.7.29.jar"
+                MVN="mvn:org.slf4j/slf4j-jdk14/1.7.29"
                 REQUIRED_IF="(AUTH_TYPE == 'ON_PREMISE') AND (MS_CRM_VERSION == 'CRM_2015')" />
             <IMPORT
                 NAME="stax2-api-4.1"
@@ -38566,6 +38563,21 @@
                 MODULE="talend-microsoft-crm-2015-on-premises-0.2.jar"
                 MVN="mvn:org.talend.libraries/talend-microsoft-crm-2015-on-premises-0.2/6.0.0"
                 REQUIRED_IF="(AUTH_TYPE == 'ON_PREMISE') AND (MS_CRM_VERSION == 'CRM_2015')" />
+            <IMPORT
+                NAME="jaxb-api-2.3.1"
+                MODULE="jaxb-api-2.3.1.jar"
+                MVN="mvn:javax.xml.bind/jaxb-api/2.3.1"
+                REQUIRED_IF="(AUTH_TYPE == 'ON_PREMISE') AND (MS_CRM_VERSION == 'CRM_2015')" />
+            <IMPORT
+                NAME="jaxws-api-2.3.1"
+                MODULE="jaxws-api-2.3.1.jar"
+                MVN="mvn:javax.xml.ws/jaxws-api/2.3.1"
+                REQUIRED_IF="(AUTH_TYPE == 'ON_PREMISE') AND (MS_CRM_VERSION == 'CRM_2015')" />
+            <IMPORT
+                NAME="javax.annotation-api-1.3.2"
+                MODULE="javax.annotation-api-1.3.2.jar"
+                MVN="mvn:javax.annotation/javax.annotation-api/1.3.2"
+                REQUIRED_IF="(AUTH_TYPE == 'ON_PREMISE') AND (MS_CRM_VERSION == 'CRM_2015')" />
             <!-- Jars for CRM 2015 CXF end -->
 
             <!-- CRM 2016 odata start -->
@@ -38616,19 +38628,19 @@
                 MVN="mvn:org.apache.httpcomponents/httpclient/4.5.13"
                 REQUIRED_IF="((AUTH_TYPE=='ONLINE') AND (API_VERSION=='API_2011' OR API_VERSION=='API_2016_ODATA' OR API_VERSION=='API_2018_ODATA')) OR ((AUTH_TYPE == 'ON_PREMISE') AND (MS_CRM_VERSION == 'CRM_2016' OR MS_CRM_VERSION == 'CRM_2018'))" />
             <IMPORT
-                NAME="jackson-core-2.11.4.jar"
-                MODULE="jackson-core-2.11.4.jar"
-                MVN="mvn:com.fasterxml.jackson.core/jackson-core/2.11.4"
+                NAME="jackson-core-2.13.2.jar"
+                MODULE="jackson-core-2.13.2.jar"
+                MVN="mvn:com.fasterxml.jackson.core/jackson-core/2.13.2"
                 REQUIRED_IF="((AUTH_TYPE=='ONLINE') AND (API_VERSION=='API_2011' OR API_VERSION=='API_2016_ODATA' OR API_VERSION=='API_2018_ODATA')) OR ((AUTH_TYPE == 'ON_PREMISE') AND (MS_CRM_VERSION == 'CRM_2016' OR MS_CRM_VERSION == 'CRM_2018'))" />
             <IMPORT
-                NAME="jackson-databind-2.11.4.jar"
-                MODULE="jackson-databind-2.11.4.jar"
-                MVN="mvn:com.fasterxml.jackson.core/jackson-databind/2.11.4"
+                NAME="jackson-databind-2.13.2.2.jar"
+                MODULE="jackson-databind-2.13.2.2.jar"
+                MVN="mvn:com.fasterxml.jackson.core/jackson-databind/2.13.2.2"
                 REQUIRED_IF="((AUTH_TYPE=='ONLINE') AND (API_VERSION=='API_2011' OR API_VERSION=='API_2016_ODATA' OR API_VERSION=='API_2018_ODATA')) OR ((AUTH_TYPE == 'ON_PREMISE') AND (MS_CRM_VERSION == 'CRM_2016' OR MS_CRM_VERSION == 'CRM_2018'))" />
             <IMPORT
-                NAME="jackson-annotations-2.11.4.jar"
-                MODULE="jackson-annotations-2.11.4.jar"
-                MVN="mvn:com.fasterxml.jackson.core/jackson-annotations/2.11.4"
+                NAME="jackson-annotations-2.13.2.jar"
+                MODULE="jackson-annotations-2.13.2.jar"
+                MVN="mvn:com.fasterxml.jackson.core/jackson-annotations/2.13.2"
                 REQUIRED_IF="((AUTH_TYPE=='ONLINE') AND (API_VERSION=='API_2011' OR API_VERSION=='API_2016_ODATA' OR API_VERSION=='API_2018_ODATA')) OR ((AUTH_TYPE == 'ON_PREMISE') AND (MS_CRM_VERSION == 'CRM_2016' OR MS_CRM_VERSION == 'CRM_2018'))" />
             <IMPORT
                 NAME="json-smart-2.4.7.jar"
@@ -38686,9 +38698,9 @@
                 MVN="mvn:org.slf4j/slf4j-api/1.7.29"
                 REQUIRED_IF="((AUTH_TYPE=='ONLINE') AND (API_VERSION=='API_2011' OR API_VERSION=='API_2016_ODATA' OR API_VERSION=='API_2018_ODATA')) OR ((AUTH_TYPE == 'ON_PREMISE') AND (MS_CRM_VERSION == 'CRM_2016' OR MS_CRM_VERSION == 'CRM_2018'))" />
             <IMPORT
-                NAME="slf4j-simple-1.7.2"
-                MODULE="slf4j-simple-1.7.2.jar"
-                MVN="mvn:org.talend.libraries/slf4j-simple-1.7.2/6.0.0"
+                NAME="slf4j-simple-1.7.29"
+                MODULE="slf4j-simple-1.7.29.jar"
+                MVN="mvn:org.slf4j/slf4j-simple/1.7.29"
                 REQUIRED_IF="((AUTH_TYPE=='ONLINE') AND (API_VERSION=='API_2011' OR API_VERSION=='API_2016_ODATA' OR API_VERSION=='API_2018_ODATA')) OR ((AUTH_TYPE == 'ON_PREMISE') AND (MS_CRM_VERSION == 'CRM_2016' OR MS_CRM_VERSION == 'CRM_2018'))" />
             <IMPORT
                 NAME="stax2-api-3.1.4"

@@ -43,6 +43,7 @@ import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.preference.IPersistentPreferenceStore;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.swt.widgets.Shell;
 import org.osgi.framework.Bundle;
 import org.osgi.service.prefs.Preferences;
 import org.talend.commons.exception.ExceptionHandler;
@@ -57,6 +58,7 @@ import org.talend.core.language.ICodeProblemsChecker;
 import org.talend.core.model.components.ComponentCategory;
 import org.talend.core.model.general.ModuleNeeded;
 import org.talend.core.model.general.Project;
+import org.talend.core.model.general.RetrieveResult;
 import org.talend.core.model.general.TalendJobNature;
 import org.talend.core.model.process.IContext;
 import org.talend.core.model.process.IProcess;
@@ -103,6 +105,7 @@ import org.talend.designer.runprocess.maven.listener.CodesJarChangeListener;
 import org.talend.designer.runprocess.prefs.RunProcessPrefsConstants;
 import org.talend.designer.runprocess.spark.SparkJavaProcessor;
 import org.talend.designer.runprocess.storm.StormJavaProcessor;
+import org.talend.designer.runprocess.ui.ProcessContextComposite;
 import org.talend.designer.runprocess.ui.views.ProcessView;
 import org.talend.librariesmanager.model.ModulesNeededProvider;
 import org.talend.repository.ProjectManager;
@@ -397,17 +400,21 @@ public class DefaultRunProcessService implements IRunProcessService {
      * org.talend.designer.runprocess.IRunProcessService#updateLibraries(org.talend.core.model.properties.RoutineItem)
      */
     @Override
-    public void updateLibraries(Item routineItem) {
+    public boolean updateLibraries(Item routineItem) {
         Set<ModuleNeeded> modulesForRoutine = ModulesNeededProvider.updateModulesNeededForRoutine(routineItem);
         File libDir = getJavaProjectLibFolder().getLocation().toFile();
         if (libDir == null) {
-            return;
+            return false;
         }
         ILibraryManagerService repositoryBundleService = CorePlugin.getDefault().getRepositoryBundleService();
-        repositoryBundleService.retrieve(ERepositoryObjectType.getItemType(routineItem), modulesForRoutine,
-                libDir.getAbsolutePath(), true);
+        RetrieveResult result = repositoryBundleService.retrieveModules(ERepositoryObjectType.getItemType(routineItem),
+                modulesForRoutine, libDir.getAbsolutePath(), true);
         repositoryBundleService.installModules(modulesForRoutine, null);
-        CorePlugin.getDefault().getLibrariesService().checkLibraries();
+        boolean updated = !result.getResovledModules().isEmpty();
+        if (updated) {
+            CorePlugin.getDefault().getLibrariesService().checkLibraries();
+        }
+        return updated;
     }
 
     /*
@@ -1066,6 +1073,16 @@ public class DefaultRunProcessService implements IRunProcessService {
     @Override
     public void updateAllCodeCacheStatus(boolean isUpdated) {
         CodeM2CacheManager.updateAllCacheStatus(false);
+    }
+
+    @Override
+    public IContext promptConfirmLauch(Shell shell, IProcess process) {
+        IContext context = process.getContextManager().getDefaultContext().clone();
+        boolean prompt = ProcessContextComposite.promptConfirmLauch(shell, context, process);
+        if (prompt) {
+            return context;
+        }
+        return null;
     }
 
 }

@@ -62,11 +62,7 @@ String connection = ElementParameterParser.getValue(node,"__CONNECTION__");
 if(useExistedConnection) {//}
 %>
 try {
-    java.lang.reflect.Field field_<%=cid%> = tempMapper_<%=cid%>.getClass().getSuperclass().getDeclaredField("delegate");
-    if (!field_<%=cid%>.isAccessible()) {
-        field_<%=cid%>.setAccessible(true);
-    }
-    Object v_<%=cid%> = field_<%=cid%>.get(tempMapper_<%=cid%>);
+    Object v_<%=cid%> = ((org.talend.sdk.component.runtime.base.Delegated)tempMapper_<%=cid%>).getDelegate();
     Object con_<%=cid%> = globalMap.get("conn_<%=connection%>");
     if(con_<%=cid%>==null) {
         throw new RuntimeException("can't find the connection object");
