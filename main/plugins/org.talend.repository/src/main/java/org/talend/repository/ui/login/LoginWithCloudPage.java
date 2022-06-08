@@ -209,7 +209,7 @@ public class LoginWithCloudPage extends AbstractLoginActionPage implements SignO
     }
 
     @Override
-    public void loginStop(String authCode) {
+    public void loginStop(String authCode, String dataCenter) {
         Display.getDefault().syncExec(() -> {
             errorManager.setInfoMessage(Messages.getString("LoginWithCloudPage.signInTaskSec"));
             loginDialog.getShell().forceActive();
