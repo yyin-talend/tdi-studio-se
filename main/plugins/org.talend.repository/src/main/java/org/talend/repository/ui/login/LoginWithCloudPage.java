@@ -56,9 +56,7 @@ public class LoginWithCloudPage extends AbstractLoginActionPage implements SignO
     private SplitButton signCloudButton;
 
     private Button otherSignButton;
-
-    private boolean isSignOnCloud = false;
-
+    
     private String codeVerifier = ICloudSignOnService.get().generateCodeVerifier();
 
     public LoginWithCloudPage(Composite parent, LoginDialogV2 dialog, int style) {
@@ -74,15 +72,15 @@ public class LoginWithCloudPage extends AbstractLoginActionPage implements SignO
     public void instantiateControl(Composite container) {
         title = new Label(container, SWT.WRAP);
         title.setFont(LoginDialogV2.fixedFont);
-        title.setText("Get start with your Studio integration software"); //$NON-NLS-1$
+        title.setText(Messages.getString("LoginWithCloudPage.titleLabel")); //$NON-NLS-1$
 
         signCloudButton = new SplitButton(container, SWT.FLAT);
         signCloudButton.setFont(LoginDialogV2.fixedFont);
-        signCloudButton.setText("Sign in with Talend Cloud");
+        signCloudButton.setText(Messages.getString("LoginWithCloudPage.signCloudBtn"));
 
         otherSignButton = new Button(container, SWT.FLAT);
         otherSignButton.setFont(LoginDialogV2.fixedFont);
-        otherSignButton.setText("Other sign in mode");
+        otherSignButton.setText(Messages.getString("LoginWithCloudPage.otherSignBtn")); 
 
         networkSettingsLabel = new Link(container, SWT.NONE);
         networkSettingsLabel.setFont(LoginDialogV2.fixedFont);
@@ -151,7 +149,6 @@ public class LoginWithCloudPage extends AbstractLoginActionPage implements SignO
 
             @Override
             public void widgetSelected(SelectionEvent e) {
-                isSignOnCloud = true;
                 try {
                     ICloudSignOnService.get().signonCloud(LoginWithCloudPage.this);
                 } catch (Exception e1) {
@@ -164,7 +161,6 @@ public class LoginWithCloudPage extends AbstractLoginActionPage implements SignO
 
             @Override
             public void widgetSelected(SelectionEvent e) {
-                isSignOnCloud = false;
                 try {
                     gotoNextPage();
                 } catch (Throwable e1) {
@@ -208,20 +204,20 @@ public class LoginWithCloudPage extends AbstractLoginActionPage implements SignO
     @Override
     public void loginStart() {
         Display.getDefault().syncExec(() -> {
-            errorManager.setInfoMessage("Still working on first step...");
+            errorManager.setInfoMessage(Messages.getString("LoginWithCloudPage.signInTaskFirst"));
         });
     }
 
     @Override
     public void loginStop(String authCode) {
         Display.getDefault().syncExec(() -> {
-            errorManager.setInfoMessage("Still working on second step...");
+            errorManager.setInfoMessage(Messages.getString("LoginWithCloudPage.signInTaskSec"));
             loginDialog.getShell().forceActive();
         });
         try {
             TokenMode token = ICloudSignOnService.get().getToken(authCode, this.codeVerifier);
             Display.getDefault().syncExec(() -> {
-                errorManager.setInfoMessage("Still working on third step...");
+                errorManager.setInfoMessage(Messages.getString("LoginWithCloudPage.signInTaskThi"));
             });
             saveConnection(token, getAdminURL(), ICloudSignOnService.get().getTokenUser(getAdminURL(), token));
             Display.getDefault().syncExec(() -> {
