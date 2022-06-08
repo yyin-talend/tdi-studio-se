@@ -1298,9 +1298,10 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
             importPackages.add("org.talend.cloud"); //$NON-NLS-1$
         }
 
-        if(usesMssql(processItem)) {
+        if (usesMssql(processItem)) {
             importPackages.add("com.microsoft.sqlserver.jdbc");
-        }else if(usesJtds(processItem)) {
+        }
+        if (usesJtds(processItem)) {
             importPackages.add("net.sourceforge.jtds.jdbc.Driver");
         }
     
