@@ -72,7 +72,7 @@ public class LoginWithCloudPage extends AbstractLoginActionPage implements SignO
     public void instantiateControl(Composite container) {
         title = new Label(container, SWT.WRAP);
         title.setFont(LoginDialogV2.fixedFont);
-        title.setText(Messages.getString("LoginWithCloudPage.titleLabel")); //$NON-NLS-1$
+        title.setText(Messages.getString("LoginWithCloudPage.titleLbl")); //$NON-NLS-1$
 
         signCloudButton = new SplitButton(container, SWT.FLAT);
         signCloudButton.setFont(LoginDialogV2.fixedFont);
