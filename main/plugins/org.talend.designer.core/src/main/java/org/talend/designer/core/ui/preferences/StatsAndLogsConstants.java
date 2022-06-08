@@ -136,7 +136,7 @@ public class StatsAndLogsConstants {
 
     public static final String[] DB_VERSION_DISPLAY = new String[] { "Oracle 18 and above", "Oracle 12", "Oracle 11", "Oracle 10",
             "Oracle 9", "Oracle 8", "MySQL 8", "MySQL 5", "MariaDB", "Open source JTDS", "Microsoft", "Access 2003",
-            "Access 2007", "Prior to v9", "v9 +", "Sybase 16 (SQL Anywhere)", "Sybase 16", "Sybase 12/15" };
+            "Access 2007", "Prior to v9", "v9 +", "Sybase 16 (SQL Anywhere) and above", "Sybase 16", "Sybase 12/15" };
 
 
     public static final String[] DB_VERSION_CODE = new String[] {"ORACLE_18", "ORACLE_12", "ORACLE_11", "ORACLE_10", "ORACLE_9", "ORACLE_8",
@@ -164,7 +164,8 @@ public class StatsAndLogsConstants {
 
     public static final String[] PSQL_VERSION_DISPLAY = new String[] {"v9 and later","Prior to v9" }; //$NON-NLS-1$ //$NON-NLS-2$
 
-    public static final String[] SYBASE_VERSION_DISPLAY = new String[] {"Sybase 16 (SQL Anywhere)", "Sybase 16", "Sybase 12/15" }; //$NON-NLS-1$ //$NON-NLS-2$
+    public static final String[] SYBASE_VERSION_DISPLAY = new String[] { "Sybase 16 (SQL Anywhere) and above", //$NON-NLS-1$
+            "Sybase 16", "Sybase 12/15" }; //$NON-NLS-1$
     public static final String[] SYBASE_VERSION_CODE = new String[] {"SYBSEIQ_16_SA", "SYBSEIQ_16", "SYBSEIQ_12_15" };
     public static final String[] PSQL_VERSION_CODE = new String[] {  "V9_X","PRIOR_TO_V9" }; //$NON-NLS-1$ //$NON-NLS-2$
 
