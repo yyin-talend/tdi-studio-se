@@ -1250,13 +1250,6 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
                 .anyMatch(lib -> lib.matches("mssql-jdbc.jar"));
     }
     
-    private boolean usesJtds(ProcessItem processItem) {
-        IDesignerCoreService service = CorePlugin.getDefault().getDesignerCoreService();
-        return service.getProcessFromProcessItem(processItem, false)
-                .getNeededLibraries(TalendProcessOptionConstants.MODULES_DEFAULT).stream()
-                .anyMatch(lib -> lib.matches("jtds-1.3.1-patch-20190523.jar"));
-    }
-    
     protected void addOsgiDependencies(Analyzer analyzer, ExportFileResource libResource, ProcessItem processItem)
             throws IOException {
         analyzer.setProperty(Analyzer.EXPORT_SERVICE, "routines.system.api.TalendJob;name=" + processItem.getProperty().getLabel() + ";type=" + "job");
@@ -1320,12 +1313,8 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
             importPackages.add("org.talend.cloud"); //$NON-NLS-1$
         }
 
-        if (usesMssql(processItem)) {
+        if(usesMssql(processItem)) {
             importPackages.add("com.microsoft.sqlserver.jdbc");
-        }
-
-        if (usesJtds(processItem)) {
-            importPackages.add("net.sourceforge.jtds.jdbc.Driver");
         }
         
         if (requireBundle != null && !requireBundle.isEmpty()) {
