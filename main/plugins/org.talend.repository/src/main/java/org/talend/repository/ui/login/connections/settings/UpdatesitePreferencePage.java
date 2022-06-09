@@ -293,7 +293,7 @@ public class UpdatesitePreferencePage extends PreferencePage {
                 }
             } else {
                 fd.height = 0;
-                if (isCloudConnection && isWorkbenchRunning) {
+                if (isWorkbenchRunning) {
                     FormData owFd = (FormData) overwritePanel.getLayoutData();
                     owFd.height = 0;
                 }
