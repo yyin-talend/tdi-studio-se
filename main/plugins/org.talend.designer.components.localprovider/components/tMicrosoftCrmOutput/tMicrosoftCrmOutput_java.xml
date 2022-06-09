@@ -38659,8 +38659,8 @@
                 REQUIRED_IF="((AUTH_TYPE=='ONLINE') AND (API_VERSION=='API_2011' OR API_VERSION=='API_2016_ODATA' OR API_VERSION=='API_2018_ODATA')) OR ((AUTH_TYPE == 'ON_PREMISE') AND (MS_CRM_VERSION == 'CRM_2016' OR MS_CRM_VERSION == 'CRM_2018'))" />
             <IMPORT
                 NAME="nimbus-jose-jwt"
-                MODULE="nimbus-jose-jwt-8.11.jar"
-                MVN="mvn:com.nimbusds/nimbus-jose-jwt/8.11"
+                MODULE="nimbus-jose-jwt-9.22.jar"
+                MVN="mvn:com.nimbusds/nimbus-jose-jwt/9.22"
                 REQUIRED_IF="((AUTH_TYPE=='ONLINE') AND (API_VERSION=='API_2011' OR API_VERSION=='API_2016_ODATA' OR API_VERSION=='API_2018_ODATA')) OR ((AUTH_TYPE == 'ON_PREMISE') AND (MS_CRM_VERSION == 'CRM_2016' OR MS_CRM_VERSION == 'CRM_2018'))" />
             <IMPORT
                 NAME="oauth2-oidc-sdk"
