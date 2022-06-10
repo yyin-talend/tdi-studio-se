@@ -36,19 +36,17 @@ String encryptedToken = null;
 String theDistribution = ElementParameterParser.getValue(node, "__DISTRIBUTION__");
 String theVersion = ElementParameterParser.getValue(node, "__HIVE_VERSION__");
 String connMode = ElementParameterParser.getValue(node, "__CONNECTION_MODE__");
-	  
-    if("true".equals(ElementParameterParser.getValue(node,"__USE_EXISTING_CONNECTION__"))) {
-        String connection = ElementParameterParser.getValue(node, "__CONNECTION__");
-        
-        node.getProcess().getNodesOfType("tHiveConnection").stream()
-      		.filter(pNode -> connection!=null && connection.equals(pNode.getUniqueName()) )
-      		.findFirst()
-      		.ifPresent(pNode -> {
-          			theDistribution = ElementParameterParser.getValue(pNode, "__DISTRIBUTION__");
-          			theVersion = ElementParameterParser.getValue(pNode, "__HIVE_VERSION__");
-          			connMode = ElementParameterParser.getValue(pNode, "__CONNECTION_MODE__");
-      	});
+
+if("true".equals(ElementParameterParser.getValue(node,"__USE_EXISTING_CONNECTION__"))) {
+    String connection = ElementParameterParser.getValue(node, "__CONNECTION__");
+    for (INode pNode : node.getProcess().getNodesOfType("tHiveConnection")) {
+        if(connection!=null && connection.equals(pNode.getUniqueName())) {
+            theDistribution = ElementParameterParser.getValue(pNode, "__DISTRIBUTION__");
+            theVersion = ElementParameterParser.getValue(pNode, "__HIVE_VERSION__");
+            connMode = ElementParameterParser.getValue(pNode, "__CONNECTION_MODE__");
+        }
     }
+}
 
 org.talend.hadoop.distribution.component.HiveComponent hiveDistrib = null;
 try {
