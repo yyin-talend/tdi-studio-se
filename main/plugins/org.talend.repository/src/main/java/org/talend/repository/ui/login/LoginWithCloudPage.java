@@ -203,24 +203,24 @@ public class LoginWithCloudPage extends AbstractLoginActionPage implements SignO
 
     @Override
     public void loginStart() {
-        Display.getDefault().syncExec(() -> {
+        Display.getDefault().asyncExec(() -> {
             errorManager.setInfoMessage(Messages.getString("LoginWithCloudPage.signInTaskFirst"));
         });
     }
 
     @Override
     public void loginStop(String authCode, String dataCenter) {
-        Display.getDefault().syncExec(() -> {
+        Display.getDefault().asyncExec(() -> {
             errorManager.setInfoMessage(Messages.getString("LoginWithCloudPage.signInTaskSec"));
             loginDialog.getShell().forceActive();
         });
         try {
             TokenMode token = ICloudSignOnService.get().getToken(authCode, this.codeVerifier);
-            Display.getDefault().syncExec(() -> {
+            Display.getDefault().asyncExec(() -> {
                 errorManager.setInfoMessage(Messages.getString("LoginWithCloudPage.signInTaskThi"));
             });
             saveConnection(token, getAdminURL(), ICloudSignOnService.get().getTokenUser(getAdminURL(), token));
-            Display.getDefault().syncExec(() -> {
+            Display.getDefault().asyncExec(() -> {
                 try {
                     errorManager.clearAllMessages();
                     this.gotoNextPage();
@@ -229,7 +229,7 @@ public class LoginWithCloudPage extends AbstractLoginActionPage implements SignO
                 }
             });
         } catch (Exception e) {
-            Display.getDefault().syncExec(() -> {
+            Display.getDefault().asyncExec(() -> {
                 errorManager.setErrMessage(e.getLocalizedMessage());
             });
             ExceptionHandler.process(e);
@@ -260,7 +260,7 @@ public class LoginWithCloudPage extends AbstractLoginActionPage implements SignO
 
     @Override
     public void loginFailed(Exception ex) {
-        Display.getDefault().syncExec(() -> {
+        Display.getDefault().asyncExec(() -> {
             errorManager.setErrMessage(ex.getMessage());
         });
     }
@@ -273,7 +273,7 @@ public class LoginWithCloudPage extends AbstractLoginActionPage implements SignO
                 codeChallenge = ICloudSignOnService.get().getCodeChallenge(codeVerifier);
             }
         } catch (Exception ex) {
-            Display.getDefault().syncExec(() -> {
+            Display.getDefault().asyncExec(() -> {
                 errorManager.setErrMessage(ex.getLocalizedMessage());
             });
             ExceptionHandler.process(ex);
