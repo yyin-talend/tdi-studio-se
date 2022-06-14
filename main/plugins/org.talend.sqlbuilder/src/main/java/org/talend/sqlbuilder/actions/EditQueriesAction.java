@@ -172,7 +172,7 @@ public class EditQueriesAction extends AContextualAction {
         dial.setReadOnly(readOnly);
 
         if (copyConnection instanceof DatabaseConnection) {
-            IMetadataConnection imetadataConnection = ConvertionHelper.convert(copyConnection, true);
+            IMetadataConnection imetadataConnection = ConvertionHelper.convert(copyConnection);
             connParameters.setSchema(imetadataConnection.getSchema() == null ? "" : imetadataConnection.getSchema());
             UIUtils.checkConnection(parentShell, imetadataConnection);
         }
