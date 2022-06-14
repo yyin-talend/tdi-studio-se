@@ -283,8 +283,7 @@ public class RepositoryService implements IRepositoryService, IRepositoryContext
         if (isloginDialogDisabled()) {
             boolean canSkip = true;
             try {
-                if (ICloudSignOnService.get() != null && ICloudSignOnService.get().usingSSO()
-                        && ICloudSignOnService.get().hasValidToken()) {
+                if (ICloudSignOnService.get() != null && ICloudSignOnService.get().hasValidToken()) {
                     canSkip = false;
                     ICloudSignOnService.get().startHeartBeat();
                     canSkip = true;

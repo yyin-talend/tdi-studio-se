@@ -1395,14 +1395,14 @@ public class LoginProjectPage extends AbstractLoginActionPage {
             }
             // should save before login, since svn related codes will read them
             saveLastUsedProjectAndBranch();
-            if (ICloudSignOnService.get() != null && ICloudSignOnService.get().usingSSO()) {
-                try {
+            try {
+                if (ICloudSignOnService.get() != null && ICloudSignOnService.get().hasValidToken()) {
                     ICloudSignOnService.get().startHeartBeat();
-                } catch (Exception e) {
-                    errorManager.setErrMessage(e.getLocalizedMessage());
-                    ExceptionHandler.process(e);
                 }
-            }   
+            } catch (Exception e) {
+                errorManager.setErrMessage(e.getLocalizedMessage());
+                ExceptionHandler.process(e);
+            }
             boolean isLogInOk = loginHelper.logIn(getConnection(), getProject(), errorManager);
             if (isLogInOk) {
                 LoginHelper.setAlwaysAskAtStartup(alwaysAsk.getSelection());            
