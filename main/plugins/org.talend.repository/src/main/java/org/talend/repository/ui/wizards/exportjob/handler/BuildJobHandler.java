@@ -13,6 +13,7 @@
 package org.talend.repository.ui.wizards.exportjob.handler;
 
 import java.io.File;
+import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -70,6 +71,7 @@ import org.talend.designer.maven.tools.BuildCacheManager;
 import org.talend.designer.runprocess.IProcessor;
 import org.talend.designer.runprocess.ProcessorUtilities;
 import org.talend.model.bridge.ReponsitoryContextBridge;
+import org.talend.repository.ProjectManager;
 import org.talend.repository.documentation.ExportFileResource;
 import org.talend.repository.local.ExportItemUtil;
 import org.talend.repository.model.IProxyRepositoryFactory;
@@ -87,8 +89,14 @@ public class BuildJobHandler extends AbstractBuildJobHandler {
 
     public BuildJobHandler(ProcessItem processItem, String version, String contextName, Map<ExportChoice, Object> exportChoiceMap) {
         super(processItem, version, contextName, exportChoiceMap);
-        setProjectNameLowerCase(false);
-
+        setProjectNameLowerCase(true);
+        // tdqReportRun need to keep project name same with studio case
+        if (GlobalServiceRegister.getDefault().isServiceRegistered(ITDQItemService.class)) {
+            ITDQItemService tdqItemService = GlobalServiceRegister.getDefault().getService(ITDQItemService.class);
+            if (tdqItemService != null && tdqItemService.hasProcessItemDependencies(Arrays.asList(new Item[] { processItem }))) {
+                setProjectNameLowerCase(false);
+            }
+        }
         ProcessorUtilities.setExportConfig(JavaUtils.JAVA_APP_NAME, null, null);
     }
 
@@ -379,57 +387,67 @@ public class BuildJobHandler extends AbstractBuildJobHandler {
         if (GlobalServiceRegister.getDefault().isServiceRegistered(ITDQItemService.class)) {
             ITDQItemService tdqItemService = GlobalServiceRegister.getDefault().getService(
                     ITDQItemService.class);
+            List<Project> initProList = new ArrayList<>();
             for (Item item : items) {
-                if (tdqItemService != null && tdqItemService.hasProcessItemDependencies(Arrays.asList(new Item[] { item }))) {
-                    setNeedItemDependencies(true);
-                    // add .Talend.definition file
-                    String defIdxFolderName = "TDQ_Libraries"; //$NON-NLS-1$
-                    String defIdxFileName = ".Talend.definition"; //$NON-NLS-1$
-                    Project pro = getProject(processItem);
-                    IFolder itemsProjectFolder = parentFolder.getFolder(pro.getTechnicalLabel().toLowerCase());
-                    File itemsFolderDir = new File(parentFolder.getLocation().toFile().getAbsolutePath());
-                    IProject project = ReponsitoryContextBridge.getRootProject();
-                    String defIdxRelativePath = defIdxFolderName + PATH_SEPARATOR + defIdxFileName;
-                    IFile defIdxFile = project.getFile(defIdxRelativePath);
-                    if (defIdxFile.exists()) {
-                        File defIdxFileSource = new File(project.getLocation().makeAbsolute().append(defIdxFolderName)
-                                .append(defIdxFileName).toFile().toURI());
-                        File defIdxFileTarget = new File(itemsProjectFolder.getFile(defIdxRelativePath).getLocation().toFile()
-                                .getAbsolutePath());
-                        FilesUtils.copyFile(defIdxFileSource, defIdxFileTarget);
-                    }
-                    // add report header image & template files
-                    String reportingBundlePath = PluginChecker.getBundlePath("org.talend.dataquality.reporting"); //$NON-NLS-1$
-                    File imageFolder = new File(reportingBundlePath + PATH_SEPARATOR + "images"); //$NON-NLS-1$
-                    if (imageFolder.exists()) {
-                        FilesUtils.copyDirectory(imageFolder, itemsFolderDir);
-                    }
-                    File templateFolder = new File(reportingBundlePath + PATH_SEPARATOR + "reports"); //$NON-NLS-1$
-                    if (templateFolder.exists() && templateFolder.isDirectory()) {
-                        FilesUtils.copyDirectory(templateFolder, itemsFolderDir);
-                    }
-                    // TDQ-10842 msjian: consider user defined report template files
-                    String reportTemplateFolderName = "JRXML Template"; //$NON-NLS-1$
-                    String reportTemplateFolderPath = defIdxFolderName + PATH_SEPARATOR + reportTemplateFolderName;
-                    IFolder reportFolder = project.getFolder(reportTemplateFolderPath);
-                    if (reportFolder.exists()) {
-                        File reportFileSource = new File(project
-                                .getLocation()
-                                .makeAbsolute()
-                                .append(defIdxFolderName)
-                                .append(reportTemplateFolderName)
-                                .toFile()
-                                .toURI());
-                        File reportFileTarget = new File(itemsProjectFolder
-                                .getFile(defIdxFolderName)
-                                .getLocation()
-                                .toFile()
-                                .getAbsolutePath());
-                        FilesUtils.copyDirectory(reportFileSource, reportFileTarget);
-                    }
-                    // TDQ-10842~
+                if (PluginChecker.isRefProjectLoaded() && ProjectManager.getInstance().getAllReferencedProjects().size() > 0) {
+                    handleMulitProjectCase(parentFolder, initProList, item);
+                } else {
+                    handleSingleProjectCase(parentFolder, tdqItemService, item);
                 }
             }
+        }
+    }
+
+    private void handleMulitProjectCase(IFolder parentFolder, List<Project> initProList, Item item) throws IOException {
+        Project pro = ProjectManager.getInstance().getProject(item);
+        if (!initProList.contains(pro)) {
+            initProList.add(pro);
+            copyDQSystemFile(parentFolder, pro);
+        }
+
+    }
+
+    protected void copyDQSystemFile(IFolder parentFolder, Project pro) throws IOException {
+        setNeedItemDependencies(true);
+        // add .Talend.definition file
+        String defIdxFolderName = "TDQ_Libraries"; //$NON-NLS-1$
+        String defIdxFileName = ".Talend.definition"; //$NON-NLS-1$
+        IFolder itemsProjectFolder = parentFolder.getFolder(pro.getTechnicalLabel().toLowerCase());
+        File itemsFolderDir = new File(parentFolder.getLocation().toFile().getAbsolutePath());
+        IProject project = ReponsitoryContextBridge.findProject(pro.getTechnicalLabel());
+        String defIdxRelativePath = defIdxFolderName + PATH_SEPARATOR + defIdxFileName;
+        IFile defIdxFile = project.getFile(defIdxRelativePath);
+        if (defIdxFile.exists()) {
+            File defIdxFileSource = new File(project.getLocation().makeAbsolute().append(defIdxFolderName).append(defIdxFileName).toFile().toURI());
+            File defIdxFileTarget = new File(itemsProjectFolder.getFile(defIdxRelativePath).getLocation().toFile().getAbsolutePath());
+            FilesUtils.copyFile(defIdxFileSource, defIdxFileTarget);
+        }
+        // add report header image & template files
+        String reportingBundlePath = PluginChecker.getBundlePath("org.talend.dataquality.reporting"); //$NON-NLS-1$
+        File imageFolder = new File(reportingBundlePath + PATH_SEPARATOR + "images"); //$NON-NLS-1$
+        if (imageFolder.exists()) {
+            FilesUtils.copyDirectory(imageFolder, itemsFolderDir);
+        }
+        File templateFolder = new File(reportingBundlePath + PATH_SEPARATOR + "reports"); //$NON-NLS-1$
+        if (templateFolder.exists() && templateFolder.isDirectory()) {
+            FilesUtils.copyDirectory(templateFolder, itemsFolderDir);
+        }
+        // TDQ-10842 msjian: consider user defined report template files
+        String reportTemplateFolderName = "JRXML Template"; //$NON-NLS-1$
+        String reportTemplateFolderPath = defIdxFolderName + PATH_SEPARATOR + reportTemplateFolderName;
+        IFolder reportFolder = project.getFolder(reportTemplateFolderPath);
+        if (reportFolder.exists()) {
+            File reportFileSource = new File(project.getLocation().makeAbsolute().append(defIdxFolderName).append(reportTemplateFolderName).toFile().toURI());
+            File reportFileTarget = new File(itemsProjectFolder.getFile(defIdxFolderName).getLocation().toFile().getAbsolutePath());
+            FilesUtils.copyDirectory(reportFileSource, reportFileTarget);
+        }
+        // TDQ-10842~
+    }
+
+    private void handleSingleProjectCase(IFolder parentFolder, ITDQItemService tdqItemService, Item item) throws IOException {
+        Project pro = getProject(processItem);
+        if (tdqItemService != null && tdqItemService.hasProcessItemDependencies(Arrays.asList(new Item[] { item }))) {
+            copyDQSystemFile(parentFolder, pro);
         }
     }
 
