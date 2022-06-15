@@ -41,9 +41,9 @@ import org.talend.repository.ui.login.connections.ConnectionUserPerReader;
 import org.talend.repository.ui.login.connections.network.LoginNetworkPreferencePage;
 import org.talend.repository.ui.login.connections.network.proxy.LoginProxyPreferencePage;
 import org.talend.signon.util.TokenMode;
-import org.talend.signon.util.listener.SignOnEventListener;
+import org.talend.signon.util.listener.LoginEventListener;
 
-public class LoginWithCloudPage extends AbstractLoginActionPage implements SignOnEventListener {
+public class LoginWithCloudPage extends AbstractLoginActionPage implements LoginEventListener {
 
     protected Label title;
 
