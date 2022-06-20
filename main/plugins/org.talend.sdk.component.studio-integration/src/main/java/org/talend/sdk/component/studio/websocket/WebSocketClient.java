@@ -194,6 +194,7 @@ public class WebSocketClient implements AutoCloseable {
         final URI connectUri = URI.create(getBase() + "/bus");
         final ClientEndpointConfig endpointConfig = ClientEndpointConfig.Builder.create().build();
         endpointConfig.getUserProperties().put(Constants.IO_TIMEOUT_MS_PROPERTY, Long.toString(timeout));
+        endpointConfig.getUserProperties().put(Constants.BLOCKING_SEND_TIMEOUT_PROPERTY, 60_000L);
         try {
             return container.connectToServer(new Endpoint() {
                 @Override
