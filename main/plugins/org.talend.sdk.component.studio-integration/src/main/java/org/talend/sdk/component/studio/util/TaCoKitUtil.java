@@ -41,6 +41,7 @@ import org.talend.core.model.components.ComponentCategory;
 import org.talend.core.model.components.IComponent;
 import org.talend.core.model.general.Project;
 import org.talend.core.model.process.EParameterFieldType;
+import org.talend.core.model.process.ElementParameterValueModel;
 import org.talend.core.model.process.IElement;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.INode;
@@ -746,7 +747,7 @@ public class TaCoKitUtil {
 
     public static void updateElementParameter(final IElementParameter param, Map<String, String> suggestedValues) {
         param.setListItemsDisplayCodeName(suggestedValues.keySet().toArray(new String[suggestedValues.size()]));
-        param.setListItemsValue(suggestedValues.keySet().toArray(new String[suggestedValues.size()]));
+        param.setListItemsValue(suggestedValues.values().toArray(new String[suggestedValues.size()]));
         param.setListItemsDisplayName(suggestedValues.keySet().toArray(new String[suggestedValues.size()]));
         param.setListItemsNotShowIf(new String[suggestedValues.size()]);
         param.setListItemsShowIf(new String[suggestedValues.size()]);
@@ -755,12 +756,20 @@ public class TaCoKitUtil {
     public static void fillDefaultItemsList(final IElementParameter param, Object value) {
         if (param instanceof ValueSelectionParameter) {
             List<String> itemsList = new ArrayList<String>();
-            if (value != null && value instanceof String && StringUtils.isNotBlank((String) value)) {
-                itemsList.add((String) value);
+            List<String> itemsValueList = new ArrayList<String>();
+            if (value != null) {
+                if (value instanceof String && StringUtils.isNotBlank((String) value)) {
+                    itemsList.add((String) value);
+                    itemsValueList.add((String) value);
+                } else if (value instanceof ElementParameterValueModel) {
+                    ElementParameterValueModel model = (ElementParameterValueModel) value;
+                    itemsList.add(model.toString());
+                    itemsValueList.add(model.getValue());
+                }
             }
             param.setListItemsDisplayName(itemsList.toArray(new String[0]));
             param.setListItemsDisplayCodeName(itemsList.toArray(new String[0]));
-            param.setListItemsValue(itemsList.toArray(new String[0]));
+            param.setListItemsValue(itemsValueList.toArray(new String[0]));
             param.setListItemsNotShowIf(itemsList.toArray(new String[0]));
             param.setListItemsShowIf(itemsList.toArray(new String[0]));
             param.setDefaultClosedListValue(""); //$NON-NLS-1$
