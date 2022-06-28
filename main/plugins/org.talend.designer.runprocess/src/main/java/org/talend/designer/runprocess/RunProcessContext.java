@@ -1988,6 +1988,8 @@ public class RunProcessContext {
                 .getPreferencesService()
                 .getString("org.talend.designer.esb.components.rs.provider", "restServiceDefaultUri",
                         "http://127.0.0.1:8090/", null);
+        
+        String customRoutinePattern = "[\\w\\_\\$]+\\..+";
 
         Collection<NodeType> restComponents = EmfModelUtils
                 .getComponentsByName((ProcessItem) process.getProperty().getItem(), "cREST", "tRESTRequest");
@@ -2002,6 +2004,8 @@ public class RunProcessContext {
                 endpoint = ComponentUtilities.getNodePropertyValue(restComponent, "REST_ENDPOINT");
 
             String decodedEndpoint = "";
+            
+            boolean endpointContainsCustomRoutine = false;
 
             if (!StringUtils.isEmpty(endpoint)) {
 
@@ -2023,8 +2027,10 @@ public class RunProcessContext {
                                 break;
                             }
                         }
-
-                    } else {
+                    } else if (endpointElement.matches(customRoutinePattern)) {
+                    	decodedEndpoint += "...";
+                    	endpointContainsCustomRoutine = true;
+                	} else {
                         decodedEndpoint += TalendTextUtils.removeQuotes(endpointElement);
                     }
                 }
@@ -2034,6 +2040,10 @@ public class RunProcessContext {
                 } else {
                     String fullURL = defaultRestUri + decodedEndpoint;
                     url = fullURL.replaceAll("(?<!(http:|https:))//", "/");
+                }
+                
+                if (endpointContainsCustomRoutine) {
+                	url += "(Endpoint cannot be calculated as it contains custom routine.)";
                 }
 
                 if (url != null)
