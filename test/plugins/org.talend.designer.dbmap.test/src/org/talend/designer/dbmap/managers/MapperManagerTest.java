@@ -209,7 +209,7 @@ public class MapperManagerTest {
         assertEquals(expressionValue + ".column", outputs.get(0).getMetadataTableEntries().get(0).getExpression());
     }
 
-    private static Property createProperty() {
+    public static Property createProperty() {
         Property property = PropertiesFactory.eINSTANCE.createProperty();
         property.setAuthor(((RepositoryContext) CorePlugin.getContext().getProperty(Context.REPOSITORY_CONTEXT_KEY)).getUser());
         property.setVersion(VersionUtils.DEFAULT_VERSION);
