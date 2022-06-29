@@ -91,7 +91,7 @@
 					<plugin>
 						<groupId>org.talend.ci</groupId>
 						<artifactId>signer-maven-plugin</artifactId>
-						<version>8.0.3</version>
+						<version>${signer.version}</version>
 						<executions>
 							<execution>
 								<id>sign</id>
