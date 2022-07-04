@@ -3786,6 +3786,15 @@
               name="RenameTimeoutParameterstRESTClient"
               version="8.0.1">
         </projecttask>
+		<projecttask
+	      beforeLogon="false"
+              breaks="8.0.0"
+              class="org.talend.repository.model.migration.MigrateWorkdayModeTask"
+              description="Migrate mode property correctly"
+              id="org.talend.repository.model.migration.MigrateWorkdayModeTask"
+              name="MigrateWorkdayModeTask"
+              version="8.0.1">
+        </projecttask>
    </extension>
 
    <extension
