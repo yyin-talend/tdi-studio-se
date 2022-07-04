@@ -37,6 +37,7 @@ public class MigrateWorkdayModeTask extends AbstractJobMigrationTask {
                 final ElementParameterType mode = ComponentUtilities.getNodeProperty(nodeType, modeNodeName);
 
                 if (mode == null) {
+                    ComponentUtilities.addNodeProperty(nodeType, modeNodeName, "CLOSED_LIST");
                     final String authName = "configuration.dataSet.datastore.authentication";
                     final ElementParameterType auth = ComponentUtilities.getNodeProperty(nodeType, authName);
                     if (auth == null || "CLIENT_ID".equals(auth.getValue())) {
