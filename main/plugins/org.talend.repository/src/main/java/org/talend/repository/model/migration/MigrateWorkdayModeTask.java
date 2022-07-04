@@ -28,7 +28,7 @@ public class MigrateWorkdayModeTask extends AbstractJobMigrationTask {
             return ExecutionResult.NOTHING_TO_DO;
         }
 
-        final String componentName = "tWorkdayInput";
+        final String componentName = "WorkdayInput";
 
         final IComponentConversion migrateMode = new IComponentConversion() {
             @Override
