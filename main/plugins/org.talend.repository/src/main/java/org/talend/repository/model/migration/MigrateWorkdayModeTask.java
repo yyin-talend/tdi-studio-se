@@ -46,8 +46,9 @@ public class MigrateWorkdayModeTask extends AbstractJobMigrationTask {
                         ComponentUtilities.setNodeValue(nodeType, modeNodeName, "RAAS");
                     } else if ("WS_SECURITY".equals(auth.getValue())) {
                         ComponentUtilities.setNodeValue(nodeType, modeNodeName, "RAAS");
+                    } else {
+                        throw new RuntimeException("Unknown auth type");
                     }
-                    throw new RuntimeException("Unknown auth type");
                 }
             }
         };
