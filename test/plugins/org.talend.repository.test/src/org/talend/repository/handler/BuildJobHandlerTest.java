@@ -339,9 +339,9 @@ public class BuildJobHandlerTest {
                     }
                 }
                 assertTrue("Not TDM item", isTDM);
-                // The name of project will not force lowercase now so that remove toLowerCase method from here
                 ZipEntry tdmSettingEntry = zip.getEntry(
-                        jobName + "/items/" + technicalLabel + "/.settings/com.oaklandsw.base.projectProps");
+                        jobName + "/items/" + technicalLabel.toLowerCase()
+                                + "/.settings/com.oaklandsw.base.projectProps");
                 assertNotNull("Can't export tdm rightly", tdmSettingEntry);
                 // the __tdm has been moved into job jar. so need test it in jar.
                 // testbuildWithXXX_0_1.jar!/__tdm/...
