@@ -442,6 +442,21 @@ public class ProjectRefSettingPage extends ProjectSettingPage {
         if (REPOSITORY_LOCAL == projectRepositoryType) {
             return;
         }
+        
+        /**
+         * If the repository is standard git mode, reference projects must be on the same branch
+         */
+        IGITProviderService gitSvc = IGITProviderService.get();
+        try {
+            if (gitSvc.isGITProject(currentProject) && gitSvc.isStandardMode()) {
+                String branchSelection = ProjectManager.getInstance().getMainProjectBranch(ProjectManager.getInstance().getCurrentProject());
+                branchCombo.setText(branchSelection);
+                return;
+            }
+        } catch (PersistenceException e1) {
+            this.setErrorMessage(e1.getLocalizedMessage());
+        }
+        
         OverTimePopupDialogTask<List<String>> overTimePopupDialogTask = new OverTimePopupDialogTask<List<String>>() {
 
             @Override
