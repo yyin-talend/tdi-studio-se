@@ -201,7 +201,29 @@
       SHOW_IF="SET_LOCALHOST == 'true'"
     >
       <DEFAULT>"localhost"</DEFAULT>
+      
     </PARAMETER>
+        <PARAMETER
+      NAME="USE_OAUTH2"
+      FIELD="CHECK"
+      REQUIRED="true"
+      NUM_ROW="12">
+        <DEFAULT>false</DEFAULT>
+    </PARAMETER>
+        <PARAMETER
+      NAME="USE_TWO_LINE_TOKEN"
+      FIELD="CHECK"
+      REQUIRED="true"
+      NUM_ROW="14">
+        <DEFAULT>false</DEFAULT>
+    </PARAMETER>
+
+    	 <PARAMETER NAME="CONFIGS" FIELD="TABLE" REQUIRED="false" NUM_ROW="15" NB_LINES="3">
+          <ITEMS>
+            <ITEM NAME="KEY" />
+            <ITEM NAME="VALUE" />
+          </ITEMS>
+        </PARAMETER>
   </ADVANCED_PARAMETERS>
 
   <CODEGENERATION>

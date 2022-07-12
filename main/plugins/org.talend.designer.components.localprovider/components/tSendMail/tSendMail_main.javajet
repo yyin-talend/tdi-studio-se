@@ -29,6 +29,9 @@ boolean setLocalhost = "true".equals(ElementParameterParser.getValue(node, "__SE
 String localhost = ElementParameterParser.getValue(node, "__LOCALHOST__");  
 boolean isDieOnError = "true".equals(ElementParameterParser.getValue(node, "__DIE_ON_ERROR__"));
 boolean isLog4jEnabled = ("true").equals(ElementParameterParser.getValue(node.getProcess(), "__LOG4J_ACTIVATE__"));
+List<Map<String, String>> configs = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__CONFIGS__");
+boolean useOauth2 = "true".equals(ElementParameterParser.getValue(node, "__USE_OAUTH2__"));
+boolean use2LineToken = "true".equals(ElementParameterParser.getValue(node, "__USE_TWO_LINE_TOKEN__"));
 	//Bug12952, move all begin part to here below
 	String smtpHost    = ElementParameterParser.getValue(node, "__SMTP_HOST__");
 	String smtpPort    = ElementParameterParser.getValue(node, "__SMTP_PORT__");
@@ -101,6 +104,12 @@ boolean isLog4jEnabled = ("true").equals(ElementParameterParser.getValue(node.ge
 	java.util.Properties props_<%=cid %> = System.getProperties();     
 	props_<%=cid %>.put("mail.smtp.host", smtpHost_<%=cid %>);
 	props_<%=cid %>.put("mail.smtp.port", smtpPort_<%=cid %>);
+	<%
+	  for (int i = 0; i < configs.size(); i++) {
+		    Map<String, String> line = configs.get(i);
+	%>
+	props_<%=cid %>.put(<%=line.get("KEY")%>, <%=line.get("VALUE")%>);
+	<%}%>
 <% 
 	if (setLocalhost){%>
 		props_<%=cid %>.put("mail.smtp.localhost", <%=localhost%>);
@@ -117,6 +126,17 @@ boolean isLog4jEnabled = ("true").equals(ElementParameterParser.getValue(node.ge
 		props_<%=cid %>.put("mail.smtp.socketFactory.fallback", "false");
 		props_<%=cid %>.put("mail.smtp.socketFactory.port", smtpPort_<%=cid %>);
 <%
+	}
+	if(useOauth2) {
+		%>
+		props_<%=cid %>.put("mail.smtp.auth.mechanisms", "XOAUTH2");
+		<%
+	}
+	if(use2LineToken) {
+		%>
+		props_<%=cid %>.put("mail.smtp.auth.xoauth2.two.line.authentication.format", "true");
+		<%
+		
 	}
 %>     
 	try {
