@@ -12,7 +12,7 @@
 CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 INode node = (INode)codeGenArgument.getArgument();
 String cid = node.getUniqueName();
-String needAuth = ElementParameterParser.getValue(node, "__NEED_AUTH__");
+String authMode = ElementParameterParser.getValue(node, "__AUTH_MODE__");
 String authUsername = ElementParameterParser.getValue(node, "__AUTH_USERNAME__");
 String authPassword = ElementParameterParser.getValue(node, "__AUTH_PASSWORD__");
 String message = org.talend.core.model.utils.NodeUtil.replaceCRLFInMEMO_SQL(ElementParameterParser.getValue(node, "__MESSAGE__"));
@@ -30,7 +30,6 @@ String localhost = ElementParameterParser.getValue(node, "__LOCALHOST__");
 boolean isDieOnError = "true".equals(ElementParameterParser.getValue(node, "__DIE_ON_ERROR__"));
 boolean isLog4jEnabled = ("true").equals(ElementParameterParser.getValue(node.getProcess(), "__LOG4J_ACTIVATE__"));
 List<Map<String, String>> configs = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__CONFIGS__");
-boolean useOauth2 = "true".equals(ElementParameterParser.getValue(node, "__USE_OAUTH2__"));
 boolean use2LineToken = "true".equals(ElementParameterParser.getValue(node, "__USE_TWO_LINE_TOKEN__"));
 	//Bug12952, move all begin part to here below
 	String smtpHost    = ElementParameterParser.getValue(node, "__SMTP_HOST__");
@@ -127,7 +126,7 @@ boolean use2LineToken = "true".equals(ElementParameterParser.getValue(node, "__U
 		props_<%=cid %>.put("mail.smtp.socketFactory.port", smtpPort_<%=cid %>);
 <%
 	}
-	if(useOauth2) {
+	if("OAUTH2".equals(authMode)) {
 		%>
 		props_<%=cid %>.put("mail.smtp.auth.mechanisms", "XOAUTH2");
 		<%
@@ -143,7 +142,7 @@ boolean use2LineToken = "true".equals(ElementParameterParser.getValue(node, "__U
 		<%if(isLog4jEnabled){%>
 			log.info("<%=cid%> - Connection attempt to '" + smtpHost_<%=cid %> +"'.");
 		<%}%>
-		<%if ("false".equals(needAuth)) { %>  
+		<%if ("NO_AUTH".equals(authMode)) { %>  
 			props_<%=cid %>.put("mail.smtp.auth", "false");
 			javax.mail.Session session_<%=cid %> = javax.mail.Session.getInstance(props_<%=cid %>, null);    
 		<%} else{%>
@@ -152,7 +151,7 @@ boolean use2LineToken = "true".equals(ElementParameterParser.getValue(node, "__U
 				protected javax.mail.PasswordAuthentication getPasswordAuthentication() {
 				
                 <%
-                String passwordFieldName = "__AUTH_PASSWORD__";
+                String passwordFieldName = "BASIC".equals(authMode)?"__AUTH_PASSWORD__":"__TOKEN__";
                 %>
                 
                 <%@ include file="@{org.talend.designer.components.localprovider}/components/templates/password.javajet"%>				
