@@ -3778,8 +3778,17 @@
               version="8.0.1">
         </projecttask>
         <projecttask
-	      beforeLogon="false"
+              beforeLogon="false"
               breaks="8.0.0"
+              class="org.talend.repository.model.migration.tSendMailOAuthMigrationTask"
+              description="Seperate GoogleAnalyticsReport table items value with id and label"
+              id="org.talend.repository.model.migration.tSendMailOAuthMigrationTask"
+              name="tSendMailOAuthMigrationTask"
+              version="8.0.1">
+        </projecttask>
+        <projecttask
+              beforeLogon="true"
+              breaks="8.0.1"
               class="org.talend.repository.model.migration.RenameTimeoutParameterstRESTClient"
               description="Rename timeout parameters for tRESTClient"
               id="org.talend.repository.model.migration.RenameTimeoutParameterstRESTClient"
