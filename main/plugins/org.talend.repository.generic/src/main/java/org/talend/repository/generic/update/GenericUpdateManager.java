@@ -94,7 +94,7 @@ public class GenericUpdateManager extends RepositoryUpdateManager {
         Map<String, MetadataTable> nameAndTableMap = new HashMap<>();
         List<MetadataTable> metadataTables = SchemaUtils.getMetadataTables(connItem.getConnection(), SubContainer.class);
         for (MetadataTable table : metadataTables) {
-            nameAndTableMap.put(table.getLabel(), table);
+            nameAndTableMap.put(table.getName(), table);
         }
         return nameAndTableMap;
     }
