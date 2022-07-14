@@ -443,19 +443,12 @@ public class ProjectRefSettingPage extends ProjectSettingPage {
             return;
         }
         
-        /**
-         * If the repository is standard git mode, reference projects must be on the same branch
-         */
+        String mainProjectGitUrl = null;
         IGITProviderService gitSvc = IGITProviderService.get();
-        try {
-            if (gitSvc.isGITProject(currentProject) && gitSvc.isStandardMode()) {
-                String branchSelection = ProjectManager.getInstance().getMainProjectBranch(ProjectManager.getInstance().getCurrentProject());
-                branchCombo.setText(branchSelection);
-                return;
-            }
-        } catch (PersistenceException e1) {
-            this.setErrorMessage(e1.getLocalizedMessage());
+        if (gitSvc != null) {
+            mainProjectGitUrl = gitSvc.getCleanGitRepositoryUrl(ProjectManager.getInstance().getCurrentProject().getEmfProject());
         }
+        final String mainProjectGitUrlFinal = mainProjectGitUrl;
         
         OverTimePopupDialogTask<List<String>> overTimePopupDialogTask = new OverTimePopupDialogTask<List<String>>() {
 
@@ -464,6 +457,19 @@ public class ProjectRefSettingPage extends ProjectSettingPage {
                 IRepositoryService repositoryService = (IRepositoryService) GlobalServiceRegister.getDefault()
                         .getService(IRepositoryService.class);
                 if (repositoryService != null) {
+                    
+                    // for standard mode, same git repository, must be on same branch
+                    if (gitSvc != null && gitSvc.isGITProject(currentProject) && gitSvc.isStandardMode()) {
+                        String refProjectGitUrl = gitSvc.getCleanGitRepositoryUrl(lastSelectedProject.getEmfProject());
+                        if (StringUtils.equals(refProjectGitUrl, mainProjectGitUrlFinal)) {
+                            List<String> arr = new ArrayList<String>();
+                            String branchSelection = ProjectManager.getInstance().getMainProjectBranch(ProjectManager.getInstance().getCurrentProject());
+                            arr.add(branchSelection);
+                            return arr;
+                        }
+                    }
+                    
+                    // otherwise continue to retrieve as before
                     return repositoryService.getProjectBranch(lastSelectedProject, false);
                 }
                 return null;
