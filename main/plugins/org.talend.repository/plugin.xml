@@ -3786,6 +3786,15 @@
               name="RenameTimeoutParameterstRESTClient"
               version="8.0.1">
         </projecttask>
+        <projecttask
+              beforeLogon="false"
+              breaks="8.0.0"
+              class="org.talend.repository.model.migration.AddClientParamsToFTPTDI44761"
+              description="Add client configuration when using sftp"
+              id="org.talend.repository.model.migration.AddClientParamsToFTPTDI44761"
+              name="AddClientParamsToFTPTDI44761"
+              version="8.0.1">
+        </projecttask>
    </extension>
 
    <extension
