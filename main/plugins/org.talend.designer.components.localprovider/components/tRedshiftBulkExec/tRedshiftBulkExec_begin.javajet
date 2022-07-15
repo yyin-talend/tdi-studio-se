@@ -19,7 +19,8 @@ skeleton="../templates/db_output_bulk.skeleton"
 	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 	INode node = (INode)codeGenArgument.getArgument();
 	String cid = node.getUniqueName();
-	
+
+	boolean isLog4jEnabled = ("true").equals(ElementParameterParser.getValue(node.getProcess(), "__LOG4J_ACTIVATE__"));
 	String host = ElementParameterParser.getValue(node, "__HOST__");
 	String port = ElementParameterParser.getValue(node, "__PORT__");
 	String dbName = ElementParameterParser.getValue(node, "__DBNAME__");
@@ -548,6 +549,13 @@ skeleton="../templates/db_output_bulk.skeleton"
 	}//!parquetMode
 %>
 	java.sql.Statement stmt_<%=cid %>=conn_<%=cid %>.createStatement();
+<%
+	if (isLog4jEnabled) {
+%>
+		log.debug("Executing COPY command: " + command_<%=cid%>.toString().replace(decryptedPwd_<%=cid %>, "****"));
+<%
+	}
+%>
 	stmt_<%=cid %>.execute(command_<%=cid%>.toString());
 <%
 	if(isSetMaxError) {
