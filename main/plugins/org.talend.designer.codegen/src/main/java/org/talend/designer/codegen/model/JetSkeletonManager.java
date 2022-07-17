@@ -38,9 +38,7 @@ import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Path;
-import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
-import org.osgi.framework.Bundle;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.runtime.utils.io.IOUtils;
 import org.talend.core.model.components.ComponentCompilations;
@@ -174,10 +172,12 @@ public final class JetSkeletonManager {
         try {
             bufferedInputStream = new BufferedInputStream(new FileInputStream(file));
             ObjectInputStream objectIn = new ObjectInputStream(bufferedInputStream) {
+
                 @Override
                 protected Class<?> resolveClass(ObjectStreamClass desc) throws IOException, ClassNotFoundException {
                     // Enforce the types that we are about to deserialize
-                    if (!(desc.getName().startsWith("java.util") || Number.class.getName().equals(desc.getName()) || Long.class.getName().equals(desc.getName())
+                    if (!(desc.getName().startsWith("java.util") || Number.class.getName().equals(desc.getName())
+                            || Long.class.getName().equals(desc.getName())
                             || String.class.getName().equals(desc.getName()))) {
                         throw new InvalidClassException("Unauthorized deserialization attempt", desc.getName());
                     }
@@ -271,7 +271,8 @@ public final class JetSkeletonManager {
         for (TemplateUtil template : CodeGeneratorInternalTemplatesFactoryProvider.getInstance().getTemplates()) {
             URL resourcesUrl = null;
             try {
-                resourcesUrl = FileLocator.toFileURL(ComponentBundleToPath.findComponentsBundleURL(template.getJetPluginRepository(), new Path(template.getTemplateRelativeUri()), null));
+                resourcesUrl = FileLocator.toFileURL(ComponentBundleToPath.findComponentsBundleURL(
+                        template.getJetPluginRepository(), new Path(template.getTemplateRelativeUri()), null));
             } catch (IOException e) {
                 ExceptionHandler.process(e);
             }

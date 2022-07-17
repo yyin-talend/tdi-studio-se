@@ -129,7 +129,8 @@ public class TalendJetEmitter extends JETEmitter {
         this.templateLanguage = jetbean.getLanguage();
         this.codePart = jetbean.getCodePart();
         if (templateName.endsWith(codePart + "" + templateLanguage)) { //$NON-NLS-1$
-            this.templateName = templateName.substring(templateName.lastIndexOf(".") + 1, templateName.lastIndexOf(codePart)); //$NON-NLS-1$
+            this.templateName =
+                    templateName.substring(templateName.lastIndexOf(".") + 1, templateName.lastIndexOf(codePart)); //$NON-NLS-1$
         }
         this.talendEclipseHelper = teh;
     }
@@ -160,7 +161,8 @@ public class TalendJetEmitter extends JETEmitter {
     @Override
     public void initialize(Monitor progressMonitor) throws JETException {
         if (EMFPlugin.IS_ECLIPSE_RUNNING) {
-            talendEclipseHelper.initialize(progressMonitor, this, componentFamily, templateName, templateLanguage, codePart);
+            talendEclipseHelper.initialize(progressMonitor, this, componentFamily, templateName, templateLanguage,
+                    codePart);
         }
     }
 
@@ -198,14 +200,16 @@ public class TalendJetEmitter extends JETEmitter {
                 }
 
                 project = workspace.getRoot().getProject(projectName);
-                progressMonitor.subTask(CodeGenPlugin.getPlugin().getString("_UI_JETPreparingProject_message", //$NON-NLS-1$
-                        new Object[] { project.getName() }));
+                progressMonitor.subTask(CodeGenPlugin.getPlugin()
+                        .getString("_UI_JETPreparingProject_message", //$NON-NLS-1$
+                                new Object[] { project.getName() }));
 
                 if (!project.exists()) {
                     progressMonitor.subTask("JET creating project " + project.getName()); //$NON-NLS-1$
                     project.create(new SubProgressMonitor(progressMonitor, 1));
-                    progressMonitor.subTask(CodeGenPlugin.getPlugin().getString("_UI_JETCreatingProject_message", //$NON-NLS-1$
-                            new Object[] { project.getName() }));
+                    progressMonitor.subTask(CodeGenPlugin.getPlugin()
+                            .getString("_UI_JETCreatingProject_message", //$NON-NLS-1$
+                                    new Object[] { project.getName() }));
                 }
                 if (!project.isOpen()) {
                     project.open(new SubProgressMonitor(progressMonitor, 5));
@@ -260,12 +264,14 @@ public class TalendJetEmitter extends JETEmitter {
             return false;
         }
 
-        public void initialize(Monitor monitor, TalendJetEmitter jetEmitter, String componentFamily, String templateName,
+        public void initialize(Monitor monitor, TalendJetEmitter jetEmitter, String componentFamily,
+                String templateName,
                 String templateLanguage, String codePart) throws JETException {
             IProgressMonitor progressMonitor = BasicMonitor.toIProgressMonitor(monitor);
             progressMonitor.beginTask("", 10); //$NON-NLS-1$
-            progressMonitor.subTask(CodeGenPlugin.getPlugin().getString("_UI_GeneratingJETEmitterFor_message", //$NON-NLS-1$
-                    new Object[] { jetEmitter.templateURI }));
+            progressMonitor.subTask(CodeGenPlugin.getPlugin()
+                    .getString("_UI_GeneratingJETEmitterFor_message", //$NON-NLS-1$
+                            new Object[] { jetEmitter.templateURI }));
 
             ByteArrayOutputStream outputStream = null;
             InputStream contents = null;
@@ -273,13 +279,16 @@ public class TalendJetEmitter extends JETEmitter {
             try {
                 JETCompiler jetCompiler = null;
                 if (jetEmitter.templateURIPath == null) {
-                    jetCompiler = new TalendJETCompiler(jetEmitter.templateURI, jetEmitter.encoding, jetEmitter.classLoader);
+                    jetCompiler =
+                            new TalendJETCompiler(jetEmitter.templateURI, jetEmitter.encoding, jetEmitter.classLoader);
                 } else {
-                    jetCompiler = new TalendJETCompiler(jetEmitter.templateURIPath, jetEmitter.templateURI, jetEmitter.encoding,
+                    jetCompiler = new TalendJETCompiler(jetEmitter.templateURIPath, jetEmitter.templateURI,
+                            jetEmitter.encoding,
                             jetEmitter.classLoader);
                 }
-                progressMonitor.subTask(CodeGenPlugin.getPlugin().getString("_UI_JETParsing_message", //$NON-NLS-1$
-                        new Object[] { jetCompiler.getResolvedTemplateURI() }));
+                progressMonitor.subTask(CodeGenPlugin.getPlugin()
+                        .getString("_UI_JETParsing_message", //$NON-NLS-1$
+                                new Object[] { jetCompiler.getResolvedTemplateURI() }));
                 jetCompiler.parse();
                 jetCompiler.getSkeleton().setPackageName("org.talend.designer.codegen.translators." + componentFamily); //$NON-NLS-1$
                 jetCompiler.getSkeleton().setClassName(templateName + codePart + templateLanguage);
@@ -289,8 +298,9 @@ public class TalendJetEmitter extends JETEmitter {
                 jetCompiler.generate(outputStream);
                 contents = new ByteArrayInputStream(outputStream.toByteArray());
 
-                progressMonitor.subTask(CodeGenPlugin.getPlugin().getString("_UI_JETOpeningJavaProject_message", //$NON-NLS-1$
-                        new Object[] { project.getName() }));
+                progressMonitor.subTask(CodeGenPlugin.getPlugin()
+                        .getString("_UI_JETOpeningJavaProject_message", //$NON-NLS-1$
+                                new Object[] { project.getName() }));
 
                 String packageName = jetCompiler.getSkeleton().getPackageName();
                 StringTokenizer stringTokenizer = new StringTokenizer(packageName, "."); //$NON-NLS-1$
@@ -314,8 +324,9 @@ public class TalendJetEmitter extends JETEmitter {
                 String targetFileName = jetCompiler.getSkeleton().getClassName() + ".java"; //$NON-NLS-1$
                 IFile targetFile = sourceContainer.getFile(new Path(targetFileName));
                 if (!targetFile.exists()) {
-                    subProgressMonitor.subTask(CodeGenPlugin.getPlugin().getString("_UI_JETCreating_message", //$NON-NLS-1$
-                            new Object[] { targetFile.getFullPath() }));
+                    subProgressMonitor.subTask(CodeGenPlugin.getPlugin()
+                            .getString("_UI_JETCreating_message", //$NON-NLS-1$
+                                    new Object[] { targetFile.getFullPath() }));
                     targetFile.create(contents, true, new SubProgressMonitor(subProgressMonitor, 1));
                 } else {
                     ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -336,8 +347,9 @@ public class TalendJetEmitter extends JETEmitter {
                     currentContent = currentContent.replace("\r", ""); //$NON-NLS-1$//$NON-NLS-2$
                     newContent = newContent.replace("\r", ""); //$NON-NLS-1$//$NON-NLS-2$
                     if (!newContent.equals(currentContent)) {
-                        subProgressMonitor.subTask(CodeGenPlugin.getPlugin().getString("_UI_JETUpdating_message", //$NON-NLS-1$
-                                new Object[] { targetFile.getFullPath() }));
+                        subProgressMonitor.subTask(CodeGenPlugin.getPlugin()
+                                .getString("_UI_JETUpdating_message", //$NON-NLS-1$
+                                        new Object[] { targetFile.getFullPath() }));
                         targetFile.setContents(contents, true, true, new SubProgressMonitor(subProgressMonitor, 1));
                     } else {
                         needRebuild = false;
@@ -351,8 +363,9 @@ public class TalendJetEmitter extends JETEmitter {
                 // but since this part is only called when there is a change detected in the jet emitters, it should be
                 // ok.
                 if (needRebuild || jetEmitter.method == null) {
-                    subProgressMonitor.subTask(CodeGenPlugin.getPlugin().getString("_UI_JETBuilding_message", //$NON-NLS-1$
-                            new Object[] { project.getName() }));
+                    subProgressMonitor.subTask(CodeGenPlugin.getPlugin()
+                            .getString("_UI_JETBuilding_message", //$NON-NLS-1$
+                                    new Object[] { project.getName() }));
                     ByteArrayOutputStream baos = new ByteArrayOutputStream();
                     compileSingleClass(project, targetFile, baos);
                     String output = baos.toString();
@@ -372,8 +385,9 @@ public class TalendJetEmitter extends JETEmitter {
                     }
 
                     if (!errors) {
-                        subProgressMonitor.subTask(CodeGenPlugin.getPlugin().getString("_UI_JETLoadingClass_message", //$NON-NLS-1$
-                                new Object[] { jetCompiler.getSkeleton().getClassName() + ".class" })); //$NON-NLS-1$
+                        subProgressMonitor.subTask(CodeGenPlugin.getPlugin()
+                                .getString("_UI_JETLoadingClass_message", //$NON-NLS-1$
+                                        new Object[] { jetCompiler.getSkeleton().getClassName() + ".class" })); //$NON-NLS-1$
 
                         // Construct a proper URL for relative lookup.
                         //
@@ -396,11 +410,15 @@ public class TalendJetEmitter extends JETEmitter {
             } catch (CoreException exception) {
                 TalendDebugHandler.debug(exception);
                 throw new JETException(
-                        Messages.getString("TalendJetEmitter.exception") + " " + templateName + codePart + templateLanguage, exception); //$NON-NLS-1$
+                        Messages.getString("TalendJetEmitter.exception") + " " + templateName + codePart //$NON-NLS-1$
+                                + templateLanguage,
+                        exception);
             } catch (Exception exception) {
                 TalendDebugHandler.debug(exception);
                 throw new JETException(
-                        Messages.getString("TalendJetEmitter.exception") + " " + templateName + codePart + templateLanguage, exception); //$NON-NLS-1$
+                        Messages.getString("TalendJetEmitter.exception") + " " + templateName + codePart //$NON-NLS-1$
+                                + templateLanguage,
+                        exception);
             } finally {
                 try {
                     contents.close();
@@ -452,7 +470,8 @@ public class TalendJetEmitter extends JETEmitter {
         if (errorStream == null) {
             errorStream = System.err;
         }
-        BatchCompiler.compile(getBatchCompilerCmd(project, javaFile), new PrintWriter(msgStream), new PrintWriter(errorStream),
+        BatchCompiler.compile(getBatchCompilerCmd(project, javaFile), new PrintWriter(msgStream),
+                new PrintWriter(errorStream),
                 progress);
     }
 
@@ -471,7 +490,7 @@ public class TalendJetEmitter extends JETEmitter {
             cmdList.add("-classpath"); //$NON-NLS-1$
             cmdList.add(classpathStr);
         }
-        //cmdList.add("-time"); //$NON-NLS-1$
+        // cmdList.add("-time"); //$NON-NLS-1$
         cmdList.add("-g"); //$NON-NLS-1$
         cmdList.add("-warn:none"); //$NON-NLS-1$
         cmdList.add('-' + JavaCore.VERSION_1_6);
@@ -604,7 +623,8 @@ public class TalendJetEmitter extends JETEmitter {
             // This might be also called for custom components.
             if (localMethod == null) {
                 try {
-                    talendEclipseHelper.initialize(BasicMonitor.toMonitor(new NullProgressMonitor()), this, componentFamily,
+                    talendEclipseHelper.initialize(BasicMonitor.toMonitor(new NullProgressMonitor()), this,
+                            componentFamily,
                             templateName, templateLanguage, codePart);
                     localMethod = super.getMethod();
                 } catch (JETException e) {

@@ -61,18 +61,22 @@ public final class ComponentsProviderManager {
                     String id = configurationElement.getAttribute("id"); //$NON-NLS-1$
                     String folderName = configurationElement.getAttribute("folderName"); //$NON-NLS-1$
                     String contributerName = configurationElement.getContributor().getName();
-                    IBrandingService brandingService = (IBrandingService) GlobalServiceRegister.getDefault().getService(
-                            IBrandingService.class);
+                    IBrandingService brandingService = (IBrandingService) GlobalServiceRegister.getDefault()
+                            .getService(
+                                    IBrandingService.class);
                     if (!brandingService.isPoweredOnlyCamel()
-                            && id.equals("org.talend.designer.camel.components.localprovider.CamelLocalComponentsProvider")) {
+                            && id.equals(
+                                    "org.talend.designer.camel.components.localprovider.CamelLocalComponentsProvider")) {
                         folderName = "camel";
                     }
                     try {
-                        AbstractComponentsProvider componentsProvider = (AbstractComponentsProvider) configurationElement
-                                .createExecutableExtension("class"); //$NON-NLS-1$
-						if (componentsProvider instanceof SharedStudioInfoProvider && !((SharedStudioInfoProvider)componentsProvider).isSupportCurrentMode()) {
-							continue;
-						}		
+                        AbstractComponentsProvider componentsProvider =
+                                (AbstractComponentsProvider) configurationElement
+                                        .createExecutableExtension("class"); //$NON-NLS-1$
+                        if (componentsProvider instanceof SharedStudioInfoProvider
+                                && !((SharedStudioInfoProvider) componentsProvider).isSupportCurrentMode()) {
+                            continue;
+                        }
                         componentsProvider.setId(id);
                         componentsProvider.setFolderName(folderName);
                         componentsProvider.setContributer(contributerName);
@@ -85,15 +89,15 @@ public final class ComponentsProviderManager {
         }
     }
 
-	public AbstractComponentsProvider loadUserComponentsProvidersFromExtension() {
-		if (providers == null) {
-			loadComponentsProvidersFromExtension();
-		}
-		for (AbstractComponentsProvider provider : providers) {
-			if (provider instanceof UserComponentsProvider) {
-				return provider;
-			}
-		}
-		return null;
-	}
+    public AbstractComponentsProvider loadUserComponentsProvidersFromExtension() {
+        if (providers == null) {
+            loadComponentsProvidersFromExtension();
+        }
+        for (AbstractComponentsProvider provider : providers) {
+            if (provider instanceof UserComponentsProvider) {
+                return provider;
+            }
+        }
+        return null;
+    }
 }

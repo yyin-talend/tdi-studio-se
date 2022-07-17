@@ -170,7 +170,8 @@ public class ComponentsFactory implements IComponentsFactory {
 
             isInitializing.set(false);
             // TimeMeasure.step("initComponents", "createCache");
-            log.info(componentList.size() + " components loaded in " + (System.currentTimeMillis() - startTime) + " ms"); //$NON-NLS-1$ //$NON-NLS-2$
+            log.info(
+                    componentList.size() + " components loaded in " + (System.currentTimeMillis() - startTime) + " ms"); //$NON-NLS-1$ //$NON-NLS-2$
 
             // TimeMeasure.end("initComponents");
             // TimeMeasure.display = false;
@@ -290,14 +291,16 @@ public class ComponentsFactory implements IComponentsFactory {
     }
 
     private boolean isUserComponent(IComponent component) {
-        return component instanceof EmfComponent && ((EmfComponent) component).getProvider() instanceof UserComponentsProvider;
+        return component instanceof EmfComponent
+                && ((EmfComponent) component).getProvider() instanceof UserComponentsProvider;
     }
 
     private void removeOldComponentsUserFolder() throws IOException {
         String userPath = IComponentsFactory.COMPONENTS_INNER_FOLDER + File.separatorChar
                 + ComponentUtilities.getExtFolder(OLD_COMPONENTS_USER_INNER_FOLDER);
         ComponentsProviderManager componentsProviderManager = ComponentsProviderManager.getInstance();
-        AbstractComponentsProvider componentsProvider = componentsProviderManager.loadUserComponentsProvidersFromExtension();
+        AbstractComponentsProvider componentsProvider =
+                componentsProviderManager.loadUserComponentsProvidersFromExtension();
         File componentsLocation = getComponentsLocation(componentsProvider, userPath);
         if (componentsLocation != null && componentsLocation.exists()) {
             FilesUtils.removeFolder(componentsLocation, true);
@@ -313,7 +316,8 @@ public class ComponentsFactory implements IComponentsFactory {
     }
 
     private void loadCustomComponentsFromFolder(String pathSource, AbstractComponentsProvider provider) {
-        String bundleName = provider.getComponentsBundle() != null ? provider.getComponentsBundle() : COMPONENTS_LOCATION;
+        String bundleName =
+                provider.getComponentsBundle() != null ? provider.getComponentsBundle() : COMPONENTS_LOCATION;
         File source;
         try {
             source = provider.getInstallationFolder();
@@ -322,7 +326,8 @@ public class ComponentsFactory implements IComponentsFactory {
             return;
         }
         if (source == null) {
-            ExceptionHandler.process(new Exception(Messages.getString("ComponentsFactory.componentNotFound") + pathSource)); //$NON-NLS-1$
+            ExceptionHandler
+                    .process(new Exception(Messages.getString("ComponentsFactory.componentNotFound") + pathSource)); //$NON-NLS-1$
             return;
         }
 
@@ -354,8 +359,9 @@ public class ComponentsFactory implements IComponentsFactory {
                     pathName = pathName.replace(applicationPath, ""); //$NON-NLS-1$
                     // pathName = /components/mycomponent/mycomponent.xml
 
-                    EmfComponent currentComp = new EmfComponent(pathName, bundleName, xmlMainFile.getParentFile().getName(),
-                            pathSource, null, false, provider);
+                    EmfComponent currentComp =
+                            new EmfComponent(pathName, bundleName, xmlMainFile.getParentFile().getName(),
+                                    pathSource, null, false, provider);
 
                     if (ComponentsLoader.skipLoadComponent(currentComp)) {
                         continue;
@@ -372,8 +378,9 @@ public class ComponentsFactory implements IComponentsFactory {
                 } catch (MissingMainXMLComponentFileException e) {
                     log.trace(currentFolder.getName() + " is not a " + getCodeLanguageSuffix() + " component", e); //$NON-NLS-1$ //$NON-NLS-2$
                 } catch (BusinessException e) {
-                    BusinessException ex = new BusinessException("Cannot load component \"" + currentFolder.getName() + "\": " //$NON-NLS-1$ //$NON-NLS-2$
-                            + e.getMessage(), e);
+                    BusinessException ex =
+                            new BusinessException("Cannot load component \"" + currentFolder.getName() + "\": " //$NON-NLS-1$ //$NON-NLS-2$
+                                    + e.getMessage(), e);
                     ExceptionHandler.process(ex, Level.ERROR);
                 }
 
@@ -414,7 +421,8 @@ public class ComponentsFactory implements IComponentsFactory {
         }
 
         if (source == null) {
-            ExceptionHandler.process(new Exception(Messages.getString("ComponentsFactory.componentNotFound") + pathSource)); //$NON-NLS-1$
+            ExceptionHandler
+                    .process(new Exception(Messages.getString("ComponentsFactory.componentNotFound") + pathSource)); //$NON-NLS-1$
             return;
         }
 
@@ -449,8 +457,9 @@ public class ComponentsFactory implements IComponentsFactory {
                     // pathName = /components/mycomponent/mycomponent.xml
 
                     ComponentsCache cache = ComponentManager.getComponentCaches().get(source.getAbsolutePath());
-                    EmfComponent currentComp = new EmfComponent(pathName, bundleName, xmlMainFile.getParentFile().getName(),
-                            pathSource, cache, false, provider);
+                    EmfComponent currentComp =
+                            new EmfComponent(pathName, bundleName, xmlMainFile.getParentFile().getName(),
+                                    pathSource, cache, false, provider);
 
                     ComponentManager.setModified(source.getAbsolutePath());
 
@@ -468,8 +477,9 @@ public class ComponentsFactory implements IComponentsFactory {
                 } catch (MissingMainXMLComponentFileException e) {
                     log.trace(currentFolder.getName() + " is not a " + getCodeLanguageSuffix() + " component", e); //$NON-NLS-1$ //$NON-NLS-2$
                 } catch (BusinessException e) {
-                    BusinessException ex = new BusinessException("Cannot load component \"" + currentFolder.getName() + "\": " //$NON-NLS-1$ //$NON-NLS-2$
-                            + e.getMessage(), e);
+                    BusinessException ex =
+                            new BusinessException("Cannot load component \"" + currentFolder.getName() + "\": " //$NON-NLS-1$ //$NON-NLS-2$
+                                    + e.getMessage(), e);
                     ExceptionHandler.process(ex, Level.ERROR);
                 }
 
@@ -488,15 +498,16 @@ public class ComponentsFactory implements IComponentsFactory {
      *
      * @param currentFolder
      * @return
-     * @throws IOException 
+     * @throws IOException
      * @throws BusinessException
      */
 
-    private File getComponentsLocation(AbstractComponentsProvider componentsProvider, String folder) throws IOException {
-    	
-    	if (componentsProvider instanceof ComponentsLocationProvider) {
-    		return componentsProvider.getInstallationFolder();
-    	} else {
+    private File getComponentsLocation(AbstractComponentsProvider componentsProvider, String folder)
+            throws IOException {
+
+        if (componentsProvider instanceof ComponentsLocationProvider) {
+            return componentsProvider.getInstallationFolder();
+        } else {
             String componentsPath = IComponentsFactory.COMPONENTS_LOCATION;
             IBrandingService breaningService = (IBrandingService) GlobalServiceRegister.getDefault()
                     .getService(IBrandingService.class);
@@ -519,7 +530,7 @@ public class ComponentsFactory implements IComponentsFactory {
             }
 
             return file;
-    	}
+        }
     }
 
     private String getCodeLanguageSuffix() {
@@ -535,7 +546,7 @@ public class ComponentsFactory implements IComponentsFactory {
     @Override
     public IComponent get(String name) {
         waitForInit();
-        
+
         for (IComponent comp : componentList) {
             if (comp != null && comp.getName().equals(name)
                     && !ComponentCategory.CATEGORY_4_MAPREDUCE.getName().equals(comp.getPaletteType())) {
@@ -560,7 +571,8 @@ public class ComponentsFactory implements IComponentsFactory {
                 return comp;
             }
         }
-        log.debug("can not get componentList.size: " + componentList.size() + ",name: " + name + ",paletteType: " + paletteType);
+        log.debug("can not get componentList.size: " + componentList.size() + ",name: " + name + ",paletteType: "
+                + paletteType);
         return null;
     }
 
@@ -811,13 +823,14 @@ public class ComponentsFactory implements IComponentsFactory {
     public void setComponentsHandler(IComponentsHandler componentsHandler) {
         this.componentsHandler = componentsHandler;
     }
-    
+
     public String getCustomComponentBundlePath() {
-    	ComponentsProviderManager componentsProviderManager = ComponentsProviderManager.getInstance();
-    	AbstractComponentsProvider componentsProvider = componentsProviderManager.loadUserComponentsProvidersFromExtension();
-    	String bundle = componentsProvider.getComponentsBundle();
-    	return ComponentBundleToPath.getPathFromBundle(bundle);
-    	
+        ComponentsProviderManager componentsProviderManager = ComponentsProviderManager.getInstance();
+        AbstractComponentsProvider componentsProvider =
+                componentsProviderManager.loadUserComponentsProvidersFromExtension();
+        String bundle = componentsProvider.getComponentsBundle();
+        return ComponentBundleToPath.getPathFromBundle(bundle);
+
     }
 
     public Set<IComponent> getComponentsForInit() {

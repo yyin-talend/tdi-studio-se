@@ -90,7 +90,8 @@ public class JetBean {
      * @param classpathParameter
      * @param templateRelativeUri
      */
-    public JetBean(String jetPluginRepository, String templateRelativeUri, String className, String version, String language,
+    public JetBean(String jetPluginRepository, String templateRelativeUri, String className, String version,
+            String language,
             String codePart) {
         this.classPath = new HashMap<String, String>();
         this.jetPluginRepository = jetPluginRepository;
@@ -214,16 +215,16 @@ public class JetBean {
         if (pluginIdToBundle.containsKey(pluginId)) {
             base = pluginIdToBundle.get(pluginId);
         } else {
-        	if (ComponentBundleToPath.SHARED_STUDIO_CUSTOM_COMPONENT_BUNDLE.equals(pluginId)) {
-        		base = ComponentBundleToPath.getPathFromBundle(pluginId);
-        		if (!base.endsWith("/")) {
-        			base = base + "/";
-        		}
-        		pluginIdToBundle.put(pluginId, base);
-        	} else {
+            if (ComponentBundleToPath.SHARED_STUDIO_CUSTOM_COMPONENT_BUNDLE.equals(pluginId)) {
+                base = ComponentBundleToPath.getPathFromBundle(pluginId);
+                if (!base.endsWith("/")) {
+                    base = base + "/";
+                }
+                pluginIdToBundle.put(pluginId, base);
+            } else {
                 base = Platform.getBundle(pluginId).getEntry("/").toString(); //$NON-NLS-1$
                 pluginIdToBundle.put(pluginId, base);
-        	}
+            }
 
         }
         String result = base + relativeUri;

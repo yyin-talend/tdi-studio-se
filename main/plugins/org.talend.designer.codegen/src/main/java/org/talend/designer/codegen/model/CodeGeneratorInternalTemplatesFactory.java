@@ -68,12 +68,14 @@ public class CodeGeneratorInternalTemplatesFactory {
             for (File file : fileDirectory.listFiles()) {
                 EInternalTemplate curentTemplate = null;
                 if (file.getName().contains(EInternalTemplate.HEADER_ADDITIONAL.getTemplateName()) && file.getName()
-                        .endsWith(TemplateUtil.EXT_SEP + ECodeLanguage.JAVA.getExtension() + TemplateUtil.TEMPLATE_EXT)) {
+                        .endsWith(
+                                TemplateUtil.EXT_SEP + ECodeLanguage.JAVA.getExtension() + TemplateUtil.TEMPLATE_EXT)) {
                     curentTemplate = EInternalTemplate.HEADER_ADDITIONAL;
                 } else {
                     for (EInternalTemplate utilTemplate : EInternalTemplate.values()) {
-                        if (file.getName().equals(utilTemplate.getTemplateName() + TemplateUtil.EXT_SEP
-                                + ECodeLanguage.JAVA.getExtension() + TemplateUtil.TEMPLATE_EXT)) {
+                        if (file.getName()
+                                .equals(utilTemplate.getTemplateName() + TemplateUtil.EXT_SEP
+                                        + ECodeLanguage.JAVA.getExtension() + TemplateUtil.TEMPLATE_EXT)) {
                             curentTemplate = utilTemplate;
                             break;
                         }

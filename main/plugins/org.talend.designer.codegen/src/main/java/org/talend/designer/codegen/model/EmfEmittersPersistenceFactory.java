@@ -73,8 +73,9 @@ public final class EmfEmittersPersistenceFactory {
             project = workspace.getRoot().getProject(".JETEmitters"); //$NON-NLS-1$
             if (!project.exists()) {
                 project.create(new SubProgressMonitor(progressMonitor, 1));
-                progressMonitor.subTask(CodeGenPlugin.getPlugin().getString("_UI_JETCreatingProject_message", //$NON-NLS-1$
-                        new Object[] { project.getName() }));
+                progressMonitor.subTask(CodeGenPlugin.getPlugin()
+                        .getString("_UI_JETCreatingProject_message", //$NON-NLS-1$
+                                new Object[] { project.getName() }));
                 project.open(new SubProgressMonitor(progressMonitor, 1));
             }
         } catch (CoreException e) {
