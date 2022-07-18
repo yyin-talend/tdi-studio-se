@@ -94,7 +94,6 @@ import org.talend.core.model.process.EComponentCategory;
 import org.talend.core.model.process.EConnectionType;
 import org.talend.core.model.process.EParameterFieldType;
 import org.talend.core.model.process.Element;
-import org.talend.core.model.process.ElementParameterValueModel;
 import org.talend.core.model.process.IConnection;
 import org.talend.core.model.process.IConnectionCategory;
 import org.talend.core.model.process.IContext;
@@ -137,8 +136,8 @@ import org.talend.core.service.IScdComponentService;
 import org.talend.core.ui.IJobletProviderService;
 import org.talend.core.ui.ILastVersionChecker;
 import org.talend.core.ui.component.ComponentsFactoryProvider;
+// import org.talend.core.ui.component.ComponentsFactoryProvider;
 import org.talend.core.ui.process.IGEFProcess;
-import org.talend.core.utils.KeywordsValidator;
 import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.ITestContainerGEFService;
 import org.talend.designer.core.i18n.Messages;
@@ -153,7 +152,6 @@ import org.talend.designer.core.model.process.ConnectionManager;
 import org.talend.designer.core.model.process.DataProcess;
 import org.talend.designer.core.model.process.IGeneratingProcess;
 import org.talend.designer.core.model.process.jobsettings.JobSettingsConstants;
-import org.talend.designer.core.model.process.jobsettings.JobSettingsManager;
 import org.talend.designer.core.model.utils.emf.component.COMPONENTType;
 import org.talend.designer.core.model.utils.emf.component.ITEMType;
 import org.talend.designer.core.model.utils.emf.component.PARAMETERType;
@@ -194,7 +192,6 @@ import org.talend.designer.core.utils.JavaProcessUtil;
 import org.talend.designer.core.utils.JobSettingVersionUtil;
 import org.talend.designer.core.utils.UnifiedComponentUtil;
 import org.talend.designer.core.utils.ValidationRulesUtil;
-import org.talend.designer.runprocess.IRunProcessService;
 import org.talend.designer.runprocess.ItemCacheManager;
 import org.talend.model.bridge.ReponsitoryContextBridge;
 import org.talend.repository.ProjectManager;
@@ -303,10 +300,10 @@ public class Process extends Element implements IProcess2, IGEFProcess, ILastVer
         this.property = property;
         screenshots = new HashMap<String, byte[]>();
         contextManager = new JobContextManager();
-        updateManager = new ProcessUpdateManager(this);
+        // updateManager = new ProcessUpdateManager(this);
         createProcessParameters();
         init();
-        loadAdditionalProperties();
+        // loadAdditionalProperties();
         componentsType = ComponentCategory.CATEGORY_4_DI.getName();
     }
 
@@ -397,8 +394,8 @@ public class Process extends Element implements IProcess2, IGEFProcess, ILastVer
      * create parameters for tabbed page 'Job Settings'.
      */
     protected void createJobSettingsParameters() {
-        ((List<IElementParameter>) this.getElementParameters())
-                .addAll(JobSettingsManager.getJobSettingsParameters(this));
+        // ((List<IElementParameter>) this.getElementParameters())
+        // .addAll(JobSettingsManager.getJobSettingsParameters(this));
     }
 
     /**
@@ -414,9 +411,7 @@ public class Process extends Element implements IProcess2, IGEFProcess, ILastVer
         param.setDisplayName(EParameterName.COMP_DEFAULT_FILE_DIR.getDisplayName());
         param.setNumRow(99);
         param.setShow(false);
-        param.setValue(DesignerPlugin.getDefault()
-                .getPreferenceStore()
-                .getString(TalendDesignerPrefConstants.COMP_DEFAULT_FILE_DIR));
+        param.setValue(TalendDesignerPrefConstants.COMP_DEFAULT_FILE_DIR);
         param.setReadOnly(true);
         addElementParameter(param);
         // For TDQ-11338 Add this path for tDqReportRun component on git remote project
@@ -444,7 +439,7 @@ public class Process extends Element implements IProcess2, IGEFProcess, ILastVer
         param.setDisplayName(EParameterName.LOG4J_ACTIVATE.getDisplayName());
         param.setNumRow(99);
         param.setShow(false);
-        param.setValue(new Boolean(Log4jPrefsSettingManager.getInstance().isLog4jEnable()).toString());
+        param.setValue(false);
         param.setReadOnly(true);
         addElementParameter(param);
 
@@ -455,7 +450,7 @@ public class Process extends Element implements IProcess2, IGEFProcess, ILastVer
         param.setDisplayName(EParameterName.LOG4J2_ACTIVATE.getDisplayName());
         param.setNumRow(99);
         param.setShow(false);
-        param.setValue(new Boolean(Log4jPrefsSettingManager.getInstance().isSelectLog4j2()).toString());
+        param.setValue(false);
         param.setReadOnly(true);
         addElementParameter(param);
 
@@ -467,9 +462,7 @@ public class Process extends Element implements IProcess2, IGEFProcess, ILastVer
         param.setDisplayName(EParameterName.PRODUCT_ROOT_DIR.getDisplayName());
         param.setNumRow(99);
         param.setShow(false);
-        param.setValue(DesignerPlugin.getDefault()
-                .getPreferenceStore()
-                .getString(TalendDesignerPrefConstants.PRODUCT_ROOT_DIR));
+        param.setValue("/tmp/lol");
         param.setReadOnly(true);
         addElementParameter(param);
 
@@ -492,9 +485,7 @@ public class Process extends Element implements IProcess2, IGEFProcess, ILastVer
         param.setDisplayName(EParameterName.DQ_REPORTING_BUNDLE_DIR.getDisplayName());
         param.setNumRow(99);
         param.setShow(false);
-        param.setValue(DesignerPlugin.getDefault()
-                .getPreferenceStore()
-                .getString(TalendDesignerPrefConstants.DQ_REPORTING_BUNDLE_DIR));
+        param.setValue("/tmp/lol");
         param.setReadOnly(true);
         addElementParameter(param);
 
@@ -526,11 +517,9 @@ public class Process extends Element implements IProcess2, IGEFProcess, ILastVer
         param.setDisplayName(EParameterName.JOB_RUN_VM_ARGUMENTS.getDisplayName());
         param.setNumRow(99);
         param.setShow(false);
-        IRunProcessService service = DesignerPlugin.getDefault().getRunProcessService();
-        if (service != null) {
-            param.setValue(service.getPreferenceStore().getString("vmarguments")); //$NON-NLS-1$
-            param.setDefaultValue(param.getValue());
-        }
+
+        param.setValue(""); //$NON-NLS-1$
+        param.setDefaultValue("");
         addElementParameter(param);
 
         param = new ElementParameter(this);
@@ -620,9 +609,7 @@ public class Process extends Element implements IProcess2, IGEFProcess, ILastVer
         param.setFieldType(EParameterFieldType.TEXT);
         param.setDisplayName(EParameterName.SCHEMA_OPTIONS.getDisplayName());
         param.setShow(false);
-        param.setValue(DesignerPlugin.getDefault()
-                .getPluginPreferences()
-                .getString(TalendDesignerPrefConstants.SCHEMA_OPTIONS));
+        param.setValue("");
         param.setDefaultValue(param.getValue());
         param.setReadOnly(true);
         addElementParameter(param);
@@ -691,7 +678,7 @@ public class Process extends Element implements IProcess2, IGEFProcess, ILastVer
         param.setCategory(EComponentCategory.TECHNICAL);
         param.setFieldType(EParameterFieldType.TEXT);
         param.setDisplayName(EParameterName.PROJECT_TECHNICAL_NAME.getDisplayName());
-        param.setValue(getProject().getTechnicalLabel());
+        param.setValue("LOL");
         param.setShow(false);
         param.setReadOnly(true);
         addElementParameter(param);
@@ -870,7 +857,7 @@ public class Process extends Element implements IProcess2, IGEFProcess, ILastVer
         List<? extends INode> generatedNodeList = getGeneratingProcess().getNodeList();
         if (!isBuilding()) {
             if (isProcessModified() || routinesDependencies == null || routinesDependencies.isEmpty()) {
-                checkRoutineDependencies();
+                // checkRoutineDependencies();
             }
             if (isProcessModified()) {
                 if (isBuilding()) {
@@ -1253,12 +1240,10 @@ public class Process extends Element implements IProcess2, IGEFProcess, ILastVer
                                     ExceptionHandler.process(e);
                                 }
                             }
-                        } else if (o instanceof Boolean) {
-                            strValue = ((Boolean) o).toString();
-                        } else if (o instanceof ElementParameterValueModel) {
-                            ElementParameterValueModel model = (ElementParameterValueModel) o;
-                            elementValue.setLabel(model.getLabel());
-                            strValue = model.getValue();
+                        } else {
+                            if (o instanceof Boolean) {
+                                strValue = ((Boolean) o).toString();
+                            }
                         }
                     }
                     if (tmpParam != null && EParameterFieldType.isPassword(tmpParam.getFieldType())) {
@@ -1532,7 +1517,6 @@ public class Process extends Element implements IProcess2, IGEFProcess, ILastVer
                 }
             } else if (isTable(param)) {
                 List<Map<String, Object>> tableValues = new ArrayList<Map<String, Object>>();
-                Map<String, EParameterFieldType> paramFieldTypes = getTableListEleParamFieldTypes(param);
                 String[] codeList = param.getListItemsDisplayCodeName();
                 Map<String, Object> lineValues = null;
                 for (ElementValueType elementValue : (List<ElementValueType>) pType.getElementValue()) {
@@ -1577,15 +1561,7 @@ public class Process extends Element implements IProcess2, IGEFProcess, ILastVer
                         if (needRemoveQuotes) {
                             elemValue = TalendTextUtils.removeQuotes(elemValue);
                         }
-
-                        ElementParameterValueModel model = null;
-                        EParameterFieldType elementValueFieldType = paramFieldTypes.get(elementValue.getElementRef());
-                        if (EParameterFieldType.TACOKIT_VALUE_SELECTION.equals(elementValueFieldType)) {
-                            model = new ElementParameterValueModel();
-                            model.setLabel(elementValue.getLabel());
-                            model.setValue(elemValue);
-                        }
-                        lineValues.put(elementValue.getElementRef(), model != null ? model : elemValue);
+                        lineValues.put(elementValue.getElementRef(), elemValue);
                         if (elementValue.getType() != null) {
                             lineValues.put(elementValue.getElementRef() + IEbcdicConstant.REF_TYPE,
                                     elementValue.getType());
@@ -1675,18 +1651,6 @@ public class Process extends Element implements IProcess2, IGEFProcess, ILastVer
             elemParam.setPropertyValue(Process.TABLE_ACTION, "CLEAR"); //$NON-NLS-1$
             UpdateTheJobsActionsOnTable.isClear = false;
         }
-    }
-
-    private Map<String, EParameterFieldType> getTableListEleParamFieldTypes(IElementParameter param) {
-        Map<String, EParameterFieldType> paramTypeMap = new HashMap<String, EParameterFieldType>();
-        Object[] listItemsValue = param.getListItemsValue();
-        for (Object listItem : listItemsValue) {
-            if (listItem instanceof IElementParameter) {
-                IElementParameter listItemParam = (IElementParameter) listItem;
-                paramTypeMap.put(listItemParam.getName(), listItemParam.getFieldType());
-            }
-        }
-        return paramTypeMap;
     }
 
     protected ProcessType createProcessType(TalendFileFactory fileFact) {
@@ -2236,10 +2200,10 @@ public class Process extends Element implements IProcess2, IGEFProcess, ILastVer
                     new ArrayList<RoutinesParameterType>(processType.getParameters().getRoutinesParameter());
         }
 
-        loadProjectParameters(processType);
-        loadAdditionalProperties();
+        // loadProjectParameters(processType);
+        // loadAdditionalProperties();
 
-        loadContexts(processType);
+        // loadContexts(processType);
 
         try {
             loadNodes(processType, nodesHashtable);
@@ -2280,10 +2244,10 @@ public class Process extends Element implements IProcess2, IGEFProcess, ILastVer
 
         // loadNodeContainer(processType);
         // bug 6158
-        this.updateManager.retrieveRefInformation();
+        // this.updateManager.retrieveRefInformation();
 
         // force a routine dependencies check, in case some dependencies are lost before.
-        checkRoutineDependencies();
+        // checkRoutineDependencies();
     }
 
     private void loadRejectConnector(Hashtable<String, Node> nodesHashtable) {
@@ -2494,8 +2458,10 @@ public class Process extends Element implements IProcess2, IGEFProcess, ILastVer
                 listParamType = unNode.getElementParameter();
                 String componentName = unNode.getComponentName();
                 if (!isCurrentProject && !componentName.contains(":")) {
-                    componentName = ProjectManager.getInstance().getProject(this.getProperty()).getLabel() + ":" //$NON-NLS-1$
-                            + componentName;
+                    // componentName = ProjectManager.getInstance().getProject(this.getProperty()).getLabel() + ":"
+                    // //$NON-NLS-1$
+                    // + componentName;
+                    componentName = componentName;
                 } else if (jobletUtil.matchExpression(componentName) && !jobletUtil.isStrictJoblet()) {
                     String[] names = componentName.split(":"); //$NON-NLS-1$
                     componentName = names[1];
@@ -2607,7 +2573,7 @@ public class Process extends Element implements IProcess2, IGEFProcess, ILastVer
         nc = new Node(component, this);
         nc.setLocation(new Point(nType.getPosX(), nType.getPosY()));
         Point offset = new Point(nType.getOffsetLabelX(), nType.getOffsetLabelY());
-        nc.getNodeLabel().setOffset(offset);
+        // nc.getNodeLabel().setOffset(offset);
         if (nType.isSetSizeX()) {
             nc.setSize(new Dimension(nType.getSizeX(), nType.getSizeY()));
         }
@@ -3015,14 +2981,14 @@ public class Process extends Element implements IProcess2, IGEFProcess, ILastVer
                             cType.getLabel(), source.getLabel(), target.getLabel())));
                 }
             } else {
-                if (PluginChecker.isJobLetPluginLoaded()) { // bug 12764
-                    IJobletProviderService service = GlobalServiceRegister.getDefault()
-                            .getService(
-                                    IJobletProviderService.class);
-                    if (service != null && service.isJobletComponent(source)) {
-                        continue;
-                    }
-                }
+                // if (PluginChecker.isJobLetPluginLoaded()) { // bug 12764
+                // IJobletProviderService service = GlobalServiceRegister.getDefault()
+                // .getService(
+                // IJobletProviderService.class);
+                // if (service != null && service.isJobletComponent(source)) {
+                // continue;
+                // }
+                // }
                 if (!ConnectionManager.checkCircle(source, target)) {
                     EConnectionType type = EConnectionType.getTypeFromId(lineStyleId);
                     connec = new Connection(source, target, type, source.getConnectorFromType(type).getName(), metaname,
@@ -3445,7 +3411,8 @@ public class Process extends Element implements IProcess2, IGEFProcess, ILastVer
             return false;
         }
 
-        return !KeywordsValidator.isKeyword(connectionName);
+        // return !KeywordsValidator.isKeyword(connectionName);
+        return true;
     }
 
     // hshen
@@ -4918,39 +4885,39 @@ public class Process extends Element implements IProcess2, IGEFProcess, ILastVer
         }
 
         // verify to remove non-existing routines from the list, just in case some have been deleted.
-        List<IRepositoryViewObject> routines;
-        try {
-            routines = ProxyRepositoryFactory.getInstance()
-                    .getAll(ProjectManager.getInstance().getCurrentProject(), itemType);
-            for (Project project : ProjectManager.getInstance().getAllReferencedProjects(true)) {
-                List<IRepositoryViewObject> routinesFromRef =
-                        ProxyRepositoryFactory.getInstance().getAll(project, itemType);
-                for (IRepositoryViewObject routine : routinesFromRef) {
-                    if (!((RoutineItem) routine.getProperty().getItem()).isBuiltIn()) {
-                        routines.add(routine);
-                    }
-                }
-            }
-
-            // always add the system, others must be checked
-            Set<String> nonExistingRoutines = new HashSet<String>();
-
-            for (String routine : listRoutines) {
-                boolean found = false;
-                for (IRepositoryViewObject object : routines) {
-                    if (routine.equals(object.getLabel())) {
-                        found = true;
-                        break;
-                    }
-                }
-                if (!found) {
-                    nonExistingRoutines.add(routine);
-                }
-            }
-            listRoutines.removeAll(nonExistingRoutines);
-        } catch (PersistenceException e) {
-            ExceptionHandler.process(e);
-        }
+        // List<IRepositoryViewObject> routines;
+        // try {
+        // routines = ProxyRepositoryFactory.getInstance()
+        // .getAll(ProjectManager.getInstance().getCurrentProject(), itemType);
+        // for (Project project : ProjectManager.getInstance().getAllReferencedProjects(true)) {
+        // List<IRepositoryViewObject> routinesFromRef =
+        // ProxyRepositoryFactory.getInstance().getAll(project, itemType);
+        // for (IRepositoryViewObject routine : routinesFromRef) {
+        // if (!((RoutineItem) routine.getProperty().getItem()).isBuiltIn()) {
+        // routines.add(routine);
+        // }
+        // }
+        // }
+        //
+        // // always add the system, others must be checked
+        // Set<String> nonExistingRoutines = new HashSet<String>();
+        //
+        // for (String routine : listRoutines) {
+        // boolean found = false;
+        // for (IRepositoryViewObject object : routines) {
+        // if (routine.equals(object.getLabel())) {
+        // found = true;
+        // break;
+        // }
+        // }
+        // if (!found) {
+        // nonExistingRoutines.add(routine);
+        // }
+        // }
+        // listRoutines.removeAll(nonExistingRoutines);
+        // } catch (PersistenceException e) {
+        // ExceptionHandler.process(e);
+        // }
         return listRoutines;
 
     }

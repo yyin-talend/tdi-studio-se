@@ -49,7 +49,6 @@ import org.talend.designer.core.ui.editor.jobletcontainer.JobletUtil;
 import org.talend.designer.core.ui.editor.nodecontainer.NodeContainer;
 import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.preferences.TalendDesignerPrefConstants;
-import org.talend.designer.core.utils.DesignerColorUtils;
 
 /**
  * DOC nrousseau class global comment. Detailled comment
@@ -529,10 +528,12 @@ public class SubjobContainer extends Element implements ISubjobContainer {
         } else {
             getElementParameter(EParameterName.SHOW_SUBJOB_TITLE.getName()).setShow(true);
         }
-        setSubjobPropertyColor(EParameterName.SUBJOB_COLOR.getName(), node,
-                DesignerColorUtils.getPreferenceSubjobRGB(DesignerColorUtils.SUBJOB_COLOR_NAME, DesignerColorUtils.SUBJOB_COLOR));
-        setSubjobPropertyColor(EParameterName.SUBJOB_TITLE_COLOR.getName(), node, DesignerColorUtils.getPreferenceSubjobRGB(
-                DesignerColorUtils.SUBJOB_TITLE_COLOR_NAME, DesignerColorUtils.SUBJOB_TITLE_COLOR));
+        // setSubjobPropertyColor(EParameterName.SUBJOB_COLOR.getName(), node,
+        // DesignerColorUtils.getPreferenceSubjobRGB(DesignerColorUtils.SUBJOB_COLOR_NAME,
+        // DesignerColorUtils.SUBJOB_COLOR));
+        // setSubjobPropertyColor(EParameterName.SUBJOB_TITLE_COLOR.getName(), node,
+        // DesignerColorUtils.getPreferenceSubjobRGB(
+        // DesignerColorUtils.SUBJOB_TITLE_COLOR_NAME, DesignerColorUtils.SUBJOB_TITLE_COLOR));
 
     }
 

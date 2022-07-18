@@ -20,10 +20,6 @@ import java.util.Set;
 import org.eclipse.draw2d.geometry.Dimension;
 import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.draw2d.geometry.Rectangle;
-import org.eclipse.swt.graphics.Image;
-import org.talend.commons.CommonsPlugin;
-import org.talend.commons.ui.runtime.image.EImage;
-import org.talend.commons.ui.runtime.image.ImageProvider;
 import org.talend.core.model.process.EComponentCategory;
 import org.talend.core.model.process.EParameterFieldType;
 import org.talend.core.model.process.Element;
@@ -31,7 +27,6 @@ import org.talend.core.model.process.IConnection;
 import org.talend.core.model.process.IElement;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.INode;
-import org.talend.core.ui.CoreUIPlugin;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.model.components.ElementParameter;
 import org.talend.designer.core.ui.editor.jobletcontainer.AbstractJobletContainer;
@@ -119,24 +114,24 @@ public class NodeContainer extends Element {
             elements.add(nodeProgressBar);
         }
 
-        if (!CommonsPlugin.isHeadless()) {
-            Image image = ImageProvider.getImage(CoreUIPlugin.getImageDescriptor(NodeContainerFigure.BREAKPOINT_IMAGE));
-            breakpointSize = new Dimension(image.getImageData().width, image.getImageData().height);
-            image = ImageProvider.getImage(EImage.ERROR_SMALL);
-            errorSize = new Dimension(image.getImageData().width, image.getImageData().height);
-            image = ImageProvider.getImage(EImage.WARNING_SMALL);
-            warningSize = new Dimension(image.getImageData().width, image.getImageData().height);
-            image = ImageProvider.getImage(EImage.INFORMATION_SMALL);
-            infoSize = new Dimension(image.getImageData().width, image.getImageData().height);
-            image = ImageProvider.getImage(EImage.PARALLEL_EXECUTION);
-            parallelSize = new Dimension(image.getImageData().width, image.getImageData().height);
-            image = ImageProvider.getImage(EImage.WINDOW);
-            windowSize = new Dimension(image.getImageData().width, image.getImageData().height);
-            image = ImageProvider.getImage(EImage.Error_Mark);
-            errorMarkSize = new Dimension(image.getImageData().width, image.getImageData().height);
-            image = ImageProvider.getImage(EImage.LOCK_ICON);
-            validationRuleSize = new Dimension(image.getImageData().width, image.getImageData().height);
-        }
+        // if (!CommonsPlugin.isHeadless()) {
+        // Image image = ImageProvider.getImage(CoreUIPlugin.getImageDescriptor(NodeContainerFigure.BREAKPOINT_IMAGE));
+        // breakpointSize = new Dimension(image.getImageData().width, image.getImageData().height);
+        // image = ImageProvider.getImage(EImage.ERROR_SMALL);
+        // errorSize = new Dimension(image.getImageData().width, image.getImageData().height);
+        // image = ImageProvider.getImage(EImage.WARNING_SMALL);
+        // warningSize = new Dimension(image.getImageData().width, image.getImageData().height);
+        // image = ImageProvider.getImage(EImage.INFORMATION_SMALL);
+        // infoSize = new Dimension(image.getImageData().width, image.getImageData().height);
+        // image = ImageProvider.getImage(EImage.PARALLEL_EXECUTION);
+        // parallelSize = new Dimension(image.getImageData().width, image.getImageData().height);
+        // image = ImageProvider.getImage(EImage.WINDOW);
+        // windowSize = new Dimension(image.getImageData().width, image.getImageData().height);
+        // image = ImageProvider.getImage(EImage.Error_Mark);
+        // errorMarkSize = new Dimension(image.getImageData().width, image.getImageData().height);
+        // image = ImageProvider.getImage(EImage.LOCK_ICON);
+        // validationRuleSize = new Dimension(image.getImageData().width, image.getImageData().height);
+        // }
 
         ElementParameter param = new ElementParameter(this);
         param.setName(EParameterName.COLLAPSED.getName());

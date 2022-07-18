@@ -34,7 +34,6 @@ import org.eclipse.emf.common.util.EList;
 import org.eclipse.gef.commands.Command;
 import org.eclipse.gef.commands.CommandStack;
 import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.graphics.ImageData;
 import org.eclipse.swt.widgets.Display;
@@ -141,7 +140,6 @@ import org.talend.designer.core.ui.editor.properties.NodeQueryCheckUtil;
 import org.talend.designer.core.ui.editor.properties.controllers.ColumnListController;
 import org.talend.designer.core.ui.editor.properties.controllers.SynchronizeSchemaHelper;
 import org.talend.designer.core.ui.editor.subjobcontainer.SubjobContainer;
-import org.talend.designer.core.ui.preferences.TalendDesignerPrefConstants;
 import org.talend.designer.core.ui.projectsetting.ElementParameter2ParameterType;
 import org.talend.designer.core.ui.views.problems.Problems;
 import org.talend.designer.core.utils.TRunjobUtil;
@@ -532,12 +530,12 @@ public class Node extends Element implements IGraphicalNode {
     private void init() {
         this.label = component.getDisplayName();
         updateComponentStatusIfNeeded(true);
-        IPreferenceStore store = DesignerPlugin.getDefault().getPreferenceStore();
-
-        labelToParse = store.getString(TalendDesignerPrefConstants.DEFAULT_LABEL);
-        hintToParse = store.getString(TalendDesignerPrefConstants.DEFAULT_HINT);
-        connectionToParse = store.getString(TalendDesignerPrefConstants.DEFAULT_CONNECTION_FORMAT);
-        showHint = store.getBoolean(TalendDesignerPrefConstants.DEFAULT_HINT_USED);
+        // IPreferenceStore store = DesignerPlugin.getDefault().getPreferenceStore();
+        //
+        // labelToParse = store.getString(TalendDesignerPrefConstants.DEFAULT_LABEL);
+        // hintToParse = store.getString(TalendDesignerPrefConstants.DEFAULT_HINT);
+        // connectionToParse = store.getString(TalendDesignerPrefConstants.DEFAULT_CONNECTION_FORMAT);
+        // showHint = store.getBoolean(TalendDesignerPrefConstants.DEFAULT_HINT_USED);
         if (nodeLabel == null) {
             nodeLabel = new NodeLabel(label, this);
         }
@@ -5446,13 +5444,13 @@ public class Node extends Element implements IGraphicalNode {
 
     public boolean isJoblet() {
         boolean isJoblet = false;
-        if (PluginChecker.isJobLetPluginLoaded()) {
-            IJobletProviderService service = GlobalServiceRegister.getDefault()
-                    .getService(IJobletProviderService.class);
-            if (service != null && service.isJobletComponent(this)) {
-                isJoblet = true;
-            }
-        }
+        // if (PluginChecker.isJobLetPluginLoaded()) {
+        // IJobletProviderService service = GlobalServiceRegister.getDefault()
+        // .getService(IJobletProviderService.class);
+        // if (service != null && service.isJobletComponent(this)) {
+        // isJoblet = true;
+        // }
+        // }
         return isJoblet;
     }
 

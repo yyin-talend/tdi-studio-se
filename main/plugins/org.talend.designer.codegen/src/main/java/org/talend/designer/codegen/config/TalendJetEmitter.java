@@ -41,7 +41,6 @@ import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.SubProgressMonitor;
@@ -103,22 +102,22 @@ public class TalendJetEmitter extends JETEmitter {
             HashMap<String, String> globalClasspath, boolean rebuild) throws JETException {
         super(arg0, arg1);
 
-        for (String classKey : globalClasspath.keySet()) {
-            if (classKey != null && globalClasspath.get(classKey) != null) {
-                try {
-                    String bundleId = globalClasspath.get(classKey);
-                    Bundle bundle = Platform.getBundle(bundleId);
-                    if (bundle == null) {
-                        throw new Exception("Plugin [" + bundleId + "] is not loaded.");
-                    }
-                    this.addVariable(classKey, bundleId);
-                } catch (Exception e) {
-                    ExceptionHandler.process(e);
-                }
-            }
-        }
+        // for (String classKey : globalClasspath.keySet()) {
+        // if (classKey != null && globalClasspath.get(classKey) != null) {
+        // try {
+        // String bundleId = globalClasspath.get(classKey);
+        // Bundle bundle = Platform.getBundle(bundleId);
+        // if (bundle == null) {
+        // throw new Exception("Plugin [" + bundleId + "] is not loaded.");
+        // }
+        // this.addVariable(classKey, bundleId);
+        // } catch (Exception e) {
+        // ExceptionHandler.process(e);
+        // }
+        // }
+        // }
 
-        this.talendEclipseHelper = new TalendEclipseHelper(progressMonitor, this, rebuild);
+        // this.talendEclipseHelper = new TalendEclipseHelper(progressMonitor, this, rebuild);
     }
 
     public TalendJetEmitter(JetBean jetbean, TalendEclipseHelper teh) {
@@ -161,8 +160,8 @@ public class TalendJetEmitter extends JETEmitter {
     @Override
     public void initialize(Monitor progressMonitor) throws JETException {
         if (EMFPlugin.IS_ECLIPSE_RUNNING) {
-            talendEclipseHelper.initialize(progressMonitor, this, componentFamily, templateName, templateLanguage,
-                    codePart);
+            // talendEclipseHelper.initialize(progressMonitor, this, componentFamily, templateName, templateLanguage,
+            // codePart);
         }
     }
 
@@ -617,19 +616,22 @@ public class TalendJetEmitter extends JETEmitter {
             } catch (Exception e) {
                 // nothing since if got exception here, the method will be reloaded bellow. (normal case)
                 // real error should be logged if the initialize fail.
+                System.out.println(">>> exception here but the method will be reloaded bellow. " + e.getClass() + ": "
+                        + e.getMessage());
             }
             // add this part in case there is any problem in the project (should never be called in normal use)
             // but if there is any problem, it will force to regenerate again this component.
             // This might be also called for custom components.
             if (localMethod == null) {
-                try {
-                    talendEclipseHelper.initialize(BasicMonitor.toMonitor(new NullProgressMonitor()), this,
-                            componentFamily,
-                            templateName, templateLanguage, codePart);
-                    localMethod = super.getMethod();
-                } catch (JETException e) {
-                    ExceptionHandler.process(e);
-                }
+                // try {
+                // talendEclipseHelper.initialize(BasicMonitor.toMonitor(new NullProgressMonitor()), this,
+                // componentFamily,
+                // templateName, templateLanguage, codePart);
+                // localMethod = super.getMethod();
+                // } catch (JETException e) {
+                // ExceptionHandler.process(e);
+                // }
+                localMethod = super.getMethod();
             } else {
                 setMethod(localMethod);
             }
@@ -659,7 +661,9 @@ public class TalendJetEmitter extends JETEmitter {
         }
         Class theClass;
         try {
-            theClass = theClassLoader.loadClass(jetbean.getClassName());
+            theClass = theClassLoader
+                    .loadClass(jetbean.getClassName());
+            System.out.println("translator class loaded: " + jetbean.getClassName());
         } catch (Error e) {
             throw new ClassNotFoundException(e.getMessage(), e);
         }
@@ -667,7 +671,7 @@ public class TalendJetEmitter extends JETEmitter {
         try {
             Method[] methods = theClass.getDeclaredMethods();
             for (Method method2 : methods) {
-                if (method2.getName().equals(jetbean.getMethodName())) {
+                if (method2.getName().equals("generate" /* jetbean.getMethodName() */)) {
                     return method2;
                 }
             }
@@ -706,7 +710,7 @@ public class TalendJetEmitter extends JETEmitter {
         for (Object o : arguments) {
             if (o instanceof JetBean) {
                 list.add(((JetBean) o).getArgument());
-                talendEclipseHelper.setHelperJetBean((JetBean) o);
+                // talendEclipseHelper.setHelperJetBean((JetBean) o);
             } else {
                 list.add(o);
             }

@@ -66,6 +66,8 @@ import org.talend.core.ui.branding.IBrandingService;
 import org.talend.core.ui.images.CoreImageProvider;
 import org.talend.designer.codegen.CodeGeneratorActivator;
 import org.talend.designer.codegen.i18n.Messages;
+import org.talend.designer.codegen.stigma.StigmaComponentManager;
+import org.talend.designer.codegen.stigma.StigmaComponentsLoader;
 import org.talend.designer.core.model.components.ComponentBundleToPath;
 import org.talend.designer.core.model.components.ComponentFilesNaming;
 import org.talend.designer.core.model.components.EmfComponent;
@@ -79,6 +81,9 @@ import org.talend.designer.core.ui.editor.jobletcontainer.JobletUtil;
  * $Id: ComponentsFactory.java 52892 2010-12-20 05:52:17Z nrousseau $
  */
 public class ComponentsFactory implements IComponentsFactory {
+
+    public static final String APPLICATION_PATH =
+            "/Users/sizhaoliu/misc/repo-stigma/emf-stigma/poc/stigma-server/src/main/resources";
 
     public static final String OLD_COMPONENTS_USER_INNER_FOLDER = "user"; //$NON-NLS-1$
 
@@ -117,11 +122,11 @@ public class ComponentsFactory implements IComponentsFactory {
     private void init(boolean duringLogon) {
         if (isInitialized.compareAndSet(false, true)) {
             log.debug("init " + this.hashCode());
-            try {
-                removeOldComponentsUserFolder();
-            } catch (IOException ex) {
-                ExceptionHandler.process(ex);
-            } // not used anymore
+            // try {
+            // removeOldComponentsUserFolder();
+            // } catch (IOException ex) {
+            // ExceptionHandler.process(ex);
+            // } // not used anymore
 
             long startTime = System.currentTimeMillis();
 
@@ -133,20 +138,23 @@ public class ComponentsFactory implements IComponentsFactory {
             skeletonList.clear();
             customComponentList.clear();
 
-            boolean needRegenerate = false;
-            if (CodeGeneratorActivator.getDefault().getBundle().getBundleContext().getProperty("osgi.dev") != null) {
-                needRegenerate = providers.stream().filter(p -> ComponentsLoader.isCachedProvider(p)).anyMatch(p -> {
-                    try {
-                        return !ComponentManager.hasComponentFile(p.getInstallationFolder().getAbsolutePath());
-                    } catch (IOException e) {
-                        return false;
-                    }
-                });
-            }
+            // boolean needRegenerate = false;
+            boolean needRegenerate = true;
+            // if (CodeGeneratorActivator.getDefault().getBundle().getBundleContext().getProperty("osgi.dev") != null) {
+            // needRegenerate = providers.stream().filter(p -> ComponentsLoader.isCachedProvider(p)).anyMatch(p -> {
+            // try {
+            // return !ComponentManager.hasComponentFile(p.getInstallationFolder().getAbsolutePath());
+            // } catch (IOException e) {
+            // return false;
+            // }
+            // });
+            // }
             if (Boolean.getBoolean("generate.component.cache") || needRegenerate) {
-                ComponentManager.clearAllCaches();
-                providers.stream().filter(p -> ComponentsLoader.isCachedProvider(p)).forEach(p -> loadComponents(p));
-                ComponentManager.saveResource();
+                StigmaComponentManager.clearAllCaches();
+                providers.stream()
+                        .filter(p -> StigmaComponentsLoader.isCachedProvider(p))
+                        .forEach(p -> loadComponents(p));
+                StigmaComponentManager.saveResource();
             }
 
             try {
@@ -351,7 +359,9 @@ public class ComponentsFactory implements IComponentsFactory {
 
                     String pathName = xmlMainFile.getAbsolutePath();
 
-                    String applicationPath = ComponentBundleToPath.getPathFromBundle(bundleName);
+                    // String applicationPath = ComponentBundleToPath.getPathFromBundle(bundleName);
+
+                    String applicationPath = APPLICATION_PATH;
 
                     // pathName = C:\myapp\plugins\myplugin\components\mycomponent\mycomponent.xml
                     pathName = (new Path(pathName)).toPortableString();
@@ -448,7 +458,8 @@ public class ComponentsFactory implements IComponentsFactory {
 
                     String pathName = xmlMainFile.getAbsolutePath();
 
-                    String applicationPath = ComponentBundleToPath.getPathFromBundle(bundleName);
+                    // String applicationPath = ComponentBundleToPath.getPathFromBundle(bundleName);
+                    String applicationPath = ComponentsFactory.APPLICATION_PATH;
 
                     // pathName = C:\myapp\plugins\myplugin\components\mycomponent\mycomponent.xml
                     pathName = (new Path(pathName)).toPortableString();
@@ -456,18 +467,18 @@ public class ComponentsFactory implements IComponentsFactory {
                     pathName = pathName.replace(applicationPath, ""); //$NON-NLS-1$
                     // pathName = /components/mycomponent/mycomponent.xml
 
-                    ComponentsCache cache = ComponentManager.getComponentCaches().get(source.getAbsolutePath());
+                    ComponentsCache cache = StigmaComponentManager.getComponentCaches().get(source.getAbsolutePath());
                     EmfComponent currentComp =
                             new EmfComponent(pathName, bundleName, xmlMainFile.getParentFile().getName(),
                                     pathSource, cache, false, provider);
 
-                    ComponentManager.setModified(source.getAbsolutePath());
+                    StigmaComponentManager.setModified(source.getAbsolutePath());
 
-                    if (ComponentsLoader.skipLoadComponent(currentComp)) {
+                    if (StigmaComponentsLoader.skipLoadComponent(currentComp)) {
                         // continue;
                     }
 
-                    ComponentsLoader.setComponentPaletteType(currentComp);
+                    StigmaComponentsLoader.setComponentPaletteType(currentComp);
 
                     if (componentList.contains(currentComp)) {
                         log.warn("Component " + currentComp.getName() + " already exists. Cannot load user version."); //$NON-NLS-1$ //$NON-NLS-2$

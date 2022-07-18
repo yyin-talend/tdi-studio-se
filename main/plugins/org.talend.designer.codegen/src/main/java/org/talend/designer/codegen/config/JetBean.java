@@ -105,6 +105,9 @@ public class JetBean {
         }
         this.className = StringUtils.capitalize(tmpClassName);
         this.language = StringUtils.capitalize(language);
+        this.className = "org.talend.designer.codegen.translators." + family + "." + this.className + this.language;
+        System.out.println("classname: " + this.className);
+        // !!!
         if ((codePart != null) && (codePart.length() != 0)) {
             this.codePart = StringUtils.capitalize(codePart);
         } else {
@@ -407,6 +410,7 @@ public class JetBean {
     public String getFullTemplatePath() {
         try {
             return TemplateUtil.getPlatformUrlOfBundle(getJetPluginRepository()) + getTemplateRelativeUri();
+            // return ComponentsFactory.APPLICATION_PATH + "/" + getTemplateRelativeUri();
         } catch (Throwable e) {
             ExceptionHandler.process(e);
         }

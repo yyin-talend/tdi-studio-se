@@ -50,7 +50,6 @@ import org.talend.core.model.temp.ECodePart;
 import org.talend.core.model.temp.ETypeGen;
 import org.talend.core.model.utils.NodeUtil;
 import org.talend.core.service.IResourcesDependenciesService;
-import org.talend.core.ui.branding.IBrandingService;
 import org.talend.core.ui.component.ComponentsFactoryProvider;
 import org.talend.designer.codegen.config.CloseBlocksCodeArgument;
 import org.talend.designer.codegen.config.CodeGeneratorArgument;
@@ -163,7 +162,7 @@ public class CodeGenerator implements ICodeGenerator {
 
             RepositoryContext repositoryContext = (RepositoryContext) CorePlugin.getContext()
                     .getProperty(Context.REPOSITORY_CONTEXT_KEY);
-            language = repositoryContext.getProject().getLanguage();
+            language = ECodeLanguage.JAVA;
 
         }
     }
@@ -171,7 +170,7 @@ public class CodeGenerator implements ICodeGenerator {
     public CodeGenerator() {
         RepositoryContext repositoryContext = (RepositoryContext) CorePlugin.getContext()
                 .getProperty(Context.REPOSITORY_CONTEXT_KEY);
-        language = repositoryContext.getProject().getLanguage();
+        language = ECodeLanguage.JAVA;
 
     }
 
@@ -218,14 +217,15 @@ public class CodeGenerator implements ICodeGenerator {
             Vector headerArgument = new Vector(3);
             headerArgument.add(process);
 
-            headerArgument.add(VersionUtils.getVersion());
+            // headerArgument.add(VersionUtils.getVersion());
+            headerArgument.add("8.8.8");
             componentsCode.append(generateTypedComponentCode(EInternalTemplate.HEADER, headerArgument));
 
             // ####
             componentsCode.append(generateTypedComponentCode(EInternalTemplate.HEADER_ADDITIONAL, headerArgument));
             if ((processTree.getSubTrees() != null) && (processTree.getSubTrees().size() > 0)) {
 
-                boolean displayMethodSize = isMethodSizeNeeded();
+                boolean displayMethodSize = false; // isMethodSizeNeeded();
                 for (NodesSubTree subTree : processTree.getSubTrees()) {
                     subTree.setMethodSizeNeeded(displayMethodSize);
                     if (!subTree.isMergeSubTree()) {
@@ -474,7 +474,8 @@ public class CodeGenerator implements ICodeGenerator {
         codeGenArgument.setCheckingSyntax(checkingSyntax);
         codeGenArgument.setIncomingName(incomingName);
         codeGenArgument.setIsRunInMultiThread(getRunInMultiThread());
-        codeGenArgument.setPauseTime(CorePlugin.getDefault().getRunProcessService().getPauseTime());
+        // codeGenArgument.setPauseTime(CorePlugin.getDefault().getRunProcessService().getPauseTime());
+        codeGenArgument.setPauseTime(0);
         JetBean jetBean = initializeJetBean(codeGenArgument);
 
         StringBuffer content = new StringBuffer();
@@ -875,7 +876,8 @@ public class CodeGenerator implements ICodeGenerator {
         argument.setCheckingSyntax(checkingSyntax);
         argument.setIncomingName(incomingName);
         argument.setIsRunInMultiThread(getRunInMultiThread());
-        argument.setPauseTime(CorePlugin.getDefault().getRunProcessService().getPauseTime());
+        // argument.setPauseTime(CorePlugin.getDefault().getRunProcessService().getPauseTime());
+        argument.setPauseTime(0);
 
         JetBean jetBean = initializeJetBean(argument);
 
@@ -1017,11 +1019,11 @@ public class CodeGenerator implements ICodeGenerator {
                 CodeGeneratorArgument codeArgument = (CodeGeneratorArgument) argument;
                 if (codeArgument.getArgument() instanceof INode) {
                     String componentsPath = IComponentsFactory.COMPONENTS_LOCATION;
-                    IBrandingService breaningService = (IBrandingService) GlobalServiceRegister.getDefault()
-                            .getService(IBrandingService.class);
-                    if (breaningService.isPoweredOnlyCamel()) {
-                        componentsPath = IComponentsFactory.CAMEL_COMPONENTS_LOCATION;
-                    }
+                    // IBrandingService breaningService = (IBrandingService) GlobalServiceRegister.getDefault()
+                    // .getService(IBrandingService.class);
+                    // if (breaningService.isPoweredOnlyCamel()) {
+                    // componentsPath = IComponentsFactory.CAMEL_COMPONENTS_LOCATION;
+                    // }
                     jetBean.setJetPluginRepository(componentsPath);
                 } else {
                     jetBean.setJetPluginRepository(CodeGeneratorActivator.PLUGIN_ID);

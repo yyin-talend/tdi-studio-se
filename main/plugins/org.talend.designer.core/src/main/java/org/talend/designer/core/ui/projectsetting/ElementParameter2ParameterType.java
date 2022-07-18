@@ -62,7 +62,7 @@ public class ElementParameter2ParameterType {
         StatsAndLogsHelper.createStatsAndLogsParameters(statsAndLogsElement);
 
         implicitContextLoadElement = new ImplicitContextLoadElement();
-        ProjectSettingManager.createImplicitContextLoadParameters(implicitContextLoadElement);
+        // ProjectSettingManager.createImplicitContextLoadParameters(implicitContextLoadElement);
     }
 
     /**

@@ -19,13 +19,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.core.runtime.FileLocator;
-import org.eclipse.core.runtime.Path;
-import org.eclipse.core.runtime.Platform;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.core.language.ECodeLanguage;
 import org.talend.designer.codegen.CodeGeneratorActivator;
 import org.talend.designer.codegen.additionaljet.AbstractJetFileProvider;
 import org.talend.designer.codegen.additionaljet.CustomizeJetFilesProviderManager;
+import org.talend.designer.codegen.components.model.ComponentsFactory;
 import org.talend.designer.codegen.config.EInternalTemplate;
 import org.talend.designer.codegen.config.TemplateUtil;
 import org.talend.designer.codegen.exception.CodeGeneratorException;
@@ -41,6 +40,8 @@ public class CodeGeneratorInternalTemplatesFactory {
     private List<TemplateUtil> templates;
 
     private ECodeLanguage language;
+
+    private static final String JET_STUB_FOLDER = ComponentsFactory.APPLICATION_PATH + "/jet_stub";
 
     /**
      * Constructor.
@@ -63,7 +64,8 @@ public class CodeGeneratorInternalTemplatesFactory {
         List<TemplateUtil> templates = new ArrayList<>();
         try {
             // System.out.println("plugin:" + pluginId); //$NON-NLS-1$
-            URL url = FileLocator.find(Platform.getBundle(pluginId), new Path(directory), null); // $NON-NLS-1$
+            // URL url = FileLocator.find(Platform.getBundle(pluginId), new Path(directory), null); // $NON-NLS-1$
+            URL url = new File(JET_STUB_FOLDER).toURI().toURL();
             File fileDirectory = new File(FileLocator.toFileURL(url).getPath());
             for (File file : fileDirectory.listFiles()) {
                 EInternalTemplate curentTemplate = null;

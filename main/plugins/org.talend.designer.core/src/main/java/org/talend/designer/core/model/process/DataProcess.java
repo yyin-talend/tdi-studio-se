@@ -36,7 +36,6 @@ import org.talend.components.api.properties.ComponentProperties;
 import org.talend.components.api.properties.ComponentReferenceProperties;
 import org.talend.components.api.properties.VirtualComponentProperties;
 import org.talend.core.GlobalServiceRegister;
-import org.talend.core.PluginChecker;
 import org.talend.core.database.EDatabaseTypeName;
 import org.talend.core.hadoop.HadoopConfJarBean;
 import org.talend.core.hadoop.IHadoopClusterService;
@@ -75,8 +74,6 @@ import org.talend.core.model.process.INode;
 import org.talend.core.model.process.INodeConnector;
 import org.talend.core.model.process.IProcess;
 import org.talend.core.model.process.IProcess2;
-import org.talend.core.model.process.IReplaceNodeInProcess;
-import org.talend.core.model.process.ReplaceNodesInProcessProvider;
 import org.talend.core.model.process.UniqueNodeNameGenerator;
 import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.PropertiesFactory;
@@ -95,7 +92,6 @@ import org.talend.core.ui.component.ComponentsFactoryProvider;
 import org.talend.daikon.properties.Properties;
 import org.talend.daikon.properties.PropertiesVisitor;
 import org.talend.daikon.properties.property.PropertyValueEvaluator;
-import org.talend.designer.core.CheckLogManamger;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.model.components.AbstractBasicComponent;
 import org.talend.designer.core.model.components.EParameterName;
@@ -451,68 +447,68 @@ public class DataProcess implements IGeneratingProcess {
             param.setNumRow(1);
             ((List<IElementParameter>) dataConnec.getElementParameters()).add(param);
         }
-        if (PluginChecker.isTeamEdition()) {
-
-            if ((connection.getLineStyle() == EConnectionType.ON_SUBJOB_OK
-                    || connection.getLineStyle() == EConnectionType.ON_SUBJOB_ERROR
-                    || connection.getLineStyle() == EConnectionType.RUN_IF
-                    || connection.getLineStyle() == EConnectionType.ROUTE_WHEN
-                    || connection.getLineStyle() == EConnectionType.ROUTE_CATCH
-                    || connection.getLineStyle() == EConnectionType.ON_COMPONENT_OK
-                    || connection.getLineStyle() == EConnectionType.ON_COMPONENT_ERROR)) {
-                IElementParameter param = new ElementParameter(dataConnec);
-                param.setName(EParameterName.RESUMING_CHECKPOINT.getName());
-                param.setValue(Boolean.FALSE);
-                param.setDisplayName(EParameterName.RESUMING_CHECKPOINT.getDisplayName());
-                param.setFieldType(EParameterFieldType.CHECK);
-                param.setCategory(EComponentCategory.RESUMING);
-                param.setNumRow(2);
-                param.setShow(true);
-                ((List<IElementParameter>) dataConnec.getElementParameters()).add(param); // breakpoint
-            }
-
-            if (dataConnec.getLineStyle().hasConnectionCategory(IConnectionCategory.FLOW)) {
-                IElementParameter param = new ElementParameter(dataConnec);
-                param.setName(EParameterName.ACTIVEBREAKPOINT.getName());
-                param.setDisplayName(EParameterName.ACTIVEBREAKPOINT.getDisplayName());
-                param.setFieldType(EParameterFieldType.CHECK);
-                param.setCategory(EComponentCategory.BREAKPOINT);
-                param.setNumRow(13);
-                param.setValue(false);
-                param.setContextMode(false);
-                param.setShow(true);
-
-                ((List<IElementParameter>) dataConnec.getElementParameters()).add(param);
-                IComponent component = ComponentsFactoryProvider.getInstance().get("tFilterRow",
-                        ComponentCategory.CATEGORY_4_DI.getName());
-                DataNode tmpNode = new DataNode(component, "breakpointNode");
-                IElementParameter tmpParam = tmpNode.getElementParameter("LOGICAL_OP");
-                if (tmpParam != null) {
-                    tmpParam.setCategory(EComponentCategory.BREAKPOINT);
-                    tmpParam.setNumRow(14);
-                    ((List<IElementParameter>) dataConnec.getElementParameters()).add(tmpParam);
-                }
-                tmpParam = tmpNode.getElementParameter("CONDITIONS");
-                if (tmpParam != null) {
-                    tmpParam.setCategory(EComponentCategory.BREAKPOINT);
-                    tmpParam.setNumRow(15);
-                    ((List<IElementParameter>) dataConnec.getElementParameters()).add(tmpParam);
-                }
-
-                tmpParam = tmpNode.getElementParameter("USE_ADVANCED");
-                if (tmpParam != null) {
-                    tmpParam.setCategory(EComponentCategory.BREAKPOINT);
-                    tmpParam.setNumRow(16);
-                    ((List<IElementParameter>) dataConnec.getElementParameters()).add(tmpParam);
-                }
-                tmpParam = tmpNode.getElementParameter("ADVANCED_COND");
-                if (tmpParam != null) {
-                    tmpParam.setCategory(EComponentCategory.BREAKPOINT);
-                    tmpParam.setNumRow(17);
-                    ((List<IElementParameter>) dataConnec.getElementParameters()).add(tmpParam);
-                }
-            }
-        }
+        // if (PluginChecker.isTeamEdition()) {
+        //
+        // if ((connection.getLineStyle() == EConnectionType.ON_SUBJOB_OK
+        // || connection.getLineStyle() == EConnectionType.ON_SUBJOB_ERROR
+        // || connection.getLineStyle() == EConnectionType.RUN_IF
+        // || connection.getLineStyle() == EConnectionType.ROUTE_WHEN
+        // || connection.getLineStyle() == EConnectionType.ROUTE_CATCH
+        // || connection.getLineStyle() == EConnectionType.ON_COMPONENT_OK
+        // || connection.getLineStyle() == EConnectionType.ON_COMPONENT_ERROR)) {
+        // IElementParameter param = new ElementParameter(dataConnec);
+        // param.setName(EParameterName.RESUMING_CHECKPOINT.getName());
+        // param.setValue(Boolean.FALSE);
+        // param.setDisplayName(EParameterName.RESUMING_CHECKPOINT.getDisplayName());
+        // param.setFieldType(EParameterFieldType.CHECK);
+        // param.setCategory(EComponentCategory.RESUMING);
+        // param.setNumRow(2);
+        // param.setShow(true);
+        // ((List<IElementParameter>) dataConnec.getElementParameters()).add(param); // breakpoint
+        // }
+        //
+        // if (dataConnec.getLineStyle().hasConnectionCategory(IConnectionCategory.FLOW)) {
+        // IElementParameter param = new ElementParameter(dataConnec);
+        // param.setName(EParameterName.ACTIVEBREAKPOINT.getName());
+        // param.setDisplayName(EParameterName.ACTIVEBREAKPOINT.getDisplayName());
+        // param.setFieldType(EParameterFieldType.CHECK);
+        // param.setCategory(EComponentCategory.BREAKPOINT);
+        // param.setNumRow(13);
+        // param.setValue(false);
+        // param.setContextMode(false);
+        // param.setShow(true);
+        //
+        // ((List<IElementParameter>) dataConnec.getElementParameters()).add(param);
+        // IComponent component = ComponentsFactoryProvider.getInstance().get("tFilterRow",
+        // ComponentCategory.CATEGORY_4_DI.getName());
+        // DataNode tmpNode = new DataNode(component, "breakpointNode");
+        // IElementParameter tmpParam = tmpNode.getElementParameter("LOGICAL_OP");
+        // if (tmpParam != null) {
+        // tmpParam.setCategory(EComponentCategory.BREAKPOINT);
+        // tmpParam.setNumRow(14);
+        // ((List<IElementParameter>) dataConnec.getElementParameters()).add(tmpParam);
+        // }
+        // tmpParam = tmpNode.getElementParameter("CONDITIONS");
+        // if (tmpParam != null) {
+        // tmpParam.setCategory(EComponentCategory.BREAKPOINT);
+        // tmpParam.setNumRow(15);
+        // ((List<IElementParameter>) dataConnec.getElementParameters()).add(tmpParam);
+        // }
+        //
+        // tmpParam = tmpNode.getElementParameter("USE_ADVANCED");
+        // if (tmpParam != null) {
+        // tmpParam.setCategory(EComponentCategory.BREAKPOINT);
+        // tmpParam.setNumRow(16);
+        // ((List<IElementParameter>) dataConnec.getElementParameters()).add(tmpParam);
+        // }
+        // tmpParam = tmpNode.getElementParameter("ADVANCED_COND");
+        // if (tmpParam != null) {
+        // tmpParam.setCategory(EComponentCategory.BREAKPOINT);
+        // tmpParam.setNumRow(17);
+        // ((List<IElementParameter>) dataConnec.getElementParameters()).add(tmpParam);
+        // }
+        // }
+        // }
         copyElementParametersValue(connection, dataConnec);
 
         dataConnec.setTarget(targetDataNode);
@@ -1803,14 +1799,14 @@ public class DataProcess implements IGeneratingProcess {
         List<INode> newGraphicalNodeList = buildCopyOfGraphicalNodeList(graphicalNodeList);
         replaceNodeFromProviders(newGraphicalNodeList);
         // job settings extra (feature 2710)
-        if (JobSettingsManager.isImplicittContextLoadActived(duplicatedProcess)) {
-            List<DataNode> contextLoadNodes = JobSettingsManager.createExtraContextLoadNodes(duplicatedProcess);
-            for (DataNode node : contextLoadNodes) {
-                buildCheckMap.put(node, node);
-                addDataNode(node);
-                replaceMultipleComponents(node);
-            }
-        }
+        // if (JobSettingsManager.isImplicittContextLoadActived(duplicatedProcess)) {
+        // List<DataNode> contextLoadNodes = JobSettingsManager.createExtraContextLoadNodes(duplicatedProcess);
+        // for (DataNode node : contextLoadNodes) {
+        // buildCheckMap.put(node, node);
+        // addDataNode(node);
+        // replaceMultipleComponents(node);
+        // }
+        // }
 
         // build data nodes from graphical nodes.
         // DataNode are the real objects used by code generation (we don't use Node class)
@@ -2024,38 +2020,39 @@ public class DataProcess implements IGeneratingProcess {
             }
         }
         
-        if (duplicatedProcess.getComponentsType().equals(ComponentCategory.CATEGORY_4_DI.getName()) 
-        		&& PluginChecker.isTIS() && !isJoblet) {
-        	final String talendJobLogComponent = "tJobStructureCatcher";
-            final String uid4TalendJobLogComponent = "talendJobLog";
-        	IComponent jobStructComponent = ComponentsFactoryProvider.getInstance().get(talendJobLogComponent, ComponentCategory.CATEGORY_4_DI.getName());
-        	if (jobStructComponent != null) {
-	        	DataNode jobStructure = new DataNode(jobStructComponent, uid4TalendJobLogComponent);
-	        	jobStructure.setActivate(true);
-	        	jobStructure.setStart(true);
-	        	jobStructure.setSubProcessStart(true);
-	        	jobStructure.setProcess(duplicatedProcess);
-	        	if(!CheckLogManamger.isSelectLog4j2()) {
-	        		jobStructure.getElementParameter("LOG4J_VERSION").setValue("LOG4J1");
-	        	} else {
-	        		jobStructure.getElementParameter("LOG4J_VERSION").setValue("LOG4J2");
-	        	}
-	        	addDataNode(jobStructure);
+        // if (duplicatedProcess.getComponentsType().equals(ComponentCategory.CATEGORY_4_DI.getName())
+        // && PluginChecker.isTIS() && !isJoblet) {
+        // final String talendJobLogComponent = "tJobStructureCatcher";
+        // final String uid4TalendJobLogComponent = "talendJobLog";
+        // IComponent jobStructComponent = ComponentsFactoryProvider.getInstance().get(talendJobLogComponent,
+        // ComponentCategory.CATEGORY_4_DI.getName());
+        // if (jobStructComponent != null) {
+        // DataNode jobStructure = new DataNode(jobStructComponent, uid4TalendJobLogComponent);
+        // jobStructure.setActivate(true);
+        // jobStructure.setStart(true);
+        // jobStructure.setSubProcessStart(true);
+        // jobStructure.setProcess(duplicatedProcess);
+        // if(!CheckLogManamger.isSelectLog4j2()) {
+        // jobStructure.getElementParameter("LOG4J_VERSION").setValue("LOG4J1");
+        // } else {
+        // jobStructure.getElementParameter("LOG4J_VERSION").setValue("LOG4J2");
+        // }
+        // addDataNode(jobStructure);
+        //
+        // //TODO consider to remove it as may not necessary
+        // shortUniqueNameList.clear();
+        // for (INode node : dataNodeList) {
+        // if (node.getComponent().getName().equals(talendJobLogComponent)
+        // && node.getUniqueName().equals(uid4TalendJobLogComponent)) {
+        // ((AbstractNode) node).setUniqueShortName(UniqueNodeNameGenerator
+        // .generateUniqueNodeName(((AbstractNode) node).getComponent().getShortName(), shortUniqueNameList));
+        // shortUniqueNameList.add(node.getUniqueShortName());
+        // }
+        // }
+        // }
+        // }
 
-	        	//TODO consider to remove it as may not necessary
-	            shortUniqueNameList.clear();
-	            for (INode node : dataNodeList) {
-	                if (node.getComponent().getName().equals(talendJobLogComponent)
-	                        && node.getUniqueName().equals(uid4TalendJobLogComponent)) {
-	    	            ((AbstractNode) node).setUniqueShortName(UniqueNodeNameGenerator
-	    	                    .generateUniqueNodeName(((AbstractNode) node).getComponent().getShortName(), shortUniqueNameList));
-	    	            shortUniqueNameList.add(node.getUniqueShortName());
-	                }
-	            }
-        	}
-        }
-
-        checkUseHadoopConfs(newGraphicalNodeList);
+        // checkUseHadoopConfs(newGraphicalNodeList);
 
         // IGenericDBService dbService = null;
         // if (GlobalServiceRegister.getDefault().isServiceRegistered(IGenericDBService.class)) {
@@ -3771,9 +3768,9 @@ public class DataProcess implements IGeneratingProcess {
                 }
                 needReplaceForJoblet = true;
             }
-            for (IReplaceNodeInProcess replaceProvider : ReplaceNodesInProcessProvider.findReplaceNodesProvider()) {
-                replaceProvider.rebuildGraphicProcessFromNode(node, graphicalNodeList);
-            }
+            // for (IReplaceNodeInProcess replaceProvider : ReplaceNodesInProcessProvider.findReplaceNodesProvider()) {
+            // replaceProvider.rebuildGraphicProcessFromNode(node, graphicalNodeList);
+            // }
         }
 
         // All replace for Parallelization done by the start node, but joblet node maybe existed after

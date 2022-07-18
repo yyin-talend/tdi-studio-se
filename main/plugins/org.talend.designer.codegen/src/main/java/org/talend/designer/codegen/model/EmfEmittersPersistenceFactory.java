@@ -51,6 +51,9 @@ public final class EmfEmittersPersistenceFactory {
             }
             File file = iFile.getLocation().toFile();
 
+            // String WORKSPACE_PATH = "/Users/sizhaoliu/misc/repo-stigma/emf-stigma/poc/stigma-client/workspace";
+            // File jetPersistenceFile = new File(WORKSPACE_PATH + "/.JETEmitters/" + "JetPersistence" + language);
+
             singleton = new EmfEmittersPersistence(language, file);
         }
 

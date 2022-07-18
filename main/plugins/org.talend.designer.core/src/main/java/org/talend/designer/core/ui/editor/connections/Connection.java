@@ -39,21 +39,16 @@ import org.talend.core.model.process.IPerformance;
 import org.talend.core.model.process.IProcess;
 import org.talend.core.model.process.IProcess2;
 import org.talend.core.model.process.TraceData;
-import org.talend.core.repository.model.ILocalRepositoryFactory;
-import org.talend.core.repository.model.ProxyRepositoryFactory;
 import org.talend.core.runtime.IAdditionalInfo;
 import org.talend.core.ui.component.ComponentsFactoryProvider;
-import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.model.components.ElementParameter;
 import org.talend.designer.core.model.process.DataNode;
 import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.process.Process;
-import org.talend.designer.core.ui.editor.properties.controllers.ColumnListController;
 import org.talend.designer.core.ui.editor.properties.controllers.TableController;
 import org.talend.designer.core.utils.ConnectionUtil;
-import org.talend.designer.runprocess.IRunProcessService;
 
 /**
  * Class that define the connection. It's the model part of the Gef element <br/>
@@ -207,17 +202,17 @@ public class Connection extends Element implements IConnection, IPerformance, IA
         if (lineStyle.hasConnectionCategory(IConnectionCategory.FLOW)) {
             trace = new ConnectionTrace(this);
             createTraceParamters();
-            IComponent component = ComponentsFactoryProvider.getInstance().get("tFlowMeter", //$NON-NLS-1$
-                    ComponentCategory.CATEGORY_4_DI.getName());
-            if (component != null) { // only if tFlowMeter is available and not M/R job
-                IProcess process = source.getProcess();
-                if (process instanceof IProcess2) {
-                    IProcess2 process2 = (IProcess2) process;
-                    if (!ComponentCategory.CATEGORY_4_MAPREDUCE.getName().equals(process2.getComponentsType())) {
-                        createMeterParameters(process2);
-                    }
-                }
-            }
+            // IComponent component = ComponentsFactoryProvider.getInstance().get("tFlowMeter", //$NON-NLS-1$
+            // ComponentCategory.CATEGORY_4_DI.getName());
+            // if (component != null) { // only if tFlowMeter is available and not M/R job
+            // IProcess process = source.getProcess();
+            // if (process instanceof IProcess2) {
+            // IProcess2 process2 = (IProcess2) process;
+            // if (!ComponentCategory.CATEGORY_4_MAPREDUCE.getName().equals(process2.getComponentsType())) {
+            // createMeterParameters(process2);
+            // }
+            // }
+            // }
         }
         setName(linkName);
         if (trace != null) {
@@ -227,11 +222,12 @@ public class Connection extends Element implements IConnection, IPerformance, IA
             resuming.setOffset(label.getOffset());
         }
 
-        if (source.getProcess().getComponentsType().equals(ComponentCategory.CATEGORY_4_DI.getName()) && ComponentsFactoryProvider
-                .getInstance().get("tPartitioner", ComponentCategory.CATEGORY_4_DI.getName()) != null) {
-            this.source = source;
-            createParallelizeParameters();
-        }
+        // if (source.getProcess().getComponentsType().equals(ComponentCategory.CATEGORY_4_DI.getName()) &&
+        // ComponentsFactoryProvider
+        // .getInstance().get("tPartitioner", ComponentCategory.CATEGORY_4_DI.getName()) != null) {
+        // this.source = source;
+        // createParallelizeParameters();
+        // }
         reconnect(source, target, lineStyle);
         updateName();
         if (lineStyle.equals(EConnectionType.RUN_IF)) {
@@ -440,105 +436,105 @@ public class Connection extends Element implements IConnection, IPerformance, IA
             initTraceParamters();
         }
 
-        if (PluginChecker.isTeamEdition()) {
-            boolean isLocalRepository = (ProxyRepositoryFactory.getInstance()
-                    .getRepositoryFactoryFromProvider() instanceof ILocalRepositoryFactory);
-            param = new ElementParameter(this);
-            param.setName(EParameterName.RESUMING_CHECKPOINT.getName());
-            param.setValue(Boolean.FALSE);
-            param.setGroupDisplayName(EParameterName.RESUMING_CHECKPOINT.getDisplayName());
-            param.setDisplayName(EParameterName.RESUMING_CHECKPOINT.getDisplayName());
-            param.setFieldType(EParameterFieldType.CHECK);
-            param.setCategory(EComponentCategory.RESUMING);
-            param.setGroup(RESUMING_CHECKPOINT);
-            param.setNumRow(2);
-            param.setShow(true);
-            param.setReadOnly(isLocalRepository);
-            param.setDefaultValue(param.getValue());
-            addElementParameter(param);
-
-            param = new ElementParameter(this);
-            param.setName(EParameterName.RESUMLABEL.getName());
-            param.setDisplayName(EParameterName.RESUMLABEL.getDisplayName());
-            param.setFieldType(EParameterFieldType.TEXT);
-            param.setCategory(EComponentCategory.RESUMING);
-            param.setGroup(RESUMING_CHECKPOINT);
-            param.setValue("");
-            param.setNumRow(3);
-            param.setShow(true);
-            param.setReadOnly(isLocalRepository);
-            param.setDefaultValue(param.getValue());
-            addElementParameter(param);
-
-            param = new ElementParameter(this);
-            param.setName(EParameterName.FAILURE_INSTRUCTIONS.getName());
-            param.setDisplayName(EParameterName.FAILURE_INSTRUCTIONS.getDisplayName());
-            param.setFieldType(EParameterFieldType.MEMO);
-            param.setCategory(EComponentCategory.RESUMING);
-            param.setGroup(RESUMING_CHECKPOINT);
-            param.setNbLines(5);
-            param.setNumRow(4);
-            param.setShow(true);
-            param.setReadOnly(isLocalRepository);
-            param.setDefaultValue(param.getValue());
-            addElementParameter(param);
-            // breakpoint
-            if (lineStyle.hasConnectionCategory(IConnectionCategory.FLOW)
-                    || lineStyle.hasConnectionCategory(IConnectionCategory.MERGE)) {
-                param = new ElementParameter(this);
-                param.setName(EParameterName.ACTIVEBREAKPOINT.getName());
-                param.setDisplayName(EParameterName.ACTIVEBREAKPOINT.getDisplayName());
-                param.setFieldType(EParameterFieldType.CHECK);
-                param.setCategory(EComponentCategory.BREAKPOINT);
-                param.setNumRow(13);
-                param.setValue(false);
-                param.setContextMode(false);
-                param.setDefaultValue(param.getValue());
-                param.setShow(true);
-
-                addElementParameter(param);
-                IComponent component = ComponentsFactoryProvider.getInstance().get("tFilterRow",
-                        ComponentCategory.CATEGORY_4_DI.getName());
-                Node tmpNode = new Node(component, (Process) source.getProcess());
-                tmpNode.setTemplate(source.isTemplate());
-                tmpNode.setGeneratedByJobscriptBool(source.isGeneratedByJobscriptBool());
-                tmpNode.addInput(this);
-                ElementParameter tmpParam = (ElementParameter) tmpNode.getElementParameter("LOGICAL_OP");
-                if (tmpParam != null) {
-                    tmpParam.setElement(this);
-                    tmpParam.setCategory(EComponentCategory.BREAKPOINT);
-                    tmpParam.setNumRow(14);
-                    tmpParam.setDefaultValue(tmpParam.getValue());
-                    addElementParameter(tmpParam);
-                }
-                tmpParam = (ElementParameter) tmpNode.getElementParameter("CONDITIONS");
-                if (tmpParam != null) {
-                    tmpParam.setElement(this);
-                    tmpParam.setCategory(EComponentCategory.BREAKPOINT);
-                    tmpParam.setNumRow(15);
-                    ColumnListController.updateColumnList(tmpNode, null, true);
-                    tmpParam.setDefaultValue(tmpParam.getValue());
-                    addElementParameter(tmpParam);
-                }
-
-                tmpParam = (ElementParameter) tmpNode.getElementParameter("USE_ADVANCED");
-                if (tmpParam != null) {
-                    tmpParam.setElement(this);
-                    tmpParam.setCategory(EComponentCategory.BREAKPOINT);
-                    tmpParam.setNumRow(16);
-                    tmpParam.setDefaultValue(tmpParam.getValue());
-                    addElementParameter(tmpParam);
-                }
-                tmpParam = (ElementParameter) tmpNode.getElementParameter("ADVANCED_COND");
-                if (tmpParam != null) {
-                    tmpParam.setElement(this);
-                    tmpParam.setCategory(EComponentCategory.BREAKPOINT);
-                    tmpParam.setNumRow(17);
-                    tmpParam.setDefaultValue(tmpParam.getValue());
-                    addElementParameter(tmpParam);
-                }
-            }
-        }
+        // if (PluginChecker.isTeamEdition()) {
+        // boolean isLocalRepository = (ProxyRepositoryFactory.getInstance()
+        // .getRepositoryFactoryFromProvider() instanceof ILocalRepositoryFactory);
+        // param = new ElementParameter(this);
+        // param.setName(EParameterName.RESUMING_CHECKPOINT.getName());
+        // param.setValue(Boolean.FALSE);
+        // param.setGroupDisplayName(EParameterName.RESUMING_CHECKPOINT.getDisplayName());
+        // param.setDisplayName(EParameterName.RESUMING_CHECKPOINT.getDisplayName());
+        // param.setFieldType(EParameterFieldType.CHECK);
+        // param.setCategory(EComponentCategory.RESUMING);
+        // param.setGroup(RESUMING_CHECKPOINT);
+        // param.setNumRow(2);
+        // param.setShow(true);
+        // param.setReadOnly(isLocalRepository);
+        // param.setDefaultValue(param.getValue());
+        // addElementParameter(param);
+        //
+        // param = new ElementParameter(this);
+        // param.setName(EParameterName.RESUMLABEL.getName());
+        // param.setDisplayName(EParameterName.RESUMLABEL.getDisplayName());
+        // param.setFieldType(EParameterFieldType.TEXT);
+        // param.setCategory(EComponentCategory.RESUMING);
+        // param.setGroup(RESUMING_CHECKPOINT);
+        // param.setValue("");
+        // param.setNumRow(3);
+        // param.setShow(true);
+        // param.setReadOnly(isLocalRepository);
+        // param.setDefaultValue(param.getValue());
+        // addElementParameter(param);
+        //
+        // param = new ElementParameter(this);
+        // param.setName(EParameterName.FAILURE_INSTRUCTIONS.getName());
+        // param.setDisplayName(EParameterName.FAILURE_INSTRUCTIONS.getDisplayName());
+        // param.setFieldType(EParameterFieldType.MEMO);
+        // param.setCategory(EComponentCategory.RESUMING);
+        // param.setGroup(RESUMING_CHECKPOINT);
+        // param.setNbLines(5);
+        // param.setNumRow(4);
+        // param.setShow(true);
+        // param.setReadOnly(isLocalRepository);
+        // param.setDefaultValue(param.getValue());
+        // addElementParameter(param);
+        // // breakpoint
+        // if (lineStyle.hasConnectionCategory(IConnectionCategory.FLOW)
+        // || lineStyle.hasConnectionCategory(IConnectionCategory.MERGE)) {
+        // param = new ElementParameter(this);
+        // param.setName(EParameterName.ACTIVEBREAKPOINT.getName());
+        // param.setDisplayName(EParameterName.ACTIVEBREAKPOINT.getDisplayName());
+        // param.setFieldType(EParameterFieldType.CHECK);
+        // param.setCategory(EComponentCategory.BREAKPOINT);
+        // param.setNumRow(13);
+        // param.setValue(false);
+        // param.setContextMode(false);
+        // param.setDefaultValue(param.getValue());
+        // param.setShow(true);
+        //
+        // addElementParameter(param);
+        // IComponent component = ComponentsFactoryProvider.getInstance().get("tFilterRow",
+        // ComponentCategory.CATEGORY_4_DI.getName());
+        // Node tmpNode = new Node(component, (Process) source.getProcess());
+        // tmpNode.setTemplate(source.isTemplate());
+        // tmpNode.setGeneratedByJobscriptBool(source.isGeneratedByJobscriptBool());
+        // tmpNode.addInput(this);
+        // ElementParameter tmpParam = (ElementParameter) tmpNode.getElementParameter("LOGICAL_OP");
+        // if (tmpParam != null) {
+        // tmpParam.setElement(this);
+        // tmpParam.setCategory(EComponentCategory.BREAKPOINT);
+        // tmpParam.setNumRow(14);
+        // tmpParam.setDefaultValue(tmpParam.getValue());
+        // addElementParameter(tmpParam);
+        // }
+        // tmpParam = (ElementParameter) tmpNode.getElementParameter("CONDITIONS");
+        // if (tmpParam != null) {
+        // tmpParam.setElement(this);
+        // tmpParam.setCategory(EComponentCategory.BREAKPOINT);
+        // tmpParam.setNumRow(15);
+        // ColumnListController.updateColumnList(tmpNode, null, true);
+        // tmpParam.setDefaultValue(tmpParam.getValue());
+        // addElementParameter(tmpParam);
+        // }
+        //
+        // tmpParam = (ElementParameter) tmpNode.getElementParameter("USE_ADVANCED");
+        // if (tmpParam != null) {
+        // tmpParam.setElement(this);
+        // tmpParam.setCategory(EComponentCategory.BREAKPOINT);
+        // tmpParam.setNumRow(16);
+        // tmpParam.setDefaultValue(tmpParam.getValue());
+        // addElementParameter(tmpParam);
+        // }
+        // tmpParam = (ElementParameter) tmpNode.getElementParameter("ADVANCED_COND");
+        // if (tmpParam != null) {
+        // tmpParam.setElement(this);
+        // tmpParam.setCategory(EComponentCategory.BREAKPOINT);
+        // tmpParam.setNumRow(17);
+        // tmpParam.setDefaultValue(tmpParam.getValue());
+        // addElementParameter(tmpParam);
+        // }
+        // }
+        // }
         updateParametersValues();
         updateInputConnection();
     }
@@ -782,19 +778,21 @@ public class Connection extends Element implements IConnection, IPerformance, IA
 
     public boolean checkTraceShowEnable() {
         // enable
-        final IRunProcessService runProcessService = DesignerPlugin.getDefault().getRunProcessService();
-        if (runProcessService == null) {
-            return false;
-        }
-        IProcess process = runProcessService.getActiveProcess();
-        if (process == null || process.getId() == null || this.getSource() == null || this.getSource().getProcess() == null) {
-            return false;
-        }
-        if (!process.getId().equals(this.getSource().getProcess().getId())) {
-            return false;
-        }
-        boolean enabled = runProcessService.enableTraceForActiveRunProcess();
-        return enabled;
+        // final IRunProcessService runProcessService = DesignerPlugin.getDefault().getRunProcessService();
+        // if (runProcessService == null) {
+        // return false;
+        // }
+        // IProcess process = runProcessService.getActiveProcess();
+        // if (process == null || process.getId() == null || this.getSource() == null || this.getSource().getProcess()
+        // == null) {
+        // return false;
+        // }
+        // if (!process.getId().equals(this.getSource().getProcess().getId())) {
+        // return false;
+        // }
+        // boolean enabled = runProcessService.enableTraceForActiveRunProcess();
+        // return enabled;
+        return false;
     }
 
     // public boolean checkResumingShowEnable() {

@@ -19,7 +19,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
-import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.swt.graphics.RGB;
 import org.talend.core.model.process.EComponentCategory;
 import org.talend.core.model.process.EParameterFieldType;
@@ -28,8 +27,6 @@ import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.IElementParameterDefaultValue;
 import org.talend.core.model.process.INode;
 import org.talend.core.model.properties.Item;
-import org.talend.designer.core.DesignerPlugin;
-import org.talend.designer.core.ui.preferences.TalendDesignerPrefConstants;
 
 /**
  * Each parameter of the components are read and written in this class. <br/>
@@ -605,13 +602,13 @@ public class ElementParameter implements IElementParameter {
      */
     @Override
     public boolean isNoCheck() {
-        IPreferenceStore preferenceStore = DesignerPlugin.getDefault().getPreferenceStore();
+        // IPreferenceStore preferenceStore = DesignerPlugin.getDefault().getPreferenceStore();
 
-        if (!preferenceStore.getBoolean(TalendDesignerPrefConstants.PROPERTY_CODE_CHECK)) {
-            // if the check has been completely disabled then no check.
-            // if not disabled in the preferences, then it will depends on the next conditions.
-            return true;
-        }
+        // if (!preferenceStore.getBoolean(TalendDesignerPrefConstants.PROPERTY_CODE_CHECK)) {
+        // // if the check has been completely disabled then no check.
+        // // if not disabled in the preferences, then it will depends on the next conditions.
+        // return true;
+        // }
 
         if (!(element instanceof INode)) {
             return true;

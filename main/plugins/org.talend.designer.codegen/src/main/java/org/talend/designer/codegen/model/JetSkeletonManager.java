@@ -89,7 +89,8 @@ public final class JetSkeletonManager {
         } catch (Exception e) {
             IStatus status = new Status(IStatus.WARNING, CodeGeneratorActivator.PLUGIN_ID,
                     Messages.getString("JetSkeletonManager.unableLoad"), e); //$NON-NLS-1$
-            CodeGeneratorActivator.getDefault().getLog().log(status);
+            // CodeGeneratorActivator.getDefault().getLog().log(status);
+            e.printStackTrace();
         }
     }
 

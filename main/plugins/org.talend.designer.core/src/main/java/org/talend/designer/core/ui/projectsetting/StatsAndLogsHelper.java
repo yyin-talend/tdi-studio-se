@@ -92,14 +92,14 @@ public class StatsAndLogsHelper extends Utils {
     static void createStatsAndLogsParameters(Element elem) {
         statsAndLogsParametersTitlePart(elem);
         statsAndLogsParametersFilePart(elem);
-        statsAndLogsParametersDBPart(elem);
-        statsAndLogsParametersFinalPart(elem);
+        // statsAndLogsParametersDBPart(elem);
+        // statsAndLogsParametersFinalPart(elem);
 
     }
 
     private static void statsAndLogsParametersTitlePart(Element elem) {
         ElementParameter param;
-        IPreferenceStore preferenceStore = DesignerPlugin.getDefault().getPreferenceStore();
+        // IPreferenceStore preferenceStore = DesignerPlugin.getDefault().getPreferenceStore();
 
         List<IElementParameter> paramList = (List<IElementParameter>) elem.getElementParameters();
 
@@ -130,7 +130,8 @@ public class StatsAndLogsHelper extends Utils {
 
         param = new ElementParameter(elem);
         param.setName(EParameterName.ON_STATCATCHER_FLAG.getName());
-        param.setValue(preferenceStore.getBoolean(languagePrefix + EParameterName.ON_STATCATCHER_FLAG.getName()));
+        // param.setValue(preferenceStore.getBoolean(languagePrefix + EParameterName.ON_STATCATCHER_FLAG.getName()));
+        param.setValue(Boolean.FALSE);
         param.setDisplayName(EParameterName.ON_STATCATCHER_FLAG.getDisplayName());
         param.setFieldType(EParameterFieldType.CHECK);
         param.setCategory(EComponentCategory.STATSANDLOGS);
@@ -139,7 +140,8 @@ public class StatsAndLogsHelper extends Utils {
 
         param = new ElementParameter(elem);
         param.setName(EParameterName.ON_LOGCATCHER_FLAG.getName());
-        param.setValue(preferenceStore.getBoolean(languagePrefix + EParameterName.ON_LOGCATCHER_FLAG.getName()));
+        // param.setValue(preferenceStore.getBoolean(languagePrefix + EParameterName.ON_LOGCATCHER_FLAG.getName()));
+        param.setValue(Boolean.FALSE);
         param.setDisplayName(EParameterName.ON_LOGCATCHER_FLAG.getDisplayName());
         param.setFieldType(EParameterFieldType.CHECK);
         param.setCategory(EComponentCategory.STATSANDLOGS);
@@ -148,7 +150,8 @@ public class StatsAndLogsHelper extends Utils {
 
         param = new ElementParameter(elem);
         param.setName(EParameterName.ON_METERCATCHER_FLAG.getName());
-        param.setValue(preferenceStore.getBoolean(languagePrefix + EParameterName.ON_METERCATCHER_FLAG.getName()));
+        // param.setValue(preferenceStore.getBoolean(languagePrefix + EParameterName.ON_METERCATCHER_FLAG.getName()));
+        param.setValue(Boolean.FALSE);
         param.setDisplayName(EParameterName.ON_METERCATCHER_FLAG.getDisplayName());
         param.setFieldType(EParameterFieldType.CHECK);
         param.setCategory(EComponentCategory.STATSANDLOGS);
@@ -169,7 +172,7 @@ public class StatsAndLogsHelper extends Utils {
 
     private static void statsAndLogsParametersFilePart(Element elem) {
         ElementParameter param;
-        IPreferenceStore preferenceStore = DesignerPlugin.getDefault().getPreferenceStore();
+        // IPreferenceStore preferenceStore = DesignerPlugin.getDefault().getPreferenceStore();
 
         List<IElementParameter> paramList = (List<IElementParameter>) elem.getElementParameters();
 
@@ -177,7 +180,8 @@ public class StatsAndLogsHelper extends Utils {
         // on files
         param = new ElementParameter(elem);
         param.setName(EParameterName.ON_FILES_FLAG.getName());
-        param.setValue(preferenceStore.getBoolean(languagePrefix + EParameterName.ON_FILES_FLAG.getName()));
+        // param.setValue(preferenceStore.getBoolean(languagePrefix + EParameterName.ON_FILES_FLAG.getName()));
+        param.setValue(Boolean.FALSE);
         param.setDisplayName(EParameterName.ON_FILES_FLAG.getDisplayName());
         param.setFieldType(EParameterFieldType.CHECK);
         param.setCategory(EComponentCategory.STATSANDLOGS);
@@ -188,7 +192,9 @@ public class StatsAndLogsHelper extends Utils {
         // file path
         param = new ElementParameter(elem);
         param.setName(EParameterName.FILE_PATH.getName());
-        param.setValue(addQuotes(replaceSlash(preferenceStore.getString(languagePrefix + EParameterName.FILE_PATH.getName()))));
+        // param.setValue(addQuotes(replaceSlash(preferenceStore.getString(languagePrefix +
+        // EParameterName.FILE_PATH.getName()))));
+        param.setValue(addQuotes("/tmp/stigma/filepath"));
         param.setDisplayName(EParameterName.FILE_PATH.getDisplayName());
         param.setFieldType(EParameterFieldType.DIRECTORY);
         param.setCategory(EComponentCategory.STATSANDLOGS);
@@ -199,7 +205,9 @@ public class StatsAndLogsHelper extends Utils {
         // stats file name
         param = new ElementParameter(elem);
         param.setName(EParameterName.FILENAME_STATS.getName());
-        param.setValue(addQuotes(preferenceStore.getString(languagePrefix + EParameterName.FILENAME_STATS.getName())));
+        // param.setValue(addQuotes(preferenceStore.getString(languagePrefix +
+        // EParameterName.FILENAME_STATS.getName())));
+        param.setValue(addQuotes("stats_file.txt"));
         param.setDisplayName(EParameterName.FILENAME_STATS.getDisplayName());
         param.setFieldType(EParameterFieldType.TEXT);
         param.setCategory(EComponentCategory.STATSANDLOGS);
@@ -211,7 +219,9 @@ public class StatsAndLogsHelper extends Utils {
 
         param = new ElementParameter(elem);
         param.setName(EParameterName.FILENAME_LOGS.getName());
-        param.setValue(addQuotes(preferenceStore.getString(languagePrefix + EParameterName.FILENAME_LOGS.getName())));
+        // param.setValue(addQuotes(preferenceStore.getString(languagePrefix +
+        // EParameterName.FILENAME_LOGS.getName())));
+        param.setValue(addQuotes("logs_file.txt"));
         param.setDisplayName(EParameterName.FILENAME_LOGS.getDisplayName());
         param.setFieldType(EParameterFieldType.TEXT);
         param.setCategory(EComponentCategory.STATSANDLOGS);
@@ -222,7 +232,9 @@ public class StatsAndLogsHelper extends Utils {
 
         param = new ElementParameter(elem);
         param.setName(EParameterName.FILENAME_METTER.getName());
-        param.setValue(addQuotes(preferenceStore.getString(languagePrefix + EParameterName.FILENAME_METTER.getName())));
+        // param.setValue(addQuotes(preferenceStore.getString(languagePrefix +
+        // EParameterName.FILENAME_METTER.getName())));
+        param.setValue(addQuotes("meter_file.txt"));
         param.setDisplayName(EParameterName.FILENAME_METTER.getDisplayName());
         param.setFieldType(EParameterFieldType.TEXT);
         param.setCategory(EComponentCategory.STATSANDLOGS);

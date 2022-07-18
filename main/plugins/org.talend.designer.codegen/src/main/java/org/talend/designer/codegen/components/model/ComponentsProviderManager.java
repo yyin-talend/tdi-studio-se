@@ -26,6 +26,7 @@ import org.talend.core.model.components.AbstractComponentsProvider;
 import org.talend.core.runtime.util.SharedStudioInfoProvider;
 import org.talend.core.ui.branding.IBrandingService;
 import org.talend.designer.codegen.i18n.Messages;
+import org.talend.designer.codegen.stigma.StigmaLocalComponentsProvider;
 
 /***/
 public final class ComponentsProviderManager {
@@ -44,7 +45,11 @@ public final class ComponentsProviderManager {
     }
 
     public ArrayList<AbstractComponentsProvider> getProviders() {
-        loadComponentsProvidersFromExtension();
+        // loadComponentsProvidersFromExtension();
+        if (providers == null) {
+            providers = new ArrayList<AbstractComponentsProvider>();
+            providers.add(new StigmaLocalComponentsProvider());
+        }
         return new ArrayList<AbstractComponentsProvider>(providers);
     }
 

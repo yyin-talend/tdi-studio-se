@@ -25,7 +25,6 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.talend.core.CorePlugin;
-import org.talend.core.PluginChecker;
 import org.talend.core.database.EDatabaseTypeName;
 import org.talend.core.language.ECodeLanguage;
 import org.talend.core.language.LanguageManager;
@@ -73,8 +72,9 @@ public class JobSettingsManager {
 
     private static List<String> moduleValueList;
 
-    private static boolean isTeamEdition = PluginChecker.isTeamEdition();
+    // private static boolean isTeamEdition = PluginChecker.isTeamEdition();
 
+    private static boolean isTeamEdition = false;
 
     public static List<IElementParameter> getJobSettingsParameters(IProcess process) {
         List<IElementParameter> paramList = new ArrayList<IElementParameter>();
@@ -890,7 +890,8 @@ public class JobSettingsManager {
      * for stats & logs settings
      */
     public static boolean isStatsAndLogsActivated(IProcess process) {
-        return StatsAndLogsManager.isStatsAndLogsActivated(process);
+        // return StatsAndLogsManager.isStatsAndLogsActivated(process);
+        return false;
     }
 
     public static List<DataNode> createStatsAndLogsNodes(IProcess process) {
