@@ -1298,7 +1298,7 @@ if (execStat) {
          returnCode = errorCode.intValue();
     }
     resumeUtil.addLog("JOB_ENDED", "JOB:" + jobName, parent_part_launcher, Thread.currentThread().getId() + "", "","" + returnCode,"","","");
-
+    resumeUtil.flush();
     return returnCode;
 
   }
