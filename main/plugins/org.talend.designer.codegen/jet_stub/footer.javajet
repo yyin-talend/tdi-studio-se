@@ -1156,9 +1156,15 @@ this.globalResumeTicket = false;//to run others jobs
             if (!componentName.equals("tJobStructureCatcher") && !componentName.equals("tLogCatcher") && !componentName.equals("tFlowMeterCatcher") && !componentName.equals("tAssertCatcher") && !componentName.equals("tStatCatcher") && !componentName.equals("tAsyncIn")) {
 %>
 <%=createCallProcess(rootNode, className, false) %>
-<%    }
-    }
-}// end if(isRunInMultiThread)
+<%
+                if (process.getNodesOfType("tStatCatcher").size() > 0) {
+%>
+<%=statsErrorHandlingAfterMainCall(rootNode, process.getNodesOfType("tStatCatcher"))%>
+<%
+                }
+            }
+        }
+    }// end if(isRunInMultiThread)
 %>
 
 this.globalResumeTicket = true;//to run tPostJob
@@ -1292,7 +1298,7 @@ if (execStat) {
          returnCode = errorCode.intValue();
     }
     resumeUtil.addLog("JOB_ENDED", "JOB:" + jobName, parent_part_launcher, Thread.currentThread().getId() + "", "","" + returnCode,"","","");
-
+    resumeUtil.flush();
     return returnCode;
 
   }

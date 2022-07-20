@@ -120,11 +120,11 @@ public class FileController extends AbstractElementPropertySectionController {
     private boolean isRequireSave() {
         if (elem instanceof Node) {
             Node node = (Node) elem;
-            if (node.getComponent() != null && StringUtils.isNotBlank(node.getComponent().getName())) {
-                return !node.getComponent().getName().contains("Input");
+            if (node.getComponent() != null && StringUtils.isNotBlank(node.getComponent().getName())){
+                return node.getComponent().getName().contains("Output") || node.getComponent().getName().contains("Bulk");
             }
         }
-        return true;
+        return false;
     }
 
     private void setDragAndDropActionBool() {

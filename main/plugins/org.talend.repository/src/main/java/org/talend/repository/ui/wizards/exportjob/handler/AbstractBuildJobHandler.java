@@ -44,6 +44,7 @@ import org.talend.core.runtime.repository.build.IBuildParametes;
 import org.talend.core.runtime.repository.build.IBuildResourceParametes;
 import org.talend.core.runtime.repository.build.IBuildResourcesProvider;
 import org.talend.core.runtime.util.ParametersUtil;
+import org.talend.core.service.IRemoteService;
 import org.talend.core.services.ICoreTisService;
 import org.talend.designer.maven.model.TalendMavenConstants;
 import org.talend.designer.runprocess.IProcessor;
@@ -280,27 +281,29 @@ public abstract class AbstractBuildJobHandler implements IBuildJobHandler, IBuil
             otherArgsBuffer.append(TalendMavenConstants.ARG_TEST_FAILURE_IGNORE);
         }
         if (canSignJob()) {
-            // Setup custom JKS for signature
-            IPreferenceStore preStore = CoreRuntimePlugin.getInstance().getCoreService().getPreferenceStore();
-            String signerPath = preStore.getString(SecurityPreferenceConstants.SIGNER_PATH);
-            if (StringUtils.isNotBlank(signerPath)) {
-                otherArgsBuffer.append(" -Dsigner.path=\"" + signerPath + "\"");//$NON-NLS-1$//$NON-NLS-2$
-            }
-            String signerStorePassword = preStore.getString(SecurityPreferenceConstants.SIGNER_KEYSTORE_PASSWORD);
-            if (StringUtils.isNotBlank(signerStorePassword)) {
-                signerStorePassword = StudioEncryption.getStudioEncryption(StudioEncryption.EncryptionKeyName.SYSTEM)
-                        .decrypt(signerStorePassword);
-                otherArgsBuffer.append(" -Dsigner.keystore.password=" + signerStorePassword);//$NON-NLS-1$
-            }
-            String signerKeyPassword = preStore.getString(SecurityPreferenceConstants.SIGNER_KEY_PASSWORD);
-            if (StringUtils.isNotBlank(signerKeyPassword)) {
-                signerKeyPassword = StudioEncryption.getStudioEncryption(StudioEncryption.EncryptionKeyName.SYSTEM)
-                        .decrypt(signerKeyPassword);
-                otherArgsBuffer.append(" -Dsigner.key.password=" + signerKeyPassword);//$NON-NLS-1$
-            }
-            String signerKeyAlias = preStore.getString(SecurityPreferenceConstants.SIGNER_KEY_ALIAS);
-            if (StringUtils.isNotBlank(signerKeyAlias)) {
-                otherArgsBuffer.append(" -Dsigner.key.alias=" + signerKeyAlias);//$NON-NLS-1$
+            if (IRemoteService.get().isCloudConnection()) {
+                // Setup custom JKS for signature
+                IPreferenceStore preStore = CoreRuntimePlugin.getInstance().getCoreService().getPreferenceStore();
+                String signerPath = preStore.getString(SecurityPreferenceConstants.SIGNER_PATH);
+                if (StringUtils.isNotBlank(signerPath)) {
+                    otherArgsBuffer.append(" -Dsigner.path=\"" + signerPath + "\"");//$NON-NLS-1$//$NON-NLS-2$
+                }
+                String signerStorePassword = preStore.getString(SecurityPreferenceConstants.SIGNER_KEYSTORE_PASSWORD);
+                if (StringUtils.isNotBlank(signerStorePassword)) {
+                    signerStorePassword = StudioEncryption.getStudioEncryption(StudioEncryption.EncryptionKeyName.SYSTEM)
+                            .decrypt(signerStorePassword);
+                    otherArgsBuffer.append(" -Dsigner.keystore.password=" + signerStorePassword);//$NON-NLS-1$
+                }
+                String signerKeyPassword = preStore.getString(SecurityPreferenceConstants.SIGNER_KEY_PASSWORD);
+                if (StringUtils.isNotBlank(signerKeyPassword)) {
+                    signerKeyPassword = StudioEncryption.getStudioEncryption(StudioEncryption.EncryptionKeyName.SYSTEM)
+                            .decrypt(signerKeyPassword);
+                    otherArgsBuffer.append(" -Dsigner.key.password=" + signerKeyPassword);//$NON-NLS-1$
+                }
+                String signerKeyAlias = preStore.getString(SecurityPreferenceConstants.SIGNER_KEY_ALIAS);
+                if (StringUtils.isNotBlank(signerKeyAlias)) {
+                    otherArgsBuffer.append(" -Dsigner.key.alias=" + signerKeyAlias);//$NON-NLS-1$
+                } 
             }
             otherArgsBuffer.append(" " + TalendMavenConstants.ARG_LICENSE_PATH + "=\"" + getLicenseFile().getAbsolutePath() + "\"");
             otherArgsBuffer.append(" " + TalendMavenConstants.ARG_SESSION_ID + "=" + getSessionId());
