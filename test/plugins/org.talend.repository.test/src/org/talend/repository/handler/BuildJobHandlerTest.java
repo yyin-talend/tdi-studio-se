@@ -1,9 +1,6 @@
 package org.talend.repository.handler;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 import java.io.File;
 import java.io.InputStream;
@@ -96,7 +93,7 @@ public class BuildJobHandlerTest {
     @Before
     public void setUp() throws Exception {
         if (GlobalServiceRegister.getDefault().isServiceRegistered(IRunProcessService.class)) {
-            runProcessService = (IRunProcessService) GlobalServiceRegister.getDefault().getService(IRunProcessService.class);
+            runProcessService = GlobalServiceRegister.getDefault().getService(IRunProcessService.class);
         }
         assertNotNull(runProcessService);
 

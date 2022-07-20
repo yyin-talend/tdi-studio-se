@@ -82,7 +82,7 @@ public class BuildJobHandler extends AbstractBuildJobHandler {
 
     public BuildJobHandler(ProcessItem processItem, String version, String contextName, Map<ExportChoice, Object> exportChoiceMap) {
         super(processItem, version, contextName, exportChoiceMap);
-        setProjectNameLowerCase(false);
+        setProjectNameLowerCase(true);
         ProcessorUtilities.setExportConfig(JavaUtils.JAVA_APP_NAME, null, null);
     }
 
