@@ -142,7 +142,7 @@ public class WebSocketClient implements AutoCloseable {
         final String buildRequest = buildRequest(id, uri, payload);
         try {
             final byte[] allBytes = buildRequest.getBytes(UTF_8);
-            if (allBytes.length < WEBSOCKET_BUFFER_LIMIT) {
+            if (allBytes.length <= WEBSOCKET_BUFFER_LIMIT) {
                 try {
                     session.getBasicRemote().sendBinary(ByteBuffer.wrap(allBytes));
                 } catch (final IOException e) {
