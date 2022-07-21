@@ -29,7 +29,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
 import java.nio.ByteBuffer;
-import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.Base64;
 import java.util.List;
@@ -74,6 +73,8 @@ import org.talend.sdk.component.studio.util.TaCoKitConst;
 // technical note: this client includes the transport (websocket) but also the protocol/payload formatting/parsing
 // todo: better error handling, can need some server bridge love too to support ERROR responses
 public class WebSocketClient implements AutoCloseable {
+
+    public static final int WEBSOCKET_BUFFER_LIMIT = 8192;
 
     private static final byte[] EOM = "^@".getBytes(UTF_8);
 
@@ -140,11 +141,25 @@ public class WebSocketClient implements AutoCloseable {
         session.getUserProperties().put("handler", handler);
         final String buildRequest = buildRequest(id, uri, payload);
         try {
-            try {
-                session.getBasicRemote().sendBinary(ByteBuffer.wrap(buildRequest.getBytes(StandardCharsets.UTF_8)));
-            } catch (final IOException e) {
-                throw new IllegalStateException(e);
+            final byte[] allBytes = buildRequest.getBytes(UTF_8);
+            if (allBytes.length < WEBSOCKET_BUFFER_LIMIT) {
+                try {
+                    session.getBasicRemote().sendBinary(ByteBuffer.wrap(allBytes));
+                } catch (final IOException e) {
+                    throw new IllegalStateException(e);
+                }
+            } else {
+                final int parts = (int) Math.ceil((double) allBytes.length / WEBSOCKET_BUFFER_LIMIT);
+                for (int i = 0; i < parts; i++) {
+                    try {
+                        final byte[] toSend = Arrays.copyOfRange(allBytes, i * WEBSOCKET_BUFFER_LIMIT, Math.min((i + 1) * WEBSOCKET_BUFFER_LIMIT, allBytes.length));
+                        session.getBasicRemote().sendBinary(ByteBuffer.wrap(toSend), i + 1 == parts);
+                    } catch (final IOException e) {
+                        throw new IllegalStateException(e);
+                    }
+                }
             }
+
             try {
                 handler.latch.await(1, MINUTES); // todo: make it configurable? 1mn is already a lot
             } catch (final InterruptedException e) {
