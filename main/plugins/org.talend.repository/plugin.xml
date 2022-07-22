@@ -2823,12 +2823,12 @@
         </projecttask>
         <projecttask
               beforeLogon="true"
-              breaks="6.2.1"
-              class="org.talend.repository.model.migration.ChangeMappingFileMigrationTask"
-              description="Change mapping file"
-              id="org.talend.repository.model.migration.ChangeMappingFileMigrationTask"
-              name="ChangeMappingFileMigrationTask"
-              version="6.2.2">
+              breaks="7.3.0"
+              class="org.talend.repository.model.migration.UpdateMappingFileMigrationTask"
+              description="Update mapping file"
+              id="org.talend.repository.model.migration.UpdateMappingFileMigrationTask"
+              name="UpdateMappingFileMigrationTask"
+              version="7.3.1">
         </projecttask>
         <projecttask
               beforeLogon="false"
