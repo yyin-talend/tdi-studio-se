@@ -542,7 +542,7 @@ public class TaCoKitUtil {
      */
     public static boolean isSupportUseExistConnection(ComponentModel component) {
         boolean isSupport = false;
-        ActionList actionList = Lookups.taCoKitCache().getActionList(component.getIndex().getFamilyDisplayName());
+        ActionList actionList = Lookups.taCoKitCache().getActionList(component.getIndex().getId().getFamily());
         if (actionList != null) {
             for (ActionItem action : actionList.getItems()) {
                 if (TaCoKitConst.CREATE_CONNECTION_ATCION_NAME.equals(action.getType())
