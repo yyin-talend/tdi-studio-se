@@ -19,7 +19,8 @@ skeleton="../templates/db_output_bulk.skeleton"
 	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 	INode node = (INode)codeGenArgument.getArgument();
 	String cid = node.getUniqueName();
-	
+
+	boolean isLog4jEnabled = ("true").equals(ElementParameterParser.getValue(node.getProcess(), "__LOG4J_ACTIVATE__"));
 	String host = ElementParameterParser.getValue(node, "__HOST__");
 	String port = ElementParameterParser.getValue(node, "__PORT__");
 	String dbName = ElementParameterParser.getValue(node, "__DBNAME__");
@@ -33,7 +34,8 @@ skeleton="../templates/db_output_bulk.skeleton"
 	
 	boolean useExistingS3Connection = "true".equalsIgnoreCase(ElementParameterParser.getValue(node,"__USE_EXISTING_CONNECTION_S3__"));
 	String s3ConnectionCid = ElementParameterParser.getValue(node,"__CONNECTION_S3__");
-	int driveVersion = "DRIVER_V2".equals(ElementParameterParser.getValue(node, "__DRIVER_VERSION__"))? 2 : 1;
+	int driveVersion = ("DRIVER_V2".equals(ElementParameterParser.getValue(node, "__DRIVER_VERSION__")) || "DRIVER_VERSION".equals(ElementParameterParser.getValue(node, "__DRIVER_VERSION__")))
+     ? 2 : 1;
     boolean useStringProperties = "true".equals(ElementParameterParser.getValue(node, "__USE_STRING_PROPERTIES__"));
 
 	INode current_node = node;
@@ -113,7 +115,8 @@ skeleton="../templates/db_output_bulk.skeleton"
 		<%}%>
 		String dbUser_<%=cid %> = <%=userName%>;
 		String dbPwd_<%=cid %> = decryptedPass_<%=cid%>;
-<%      
+
+<%
         if(driveVersion == 2 && !useStringProperties){
 
 		        log4jCodeGenerateUtil.connectWithProperties(node);
@@ -121,7 +124,7 @@ skeleton="../templates/db_output_bulk.skeleton"
 		        log4jCodeGenerateUtil.connect(node);
 		}
 	}
-	
+
 	String tableAction = ElementParameterParser.getValue(node,"__TABLE_ACTION__");
 	String dbmsId = ElementParameterParser.getValue(node,"__MAPPING__");
 	List<Column> stmtStructure = null;
@@ -546,6 +549,13 @@ skeleton="../templates/db_output_bulk.skeleton"
 	}//!parquetMode
 %>
 	java.sql.Statement stmt_<%=cid %>=conn_<%=cid %>.createStatement();
+<%
+	if (isLog4jEnabled) {
+%>
+		log.debug("Executing COPY command: " + command_<%=cid%>.toString().replace(decryptedPwd_<%=cid %>, "****"));
+<%
+	}
+%>
 	stmt_<%=cid %>.execute(command_<%=cid%>.toString());
 <%
 	if(isSetMaxError) {

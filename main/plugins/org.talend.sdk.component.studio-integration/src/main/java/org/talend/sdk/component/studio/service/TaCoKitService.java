@@ -15,24 +15,34 @@ package org.talend.sdk.component.studio.service;
 import java.io.File;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.NullProgressMonitor;
 import org.talend.commons.CommonsPlugin;
 import org.talend.commons.exception.ExceptionHandler;
+import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.runtime.service.ITaCoKitService;
 import org.talend.core.PluginChecker;
+import org.talend.core.model.metadata.builder.connection.Connection;
+import org.talend.core.model.properties.Item;
+import org.talend.core.model.properties.Property;
+import org.talend.core.model.properties.impl.ConnectionItemImpl;
 import org.talend.core.model.repository.ERepositoryObjectType;
+import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.model.utils.ComponentInstallerTaskRegistryReader;
 import org.talend.core.model.utils.IComponentInstallerTask;
+import org.talend.core.runtime.CoreRuntimePlugin;
+import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.sdk.component.server.front.model.ComponentDetail;
 import org.talend.sdk.component.studio.Lookups;
 import org.talend.sdk.component.studio.ServerManager;
 import org.talend.sdk.component.studio.metadata.TaCoKitCache;
+import org.talend.sdk.component.studio.metadata.model.TaCoKitConfigurationModel;
 import org.talend.sdk.component.studio.model.parameter.PropertyDefinitionDecorator;
+import org.talend.sdk.component.studio.model.parameter.ValueSelectionParameter;
 import org.talend.sdk.component.studio.model.parameter.VersionParameter;
 import org.talend.sdk.component.studio.toolbar.ReloadAction;
 import org.talend.sdk.component.studio.util.TaCoKitUtil;
@@ -75,6 +85,7 @@ public class TaCoKitService implements ITaCoKitService {
         });
     }
 
+    @Override
     public void waitForStart() {
         ServerManager.getInstance().waitForStart();
     }
@@ -110,6 +121,72 @@ public class TaCoKitService implements ITaCoKitService {
     }
 
     @Override
+    public String getParentItemIdFromItem(Object item) {
+        String parentItemId = null;
+        if (item instanceof ConnectionItemImpl) {
+            Connection connection = ((ConnectionItemImpl) item).getConnection();
+
+            if (connection != null) {
+                HashMap properties = connection.getProperties();
+                if (properties != null && !properties.isEmpty()) {
+
+                    TaCoKitConfigurationModel taCoKitConfigurationModel = new TaCoKitConfigurationModel(connection);
+                    parentItemId = taCoKitConfigurationModel.getParentItemId();
+                }
+            }
+        }
+        return parentItemId;
+    }
+
+    @Override
+    public Object getDatastoreFromDataset(Object obj) {
+        if (obj instanceof IRepositoryViewObject) {
+            IRepositoryViewObject repositoryViewObject = (IRepositoryViewObject) obj;
+            ERepositoryObjectType repositoryObjectType = repositoryViewObject.getRepositoryObjectType();
+            if (repositoryObjectType != null && isTaCoKitType(repositoryObjectType)) {
+
+                Property property = repositoryViewObject.getProperty();
+
+                if (property != null) {
+
+                    Item item = property.getItem();
+
+                    if (item instanceof ConnectionItemImpl) {
+
+                        Connection connection = ((ConnectionItemImpl) item).getConnection();
+
+                        if (connection != null) {
+
+                            TaCoKitConfigurationModel taCoKitConfigurationModel = new TaCoKitConfigurationModel(
+                                    connection);
+                            String parentItemId = taCoKitConfigurationModel.getParentItemId();
+
+                            IProxyRepositoryFactory factory = CoreRuntimePlugin.getInstance()
+                                    .getProxyRepositoryFactory();
+
+                            IRepositoryViewObject objParent = null;
+                            try {
+                                if (factory != null && parentItemId != null) {
+                                    objParent = factory.getLastVersion(parentItemId, repositoryObjectType);
+                                    if (objParent != null) {
+                                        return objParent;
+                                    }
+                                }
+
+                            } catch (PersistenceException e) {
+                                ExceptionHandler.process(e);
+                            }
+                        }
+
+                    }
+                }
+            }
+        }
+
+        return null;
+    }
+
+    @Override
     public boolean isNeedMigration(String componentName, Map<String, String> persistedProperties) {
         TaCoKitCache currentCach = Lookups.taCoKitCache();
         Optional<ComponentDetail> detail = Lookups.service().getDetail(componentName);         
@@ -130,5 +207,10 @@ public class TaCoKitService implements ITaCoKitService {
             }
         }
         return false;
+    }
+
+    @Override
+    public boolean isValueSelectionParameter(Object parameter) {
+        return (parameter instanceof ValueSelectionParameter);
     }
 }

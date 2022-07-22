@@ -63,6 +63,7 @@ import org.talend.core.model.process.EComponentCategory;
 import org.talend.core.model.process.EConnectionType;
 import org.talend.core.model.process.EParameterFieldType;
 import org.talend.core.model.process.ElementParameterParser;
+import org.talend.core.model.process.ElementParameterValueModel;
 import org.talend.core.model.process.IConnection;
 import org.talend.core.model.process.IConnectionCategory;
 import org.talend.core.model.process.IElement;
@@ -230,6 +231,11 @@ public class DataProcess implements IGeneratingProcess {
                     // targetParam.setValue( sourceParam.getValue());
                     targetParam.setListItemsValue(ArrayUtils.clone(sourceParam.getListItemsValue()));
                     targetParam.setListItemsDisplayCodeName(sourceParam.getListItemsDisplayCodeName());
+                    try {
+                        setupTacokitSuggestionValueConfiguration(targetParam);
+                    } catch (Exception e) {
+                        ExceptionHandler.process(e);
+                    }
                 }
                 for (String name : targetParam.getChildParameters().keySet()) {
                     IElementParameter targetChildParam = targetParam.getChildParameters().get(name);
@@ -247,6 +253,46 @@ public class DataProcess implements IGeneratingProcess {
                 ElementParameter newParam = (ElementParameter) sourceParam.getClone();
                 List<IElementParameter> listParam = (List<IElementParameter>) targetElement.getElementParameters();
                 listParam.add(newParam);
+            }
+        }
+    }
+
+    public void setupTacokitSuggestionValueConfiguration(IElementParameter parameter) {
+        if (parameter instanceof ElementParameter) {
+            Object sourceName = ((ElementParameter) parameter).getTaggedValue("org.talend.sdk.component.source"); //$NON-NLS-1$
+            boolean isTacokit = "tacokit".equalsIgnoreCase(String.valueOf(sourceName)); //$NON-NLS-1$
+            if (!isTacokit) {
+                return;
+            }
+            Object value = parameter.getValue();
+            if (value == null || value instanceof List && ((List) value).isEmpty()) {
+                return;
+            }
+            Object[] listItemsValue = parameter.getListItemsValue();
+            Set<String> valueSelectionColNames = new HashSet<String>();
+            for (Object itemObj : listItemsValue) {
+                if (itemObj instanceof ElementParameter) {
+                    ElementParameter itemParam = (ElementParameter) itemObj;
+                    if (EParameterFieldType.TACOKIT_VALUE_SELECTION.equals(itemParam.getFieldType())) {
+                        valueSelectionColNames.add(itemParam.getName());
+                    }
+                }
+            }
+
+            if (value instanceof List) {
+                for (Object row : (List) value) {
+                    if (row instanceof Map) {
+                        Map rowColumn = (Map) row;
+                        for (Object columnName : rowColumn.keySet()) {
+                            Object columnValue = rowColumn.get(columnName);
+                            if (valueSelectionColNames.contains(String.valueOf(columnName))
+                                    && columnValue instanceof ElementParameterValueModel) {
+                                ElementParameterValueModel model = (ElementParameterValueModel) columnValue;
+                                rowColumn.put(columnName, model.getValue());
+                            }
+                        }
+                    }
+                }
             }
         }
     }

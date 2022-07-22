@@ -4,7 +4,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.talend</groupId>
 	<artifactId>talendMQRFH2</artifactId>
-	<version>1.1.0-20220307</version>
+	<version>1.2.0-20220707</version>
 	<packaging>jar</packaging>
 
 	<properties>
@@ -39,7 +39,7 @@
 		<dependency>
 			<groupId>com.ibm.mq</groupId>
 			<artifactId>com.ibm.mq.allclient</artifactId>
-			<version>9.2.4.0</version>
+			<version>9.2.5.0</version>
 		</dependency>
 		<dependency>
 			<groupId>org.talend.libraries</groupId>

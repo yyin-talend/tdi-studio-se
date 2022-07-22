@@ -489,12 +489,12 @@ public class SQLBuilderDialog extends Dialog implements ISQLBuilderDialog, IRepo
                 List list = ExtractMetaDataUtils.getInstance().connect(dbType, url, username, pwd, driverClassName,
                         iMetadataConnection.getDriverJarPath(), dbVersion, iMetadataConnection.getAdditionalParams());
                 if (list != null && list.size() > 0) {
-                    for (int i = 0; i < list.size(); i++) {
-                        if (list.get(i) instanceof Connection) {
-                            connection = (Connection) list.get(i);
+                    for (Object element : list) {
+                        if (element instanceof Connection) {
+                            connection = (Connection) element;
                         }
-                        if (list.get(i) instanceof DriverShim) {
-                            wapperDriver = (DriverShim) list.get(i);
+                        if (element instanceof DriverShim) {
+                            wapperDriver = (DriverShim) element;
                         }
                     }
                 }
@@ -880,6 +880,11 @@ public class SQLBuilderDialog extends Dialog implements ISQLBuilderDialog, IRepo
      */
     @Override
     public String getSelectedContext() {
+        if (this.selectedContext == null) {
+            if (connParameters != null) {
+                this.selectedContext = connParameters.getSelectContext();
+            }
+        }
         return this.selectedContext;
     }
 

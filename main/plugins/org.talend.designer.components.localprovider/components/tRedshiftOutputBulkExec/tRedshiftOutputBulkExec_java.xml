@@ -412,6 +412,18 @@
 						<ITEM NAME="TRIMBLANKS" VALUE="TRIMBLANKS" />
 						<ITEM NAME="EMPTYASNULL" VALUE="EMPTYASNULL" />
 						<ITEM NAME="BLANKSASNULL" VALUE="BLANKSASNULL" />
+						<ITEM NAME="SSH" VALUE="SSH" />
+						<ITEM NAME="REMOVEQUOTES" VALUE="REMOVEQUOTES" />
+						<ITEM NAME="ACCEPTINVCHARS" VALUE="ACCEPTINVCHARS" />
+						<ITEM NAME="ACCEPTANYDATE" VALUE="ACCEPTANYDATE" />
+						<ITEM NAME="TRUNCATECOLUMNS" VALUE="TRUNCATECOLUMNS" />
+						<ITEM NAME="FILLRECORD" VALUE="FILLRECORD" />
+						<ITEM NAME="NOLOAD" VALUE="NOLOAD" />
+						<ITEM NAME="COMPROWS" VALUE="COMPROWS" />
+						<ITEM NAME="COMPUPDATE" VALUE="COMPUPDATE" />
+						<ITEM NAME="STATUPDATE" VALUE="STATUPDATE" />
+						<ITEM NAME="ROUNDEC" VALUE="ROUNDEC" />
+						<ITEM NAME="NULL" VALUE="NULL" />
 					</ITEMS>
 				</ITEM>
 				<ITEM NAME="DATA_VALUE" FIELD="TEXT" READONLY_IF="(OTHER_CONFIGURATION.OTHER_PARAMETER=='ESCAPE')
@@ -420,6 +432,13 @@
 				 OR (OTHER_CONFIGURATION.OTHER_PARAMETER=='TRIMBLANKS')
 				 OR (OTHER_CONFIGURATION.OTHER_PARAMETER=='EMPTYASNULL')
 				 OR (OTHER_CONFIGURATION.OTHER_PARAMETER=='BLANKSASNULL')
+				 OR (OTHER_CONFIGURATION.OTHER_PARAMETER=='SSH')
+				 OR (OTHER_CONFIGURATION.OTHER_PARAMETER=='REMOVEQUOTES')
+				 OR (OTHER_CONFIGURATION.OTHER_PARAMETER=='ACCEPTANYDATE')
+				 OR (OTHER_CONFIGURATION.OTHER_PARAMETER=='TRUNCATECOLUMNS')
+				 OR (OTHER_CONFIGURATION.OTHER_PARAMETER=='FILLRECORD')
+				 OR (OTHER_CONFIGURATION.OTHER_PARAMETER=='NOLOAD')
+				 OR (OTHER_CONFIGURATION.OTHER_PARAMETER=='ROUNDEC')
 				 "/>
 			</ITEMS>
 		</PARAMETER>
@@ -727,14 +746,14 @@
 			<IMPORT NAME="aws-java-sdk-redshift-internal-1.12.x.jar" MODULE="aws-java-sdk-redshift-internal-1.12.x.jar"
 					MVN="mvn:com.amazonaws/aws-java-sdk-redshift-internal/1.12.x"
 					REQUIRED_IF="(JDBC_URL == 'SSO') AND (USE_EXISTING_CONNECTION == 'false')" />
-			<IMPORT NAME="jackson-core-2.11.4.jar" MODULE="jackson-core-2.11.4.jar"
-				MVN="mvn:com.fasterxml.jackson.core/jackson-core/2.11.4"
+			<IMPORT NAME="jackson-core-2.13.2.jar" MODULE="jackson-core-2.13.2.jar"
+				MVN="mvn:com.fasterxml.jackson.core/jackson-core/2.13.2"
 				REQUIRED="true" />
-			<IMPORT NAME="jackson-databind-2.11.4.jar" MODULE="jackson-databind-2.11.4.jar"
-				MVN="mvn:com.fasterxml.jackson.core/jackson-databind/2.11.4"
+			<IMPORT NAME="jackson-databind-2.13.2.2.jar" MODULE="jackson-databind-2.13.2.2.jar"
+				MVN="mvn:com.fasterxml.jackson.core/jackson-databind/2.13.2.2"
 				REQUIRED="true" />
-			<IMPORT NAME="jackson-annotations-2.11.4.jar" MODULE="jackson-annotations-2.11.4.jar"
-				MVN="mvn:com.fasterxml.jackson.core/jackson-annotations/2.11.4"
+			<IMPORT NAME="jackson-annotations-2.13.2.jar" MODULE="jackson-annotations-2.13.2.jar"
+				MVN="mvn:com.fasterxml.jackson.core/jackson-annotations/2.13.2"
 				REQUIRED="true" />
 			<IMPORT NAME="httpcore-4.4.13.jar" MODULE="httpcore-4.4.13.jar"
 				MVN="mvn:org.apache.httpcomponents/httpcore/4.4.13"

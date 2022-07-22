@@ -89,6 +89,7 @@ import org.talend.core.model.metadata.builder.ConvertionHelper;
 import org.talend.core.model.metadata.builder.connection.Connection;
 import org.talend.core.model.metadata.builder.connection.DatabaseConnection;
 import org.talend.core.model.metadata.builder.database.ExtractMetaDataUtils;
+import org.talend.core.model.metadata.builder.database.JavaSqlFactory;
 import org.talend.core.model.metadata.designerproperties.EParameterNameForComponent;
 import org.talend.core.model.param.EConnectionParameterName;
 import org.talend.core.model.process.EComponentCategory;
@@ -97,6 +98,7 @@ import org.talend.core.model.process.Element;
 import org.talend.core.model.process.IConnection;
 import org.talend.core.model.process.IContext;
 import org.talend.core.model.process.IContextManager;
+import org.talend.core.model.process.IContextParameter;
 import org.talend.core.model.process.IElement;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.INode;
@@ -149,11 +151,14 @@ import org.talend.designer.core.ui.views.problems.Problems;
 import org.talend.designer.core.ui.views.properties.ComponentSettingsView;
 import org.talend.designer.core.ui.views.properties.MultipleThreadDynamicComposite;
 import org.talend.designer.core.ui.views.properties.WidgetFactory;
+import org.talend.designer.core.ui.views.properties.composites.MissingSettingsMultiThreadDynamicComposite;
 import org.talend.designer.core.utils.UpgradeParameterHelper;
 import org.talend.designer.runprocess.IRunProcessService;
 import org.talend.hadoop.distribution.constants.HiveConstant;
 import org.talend.hadoop.distribution.constants.ImpalaConstant;
 import org.talend.metadata.managment.repository.ManagerConnection;
+import org.talend.metadata.managment.ui.utils.ConnectionContextHelper;
+import org.talend.metadata.managment.utils.MetadataConnectionUtils;
 import org.talend.repository.RepositoryPlugin;
 import org.talend.repository.model.IMetadataService;
 import org.talend.repository.model.IProxyRepositoryFactory;
@@ -221,6 +226,8 @@ public abstract class AbstractElementPropertySectionController implements Proper
     protected IContextManager contextManager;
 
     public static Map<String, String> connKeyMap = new HashMap<String, String>(10);
+
+    protected Map<String, String> promptParameterMap = new HashMap<String, String>();
 
     static {
         connKeyMap.put("SERVER_NAME", "HOST"); //$NON-NLS-1$ //$NON-NLS-2$
@@ -335,8 +342,7 @@ public abstract class AbstractElementPropertySectionController implements Proper
                         // for jdbc parm driver jar
                         String value = "";
                         List list = (List) param.getValue();
-                        for (int i = 0; i < list.size(); i++) {
-                            Object object = list.get(i);
+                        for (Object object : list) {
                             if (object instanceof Map) {
                                 Map valueMap = (Map) object;
                                 if (valueMap.get("JAR_NAME") != null) {
@@ -393,8 +399,7 @@ public abstract class AbstractElementPropertySectionController implements Proper
                         // for jdbc parm driver jar
                         String value = "";
                         List list = (List) param.getValue();
-                        for (int i = 0; i < list.size(); i++) {
-                            Object object = list.get(i);
+                        for (Object object : list) {
                             if (object instanceof Map) {
                                 Map valueMap = (Map) object;
                                 if (valueMap.get("JAR_NAME") != null) {
@@ -444,8 +449,7 @@ public abstract class AbstractElementPropertySectionController implements Proper
                             // for jdbc parm driver jar
                             String value = "";
                             List list = (List) param.getValue();
-                            for (int i = 0; i < list.size(); i++) {
-                                Object object = list.get(i);
+                            for (Object object : list) {
                                 if (object instanceof Map) {
                                     Map valueMap = (Map) object;
                                     if (valueMap.get("JAR_NAME") != null) {
@@ -792,7 +796,11 @@ public abstract class AbstractElementPropertySectionController implements Proper
          */
         public void checkErrors(final Control control) {
             refreshNode();
-            IElementParameter elementParameter = elem.getElementParameter(getParameterName(control));
+            String parameterName = getParameterName(control);
+            if (StringUtils.isBlank(parameterName)) {
+                return;
+            }
+            IElementParameter elementParameter = elem.getElementParameter(parameterName);
 
             if (elementParameter.isReadOnly() || elementParameter.isNoCheck()) {
                 return;
@@ -1093,6 +1101,9 @@ public abstract class AbstractElementPropertySectionController implements Proper
                 @Override
                 public void addNewCommand(Control control) {
                     String name = getParameterName(control);
+                    if (StringUtils.isBlank(name)) {
+                        return;
+                    }
                     String text = ControlUtils.getText(control);
                     Command cmd = getTextCommandForHelper(name, text);
                     // getCommandStack().execute(cmd);
@@ -1104,6 +1115,9 @@ public abstract class AbstractElementPropertySectionController implements Proper
                     CommandStack commandStack = getCommandStack();
 
                     String name = getParameterName(control);
+                    if (StringUtils.isBlank(name)) {
+                        return;
+                    }
                     String text = ControlUtils.getText(control);
 
                     if (commandStack == null) {
@@ -1229,8 +1243,10 @@ public abstract class AbstractElementPropertySectionController implements Proper
             public void dragOver(final DropTargetEvent event) {
                 if (TextTransfer.getInstance().isSupportedType(event.currentDataType)) {
                     propertyName = getParameterName(textControl);
-                    for (int i = 0; i < elem.getElementParameters().size(); i++) {
-                        IElementParameter param = elem.getElementParameters().get(i);
+                    if (StringUtils.isBlank(propertyName)) {
+                        return;
+                    }
+                    for (IElementParameter param : elem.getElementParameters()) {
                         if (param.getName().equals(propertyName)) {
                             if (param.isReadOnly()) {
                                 event.detail = DND.ERROR_INVALID_DATA;
@@ -1705,20 +1721,22 @@ public abstract class AbstractElementPropertySectionController implements Proper
                 dbName = dbName.replace("\\\"", "");
             }
             dbName = TextUtil.removeQuots(dbName);
-        } else if (EDatabaseTypeName.GENERAL_JDBC.getDisplayName().equals(connParameters.getDbType())) {
+        } else if (EDatabaseTypeName.GENERAL_JDBC.getDisplayName().equals(dbType)) {
             dbName = ""; //$NON-NLS-1$
         }
+        boolean isJDBCImplicitContext = EDatabaseTypeName.GENERAL_JDBC.getDisplayName().equals(dbType)
+                && elem instanceof ImplicitContextLoadElement;
         connParameters.setDbName(dbName);
 
-        if ((elem instanceof Node) && (((Node)elem).getComponent().getComponentType().equals(EComponentType.GENERIC)
-                || (element instanceof INode
+        if ((elem instanceof Node)
+                && (((Node) elem).getComponent().getComponentType().equals(EComponentType.GENERIC) || (element instanceof INode
                         && ((INode) element).getComponent().getComponentType().equals(EComponentType.GENERIC)))) {
-            connParameters.setUserName(getParameterValueWithContext(element, EConnectionParameterName.GENERIC_USERNAME.getDisplayName(), context,
-                    basePropertyParameter));
-            connParameters.setPassword(getParameterValueWithContext(element, EConnectionParameterName.GENERIC_PASSWORD.getDisplayName(), context,
-                    basePropertyParameter));
-            String url = TalendTextUtils.removeQuotesIfExist(getParameterValueWithContext(element, EConnectionParameterName.GENERIC_URL.getDisplayName(), context,
-                    basePropertyParameter));
+            connParameters.setUserName(getParameterValueWithContext(element,
+                    EConnectionParameterName.GENERIC_USERNAME.getDisplayName(), context, basePropertyParameter));
+            connParameters.setPassword(getParameterValueWithContext(element,
+                    EConnectionParameterName.GENERIC_PASSWORD.getDisplayName(), context, basePropertyParameter));
+            String url = TalendTextUtils.removeQuotesIfExist(getParameterValueWithContext(element,
+                    EConnectionParameterName.GENERIC_URL.getDisplayName(), context, basePropertyParameter));
             connParameters.setUrl(url);
             String jar = TalendTextUtils.removeQuotesIfExist(getParameterValueWithContext(element, EConnectionParameterName.GENERIC_DRIVER_JAR.getDisplayName(), context,
                     basePropertyParameter));
@@ -1746,18 +1764,30 @@ public abstract class AbstractElementPropertySectionController implements Proper
                 if (EDatabaseTypeName.ORACLE_CUSTOM.getDisplayName().equals(dbType)) {
                     url = TalendTextUtils.removeQuotesIfExist(getParameterValueWithContext(element, "RAC_"
                             + EConnectionParameterName.URL.getName(), context, basePropertyParameter));
+                } else if (isJDBCImplicitContext) {
+                    url = TalendTextUtils.removeQuotesIfExist(getParameterValueWithContext(element,
+                            EConnectionParameterName.GENERIC_URL.getDisplayName(), context, basePropertyParameter));
                 }
             }
             connParameters.setUrl(url);
             String driverClass = TalendTextUtils.removeQuotesIfExist(getParameterValueWithContext(element,
                     EConnectionParameterName.DRIVER_CLASS.getName(), context, basePropertyParameter));
+            String jar = TalendTextUtils.removeQuotesIfExist(getParameterValueWithContext(element,
+                    EConnectionParameterName.DRIVER_JAR.getName(), context, basePropertyParameter));
             if (EDatabaseTypeName.GENERAL_JDBC.getDisplayName().equals(dbType)) {
+                if (StringUtils.isEmpty(driverClass)) {
+                    driverClass = TalendTextUtils.removeQuotesIfExist(getParameterValueWithContext(element,
+                            EConnectionParameterName.GENERIC_DRIVER_CLASS.getDisplayName(), context, basePropertyParameter));
+                }
                 connParameters.setDriverClass(driverClass);// tJDBCSCDELT
+                if (StringUtils.isEmpty(jar)) {
+                    jar = TalendTextUtils.removeQuotesIfExist(getParameterValueWithContext(element,
+                            EConnectionParameterName.GENERIC_DRIVER_JAR.getDisplayName(), context, basePropertyParameter));
+                }
             } else {
                 connParameters.setDriverClass(EDatabase4DriverClassName.getDriverClassByDbType(dbType));
             }
-            connParameters.setDriverJar(TalendTextUtils.removeQuotesIfExist(getParameterValueWithContext(element,
-                    EConnectionParameterName.DRIVER_JAR.getName(), context, basePropertyParameter)));
+            connParameters.setDriverJar(jar);
         }
 
         connParameters.setPort(getParameterValueWithContext(element, EConnectionParameterName.PORT.getName(), context,
@@ -1806,6 +1836,9 @@ public abstract class AbstractElementPropertySectionController implements Proper
         		&& (connParameters.getSchema() == null || connParameters.getSchema().length() <= 0)) {
         	connParameters.setSchema(dbName);
         }
+        if (context != null) {
+            connParameters.setSelectContext(context.getName());
+        }
     }
 
     private String getParameterValueWithContext(IElement elem, String key, IContext context,
@@ -1840,8 +1873,7 @@ public abstract class AbstractElementPropertySectionController implements Proper
                 // for jdbc parm driver jars
                 String jarValues = "";
                 List list = (List) value;
-                for (int i = 0; i < list.size(); i++) {
-                    Object object = list.get(i);
+                for (Object object : list) {
                     if (object instanceof Map) {
                         Map valueMap = (Map) object;
                         if (valueMap.get("JAR_NAME") != null) {
@@ -2307,9 +2339,9 @@ public abstract class AbstractElementPropertySectionController implements Proper
                     metadataConnection.getDriverJarPath(), metadataConnection.getDbVersionString(),
                     metadataConnection.getAdditionalParams());
             if (list != null && list.size() > 0) {
-                for (int i = 0; i < list.size(); i++) {
-                    if (list.get(i) instanceof Connection) {
-                        connection = (java.sql.Connection) list.get(i);
+                for (Object element : list) {
+                    if (element instanceof Connection) {
+                        connection = (java.sql.Connection) element;
                     }
                 }
             }
@@ -2432,14 +2464,14 @@ public abstract class AbstractElementPropertySectionController implements Proper
      * @param propertyName
      * @param query
      */
-    protected String openSQLBuilder(String repositoryType, String propertyName, String query) {
+    protected String openSQLBuilder(String repositoryType, String propertyName, String query, IContext context) {
         if (repositoryType.equals(EmfComponent.BUILTIN)) {
             connParameters.setQuery(query, true);
             if (connParameters.isShowConfigParamDialog()) {
                 if (!isUseExistingConnection()) {
-                    initConnectionParametersWithContext(elem, part.getProcess().getContextManager().getDefaultContext());
+                    initConnectionParametersWithContext(elem, context);
                 } else {
-                    initConnectionParametersWithContext(connectionNode, part.getProcess().getContextManager().getDefaultContext());
+                    initConnectionParametersWithContext(connectionNode, context);
                 }
             }
             // add for bug TDI-20335
@@ -2769,4 +2801,85 @@ public abstract class AbstractElementPropertySectionController implements Proper
         return !(elem instanceof FakeElement) && param.isRepositoryValueUsed();
     }
 
+    protected void updatePromptParameter(IElementParameter parameter) {
+        IElement element = parameter.getElement();
+        if (isInWizard()) {
+            ConnectionItem connItem = null;
+            if (dynamicProperty instanceof MissingSettingsMultiThreadDynamicComposite) {
+                connItem = ((MissingSettingsMultiThreadDynamicComposite) dynamicProperty).getConnectionItem();
+            }
+            if (connItem == null) {
+                return;
+            }
+            Connection conn = connItem.getConnection();
+            if (!conn.isContextMode()) {
+                return;
+            }
+            JavaSqlFactory.clearPromptContextCache();
+            Connection connection = MetadataConnectionUtils.prepareConection(conn);
+            if (connection == null) {
+                return;
+            }
+            ConnectionContextHelper.context = ConnectionContextHelper.getContextTypeForContextMode(connection,
+                    connection.getContextName(), false);
+            List<? extends IElementParameter> params = getPromptParameters(element);
+            for (IElementParameter param : params) {
+                Object paramValue = param.getValue();
+                if (paramValue != null && !"".equals(paramValue)) { //$NON-NLS-1$
+                    String value = JavaSqlFactory.getReportPromptConValueFromCache(connection.getContextName(),
+                            connection.getContextId(), paramValue.toString());
+                    if (StringUtils.isNotBlank(value)) {
+                        promptParameterMap.put(param.getName(), paramValue.toString());
+                        elem.setPropertyValue(param.getName(), value);
+                    }
+                }
+            }
+        } else {
+            IContext selectContext = null;
+            if (part != null && part.getProcess() != null) {
+                selectContext = part.getProcess().getContextManager().getDefaultContext();
+            }
+            if (GlobalServiceRegister.getDefault().isServiceRegistered(IRunProcessService.class) && part != null) {
+                IRunProcessService service = GlobalServiceRegister.getDefault().getService(IRunProcessService.class);
+                Shell shell = PlatformUI.getWorkbench().getDisplay().getActiveShell();
+                selectContext = service.promptConfirmLauch(shell, part.getProcess());
+                if (selectContext == null) {
+                    return;
+                }
+                Map<String, String> promptNeededMap = new HashMap<String, String>();
+                for (IContextParameter contextParameter : selectContext.getContextParameterList()) {
+                    if (contextParameter.isPromptNeeded()) {
+                        String name = contextParameter.getName();
+                        String value = contextParameter.getValue();
+                        if (StringUtils.isNotBlank(value)) {
+                            promptNeededMap.put("context." + name, value);//$NON-NLS-1$
+                        }
+                    }
+                }
+                List<? extends IElementParameter> params = getPromptParameters(element);
+                for (IElementParameter param : params) {
+                    Object paramValue = param.getValue();
+                    if (paramValue != null && !"".equals(paramValue)) { //$NON-NLS-1$
+                        if (promptNeededMap.containsKey(paramValue)) {
+                            promptParameterMap.put(param.getName(), paramValue.toString());
+                            elem.setPropertyValue(param.getName(), promptNeededMap.get(paramValue));
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    protected void resetPromptParameter() {
+        Iterator<String> iter = promptParameterMap.keySet().iterator();
+        while (iter.hasNext()) {
+            String key = iter.next();
+            String value = promptParameterMap.get(key);
+            elem.setPropertyValue(key, value);
+        }
+    }
+
+    protected List<? extends IElementParameter> getPromptParameters(IElement element) {
+        return element.getElementParameters();
+    }
 }
