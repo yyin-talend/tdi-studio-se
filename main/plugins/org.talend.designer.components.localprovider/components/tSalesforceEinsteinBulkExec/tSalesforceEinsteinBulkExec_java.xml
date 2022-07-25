@@ -339,9 +339,9 @@
     <CODEGENERATION>
       <IMPORTS>
         <IMPORT
-            NAME="force-wsc-53.0.0"
-            MODULE="force-wsc-53.0.0.jar"
-            MVN="mvn:com.force.api/force-wsc/53.0.0"
+            NAME="force-wsc-53.1.0"
+            MODULE="force-wsc-53.1.0.jar"
+            MVN="mvn:com.force.api/force-wsc/53.1.0"
             REQUIRED_IF="USE_EXISTING_CONNECTION == 'false'"
         />
         <IMPORT

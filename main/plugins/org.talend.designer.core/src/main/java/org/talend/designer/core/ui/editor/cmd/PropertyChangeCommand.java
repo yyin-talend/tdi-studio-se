@@ -605,9 +605,7 @@ public class PropertyChangeCommand extends Command {
         if (elementParameters == null) {
             return;
         }
-        for (int i = 0; i < elementParameters.size(); i++) {
-            IElementParameter testedParam = elementParameters.get(i);
-
+        for (IElementParameter testedParam : elementParameters) {
             String showIf = testedParam.getShowIf();
             String notShowIf = testedParam.getNotShowIf();
 
@@ -997,8 +995,7 @@ public class PropertyChangeCommand extends Command {
         }
 
         if (currentParam.getFieldType().equals(EParameterFieldType.CLOSED_LIST)) {
-            for (int i = 0; i < elem.getElementParameters().size(); i++) {
-                IElementParameter param = elem.getElementParameters().get(i);
+            for (IElementParameter param : elem.getElementParameters()) {
                 if (param.getDefaultValues().size() > 0) {
                     param.setValueToDefault(elem.getElementParameters());
                 }

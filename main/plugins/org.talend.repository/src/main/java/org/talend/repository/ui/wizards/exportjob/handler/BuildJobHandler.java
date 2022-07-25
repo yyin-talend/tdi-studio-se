@@ -91,13 +91,6 @@ public class BuildJobHandler extends AbstractBuildJobHandler {
     public BuildJobHandler(ProcessItem processItem, String version, String contextName, Map<ExportChoice, Object> exportChoiceMap) {
         super(processItem, version, contextName, exportChoiceMap);
         setProjectNameLowerCase(true);
-        // tdqReportRun need to keep project name same with studio case
-        if (GlobalServiceRegister.getDefault().isServiceRegistered(ITDQItemService.class)) {
-            ITDQItemService tdqItemService = (ITDQItemService) GlobalServiceRegister.getDefault().getService(ITDQItemService.class);
-            if (tdqItemService != null && tdqItemService.hasProcessItemDependencies(Arrays.asList(new Item[] { processItem }))) {
-                setProjectNameLowerCase(false);
-            }
-        }
         ProcessorUtilities.setExportConfig(JavaUtils.JAVA_APP_NAME, null, null);
     }
 

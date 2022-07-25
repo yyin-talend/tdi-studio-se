@@ -2823,12 +2823,12 @@
         </projecttask>
         <projecttask
               beforeLogon="true"
-              breaks="6.2.1"
-              class="org.talend.repository.model.migration.ChangeMappingFileMigrationTask"
-              description="Change mapping file"
-              id="org.talend.repository.model.migration.ChangeMappingFileMigrationTask"
-              name="ChangeMappingFileMigrationTask"
-              version="6.2.2">
+              breaks="7.3.0"
+              class="org.talend.repository.model.migration.UpdateMappingFileMigrationTask"
+              description="Update mapping file"
+              id="org.talend.repository.model.migration.UpdateMappingFileMigrationTask"
+              name="UpdateMappingFileMigrationTask"
+              version="7.3.1">
         </projecttask>
         <projecttask
               beforeLogon="false"
@@ -3766,6 +3766,33 @@
               description="Change Mapping type in GreenPlum components where greenplum driver selected"
               id="org.talend.repository.model.migration.ReplaceMappingForGreenplumDatabaseMigrationTask"
               name="ReplaceMappingForGreenplumDatabaseMigrationTask"
+              version="8.0.1">
+        </projecttask>
+        <projecttask
+              beforeLogon="false"
+              breaks="8.0.0"
+              class="org.talend.repository.model.migration.ChangeGoogleAnalyticsReportTableEleValueMigrationTask"
+              description="Seperate GoogleAnalyticsReport table items value with id and label"
+              id="org.talend.repository.model.migration.ChangeGoogleAnalyticsReportTableEleValueMigrationTask"
+              name="ChangeGoogleAnalyticsReportTableEleValueMigrationTask"
+              version="8.0.1">
+        </projecttask>
+        <projecttask
+	      beforeLogon="false"
+              breaks="8.0.0"
+              class="org.talend.repository.model.migration.RenameTimeoutParameterstRESTClient"
+              description="Rename timeout parameters for tRESTClient"
+              id="org.talend.repository.model.migration.RenameTimeoutParameterstRESTClient"
+              name="RenameTimeoutParameterstRESTClient"
+              version="8.0.1">
+        </projecttask>
+        <projecttask
+              beforeLogon="false"
+              breaks="8.0.0"
+              class="org.talend.repository.model.migration.AddClientParamsToFTPTDI44761"
+              description="Add client configuration when using sftp"
+              id="org.talend.repository.model.migration.AddClientParamsToFTPTDI44761"
+              name="AddClientParamsToFTPTDI44761"
               version="8.0.1">
         </projecttask>
    </extension>
