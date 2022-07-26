@@ -782,11 +782,117 @@ public abstract class DbGenerationManager {
             }
         }
         for (String globalMapStr : globalMapList) {
-            String regex = parser.getGlobalMapExpressionRegex(globalMapStr);
-            String replacement = parser.getGlobalMapReplacement(globalMapStr);
-            expression = expression.replaceAll(regex, "\" +" + replacement + "+ \""); //$NON-NLS-1$ //$NON-NLS-2$
+            expression = handleGlobalStringInExpression(expression, globalMapStr);
         }
         return expression;
+    }
+
+    /**
+     * try add [" +] before global string and add  [+ "] after if needed
+     */
+    public String handleGlobalStringInExpression(String expression, String globalMapStr) {
+        String regex = parser.getGlobalMapExpressionRegex(globalMapStr);
+        String replacement = parser.getGlobalMapReplacement(globalMapStr);
+        int countMatches = org.apache.commons.lang.StringUtils.countMatches(expression, globalMapStr);
+        if( 1 == countMatches) {
+            int indexGlobal = expression.indexOf(globalMapStr);
+            
+            boolean foundhead = foundhead(expression, indexGlobal - 1, 0);
+            
+            boolean foundtail = foundtail(expression, indexGlobal + globalMapStr.length(), expression.length());
+            
+            if(!foundhead && !foundtail) {
+                expression = expression.replaceAll(regex, "\" +" + replacement + "+ \"");//$NON-NLS-1$ //$NON-NLS-2$
+            } else if(!foundhead) {
+                expression = expression.replaceAll(regex, "\" +" + replacement);//$NON-NLS-1$ //$NON-NLS-2$
+            } else if(!foundtail){
+                expression = expression.replaceAll(regex, replacement + "+ \"");//$NON-NLS-1$ //$NON-NLS-2$
+            }
+        } else {
+            int length = globalMapStr.length();
+            int[] index = new int[countMatches];
+            index[0] = expression.indexOf(globalMapStr);
+            for(int i = 1; i<countMatches; i++) {
+                index[i] = org.apache.commons.lang.StringUtils.indexOf(expression, globalMapStr, index[i-1]+ length);
+            }
+            
+            String[] globalMapStrReplacement = new String[countMatches];
+            for(int i = index.length - 1; i >=0; i--) {
+                globalMapStrReplacement[i] = globalMapStr;
+                
+                boolean foundhead = foundhead(expression, index[i] -1, i>0? index[i-1] + globalMapStr.length():0);
+                boolean foundtail = foundtail(expression, index[i] + globalMapStr.length(), i == index.length - 1?expression.length():index[i+1]);
+                
+                if(!foundhead && !foundtail) {
+                    globalMapStrReplacement[i] = "\" +" + replacement + "+ \"";//$NON-NLS-1$ //$NON-NLS-2$
+                } else if(!foundhead) {
+                    globalMapStrReplacement[i] = "\" +" + replacement;//$NON-NLS-1$ //$NON-NLS-2$
+                } else if(!foundtail){
+                    globalMapStrReplacement[i] = replacement + "+ \"";//$NON-NLS-1$ //$NON-NLS-2$
+                }
+            }
+            
+            for(int i = index.length - 1; i >=0; i--) {
+                expression = expression.substring(0, index[i]) + globalMapStrReplacement[i] + expression.substring(index[i] + length);
+            }
+        }
+        return expression;
+    }
+
+    /*
+     * from to startIndex(include) to tolowerIndex(include), check in order if found + and then found "
+     */
+    public boolean foundhead(String expression, int startIndex, int tolowerIndex) {
+        boolean foundhead = false;
+        for (int index = startIndex; index >= tolowerIndex && !foundhead; index--) {
+            if(Character.isWhitespace(expression.charAt(index))) {
+                continue;
+            }
+            
+            if (expression.charAt(index) != '+') {
+                break;
+            }
+            
+            // char at index is '+'
+            for (int i = index - 1; i >= 0 && index >= tolowerIndex; i--) {
+                char ch = expression.charAt(i);
+                if (ch == '"') {
+                    foundhead = true;
+                    break;
+                } else if(!Character.isWhitespace(ch)) {
+                    break;
+                }
+            }
+        }
+        return foundhead;
+    }
+
+    /*
+     * from to startIndex(include) to tohigherIndex(exclude), check in order if found + and then found "
+     */
+    public boolean foundtail(String expression, int startIndex, int tohigherIndex) {
+        boolean foundtail = false;
+        for (int index = startIndex; index < tohigherIndex && !foundtail; index++) {
+            if(Character.isWhitespace(expression.charAt(index))) {
+                continue;
+            }
+            
+            if (expression.charAt(index) != '+') {
+                break;
+            }
+            
+            // char at index is '+'
+            for (int i = index +1; i < tohigherIndex; i++) {
+                char ch = expression.charAt(i);
+                if (ch == '"') {
+                    foundtail = true;
+                    break;
+                } else if(!Character.isWhitespace(ch)) {
+                    break;
+                }
+            }
+        }
+        return foundtail;
     }
 
     protected String replaceVariablesForTargetTableExpression(DbMapComponent component, String expression) {
@@ -855,9 +961,7 @@ public abstract class DbGenerationManager {
             }
         }
         for (String globalMapStr : globalMapList) {
-            String regex = parser.getGlobalMapExpressionRegex(globalMapStr);
-            String replacement = parser.getGlobalMapReplacement(globalMapStr);
-            expression = expression.replaceAll(regex, "\" +" + replacement + "+ \"");//$NON-NLS-1$ //$NON-NLS-2$
+            expression = handleGlobalStringInExpression(expression, globalMapStr);
         }
         return expression;
     }
