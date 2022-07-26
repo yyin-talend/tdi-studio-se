@@ -321,9 +321,13 @@
     	globalMap.put(GLOBAL_CONNECTION_POOL_KEY, connectionPool);
     }
     <%}%>
+    
+    private final static java.util.Properties jobInfo = new java.util.Properties();
 
     public static void main(String[] args){
         final <%=className %> <%=className %>Class = new <%=className %>();
+		
+        <%=className %>Class.getjobInfo(); 
 
         int exitCode = <%=className %>Class.runJobInTOS(args);
         <%if(isLog4jEnabled){%>
@@ -333,6 +337,42 @@
         <%}%>
 
         System.exit(exitCode);
+    }
+	
+
+	
+	
+	private void getjobInfo() {
+		final String TEMPLATE_PATH = "src/main/templates/jobInfo_template.properties";
+		final String BUILD_PATH = "../jobInfo.properties";
+		final String path = this.getClass().getResource("").getPath();
+		if(path.lastIndexOf("target") > 0) {
+			final java.io.File templateFile = new java.io.File(
+					path.substring(0, path.lastIndexOf("target")).concat(TEMPLATE_PATH));
+			if (templateFile.exists()) {
+				readJobInfo(templateFile);
+				return;
+			}
+		}
+			readJobInfo(new java.io.File(BUILD_PATH));
+	}
+
+    private void readJobInfo(java.io.File jobInfoFile){
+	
+        if(jobInfoFile.exists()) {
+            try {
+            	jobInfo.load(new java.io.FileInputStream(jobInfoFile));
+            } catch (IOException e) {
+            	 <%if(isLog4jEnabled){%>
+                log.debug("Read jobInfo.properties file fail: " + e.getMessage());
+                <%}%>
+                
+            }
+        }
+            <%if(isLog4jEnabled){%>
+		log.info("Project name: {}\tJob name: {}\tGIT Commit ID: {}\tTalend Version: {}",
+				projectName,jobName,jobInfo.getProperty("gitCommitId"), "<%=System.getProperties().getProperty("talend.studio.version")%>");
+		<%}%>
     }
 
    <%
