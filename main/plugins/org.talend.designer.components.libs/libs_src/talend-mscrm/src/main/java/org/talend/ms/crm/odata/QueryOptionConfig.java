@@ -1,6 +1,6 @@
 // ============================================================================
 //
-// Copyright (C) 2006-2019 Talend Inc. - www.talend.com
+// Copyright (C) 2006-2022 Talend Inc. - www.talend.com
 //
 // This source code is available under agreement available at
 // %InstallDIR%\features\org.talend.rcp.branding.%PRODUCTNAME%\%PRODUCTNAME%license.txt
@@ -11,6 +11,9 @@
 //
 // ============================================================================
 package org.talend.ms.crm.odata;
+
+import java.util.List;
+import java.util.ArrayList;
 
 public class QueryOptionConfig {
 
@@ -23,6 +26,9 @@ public class QueryOptionConfig {
     private String[] returnEntityProperties;
 
     private String filter;
+
+    private List<String> expand = new ArrayList<>();
+
 
     public int getTop() {
         return top;
@@ -63,5 +69,9 @@ public class QueryOptionConfig {
     public void setFilter(String filter) {
         this.filter = filter;
     }
+
+    public void setExpands(List<String> expand) { this.expand = expand;}
+
+    public List<String> getExpands() { return this.expand; }
 
 }
