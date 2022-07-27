@@ -115,7 +115,7 @@ public class LoginDialogV2 extends TrayDialog {
 
     private ConnectionUserPerReader perReader;
 
-    private Composite base;
+    protected Composite base;
 
     private StackLayout stackLayout;
 

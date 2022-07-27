@@ -40,6 +40,7 @@ import org.talend.repository.i18n.Messages;
 import org.talend.repository.ui.login.connections.ConnectionUserPerReader;
 import org.talend.repository.ui.login.connections.network.LoginNetworkPreferencePage;
 import org.talend.repository.ui.login.connections.network.proxy.LoginProxyPreferencePage;
+import org.talend.signon.util.SSOClientUtil;
 import org.talend.signon.util.TokenMode;
 import org.talend.signon.util.listener.LoginEventListener;
 
@@ -53,15 +54,23 @@ public class LoginWithCloudPage extends AbstractLoginActionPage implements Login
 
     protected String licenseString;
 
-    private SplitButton signCloudButton;
+    private Button signCloudButton;
 
     private Button otherSignButton;
     
     private String codeVerifier = ICloudSignOnService.get().generateCodeVerifier();
+    
+    private boolean isRefreshToken = false;
 
     public LoginWithCloudPage(Composite parent, LoginDialogV2 dialog, int style) {
         super(parent, dialog, style);
     }
+    
+    public LoginWithCloudPage(Composite parent, LoginDialogV2 dialog, int style, boolean isRefreshToken) {
+        super(parent, dialog, style);
+        this.isRefreshToken = isRefreshToken;
+    }
+
 
     @Override
     public void preCreateControl() {
@@ -74,21 +83,22 @@ public class LoginWithCloudPage extends AbstractLoginActionPage implements Login
         title.setFont(LoginDialogV2.fixedFont);
         title.setText(Messages.getString("LoginWithCloudPage.titleLbl")); //$NON-NLS-1$
 
-        signCloudButton = new SplitButton(container, SWT.FLAT);
+        signCloudButton = new Button(container, SWT.FLAT);
         signCloudButton.setFont(LoginDialogV2.fixedFont);
         signCloudButton.setText(Messages.getString("LoginWithCloudPage.signCloudBtn"));
 
-        otherSignButton = new Button(container, SWT.FLAT);
-        otherSignButton.setFont(LoginDialogV2.fixedFont);
-        otherSignButton.setText(Messages.getString("LoginWithCloudPage.otherSignBtn")); 
+        if (!isRefreshToken) {
+            otherSignButton = new Button(container, SWT.FLAT);
+            otherSignButton.setFont(LoginDialogV2.fixedFont);
+            otherSignButton.setText(Messages.getString("LoginWithCloudPage.otherSignBtn")); 
 
-        networkSettingsLabel = new Link(container, SWT.NONE);
-        networkSettingsLabel.setFont(LoginDialogV2.fixedFont);
-        networkSettingsLabel.setBackground(backgroundRadioColor);
-        networkSettingsLabel.setText("<a>" //$NON-NLS-1$
-                + Messages.getString("LoginProjectPage.networkSettings") //$NON-NLS-1$
-                + "</a>");//$NON-NLS-1$
-
+            networkSettingsLabel = new Link(container, SWT.NONE);
+            networkSettingsLabel.setFont(LoginDialogV2.fixedFont);
+            networkSettingsLabel.setBackground(backgroundRadioColor);
+            networkSettingsLabel.setText("<a>" //$NON-NLS-1$
+                    + Messages.getString("LoginProjectPage.networkSettings") //$NON-NLS-1$
+                    + "</a>");//$NON-NLS-1$
+        }
     }
 
     @Override
@@ -105,11 +115,13 @@ public class LoginWithCloudPage extends AbstractLoginActionPage implements Login
         formData.left = new FormAttachment(50, offset);
         signCloudButton.setLayoutData(formData);
 
-        offset = otherSignButton.computeSize(SWT.DEFAULT, SWT.DEFAULT).x / 2 * -1;
-        formData = new FormData();
-        formData.top = new FormAttachment(signCloudButton, TAB_VERTICAL_PADDING_LEVEL_1, SWT.BOTTOM);
-        formData.left = new FormAttachment(50, offset);
-        otherSignButton.setLayoutData(formData);
+        if (otherSignButton != null) {
+            offset = otherSignButton.computeSize(SWT.DEFAULT, SWT.DEFAULT).x / 2 * -1;
+            formData = new FormData();
+            formData.top = new FormAttachment(signCloudButton, TAB_VERTICAL_PADDING_LEVEL_1, SWT.BOTTOM);
+            formData.left = new FormAttachment(50, offset);
+            otherSignButton.setLayoutData(formData); 
+        }
 
         if (this.networkSettingsLabel != null) {
             offset = networkSettingsLabel.computeSize(SWT.DEFAULT, SWT.DEFAULT).x / 2 * -1;
@@ -157,28 +169,32 @@ public class LoginWithCloudPage extends AbstractLoginActionPage implements Login
             }
         });
 
-        otherSignButton.addSelectionListener(new SelectionAdapter() {
+        if (otherSignButton != null) {
+            otherSignButton.addSelectionListener(new SelectionAdapter() {
 
-            @Override
-            public void widgetSelected(SelectionEvent e) {
-                try {
-                    gotoNextPage();
-                } catch (Throwable e1) {
-                    // TODO Auto-generated catch block
-                    e1.printStackTrace();
+                @Override
+                public void widgetSelected(SelectionEvent e) {
+                    try {
+                        gotoNextPage();
+                    } catch (Throwable e1) {
+                        // TODO Auto-generated catch block
+                        e1.printStackTrace();
+                    }
                 }
-            }
 
-        });
+            });
+        }
 
-        networkSettingsLabel.addSelectionListener(new SelectionAdapter() {
+        if (networkSettingsLabel != null) {
+            networkSettingsLabel.addSelectionListener(new SelectionAdapter() {
 
-            @Override
-            public void widgetSelected(SelectionEvent e) {
-                onNetworkSettingsClicked();
-            }
+                @Override
+                public void widgetSelected(SelectionEvent e) {
+                    onNetworkSettingsClicked();
+                }
 
-        });
+            });
+        }
     }
 
     @Override
@@ -219,7 +235,7 @@ public class LoginWithCloudPage extends AbstractLoginActionPage implements Login
             Display.getDefault().asyncExec(() -> {
                 errorManager.setInfoMessage(Messages.getString("LoginWithCloudPage.signInTaskThi"));
             });
-            saveConnection(token, getAdminURL(), ICloudSignOnService.get().getTokenUser(getAdminURL(), token));
+            saveConnection(token, SSOClientUtil.getCloudAdminURL(dataCenter), ICloudSignOnService.get().getTokenUser(SSOClientUtil.getCloudAdminURL(dataCenter), token));
             Display.getDefault().asyncExec(() -> {
                 try {
                     errorManager.clearAllMessages();
@@ -281,10 +297,6 @@ public class LoginWithCloudPage extends AbstractLoginActionPage implements Login
         return codeChallenge;
     }
 
-    public String getAdminURL() {
-        return "https://tmc.int.cloud.talend.com/studio_cloud_connection";// TODO --KK
-    }
-
     public static void onNetworkSettingsClicked() {
         PreferenceDialog pd = new PreferenceDialog(Display.getDefault().getActiveShell(), new PreferenceManager());
 
@@ -304,11 +316,13 @@ public class LoginWithCloudPage extends AbstractLoginActionPage implements Login
 
     @Override
     public AbstractActionPage getNextPage() {
-        AbstractActionPage iNextPage = super.getNextPage();
-
-        if (iNextPage == null) {
-            iNextPage = new LoginProjectPage(getParent(), loginDialog, SWT.NONE);
-            setNextPage(iNextPage);
+        AbstractActionPage iNextPage = null;
+        if (!isRefreshToken) {
+            iNextPage = super.getNextPage();
+            if (iNextPage == null) {
+                iNextPage = new LoginProjectPage(getParent(), loginDialog, SWT.NONE);
+                setNextPage(iNextPage);
+            }
         }
 
         return iNextPage;
