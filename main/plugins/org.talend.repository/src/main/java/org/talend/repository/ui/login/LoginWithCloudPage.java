@@ -32,6 +32,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Link;
+import org.eclipse.ui.PlatformUI;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.utils.network.NetworkUtil;
 import org.talend.core.model.general.ConnectionBean;
@@ -57,6 +58,8 @@ public class LoginWithCloudPage extends AbstractLoginActionPage implements Login
     private Button signCloudButton;
 
     private Button otherSignButton;
+    
+    private Button restartButton;
     
     private String codeVerifier = ICloudSignOnService.get().generateCodeVerifier();
     
@@ -98,6 +101,10 @@ public class LoginWithCloudPage extends AbstractLoginActionPage implements Login
             networkSettingsLabel.setText("<a>" //$NON-NLS-1$
                     + Messages.getString("LoginProjectPage.networkSettings") //$NON-NLS-1$
                     + "</a>");//$NON-NLS-1$
+        } else {
+            restartButton = new Button(container, SWT.FLAT);
+            restartButton.setFont(LoginDialogV2.fixedFont);
+            restartButton.setText("Exit Studio"); 
         }
     }
 
@@ -121,6 +128,14 @@ public class LoginWithCloudPage extends AbstractLoginActionPage implements Login
             formData.top = new FormAttachment(signCloudButton, TAB_VERTICAL_PADDING_LEVEL_1, SWT.BOTTOM);
             formData.left = new FormAttachment(50, offset);
             otherSignButton.setLayoutData(formData); 
+        }
+        
+        if (restartButton != null) {
+            offset = restartButton.computeSize(SWT.DEFAULT, SWT.DEFAULT).x / 2 * -1;
+            formData = new FormData();
+            formData.top = new FormAttachment(signCloudButton, TAB_VERTICAL_PADDING_LEVEL_1, SWT.BOTTOM);
+            formData.left = new FormAttachment(50, offset);
+            restartButton.setLayoutData(formData); 
         }
 
         if (this.networkSettingsLabel != null) {
@@ -168,6 +183,19 @@ public class LoginWithCloudPage extends AbstractLoginActionPage implements Login
                 }
             }
         });
+        if (restartButton != null) {
+            restartButton.addSelectionListener(new SelectionAdapter() {
+
+                @Override
+                public void widgetSelected(SelectionEvent e) {
+                    try {
+                        PlatformUI.getWorkbench().close();
+                    } catch (Exception e1) {
+                        showError(e1);
+                    }
+                }
+            });
+        }
 
         if (otherSignButton != null) {
             otherSignButton.addSelectionListener(new SelectionAdapter() {

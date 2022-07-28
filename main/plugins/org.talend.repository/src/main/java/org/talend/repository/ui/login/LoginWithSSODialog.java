@@ -14,6 +14,7 @@ package org.talend.repository.ui.login;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Shell;
+import org.talend.commons.exception.ExceptionHandler;
 
 public class LoginWithSSODialog extends LoginDialogV2 {
 
@@ -22,8 +23,14 @@ public class LoginWithSSODialog extends LoginDialogV2 {
     }
     
     protected void showFirstPage() {
-        AbstractLoginActionPage loginPage  = new LoginWithCloudPage(base, this, SWT.NONE);;
-        loginPage.showPage();
+        AbstractLoginActionPage loginPage  = new LoginWithCloudPage(base, this, SWT.NONE, true);
+        try {
+            loginPage.preShowPage();
+            loginPage.showPage();
+        } catch (Throwable e) {
+            ExceptionHandler.process(e);
+        }
+
     }
 
     @Override
@@ -33,7 +40,7 @@ public class LoginWithSSODialog extends LoginDialogV2 {
 
     @Override
     protected int getShellStyle() {
-        return SWT.ON_TOP;
+        return SWT.APPLICATION_MODAL | SWT.ON_TOP;
     }
 
 }
