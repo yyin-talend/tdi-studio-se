@@ -404,7 +404,7 @@
 			<IMPORT NAME="grpc-context"
 				MODULE="grpc-context-1.19.0.jar" MVN="mvn:io.grpc/grpc-context/1.19.0" REQUIRED="true"/>
 			<IMPORT NAME="gson"
-				MODULE="gson-2.8.5.jar" MVN="mvn:com.google.code.gson/gson/2.8.5" REQUIRED="true"/>
+				MODULE="gson-2.8.9.jar" MVN="mvn:com.google.code.gson/gson/2.8.9" REQUIRED="true"/>
 			<IMPORT NAME="json"
 				MODULE="json-20170516.jar" MVN="mvn:org.json/json/20170516" REQUIRED="true"/>
 			<IMPORT NAME="guava"

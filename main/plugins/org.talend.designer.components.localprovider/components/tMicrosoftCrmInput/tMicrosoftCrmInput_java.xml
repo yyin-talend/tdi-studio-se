@@ -27824,9 +27824,9 @@
                 MVN="mvn:org.apache.commons/commons-lang3/3.10"
                 REQUIRED_IF="(((AUTH_TYPE=='ONLINE') AND (API_VERSION=='API_2011' OR API_VERSION=='API_2016_ODATA' OR API_VERSION=='API_2018_ODATA')) OR ((AUTH_TYPE=='ON_PREMISE') AND (MS_CRM_VERSION == 'CRM_2016' OR MS_CRM_VERSION == 'CRM_2018')))" />
             <IMPORT
-                NAME="gson-2.8.6"
-                MODULE="gson-2.8.6.jar"
-                MVN="mvn:com.google.code.gson/gson/2.8.6"
+                NAME="gson-2.8.9"
+                MODULE="gson-2.8.9.jar"
+                MVN="mvn:com.google.code.gson/gson/2.8.9"
                 REQUIRED_IF="(((AUTH_TYPE=='ONLINE') AND (API_VERSION=='API_2011' OR API_VERSION=='API_2016_ODATA' OR API_VERSION=='API_2018_ODATA')) OR ((AUTH_TYPE=='ON_PREMISE') AND (MS_CRM_VERSION == 'CRM_2016' OR MS_CRM_VERSION == 'CRM_2018')))" />
             <IMPORT
                 NAME="commons-logging"
