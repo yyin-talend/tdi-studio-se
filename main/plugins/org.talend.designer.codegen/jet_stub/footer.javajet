@@ -326,8 +326,6 @@
 
     public static void main(String[] args){
         final <%=className %> <%=className %>Class = new <%=className %>();
-		
-        <%=className %>Class.getjobInfo(); 
 
         int exitCode = <%=className %>Class.runJobInTOS(args);
         <%if(isLog4jEnabled){%>
@@ -555,6 +553,8 @@
 				org.apache.logging.log4j.core.config.Configurator.setLevel(org.apache.logging.log4j.LogManager.getRootLogger().getName(), log.getLevel());
 				<%}%>
 			}
+			
+	        getjobInfo();
 			log.info("TalendJob: '<%=codeGenArgument.getJobName()%>' - Start.");
 		<%}%>
 		
