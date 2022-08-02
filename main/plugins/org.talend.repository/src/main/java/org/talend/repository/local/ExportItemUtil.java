@@ -394,7 +394,9 @@ public class ExportItemUtil {
                             if (StringUtils.isEmpty(proTechnicalLabel)) {
                                 continue;
                             }
-                            String uppercasePath = "../../" + proTechnicalLabel;
+                            // TDQ-20638 msjian: here replacement consider a case: when referenceProjectName starts with
+                            // mainProjectName
+                            String uppercasePath = "../../" + proTechnicalLabel + "/"; //$NON-NLS-1$ //$NON-NLS-2$
                             FilesUtils.replaceInFile(uppercasePath, targetPath.toPortableString(), uppercasePath.toLowerCase());
                         }
                     }
