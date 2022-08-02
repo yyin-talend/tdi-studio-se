@@ -2119,4 +2119,38 @@ public class DbGenerationManagerTest extends DbGenerationManagerTestHelper {
 
         return contextManager;
     }
+    
+    @Test
+    public void testHandleGlobalString() {
+        dbManager = new GenericDbGenerationManager();
+        //standard 
+        String[] globalStrs = {"((Integer)globalMap.get(\"G_StrtCVRGskeySCHD\"))", "((Integer)globalMap.get(\"G_EndCVRGskeySCHD\"))", "((String)globalMap.get(\"sQRY_TXT\"))"};
+        String expression = "SCHD_GEN_SKEY BETWEEN ((Integer)globalMap.get(\"G_StrtCVRGskeySCHD\"))  AND ((Integer)globalMap.get(\"G_EndCVRGskeySCHD\"))  AND (   ((String)globalMap.get(\"sQRY_TXT\"))    ) AND ((Integer)globalMap.get(\"G_StrtCVRGskeySCHD\")) AND 1=1";
+        String expected = "SCHD_GEN_SKEY BETWEEN \" +((Integer)globalMap.get(\"G_StrtCVRGskeySCHD\"))+ \"  AND \" +((Integer)globalMap.get(\"G_EndCVRGskeySCHD\"))+ \"  AND (   \" +((String)globalMap.get(\"sQRY_TXT\"))+ \"    ) AND \" +((Integer)globalMap.get(\"G_StrtCVRGskeySCHD\"))+ \" AND 1=1";
+        for(String globalStr:globalStrs) {
+            expression = dbManager.handleGlobalStringInExpression(expression, globalStr);
+        }
+        assertEquals(expected ,expression);
+        
+        //had duplicated global string
+        expression = "SCHD_GEN_SKEY BETWEEN \"+((Integer)globalMap.get(\"G_StrtCVRGskeySCHD\"))+\"  AND \"+ ((Integer)globalMap.get(\"G_EndCVRGskeySCHD\")) + \" AND (   ((String)globalMap.get(\"sQRY_TXT\"))    ) AND ((Integer)globalMap.get(\"G_StrtCVRGskeySCHD\")) AND 1=1";
+        expected = "SCHD_GEN_SKEY BETWEEN \"+((Integer)globalMap.get(\"G_StrtCVRGskeySCHD\"))+\"  AND \"+ ((Integer)globalMap.get(\"G_EndCVRGskeySCHD\")) + \" AND (   \" +((String)globalMap.get(\"sQRY_TXT\"))+ \"    ) AND \" +((Integer)globalMap.get(\"G_StrtCVRGskeySCHD\"))+ \" AND 1=1";
+        
+        for(String globalStr:globalStrs) {
+            expression = dbManager.handleGlobalStringInExpression(expression, globalStr);
+        }
+        assertEquals(expected ,expression);
+        
+        
+        // no duplicated global string
+        expression = "SCHD_GEN_SKEY BETWEEN \"+((Integer)globalMap.get(\"G_StrtCVRGskeySCHD\"))+\"  AND \"+ ((Integer)globalMap.get(\"G_EndCVRGskeySCHD\")) + \" AND (   ((String)globalMap.get(\"sQRY_TXT\"))    ) AND 1=1";
+        expected = "SCHD_GEN_SKEY BETWEEN \"+((Integer)globalMap.get(\"G_StrtCVRGskeySCHD\"))+\"  AND \"+ ((Integer)globalMap.get(\"G_EndCVRGskeySCHD\")) + \" AND (   \" +((String)globalMap.get(\"sQRY_TXT\"))+ \"    ) AND 1=1";
+        for(String globalStr:globalStrs) {
+            expression = dbManager.handleGlobalStringInExpression(expression, globalStr);
+        }
+        assertEquals(expected ,expression);
+        
+        
+        
+    }
 }

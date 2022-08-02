@@ -168,7 +168,6 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer {
             store.setDefault(ITalendCorePrefConstants.PERFORMANCE_TAC_READ_TIMEOUT, NetworkConfiguration.READ_TIMEOUT_DEFAULT);
         }
 
-        store.setDefault(ITalendCorePrefConstants.NEXUS_TIMEOUT, 20000);
         store.setDefault(ITalendCorePrefConstants.NEXUS_REFRESH_FREQUENCY, 0);
 
         store.setDefault(ITalendCorePrefConstants.NEXUS_SHARE_LIBS, false);

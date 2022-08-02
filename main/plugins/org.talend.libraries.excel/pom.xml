@@ -33,7 +33,7 @@
 								<artifactItem>
 									<groupId>org.apache.poi</groupId>
 									<artifactId>poi-scratchpad</artifactId>
-									<version>4.1.2-20200903124306_modified_talend</version>
+									<version>5.2.2</version>
 								</artifactItem>
 								<artifactItem>
 									<groupId>org.apache.poi</groupId>
