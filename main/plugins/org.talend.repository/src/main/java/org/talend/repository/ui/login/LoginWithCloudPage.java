@@ -332,7 +332,7 @@ public class LoginWithCloudPage extends AbstractLoginActionPage implements Login
             }
         }
         if (connection == null) {
-            connection = ConnectionBean.getDefaultCloudConnectionBean();
+            connection = ConnectionBean.getDefaultCloudConnectionBean(token.getDataCenter());
             connection.setConnectionToken(token);
             connection.setUrl(adminURL);
             connection.setUser(user);
