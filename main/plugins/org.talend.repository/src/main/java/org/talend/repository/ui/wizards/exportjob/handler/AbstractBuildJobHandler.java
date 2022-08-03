@@ -281,7 +281,7 @@ public abstract class AbstractBuildJobHandler implements IBuildJobHandler, IBuil
             otherArgsBuffer.append(TalendMavenConstants.ARG_TEST_FAILURE_IGNORE);
         }
         if (canSignJob()) {
-            if (IRemoteService.get().isCloudConnection()) {
+            if (IRemoteService.get() != null && IRemoteService.get().isCloudConnection()) {
                 // Setup custom JKS for signature
                 IPreferenceStore preStore = CoreRuntimePlugin.getInstance().getCoreService().getPreferenceStore();
                 String signerPath = preStore.getString(SecurityPreferenceConstants.SIGNER_PATH);
