@@ -17,26 +17,32 @@ import java.util.List;
 
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
+import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.preference.PreferenceDialog;
 import org.eclipse.jface.preference.PreferenceManager;
 import org.eclipse.jface.preference.PreferenceNode;
+import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.layout.FormData;
+import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Link;
 import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.forms.widgets.Hyperlink;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.utils.network.NetworkUtil;
 import org.talend.core.model.general.ConnectionBean;
 import org.talend.core.service.ICloudSignOnService;
+import org.talend.repository.RepositoryPlugin;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.ui.login.connections.ConnectionUserPerReader;
 import org.talend.repository.ui.login.connections.network.LoginNetworkPreferencePage;
@@ -64,6 +70,12 @@ public class LoginWithCloudPage extends AbstractLoginActionPage implements Login
     private String codeVerifier = ICloudSignOnService.get().generateCodeVerifier();
     
     private boolean isRefreshToken = false;
+    
+    private boolean isFirstLogin = true;
+    
+    private Composite firstInfoComposite = null;
+    
+    private Hyperlink imageLink = null;
 
     public LoginWithCloudPage(Composite parent, LoginDialogV2 dialog, int style) {
         super(parent, dialog, style);
@@ -82,6 +94,34 @@ public class LoginWithCloudPage extends AbstractLoginActionPage implements Login
 
     @Override
     public void instantiateControl(Composite container) {
+        if (isFirstLogin) {
+            firstInfoComposite = new Composite (container, SWT.None);
+            GridLayout compositeLayout = new GridLayout(3, false);
+            compositeLayout.marginWidth = 0;
+            compositeLayout.marginHeight = 0;
+            firstInfoComposite.setLayout(compositeLayout);
+            
+            Label imageLabel = new Label(firstInfoComposite, SWT.None);           
+            imageLabel.setImage(JFaceResources.getImage(Dialog.DLG_IMG_MESSAGE_INFO));
+            
+            Label infoLabel = new Label(firstInfoComposite, SWT.None);
+            infoLabel.setText(Messages.getString("LoginWithCloudPage.titleFirstLbl"));
+            
+            Composite moreInfoCom = new Composite(firstInfoComposite, SWT.None);
+            compositeLayout = new GridLayout(3, false);
+            compositeLayout.marginWidth = 0;
+            compositeLayout.marginHeight = 0;
+            moreInfoCom.setLayout(compositeLayout);
+            
+            imageLink = new Hyperlink(moreInfoCom, SWT.NONE);
+            imageLink.setText(Messages.getString("LoginWithCloudPage.titleFirstLinkLbl"));
+            imageLink.setUnderlined(true); 
+            
+            Label moreImageLabel= new Label(moreInfoCom, SWT.RIGHT);           
+            ImageDescriptor imageDescriptor = ImageDescriptor.createFromURL(RepositoryPlugin.class.getResource("/icons/moreInfo.png"));
+            moreImageLabel.setImage(imageDescriptor.createImage());
+        }
+        
         title = new Label(container, SWT.WRAP);
         title.setFont(LoginDialogV2.fixedFont);
         title.setText(Messages.getString("LoginWithCloudPage.titleLbl")); //$NON-NLS-1$
@@ -259,7 +299,7 @@ public class LoginWithCloudPage extends AbstractLoginActionPage implements Login
             loginDialog.getShell().forceActive();
         });
         try {
-            TokenMode token = ICloudSignOnService.get().getToken(authCode, this.codeVerifier);
+            TokenMode token = ICloudSignOnService.get().getToken(authCode, this.codeVerifier, dataCenter);
             Display.getDefault().asyncExec(() -> {
                 errorManager.setInfoMessage(Messages.getString("LoginWithCloudPage.signInTaskThi"));
             });
@@ -348,7 +388,7 @@ public class LoginWithCloudPage extends AbstractLoginActionPage implements Login
         if (!isRefreshToken) {
             iNextPage = super.getNextPage();
             if (iNextPage == null) {
-                iNextPage = new LoginProjectPage(getParent(), loginDialog, SWT.NONE);
+                iNextPage = new LoginProjectPage(getParent(), loginDialog, SWT.NONE, true);
                 setNextPage(iNextPage);
             }
         }

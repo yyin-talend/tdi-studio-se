@@ -43,6 +43,7 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.talend.commons.exception.CommonExceptionHandler;
+import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.utils.system.EnvironmentUtils;
 import org.talend.core.GlobalServiceRegister;
 import org.talend.core.model.general.ConnectionBean;
@@ -276,7 +277,7 @@ public class LoginDialogV2 extends TrayDialog {
         }
 
         try {
-            if (loginPage == null && ICloudSignOnService.get() != null && !ICloudSignOnService.get().hasValidToken()) {
+            if (loginPage == null && isShowSSOPage()) {
                 loginPage = new LoginWithCloudPage(base, this, SWT.NONE);
             }
             if (loginPage == null) {
@@ -562,7 +563,15 @@ public class LoginDialogV2 extends TrayDialog {
     }
     
     protected boolean isShowSSOPage() {
-        return true;
+        if ( ICloudSignOnService.get() != null) {
+            try {
+                if (!ICloudSignOnService.get().hasValidToken()) {
+                    return true;
+                }
+            } catch (Exception ex) {
+                ExceptionHandler.process(ex);
+            }
+        }
+        return false;
     }
-
 }

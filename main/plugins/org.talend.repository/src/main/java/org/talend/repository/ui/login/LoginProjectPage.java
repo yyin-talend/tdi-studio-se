@@ -237,9 +237,16 @@ public class LoginProjectPage extends AbstractLoginActionPage {
     private List<String> projectBranches = new ArrayList<String>();
     
     private String lastSelectedBranch;
+    
+    private boolean isSSOMode = false;
 
     public LoginProjectPage(Composite parent, LoginDialogV2 dialog, int style) {
         super(parent, dialog, style);
+    }
+    
+    public LoginProjectPage(Composite parent, LoginDialogV2 dialog, int style, boolean isSSOMode) {
+        super(parent, dialog, style);
+        this.isSSOMode = isSSOMode;
     }
 
     @Override
@@ -598,12 +605,15 @@ public class LoginProjectPage extends AbstractLoginActionPage {
         connectionManageArea = new Composite(container, SWT.NONE);
         connectionsViewer = new ComboViewer(connectionManageArea, SWT.READ_ONLY);
         connectionsViewer.getControl().setFont(LoginDialogV2.fixedFont);
+        connectionsViewer.getControl().setEnabled(!isSSOMode);
         
-        manageButton = new Button(connectionManageArea, SWT.NONE);
-        manageButton.setFont(LoginDialogV2.fixedFont);
-        manageButton.setBackground(backgroundBtnColor);
-        manageButton.setImage(ImageProvider.getImage(EImage.MANAGE_CONNECTION));
-        manageButton.setToolTipText(Messages.getString("LoginProjectPage.manage")); //$NON-NLS-1$
+        if (!isSSOMode) {
+            manageButton = new Button(connectionManageArea, SWT.NONE);
+            manageButton.setFont(LoginDialogV2.fixedFont);
+            manageButton.setBackground(backgroundBtnColor);
+            manageButton.setImage(ImageProvider.getImage(EImage.MANAGE_CONNECTION));
+            manageButton.setToolTipText(Messages.getString("LoginProjectPage.manage")); //$NON-NLS-1$  
+        }
         
         switchLoginTypeButton =  new Button(connectionManageArea, SWT.NONE);
         switchLoginTypeButton.setFont(LoginDialogV2.fixedFont);
@@ -724,21 +734,11 @@ public class LoginProjectPage extends AbstractLoginActionPage {
         gridLayout.marginWidth = 0;
         connectionManageArea.setLayout(gridLayout);
 
-        // formData = new FormData();
-        // formData.top = new FormAttachment(title, TAB_VERTICAL_PADDING_LEVEL_2, SWT.BOTTOM);
-        // formData.right = new FormAttachment(100, 0);
-        // formData.left = new FormAttachment(100, -1 * LoginDialogV2.getNewButtonSize(manageButton).x);
-        // manageButton.setLayoutData(formData);
-        GridData gridData = new GridData(SWT.BEGINNING, SWT.CENTER, false, true);
-        manageButton.setLayoutData(gridData);      
-
-        // formData = new FormData();
-        // formData.top = new FormAttachment(manageButton, 0, SWT.CENTER);
-        // formData.bottom = new FormAttachment(manageButton, 0, SWT.CENTER);
-        // formData.left = new FormAttachment(title, 0, SWT.LEFT);
-        // formData.right = new FormAttachment(manageButton, -1 * TAB_HORIZONTAL_PADDING_LEVEL_2, SWT.LEFT);
-        // connectionsViewer.getControl().setLayoutData(formData);
-        gridData = new GridData(SWT.FILL, SWT.CENTER, true, true);
+        if (manageButton != null) {
+            GridData gridData = new GridData(SWT.BEGINNING, SWT.CENTER, false, true);
+            manageButton.setLayoutData(gridData); 
+        }
+        GridData gridData = new GridData(SWT.FILL, SWT.CENTER, true, true);
         connectionsViewer.getControl().setLayoutData(gridData);
         connectionsViewer.setContentProvider(ArrayContentProvider.getInstance());
         connectionsViewer.setLabelProvider(new ConnectionLabelProvider());
@@ -1262,13 +1262,16 @@ public class LoginProjectPage extends AbstractLoginActionPage {
             }
         });
 
-        manageButton.addSelectionListener(new SelectionAdapter() {
+        if (manageButton != null) {
+            manageButton.addSelectionListener(new SelectionAdapter() {
 
-            @Override
-            public void widgetSelected(SelectionEvent e) {
-                handleOpenConnectionsDialog(false);
-            }
-        });
+                @Override
+                public void widgetSelected(SelectionEvent e) {
+                    handleOpenConnectionsDialog(false);
+                }
+            });
+        }
+
 
         finishButton.addPaintListener(new PaintListener() {
 
