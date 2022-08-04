@@ -31,6 +31,7 @@ import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.layout.FormData;
+import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
@@ -48,7 +49,7 @@ import org.talend.repository.i18n.Messages;
 import org.talend.repository.ui.login.connections.ConnectionUserPerReader;
 import org.talend.repository.ui.login.connections.network.LoginNetworkPreferencePage;
 import org.talend.repository.ui.login.connections.network.proxy.LoginProxyPreferencePage;
-import org.talend.signon.util.SSOClientUtil;
+import org.talend.signon.util.TMCRepositoryUtil;
 import org.talend.signon.util.TokenMode;
 import org.talend.signon.util.listener.LoginEventListener;
 
@@ -159,6 +160,16 @@ public class LoginWithCloudPage extends AbstractLoginActionPage implements Login
 
     @Override
     protected void layoutControl() {
+        if (firstInfoComposite != null) {            
+            int offset = (firstInfoComposite.computeSize(SWT.DEFAULT, SWT.DEFAULT).x) / 2 * -1;
+            FormData formData = new FormData();
+            formData.top = new FormAttachment(15, 0);
+            formData.left = new FormAttachment(50, offset);
+            firstInfoComposite.setLayoutData(formData);
+            
+            imageLink.setLayoutData(new GridData());
+        }
+        
         int offset = (title.computeSize(SWT.DEFAULT, SWT.DEFAULT).x) / 2 * -1;
         FormData formData = new FormData();
         formData.top = new FormAttachment(15, 0);
@@ -312,7 +323,7 @@ public class LoginWithCloudPage extends AbstractLoginActionPage implements Login
             Display.getDefault().asyncExec(() -> {
                 errorManager.setInfoMessage(Messages.getString("LoginWithCloudPage.signInTaskThi"));
             });
-            saveConnection(token, SSOClientUtil.getCloudAdminURL(dataCenter), ICloudSignOnService.get().getTokenUser(SSOClientUtil.getCloudAdminURL(dataCenter), token));
+            saveConnection(token, TMCRepositoryUtil.getCloudAdminURL(dataCenter), ICloudSignOnService.get().getTokenUser(TMCRepositoryUtil.getCloudAdminURL(dataCenter), token));
             Display.getDefault().asyncExec(() -> {
                 try {
                     errorManager.clearAllMessages();
