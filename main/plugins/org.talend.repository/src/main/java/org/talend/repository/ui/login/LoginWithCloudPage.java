@@ -28,6 +28,7 @@ import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.layout.GridLayout;
@@ -67,6 +68,8 @@ public class LoginWithCloudPage extends AbstractLoginActionPage implements Login
     
     private Button restartButton;
     
+    private Color messagePanelColor = new Color(null, 205, 227, 242);
+    
     private String codeVerifier = ICloudSignOnService.get().generateCodeVerifier();
     
     private boolean isRefreshToken = false;
@@ -100,26 +103,32 @@ public class LoginWithCloudPage extends AbstractLoginActionPage implements Login
             compositeLayout.marginWidth = 0;
             compositeLayout.marginHeight = 0;
             firstInfoComposite.setLayout(compositeLayout);
+            firstInfoComposite.setBackground(messagePanelColor);
             
             Label imageLabel = new Label(firstInfoComposite, SWT.None);           
             imageLabel.setImage(JFaceResources.getImage(Dialog.DLG_IMG_MESSAGE_INFO));
+            imageLabel.setBackground(messagePanelColor);
             
             Label infoLabel = new Label(firstInfoComposite, SWT.None);
             infoLabel.setText(Messages.getString("LoginWithCloudPage.titleFirstLbl"));
+            infoLabel.setBackground(messagePanelColor);
             
             Composite moreInfoCom = new Composite(firstInfoComposite, SWT.None);
             compositeLayout = new GridLayout(3, false);
             compositeLayout.marginWidth = 0;
             compositeLayout.marginHeight = 0;
             moreInfoCom.setLayout(compositeLayout);
+            moreInfoCom.setBackground(messagePanelColor);
             
             imageLink = new Hyperlink(moreInfoCom, SWT.NONE);
             imageLink.setText(Messages.getString("LoginWithCloudPage.titleFirstLinkLbl"));
             imageLink.setUnderlined(true); 
+            imageLink.setBackground(messagePanelColor);
             
             Label moreImageLabel= new Label(moreInfoCom, SWT.RIGHT);           
             ImageDescriptor imageDescriptor = ImageDescriptor.createFromURL(RepositoryPlugin.class.getResource("/icons/moreInfo.png"));
             moreImageLabel.setImage(imageDescriptor.createImage());
+            moreImageLabel.setBackground(messagePanelColor);
         }
         
         title = new Label(container, SWT.WRAP);

@@ -156,6 +156,8 @@ public class LoginProjectPage extends AbstractLoginActionPage {
     protected Composite connectionManageArea;
 
     protected ComboViewer connectionsViewer;
+    
+    protected Label connectionLabel;
 
     protected Button manageButton;
     
@@ -603,9 +605,12 @@ public class LoginProjectPage extends AbstractLoginActionPage {
         title.setText(Messages.getString("LoginProjectPage.title")); //$NON-NLS-1$
         
         connectionManageArea = new Composite(container, SWT.NONE);
-        connectionsViewer = new ComboViewer(connectionManageArea, SWT.READ_ONLY);
-        connectionsViewer.getControl().setFont(LoginDialogV2.fixedFont);
-        connectionsViewer.getControl().setEnabled(!isSSOMode);
+        if (isSSOMode) {
+            connectionLabel = new Label (connectionManageArea, SWT.None);
+        } else {
+            connectionsViewer = new ComboViewer(connectionManageArea, SWT.READ_ONLY);
+            connectionsViewer.getControl().setFont(LoginDialogV2.fixedFont);; 
+        }
         
         if (!isSSOMode) {
             manageButton = new Button(connectionManageArea, SWT.NONE);
@@ -613,7 +618,7 @@ public class LoginProjectPage extends AbstractLoginActionPage {
             manageButton.setBackground(backgroundBtnColor);
             manageButton.setImage(ImageProvider.getImage(EImage.MANAGE_CONNECTION));
             manageButton.setToolTipText(Messages.getString("LoginProjectPage.manage")); //$NON-NLS-1$  
-        }
+        }        
         
         switchLoginTypeButton =  new Button(connectionManageArea, SWT.NONE);
         switchLoginTypeButton.setFont(LoginDialogV2.fixedFont);
@@ -739,10 +744,13 @@ public class LoginProjectPage extends AbstractLoginActionPage {
             manageButton.setLayoutData(gridData); 
         }
         GridData gridData = new GridData(SWT.FILL, SWT.CENTER, true, true);
-        connectionsViewer.getControl().setLayoutData(gridData);
-        connectionsViewer.setContentProvider(ArrayContentProvider.getInstance());
-        connectionsViewer.setLabelProvider(new ConnectionLabelProvider());
-
+        if (connectionsViewer != null) {
+            connectionsViewer.getControl().setLayoutData(gridData);
+            connectionsViewer.setContentProvider(ArrayContentProvider.getInstance());
+            connectionsViewer.setLabelProvider(new ConnectionLabelProvider());  
+        } else {
+            connectionLabel.setLayoutData(gridData);
+        }
         gridData = new GridData(SWT.END, SWT.CENTER, false, true);
         switchLoginTypeButton.setLayoutData(gridData);
         /**
@@ -975,33 +983,39 @@ public class LoginProjectPage extends AbstractLoginActionPage {
             if (monitor.isCanceled() || isDisposed()) {
                 return;
             }
-            connectionsViewer.setInput(finalStoredConnections);
-            // Check number of connection available.
-            if (finalStoredConnections.size() == 0) {
-                //
-            } else if (finalStoredConnections.size() == 1) {
-                connectionsViewer.setSelection(new StructuredSelection(new Object[] { finalStoredConnections.get(0) }));
-            } else {
-                // select last connection used
-                boolean selected = false;
-                // for (ConnectionBean curent : storedConnections) {
-                // String stringValue = ((LabelProvider) connectionsViewer.getLabelProvider()).getText(curent);
-                // if (curent.getName().equals( lastConnection)) {
-                // selectLast(stringValue, connectionsViewer.getCombo());
-                // selected = true;
-                // }
-                // }
-                ConnectionBean selectedConnBean = loginHelper.getCurrentSelectedConnBean();
-                if (selectedConnBean != null) {
-                    connectionsViewer.setSelection(new StructuredSelection(new Object[] { selectedConnBean }));
-                    IStructuredSelection sel = (IStructuredSelection) connectionsViewer.getSelection();
-                    if (selectedConnBean.equals(sel.getFirstElement())) {
-                        selected = true;
+            if (connectionsViewer != null) {
+                connectionsViewer.setInput(finalStoredConnections);
+                // Check number of connection available.
+                if (finalStoredConnections.size() == 0) {
+                    //
+                } else if (finalStoredConnections.size() == 1) {
+                    connectionsViewer.setSelection(new StructuredSelection(new Object[] { finalStoredConnections.get(0) }));
+                } else {
+                    // select last connection used
+                    boolean selected = false;
+                    // for (ConnectionBean curent : storedConnections) {
+                    // String stringValue = ((LabelProvider) connectionsViewer.getLabelProvider()).getText(curent);
+                    // if (curent.getName().equals( lastConnection)) {
+                    // selectLast(stringValue, connectionsViewer.getCombo());
+                    // selected = true;
+                    // }
+                    // }
+                    ConnectionBean selectedConnBean = loginHelper.getCurrentSelectedConnBean();
+                    if (selectedConnBean != null) {
+                        connectionsViewer.setSelection(new StructuredSelection(new Object[] { selectedConnBean }));
+                        IStructuredSelection sel = (IStructuredSelection) connectionsViewer.getSelection();
+                        if (selectedConnBean.equals(sel.getFirstElement())) {
+                            selected = true;
+                        }
+                    }
+                    if (!selected) {
+                        connectionsViewer.setSelection(new StructuredSelection(new Object[] { finalStoredConnections.get(0) }));
                     }
                 }
-                if (!selected) {
-                    connectionsViewer.setSelection(new StructuredSelection(new Object[] { finalStoredConnections.get(0) }));
-                }
+            } else if (connectionLabel != null) {
+                ConnectionBean selectedConnBean = loginHelper.getCurrentSelectedConnBean();
+                connectionLabel.setText(selectedConnBean.getName());
+                connectionLabel.setData(selectedConnBean);
             }
         });
 
@@ -1055,15 +1069,17 @@ public class LoginProjectPage extends AbstractLoginActionPage {
     protected void addListeners() {
         super.addListeners();
 
-        connectionsViewer.addSelectionChangedListener(new ISelectionChangedListener() {
+        if (connectionsViewer != null) {
+            connectionsViewer.addSelectionChangedListener(new ISelectionChangedListener() {
 
-            @Override
-            public void selectionChanged(SelectionChangedEvent event) {
-                onConnectionSelected(new NullProgressMonitor(), false);
-            }
+                @Override
+                public void selectionChanged(SelectionChangedEvent event) {
+                    onConnectionSelected(new NullProgressMonitor(), false);
+                }
 
-        });
-        
+            });  
+        }
+      
         switchLoginTypeButton.addSelectionListener(new SelectionAdapter() {
 
             @Override
@@ -2120,8 +2136,12 @@ public class LoginProjectPage extends AbstractLoginActionPage {
     public ConnectionBean getConnection() {
         ConnectionBean result[] = new ConnectionBean[1];
         Display.getDefault().syncExec(() -> {
-            IStructuredSelection sel = (IStructuredSelection) connectionsViewer.getSelection();
-            result[0] = (ConnectionBean) sel.getFirstElement();
+            if (connectionsViewer != null) {
+                IStructuredSelection sel = (IStructuredSelection) connectionsViewer.getSelection();
+                result[0] = (ConnectionBean) sel.getFirstElement();
+            } else {
+                result[0] = (ConnectionBean) connectionLabel.getData();
+            }
         });
         return result[0];
     }
@@ -2248,10 +2268,15 @@ public class LoginProjectPage extends AbstractLoginActionPage {
         AtomicBoolean isRemote = new AtomicBoolean(false);
         Display.getDefault().syncExec(() -> {
             if (PluginChecker.isRemoteProviderPluginLoaded()) {
-                StructuredSelection selection = (StructuredSelection) connectionsViewer.getSelection();
-                Object firstElement = selection.getFirstElement();
-                if (firstElement instanceof ConnectionBean) {
-                    isRemote.set(LoginHelper.isRemotesConnection((ConnectionBean) firstElement));
+                if (connectionsViewer != null) {
+                    StructuredSelection selection = (StructuredSelection) connectionsViewer.getSelection();
+                    Object firstElement = selection.getFirstElement();
+                    if (firstElement instanceof ConnectionBean) {
+                        isRemote.set(LoginHelper.isRemotesConnection((ConnectionBean) firstElement));
+                    }
+                } else {
+                    ConnectionBean conectionBean = (ConnectionBean)connectionLabel.getData();
+                    isRemote.set(LoginHelper.isRemotesConnection(conectionBean));
                 }
             }
         });
