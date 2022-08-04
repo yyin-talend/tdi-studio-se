@@ -201,7 +201,7 @@ public class LoginWithCloudPage extends AbstractLoginActionPage implements Login
         if (this.networkSettingsLabel != null) {
             offset = networkSettingsLabel.computeSize(SWT.DEFAULT, SWT.DEFAULT).x / 2 * -1;
             formData = new FormData();
-            formData.top = new FormAttachment(100, -100);
+            formData.top = new FormAttachment(100, -50);
             formData.left = new FormAttachment(50, offset);
             networkSettingsLabel.setLayoutData(formData);
         }
