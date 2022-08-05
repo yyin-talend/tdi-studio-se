@@ -368,8 +368,8 @@
             }
         }
             <%if(isLog4jEnabled){%>
-		log.info("Project name: {}\tJob name: {}\tGIT Commit ID: {}\tTalend Version: {}",
-				projectName,jobName,jobInfo.getProperty("gitCommitId"), "<%=System.getProperties().getProperty("talend.studio.version")%>");
+		log.info(String.format("Project name: %s\tJob name: %s\tGIT Commit ID: %s\tTalend Version: %s",
+				projectName,jobName,jobInfo.getProperty("gitCommitId"), "<%=System.getProperties().getProperty("talend.studio.version")%>"));
 		<%}%>
     }
 
