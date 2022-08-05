@@ -618,9 +618,6 @@ public class ProjectRefSettingPage extends ProjectSettingPage {
                 return false;
             }
 
-            // update reference project
-            saveData();
-            
             MessageDialog.openInformation(Display.getCurrent().getActiveShell(),
                     Messages.getString("RepoReferenceProjectSetupAction.TitleReferenceChanged"), //$NON-NLS-1$
                     Messages.getString("RepoReferenceProjectSetupAction.MsgReferenceChanged")); //$NON-NLS-1$
@@ -639,6 +636,8 @@ public class ProjectRefSettingPage extends ProjectSettingPage {
                         public void run(IProgressMonitor monitor) throws CoreException {
                             try {
                                 relogin(mainProjectLabel, false, monitor);
+                                // update reference project
+                                saveData();
                             } catch (Exception ex) {
                                 errorException = ex;
                                 synSetErrorMessage(errorException);
