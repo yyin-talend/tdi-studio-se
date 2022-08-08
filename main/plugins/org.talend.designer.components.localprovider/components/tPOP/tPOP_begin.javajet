@@ -14,7 +14,7 @@ INode node = (INode)codeGenArgument.getArgument();
 String cid = node.getUniqueName();
 String host = ElementParameterParser.getValue(node, "__HOST__");
 String username = ElementParameterParser.getValue(node, "__USERNAME__");
-
+String authMode = ElementParameterParser.getValue(node, "__AUTH_MODE__");
 String port = ElementParameterParser.getValue(node, "__PORT__");
 String outputDirectory = ElementParameterParser.getValue(node, "__OUTPUT_DIRECTORY__");
 String filenamePattern = ElementParameterParser.getValue(node, "__FILENAME_PATTERN__");
@@ -27,13 +27,15 @@ String condition = ElementParameterParser.getValue(node, "__FILTER_RELATION__");
 boolean useSSL = "true".equals(ElementParameterParser.getValue(node, "__USE_SSL__"));
 boolean isLog4jEnabled = ("true").equals(ElementParameterParser.getValue(node.getProcess(), "__LOG4J_ACTIVATE__"));
 boolean isNewerEmailFirst = ("true").equals(ElementParameterParser.getValue(node, "__NEWER_EMAILS__"));
+List<Map<String, String>> configs = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__CONFIGS__");
+boolean use2LineToken = "true".equals(ElementParameterParser.getValue(node, "__USE_TWO_LINE_TOKEN__"));
 %>  
 	String server_<%=cid %> = <%=host %>;
 	String mbox_<%=cid%> = "INBOX";
 	String user_<%=cid %> = <%=username %>;
 	
     <%
-    String passwordFieldName = "__PASSWORD__";
+    String passwordFieldName = "BASIC".equals(authMode)?"__PASSWORD__":"__TOKEN__";
     %>
     
     <%@ include file="@{org.talend.designer.components.localprovider}/components/templates/password.javajet"%>
@@ -58,21 +60,31 @@ globalMap.put("<%=cid%>_ERROR_MESSAGE",sex.getMessage());
 	}
 <%
 	if (useSSL) {
-		if ("pop3".equals(protocol)){
   %>
-		    props_<%=cid %>.setProperty("mail.pop3.socketFactory.class", "javax.net.ssl.SSLSocketFactory");      
-		    props_<%=cid %>.setProperty("mail.pop3.socketFactory.fallback", "false");
-		    props_<%=cid %>.setProperty("mail.pop3.socketFactory.port", port_<%=cid %> + "");
+		    props_<%=cid %>.setProperty("mail.<%=protocol%>.socketFactory.class", "javax.net.ssl.SSLSocketFactory");      
+		    props_<%=cid %>.setProperty("mail.<%=protocol%>.socketFactory.fallback", "false");
+		    props_<%=cid %>.setProperty("mail.<%=protocol%>.socketFactory.port", port_<%=cid %> + "");
   <%
-		} else {
-  %>
-		    props_<%=cid %>.setProperty("mail.imap.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
-		    props_<%=cid %>.setProperty("mail.imap.socketFactory.fallback", "false");
-		    props_<%=cid %>.setProperty("mail.imap.socketFactory.port", port_<%=cid %> + "");    
-  <%
-		}
-	}
+    }
 
+if("OAUTH2".equals(authMode)) {
+	%>
+	props_<%=cid %>.put("mail.<%=protocol%>.auth.mechanisms", "XOAUTH2");
+	<%
+}
+if(use2LineToken) {
+	%>
+	props_<%=cid %>.put("mail.<%=protocol%>.auth.xoauth2.two.line.authentication.format", "true");
+	<%
+	
+}
+
+for (int i = 0; i < configs.size(); i++) {
+    Map<String, String> line = configs.get(i);
+%>
+props_<%=cid %>.put(<%=line.get("KEY")%>, <%=line.get("VALUE")%>);
+<%
+}
 	if ("pop3".equals(protocol)){
 %>
   		session_<%=cid %> = javax.mail.Session.getInstance(props_<%=cid %>, null);
