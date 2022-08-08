@@ -80,6 +80,8 @@ public class LoginWithCloudPage extends AbstractLoginActionPage implements Login
     private Composite firstInfoComposite = null;
     
     private Hyperlink imageLink = null;
+    
+    private boolean isSignOnCloud;
 
     public LoginWithCloudPage(Composite parent, LoginDialogV2 dialog, int style) {
         super(parent, dialog, style);
@@ -236,6 +238,7 @@ public class LoginWithCloudPage extends AbstractLoginActionPage implements Login
 
             @Override
             public void widgetSelected(SelectionEvent e) {
+                isSignOnCloud = true;
                 try {
                     ICloudSignOnService.get().signonCloud(LoginWithCloudPage.this);
                 } catch (Exception e1) {
@@ -262,6 +265,7 @@ public class LoginWithCloudPage extends AbstractLoginActionPage implements Login
 
                 @Override
                 public void widgetSelected(SelectionEvent e) {
+                    isSignOnCloud = false;
                     try {
                         gotoNextPage();
                     } catch (Throwable e1) {
@@ -408,7 +412,7 @@ public class LoginWithCloudPage extends AbstractLoginActionPage implements Login
         if (!isRefreshToken) {
             iNextPage = super.getNextPage();
             if (iNextPage == null) {
-                iNextPage = new LoginProjectPage(getParent(), loginDialog, SWT.NONE, true);
+                iNextPage = new LoginProjectPage(getParent(), loginDialog, SWT.NONE, isSignOnCloud);
                 setNextPage(iNextPage);
             }
         }
