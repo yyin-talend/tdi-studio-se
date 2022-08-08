@@ -259,9 +259,18 @@ public class GenericDBService implements IGenericDBService{
             public void run(IProgressMonitor monitor) throws CoreException {
                 ConnectionItem connItem = item;
                 try {
+                    ITDQRepositoryService tdqRepService = null;
+                    if (GlobalServiceRegister.getDefault().isServiceRegistered(ITDQRepositoryService.class)) {
+                        tdqRepService =
+                                (ITDQRepositoryService) GlobalServiceRegister.getDefault()
+                                        .getService(ITDQRepositoryService.class);
+                    }
                     if (form != null && form.isCallAfterFormFinish()) {
                         if (creation) {
                             factory.create(connItem, pathToSave);
+                        } else if (tdqRepService != null) {
+                            // TDQ-20362 get connection's dependency analysis and save analysis by EMF resources
+                            tdqRepService.saveConnectionWithDependency(connItem);
                         }
                         try {
                             compService.afterFormFinish(form.getName(), form.getProperties());
@@ -291,7 +300,7 @@ public class GenericDBService implements IGenericDBService{
                     }
                     MetadataConnectionUtils.fillConnectionInformation(connItem, metadataConnection);
                     factory.save(connItem);
-                    updateConnectionOnDQSide(creation, connItem);
+                    updateConnectionOnDQSide(tdqRepService, creation, connItem);
                 } catch (Throwable e) {
                     e.printStackTrace();
                     throw new CoreException(new Status(IStatus.ERROR, IGenericConstants.REPOSITORY_PLUGIN_ID,
@@ -316,19 +325,16 @@ public class GenericDBService implements IGenericDBService{
      * @param creation
      * @param connectionItem
      */
-    private void updateConnectionOnDQSide(boolean creation, ConnectionItem connectionItem) {
-        ITDQRepositoryService tdqRepService = null;
-
-        if (GlobalServiceRegister.getDefault().isServiceRegistered(ITDQRepositoryService.class)) {
-            tdqRepService =
-                    (ITDQRepositoryService) GlobalServiceRegister.getDefault().getService(ITDQRepositoryService.class);
-        }
+    private void updateConnectionOnDQSide(ITDQRepositoryService tdqRepService, boolean creation,
+            ConnectionItem connectionItem) {
         if (tdqRepService != null) {
             // MOD qiongli 2012-11-19 TDQ-6287
             if (creation) {
                 tdqRepService.notifySQLExplorer(connectionItem);
             } else {
                 tdqRepService.updateAliasInSQLExplorer(connectionItem, connectionItem.getProperty().getDisplayName());
+                // update the opened analysis
+                tdqRepService.refreshCurrentAnalysisEditor(connectionItem);
             }
         }
     }
