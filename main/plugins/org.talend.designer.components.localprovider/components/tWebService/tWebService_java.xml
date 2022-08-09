@@ -332,12 +332,7 @@
                 REQUIRED="true"
             />
 
-            <IMPORT
-                NAME="SOAP-JavaMail"
-                MODULE="javax.mail-1.6.2.jar"
-                MVN="mvn:com.sun.mail/javax.mail/1.6.2"
-                REQUIRED="true"
-            />
+            <IMPORT NAME="jakartaMail" MODULE="jakarta.mail-1.6.7.jar" MVN="mvn:com.sun.mail/jakarta.mail/1.6.7" REQUIRED="true" />
             <IMPORT
                 NAME="SOAP-JAF"
                 MODULE="activation.jar"
