@@ -489,6 +489,14 @@ public class LoginDialogV2 extends TrayDialog {
     protected void okPressed() {
         // LoginDialog.getInstance().okPressed();
         LoginHelper.refreshTalendLogonStartupTimes();
+        try {
+            if (ICloudSignOnService.get() != null && ICloudSignOnService.get().hasValidToken()) {
+                ICloudSignOnService.get().startHeartBeat();
+            }
+        } catch (Exception e) {
+            setErrorMessage(e.getLocalizedMessage(), null);
+            ExceptionHandler.process(e);
+        }
         super.okPressed();
     }
 

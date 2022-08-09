@@ -17,6 +17,7 @@ import java.util.List;
 
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
+import org.eclipse.equinox.app.IApplication;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.preference.PreferenceDialog;
@@ -26,15 +27,20 @@ import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.PaintEvent;
+import org.eclipse.swt.events.PaintListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.widgets.Canvas;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Link;
@@ -66,8 +72,6 @@ public class LoginWithCloudPage extends AbstractLoginActionPage implements Login
     private Button signCloudButton;
 
     private Button otherSignButton;
-    
-    private Button restartButton;
     
     private Color messagePanelColor = new Color(null, 205, 227, 242);
     
@@ -101,12 +105,20 @@ public class LoginWithCloudPage extends AbstractLoginActionPage implements Login
     @Override
     public void instantiateControl(Composite container) {
         if (isFirstLogin) {
-            firstInfoComposite = new Composite (container, SWT.None);
+            firstInfoComposite = new Canvas(container, SWT.DOUBLE_BUFFERED);
             GridLayout compositeLayout = new GridLayout(3, false);
             compositeLayout.marginWidth = 0;
             compositeLayout.marginHeight = 0;
+            compositeLayout.marginTop = 5;
+            compositeLayout.marginBottom = 5;
             firstInfoComposite.setLayout(compositeLayout);
-            firstInfoComposite.setBackground(messagePanelColor);
+            firstInfoComposite.addPaintListener(new PaintListener() {
+
+                @Override
+                public void paintControl(PaintEvent e) {
+                    drawMessageBackground(e, firstInfoComposite);
+                }
+            });
             
             Label imageLabel = new Label(firstInfoComposite, SWT.None);           
             imageLabel.setImage(JFaceResources.getImage(Dialog.DLG_IMG_MESSAGE_INFO));
@@ -117,6 +129,7 @@ public class LoginWithCloudPage extends AbstractLoginActionPage implements Login
             infoLabel.setBackground(messagePanelColor);
             
             Composite moreInfoCom = new Composite(firstInfoComposite, SWT.None);
+            
             compositeLayout = new GridLayout(3, false);
             compositeLayout.marginWidth = 0;
             compositeLayout.marginHeight = 0;
@@ -141,23 +154,31 @@ public class LoginWithCloudPage extends AbstractLoginActionPage implements Login
         signCloudButton = new Button(container, SWT.FLAT);
         signCloudButton.setFont(LoginDialogV2.fixedFont);
         signCloudButton.setText(Messages.getString("LoginWithCloudPage.signCloudBtn"));
+        
+        otherSignButton = new Button(container, SWT.FLAT);
+        otherSignButton.setFont(LoginDialogV2.fixedFont);
+        otherSignButton.setText(Messages.getString("LoginWithCloudPage.otherSignBtn")); 
 
-        if (!isRefreshToken) {
-            otherSignButton = new Button(container, SWT.FLAT);
-            otherSignButton.setFont(LoginDialogV2.fixedFont);
-            otherSignButton.setText(Messages.getString("LoginWithCloudPage.otherSignBtn")); 
-
-            networkSettingsLabel = new Link(container, SWT.NONE);
-            networkSettingsLabel.setFont(LoginDialogV2.fixedFont);
-            networkSettingsLabel.setBackground(backgroundRadioColor);
-            networkSettingsLabel.setText("<a>" //$NON-NLS-1$
-                    + Messages.getString("LoginProjectPage.networkSettings") //$NON-NLS-1$
-                    + "</a>");//$NON-NLS-1$
-        } else {
-            restartButton = new Button(container, SWT.FLAT);
-            restartButton.setFont(LoginDialogV2.fixedFont);
-            restartButton.setText("Exit Studio"); 
+        networkSettingsLabel = new Link(container, SWT.NONE);
+        networkSettingsLabel.setFont(LoginDialogV2.fixedFont);
+        networkSettingsLabel.setBackground(backgroundRadioColor);
+        networkSettingsLabel.setText("<a>" //$NON-NLS-1$
+                + Messages.getString("LoginProjectPage.networkSettings") //$NON-NLS-1$
+                + "</a>");//$NON-NLS-1$
+        
+        
+        if (isRefreshToken) {
+            title.setText(Messages.getString("LoginWithCloudPage.titleLbl")); //$NON-NLS-1$
+            otherSignButton.setText(Messages.getString("LoginWithCloudPage.exitBtn"));
         }
+    }
+    
+    private void drawMessageBackground(PaintEvent e, Control ctrl) {
+        e.gc.setBackground(messagePanelColor);
+        e.gc.setAntialias(SWT.ON);
+        e.gc.setInterpolation(SWT.HIGH);
+        Point size = ctrl.getSize();
+        e.gc.fillRoundRectangle(0, 0, size.x, size.y, 15, 15);
     }
 
     @Override
@@ -168,8 +189,6 @@ public class LoginWithCloudPage extends AbstractLoginActionPage implements Login
             formData.top = new FormAttachment(15, 0);
             formData.left = new FormAttachment(50, offset);
             firstInfoComposite.setLayoutData(formData);
-            
-            imageLink.setLayoutData(new GridData());
         }
         
         int offset = (title.computeSize(SWT.DEFAULT, SWT.DEFAULT).x) / 2 * -1;
@@ -190,14 +209,6 @@ public class LoginWithCloudPage extends AbstractLoginActionPage implements Login
             formData.top = new FormAttachment(signCloudButton, TAB_VERTICAL_PADDING_LEVEL_1, SWT.BOTTOM);
             formData.left = new FormAttachment(50, offset);
             otherSignButton.setLayoutData(formData); 
-        }
-        
-        if (restartButton != null) {
-            offset = restartButton.computeSize(SWT.DEFAULT, SWT.DEFAULT).x / 2 * -1;
-            formData = new FormData();
-            formData.top = new FormAttachment(signCloudButton, TAB_VERTICAL_PADDING_LEVEL_1, SWT.BOTTOM);
-            formData.left = new FormAttachment(50, offset);
-            restartButton.setLayoutData(formData); 
         }
 
         if (this.networkSettingsLabel != null) {
@@ -246,34 +257,32 @@ public class LoginWithCloudPage extends AbstractLoginActionPage implements Login
                 }
             }
         });
-        if (restartButton != null) {
-            restartButton.addSelectionListener(new SelectionAdapter() {
-
-                @Override
-                public void widgetSelected(SelectionEvent e) {
-                    try {
-                        PlatformUI.getWorkbench().close();
-                    } catch (Exception e1) {
-                        showError(e1);
-                    }
-                }
-            });
-        }
 
         if (otherSignButton != null) {
             otherSignButton.addSelectionListener(new SelectionAdapter() {
 
                 @Override
                 public void widgetSelected(SelectionEvent e) {
-                    isSignOnCloud = false;
-                    try {
-                        gotoNextPage();
-                    } catch (Throwable e1) {
-                        // TODO Auto-generated catch block
-                        e1.printStackTrace();
+                    if (!isRefreshToken) {
+                        isSignOnCloud = false;
+                        try {
+                            gotoNextPage();
+                        } catch (Throwable e1) {
+                            showError(e1);
+                        }
+                    } else {
+                        try {
+                            if (PlatformUI.isWorkbenchRunning()) {
+                                PlatformUI.getWorkbench().close();
+                            } else {
+                                System.exit(IApplication.EXIT_OK);
+                            }
+
+                        } catch (Exception e1) {
+                            showError(e1);
+                        } 
                     }
                 }
-
             });
         }
 
