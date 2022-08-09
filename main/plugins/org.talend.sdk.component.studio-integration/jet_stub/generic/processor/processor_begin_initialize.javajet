@@ -60,7 +60,7 @@
     org.talend.sdk.component.runtime.di.studio.RuntimeContextInjector.injectLifecycle(processorImpl_<%=cid%>, globalMap);
     
     <%
-    boolean useExistedConnection = "true".equals(ElementParameterParser.getValue(node,"__USE_EXISTING_CONNECTION__"));
+    boolean useExistedConnection = "Commit".equals(originalName) || "Rollback".equals(originalName) || "true".equals(ElementParameterParser.getValue(node,"__USE_EXISTING_CONNECTION__"));
     String connection = ElementParameterParser.getValue(node,"__CONNECTION__");
     if(useExistedConnection) {//}
     %>
