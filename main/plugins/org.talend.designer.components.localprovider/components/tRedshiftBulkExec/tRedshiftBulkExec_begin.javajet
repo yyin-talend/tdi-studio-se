@@ -272,8 +272,12 @@ skeleton="../templates/db_output_bulk.skeleton"
 				final String decryptedPwd_<%=cid%> = <%= ElementParameterParser.getValue(current_node, passwordFieldKey)%>; 
 <%
 			}
-    	}
-    }
+		}
+	} else {
+%>
+		final String decryptedPwd_<%=cid%> = "";
+<%
+	}
 	if(avroMode) {
 		String avro_mapping = ElementParameterParser.getValue(node, "__JSON_MAPPING__");
 %>
@@ -552,7 +556,10 @@ skeleton="../templates/db_output_bulk.skeleton"
 <%
 	if (isLog4jEnabled) {
 %>
-		log.debug("Executing COPY command: " + command_<%=cid%>.toString().replace(decryptedPwd_<%=cid %>, "****"));
+		String log_command_<%=cid%> = decryptedPwd_<%=cid %>.isEmpty()
+			? command_<%=cid%>.toString()
+			: command_<%=cid%>.toString().replace(decryptedPwd_<%=cid %>, "****");
+		log.debug("Executing COPY command: " + log_command_<%=cid%>);
 <%
 	}
 %>
