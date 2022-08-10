@@ -996,7 +996,12 @@ public class LoginHelper {
         // can be two case: 1 only local connection, 2 only remote connection
         Iterator<ConnectionBean> connectionBeanIter = filteredConnections.iterator();
         while (connectionBeanIter.hasNext()) {
-            boolean isRemoteConnection = LoginHelper.isRemotesConnection(connectionBeanIter.next());
+            ConnectionBean connectionBean = connectionBeanIter.next();
+            if (connectionBean.isLoginViaCloud()) {
+                connectionBeanIter.remove();
+                continue;
+            }
+            boolean isRemoteConnection = LoginHelper.isRemotesConnection(connectionBean);
             if (isOnlyRemoteConnection && !isRemoteConnection) {
                 // only remote connection, should remove local
                 connectionBeanIter.remove();

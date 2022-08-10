@@ -15,8 +15,10 @@ package org.talend.repository.ui.login;
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 
+import org.apache.log4j.Logger;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
+import org.eclipse.core.runtime.preferences.ConfigurationScope;
 import org.eclipse.equinox.app.IApplication;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.MessageDialog;
@@ -35,7 +37,6 @@ import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.layout.FormData;
-import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Canvas;
@@ -46,10 +47,13 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Link;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.forms.widgets.Hyperlink;
+import org.osgi.service.prefs.BackingStoreException;
+import org.osgi.service.prefs.Preferences;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.utils.network.NetworkUtil;
 import org.talend.core.model.general.ConnectionBean;
 import org.talend.core.service.ICloudSignOnService;
+import org.talend.core.ui.workspace.ChooseWorkspaceData;
 import org.talend.repository.RepositoryPlugin;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.ui.login.connections.ConnectionUserPerReader;
@@ -60,6 +64,9 @@ import org.talend.signon.util.TokenMode;
 import org.talend.signon.util.listener.LoginEventListener;
 
 public class LoginWithCloudPage extends AbstractLoginActionPage implements LoginEventListener {
+    private static final Logger LOGGER = Logger.getLogger(LoginWithCloudPage.class);
+    
+    private static final String SHOW_WELCOME_INFO_KEY = "LoginWithCloudPage.showWelcomeInfo";
 
     protected Label title;
 
@@ -78,8 +85,6 @@ public class LoginWithCloudPage extends AbstractLoginActionPage implements Login
     private String codeVerifier = ICloudSignOnService.get().generateCodeVerifier();
     
     private boolean isRefreshToken = false;
-    
-    private boolean isFirstLogin = true;
     
     private Composite firstInfoComposite = null;
     
@@ -104,7 +109,7 @@ public class LoginWithCloudPage extends AbstractLoginActionPage implements Login
 
     @Override
     public void instantiateControl(Composite container) {
-        if (isFirstLogin) {
+        if (isShowWelcomeInfo()) {
             firstInfoComposite = new Canvas(container, SWT.DOUBLE_BUFFERED);
             GridLayout compositeLayout = new GridLayout(3, false);
             compositeLayout.marginWidth = 0;
@@ -193,7 +198,11 @@ public class LoginWithCloudPage extends AbstractLoginActionPage implements Login
         
         int offset = (title.computeSize(SWT.DEFAULT, SWT.DEFAULT).x) / 2 * -1;
         FormData formData = new FormData();
-        formData.top = new FormAttachment(15, 0);
+        if (firstInfoComposite != null) {
+            formData.top = new FormAttachment(firstInfoComposite, 20);
+        } else {
+            formData.top = new FormAttachment(20, 0);
+        }
         formData.left = new FormAttachment(50, offset);
         title.setLayoutData(formData);
 
@@ -203,13 +212,11 @@ public class LoginWithCloudPage extends AbstractLoginActionPage implements Login
         formData.left = new FormAttachment(50, offset);
         signCloudButton.setLayoutData(formData);
 
-        if (otherSignButton != null) {
-            offset = otherSignButton.computeSize(SWT.DEFAULT, SWT.DEFAULT).x / 2 * -1;
-            formData = new FormData();
-            formData.top = new FormAttachment(signCloudButton, TAB_VERTICAL_PADDING_LEVEL_1, SWT.BOTTOM);
-            formData.left = new FormAttachment(50, offset);
-            otherSignButton.setLayoutData(formData); 
-        }
+        offset = otherSignButton.computeSize(SWT.DEFAULT, SWT.DEFAULT).x / 2 * -1;
+        formData = new FormData();
+        formData.top = new FormAttachment(signCloudButton, TAB_VERTICAL_PADDING_LEVEL_1, SWT.BOTTOM);
+        formData.left = new FormAttachment(50, offset);
+        otherSignButton.setLayoutData(formData);
 
         if (this.networkSettingsLabel != null) {
             offset = networkSettingsLabel.computeSize(SWT.DEFAULT, SWT.DEFAULT).x / 2 * -1;
@@ -217,6 +224,22 @@ public class LoginWithCloudPage extends AbstractLoginActionPage implements Login
             formData.top = new FormAttachment(100, -50);
             formData.left = new FormAttachment(50, offset);
             networkSettingsLabel.setLayoutData(formData);
+        }
+    }
+    
+    private boolean isShowWelcomeInfo() {
+        Preferences node = new ConfigurationScope().getNode(ChooseWorkspaceData.ORG_TALEND_WORKSPACE_PREF_NODE);
+        boolean showWelcomeInfo = node.getBoolean(SHOW_WELCOME_INFO_KEY, true);
+        return showWelcomeInfo;
+    }
+    
+    private void saveShowWelcomeInfo() {
+        Preferences node = new ConfigurationScope().getNode(ChooseWorkspaceData.ORG_TALEND_WORKSPACE_PREF_NODE);
+        node.putBoolean(SHOW_WELCOME_INFO_KEY, false);
+        try {
+            node.flush();
+        } catch (BackingStoreException e) {
+            LOGGER.error("failed to store workspace location in preferences :", e); //$NON-NLS-1$
         }
     }
 
@@ -419,6 +442,7 @@ public class LoginWithCloudPage extends AbstractLoginActionPage implements Login
     public AbstractActionPage getNextPage() {
         AbstractActionPage iNextPage = null;
         if (!isRefreshToken) {
+            saveShowWelcomeInfo();
             iNextPage = super.getNextPage();
             if (iNextPage == null) {
                 iNextPage = new LoginProjectPage(getParent(), loginDialog, SWT.NONE, isSignOnCloud);
