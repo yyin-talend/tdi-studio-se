@@ -307,7 +307,7 @@ public class LoginHelper {
         if (connectionBean == null) {
             return false;
         }        
-        return connectionBean.getConnectionToken() != null;
+        return connectionBean.isLoginViaCloud();
     }
 
     public static boolean isCloudRepository(String repositoryId) {
