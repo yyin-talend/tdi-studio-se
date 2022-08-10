@@ -338,7 +338,7 @@ public class PropertyChangeCommand extends Command {
                 }
                 INode targetNode = connection.getTarget();
                 String componentName = targetNode.getComponent().getName();
-                if (componentName.matches("tELT.*Map")) { //$NON-NLS-1$
+                if (componentName.matches("tELT.*Map") && !"tELTSAPMap".equalsIgnoreCase(componentName)) { //$NON-NLS-1$//$NON-NLS-2$
                     if (GlobalServiceRegister.getDefault().isServiceRegistered(IDbMapDesignerService.class)) {
                         IDbMapDesignerService service = GlobalServiceRegister.getDefault().getService(
                                 IDbMapDesignerService.class);

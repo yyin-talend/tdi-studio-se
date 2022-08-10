@@ -51,12 +51,25 @@
     >
      <DEFAULT>110</DEFAULT>
     </PARAMETER>
+    
+     <PARAMETER
+      NAME="AUTH_MODE"
+      FIELD="CLOSED_LIST"
+      NUM_ROW="5"
+      GROUP="AUTHENTICATION"
+    >
+      <ITEMS DEFAULT="BASIC">
+        <ITEM NAME="BASIC"   VALUE="BASIC" />
+        <ITEM NAME="OAUTH2" VALUE="OAUTH2" />
+      </ITEMS>
+    </PARAMETER>
 
     <PARAMETER
       NAME="USERNAME"
       FIELD="TEXT"
       REQUIRED="true"
-      NUM_ROW="2"
+      NUM_ROW="6"
+      GROUP="AUTHENTICATION"
     >
       <DEFAULT>"username"</DEFAULT>
     </PARAMETER>
@@ -65,7 +78,20 @@
       NAME="PASSWORD"
       FIELD="PASSWORD"
       REQUIRED="true"
-      NUM_ROW="2"
+      NUM_ROW="6"
+      GROUP="AUTHENTICATION"
+      SHOW_IF="AUTH_MODE == 'BASIC'"
+    >
+      <DEFAULT>"password"</DEFAULT>
+    </PARAMETER>
+    
+     <PARAMETER
+      NAME="TOKEN"
+      FIELD="PASSWORD"
+      REQUIRED="true"
+      NUM_ROW="6"
+      GROUP="AUTHENTICATION"
+      SHOW_IF="AUTH_MODE == 'OAUTH2'"
     >
       <DEFAULT>"password"</DEFAULT>
     </PARAMETER>
@@ -73,7 +99,7 @@
     <PARAMETER
       NAME="OUTPUT_DIRECTORY"
       FIELD="DIRECTORY"
-      NUM_ROW="3"
+      NUM_ROW="10"
     >
       <DEFAULT>"__COMP_DEFAULT_FILE_DIR__"</DEFAULT>
     </PARAMETER>
@@ -82,7 +108,7 @@
       NAME="FILENAME_PATTERN"
       FIELD="TEXT"
       REQUIRED="true"
-      NUM_ROW="4"
+      NUM_ROW="15"
     >
       <DEFAULT>TalendDate.getDate("yyyyMMdd-hhmmss") + "_" + java.util.UUID.randomUUID().toString().substring(0, 16) + ".mail"</DEFAULT>
     </PARAMETER>
@@ -91,7 +117,7 @@
       NAME="ALL_EMAILS"
       FIELD="CHECK"
       REQUIRED="true"
-      NUM_ROW="6"
+      NUM_ROW="20"
     >
       <DEFAULT>true</DEFAULT>
     </PARAMETER>
@@ -100,7 +126,7 @@
       NAME="NEWER_EMAILS"
       FIELD="CHECK"
       REQUIRED="true"
-      NUM_ROW="7"
+      NUM_ROW="25"
       SHOW_IF="ALL_EMAILS == 'false'"
     >
       <DEFAULT>true</DEFAULT>
@@ -110,7 +136,7 @@
       NAME="MAX_EMAILS"
       FIELD="TEXT"
       REQUIRED="true"
-      NUM_ROW="6"
+      NUM_ROW="20"
       SHOW_IF="ALL_EMAILS == 'false'"
     >
       <DEFAULT>10</DEFAULT>
@@ -120,23 +146,23 @@
       NAME="DELETE_FROM_SERVER"
       FIELD="CHECK"
       REQUIRED="true"
-      NUM_ROW="7"
+      NUM_ROW="25"
     >
       <DEFAULT>false</DEFAULT>
     </PARAMETER>
 
-    <PARAMETER NAME="PROTOCOL" FIELD="CLOSED_LIST" NUM_ROW="8">
+    <PARAMETER NAME="PROTOCOL" FIELD="CLOSED_LIST" NUM_ROW="30">
       <ITEMS DEFAULT="POP3">
         <ITEM NAME="POP3" VALUE="pop3" />
         <ITEM NAME="IMAP" VALUE="imap"/>
       </ITEMS>
     </PARAMETER>
 
-    <PARAMETER NAME="SPECIFY_MAIL_FOLDER" FIELD="CHECK" REQUIRED="true" NUM_ROW="8" SHOW_IF="PROTOCOL == 'IMAP'">
+    <PARAMETER NAME="SPECIFY_MAIL_FOLDER" FIELD="CHECK" REQUIRED="true" NUM_ROW="30" SHOW_IF="PROTOCOL == 'IMAP'">
       <DEFAULT>false</DEFAULT>
     </PARAMETER>
 
-    <PARAMETER NAME="MAIL_FOLDER" FIELD="TEXT" REQUIRED="true" NUM_ROW="8" SHOW_IF="(SPECIFY_MAIL_FOLDER == 'true') AND (PROTOCOL == 'IMAP')">
+    <PARAMETER NAME="MAIL_FOLDER" FIELD="TEXT" REQUIRED="true" NUM_ROW="30" SHOW_IF="(SPECIFY_MAIL_FOLDER == 'true') AND (PROTOCOL == 'IMAP')">
      <DEFAULT>"INBOX"</DEFAULT>
     </PARAMETER>
 
@@ -144,7 +170,7 @@
       NAME="USE_SSL"
       FIELD="CHECK"
       REQUIRED="true"
-      NUM_ROW="9"
+      NUM_ROW="35"
     >
       <DEFAULT>false</DEFAULT>
     </PARAMETER>
@@ -174,11 +200,28 @@
         <ITEM NAME="OR" VALUE="||"/>
       </ITEMS>
     </PARAMETER>
+    
+    <PARAMETER
+      NAME="USE_TWO_LINE_TOKEN"
+      FIELD="CHECK"
+      REQUIRED="true"
+      SHOW_IF="AUTH_MODE == 'OAUTH2'"
+      NUM_ROW="14">
+        <DEFAULT>false</DEFAULT>
+    </PARAMETER>
+
+    	 <PARAMETER NAME="CONFIGS" FIELD="TABLE" REQUIRED="false" NUM_ROW="15" NB_LINES="3">
+          <ITEMS>
+            <ITEM NAME="KEY" />
+            <ITEM NAME="VALUE" />
+          </ITEMS>
+        </PARAMETER>
+        
   </ADVANCED_PARAMETERS>
 
   <CODEGENERATION>
     <IMPORTS>
-      <IMPORT NAME="JavaMail" MODULE="javax.mail-1.6.2.jar" MVN="mvn:com.sun.mail/javax.mail/1.6.2" REQUIRED="true" />
+      <IMPORT NAME="jakartaMail" MODULE="jakarta.mail-1.6.7.jar" MVN="mvn:com.sun.mail/jakarta.mail/1.6.7" REQUIRED="true" />
       <IMPORT NAME="JAF" MODULE="activation.jar" MVN="mvn:org.talend.libraries/activation/6.0.0"  UrlPath="platform:/plugin/org.talend.libraries.apache.axis2/lib/activation.jar" REQUIRED="true" />
     </IMPORTS>
   </CODEGENERATION>
