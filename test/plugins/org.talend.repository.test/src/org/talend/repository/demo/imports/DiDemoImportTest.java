@@ -13,10 +13,12 @@
 package org.talend.repository.demo.imports;
 
 import java.io.File;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
 import org.eclipse.core.runtime.NullProgressMonitor;
+import org.eclipse.core.runtime.Path;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -107,4 +109,13 @@ public class DiDemoImportTest extends DemosImportTest {
 		map.put(rootPath + File.separator + documentionPath, FileConstants.ITEM_EXTENSION);
 		return map;
 	}
+
+    protected String getRootPath(ResourcesManager resManager) {
+        Iterator path = resManager.getPaths().iterator();
+        String firstFilePath = ((Path) path.next()).toPortableString();
+        String tempFolderPath = firstFilePath.substring(0,
+                firstFilePath.indexOf(TEMP_FOLDER_SUFFIEX) + TEMP_FOLDER_SUFFIEX.length());
+        Assert.assertTrue(new File(tempFolderPath).exists());
+        return tempFolderPath + File.separator + demoName.toUpperCase();
+    }
 }
