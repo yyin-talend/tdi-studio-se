@@ -13,6 +13,7 @@
 package org.talend.repository.ui.login;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.Iterator;
 import java.util.List;
 
 import org.apache.log4j.Logger;
@@ -288,6 +289,7 @@ public class LoginWithCloudPage extends AbstractLoginActionPage implements Login
                 public void widgetSelected(SelectionEvent e) {
                     if (!isRefreshToken) {
                         isSignOnCloud = false;
+                        removeSSOConnection();
                         try {
                             gotoNextPage();
                         } catch (Throwable e1) {
@@ -375,6 +377,18 @@ public class LoginWithCloudPage extends AbstractLoginActionPage implements Login
             ExceptionHandler.process(e);
         }
 
+    }
+    
+    private void removeSSOConnection() {
+        ConnectionUserPerReader reader = ConnectionUserPerReader.getInstance();
+        List<ConnectionBean> list = reader.readConnections();
+        Iterator<ConnectionBean> connectionBeanIter = list.iterator();
+        while (connectionBeanIter.hasNext()) {
+            if (connectionBeanIter.next().isLoginViaCloud()) {
+                connectionBeanIter.remove();
+            }
+        }
+        reader.saveConnections(list);
     }
 
     private void saveConnection(TokenMode token, String adminURL, String user) {
