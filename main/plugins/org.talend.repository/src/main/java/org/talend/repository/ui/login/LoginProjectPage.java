@@ -162,6 +162,8 @@ public class LoginProjectPage extends AbstractLoginActionPage {
     protected Button manageButton;
     
     protected Button switchLoginTypeButton;
+    
+    protected Label separatorLabel = null;
 
     protected Composite projectOperationArea;
 
@@ -602,30 +604,31 @@ public class LoginProjectPage extends AbstractLoginActionPage {
         // Connection Area
         title = new Label(container, SWT.NONE);
         title.setFont(LoginDialogV2.fixedFont);
-        title.setText(Messages.getString("LoginProjectPage.title")); //$NON-NLS-1$
         
         connectionManageArea = new Composite(container, SWT.NONE);
         if (isSSOMode) {
+            title.setText(Messages.getString("LoginProjectPage.cloud.title")); //$NON-NLS-1$
             connectionLabel = new Label (connectionManageArea, SWT.None);
         } else {
+            title.setText(Messages.getString("LoginProjectPage.title")); //$NON-NLS-1$
             connectionsViewer = new ComboViewer(connectionManageArea, SWT.READ_ONLY);
             connectionsViewer.getControl().setFont(LoginDialogV2.fixedFont);; 
-        }
-        
-        if (!isSSOMode) {
+            
             manageButton = new Button(connectionManageArea, SWT.NONE);
             manageButton.setFont(LoginDialogV2.fixedFont);
             manageButton.setBackground(backgroundBtnColor);
             manageButton.setImage(ImageProvider.getImage(EImage.MANAGE_CONNECTION));
             manageButton.setToolTipText(Messages.getString("LoginProjectPage.manage")); //$NON-NLS-1$  
-        }        
+        } 
         
         switchLoginTypeButton =  new Button(connectionManageArea, SWT.NONE);
         switchLoginTypeButton.setFont(LoginDialogV2.fixedFont);
         switchLoginTypeButton.setBackground(backgroundBtnColor);
         switchLoginTypeButton.setText("Switch sign in"); 
         
-        
+        if (isSSOMode) {
+            separatorLabel = new Label(connectionManageArea, SWT.SEPARATOR | SWT.HORIZONTAL | SWT.SHADOW_OUT);
+        }
         // Project Operation Area
         projectOperationArea = new Composite(container, SWT.NONE);
         // Existing Project Area
@@ -753,6 +756,10 @@ public class LoginProjectPage extends AbstractLoginActionPage {
         }
         gridData = new GridData(SWT.END, SWT.CENTER, false, true);
         switchLoginTypeButton.setLayoutData(gridData);
+        
+        if (separatorLabel != null) {
+            separatorLabel.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, true, 3, 1));
+        }
         /**
          * 2.3 Layout Project Operation Area
          */

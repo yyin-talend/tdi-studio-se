@@ -45,7 +45,6 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.Link;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.forms.widgets.Hyperlink;
 import org.osgi.service.prefs.BackingStoreException;
@@ -71,7 +70,7 @@ public class LoginWithCloudPage extends AbstractLoginActionPage implements Login
 
     protected Label title;
 
-    private Link networkSettingsLabel;
+    private Button networkSettingsButton;
 
     protected String initialLicenceString;
 
@@ -165,12 +164,9 @@ public class LoginWithCloudPage extends AbstractLoginActionPage implements Login
         otherSignButton.setFont(LoginDialogV2.fixedFont);
         otherSignButton.setText(Messages.getString("LoginWithCloudPage.otherSignBtn")); 
 
-        networkSettingsLabel = new Link(container, SWT.NONE);
-        networkSettingsLabel.setFont(LoginDialogV2.fixedFont);
-        networkSettingsLabel.setBackground(backgroundRadioColor);
-        networkSettingsLabel.setText("<a>" //$NON-NLS-1$
-                + Messages.getString("LoginProjectPage.networkSettings") //$NON-NLS-1$
-                + "</a>");//$NON-NLS-1$
+        networkSettingsButton = new Button(container, SWT.NONE);
+        networkSettingsButton.setFont(LoginDialogV2.fixedFont);
+        networkSettingsButton.setText(Messages.getString("LoginWithCloudPage.networkSettings"));//$NON-NLS-1$
         
         
         if (isRefreshToken) {
@@ -219,12 +215,12 @@ public class LoginWithCloudPage extends AbstractLoginActionPage implements Login
         formData.left = new FormAttachment(50, offset);
         otherSignButton.setLayoutData(formData);
 
-        if (this.networkSettingsLabel != null) {
-            offset = networkSettingsLabel.computeSize(SWT.DEFAULT, SWT.DEFAULT).x / 2 * -1;
+        if (this.networkSettingsButton != null) {
+            offset = networkSettingsButton.computeSize(SWT.DEFAULT, SWT.DEFAULT).x / 2 * -1;
             formData = new FormData();
             formData.top = new FormAttachment(100, -50);
             formData.left = new FormAttachment(50, offset);
-            networkSettingsLabel.setLayoutData(formData);
+            networkSettingsButton.setLayoutData(formData);
         }
     }
     
@@ -311,8 +307,8 @@ public class LoginWithCloudPage extends AbstractLoginActionPage implements Login
             });
         }
 
-        if (networkSettingsLabel != null) {
-            networkSettingsLabel.addSelectionListener(new SelectionAdapter() {
+        if (networkSettingsButton != null) {
+            networkSettingsButton.addSelectionListener(new SelectionAdapter() {
 
                 @Override
                 public void widgetSelected(SelectionEvent e) {
@@ -346,6 +342,7 @@ public class LoginWithCloudPage extends AbstractLoginActionPage implements Login
     @Override
     public void loginStart() {
         Display.getDefault().asyncExec(() -> {
+            updateSignButtonStatus(false);
             errorManager.setInfoMessage(Messages.getString("LoginWithCloudPage.signInTaskFirst"));
         });
     }
@@ -367,6 +364,9 @@ public class LoginWithCloudPage extends AbstractLoginActionPage implements Login
                     errorManager.clearAllMessages();
                     this.gotoNextPage();
                 } catch (Throwable e) {
+                    Display.getDefault().asyncExec(() -> {
+                        errorManager.setErrMessage(e.getLocalizedMessage());
+                    });
                     ExceptionHandler.process(e);
                 }
             });
@@ -375,8 +375,29 @@ public class LoginWithCloudPage extends AbstractLoginActionPage implements Login
                 errorManager.setErrMessage(e.getLocalizedMessage());
             });
             ExceptionHandler.process(e);
+        } finally {
+            Display.getDefault().asyncExec(() -> {
+                updateSignButtonStatus(true);
+            });
         }
+    }
+    
 
+    @Override
+    public void loginFailed(Exception ex) {
+        Display.getDefault().asyncExec(() -> {
+            updateSignButtonStatus(true);
+            errorManager.setErrMessage(ex.getMessage());
+        });
+    }
+    
+    private void updateSignButtonStatus(boolean isEnable) {
+        if (signCloudButton != null) {
+            signCloudButton.setEnabled(isEnable);
+        }
+        if (otherSignButton != null) {
+            otherSignButton.setEnabled(isEnable);
+        }
     }
     
     private void removeSSOConnection() {
@@ -410,13 +431,6 @@ public class LoginWithCloudPage extends AbstractLoginActionPage implements Login
         }
         reader.saveConnections(list);
         reader.saveLastConnectionBean(connection);
-    }
-
-    @Override
-    public void loginFailed(Exception ex) {
-        Display.getDefault().asyncExec(() -> {
-            errorManager.setErrMessage(ex.getMessage());
-        });
     }
 
     @Override
