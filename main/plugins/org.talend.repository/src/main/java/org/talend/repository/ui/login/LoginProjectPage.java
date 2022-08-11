@@ -106,7 +106,6 @@ import org.talend.core.repository.services.ILoginConnectionService;
 import org.talend.core.repository.utils.ProjectHelper;
 import org.talend.core.runtime.CoreRuntimePlugin;
 import org.talend.core.runtime.util.SharedStudioUtils;
-import org.talend.core.service.ICloudSignOnService;
 import org.talend.core.services.ICoreTisService;
 import org.talend.core.ui.TalendBrowserLaunchHelper;
 import org.talend.core.ui.branding.IBrandingService;
@@ -758,7 +757,9 @@ public class LoginProjectPage extends AbstractLoginActionPage {
         switchLoginTypeButton.setLayoutData(gridData);
         
         if (separatorLabel != null) {
-            separatorLabel.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, true, 3, 1));
+            GridData separatorLabelData = new GridData(SWT.FILL, SWT.CENTER, true, true, 3, 1);
+            separatorLabelData.verticalIndent = 5;
+            separatorLabel.setLayoutData(separatorLabelData);
         }
         /**
          * 2.3 Layout Project Operation Area

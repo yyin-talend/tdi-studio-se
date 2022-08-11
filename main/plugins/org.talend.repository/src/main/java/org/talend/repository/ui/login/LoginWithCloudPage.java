@@ -130,6 +130,7 @@ public class LoginWithCloudPage extends AbstractLoginActionPage implements Login
             imageLabel.setBackground(messagePanelColor);
             
             Label infoLabel = new Label(firstInfoComposite, SWT.None);
+            infoLabel.setFont(LoginDialogV2.fixedFont);
             infoLabel.setText(Messages.getString("LoginWithCloudPage.titleFirstLbl"));
             infoLabel.setBackground(messagePanelColor);
             
@@ -365,6 +366,7 @@ public class LoginWithCloudPage extends AbstractLoginActionPage implements Login
                     this.gotoNextPage();
                 } catch (Throwable e) {
                     Display.getDefault().asyncExec(() -> {
+                        updateSignButtonStatus(true);
                         errorManager.setErrMessage(e.getLocalizedMessage());
                     });
                     ExceptionHandler.process(e);
@@ -372,13 +374,10 @@ public class LoginWithCloudPage extends AbstractLoginActionPage implements Login
             });
         } catch (Exception e) {
             Display.getDefault().asyncExec(() -> {
+                updateSignButtonStatus(true);
                 errorManager.setErrMessage(e.getLocalizedMessage());
             });
             ExceptionHandler.process(e);
-        } finally {
-            Display.getDefault().asyncExec(() -> {
-                updateSignButtonStatus(true);
-            });
         }
     }
     
