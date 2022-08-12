@@ -38,6 +38,7 @@ import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.layout.FormData;
+import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Canvas;
@@ -112,10 +113,6 @@ public class LoginWithCloudPage extends AbstractLoginActionPage implements Login
         if (isShowWelcomeInfo()) {
             firstInfoComposite = new Canvas(container, SWT.DOUBLE_BUFFERED);
             GridLayout compositeLayout = new GridLayout(3, false);
-            compositeLayout.marginWidth = 0;
-            compositeLayout.marginHeight = 0;
-            compositeLayout.marginTop = 5;
-            compositeLayout.marginBottom = 5;
             firstInfoComposite.setLayout(compositeLayout);
             firstInfoComposite.addPaintListener(new PaintListener() {
 
@@ -128,15 +125,28 @@ public class LoginWithCloudPage extends AbstractLoginActionPage implements Login
             Label imageLabel = new Label(firstInfoComposite, SWT.None);           
             imageLabel.setImage(JFaceResources.getImage(Dialog.DLG_IMG_MESSAGE_INFO));
             imageLabel.setBackground(messagePanelColor);
+            GridData gridData = new GridData(SWT.BEGINNING, SWT.CENTER, false, false);
+            imageLabel.setLayoutData(gridData);
             
-            Label infoLabel = new Label(firstInfoComposite, SWT.None);
-            infoLabel.setFont(LoginDialogV2.fixedFont);
-            infoLabel.setText(Messages.getString("LoginWithCloudPage.titleFirstLbl"));
-            infoLabel.setBackground(messagePanelColor);
+            Label infoLabel1 = new Label(firstInfoComposite, SWT.None);
+            infoLabel1.setText(Messages.getString("LoginWithCloudPage.titleFirstLbl1"));
+            infoLabel1.setBackground(messagePanelColor);
+            gridData = new GridData(SWT.FILL, SWT.CENTER, false, false);
+            gridData.horizontalSpan = 2;
+            infoLabel1.setLayoutData(gridData);
             
-            Composite moreInfoCom = new Composite(firstInfoComposite, SWT.None);
+            Label holderLabel = new Label(firstInfoComposite, SWT.None);
+            gridData = new GridData(SWT.BEGINNING, SWT.CENTER, false, false);
+            holderLabel.setLayoutData(gridData);
             
-            compositeLayout = new GridLayout(3, false);
+            Label infoLabel2 = new Label(firstInfoComposite, SWT.None);
+            infoLabel2.setText(Messages.getString("LoginWithCloudPage.titleFirstLbl2"));
+            infoLabel2.setBackground(messagePanelColor);
+            gridData = new GridData(SWT.FILL, SWT.CENTER, false, false);
+            infoLabel2.setLayoutData(gridData);
+            
+            Composite moreInfoCom = new Composite(firstInfoComposite, SWT.None);          
+            compositeLayout = new GridLayout(2, false);
             compositeLayout.marginWidth = 0;
             compositeLayout.marginHeight = 0;
             moreInfoCom.setLayout(compositeLayout);
@@ -189,7 +199,7 @@ public class LoginWithCloudPage extends AbstractLoginActionPage implements Login
         if (firstInfoComposite != null) {            
             int offset = (firstInfoComposite.computeSize(SWT.DEFAULT, SWT.DEFAULT).x) / 2 * -1;
             FormData formData = new FormData();
-            formData.top = new FormAttachment(15, 0);
+            formData.top = new FormAttachment(0, 0);
             formData.left = new FormAttachment(50, offset);
             firstInfoComposite.setLayoutData(formData);
         }
