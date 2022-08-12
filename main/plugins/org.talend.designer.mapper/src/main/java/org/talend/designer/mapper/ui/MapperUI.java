@@ -12,6 +12,8 @@
 // ============================================================================
 package org.talend.designer.mapper.ui;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -19,6 +21,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.SashForm;
@@ -49,6 +52,7 @@ import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.ScrollBar;
 import org.eclipse.swt.widgets.Shell;
+import org.talend.commons.runtime.model.emf.EmfHelper;
 import org.talend.commons.ui.runtime.image.ImageUtils.ICON_SIZE;
 import org.talend.commons.ui.runtime.ws.WindowSystem;
 import org.talend.commons.ui.swt.colorstyledtext.UnnotifiableColorStyledText;
@@ -66,12 +70,14 @@ import org.talend.designer.abstractmap.ui.dnd.DraggingInfosPopup;
 import org.talend.designer.abstractmap.ui.listener.DropTargetOperationListener;
 import org.talend.designer.abstractmap.ui.listener.MouseScrolledListener;
 import org.talend.designer.abstractmap.ui.visualmap.link.IMapperLink;
+import org.talend.designer.core.model.utils.emf.talendfile.AbstractExternalData;
 import org.talend.designer.mapper.MapperComponent;
 import org.talend.designer.mapper.external.data.ExternalMapperUiProperties;
 import org.talend.designer.mapper.i18n.Messages;
 import org.talend.designer.mapper.managers.MapperManager;
 import org.talend.designer.mapper.managers.UIManager;
 import org.talend.designer.mapper.model.MapperModel;
+import org.talend.designer.mapper.model.emf.mapper.MapperPackage;
 import org.talend.designer.mapper.model.table.AbstractDataMapTable;
 import org.talend.designer.mapper.model.table.AbstractInOutTable;
 import org.talend.designer.mapper.model.table.InputTable;
@@ -262,6 +268,16 @@ public class MapperUI {
                     uiManager.prepareClosing(uiManager.getMapperResponse());
                 } else if (uiManager.getMapperResponse() == SWT.OK) {
                     mapperManager.pendoMapperTrack();
+                    try {
+                        MapperComponent component = (MapperComponent) mapperManager.getAbstractMapComponent();
+                        AbstractExternalData externalEmfData = component.getExternalEmfData();
+                        File createTempFile = File.createTempFile("temp", ".item");
+                        Resource resource = EmfHelper.saveEmfModel(MapperPackage.eINSTANCE, externalEmfData,
+                                createTempFile.getAbsolutePath());
+                    } catch (IOException e1) {
+                        // TODO Auto-generated catch block
+                        e1.printStackTrace();
+                    }
                 }
                 if (!mapperManager.componentIsReadOnly() && mapperManager.isDataChanged()
                         && !mapperManager.getUiManager().isCloseWithoutPrompt()) {
