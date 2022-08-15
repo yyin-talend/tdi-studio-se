@@ -181,7 +181,7 @@ public class LoginWithCloudPage extends AbstractLoginActionPage implements Login
         
         
         if (isRefreshToken) {
-            title.setText(Messages.getString("LoginWithCloudPage.titleLbl")); //$NON-NLS-1$
+            title.setText(Messages.getString("LoginWithCloudPage.titleLblRelogin")); //$NON-NLS-1$
             otherSignButton.setText(Messages.getString("LoginWithCloudPage.exitBtn"));
         }
     }
