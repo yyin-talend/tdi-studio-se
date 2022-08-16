@@ -222,7 +222,7 @@ public class LoginWithCloudPage extends AbstractLoginActionPage implements Login
 
         offset = otherSignButton.computeSize(SWT.DEFAULT, SWT.DEFAULT).x / 2 * -1;
         formData = new FormData();
-        formData.top = new FormAttachment(signCloudButton, TAB_VERTICAL_PADDING_LEVEL_1, SWT.BOTTOM);
+        formData.top = new FormAttachment(signCloudButton, 20, SWT.BOTTOM);
         formData.left = new FormAttachment(50, offset);
         otherSignButton.setLayoutData(formData);
 
@@ -306,10 +306,8 @@ public class LoginWithCloudPage extends AbstractLoginActionPage implements Login
                         try {
                             if (PlatformUI.isWorkbenchRunning()) {
                                 PlatformUI.getWorkbench().close();
-                            } else {
-                                System.exit(IApplication.EXIT_OK);
                             }
-
+                            System.exit(IApplication.EXIT_OK);
                         } catch (Exception e1) {
                             showError(e1);
                         } 
@@ -411,7 +409,7 @@ public class LoginWithCloudPage extends AbstractLoginActionPage implements Login
         if (signCloudButton != null) {
             signCloudButton.setEnabled(isEnable);
         }
-        if (otherSignButton != null) {
+        if (otherSignButton != null && !isRefreshToken) {
             otherSignButton.setEnabled(isEnable);
         }
     }

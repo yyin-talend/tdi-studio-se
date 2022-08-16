@@ -40,7 +40,7 @@ public class LoginWithSSODialog extends LoginDialogV2 {
 
     @Override
     protected int getShellStyle() {
-        return SWT.APPLICATION_MODAL | SWT.ON_TOP;
+        return SWT.TITLE | SWT.APPLICATION_MODAL;
     }
 
 }
