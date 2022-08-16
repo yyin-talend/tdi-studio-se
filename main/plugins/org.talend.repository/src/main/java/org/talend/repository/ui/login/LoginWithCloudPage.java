@@ -369,19 +369,26 @@ public class LoginWithCloudPage extends AbstractLoginActionPage implements Login
             Display.getDefault().asyncExec(() -> {
                 errorManager.setInfoMessage(Messages.getString("LoginWithCloudPage.signInTaskThi"));
             });
-            saveConnection(token, TMCRepositoryUtil.getCloudAdminURL(dataCenter), ICloudSignOnService.get().getTokenUser(TMCRepositoryUtil.getCloudAdminURL(dataCenter), token));
-            Display.getDefault().asyncExec(() -> {
-                try {
-                    errorManager.clearAllMessages();
-                    this.gotoNextPage();
-                } catch (Throwable e) {
-                    Display.getDefault().asyncExec(() -> {
+            saveConnection(token, TMCRepositoryUtil.getCloudAdminURL(dataCenter),
+                    ICloudSignOnService.get().getTokenUser(TMCRepositoryUtil.getCloudAdminURL(dataCenter), token));
+            if (isRefreshToken) {
+                Display.getDefault().asyncExec(() -> {
+                    loginDialog.okPressed();
+                });
+            } else {
+                Display.getDefault().asyncExec(() -> {
+                    try {
+                        errorManager.clearAllMessages();
                         updateSignButtonStatus(true);
-                        errorManager.setErrMessage(e.getLocalizedMessage());
-                    });
-                    ExceptionHandler.process(e);
-                }
-            });
+                        this.gotoNextPage();
+                    } catch (Throwable e) {
+                        Display.getDefault().asyncExec(() -> {
+                            errorManager.setErrMessage(e.getLocalizedMessage());
+                        });
+                        ExceptionHandler.process(e);
+                    }
+                });
+            }
         } catch (Exception e) {
             Display.getDefault().asyncExec(() -> {
                 updateSignButtonStatus(true);

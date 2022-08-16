@@ -1092,7 +1092,7 @@ public class LoginProjectPage extends AbstractLoginActionPage {
 
             @Override
             public void widgetSelected(SelectionEvent e) {
-
+                loginHelper.destroy(); // Reload connections
                 if (getPreviousPage() == null) {
                     AbstractActionPage page =  new LoginWithCloudPage(getParent(), loginDialog, SWT.NONE);
                     setPreviousPage(page);
