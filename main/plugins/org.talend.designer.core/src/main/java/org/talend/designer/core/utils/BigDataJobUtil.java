@@ -101,7 +101,7 @@ public class BigDataJobUtil {
                 }
             }
         }
-        return isSparkWithSynapse;
+        return isSparkUniversalWithDataproc;
     }
 
     public boolean isMRWithHDInsight() {
