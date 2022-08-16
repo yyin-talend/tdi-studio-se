@@ -25,6 +25,7 @@ import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.IProcess;
 import org.talend.core.model.process.IProcess2;
 import org.talend.core.model.repository.ERepositoryObjectType;
+import org.talend.hadoop.distribution.constants.apache.ESparkMode;
 
 /**
  * created by nrousseau on Mar 24, 2018 Detailled comment
@@ -83,6 +84,20 @@ public class BigDataJobUtil {
                 if (pt.getName().equals("DISTRIBUTION") //$NON-NLS-1$
                         && EHadoopDistributions.AZURE_SYNAPSE.getName().equals(pt.getValue())) {
                     isSparkWithSynapse = true;
+                }
+            }
+        }
+        return isSparkWithSynapse;
+    }
+    
+    public boolean isSparkUniversalWithDataproc() {
+        boolean isSparkUniversalWithDataproc = false;
+        if (isBDJobWithFramework(ERepositoryObjectType.PROCESS_MR, HadoopConstants.FRAMEWORK_SPARK)
+                || isBDJobWithFramework(ERepositoryObjectType.PROCESS_STORM, HadoopConstants.FRAMEWORK_SPARKSTREAMING)) {
+            List<? extends IElementParameter> parameters = process.getElementParametersWithChildrens();
+            for (IElementParameter pt : parameters) {
+                if (ESparkMode.DATAPROC.equals(pt.getValue())) {
+                	isSparkUniversalWithDataproc = true;
                 }
             }
         }
