@@ -96,7 +96,8 @@ public class BigDataJobUtil {
                 || isBDJobWithFramework(ERepositoryObjectType.PROCESS_STORM, HadoopConstants.FRAMEWORK_SPARKSTREAMING)) {
             List<? extends IElementParameter> parameters = process.getElementParametersWithChildrens();
             for (IElementParameter pt : parameters) {
-                if (ESparkMode.DATAPROC.equals(pt.getValue())) {
+            	if (HadoopConstants.SPARK_MODE.equals(pt.getName())
+                        && ESparkMode.DATAPROC.getValue().equals(pt.getValue())) {
                 	isSparkUniversalWithDataproc = true;
                 }
             }
