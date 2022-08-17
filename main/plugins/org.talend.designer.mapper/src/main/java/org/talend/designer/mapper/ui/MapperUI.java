@@ -12,8 +12,6 @@
 // ============================================================================
 package org.talend.designer.mapper.ui;
 
-import java.io.File;
-import java.io.IOException;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -21,7 +19,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.SashForm;
@@ -77,7 +74,6 @@ import org.talend.designer.mapper.i18n.Messages;
 import org.talend.designer.mapper.managers.MapperManager;
 import org.talend.designer.mapper.managers.UIManager;
 import org.talend.designer.mapper.model.MapperModel;
-import org.talend.designer.mapper.model.emf.mapper.MapperPackage;
 import org.talend.designer.mapper.model.table.AbstractDataMapTable;
 import org.talend.designer.mapper.model.table.AbstractInOutTable;
 import org.talend.designer.mapper.model.table.InputTable;
@@ -271,10 +267,8 @@ public class MapperUI {
                     try {
                         MapperComponent component = (MapperComponent) mapperManager.getAbstractMapComponent();
                         AbstractExternalData externalEmfData = component.getExternalEmfData();
-                        File createTempFile = File.createTempFile("temp", ".item");
-                        Resource resource = EmfHelper.saveEmfModel(MapperPackage.eINSTANCE, externalEmfData,
-                                createTempFile.getAbsolutePath());
-                    } catch (IOException e1) {
+                        String resource = EmfHelper.getEmfModelContent(externalEmfData);
+                    } catch (Exception e1) {
                         // TODO Auto-generated catch block
                         e1.printStackTrace();
                     }
