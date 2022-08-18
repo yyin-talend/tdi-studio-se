@@ -96,6 +96,15 @@ public class DataSourceConfig {
         }
     }
     
+    private static boolean isJson(String jsonString){
+        try {
+            new JSONObject(jsonString);
+        } catch (JSONException e) {
+            return false;
+        }
+        return true;
+    }
+    
     /**
      * DOC sunchaoqun Comment method "getAliases".
      * 
@@ -122,7 +131,7 @@ public class DataSourceConfig {
                 for (Iterator<?> iterator = node.getElementParameter().iterator(); iterator.hasNext();) {
                     ElementParameterType elementParameter = (ElementParameterType) iterator.next();
 
-                    if (StringUtils.equals(elementParameter.getName(), "PROPERTIES")) {
+                    if (StringUtils.equals(elementParameter.getName(), "PROPERTIES") && isJson(elementParameter.getValue())) {
                         JSONObject val = null;
                         try {
                             val = new JSONObject(elementParameter.getValue());                            
