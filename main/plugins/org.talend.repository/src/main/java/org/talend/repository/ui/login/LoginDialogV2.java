@@ -281,7 +281,7 @@ public class LoginDialogV2 extends TrayDialog {
                 loginPage = new LoginWithCloudPage(base, this, SWT.NONE);
             }
             if (loginPage == null) {
-                if ( ICloudSignOnService.get() != null && ICloudSignOnService.get().hasValidToken()) {
+                if ( ICloudSignOnService.get() != null && ICloudSignOnService.get().isSignViaCloud()) {
                     loginPage = new LoginProjectPage(base, this, SWT.NONE, true);
                 } else {
                     loginPage = new LoginProjectPage(base, this, SWT.NONE); 
@@ -490,7 +490,7 @@ public class LoginDialogV2 extends TrayDialog {
         // LoginDialog.getInstance().okPressed();
         LoginHelper.refreshTalendLogonStartupTimes();
         try {
-            if (ICloudSignOnService.get() != null && ICloudSignOnService.get().hasValidToken()) {
+            if (ICloudSignOnService.get() != null && ICloudSignOnService.get().isSignViaCloud()) {
                 ICloudSignOnService.get().startHeartBeat();
             }
         } catch (Exception e) {
@@ -575,14 +575,12 @@ public class LoginDialogV2 extends TrayDialog {
     }
     
     protected boolean isShowSSOPage() {
-        if ( ICloudSignOnService.get() != null) {
-            try {
-                if (!ICloudSignOnService.get().hasValidToken()) {
-                    return true;
-                }
-            } catch (Exception ex) {
-                ExceptionHandler.process(ex);
+        try {
+            if ( ICloudSignOnService.get() != null && ICloudSignOnService.get().isSignViaCloud() && !ICloudSignOnService.get().hasValidToken()) {
+                return true;
             }
+        }catch (Exception ex) {
+            ExceptionHandler.process(ex);
         }
         return false;
     }

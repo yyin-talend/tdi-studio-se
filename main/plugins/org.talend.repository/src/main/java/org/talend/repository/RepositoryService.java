@@ -282,7 +282,7 @@ public class RepositoryService implements IRepositoryService, IRepositoryContext
     public void openLoginDialog() {
         if (isloginDialogDisabled()) {
             try {
-                if (ICloudSignOnService.get() != null && ICloudSignOnService.get().hasValidToken()) {
+                if (ICloudSignOnService.get() != null && ICloudSignOnService.get().isSignViaCloud() && ICloudSignOnService.get().hasValidToken()) {
                     return;
                 }
             } catch (Exception e) {
