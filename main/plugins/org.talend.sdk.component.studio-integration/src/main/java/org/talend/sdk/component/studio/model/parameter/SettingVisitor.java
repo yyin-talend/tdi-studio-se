@@ -454,7 +454,6 @@ public class SettingVisitor implements PropertyVisitor {
             defaultValue = node.getProperty().getMetadata().get("ui::defaultvalue::value");
         }
         parameter.setDefaultClosedListValue(defaultValue);
-        parameter.setDefaultValue(defaultValue);
         parameter.setValue(defaultValue);
         return parameter;
     }
