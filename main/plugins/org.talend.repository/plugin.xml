@@ -3804,6 +3804,15 @@
               name="AddClientParamsToFTPTDI44761"
               version="8.0.1">
         </projecttask>
+        <projecttask
+              beforeLogon="false"
+              breaks="8.0.0"
+              class="org.talend.repository.model.migration.SaveDefaultClostdListValueForTckMigrationTask"
+              description="Save default closedlist value for tck components"
+              id="org.talend.repository.model.migration.SaveDefaultClostdListValueForTckMigrationTask"
+              name="SaveDefaultClostdListValueForTckMigrationTask"
+              version="8.0.1">
+        </projecttask>
    </extension>
 
    <extension
