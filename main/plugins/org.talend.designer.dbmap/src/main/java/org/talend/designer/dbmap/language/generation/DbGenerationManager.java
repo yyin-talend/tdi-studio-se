@@ -1190,7 +1190,7 @@ public abstract class DbGenerationManager {
             }
             if (!subQueryTable.contains(tableName)) {
                 entryName = getOriginalColumnName(entryName, component, table);
-                entryName = getColumnName(null, entryName);
+                entryName = getColumnName(null, entryName, getQuote(component));
             }
             String locationInputEntry = language.getLocation(tableName, getHandledField(component, entryName));
             appendSqlQuery(sbWhere, DbMapSqlConstants.SPACE, isSqlQuery);
@@ -1544,6 +1544,12 @@ public abstract class DbGenerationManager {
         return expression;
     }
 
+    private String adaptQuoteForColumnName(DbMapComponent component, String columnEntry) {
+        String quote = getQuote(component);
+        String quto_mark = TalendQuoteUtils.QUOTATION_MARK;
+        String quto_markParser = "[\\\\]?\\" + quto_mark; //$NON-NLS-1$
+        return columnEntry.replaceAll(quto_markParser, "\\\\" + quto_mark);
+    }
     protected String replaceAuotes(DbMapComponent component, String expression, String quoParser, String quote) {
         if (isComplexExpression(component, expression)) {
             return expression;
@@ -1977,6 +1983,10 @@ public abstract class DbGenerationManager {
                             appendSqlQuery(sb, DbMapSqlConstants.NEW_LINE);
                         } else {
                             isFirstColumn = false;
+                        }
+                        if (isUseDelimitedIdentifiers()) {
+                            columnEntry = getNameWithDelimitedIdentifier(columnEntry, getQuote(component));
+                            columnEntry = adaptQuoteForColumnName(component, columnEntry);
                         }
                         appendSqlQuery(sb, addQuotes(columnEntry) + " = " + exp); //$NON-NLS-1$
                     }
