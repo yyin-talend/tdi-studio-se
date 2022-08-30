@@ -156,12 +156,12 @@ public class DbGenerationManagerTest extends DbGenerationManagerTestHelper {
     
     @Test
     public void testInitExpressionDelimitedIdentifiers() {
-        //when DelimitedIdentifiers true
-        dbManager.setUseDelimitedIdentifiers(true);
+        //when setAddQuotesInColumns true
+        dbManager.setAddQuotesInColumns(true);
         checkSnowFlakeValue("t1.\\\"id\\\"",extMapEntry);
         checkMysqlValue("t1.`id`",extMapEntry);
-        //when DelimitedIdentifiers false
-        dbManager.setUseDelimitedIdentifiers(false);
+        //when setAddQuotesInColumns false
+        dbManager.setAddQuotesInColumns(false);
         checkSnowFlakeValue("t1.id",extMapEntry);
         checkMysqlValue("t1.id",extMapEntry);
     }
@@ -277,7 +277,7 @@ public class DbGenerationManagerTest extends DbGenerationManagerTestHelper {
     }
 
     private void testWithQuote(){
-    	dbManager.setUseDelimitedIdentifiers(true);
+    	dbManager.setAddQuotesInColumns(true);
     	List<IConnection> incomingConnections = new ArrayList<IConnection>();
         String[] columns = new String[] { "id",  "name"};
         String[] labels = new String[] { "id",  "name"};
@@ -2157,7 +2157,7 @@ public class DbGenerationManagerTest extends DbGenerationManagerTestHelper {
     @Test
     public void testELTMapJoinWithUpdateAndQuoteSnowflake() {
         dbManager = new GenericDbGenerationManager();
-        dbManager.setUseDelimitedIdentifiers(true);
+        dbManager.setAddQuotesInColumns(true);
         String schema = "dbo";
         String inputTable1 = "src1";
         String inputTable2 = "src2";
@@ -2290,7 +2290,7 @@ public class DbGenerationManagerTest extends DbGenerationManagerTestHelper {
     @Test
     public void testELTMapJoinWithUpdateAndQuoteMysql() {
         dbManager = new GenericDbGenerationManager();
-        dbManager.setUseDelimitedIdentifiers(true);
+        dbManager.setAddQuotesInColumns(true);
         String schema = "dbo";
         String inputTable1 = "src1";
         String inputTable2 = "src2";

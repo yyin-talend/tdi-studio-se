@@ -96,7 +96,9 @@ public abstract class DbGenerationManager {
 
     protected DataMapExpressionParser parser;
 
-    private Boolean useDelimitedIdentifiers;
+    private Boolean addQuotesInColumns;
+
+    private Boolean addQuotesInTableNames;
 
     private Boolean useAliasInOutputTable;
 
@@ -721,14 +723,14 @@ public abstract class DbGenerationManager {
          * DbMapComponent#getGenerationManager() while they construct a new manager manually, so some parameters may not
          * be initialised, then need to check these parameters here manually to make sure they are initialised.
          */
-        if (this.useDelimitedIdentifiers == null) {
-            this.useDelimitedIdentifiers = false;
+        if (this.addQuotesInColumns == null) {
+            this.addQuotesInColumns = false;
             IElementParameter activeDelimitedIdentifiersEP = component
                     .getElementParameter(EParameterName.ACTIVE_DATABASE_DELIMITED_IDENTIFIERS.getName());
             if (activeDelimitedIdentifiersEP != null) {
                 Object value = activeDelimitedIdentifiersEP.getValue();
                 if (value != null) {
-                    setUseDelimitedIdentifiers(Boolean.valueOf(value.toString()));
+                    setAddQuotesInColumns(Boolean.valueOf(value.toString()));
                 }
             }
         }
@@ -1522,7 +1524,7 @@ public abstract class DbGenerationManager {
                                         if (iconn.getLineStyle() == EConnectionType.TABLE_REF) {
                                             continue;
                                         }
-                                        if (!isRefTableConnection(iconn) && isUseDelimitedIdentifiers()) {
+                                        if (!isRefTableConnection(iconn) && isAddQuotesInColumns()) {
                                             oriName = getColumnName(iconn, oriName, quote);
                                         } else {
                                             oriName = oriName.replaceAll("\\$", "\\\\\\$"); //$NON-NLS-1$ //$NON-NLS-2$
@@ -1740,7 +1742,7 @@ public abstract class DbGenerationManager {
     }
 
     protected String getColumnName(IConnection conn, String name) {
-        if (!isRefTableConnection(conn) && isUseDelimitedIdentifiers()) {
+        if (!isRefTableConnection(conn) && isAddQuotesInColumns()) {
             return getNameWithDelimitedIdentifier(name);
         } else {
             return name;
@@ -1748,7 +1750,7 @@ public abstract class DbGenerationManager {
     }
 
     protected String getColumnName(IConnection conn, String name, String quote) {
-        if (!isRefTableConnection(conn) && isUseDelimitedIdentifiers()) {
+        if (!isRefTableConnection(conn) && isAddQuotesInColumns()) {
             return getNameWithDelimitedIdentifier(name, quote);
         } else {
             return name;
@@ -1796,13 +1798,18 @@ public abstract class DbGenerationManager {
         return field;
     }
 
-    public boolean isUseDelimitedIdentifiers() {
-        return Boolean.TRUE.equals(this.useDelimitedIdentifiers);
+    public boolean isAddQuotesInColumns() {
+        return Boolean.TRUE.equals(this.addQuotesInColumns);
     }
 
-    public void setUseDelimitedIdentifiers(boolean useDelimitedIdentifiers) {
-        this.useDelimitedIdentifiers = useDelimitedIdentifiers;
+    public boolean isAddQuotesInTableNames() {
+        return Boolean.TRUE.equals(this.addQuotesInTableNames);
     }
+    
+    public void setAddQuotesInColumns(boolean addQuotesInColumns) {
+        this.addQuotesInColumns = addQuotesInColumns;
+    }
+    
 
     public boolean isUseAliasInOutputTable() {
         return Boolean.TRUE.equals(this.useAliasInOutputTable);
@@ -1984,7 +1991,7 @@ public abstract class DbGenerationManager {
                         } else {
                             isFirstColumn = false;
                         }
-                        if (isUseDelimitedIdentifiers()) {
+                        if (isAddQuotesInColumns()) {
                             columnEntry = getNameWithDelimitedIdentifier(columnEntry, getQuote(component));
                             columnEntry = adaptQuoteForColumnName(component, columnEntry);
                         }
