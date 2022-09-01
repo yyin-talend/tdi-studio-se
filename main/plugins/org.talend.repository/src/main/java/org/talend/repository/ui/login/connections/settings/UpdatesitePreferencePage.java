@@ -97,7 +97,7 @@ public class UpdatesitePreferencePage extends PreferencePage {
     
     private static final boolean M2_DELETE_DEFAULT= false;
     
-    private static final String LINK_MORE_URL = "";
+    private static final String LINK_MORE_URL = "https://document-link.us.cloud.talend.com/ts_mg_update-studio?version=80&lang=en&env=prd";
     
     private static final String PROPERTY_REMOVE_M2 = "talend.studio.m2.clean";
 
