@@ -8,8 +8,8 @@ import java.util.concurrent.Callable;
 import com.amazonaws.SdkClientException;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.GetObjectRequest;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import com.amazonaws.thirdparty.apache.logging.Log;
+import com.amazonaws.thirdparty.apache.logging.LogFactory;
 
 /**
  * Helper class to get a part from s3,

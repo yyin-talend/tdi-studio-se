@@ -19,8 +19,8 @@ import com.amazonaws.services.s3.transfer.internal.TransferManagerUtils;
 import com.amazonaws.services.s3.transfer.internal.TransferStateChangeListener;
 import com.amazonaws.services.s3.transfer.internal.TransferProgressUpdatingListener;
 import com.amazonaws.util.VersionInfoUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import com.amazonaws.thirdparty.apache.logging.Log;
+import com.amazonaws.thirdparty.apache.logging.LogFactory;
 
 import java.io.File;
 import java.util.Date;
