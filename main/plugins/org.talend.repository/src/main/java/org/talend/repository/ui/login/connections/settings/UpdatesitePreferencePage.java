@@ -27,17 +27,25 @@ import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.layout.RowData;
+import org.eclipse.swt.layout.RowLayout;
+import org.eclipse.swt.program.Program;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Link;
+import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.PlatformUI;
 import org.talend.commons.exception.ExceptionHandler;
@@ -84,6 +92,14 @@ public class UpdatesitePreferencePage extends PreferencePage {
     private boolean isCloudConnection = false;
 
     private boolean isWorkbenchRunning = false;
+    
+    private Button m2Delete = null;
+    
+    private static final boolean M2_DELETE_DEFAULT= false;
+    
+    private static final String LINK_MORE_URL = "";
+    
+    private static final String PROPERTY_REMOVE_M2 = "talend.studio.m2.clean";
 
     @Override
     protected Control createContents(Composite parent) {
@@ -214,9 +230,13 @@ public class UpdatesitePreferencePage extends PreferencePage {
         fd.bottom = new FormAttachment(100);
         localGroup.setLayoutData(fd);
         localGroup.setLayout(new FillLayout());
-
-        Composite localSettingsPanel = new Composite(localGroup, SWT.None);
-        localSettingsPanel.setLayoutData(new GridData(GridData.FILL_BOTH));
+        
+        Composite LocalSettinsContainer =  new Composite(localGroup, SWT.None);
+        LocalSettinsContainer.setLayout(new GridLayout(1, false));
+        LocalSettinsContainer.setLayoutData(new GridData(SWT.NONE, SWT.TOP, true, false));
+        
+        Composite localSettingsPanel = new Composite(LocalSettinsContainer, SWT.None);
+        localSettingsPanel.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 
         panelLayout = new GridLayout(2, false);
         panelLayout.horizontalSpacing = 10;
@@ -260,6 +280,43 @@ public class UpdatesitePreferencePage extends PreferencePage {
         gd = new GridData(GridData.VERTICAL_ALIGN_BEGINNING | GridData.FILL_HORIZONTAL);
         gd.widthHint = 600;
         warningDesc.setLayoutData(gd);
+        
+        // remove m2
+        Composite m2Panel = new Composite(LocalSettinsContainer, SWT.None);
+        GridData m2PanelData = new GridData(SWT.NONE, SWT.CENTER, true, false);
+        m2Panel.setLayout(new GridLayout(1, false));
+        m2Panel.setLayoutData(m2PanelData);
+        
+        m2Delete = new Button(m2Panel, SWT.CHECK | SWT.WRAP);
+        m2Delete.setText(Messages.getString("UpdatesitePreferencePage.m2.delete"));
+        try {
+            m2Delete.setSelection(p2Service.removeM2());
+        } catch (Exception e2) {
+            ExceptionHandler.process(e2);
+        }
+        
+        String linkMsg = Messages.getString("UpdatesitePreferencePage.m2.info", "<a>" + Messages.getString("UpdatesitePreferencePage.m2.more") + "</a>");
+
+        Link m2Link = new Link(m2Panel, SWT.WRAP);
+        GridData m2LinkData = new GridData(GridData.FILL_HORIZONTAL);
+        m2LinkData.widthHint = 860;
+        m2Link.setLayoutData(m2LinkData);
+        m2Link.setText(linkMsg);
+        m2Link.addListener(SWT.MouseUp, new Listener() {
+
+            @Override
+            public void handleEvent(Event event) {
+                Program.launch(LINK_MORE_URL);
+            }
+        });
+        
+        if (Boolean.getBoolean(PROPERTY_REMOVE_M2)) {
+            m2Delete.setSelection(true);
+        }
+        
+        if (System.getProperty(PROPERTY_REMOVE_M2) != null) {
+            m2Delete.setEnabled(false);
+        }
 
         init();
         addListener();
@@ -268,7 +325,10 @@ public class UpdatesitePreferencePage extends PreferencePage {
 
     private void init() {
         try {
+            ((GridData) warningPanel.getLayoutData()).exclude = true;
             warningPanel.setVisible(false);
+            warningPanel.getParent().getParent().layout();
+            
             IProgressMonitor monitor = new NullProgressMonitor();
             UpdateSiteConfig config = p2Service.getUpdateSiteConfig(new NullProgressMonitor());
             URI release = config.getLocalRelease(monitor);
@@ -369,6 +429,13 @@ public class UpdatesitePreferencePage extends PreferencePage {
     public boolean performOk() {
         if (this.isControlCreated()) {
             try {
+                if (m2Delete.getSelection() != p2Service.removeM2()) {
+                    p2Service.saveRemoveM2(m2Delete.getSelection());
+                }
+            } catch (Exception e1) {
+                ExceptionHandler.process(e1);
+            }
+            try {
                 IProgressMonitor monitor = new NullProgressMonitor();
                 UpdateSiteConfig config = p2Service.getUpdateSiteConfig(new NullProgressMonitor());
                 if (config.isReleaseEditable()) {
@@ -420,6 +487,11 @@ public class UpdatesitePreferencePage extends PreferencePage {
 //                        this.overwriteRemoteUpdateSettingsBtn.setSelection(config.isOverwriteTmcUpdateSettings(monitor));
 //                        onOverwriteRemoteUpdateSettingsBtn(null);
 //                    }
+                    
+                    // set default for m2delete
+                    if (System.getProperty(PROPERTY_REMOVE_M2) == null) {
+                        m2Delete.setSelection(M2_DELETE_DEFAULT);
+                    }
                 } else {
                     // normally it should be a dead code
                     throw new Exception(Messages.getString("UpdatesitePreferencePage.err.reset.readonly"));
@@ -455,9 +527,13 @@ public class UpdatesitePreferencePage extends PreferencePage {
     private void checkUpdateUriSettings() {
         String updateUriStr = updateUriText.getText().trim();
         if (StringUtils.isBlank(updateUriStr)) {
+            ((GridData) warningPanel.getLayoutData()).exclude = false;
             warningPanel.setVisible(true);
+            warningPanel.getParent().getParent().layout();
         } else {
+            ((GridData) warningPanel.getLayoutData()).exclude = true;
             warningPanel.setVisible(false);
+            warningPanel.getParent().getParent().layout();
         }
     }
 

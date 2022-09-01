@@ -144,7 +144,7 @@
 				REQUIRED_IF="(GENERATION_MODE == 'XERCES') OR (GENERATION_MODE == 'SAX')" BundleID="" />
 			<IMPORT NAME="xml-apis-1.4.01" MODULE="xml-apis-1.4.01.jar" MVN="mvn:xml-apis/xml-apis/1.4.01" 
 				REQUIRED_IF="(GENERATION_MODE == 'XERCES') OR (GENERATION_MODE == 'SAX')" BundleID="" />
-			<IMPORT NAME="Java_xalan" MODULE="xalan-2.7.2.jar" MVN="mvn:xalan/xalan/2.7.2" REQUIRED_IF="GENERATION_MODE == 'XERCES'" BundleID="" />
+			<IMPORT NAME="SAXON-HE" MODULE="Saxon-HE-10.6.jar" MVN="mvn:net.sf.saxon/Saxon-HE/10.6" REQUIRED_IF="GENERATION_MODE == 'XERCES'" BundleID="" />
 			<IMPORT NAME="Java_talendSAX" MODULE="TalendSAX-1.0.1-20190326.jar" MVN="mvn:org.talend.libraries/TalendSAX/1.0.1-20190326"  UrlPath="platform:/plugin/org.talend.libraries.xml/lib/TalendSAX-1.0.1-20190326.jar"
 				REQUIRED_IF="GENERATION_MODE == 'SAX'" />
 			<IMPORT NAME="xpathutil" MODULE="xpathutil-1.0.0.jar" MVN="mvn:org.talend.libraries/xpathutil-1.0.0/6.0.0"  UrlPath="platform:/plugin/org.talend.libraries.xml/lib/xpathutil-1.0.0.jar"
