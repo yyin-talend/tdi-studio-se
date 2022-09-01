@@ -19,19 +19,12 @@ if(!(filename_<%=cid %> instanceof java.io.InputStream)){
 
 	org.talend.fileprocess.delimited.RowParser reader_<%=cid %> = (org.talend.fileprocess.delimited.RowParser)resourceMap.get("reader_<%=cid %>"); 
     org.talend.fileprocess.delimited.RowParserByByte byteReader_<%=cid %> = (org.talend.fileprocess.delimited.RowParserByByte)resourceMap.get("byteReader_<%=cid %>"); 
+    
 	if(reader_<%=cid %>!=null) {
-		try {
-			reader_<%=cid %>.close();
-		}catch(java.lang.Exception e_reader_<%=cid%>) {
-			log.warn("<%=cid%> - " + e_reader_<%=cid%>.getMessage());
-		}
+		reader_<%=cid %>.close();
 	}
 
 	if(byteReader_<%=cid %>!=null) {
-		try {
-			byteReader_<%=cid %>.close();
-		}catch(java.lang.Exception e_byteReader_<%=cid%>) {
-			log.warn("<%=cid%> - " + e_byteReader_<%=cid%>.getMessage());
-		}
+		byteReader_<%=cid %>.close();
 	}
 }
