@@ -2,7 +2,7 @@ package org.talend.aws;
 
 import com.amazonaws.services.s3.model.ResponseHeaderOverrides;
 import com.amazonaws.services.s3.transfer.PersistableTransfer;
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.amazonaws.thirdparty.jackson.annotation.JsonProperty;
 
 /**
  * An opaque token that holds some private state and can be used to resume a

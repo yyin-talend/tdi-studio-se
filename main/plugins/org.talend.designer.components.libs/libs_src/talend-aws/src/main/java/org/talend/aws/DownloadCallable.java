@@ -15,8 +15,8 @@ import java.util.concurrent.Future;
 
 import javax.net.ssl.SSLProtocolException;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import com.amazonaws.thirdparty.apache.logging.Log;
+import com.amazonaws.thirdparty.apache.logging.LogFactory;
 
 import com.amazonaws.AmazonClientException;
 import com.amazonaws.SdkClientException;
