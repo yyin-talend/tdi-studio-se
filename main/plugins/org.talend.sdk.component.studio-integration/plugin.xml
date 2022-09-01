@@ -329,4 +329,10 @@
   <extension point="org.talend.core.runtime.buildExport_provider">
     <dependenciesProvider class="org.talend.sdk.component.studio.provider.TacokitExportDependenciesProvider"></dependenciesProvider>
   </extension>
+  <extension
+          point="org.talend.core.repository.repository_context">
+       <RepositoryContext
+             class="org.talend.sdk.component.studio.ui.wizard.page.TaCoKitNetSuiteContextHandler">
+       </RepositoryContext>
+    </extension>
 </plugin>

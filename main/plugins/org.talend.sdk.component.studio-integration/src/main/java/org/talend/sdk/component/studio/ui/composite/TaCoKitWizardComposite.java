@@ -18,10 +18,13 @@ import org.apache.commons.lang.StringUtils;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.widgets.Composite;
 import org.talend.commons.exception.ExceptionHandler;
+import org.talend.commons.ui.gmf.util.DisplayUtils;
+import org.talend.core.model.metadata.builder.connection.Connection;
 import org.talend.core.model.process.EComponentCategory;
 import org.talend.core.model.process.EParameterFieldType;
 import org.talend.core.model.process.Element;
 import org.talend.core.model.process.IElementParameter;
+import org.talend.designer.core.model.FakeElement;
 import org.talend.sdk.component.studio.metadata.model.TaCoKitConfigurationModel;
 import org.talend.sdk.component.studio.metadata.model.TaCoKitConfigurationModel.ValueModel;
 import org.talend.sdk.component.studio.model.parameter.TaCoKitElementParameter;
@@ -67,7 +70,39 @@ public class TaCoKitWizardComposite extends TaCoKitComposite {
                 .map(TaCoKitElementParameter.class::cast)
                 .forEach(p -> p.unregisterRedrawListener("show", getRedrawListener()));
     }
+   
+    public void updateConfigurationModel(Connection connection) {
+    	TaCoKitConfigurationModel configurationModel = new TaCoKitConfigurationModel(connection);
 
+        elem
+                .getElementParameters()
+                .stream()
+                .filter(p -> p instanceof TaCoKitElementParameter)
+                .map(p -> (TaCoKitElementParameter) p)
+                .filter(TaCoKitElementParameter::isPersisted)
+                .filter(p -> !EParameterFieldType.SCHEMA_TYPE.equals(p.getFieldType()))
+                .forEach(parameter -> {
+                    parameter.addValueChangeListener(configurationUpdater);
+                    try {
+                        String key = parameter.getName();
+
+                        ValueModel valueModel = configurationModel.getValue(key);
+                        if (valueModel != null) {
+                            if (valueModel.getConfigurationModel() != configurationModel) {
+                                parameter.setReadOnly(true);
+                            }
+                            if (StringUtils.isEmpty(valueModel.getValue())) {
+                                return;
+                            }
+                            parameter.setValue(valueModel.getValue());
+                        }
+                    } catch (Exception e) {
+                        ExceptionHandler.process(e);
+                    }
+                });
+    
+    }
+    
     private void init() {
         elem
                 .getElementParameters()

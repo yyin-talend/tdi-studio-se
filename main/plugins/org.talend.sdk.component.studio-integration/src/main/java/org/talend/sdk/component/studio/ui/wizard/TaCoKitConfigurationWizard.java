@@ -192,6 +192,14 @@ public abstract class TaCoKitConfigurationWizard extends CheckLastVersionReposit
         wizardShell.pack();
         wizardShell.setLocation(windowLocation.x + (windowShell.getBounds().width - wizardShell.getBounds().width) / 2,
                 windowLocation.y + (windowShell.getBounds().height - wizardShell.getBounds().height) / 2);
+//        Button theBtn = new Button(pageContainer, SWT.FLAT);
+//        theBtn.setBackground(pageContainer.getBackground());
+//        theBtn.setText("export context");
+//        FormData data = new FormData();
+//        data.right = new FormAttachment();
+//        data.left = new FormAttachment();
+//        data.top = new FormAttachment();
+//        theBtn.setLayoutData(data);
     }
 
     @Override

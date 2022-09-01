@@ -25,7 +25,9 @@ import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Text;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.core.model.process.EComponentCategory;
 import org.talend.core.model.process.Element;
@@ -34,6 +36,7 @@ import org.talend.designer.core.model.FakeElement;
 import org.talend.designer.core.model.components.DummyComponent;
 import org.talend.designer.core.model.components.ElementParameter;
 import org.talend.designer.core.model.process.DataNode;
+import org.talend.repository.hadoopcluster.ui.HadoopClusterForm;
 import org.talend.sdk.component.server.front.model.ConfigTypeNode;
 import org.talend.sdk.component.studio.Lookups;
 import org.talend.sdk.component.studio.i18n.Messages;
@@ -112,14 +115,35 @@ public class TaCoKitConfigurationWizardPage extends AbsTaCoKitWizardPage {
             final Composite container = new Composite(parent, SWT.NONE);
             container.setLayoutData(new GridData(GridData.FILL_BOTH));
             container.setLayout(new FormLayout());
-            setControl(container);
+            
+            
+//            final FormData data1 = new FormData();
+//            data1.left = new FormAttachment(30, 0);
+//            data1.right = new FormAttachment(50, 0);
+//            data1.top = new FormAttachment(90, 0);
+//            data1.bottom = new FormAttachment(95, 0);
+//            Button exportButton = new Button(container, SWT.NONE);
+//            exportButton.setText("Export as context");
+//            exportButton.setLayoutData(data1);
+//            
+//            
+//            final FormData data2 = new FormData();
+//            data2.left = new FormAttachment(55, 0);
+//            data2.right = new FormAttachment(75, 0);
+//            data2.top = new FormAttachment(90, 0);
+//            data2.bottom = new FormAttachment(95, 0);
+//            Button revertButton = new Button(container, SWT.NONE);
+//            revertButton.setText("Revert Context");
+//            revertButton.setLayoutData(data2);
+            
+              
 
             final TaCoKitConfigurationRuntimeData runtimeData = getTaCoKitConfigurationRuntimeData();
             configurationModel = getConfigurationItemModel();
             final ConfigTypeNode configTypeNode = runtimeData.getConfigTypeNode();
             final DummyComponent component = new DummyComponent(configTypeNode.getDisplayName());
             final DataNode node = new DataNode(component, component.getName());
-
+            TaCokitForm  taCokitForm = new TaCokitForm(container,runtimeData.getConnectionItem(), SWT.NONE);
             //add version params
             Map<String, ConfigTypeNode> nodes = Lookups.taCoKitCache().getConfigTypeNodeMap();
             configTypeNode.getProperties()
@@ -133,10 +157,15 @@ public class TaCoKitConfigurationWizardPage extends AbsTaCoKitWizardPage {
                                     .findFirst()
                                     .map(n -> String.valueOf(n.getVersion())).orElse("-1")))
                     .forEach(p -> configurationModel.setValue(p));
-
-            tacokitComposite = new TaCoKitWizardComposite(container, SWT.H_SCROLL | SWT.V_SCROLL | SWT.NO_FOCUS, category,
-                    element, configurationModel, true, container.getBackground(), isNew, problemManager);
-            tacokitComposite.setLayoutData(createMainFormData(runtimeData.isAddContextFields()));
+//
+            tacokitComposite = new TaCoKitWizardComposite(container, SWT.H_SCROLL | SWT.V_SCROLL | SWT.NO_FOCUS,
+                    category, element, configurationModel, true, container.getBackground(), isNew, problemManager);
+            tacokitComposite.setLayoutData(createMainFormData(true));
+            taCokitForm.setComposite(tacokitComposite);
+            
+            
+            
+            setControl(container);
         } catch (Exception e) {
             throw new IllegalStateException(e);
         }
