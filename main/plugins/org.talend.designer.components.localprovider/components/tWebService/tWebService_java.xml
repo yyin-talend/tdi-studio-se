@@ -342,19 +342,6 @@
             />
 
             <IMPORT
-                NAME="xalan"
-                MODULE="xalan-2.7.2.jar"
-                MVN="mvn:xalan/xalan/2.7.2"
-                REQUIRED="true"
-            />
-            <IMPORT
-                NAME="serializer"
-                MODULE="serializer-2.7.2.jar"
-                MVN="mvn:xalan/serializer/2.7.2"
-                REQUIRED="true"
-            />
-
-            <IMPORT
                 NAME="velocity"
                 MODULE="velocity-1.7.jar"
                 MVN="mvn:org.apache.velocity/velocity/1.7"

@@ -358,18 +358,6 @@ for(int i = 0; i &lt; result.length; i++){
 				MVN="mvn:org.talend.components/talend-ws/1.0.7-20220526"
 				REQUIRED_IF="(API=='CXF')"
 			/>
-			<IMPORT
-				NAME="xalan"
-				MODULE="xalan-2.7.2.jar"
-				MVN="mvn:xalan/xalan/2.7.2"
-				REQUIRED_IF="(API=='CXF')"
-			/>
-			<IMPORT
-				NAME="serializer"
-				MODULE="serializer-2.7.2.jar"
-				MVN="mvn:xalan/serializer/2.7.2"
-				REQUIRED_IF="(API=='CXF')"
-			/>
 	
 			<IMPORT
 				NAME="velocity"
