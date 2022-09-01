@@ -67,25 +67,6 @@ public class TaCokitForm extends AbstractForm{
 
 	@Override
 	protected void addFields() {
-		// TODO Auto-generated method stub
-//      final FormData data1 = new FormData();
-//      data1.left = new FormAttachment(30, 0);
-//      data1.right = new FormAttachment(50, 0);
-//      data1.top = new FormAttachment(90, 0);
-//      data1.bottom = new FormAttachment(95, 0);
-//      Button exportButton = new Button(this, SWT.NONE);
-//      exportButton.setText("Export as context");
-//      exportButton.setLayoutData(data1);
-//      
-//      
-//      final FormData data2 = new FormData();
-//      data2.left = new FormAttachment(55, 0);
-//      data2.right = new FormAttachment(75, 0);
-//      data2.top = new FormAttachment(90, 0);
-//      data2.bottom = new FormAttachment(95, 0);
-//      Button revertButton = new Button(this, SWT.NONE);
-//      revertButton.setText("Revert Context");
-//      revertButton.setLayoutData(data2);
 		
 	}
 

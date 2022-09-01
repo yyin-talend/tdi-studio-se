@@ -335,4 +335,11 @@
              class="org.talend.sdk.component.studio.ui.wizard.page.TaCoKitNetSuiteContextHandler">
        </RepositoryContext>
     </extension>
+    <extension
+          point="org.talend.core.runtime.service">
+       <Service
+             class="org.talend.sdk.component.studio.service.TaCoKitNetSuiteContextUpdateService"
+             serviceId="IRepositoryContextUpdateService">
+       </Service>
+    </extension>
 </plugin>

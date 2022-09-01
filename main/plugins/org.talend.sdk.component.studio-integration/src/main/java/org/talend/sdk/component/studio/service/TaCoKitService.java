@@ -123,7 +123,7 @@ public class TaCoKitService implements ITaCoKitService {
     @Override
     public boolean isTaCoKitConnection(Object connection) {
     	if(connection instanceof Connection) {
-//    		return TaCoKitConfigurationModel.isTacokit((Connection) connection);
+    		return TaCoKitConfigurationModel.isTacokit((Connection) connection);
     	}
     	return false;
     }

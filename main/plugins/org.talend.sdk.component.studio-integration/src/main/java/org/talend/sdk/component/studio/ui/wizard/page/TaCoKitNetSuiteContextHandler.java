@@ -30,7 +30,6 @@ public class TaCoKitNetSuiteContextHandler extends AbstractRepositoryContextHand
 
 	@Override
 	public boolean isRepositoryConType(Connection connection) {
-//		return connection instanceof HadoopClusterConnection;
 		String name = null;
 		boolean isTacokit = TaCoKitConfigurationModel.isTacokit(connection);
 		if(isTacokit) {
@@ -56,12 +55,7 @@ public class TaCoKitNetSuiteContextHandler extends AbstractRepositoryContextHand
 				ETaCoKitParamName hadoopParam = (ETaCoKitParamName) param;
 				paramName = paramPrefix + hadoopParam;
 				switch (hadoopParam) {
-//                    case ApiVersion:
-//                        ConnectionContextHelper.createParameters(varList, paramName, "configuration.account");
-//                        break;
-//                    case LoginType:
-//                        ConnectionContextHelper.createParameters(varList, paramName, "configuration.account");
-//                        break;
+
 				case Account:
 					ConnectionContextHelper.createParameters(varList, paramName,
 							properties.get("configuration.account"));
@@ -85,8 +79,7 @@ public class TaCoKitNetSuiteContextHandler extends AbstractRepositoryContextHand
 				}
 			}
 		}
-//            createHadoopPropertiesContextVariable(prefixName, varList, taCoKitConfigurationModel.getProperties());
-//            createHadoopPropertiesContextVariable(prefixName, varList, taCoKitConfigurationModel.getSparkProperties());
+
 		return varList;
 
 	}
@@ -96,8 +89,7 @@ public class TaCoKitNetSuiteContextHandler extends AbstractRepositoryContextHand
 		if (connection == null) {
 			return;
 		}
-//		 TaCoKitConfigurationModel taCoKitConfigurationModel = new TaCoKitConfigurationModel(connection);
-//         Map<String,String> properties = taCoKitConfigurationModel.getProperties();
+
 		String originalVariableName = prefixName + ConnectionContextHelper.LINE;
 		String hadoopVariableName = null;
 		for (IConnParamName param : paramSet) {
@@ -108,15 +100,7 @@ public class TaCoKitNetSuiteContextHandler extends AbstractRepositoryContextHand
 				matchContextForAttribues(connection, hadoopConnectionParam, hadoopVariableName);
 			}
 		}
-//	            String hadoopProperties = hadoopConn.getHadoopProperties();
-//	            List<Map<String, Object>> propertiesAfterContext = transformHadoopPropertiesForContextMode(
-//	                    HadoopRepositoryUtil.getHadoopPropertiesList(hadoopProperties), prefixName);
-//	            hadoopConn.setHadoopProperties(HadoopRepositoryUtil.getHadoopPropertiesJsonStr(propertiesAfterContext));
-//	            //
-//	            String sparkProperties = hadoopConn.getSparkProperties();
-//	            List<Map<String, Object>> sparkPropertiesAfterContext = transformHadoopPropertiesForContextMode(
-//	                    HadoopRepositoryUtil.getHadoopPropertiesList(sparkProperties), prefixName);
-//	            hadoopConn.setSparkProperties(HadoopRepositoryUtil.getHadoopPropertiesJsonStr(sparkPropertiesAfterContext));
+
 
 	}
 
@@ -166,41 +150,23 @@ public class TaCoKitNetSuiteContextHandler extends AbstractRepositoryContextHand
 		// TODO Auto-generated method stub
 		TaCoKitConfigurationModel taCoKitConfigurationModel = new TaCoKitConfigurationModel(connection);
 		Map<String, String> properties = taCoKitConfigurationModel.getProperties();
-//		taCoKitConfigurationModel.setValue();
-//		String paramPrefix = prefixName + ConnectionContextHelper.LINE;
 		String paramName = null;
 		if (param instanceof ETaCoKitParamName) {
 			ETaCoKitParamName hadoopParam = (ETaCoKitParamName) param;
-//			paramName = paramPrefix + hadoopParam;
 			switch (hadoopParam) {
-//	      case ApiVersion:
-//	          ConnectionContextHelper.createParameters(varList, paramName, "configuration.account");
-//	          break;
-//	      case LoginType:
-//	          ConnectionContextHelper.createParameters(varList, paramName, "configuration.account");
-//	          break;
 		case Account:
-//			ConnectionContextHelper.createParameters(varList, paramName,
-//					properties.get("configuration.account"));
 			taCoKitConfigurationModel.setValue("configuration.account",ContextParameterUtils.getNewScriptCode(contextVariableName, LANGUAGE));
 			break;
 		case Email:
-//			ConnectionContextHelper.createParameters(varList, paramName, properties.get("configuration.email"));
 			taCoKitConfigurationModel.setValue("configuration.email",ContextParameterUtils.getNewScriptCode(contextVariableName, LANGUAGE));
 			break;
 		case Password:
-//			ConnectionContextHelper.createParameters(varList, paramName,
-//					properties.get("configuration.password"));
 			taCoKitConfigurationModel.setValue("configuration.password",ContextParameterUtils.getNewScriptCode(contextVariableName, LANGUAGE));
 			break;
 		case RoleId:
-//			ConnectionContextHelper.createParameters(varList, paramName, properties.get("configuration.role"));
 			taCoKitConfigurationModel.setValue("configuration.role",ContextParameterUtils.getNewScriptCode(contextVariableName, LANGUAGE));
 			break;
 		case ApplicationId:
-//			ConnectionContextHelper.createParameters(varList, paramName,
-//					properties.get("configuration.applicationId"));
-			
 			taCoKitConfigurationModel.setValue("configuration.applicationId",ContextParameterUtils.getNewScriptCode(contextVariableName, LANGUAGE));
 			break;
 
@@ -213,7 +179,6 @@ public class TaCoKitNetSuiteContextHandler extends AbstractRepositoryContextHand
 	@Override
 	protected void matchAdditionProperties(Connection conn,
 			Map<ContextItem, List<ConectionAdaptContextVariableModel>> adaptMap) {
-		// TODO Auto-generated method stub
 
 	}
 

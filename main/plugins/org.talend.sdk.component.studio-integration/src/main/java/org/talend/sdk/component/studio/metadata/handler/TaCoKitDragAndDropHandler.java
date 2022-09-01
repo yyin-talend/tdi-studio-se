@@ -62,7 +62,7 @@ import org.talend.sdk.component.studio.util.TaCoKitUtil;
 import org.talend.sdk.component.studio.websocket.WebSocketClient.V1Component;
 import org.talend.sdk.studio.process.TaCoKitNode;
 
-public abstract  class TaCoKitDragAndDropHandler extends AbstractDragAndDropServiceHandler {
+public  class TaCoKitDragAndDropHandler extends AbstractDragAndDropServiceHandler {
 
     private static final String TACOKIT = TaCoKitConst.METADATA_TACOKIT.name();
 
