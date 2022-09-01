@@ -118,7 +118,7 @@ public class PropertySetDialog extends Dialog {
 
             @Override
             public void widgetSelected(SelectionEvent e) {
-                mapperManager.setAddQuotesInColumns(addQuotesInTableNamesButton.getSelection());
+                mapperManager.setAddQuotesInTableNames(addQuotesInTableNamesButton.getSelection());
                 updateStatus();
             }
         });

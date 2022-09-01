@@ -785,6 +785,11 @@ public class MapperManager extends AbstractMapperManager {
         getComponent().getGenerationManager().setAddQuotesInColumns(setAddQuotesInColumns);
         uiManager.refreshSqlExpression();
     }
+    
+    public void setAddQuotesInTableNames(boolean setAddQuotesInTableNames) {
+        getComponent().getGenerationManager().setAddQuotesInTableNames(setAddQuotesInTableNames);
+        uiManager.refreshSqlExpression();
+    }
 
     public void useAliasInOutputTable(boolean useAliasInOutputTable) {
         getComponent().getGenerationManager().setUseAliasInOutputTable(useAliasInOutputTable);

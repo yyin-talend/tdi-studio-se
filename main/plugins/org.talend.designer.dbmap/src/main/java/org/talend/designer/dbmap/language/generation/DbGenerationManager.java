@@ -1328,6 +1328,7 @@ public abstract class DbGenerationManager {
 
     protected void buildTableDeclaration(DbMapComponent component, StringBuilder sb, ExternalDbMapTable inputTable) {
         Object inConns = component.getIncomingConnections();
+        String quote = getQuote(component);
 
         List<IConnection> inputConnections = null;
         if (inConns != null) {
@@ -1398,7 +1399,7 @@ public abstract class DbGenerationManager {
                 }
             }
             if (!replace) {
-                String exp = replaceVariablesForExpression(component, inputTable.getName());
+                String exp = replaceVariablesForExpression(component, getTableName(iconn,inputTable.getName(),quote));
                 appendSqlQuery(sb, exp);
             }
         }
@@ -1511,7 +1512,7 @@ public abstract class DbGenerationManager {
                                             continue;
                                         }
                                         if (expression.trim().equals(tableValue + "." + oriName)) {
-                                            expression = tableValue + "." + getColumnName(iconn, oriName, quote);
+                                            expression = getTableName(iconn,tableValue,quote) + "." + getColumnName(iconn, oriName, quote);
                                             expression = expression.replaceAll(quto_markParser,"\\\\" +quto_mark); //$NON-NLS-1$
                                             continue;
                                         }
@@ -1756,6 +1757,14 @@ public abstract class DbGenerationManager {
             return name;
         }
     }
+    
+    protected String getTableName(IConnection conn, String name, String quote) {
+        if (!isRefTableConnection(conn) && isAddQuotesInTableNames()) {
+            return getNameWithDelimitedIdentifier(name, quote);
+        } else {
+            return name;
+        }
+    }
 
     protected boolean isRefTableConnection(IConnection conn) {
         return conn != null && conn.getLineStyle() == EConnectionType.TABLE_REF;
@@ -1810,7 +1819,10 @@ public abstract class DbGenerationManager {
         this.addQuotesInColumns = addQuotesInColumns;
     }
     
-
+    public void setAddQuotesInTableNames(boolean addQuotesInTableNames) {
+        this.addQuotesInTableNames = addQuotesInTableNames;
+    }
+    
     public boolean isUseAliasInOutputTable() {
         return Boolean.TRUE.equals(this.useAliasInOutputTable);
     }
