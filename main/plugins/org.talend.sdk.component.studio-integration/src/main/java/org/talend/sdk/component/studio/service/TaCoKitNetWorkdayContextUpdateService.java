@@ -25,7 +25,7 @@ import org.talend.sdk.component.studio.metadata.model.TaCoKitConfigurationModel;
 import org.talend.sdk.component.studio.metadata.model.TaCoKitConfigurationModel.ValueModel;
 
 
-public class TaCoKitNetSuiteContextUpdateService extends AbstractRepositoryContextUpdateService {
+public class TaCoKitNetWorkdayContextUpdateService extends AbstractRepositoryContextUpdateService {
 
     @Override
 	public boolean updateContextParameter(Connection conn, String oldValue, String newValue) {
@@ -77,6 +77,6 @@ public class TaCoKitNetSuiteContextUpdateService extends AbstractRepositoryConte
 			ConfigTypeNode configTypeNode = taCoKitConfigurationModel.getConfigTypeNode();
 		    name = configTypeNode.getDisplayName();
 		}
-		return StringUtils.equals(name, "Workday");
+		return StringUtils.equals(name, "NetSuite");
     }
 }
