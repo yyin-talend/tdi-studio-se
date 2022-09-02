@@ -82,7 +82,8 @@ if(use2LineToken || "MSEXCHANGE".equals(authMode) ) {
 }
 if("MSEXCHANGE".equals(authMode) ) {
   %>
-		java.util.Set<String> SCOPE_<%=cid %> = java.util.Set.of("https://outlook.office365.com/.default");
+		java.util.Set<String> SCOPE_<%=cid %> = new java.util.HashSet();
+		SCOPE_<%=cid %>.add("https://outlook.office365.com/.default");
 		com.microsoft.aad.msal4j.ConfidentialClientApplication app_<%=cid %> = 
 			com.microsoft.aad.msal4j.ConfidentialClientApplication
 				.builder(<%=clientId %>, com.microsoft.aad.msal4j.ClientCredentialFactory.createFromSecret(password_<%=cid %>) )
