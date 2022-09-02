@@ -1,5 +1,7 @@
 package org.talend.sdk.component.studio.ui.wizard.page;
 
+import java.util.Set;
+
 import org.apache.commons.lang3.StringUtils;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.FormAttachment;
@@ -63,11 +65,20 @@ public class TaCokitForm extends AbstractForm {
 	}
 
 	protected void collectConParameters() {
+		
+		Set<ETaCoKitParamName> parameters = null;
 
 		for (IRepositoryContextHandler handler : RepositoryContextManager.getHandlers()) {
 			if (connectionItem != null && handler.isRepositoryConType(connectionItem.getConnection())) {
-				handler.collectConParameters(this);
+				parameters = handler.collectConParameters();
+				break;
 			}
+		}
+		if (parameters != null) {
+
+			parameters.forEach(p -> {
+				addContextParams(p, true);
+			});
 		}
 
 //		if (StringUtils.equals(this.tacokitConnetionName, "NetSuite")) {

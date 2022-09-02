@@ -41,12 +41,17 @@ public class TaCoKitNetSuiteContextHandler extends AbstractRepositoryContextHand
 		return StringUtils.equals(name, "NetSuite");
 	}
 	
-	public void collectConParameters(AbstractForm af){
-		af.addContextParams(ETaCoKitParamName.Account, true);
-		af.addContextParams(ETaCoKitParamName.Email, true);
-		af.addContextParams(ETaCoKitParamName.Password, true);
-		af.addContextParams(ETaCoKitParamName.RoleId, true);
-		af.addContextParams(ETaCoKitParamName.ApplicationId, true);
+	public Set<ETaCoKitParamName> collectConParameters(){
+		
+		Set<ETaCoKitParamName> set  = new HashSet<ETaCoKitParamName>();
+		set.add(ETaCoKitParamName.Account);
+		set.add(ETaCoKitParamName.Email);
+		
+		set.add(ETaCoKitParamName.Password);
+		set.add(ETaCoKitParamName.RoleId);
+		
+		set.add(ETaCoKitParamName.ApplicationId);
+		return set;
 	}
 
 	@Override
