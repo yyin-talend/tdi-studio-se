@@ -21,6 +21,7 @@ import org.talend.designer.core.model.utils.emf.talendfile.ContextType;
 import org.talend.metadata.managment.ui.model.IConnParamName;
 import org.talend.metadata.managment.ui.utils.ConnectionContextHelper;
 import org.talend.metadata.managment.ui.utils.TaCoKitConnectionContextUtils.ETaCoKitParamName;
+import org.talend.metadata.managment.ui.wizard.AbstractForm;
 import org.talend.metadata.managment.ui.wizard.context.AbstractRepositoryContextHandler;
 import org.talend.sdk.component.server.front.model.ConfigTypeNode;
 import org.talend.sdk.component.studio.metadata.model.TaCoKitConfigurationModel;
@@ -38,6 +39,14 @@ public class TaCoKitNetSuiteContextHandler extends AbstractRepositoryContextHand
 			name = configTypeNode.getDisplayName();
 		}
 		return StringUtils.equals(name, "NetSuite");
+	}
+	
+	public void collectConParameters(AbstractForm af){
+		af.addContextParams(ETaCoKitParamName.Account, true);
+		af.addContextParams(ETaCoKitParamName.Email, true);
+		af.addContextParams(ETaCoKitParamName.Password, true);
+		af.addContextParams(ETaCoKitParamName.RoleId, true);
+		af.addContextParams(ETaCoKitParamName.ApplicationId, true);
 	}
 
 	@Override
