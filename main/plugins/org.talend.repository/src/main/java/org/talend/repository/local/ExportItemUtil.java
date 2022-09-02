@@ -368,10 +368,15 @@ public class ExportItemUtil {
                 IPath propertyPath = null;
                 Property property = item.getProperty();
                 List<Resource> resources = localRepositoryManager.getAffectedResources(property);
-                if (resources.isEmpty()) {
+                if (resources != null && resources.isEmpty()) {
                     IRepositoryViewObject obj = ProxyRepositoryFactory.getInstance().getSpecificVersion(property.getId(),
                             property.getVersion(), true);
-                    resources = localRepositoryManager.getAffectedResources(obj.getProperty());
+                    if (obj != null) {
+                        resources = localRepositoryManager.getAffectedResources(obj.getProperty());
+                    }
+                }
+                if (resources == null) {
+                    resources = new ArrayList<>();
                 }
                 for (Resource curResource : resources) {
                     URI uri = curResource.getURI();
