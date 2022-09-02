@@ -32,10 +32,10 @@ public class TaCoKitNetSuiteContextHandler extends AbstractRepositoryContextHand
 	public boolean isRepositoryConType(Connection connection) {
 		String name = null;
 		boolean isTacokit = TaCoKitConfigurationModel.isTacokit(connection);
-		if(isTacokit) {
+		if (isTacokit) {
 			TaCoKitConfigurationModel taCoKitConfigurationModel = new TaCoKitConfigurationModel(connection);
 			ConfigTypeNode configTypeNode = taCoKitConfigurationModel.getConfigTypeNode();
-		    name = configTypeNode.getDisplayName();
+			name = configTypeNode.getDisplayName();
 		}
 		return StringUtils.equals(name, "NetSuite");
 	}
@@ -101,7 +101,6 @@ public class TaCoKitNetSuiteContextHandler extends AbstractRepositoryContextHand
 			}
 		}
 
-
 	}
 
 	@Override
@@ -113,8 +112,7 @@ public class TaCoKitNetSuiteContextHandler extends AbstractRepositoryContextHand
 
 	@Override
 	public void revertPropertiesForContextMode(Connection connection, ContextType contextType) {
-		
-		
+
 		TaCoKitConfigurationModel taCoKitConfigurationModel = new TaCoKitConfigurationModel(connection);
 		revertProperties(taCoKitConfigurationModel, contextType, "configuration.account");
 		revertProperties(taCoKitConfigurationModel, contextType, "configuration.email");
@@ -154,26 +152,31 @@ public class TaCoKitNetSuiteContextHandler extends AbstractRepositoryContextHand
 		if (param instanceof ETaCoKitParamName) {
 			ETaCoKitParamName hadoopParam = (ETaCoKitParamName) param;
 			switch (hadoopParam) {
-		case Account:
-			taCoKitConfigurationModel.setValue("configuration.account",ContextParameterUtils.getNewScriptCode(contextVariableName, LANGUAGE));
-			break;
-		case Email:
-			taCoKitConfigurationModel.setValue("configuration.email",ContextParameterUtils.getNewScriptCode(contextVariableName, LANGUAGE));
-			break;
-		case Password:
-			taCoKitConfigurationModel.setValue("configuration.password",ContextParameterUtils.getNewScriptCode(contextVariableName, LANGUAGE));
-			break;
-		case RoleId:
-			taCoKitConfigurationModel.setValue("configuration.role",ContextParameterUtils.getNewScriptCode(contextVariableName, LANGUAGE));
-			break;
-		case ApplicationId:
-			taCoKitConfigurationModel.setValue("configuration.applicationId",ContextParameterUtils.getNewScriptCode(contextVariableName, LANGUAGE));
-			break;
+			case Account:
+				taCoKitConfigurationModel.setValue("configuration.account",
+						ContextParameterUtils.getNewScriptCode(contextVariableName, LANGUAGE));
+				break;
+			case Email:
+				taCoKitConfigurationModel.setValue("configuration.email",
+						ContextParameterUtils.getNewScriptCode(contextVariableName, LANGUAGE));
+				break;
+			case Password:
+				taCoKitConfigurationModel.setValue("configuration.password",
+						ContextParameterUtils.getNewScriptCode(contextVariableName, LANGUAGE));
+				break;
+			case RoleId:
+				taCoKitConfigurationModel.setValue("configuration.role",
+						ContextParameterUtils.getNewScriptCode(contextVariableName, LANGUAGE));
+				break;
+			case ApplicationId:
+				taCoKitConfigurationModel.setValue("configuration.applicationId",
+						ContextParameterUtils.getNewScriptCode(contextVariableName, LANGUAGE));
+				break;
 
-		default:
+			default:
+			}
 		}
-		}
-		
+
 	}
 
 	@Override
