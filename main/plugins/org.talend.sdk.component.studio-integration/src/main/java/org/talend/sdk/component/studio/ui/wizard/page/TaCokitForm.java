@@ -3,6 +3,7 @@ package org.talend.sdk.component.studio.ui.wizard.page;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.layout.FormData;
+import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
@@ -17,20 +18,26 @@ public class TaCokitForm extends AbstractForm{
 	private TaCoKitWizardComposite composite;
 	protected TaCokitForm(Composite parent,ConnectionItem connectionItem, int style) {
 		super(parent, style);
-		// TODO Auto-generated constructor stub
 		setConnectionItem(connectionItem);
 		setupForm(true);
+		FormData data = new FormData();
+		data.left = new FormAttachment(0, 0);
+		data.right = new FormAttachment(100, 0);
+		data.bottom = new FormAttachment(85, 0);
+		setLayoutData(data);
        
 	}
 	
 	public void setComposite(TaCoKitWizardComposite composite) {
 		this.composite = composite;
 	}
-	 @Override
-	    protected void exportAsContext() {
-	        collectConParameters();
-	        super.exportAsContext();
-	    }
+
+	@Override
+	protected void exportAsContext() {
+		collectConParameters();
+		super.exportAsContext();
+	}
+
 	protected void collectConParameters() {
 		addContextParams(ETaCoKitParamName.Account, true);
 		addContextParams(ETaCoKitParamName.Email, true);
