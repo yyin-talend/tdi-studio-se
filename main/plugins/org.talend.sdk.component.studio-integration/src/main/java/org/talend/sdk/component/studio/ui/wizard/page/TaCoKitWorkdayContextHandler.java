@@ -39,6 +39,19 @@ public class TaCoKitWorkdayContextHandler extends AbstractRepositoryContextHandl
 		}
 		return StringUtils.equals(name, "Workday");
 	}
+	
+	@Override
+	public Set<ETaCoKitParamName> collectConParameters(){
+
+		Set<ETaCoKitParamName> set  = new HashSet<ETaCoKitParamName>();
+		set.add(ETaCoKitParamName.ClientIdentifier);
+		set.add(ETaCoKitParamName.ClientSecret);
+		set.add(ETaCoKitParamName.TenantAlias);
+		set.add(ETaCoKitParamName.Endpoint);
+		set.add(ETaCoKitParamName.AuthEndpoint);
+		
+		return set;
+	}
 
 	@Override
 	public List<IContextParameter> createContextParameters(String prefixName, Connection connection,
@@ -56,25 +69,25 @@ public class TaCoKitWorkdayContextHandler extends AbstractRepositoryContextHandl
 				paramName = paramPrefix + hadoopParam;
 				switch (hadoopParam) {
 
-				case Account:
+				case ClientIdentifier:
 					ConnectionContextHelper.createParameters(varList, paramName,
-							properties.get("configuration.account"));
+							properties.get("configuration.clientId"));
 					break;
-				case Email:
-					ConnectionContextHelper.createParameters(varList, paramName, properties.get("configuration.email"));
+				case ClientSecret:
+					ConnectionContextHelper.createParameters(varList, paramName, properties.get("configuration.clientSecret"));
 					break;
-				case Password:
+				case TenantAlias:
 					ConnectionContextHelper.createParameters(varList, paramName,
-							properties.get("configuration.password"));
+							properties.get("configuration.tenantAlias"));
 					break;
-				case RoleId:
-					ConnectionContextHelper.createParameters(varList, paramName, properties.get("configuration.role"));
-					break;
-				case ApplicationId:
+				case Endpoint:
 					ConnectionContextHelper.createParameters(varList, paramName,
-							properties.get("configuration.applicationId"));
+							properties.get("configuration.endpoint"));
 					break;
-
+				case AuthEndpoint:
+					ConnectionContextHelper.createParameters(varList, paramName,
+							properties.get("configuration.authEndpoint"));
+					break;
 				default:
 				}
 			}
@@ -114,11 +127,11 @@ public class TaCoKitWorkdayContextHandler extends AbstractRepositoryContextHandl
 	public void revertPropertiesForContextMode(Connection connection, ContextType contextType) {
 
 		TaCoKitConfigurationModel taCoKitConfigurationModel = new TaCoKitConfigurationModel(connection);
-		revertProperties(taCoKitConfigurationModel, contextType, "configuration.account");
-		revertProperties(taCoKitConfigurationModel, contextType, "configuration.email");
-		revertProperties(taCoKitConfigurationModel, contextType, "configuration.password");
-		revertProperties(taCoKitConfigurationModel, contextType, "configuration.role");
-		revertProperties(taCoKitConfigurationModel, contextType, "configuration.applicationId");
+		revertProperties(taCoKitConfigurationModel, contextType, "configuration.clientId");
+		revertProperties(taCoKitConfigurationModel, contextType, "configuration.clientSecret");
+		revertProperties(taCoKitConfigurationModel, contextType, "configuration.tenantAlias");
+		revertProperties(taCoKitConfigurationModel, contextType, "configuration.endpoint");
+		revertProperties(taCoKitConfigurationModel, contextType, "configuration.authEndpoint");
 	}
 
 	private void revertProperties(TaCoKitConfigurationModel taCoKitConfigurationModel, ContextType contextType,
@@ -152,27 +165,26 @@ public class TaCoKitWorkdayContextHandler extends AbstractRepositoryContextHandl
 		if (param instanceof ETaCoKitParamName) {
 			ETaCoKitParamName hadoopParam = (ETaCoKitParamName) param;
 			switch (hadoopParam) {
-			case Account:
-				taCoKitConfigurationModel.setValue("configuration.account",
+			case ClientIdentifier:
+				taCoKitConfigurationModel.setValue("configuration.clientId",
 						ContextParameterUtils.getNewScriptCode(contextVariableName, LANGUAGE));
 				break;
-			case Email:
-				taCoKitConfigurationModel.setValue("configuration.email",
+			case ClientSecret:
+				taCoKitConfigurationModel.setValue("configuration.clientSecret",
 						ContextParameterUtils.getNewScriptCode(contextVariableName, LANGUAGE));
 				break;
-			case Password:
-				taCoKitConfigurationModel.setValue("configuration.password",
+			case TenantAlias:
+				taCoKitConfigurationModel.setValue("configuration.tenantAlias",
 						ContextParameterUtils.getNewScriptCode(contextVariableName, LANGUAGE));
 				break;
-			case RoleId:
-				taCoKitConfigurationModel.setValue("configuration.role",
+			case Endpoint:
+				taCoKitConfigurationModel.setValue("configuration.endpoint",
 						ContextParameterUtils.getNewScriptCode(contextVariableName, LANGUAGE));
 				break;
-			case ApplicationId:
-				taCoKitConfigurationModel.setValue("configuration.applicationId",
+			case AuthEndpoint:
+				taCoKitConfigurationModel.setValue("configuration.authEndpoint",
 						ContextParameterUtils.getNewScriptCode(contextVariableName, LANGUAGE));
 				break;
-
 			default:
 			}
 		}

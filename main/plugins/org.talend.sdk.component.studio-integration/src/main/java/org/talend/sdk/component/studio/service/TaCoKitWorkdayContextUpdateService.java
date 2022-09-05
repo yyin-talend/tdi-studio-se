@@ -32,34 +32,34 @@ public class TaCoKitWorkdayContextUpdateService extends AbstractRepositoryContex
 		boolean isModified = false;
 		if (conn.isContextMode()) {
 			TaCoKitConfigurationModel taCoKitConfigurationModel = new TaCoKitConfigurationModel(conn);
-			ValueModel accountValue;
-			ValueModel emailValue;
-			ValueModel passwordValue;
-			ValueModel roleValue;
-			ValueModel applicationIdValue;
+			ValueModel clientIdentifier;
+			ValueModel clientSecret;
+			ValueModel tenantAlias;
+			ValueModel endpoint;
+			ValueModel authEndpoint;
 			try {
-				accountValue = taCoKitConfigurationModel.getValue("configuration.account");
-				emailValue = taCoKitConfigurationModel.getValue("configuration.email");
-				passwordValue = taCoKitConfigurationModel.getValue("configuration.password");
-				roleValue = taCoKitConfigurationModel.getValue("configuration.role");
-				applicationIdValue = taCoKitConfigurationModel.getValue("configuration.applicationId");
+				clientIdentifier = taCoKitConfigurationModel.getValue("configuration.clientId");
+				clientSecret = taCoKitConfigurationModel.getValue("configuration.clientSecret");
+				tenantAlias = taCoKitConfigurationModel.getValue("configuration.tenantAlias");
+				endpoint = taCoKitConfigurationModel.getValue("configuration.endpoint");
+				authEndpoint = taCoKitConfigurationModel.getValue("configuration.authEndpoint");
 
-				if (accountValue != null && StringUtils.equals(oldValue, accountValue.getValue())) {
-					taCoKitConfigurationModel.setValue("configuration.account", accountValue.getValue());
+				if (clientIdentifier != null && StringUtils.equals(oldValue, clientIdentifier.getValue())) {
+					taCoKitConfigurationModel.setValue("configuration.clientId", clientIdentifier.getValue());
 					isModified = true;
-				} else if (emailValue != null && StringUtils.equals(oldValue, emailValue.getValue())) {
-					taCoKitConfigurationModel.setValue("configuration.email", emailValue.getValue());
+				} else if (clientSecret != null && StringUtils.equals(oldValue, clientSecret.getValue())) {
+					taCoKitConfigurationModel.setValue("configuration.clientSecret", clientSecret.getValue());
 					isModified = true;
-				} else if (passwordValue != null && StringUtils.equals(oldValue, passwordValue.getValue())) {
-					taCoKitConfigurationModel.setValue("configuration.password", passwordValue.getValue());
+				} else if (tenantAlias != null && StringUtils.equals(oldValue, tenantAlias.getValue())) {
+					taCoKitConfigurationModel.setValue("configuration.tenantAlias", tenantAlias.getValue());
 					isModified = true;
-				} else if (roleValue != null && StringUtils.equals(oldValue, roleValue.getValue())) {
-					taCoKitConfigurationModel.setValue("configuration.role", roleValue.getValue());
+				}  else if (endpoint != null && StringUtils.equals(oldValue, endpoint.getValue())) {
+					taCoKitConfigurationModel.setValue("configuration.endpoint", endpoint.getValue());
 					isModified = true;
-				} else if (applicationIdValue != null && StringUtils.equals(oldValue, applicationIdValue.getValue())) {
-					taCoKitConfigurationModel.setValue("configuration.applicationId", applicationIdValue.getValue());
+				} else if (authEndpoint != null && StringUtils.equals(oldValue, authEndpoint.getValue())) {
+					taCoKitConfigurationModel.setValue("configuration.authEndpoint", authEndpoint.getValue());
 					isModified = true;
-				}
+				} 
 			} catch (Exception e) {
 				ExceptionHandler.process(e);
 			}
@@ -77,6 +77,6 @@ public class TaCoKitWorkdayContextUpdateService extends AbstractRepositoryContex
 			ConfigTypeNode configTypeNode = taCoKitConfigurationModel.getConfigTypeNode();
 		    name = configTypeNode.getDisplayName();
 		}
-		return StringUtils.equals(name, "NetSuite");
+		return StringUtils.equals(name, "Workday");
     }
 }
