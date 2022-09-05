@@ -355,4 +355,17 @@
              serviceId="IRepositoryContextUpdateService">
        </Service>
     </extension>
+  <extension
+          point="org.talend.core.repository.repository_context">
+       <RepositoryContext
+             class="org.talend.sdk.component.studio.ui.wizard.page.TaCoKitNeo4jContextHandler">
+       </RepositoryContext>
+    </extension>
+    <extension
+          point="org.talend.core.runtime.service">
+       <Service
+             class="org.talend.sdk.component.studio.service.TaCoKitNeo4jContextUpdateService"
+             serviceId="IRepositoryContextUpdateService">
+       </Service>
+    </extension>
 </plugin>

@@ -26,7 +26,6 @@ public class TaCokitForm extends AbstractForm {
 
 	private TaCoKitWizardComposite composite;
 
-//	private String tacokitConnetionName;
 
 	protected TaCokitForm(Composite parent, ConnectionItem connectionItem, int style) {
 		super(parent, style);
@@ -37,21 +36,7 @@ public class TaCokitForm extends AbstractForm {
 		data.right = new FormAttachment(100, 0);
 		data.bottom = new FormAttachment(85, 0);
 		setLayoutData(data);
-//		this.tacokitConnetionName = getTacokitConnetionName(connectionItem);
-
 	}
-
-//	private String getTacokitConnetionName(ConnectionItem connectionItem) {
-//		Connection connection = connectionItem.getConnection();
-//		String name = null;
-//		boolean isTacokit = TaCoKitConfigurationModel.isTacokit(connection);
-//		if (isTacokit) {
-//			TaCoKitConfigurationModel taCoKitConfigurationModel = new TaCoKitConfigurationModel(connection);
-//			ConfigTypeNode configTypeNode = taCoKitConfigurationModel.getConfigTypeNode();
-//			name = configTypeNode.getDisplayName();
-//		}
-//		return name;
-//	}
 
 	public void setComposite(TaCoKitWizardComposite composite) {
 		this.composite = composite;
@@ -81,23 +66,6 @@ public class TaCokitForm extends AbstractForm {
 			});
 		}
 
-//		if (StringUtils.equals(this.tacokitConnetionName, "NetSuite")) {
-//
-//			addContextParams(ETaCoKitParamName.Account, true);
-//			addContextParams(ETaCoKitParamName.Email, true);
-//			addContextParams(ETaCoKitParamName.Password, true);
-//			addContextParams(ETaCoKitParamName.RoleId, true);
-//			addContextParams(ETaCoKitParamName.ApplicationId, true);
-//		}
-
-//		if (StringUtils.equals(this.tacokitConnetionName, "Workday")) {
-//
-//			addContextParams(ETaCoKitParamName.Account, true);
-//			addContextParams(ETaCoKitParamName.Email, true);
-//			addContextParams(ETaCoKitParamName.Password, true);
-//			addContextParams(ETaCoKitParamName.RoleId, true);
-//			addContextParams(ETaCoKitParamName.ApplicationId, true);
-//		}
 
 	}
 
@@ -109,7 +77,6 @@ public class TaCokitForm extends AbstractForm {
 
 	@Override
 	protected void initialize() {
-		// TODO Auto-generated method stub
 		if (composite != null) {
 
 			composite.updateConfigurationModel(connectionItem.getConnection());
