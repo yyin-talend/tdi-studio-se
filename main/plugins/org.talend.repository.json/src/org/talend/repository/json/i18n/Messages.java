@@ -38,6 +38,8 @@ public class Messages extends NLS {
     public static String JSONDragAndDropHandler_dataViewer_warning_title;
 
     public static String JSONDragAndDropHandler_dataViewer_warning_message;
+
+    public static String JSONFileStep2Form_Output_ErrorInfo;
     static {
         // initialize resource bundle
         NLS.initializeMessages(BUNDLE_NAME, Messages.class);
