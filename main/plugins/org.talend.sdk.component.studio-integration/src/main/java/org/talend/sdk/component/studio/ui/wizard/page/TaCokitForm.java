@@ -74,7 +74,7 @@ public class TaCokitForm extends AbstractForm {
 				break;
 			}
 		}
-		if (parameters != null) {
+		if (parameters != null && parameters.size()>0) {
 
 			parameters.forEach(p -> {
 				addContextParams(p, true);

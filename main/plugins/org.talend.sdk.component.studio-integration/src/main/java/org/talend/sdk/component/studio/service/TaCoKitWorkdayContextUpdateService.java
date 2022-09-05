@@ -25,7 +25,7 @@ import org.talend.sdk.component.studio.metadata.model.TaCoKitConfigurationModel;
 import org.talend.sdk.component.studio.metadata.model.TaCoKitConfigurationModel.ValueModel;
 
 
-public class TaCoKitNetWorkdayContextUpdateService extends AbstractRepositoryContextUpdateService {
+public class TaCoKitWorkdayContextUpdateService extends AbstractRepositoryContextUpdateService {
 
     @Override
 	public boolean updateContextParameter(Connection conn, String oldValue, String newValue) {
