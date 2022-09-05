@@ -40,17 +40,23 @@ public class TaCoKitNetSuiteContextHandler extends AbstractRepositoryContextHand
 		}
 		return StringUtils.equals(name, "NetSuite");
 	}
-	
-	public Set<ETaCoKitParamName> collectConParameters(){
-		
-		Set<ETaCoKitParamName> set  = new HashSet<ETaCoKitParamName>();
+
+	public Set<ETaCoKitParamName> collectConParameters() {
+
+		Set<ETaCoKitParamName> set = new HashSet<ETaCoKitParamName>();
 		set.add(ETaCoKitParamName.Account);
 		set.add(ETaCoKitParamName.Email);
-		
+
 		set.add(ETaCoKitParamName.Password);
 		set.add(ETaCoKitParamName.RoleId);
-		
+
 		set.add(ETaCoKitParamName.ApplicationId);
+
+		set.add(ETaCoKitParamName.TokenId);
+		set.add(ETaCoKitParamName.ConsumerKey);
+		set.add(ETaCoKitParamName.ConsumerSecret);
+		set.add(ETaCoKitParamName.TokenSecret);
+
 		return set;
 	}
 
@@ -88,7 +94,22 @@ public class TaCoKitNetSuiteContextHandler extends AbstractRepositoryContextHand
 					ConnectionContextHelper.createParameters(varList, paramName,
 							properties.get("configuration.applicationId"));
 					break;
-
+				case TokenId:
+					ConnectionContextHelper.createParameters(varList, paramName,
+							properties.get("configuration.tokenId"));
+					break;
+				case ConsumerKey:
+					ConnectionContextHelper.createParameters(varList, paramName,
+							properties.get("configuration.consumerKey"));
+					break;
+				case ConsumerSecret:
+					ConnectionContextHelper.createParameters(varList, paramName,
+							properties.get("configuration.consumerSecret"));
+					break;
+				case TokenSecret:
+					ConnectionContextHelper.createParameters(varList, paramName,
+							properties.get("configuration.tokenSecret"));
+					break;
 				default:
 				}
 			}
@@ -133,6 +154,12 @@ public class TaCoKitNetSuiteContextHandler extends AbstractRepositoryContextHand
 		revertProperties(taCoKitConfigurationModel, contextType, "configuration.password");
 		revertProperties(taCoKitConfigurationModel, contextType, "configuration.role");
 		revertProperties(taCoKitConfigurationModel, contextType, "configuration.applicationId");
+
+		revertProperties(taCoKitConfigurationModel, contextType, "configuration.tokenId");
+
+		revertProperties(taCoKitConfigurationModel, contextType, "configuration.consumerKey");
+		revertProperties(taCoKitConfigurationModel, contextType, "configuration.consumerSecret");
+		revertProperties(taCoKitConfigurationModel, contextType, "configuration.tokenSecret");
 	}
 
 	private void revertProperties(TaCoKitConfigurationModel taCoKitConfigurationModel, ContextType contextType,
@@ -184,6 +211,22 @@ public class TaCoKitNetSuiteContextHandler extends AbstractRepositoryContextHand
 				break;
 			case ApplicationId:
 				taCoKitConfigurationModel.setValue("configuration.applicationId",
+						ContextParameterUtils.getNewScriptCode(contextVariableName, LANGUAGE));
+				break;
+			case TokenId:
+				taCoKitConfigurationModel.setValue("configuration.tokenId",
+						ContextParameterUtils.getNewScriptCode(contextVariableName, LANGUAGE));
+				break;
+			case ConsumerKey:
+				taCoKitConfigurationModel.setValue("configuration.consumerKey",
+						ContextParameterUtils.getNewScriptCode(contextVariableName, LANGUAGE));
+				break;
+			case ConsumerSecret:
+				taCoKitConfigurationModel.setValue("configuration.consumerSecret",
+						ContextParameterUtils.getNewScriptCode(contextVariableName, LANGUAGE));
+				break;
+			case TokenSecret:
+				taCoKitConfigurationModel.setValue("configuration.tokenSecret",
 						ContextParameterUtils.getNewScriptCode(contextVariableName, LANGUAGE));
 				break;
 
