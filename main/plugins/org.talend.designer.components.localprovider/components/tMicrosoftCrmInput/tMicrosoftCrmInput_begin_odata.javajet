@@ -95,7 +95,7 @@ if ((metadatas != null) && (metadatas.size() > 0)) {
 				else{
 			%>
 			    org.talend.ms.crm.odata.ClientConfiguration clientConfig_<%=cid%> = org.talend.ms.crm.odata.ClientConfigurationFactory
-                        .buildOAuthPremiseClientConfiguration(<%=userName%>, decryptedPassword_<%=cid%>, <%=authority%>, <%=serviceURL%>,<%=applicationId%>, <%=redirectUrl%>, <%=oauth_resource%>);
+                        .buildOAuthPremiseClientConfiguration(<%=userName%>, decryptedPassword_<%=cid%>, <%=authority%>, <%=serviceURL%>,<%=applicationId%>, <%=clientSecret%>, <%=redirectUrl%>, <%=oauth_resource%>);
 			<%
 				}
 			    } else {
