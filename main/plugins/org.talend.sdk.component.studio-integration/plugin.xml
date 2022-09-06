@@ -394,4 +394,17 @@
              serviceId="IRepositoryContextUpdateService">
        </Service>
     </extension>
+  <extension
+          point="org.talend.core.repository.repository_context">
+       <RepositoryContext
+             class="org.talend.sdk.component.studio.ui.wizard.page.TaCoKitZendeskContextHandler">
+       </RepositoryContext>
+    </extension>
+    <extension
+          point="org.talend.core.runtime.service">
+       <Service
+             class="org.talend.sdk.component.studio.service.TaCoKitZendeskContextUpdateService"
+             serviceId="IRepositoryContextUpdateService">
+       </Service>
+    </extension>
 </plugin>
