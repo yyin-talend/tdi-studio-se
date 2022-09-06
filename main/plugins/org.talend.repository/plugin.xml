@@ -3813,6 +3813,14 @@
               name="SaveDefaultClostdListValueForTckMigrationTask"
               version="8.0.1">
         </projecttask>
+        <projecttask
+              beforeLogon="true"
+              breaks="7.3.1"
+              class="org.talend.repository.model.migration.EncryptPasswordForNexusProxyPasswordMigrationTask"
+              id="org.talend.repository.model.migration.EncryptPasswordForNexusProxyPasswordMigrationTask"
+              name="Encrypt passwords for nexus proxy password in project setting preference"
+              version="7.3.1">
+        </projecttask>
    </extension>
 
    <extension
