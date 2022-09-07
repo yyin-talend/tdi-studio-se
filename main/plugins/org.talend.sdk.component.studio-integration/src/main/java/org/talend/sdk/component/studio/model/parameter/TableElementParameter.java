@@ -25,6 +25,7 @@ import java.util.Optional;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
+import org.apache.commons.lang3.StringUtils;
 import org.talend.core.model.process.EParameterFieldType;
 import org.talend.core.model.process.IElement;
 import org.talend.core.model.process.IElementParameter;
@@ -106,15 +107,37 @@ public class TableElementParameter extends TaCoKitElementParameter {
      */
     @Override
     public void setValue(final Object newValue) {
-        if (newValue == null || newValue instanceof String) {
-            final List<Map<String, Object>> tableValue = ValueConverter.toTable((String) newValue);
-            super.setValue(fromRepository(tableValue));
-        } else if (newValue instanceof List) {
-            super.setValue(fixClosedListColumn((List<Map<String, Object>>) newValue));
-        } else {
-            throw new IllegalArgumentException("wrong type on new value: " + newValue.getClass().getName());
-        }
-    }
+		IElement elem = getElement();
+		String name = getName();
+		boolean contextMode = isContextMode();
+		if (contextMode && elem != null && StringUtils.equals("Apache Kudu", elem.getElementName())
+				&& StringUtils.equals("configuration.masterAddresses", name) && newValue instanceof String) {
+
+			List<Map<String, Object>> table = ValueConverter.toTable((String) newValue);
+
+			if (table == null || table.size() == 0 || table.get(0).isEmpty()) {
+				String contetValue = "[{configuration.masterAddresses[].hostname=" + (String) newValue
+						+ ", configuration.masterAddresses[].port=" + newValue + "}]";
+
+				final List<Map<String, Object>> tableValue = ValueConverter.toTable((String) contetValue);
+
+				super.setValue(fromRepository(tableValue));
+			} else {
+
+				final List<Map<String, Object>> tableValue = table;
+
+				super.setValue(fromRepository(tableValue));
+			}
+
+		} else if (newValue == null || newValue instanceof String) {
+			final List<Map<String, Object>> tableValue = ValueConverter.toTable((String) newValue);
+			super.setValue(fromRepository(tableValue));
+		} else if (newValue instanceof List) {
+			super.setValue(fixClosedListColumn((List<Map<String, Object>>) newValue));
+		} else {
+			throw new IllegalArgumentException("wrong type on new value: " + newValue.getClass().getName());
+		}
+	}
 
     @Override
     public void updateValueOnly(final Object newValue) {

@@ -67,7 +67,7 @@ public final class ValueConverter {
                 } else {
                     keyValue = entry.split(":");
                 }
-                if (keyValue.length < 1) {
+				if (keyValue.length < 2) {
                     continue;
                 }
                 String key = keyValue[0];
