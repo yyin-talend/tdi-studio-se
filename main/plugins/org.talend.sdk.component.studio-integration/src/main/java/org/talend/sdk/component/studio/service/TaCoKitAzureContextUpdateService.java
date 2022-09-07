@@ -82,6 +82,6 @@ public class TaCoKitAzureContextUpdateService extends AbstractRepositoryContextU
 			ConfigTypeNode configTypeNode = taCoKitConfigurationModel.getConfigTypeNode();
 			name = configTypeNode.getDisplayName();
 		}
-		return StringUtils.equals(name, "Azure");
+		return StringUtils.equals(name, "Azure Data Lake Storage Gen2");
 	}
 }

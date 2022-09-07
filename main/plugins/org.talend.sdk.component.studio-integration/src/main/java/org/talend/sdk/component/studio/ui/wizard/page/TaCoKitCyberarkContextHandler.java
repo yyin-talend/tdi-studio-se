@@ -34,7 +34,7 @@ public class TaCoKitCyberarkContextHandler extends AbstractRepositoryContextHand
 			ConfigTypeNode configTypeNode = taCoKitConfigurationModel.getConfigTypeNode();
 			name = configTypeNode.getDisplayName();
 		}
-		return StringUtils.equals(name, "Cyberark");
+		return StringUtils.equals(name, "Cyberark vault connection");
 	}
 
 	public Set<ETaCoKitParamName> collectConParameters() {

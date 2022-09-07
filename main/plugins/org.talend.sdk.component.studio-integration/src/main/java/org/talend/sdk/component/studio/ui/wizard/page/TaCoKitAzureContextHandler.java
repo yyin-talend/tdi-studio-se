@@ -34,7 +34,7 @@ public class TaCoKitAzureContextHandler extends AbstractRepositoryContextHandler
 			ConfigTypeNode configTypeNode = taCoKitConfigurationModel.getConfigTypeNode();
 			name = configTypeNode.getDisplayName();
 		}
-		return StringUtils.equals(name, "Azure");
+		return StringUtils.equals(name, "Azure Data Lake Storage Gen2");
 	}
 
 	@Override

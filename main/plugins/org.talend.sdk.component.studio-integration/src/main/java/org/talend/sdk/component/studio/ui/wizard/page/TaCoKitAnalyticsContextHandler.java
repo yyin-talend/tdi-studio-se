@@ -34,7 +34,7 @@ public class TaCoKitAnalyticsContextHandler extends AbstractRepositoryContextHan
 			ConfigTypeNode configTypeNode = taCoKitConfigurationModel.getConfigTypeNode();
 			name = configTypeNode.getDisplayName();
 		}
-		return StringUtils.equals(name, "GoogleAnalytics");
+		return StringUtils.equals(name, "Google Analytics");
 	}
 
 	public Set<ETaCoKitParamName> collectConParameters() {
