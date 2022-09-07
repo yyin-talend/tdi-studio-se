@@ -211,14 +211,16 @@ public class UpdatesitePreferencePage extends PreferencePage {
         } else {
             fd.height = 0;
         }
-
+        
+        Composite m2Panel = new Composite(panel, SWT.None);
+        
         localPanel = new Composite(panel, SWT.NONE);
         localPanel.setLayout(new FormLayout());
         fd = new FormData();
         fd.top = new FormAttachment(overwritePanel, 0, SWT.BOTTOM);
         fd.left = new FormAttachment(0);
         fd.right = new FormAttachment(100);
-        fd.bottom = new FormAttachment(100);
+        fd.bottom = new FormAttachment(m2Panel, 0, SWT.TOP);
         localPanel.setLayoutData(fd);
 
         Group localGroup = new Group(localPanel, SWT.NONE);
@@ -282,8 +284,10 @@ public class UpdatesitePreferencePage extends PreferencePage {
         warningDesc.setLayoutData(gd);
         
         // remove m2
-        Composite m2Panel = new Composite(LocalSettinsContainer, SWT.None);
-        GridData m2PanelData = new GridData(SWT.NONE, SWT.CENTER, true, false);
+        FormData m2PanelData = new FormData();
+        m2PanelData.left = new FormAttachment(localPanel, 0, SWT.LEFT);
+        m2PanelData.right = new FormAttachment(localPanel, 0, SWT.RIGHT);
+        m2PanelData.bottom = new FormAttachment(100);
         m2Panel.setLayout(new GridLayout(1, false));
         m2Panel.setLayoutData(m2PanelData);
         
