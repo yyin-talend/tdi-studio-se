@@ -34,7 +34,7 @@ public class TaCoKitTableauContextHandler extends AbstractRepositoryContextHandl
 			ConfigTypeNode configTypeNode = taCoKitConfigurationModel.getConfigTypeNode();
 			name = configTypeNode.getDisplayName();
 		}
-		return StringUtils.equals(name, "Tableau");
+		return StringUtils.equals(name, "Tableau datastore");
 	}
 
 	public Set<ETaCoKitParamName> collectConParameters() {
