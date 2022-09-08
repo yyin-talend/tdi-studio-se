@@ -260,9 +260,10 @@ public class TextController extends AbstractElementPropertySectionController {
         if (checkErrorsWhenViewRefreshed || valueChanged) {
             checkErrorsForPropertiesOnly(labelText);
         }
-        fixedCursorPosition(param, labelText, value, valueChanged);
+		fixedCursorPosition(param, labelText, value, valueChanged);
 
-    }
+		labelText.setEditable(!param.isContextMode());
+	}
 
     boolean a = false;
 

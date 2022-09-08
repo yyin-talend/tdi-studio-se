@@ -2,20 +2,12 @@ package org.talend.sdk.component.studio.ui.wizard.page;
 
 import java.util.Set;
 
-import org.apache.commons.lang3.StringUtils;
-import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.layout.FormData;
-import org.eclipse.swt.layout.FormLayout;
-import org.eclipse.swt.layout.GridData;
-import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
-import org.talend.core.model.metadata.builder.connection.Connection;
 import org.talend.core.model.properties.ConnectionItem;
 import org.talend.metadata.managment.ui.utils.IRepositoryContextHandler;
 import org.talend.metadata.managment.ui.utils.RepositoryContextManager;
-import org.talend.metadata.managment.ui.utils.ExtendedNodeConnectionContextUtils.EHadoopParamName;
 import org.talend.metadata.managment.ui.utils.TaCoKitConnectionContextUtils.ETaCoKitParamName;
 import org.talend.metadata.managment.ui.wizard.AbstractForm;
 import org.talend.sdk.component.server.front.model.ConfigTypeNode;
@@ -79,7 +71,7 @@ public class TaCokitForm extends AbstractForm {
 	protected void initialize() {
 		if (composite != null) {
 
-			composite.updateConfigurationModel(connectionItem.getConnection());
+			composite.updateParameter(connectionItem.getConnection());
 
 			composite.refresh();
 		}

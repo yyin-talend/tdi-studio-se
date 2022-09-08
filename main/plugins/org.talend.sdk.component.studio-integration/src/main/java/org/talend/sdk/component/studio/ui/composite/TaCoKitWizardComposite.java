@@ -65,9 +65,9 @@ public class TaCoKitWizardComposite extends TaCoKitComposite {
 				.forEach(p -> p.unregisterRedrawListener("show", getRedrawListener()));
 	}
 
-	public void updateConfigurationModel(Connection connection) {
+	public void updateParameter(Connection connection) {
 		TaCoKitConfigurationModel configurationModel = new TaCoKitConfigurationModel(connection);
-
+		boolean isContextMode = configurationModel.getConnection().isContextMode();
 		elem.getElementParameters().stream().filter(p -> p instanceof TaCoKitElementParameter)
 				.map(p -> (TaCoKitElementParameter) p).filter(TaCoKitElementParameter::isPersisted)
 				.filter(p -> !EParameterFieldType.SCHEMA_TYPE.equals(p.getFieldType())).forEach(parameter -> {
@@ -83,11 +83,13 @@ public class TaCoKitWizardComposite extends TaCoKitComposite {
 							if (StringUtils.isEmpty(valueModel.getValue())) {
 								return;
 							}
-							boolean contextMode = configurationModel.getConnection().isContextMode();
-							parameter.setContextMode(contextMode);
+							parameter.setContextMode(isContextMode);
 							String value = valueModel.getValue();
 
 							parameter.setValue(value);
+
+							parameter.setReadOnly(isContextMode);
+
 						}
 					} catch (Exception e) {
 						ExceptionHandler.process(e);
@@ -97,6 +99,7 @@ public class TaCoKitWizardComposite extends TaCoKitComposite {
 	}
 
 	private void init() {
+		boolean isContextMode = configurationModel.getConnection().isContextMode();
 		elem.getElementParameters().stream().filter(p -> p instanceof TaCoKitElementParameter)
 				.map(p -> (TaCoKitElementParameter) p).filter(TaCoKitElementParameter::isPersisted)
 				.filter(p -> !EParameterFieldType.SCHEMA_TYPE.equals(p.getFieldType())).forEach(parameter -> {
@@ -114,11 +117,13 @@ public class TaCoKitWizardComposite extends TaCoKitComposite {
 							if (StringUtils.isEmpty(valueModel.getValue())) {
 								return;
 							}
-							boolean contextMode = configurationModel.getConnection().isContextMode();
-							parameter.setContextMode(contextMode);
+
+							parameter.setContextMode(isContextMode);
 							String value = valueModel.getValue();
 
 							parameter.setValue(value);
+
+							parameter.setReadOnly(isContextMode);
 						}
 					} catch (Exception e) {
 						ExceptionHandler.process(e);
