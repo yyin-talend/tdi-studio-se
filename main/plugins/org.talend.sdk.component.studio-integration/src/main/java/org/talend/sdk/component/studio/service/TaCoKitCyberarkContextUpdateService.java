@@ -56,6 +56,6 @@ public class TaCoKitCyberarkContextUpdateService extends AbstractRepositoryConte
 			ConfigTypeNode configTypeNode = taCoKitConfigurationModel.getConfigTypeNode();
 			name = configTypeNode.getDisplayName();
 		}
-		return StringUtils.equals(name, "Cyberark vault connection");
+		return StringUtils.equals(name, "CyberArk vault connection");
 	}
 }
