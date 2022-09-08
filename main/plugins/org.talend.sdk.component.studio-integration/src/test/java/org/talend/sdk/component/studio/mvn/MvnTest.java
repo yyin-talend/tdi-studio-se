@@ -25,7 +25,7 @@ class MvnTest {
 
     private static final String MVN_LOC = "localrepositories://@id=talend.local!";
 
-    private static final String MVN_PATH = "io.netty/netty-codec-http/4.1.68.Final/jar";
+    private static final String MVN_PATH = "io.netty/netty-codec-http/4.1.77.Final/jar";
 
     private static final String MVN_URI_CONF = MVN_PRE + MVN_PATH;
 
@@ -33,13 +33,13 @@ class MvnTest {
 
     private static final String MVN_GAVTC = MVN_GAVT + "/osx-x86_64";
 
-    private static final String GAV = "io.netty:netty-codec-http:4.1.68.Final";
+    private static final String GAV = "io.netty:netty-codec-http:4.1.77.Final";
 
-    private static final String GATV = "io.netty:netty-codec-http:jar:4.1.68.Final";
+    private static final String GATV = "io.netty:netty-codec-http:jar:4.1.77.Final";
 
-    private static final String GATVS = "io.netty:netty-codec-http:jar:4.1.68.Final:compile";
+    private static final String GATVS = "io.netty:netty-codec-http:jar:4.1.77.Final:compile";
 
-    private static final String GATCV = "io.netty:netty-codec-http:jar:osx-x86_64:4.1.68.Final";
+    private static final String GATCV = "io.netty:netty-codec-http:jar:osx-x86_64:4.1.77.Final";
 
     private static final String GA = "io.netty:netty-codec-http";
 
@@ -60,7 +60,7 @@ class MvnTest {
         assertEquals("fake", need.getContext());
         // from ModuleNeeded$constructor:
         // this.setModuleName(mavenArtifact.getArtifactId() + "-" + mavenArtifact.getVersion() + "." + mavenArtifact.getType());
-        assertEquals("netty-codec-http-4.1.68.Final.jar", need.getModuleName());
+        assertEquals("netty-codec-http-4.1.77.Final.jar", need.getModuleName());
         assertEquals(MVN_URI_CONF + ext, need.getMavenURIFromConfiguration());
         assertEquals(MVN_URI_CONF + ext, need.getDefaultMavenURI());
     }
