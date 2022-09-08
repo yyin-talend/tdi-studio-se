@@ -269,8 +269,8 @@ public class BuildJobHandlerTest {
             final String technicalLabel = ProjectManager.getInstance().getCurrentProject().getTechnicalLabel();
             assertEquals(technicalLabel, jobInfoProp.getProperty("project"));
 
-            ZipEntry libEntry = zip.getEntry("lib");
-            assertNotNull("No lib folder", libEntry);
+            boolean findLibFolder = zip.stream().anyMatch(entry->entry.getName().startsWith("lib/"));
+            assertTrue("No lib folder", findLibFolder);
             if (jobItem == jobWithChildrenItem) {
                 String dependencyFromParent = "commons-beanutils-1.9.4.jar";
                 ZipEntry dependencyEntry = zip.getEntry("lib/" + dependencyFromParent);
