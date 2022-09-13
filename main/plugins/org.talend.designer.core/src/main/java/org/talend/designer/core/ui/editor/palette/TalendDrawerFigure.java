@@ -107,6 +107,8 @@ public class TalendDrawerFigure extends DrawerFigure {
             drawerLabelField.setAccessible(true);
             talendDrawerLabel = new Label();
             talendDrawerLabel.setFont(JFaceResources.getFontRegistry().getBold("TalendDrawerFigureSymbolicName"));
+            // TUP-35745
+            talendDrawerLabel.setForegroundColor(cssStyleSetting.getMouseOverForgroundColor3());
             talendDrawerLabel.setLabelAlignment(Label.LEFT);
             drawerLabelField.set(this, talendDrawerLabel);
 
