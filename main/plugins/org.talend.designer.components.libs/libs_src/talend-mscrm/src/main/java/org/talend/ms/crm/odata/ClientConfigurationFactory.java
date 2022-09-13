@@ -48,6 +48,19 @@ public class ClientConfigurationFactory {
         return clientConfiguration;
     }
 
+    public final static ClientConfiguration buildOAuthWebClientConfiguration(String clientId, String clientSecret,
+                                                                             String authoryEndpoint, ClientConfiguration.WebAppPermission permission) {
+        ClientConfiguration clientConfiguration = new ClientConfiguration(AuthStrategyEnum.OAUTH);
+        clientConfiguration.setAppRegisteredType(ClientConfiguration.AppRegisteredType.WEB_APP);
+        clientConfiguration.setWebAppPermission(permission);
+
+        clientConfiguration.setClientId(clientId);
+        clientConfiguration.setClientSecret(clientSecret);
+        clientConfiguration.setAuthoryEndpoint(authoryEndpoint);
+
+        return clientConfiguration;
+    }
+
     public final static ClientConfiguration buildNtlmClientConfiguration(String userName, String password, String workstation,
                                                                          String domain) {
         ClientConfiguration clientConfiguration = new ClientConfiguration(AuthStrategyEnum.NTLM);

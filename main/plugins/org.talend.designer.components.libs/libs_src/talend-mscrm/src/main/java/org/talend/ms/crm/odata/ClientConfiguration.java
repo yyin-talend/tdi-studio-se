@@ -29,7 +29,7 @@ public final class ClientConfiguration {
     /*
      * If Web app, permission type
      */
-    public static enum WebAppPermission {DELEGATED}; // MS CRM only accept DELEGATED PERMISSION, not APPLICATION PERMISSION
+    public static enum WebAppPermission {DELEGATED, APPLICATION}; // TODO: MS CRM only accept DELEGATED PERMISSION, not APPLICATION PERMISSION
 
     /*
      * This would be obtained after you register the Dynamic CRM in Active Directory on the Microsoft Azure portal
