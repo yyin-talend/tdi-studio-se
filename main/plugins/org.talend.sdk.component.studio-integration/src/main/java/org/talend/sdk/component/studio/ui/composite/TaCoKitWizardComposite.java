@@ -80,9 +80,6 @@ public class TaCoKitWizardComposite extends TaCoKitComposite {
 							if (valueModel.getConfigurationModel() != configurationModel) {
 								parameter.setReadOnly(true);
 							}
-							if (StringUtils.isEmpty(valueModel.getValue())) {
-								return;
-							}
 							parameter.setContextMode(isContextMode);
 							String value = valueModel.getValue();
 
