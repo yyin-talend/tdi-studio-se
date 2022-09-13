@@ -366,9 +366,13 @@ public class TableController extends AbstractTableController {
 				tableViewerCreator.getTableViewer().refresh();
 			}
 		}
-
-		tableViewerCreator.getTable().setTouchEnabled(!param.isContextMode());
-		revertToolBarButtonState(!param.isContextMode());
+		if (param.isContextMode()) {
+			revertToolBarButtonState(false);
+			tableViewerCreator.getTable().setEnabled(false);
+		} else {
+			revertToolBarButtonState(true);
+			tableViewerCreator.getTable().setEnabled(true);
+		}
 
 
     }
