@@ -82,6 +82,7 @@ import org.talend.metadata.managment.ui.preview.StoppablePreviewLoader;
 import org.talend.metadata.managment.ui.utils.ConnectionContextHelper;
 import org.talend.metadata.managment.ui.utils.ShadowProcessHelper;
 import org.talend.metadata.managment.ui.wizard.IRefreshable;
+import org.talend.repository.json.i18n.Messages;
 import org.talend.repository.json.ui.preview.JSONShadowProcessPreview;
 import org.talend.repository.json.ui.shadow.JSONShadowProcessHelper;
 import org.talend.repository.json.ui.wizards.extraction.ExtractionFieldsWithJSONXPathEditorView;
@@ -848,10 +849,7 @@ public class JSONFileStep2Form extends AbstractJSONFileStepForm implements IRefr
         text.setLayoutData(gridData);
         outputComposite.setBackground(Display.getDefault().getSystemColor(SWT.COLOR_WHITE));
 
-        String errorInfo = "No result for this settings" + "\n";
-        errorInfo = errorInfo + "Please check right XPathExpression or XML source document." + "\n";
-
-        text.setText(errorInfo);
+        text.setText(Messages.JSONFileStep2Form_Output_ErrorInfo);
         text.setForeground(Display.getDefault().getSystemColor(SWT.COLOR_RED));
         text.setFont(font);
 
