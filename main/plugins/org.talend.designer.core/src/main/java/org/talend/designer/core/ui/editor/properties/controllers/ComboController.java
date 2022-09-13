@@ -70,7 +70,6 @@ import org.talend.designer.core.ui.editor.cmd.PropertyChangeCommand;
 import org.talend.designer.core.ui.editor.cmd.QueryGuessCommand;
 import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.repository.model.IProxyRepositoryFactory;
-import org.talend.hadoop.distribution.constants.SparkBatchConstant;
 
 /**
  * DOC yzhang class global comment. Detailled comment <br/>
@@ -597,6 +596,9 @@ public class ComboController extends AbstractElementPropertySectionController {
         if (param.isContextMode()) {
             combo.setBackground(Display.getDefault().getSystemColor(SWT.COLOR_YELLOW));
             combo.setEnabled(false);
+		} else {
+			combo.setBackground(Display.getDefault().getSystemColor(SWT.COLOR_LIST_BACKGROUND));
+			combo.setEnabled(true);
         }
 
     }
