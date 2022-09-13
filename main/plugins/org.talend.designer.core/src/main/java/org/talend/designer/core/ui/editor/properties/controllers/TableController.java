@@ -353,19 +353,24 @@ public class TableController extends AbstractTableController {
         if (tableViewerCreator == null || tableViewerCreator.getTable() == null || tableViewerCreator.getTable().isDisposed()) {
             return;
         }
-        updateContextList(param);
-        Object value = param.getValue();
-        if (value instanceof List) {
-            // updateTableValues(param);
-            // (bug 5365)
-            checkAndSetDefaultValue(param);
-            if (tableViewerCreator != null) {
-                if (!tableViewerCreator.getInputList().equals(value)) {
-                    tableViewerCreator.init((List) value);
-                }
-                tableViewerCreator.getTableViewer().refresh();
-            }
-        }
+		updateContextList(param);
+		Object value = param.getValue();
+		if (value instanceof List) {
+			// updateTableValues(param);
+			// (bug 5365)
+			checkAndSetDefaultValue(param);
+			if (tableViewerCreator != null) {
+				if (!tableViewerCreator.getInputList().equals(value)) {
+					tableViewerCreator.init((List) value);
+				}
+				tableViewerCreator.getTableViewer().refresh();
+			}
+		}
+
+		tableViewerCreator.getTable().setTouchEnabled(!param.isContextMode());
+		revertToolBarButtonState(!param.isContextMode());
+
+
     }
 
     @SuppressWarnings("unchecked")
