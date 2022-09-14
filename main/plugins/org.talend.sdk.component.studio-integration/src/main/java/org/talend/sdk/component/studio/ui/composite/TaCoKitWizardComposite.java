@@ -120,7 +120,7 @@ public class TaCoKitWizardComposite extends TaCoKitComposite {
 
 							parameter.setValue(value);
 
-							parameter.setReadOnly(isContextMode);
+							parameter.setReadOnly(false);
 						}
 					} catch (Exception e) {
 						ExceptionHandler.process(e);
