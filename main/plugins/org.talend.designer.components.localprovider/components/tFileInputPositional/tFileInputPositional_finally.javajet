@@ -14,17 +14,19 @@
 	String cid = node.getUniqueName();
 	String filename = ElementParameterParser.getValueWithUIFieldKey(node,"__FILENAME__", "FILENAME");
 %>
-Object filename_<%=cid %> = <%=filename %>;
-if(!(filename_<%=cid %> instanceof java.io.InputStream)){
-
-	org.talend.fileprocess.delimited.RowParser reader_<%=cid %> = (org.talend.fileprocess.delimited.RowParser)resourceMap.get("reader_<%=cid %>"); 
-    org.talend.fileprocess.delimited.RowParserByByte byteReader_<%=cid %> = (org.talend.fileprocess.delimited.RowParserByByte)resourceMap.get("byteReader_<%=cid %>"); 
-    
-	if(reader_<%=cid %>!=null) {
-		reader_<%=cid %>.close();
-	}
-
-	if(byteReader_<%=cid %>!=null) {
-		byteReader_<%=cid %>.close();
+if(resourceMap.get("finish_<%=cid%>") == null){ 
+	Object filename_<%=cid %> = <%=filename %>;
+	if(!(filename_<%=cid %> instanceof java.io.InputStream)){
+	
+		org.talend.fileprocess.delimited.RowParser reader_<%=cid %> = (org.talend.fileprocess.delimited.RowParser)resourceMap.get("reader_<%=cid %>"); 
+	    org.talend.fileprocess.delimited.RowParserByByte byteReader_<%=cid %> = (org.talend.fileprocess.delimited.RowParserByByte)resourceMap.get("byteReader_<%=cid %>"); 
+	    
+		if(reader_<%=cid %>!=null) {
+			reader_<%=cid %>.close();
+		}
+	
+		if(byteReader_<%=cid %>!=null) {
+			byteReader_<%=cid %>.close();
+		}
 	}
 }
