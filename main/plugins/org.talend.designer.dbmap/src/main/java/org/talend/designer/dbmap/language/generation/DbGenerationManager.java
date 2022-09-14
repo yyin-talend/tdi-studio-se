@@ -1399,7 +1399,9 @@ public abstract class DbGenerationManager {
                 }
             }
             if (!replace) {
-                String exp = replaceVariablesForExpression(component, getTableName(iconn,inputTable.getName(),quote));
+                tableName = getTableName(iconn,inputTable.getName(),quote);
+                tableName = adaptQuoteForColumnName(component, tableName);
+                String exp = replaceVariablesForExpression(component, tableName);
                 appendSqlQuery(sb, exp);
             }
         }
@@ -1680,11 +1682,14 @@ public abstract class DbGenerationManager {
     }
 
     protected String getHandledTableName(DbMapComponent component, String tableName, String alias) {
+        String quote = getQuote(component);
+        List<IConnection> inputConnections = (List<IConnection>) component.getIncomingConnections();
+        IConnection iconn = this.getConnectonByName(inputConnections, tableName);
+        tableName = getTableName(iconn,tableName,quote);
+        tableName = adaptQuoteForColumnName(component,tableName);
         if (alias == null) {
             return replaceVariablesForExpression(component, tableName);
         } else {
-            List<IConnection> inputConnections = (List<IConnection>) component.getIncomingConnections();
-            IConnection iconn = this.getConnectonByName(inputConnections, tableName);
             if (iconn != null) {
                 String handledTableName = "";
                 boolean inputIsELTDBMap = false;
