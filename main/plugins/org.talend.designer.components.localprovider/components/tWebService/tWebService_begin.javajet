@@ -58,7 +58,6 @@ String passwordFieldName = "";
 if("".equals(tempPath))tempPath="\"\"";
 
 %>
-	System.setProperty("javax.xml.transform.TransformerFactory", "org.apache.xalan.processor.TransformerFactoryImpl");
     System.setProperty("org.apache.commons.logging.Log", "org.apache.commons.logging.impl.NoOpLog");
 
     System.setProperty("javax.xml.accessExternalSchema", "all");
