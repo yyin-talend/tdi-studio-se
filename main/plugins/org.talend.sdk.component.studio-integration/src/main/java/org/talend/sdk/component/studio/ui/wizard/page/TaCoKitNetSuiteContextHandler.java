@@ -8,10 +8,7 @@ import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
 import org.talend.commons.exception.ExceptionHandler;
-import org.talend.core.database.conn.ConnParameterKeys;
-import org.talend.core.hadoop.repository.HadoopRepositoryUtil;
 import org.talend.core.model.metadata.builder.connection.Connection;
-import org.talend.core.model.metadata.types.JavaTypesManager;
 import org.talend.core.model.process.IContextParameter;
 import org.talend.core.model.properties.ContextItem;
 import org.talend.core.model.utils.ContextParameterUtils;
@@ -21,7 +18,6 @@ import org.talend.designer.core.model.utils.emf.talendfile.ContextType;
 import org.talend.metadata.managment.ui.model.IConnParamName;
 import org.talend.metadata.managment.ui.utils.ConnectionContextHelper;
 import org.talend.metadata.managment.ui.utils.TaCoKitConnectionContextUtils.ETaCoKitParamName;
-import org.talend.metadata.managment.ui.wizard.AbstractForm;
 import org.talend.metadata.managment.ui.wizard.context.AbstractRepositoryContextHandler;
 import org.talend.sdk.component.server.front.model.ConfigTypeNode;
 import org.talend.sdk.component.studio.metadata.model.TaCoKitConfigurationModel;
@@ -186,10 +182,8 @@ public class TaCoKitNetSuiteContextHandler extends AbstractRepositoryContextHand
 
 	@Override
 	protected void matchContextForAttribues(Connection connection, IConnParamName param, String contextVariableName) {
-		// TODO Auto-generated method stub
 		TaCoKitConfigurationModel taCoKitConfigurationModel = new TaCoKitConfigurationModel(connection);
-		Map<String, String> properties = taCoKitConfigurationModel.getProperties();
-		String paramName = null;
+
 		if (param instanceof ETaCoKitParamName) {
 			ETaCoKitParamName hadoopParam = (ETaCoKitParamName) param;
 			switch (hadoopParam) {

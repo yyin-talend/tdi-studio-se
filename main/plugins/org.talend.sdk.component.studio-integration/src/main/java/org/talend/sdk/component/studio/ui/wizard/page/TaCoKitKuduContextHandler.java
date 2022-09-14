@@ -79,7 +79,6 @@ public class TaCoKitKuduContextHandler extends AbstractRepositoryContextHandler 
 				}
 			}
 		}
-//		createKuduPropertiesContextVariable(prefixName, varList, properties.get("configuration.masterAddresses"));
 
 		return varList;
 
@@ -101,21 +100,6 @@ public class TaCoKitKuduContextHandler extends AbstractRepositoryContextHandler 
 				matchContextForAttribues(connection, hadoopConnectionParam, hadoopVariableName);
 			}
 		}
-
-//		TaCoKitConfigurationModel taCoKitConfigurationModel = new TaCoKitConfigurationModel(connection);
-//
-//		Map<String, String> properties = taCoKitConfigurationModel.getProperties();
-//
-//		String hadoopProperties = properties.get("configuration.masterAddresses");
-//
-//		List<Map<String, Object>> hadoopPropertiesList = getKuduPropertiesList(hadoopProperties);
-//
-//		List<Map<String, Object>> propertiesAfterContext = transformKuduPropertiesForContextMode(hadoopPropertiesList,
-//				prefixName);
-//
-//		String hadoopPropertiesJsonStr = getKuduPropertiesJsonStr(propertiesAfterContext);
-//
-//		taCoKitConfigurationModel.setValue("configuration.masterAddresses", hadoopPropertiesJsonStr);
 
 	}
 
@@ -206,7 +190,7 @@ public class TaCoKitKuduContextHandler extends AbstractRepositoryContextHandler 
 			String key) {
 		try {
 			ValueModel valueModel = taCoKitConfigurationModel.getValue(key);
-			if (valueModel != null) {// context.aaaa_MasterAddresses
+			if (valueModel != null) {
 				String contetValue = valueModel.getValue();
 				final List<Map<String, Object>> tableValue = ValueConverter.toTable((String) contetValue);
 				if (tableValue != null && tableValue.size() > 0) {
@@ -243,7 +227,6 @@ public class TaCoKitKuduContextHandler extends AbstractRepositoryContextHandler 
 
 		TaCoKitConfigurationModel taCoKitConfigurationModel = new TaCoKitConfigurationModel(connection);
 
-		String paramName = null;
 		if (param instanceof ETaCoKitParamName) {
 			ETaCoKitParamName hadoopParam = (ETaCoKitParamName) param;
 			switch (hadoopParam) {

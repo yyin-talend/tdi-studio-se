@@ -167,10 +167,7 @@ public class TaCoKitAzureContextHandler extends AbstractRepositoryContextHandler
 
 	@Override
 	protected void matchContextForAttribues(Connection connection, IConnParamName param, String contextVariableName) {
-		// TODO Auto-generated method stub
 		TaCoKitConfigurationModel taCoKitConfigurationModel = new TaCoKitConfigurationModel(connection);
-		Map<String, String> properties = taCoKitConfigurationModel.getProperties();
-		String paramName = null;
 		if (param instanceof ETaCoKitParamName) {
 			ETaCoKitParamName hadoopParam = (ETaCoKitParamName) param;
 			switch (hadoopParam) {
