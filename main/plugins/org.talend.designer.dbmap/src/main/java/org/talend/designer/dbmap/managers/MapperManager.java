@@ -781,8 +781,13 @@ public class MapperManager extends AbstractMapperManager {
         uiManager.refreshSqlExpression();
     }
 
-    public void useDelimitedIdentifiers(boolean useDelimitedIdentifiers) {
-        getComponent().getGenerationManager().setUseDelimitedIdentifiers(useDelimitedIdentifiers);
+    public void setAddQuotesInColumns(boolean setAddQuotesInColumns) {
+        getComponent().getGenerationManager().setAddQuotesInColumns(setAddQuotesInColumns);
+        uiManager.refreshSqlExpression();
+    }
+    
+    public void setAddQuotesInTableNames(boolean setAddQuotesInTableNames) {
+        getComponent().getGenerationManager().setAddQuotesInTableNames(setAddQuotesInTableNames);
         uiManager.refreshSqlExpression();
     }
 
