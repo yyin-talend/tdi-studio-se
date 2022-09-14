@@ -96,9 +96,7 @@ public abstract class DbGenerationManager {
 
     protected DataMapExpressionParser parser;
 
-    private Boolean addQuotesInColumns;
-
-    private Boolean addQuotesInTableNames;
+    private Boolean useDelimitedIdentifiers;
 
     private Boolean useAliasInOutputTable;
 
@@ -723,14 +721,14 @@ public abstract class DbGenerationManager {
          * DbMapComponent#getGenerationManager() while they construct a new manager manually, so some parameters may not
          * be initialised, then need to check these parameters here manually to make sure they are initialised.
          */
-        if (this.addQuotesInColumns == null) {
-            this.addQuotesInColumns = false;
+        if (this.useDelimitedIdentifiers == null) {
+            this.useDelimitedIdentifiers = false;
             IElementParameter activeDelimitedIdentifiersEP = component
                     .getElementParameter(EParameterName.ACTIVE_DATABASE_DELIMITED_IDENTIFIERS.getName());
             if (activeDelimitedIdentifiersEP != null) {
                 Object value = activeDelimitedIdentifiersEP.getValue();
                 if (value != null) {
-                    setAddQuotesInColumns(Boolean.valueOf(value.toString()));
+                    setUseDelimitedIdentifiers(Boolean.valueOf(value.toString()));
                 }
             }
         }
@@ -1328,7 +1326,6 @@ public abstract class DbGenerationManager {
 
     protected void buildTableDeclaration(DbMapComponent component, StringBuilder sb, ExternalDbMapTable inputTable) {
         Object inConns = component.getIncomingConnections();
-        String quote = getQuote(component);
 
         List<IConnection> inputConnections = null;
         if (inConns != null) {
@@ -1399,7 +1396,7 @@ public abstract class DbGenerationManager {
                 }
             }
             if (!replace) {
-                String exp = replaceVariablesForExpression(component, getTableName(iconn,inputTable.getName(),quote));
+                String exp = replaceVariablesForExpression(component, inputTable.getName());
                 appendSqlQuery(sb, exp);
             }
         }
@@ -1512,7 +1509,7 @@ public abstract class DbGenerationManager {
                                             continue;
                                         }
                                         if (expression.trim().equals(tableValue + "." + oriName)) {
-                                            expression = getTableName(iconn,tableValue,quote) + "." + getColumnName(iconn, oriName, quote);
+                                            expression = tableValue + "." + getColumnName(iconn, oriName, quote);
                                             expression = expression.replaceAll(quto_markParser,"\\\\" +quto_mark); //$NON-NLS-1$
                                             continue;
                                         }
@@ -1525,7 +1522,7 @@ public abstract class DbGenerationManager {
                                         if (iconn.getLineStyle() == EConnectionType.TABLE_REF) {
                                             continue;
                                         }
-                                        if (!isRefTableConnection(iconn) && isAddQuotesInColumns()) {
+                                        if (!isRefTableConnection(iconn) && isUseDelimitedIdentifiers()) {
                                             oriName = getColumnName(iconn, oriName, quote);
                                         } else {
                                             oriName = oriName.replaceAll("\\$", "\\\\\\$"); //$NON-NLS-1$ //$NON-NLS-2$
@@ -1743,7 +1740,7 @@ public abstract class DbGenerationManager {
     }
 
     protected String getColumnName(IConnection conn, String name) {
-        if (!isRefTableConnection(conn) && isAddQuotesInColumns()) {
+        if (!isRefTableConnection(conn) && isUseDelimitedIdentifiers()) {
             return getNameWithDelimitedIdentifier(name);
         } else {
             return name;
@@ -1751,15 +1748,7 @@ public abstract class DbGenerationManager {
     }
 
     protected String getColumnName(IConnection conn, String name, String quote) {
-        if (!isRefTableConnection(conn) && isAddQuotesInColumns()) {
-            return getNameWithDelimitedIdentifier(name, quote);
-        } else {
-            return name;
-        }
-    }
-    
-    protected String getTableName(IConnection conn, String name, String quote) {
-        if (!isRefTableConnection(conn) && isAddQuotesInTableNames()) {
+        if (!isRefTableConnection(conn) && isUseDelimitedIdentifiers()) {
             return getNameWithDelimitedIdentifier(name, quote);
         } else {
             return name;
@@ -1807,22 +1796,14 @@ public abstract class DbGenerationManager {
         return field;
     }
 
-    public boolean isAddQuotesInColumns() {
-        return Boolean.TRUE.equals(this.addQuotesInColumns);
+    public boolean isUseDelimitedIdentifiers() {
+        return Boolean.TRUE.equals(this.useDelimitedIdentifiers);
     }
 
-    public boolean isAddQuotesInTableNames() {
-        return Boolean.TRUE.equals(this.addQuotesInTableNames);
+    public void setUseDelimitedIdentifiers(boolean useDelimitedIdentifiers) {
+        this.useDelimitedIdentifiers = useDelimitedIdentifiers;
     }
-    
-    public void setAddQuotesInColumns(boolean addQuotesInColumns) {
-        this.addQuotesInColumns = addQuotesInColumns;
-    }
-    
-    public void setAddQuotesInTableNames(boolean addQuotesInTableNames) {
-        this.addQuotesInTableNames = addQuotesInTableNames;
-    }
-    
+
     public boolean isUseAliasInOutputTable() {
         return Boolean.TRUE.equals(this.useAliasInOutputTable);
     }
@@ -2003,7 +1984,7 @@ public abstract class DbGenerationManager {
                         } else {
                             isFirstColumn = false;
                         }
-                        if (isAddQuotesInColumns()) {
+                        if (isUseDelimitedIdentifiers()) {
                             columnEntry = getNameWithDelimitedIdentifier(columnEntry, getQuote(component));
                             columnEntry = adaptQuoteForColumnName(component, columnEntry);
                         }

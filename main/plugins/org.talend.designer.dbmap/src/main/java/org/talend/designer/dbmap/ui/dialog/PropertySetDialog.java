@@ -40,9 +40,7 @@ public class PropertySetDialog extends Dialog {
 
     private DbGenerationManager generationManager;
 
-    private Button addQuotesInColumnsButton;
-    
-    private Button addQuotesInTableNamesButton;
+    private Button delimitedIdentifiersButton;
 
     private Button useAliasButton;
 
@@ -63,12 +61,9 @@ public class PropertySetDialog extends Dialog {
         gridLayout.marginHeight = 0;
         container.setLayout(gridLayout);
 
-        addQuotesInColumnsButton = new Button(container, SWT.CHECK);
-        addQuotesInColumnsButton.setText(Messages.getString("PropertySetDialog.add_quotes_in_columns.title")); //$NON-NLS-1$
+        delimitedIdentifiersButton = new Button(container, SWT.CHECK);
+        delimitedIdentifiersButton.setText(Messages.getString("PropertySetDialog.delimitedIdentifiers.title")); //$NON-NLS-1$
 
-        addQuotesInTableNamesButton = new Button(container, SWT.CHECK);
-        addQuotesInTableNamesButton.setText(Messages.getString("PropertySetDialog.add_quotes_in_table_names.title"));//$NON-NLS-1$
-        
         useAliasButton = new Button(container, SWT.CHECK);
         String useAliasTitle = Messages.getString("PropertySetDialog.useAlias.title");//$NON-NLS-1$
         IComponent component = mapperManager.getComponent().getComponent();
@@ -84,8 +79,7 @@ public class PropertySetDialog extends Dialog {
     }
 
     private void init() {
-        addQuotesInColumnsButton.setSelection(generationManager.isAddQuotesInColumns());
-        addQuotesInTableNamesButton.setSelection(generationManager.isAddQuotesInTableNames());
+        delimitedIdentifiersButton.setSelection(generationManager.isUseDelimitedIdentifiers());
         useAliasButton.setSelection(generationManager.isUseAliasInOutputTable());
 
         // Implement the column alias only for tELTTeradataMap/tELTOracleMap now.
@@ -98,11 +92,11 @@ public class PropertySetDialog extends Dialog {
     }
 
     private void addListener() {
-        addQuotesInColumnsButton.addSelectionListener(new SelectionAdapter() {
+        delimitedIdentifiersButton.addSelectionListener(new SelectionAdapter() {
 
             @Override
             public void widgetSelected(SelectionEvent e) {
-                mapperManager.setAddQuotesInColumns(addQuotesInColumnsButton.getSelection());
+                mapperManager.useDelimitedIdentifiers(delimitedIdentifiersButton.getSelection());
                 updateStatus();
             }
         });
@@ -114,26 +108,13 @@ public class PropertySetDialog extends Dialog {
                 updateStatus();
             }
         });
-        addQuotesInTableNamesButton.addSelectionListener(new SelectionAdapter() {
-
-            @Override
-            public void widgetSelected(SelectionEvent e) {
-                mapperManager.setAddQuotesInTableNames(addQuotesInTableNamesButton.getSelection());
-                updateStatus();
-            }
-        });
     }
 
     private void updateStatus() {
-        if (generationManager.isAddQuotesInColumns() == addQuotesInColumnsButton.getSelection()) {
-            addQuotesInColumnsButton.setBackground(null);
+        if (generationManager.isUseDelimitedIdentifiers() == delimitedIdentifiersButton.getSelection()) {
+            delimitedIdentifiersButton.setBackground(null);
         } else {
-            addQuotesInColumnsButton.setBackground(color);
-        }
-        if (generationManager.isAddQuotesInTableNames() == addQuotesInTableNamesButton.getSelection()) {
-            addQuotesInTableNamesButton.setBackground(null);
-        } else {
-            addQuotesInTableNamesButton.setBackground(color);
+            delimitedIdentifiersButton.setBackground(color);
         }
         if (generationManager.isUseAliasInOutputTable() == useAliasButton.getSelection()) {
             useAliasButton.setBackground(null);
@@ -161,7 +142,7 @@ public class PropertySetDialog extends Dialog {
 
     @Override
     protected void okPressed() {
-        mapperManager.setAddQuotesInColumns(addQuotesInColumnsButton.getSelection());
+        mapperManager.useDelimitedIdentifiers(delimitedIdentifiersButton.getSelection());
         mapperManager.useAliasInOutputTable(useAliasButton.getSelection());
         super.okPressed();
     }

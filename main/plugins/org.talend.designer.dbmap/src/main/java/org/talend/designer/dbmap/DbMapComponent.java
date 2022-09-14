@@ -180,7 +180,7 @@ public class DbMapComponent extends AbstractMapComponent {
                 elemParams.add(activeDelimitedIdentifiersEP);
             }
             activeDelimitedIdentifiersEP.setFieldType(EParameterFieldType.CHECK);
-            activeDelimitedIdentifiersEP.setValue(getGenerationManager().isAddQuotesInColumns());
+            activeDelimitedIdentifiersEP.setValue(getGenerationManager().isUseDelimitedIdentifiers());
 
             //
             IElementParameter useAliasInOutputTableEP = origNode
@@ -663,7 +663,7 @@ public class DbMapComponent extends AbstractMapComponent {
                     activeDelimitedIdentifiers = Boolean.valueOf(value.toString());
                 }
             }
-            generationManager.setAddQuotesInColumns(activeDelimitedIdentifiers);
+            generationManager.setUseDelimitedIdentifiers(activeDelimitedIdentifiers);
         }
     }
 
