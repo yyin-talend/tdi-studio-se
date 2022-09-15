@@ -15,16 +15,20 @@ package org.talend.designer.dbmap.ui.dialog;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.ModifyEvent;
+import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Point;
+import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
+import org.eclipse.swt.widgets.Text;
 import org.talend.core.model.components.IComponent;
 import org.talend.designer.dbmap.i18n.Messages;
 import org.talend.designer.dbmap.language.generation.DbGenerationManager;
@@ -43,6 +47,10 @@ public class PropertySetDialog extends Dialog {
     private Button addQuotesInColumnsButton;
     
     private Button addQuotesInTableNamesButton;
+    
+    private Button delimitedCharacterButton;
+    
+    private Text delimitedCharacterText;
 
     private Button useAliasButton;
 
@@ -69,6 +77,9 @@ public class PropertySetDialog extends Dialog {
         addQuotesInTableNamesButton = new Button(container, SWT.CHECK);
         addQuotesInTableNamesButton.setText(Messages.getString("PropertySetDialog.add_quotes_in_table_names.title"));//$NON-NLS-1$
         
+        delimitedCharacterButton = new Button(container,SWT.CHECK);
+        delimitedCharacterButton.setText(Messages.getString("PropertySetDialog.delimited_character.title"));
+        delimitedCharacterText = new Text(container,SWT.BORDER);
         useAliasButton = new Button(container, SWT.CHECK);
         String useAliasTitle = Messages.getString("PropertySetDialog.useAlias.title");//$NON-NLS-1$
         IComponent component = mapperManager.getComponent().getComponent();
@@ -86,6 +97,8 @@ public class PropertySetDialog extends Dialog {
     private void init() {
         addQuotesInColumnsButton.setSelection(generationManager.isAddQuotesInColumns());
         addQuotesInTableNamesButton.setSelection(generationManager.isAddQuotesInTableNames());
+        delimitedCharacterButton.setSelection(generationManager.isDelimitedCharacter());
+        delimitedCharacterText.setText(generationManager.getDelimitedCharacterText());
         useAliasButton.setSelection(generationManager.isUseAliasInOutputTable());
 
         // Implement the column alias only for tELTTeradataMap/tELTOracleMap now.
@@ -122,6 +135,23 @@ public class PropertySetDialog extends Dialog {
                 updateStatus();
             }
         });
+        delimitedCharacterButton.addSelectionListener(new SelectionAdapter() {
+
+            @Override
+            public void widgetSelected(SelectionEvent e) {
+                mapperManager.setDelimitedCharacter(delimitedCharacterButton.getSelection());
+                updateStatus();
+            }
+        });
+        
+        delimitedCharacterText.addModifyListener( new ModifyListener() {
+
+            public void modifyText(ModifyEvent e) {
+                mapperManager.setDelimitedCharacterText(delimitedCharacterText.getText());
+                updateStatus();
+            }
+
+        } );
     }
 
     private void updateStatus() {
@@ -162,6 +192,9 @@ public class PropertySetDialog extends Dialog {
     @Override
     protected void okPressed() {
         mapperManager.setAddQuotesInColumns(addQuotesInColumnsButton.getSelection());
+        mapperManager.setDelimitedCharacterText(delimitedCharacterText.getText());
+        mapperManager.setDelimitedCharacter(delimitedCharacterButton.getSelection());
+        mapperManager.setAddQuotesInTableNames(addQuotesInTableNamesButton.getSelection());
         mapperManager.useAliasInOutputTable(useAliasButton.getSelection());
         super.okPressed();
     }

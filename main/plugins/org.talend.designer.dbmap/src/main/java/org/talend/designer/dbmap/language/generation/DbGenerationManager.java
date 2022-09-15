@@ -99,7 +99,11 @@ public abstract class DbGenerationManager {
     private Boolean addQuotesInColumns;
 
     private Boolean addQuotesInTableNames;
-
+    
+    private Boolean delimitedCharacter;
+    
+    private String delimitedCharacterText;
+    
     private Boolean useAliasInOutputTable;
 
     protected Set<String> subQueryTable = new HashSet<String>();
@@ -731,6 +735,42 @@ public abstract class DbGenerationManager {
                 Object value = activeDelimitedIdentifiersEP.getValue();
                 if (value != null) {
                     setAddQuotesInColumns(Boolean.valueOf(value.toString()));
+                }
+            }
+        }
+        
+        if (this.addQuotesInTableNames == null) {
+            this.addQuotesInTableNames = false;
+            IElementParameter activeAddQuotesInTableNameEP = component
+                    .getElementParameter(EParameterName.ACTIVE_ADD_QUOTES_IN_TABLE_NAME.getName());
+            if (activeAddQuotesInTableNameEP != null) {
+                Object value = activeAddQuotesInTableNameEP.getValue();
+                if (value != null) {
+                    setAddQuotesInTableNames(Boolean.valueOf(value.toString()));
+                }
+            }
+        }
+        
+        if (this.delimitedCharacter == null) {
+            this.delimitedCharacter = false;
+            IElementParameter activeDelimitedCharacterEP = component
+                    .getElementParameter(EParameterName.ACTIVE_DELIMITED_CHARACTER.getName());
+            if (activeDelimitedCharacterEP != null) {
+                Object value = activeDelimitedCharacterEP.getValue();
+                if (value != null) {
+                    setDelimitedCharacter(Boolean.valueOf(value.toString()));
+                }
+            }
+        }
+        
+        if (this.delimitedCharacterText == null) {
+            this.delimitedCharacterText = "";
+            IElementParameter delimitedCharacterTextEP = component
+                    .getElementParameter(EParameterName.DELIMITED_CHARACTER_TEXT.getName());
+            if (delimitedCharacterTextEP != null) {
+                Object value = delimitedCharacterTextEP.getValue();
+                if (value != null) {
+                    setDelimitedCharacterText(String.valueOf(value));
                 }
             }
         }
@@ -1820,14 +1860,30 @@ public abstract class DbGenerationManager {
         return Boolean.TRUE.equals(this.addQuotesInTableNames);
     }
     
+    public boolean isDelimitedCharacter() {
+        return Boolean.TRUE.equals(this.delimitedCharacter);
+    }
+    
+    public String getDelimitedCharacterText() {
+        return delimitedCharacterText == null ? "": this.delimitedCharacterText;
+    }
+    
+    public void setDelimitedCharacterText(String delimitedCharaterText) {
+        this.delimitedCharacterText = delimitedCharaterText;
+    }
+    
     public void setAddQuotesInColumns(boolean addQuotesInColumns) {
         this.addQuotesInColumns = addQuotesInColumns;
     }
     
-    public void setAddQuotesInTableNames(boolean addQuotesInTableNames) {
-        this.addQuotesInTableNames = addQuotesInTableNames;
+    public void setDelimitedCharacter(boolean delimitedCharacter) {
+        this.delimitedCharacter = delimitedCharacter;
     }
     
+    public void setAddQuotesInTableNames(boolean addQuotesInTableNames) {
+        this.addQuotesInTableNames = addQuotesInTableNames;
+    
+    }
     public boolean isUseAliasInOutputTable() {
         return Boolean.TRUE.equals(this.useAliasInOutputTable);
     }
