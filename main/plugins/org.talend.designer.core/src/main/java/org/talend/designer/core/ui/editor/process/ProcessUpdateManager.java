@@ -2380,13 +2380,13 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
                                     && param.isShow(node.getElementParameters())) {
                                 param.setRepositoryValueUsed(true);
                                 param.setReadOnly(true);
-                            }
-                        }
+							}
+						}
 						if (node instanceof INode) {
 							contextData.put("NODE", (INode) node);
 						}
 
-                        // for context mode(bug 5198)
+						// for context mode(bug 5198)
                         List<UpdateResult> contextResults = checkParameterContextMode(node.getElementParameters(),
                                 (ConnectionItem) lastVersion.getProperty().getItem(), null, contextData);
                         if (contextResults != null) {

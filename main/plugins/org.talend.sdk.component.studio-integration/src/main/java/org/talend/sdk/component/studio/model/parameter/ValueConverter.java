@@ -68,8 +68,8 @@ public final class ValueConverter {
                     keyValue = entry.split(":");
                 }
 				if (keyValue.length < 2) {
-                    continue;
-                }
+					continue;
+				}
                 String key = keyValue[0];
                 String value = keyValue[1];
                 element.put(key, value);
