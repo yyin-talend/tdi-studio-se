@@ -1643,6 +1643,10 @@ public abstract class DbGenerationManager {
     }
 
     private String getQuote(DbMapComponent component){
+        String delimitedCharacterText = getDelimitedCharacterText();
+        if(isDelimitedCharacter()&& org.apache.commons.lang.StringUtils.isNotEmpty(delimitedCharacterText)){
+            return delimitedCharacterText;
+        }
         String quote = TalendQuoteUtils.QUOTATION_MARK;
         IElementParameter mappingPara = component.getElementParameter(EParameterName.MAPPING.getName());
         if(mappingPara == null){
