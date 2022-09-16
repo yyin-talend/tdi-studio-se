@@ -209,13 +209,14 @@ public class ConnectionsListComposite extends Composite {
         Iterator<ConnectionBean> iter = source.iterator();
         while (iter.hasNext()) {
             ConnectionBean sourceBean = iter.next();
-            try {
-                ConnectionBean targetBean = sourceBean.clone();
-                target.add(targetBean);
-            } catch (CloneNotSupportedException e) {
-                CommonExceptionHandler.process(e);
+            if (!sourceBean.isLoginViaCloud()) {
+                try {
+                    ConnectionBean targetBean = sourceBean.clone();
+                    target.add(targetBean);
+                } catch (CloneNotSupportedException e) {
+                    CommonExceptionHandler.process(e);
+                }
             }
-
         }
         return target;
     }
