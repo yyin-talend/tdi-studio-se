@@ -111,6 +111,7 @@ import org.talend.core.repository.model.repositoryObject.SalesforceModuleReposit
 import org.talend.core.repository.utils.ProjectHelper;
 import org.talend.core.repository.utils.RepositoryPathProvider;
 import org.talend.core.runtime.util.SharedStudioUtils;
+import org.talend.core.service.ICloudSignOnService;
 import org.talend.core.services.ICoreTisService;
 import org.talend.core.services.IGITProviderService;
 import org.talend.core.ui.branding.IBrandingService;
@@ -280,7 +281,13 @@ public class RepositoryService implements IRepositoryService, IRepositoryContext
     @Override
     public void openLoginDialog() {
         if (isloginDialogDisabled()) {
-            return;
+            try {
+                if (ICloudSignOnService.get() != null && ICloudSignOnService.get().isSignViaCloud() && ICloudSignOnService.get().hasValidToken()) {
+                    return;
+                }
+            } catch (Exception e) {
+                ExceptionHandler.process(e);
+            }
         }
 
         if (CorePlugin.getContext().getProperty(Context.REPOSITORY_CONTEXT_KEY) != null) {
@@ -388,7 +395,7 @@ public class RepositoryService implements IRepositoryService, IRepositoryContext
             brandingService.getBrandingConfiguration().setUseProductRegistration(false);
             ProxyRepositoryFactory repositoryFactory = ProxyRepositoryFactory.getInstance();
 
-            String projectName = getAppArgValue("-project", "AUTO_LOGIN_PROJECT"); //$NON-NLS-1$ //$NON-NLS-2$
+            String projectName = getAppArgValue(EclipseCommandLine.ARG_PROJECT, "AUTO_LOGIN_PROJECT"); //$NON-NLS-1$ //$NON-NLS-2$
             String language = getAppArgValue("-language", ECodeLanguage.JAVA.getName()); //$NON-NLS-1$
             String login = getAppArgValue("-login", "auto@login.com"); //$NON-NLS-1$ //$NON-NLS-2$
             String password = getAppArgValue("-loginPass", ""); //$NON-NLS-1$ //$NON-NLS-2$
@@ -399,7 +406,7 @@ public class RepositoryService implements IRepositoryService, IRepositoryContext
             final boolean isRemote = tacURL != null;
 
             if (reload && lastBean != null) {
-                if (lastBean.isStoreCredentials()) {
+                if (lastBean.isStoreCredentials() && !lastBean.isLoginViaCloud()) {
                     if (StringUtils.isBlank(lastBean.getCredentials())) {
                         LoginHelper.getInstance().getCredentials(lastBean);
                     }
