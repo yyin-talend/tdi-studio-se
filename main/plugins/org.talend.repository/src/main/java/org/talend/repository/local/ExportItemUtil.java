@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.log4j.Logger;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IWorkspace;
@@ -47,16 +48,20 @@ import org.talend.core.GlobalServiceRegister;
 import org.talend.core.ILibraryManagerService;
 import org.talend.core.model.context.link.ContextLinkService;
 import org.talend.core.model.properties.Item;
+import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.model.properties.Project;
 import org.talend.core.model.properties.PropertiesPackage;
 import org.talend.core.model.properties.Property;
 import org.talend.core.model.properties.RoutineItem;
 import org.talend.core.model.properties.RoutinesJarItem;
+import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.FakePropertyImpl;
 import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.model.repository.ResourceModelUtils;
 import org.talend.core.repository.constants.FileConstants;
 import org.talend.core.repository.model.ProxyRepositoryFactory;
+import org.talend.core.repository.utils.ResourceFilenameHelper;
+import org.talend.core.repository.utils.ResourceFilenameHelper.FileName;
 import org.talend.core.repository.utils.URIHelper;
 import org.talend.core.repository.utils.XmiResourceManager;
 import org.talend.core.service.ITransformService;
@@ -70,6 +75,8 @@ import org.talend.repository.i18n.Messages;
 
 /***/
 public class ExportItemUtil {
+
+    private static final Logger LOGGER = Logger.getLogger(ExportItemUtil.class);
 
     private Project project;
 
@@ -373,6 +380,34 @@ public class ExportItemUtil {
                             property.getVersion(), true);
                     if (obj != null) {
                         resources = localRepositoryManager.getAffectedResources(obj.getProperty());
+                    } else {
+                        LOGGER.info("Can't find emf resource, will try to serialize directly.");
+                        if (item instanceof ProcessItem) {
+                            String folder = ERepositoryObjectType.PROCESS.getFolder();
+                            IPath outputRelativeItemPath = getProjectOutputPath().append(folder);
+                            IPath targetPath = new Path(destinationDirectory.getAbsolutePath()).append(outputRelativeItemPath);
+
+                            XmiResourceManager xrm = new XmiResourceManager();
+                            try {
+                                ProcessItem processItem = (ProcessItem) item;
+                                FileName fileName = ResourceFilenameHelper.create(processItem.getProperty());
+                                IPath itemPath = ResourceFilenameHelper.getExpectedFilePath(fileName, targetPath,
+                                        FileConstants.ITEM_EXTENSION, processItem.isNeedVersion());
+                                itemPath.toFile().getParentFile().mkdirs();
+                                Resource processItemResource = xrm.createItemResource(false,
+                                        URI.createFileURI(itemPath.toPortableString()));
+                                Resource propertyResource = xrm.createPropertyResource(processItem, processItemResource);
+                                propertyResource.getContents().add(processItem.getProperty());
+                                propertyResource.getContents().add(processItem.getState());
+                                propertyResource.getContents().add(processItem);
+                                processItemResource.getContents().add(processItem.getProcess());
+
+                                xrm.saveResource(processItemResource);
+                                xrm.saveResource(propertyResource);
+                            } finally {
+                                xrm.unloadResources();
+                            }
+                        }
                     }
                 }
                 if (resources == null) {
