@@ -83,6 +83,7 @@ import org.talend.signon.util.TMCRepositoryUtil;
 import org.talend.signon.util.TokenMode;
 import org.talend.signon.util.listener.LoginEventListener;
 import org.talend.utils.json.JSONObject;
+import org.talend.utils.string.DigestUtil;
 
 public class LoginWithCloudPage extends AbstractLoginActionPage implements LoginEventListener {
 
@@ -402,6 +403,10 @@ public class LoginWithCloudPage extends AbstractLoginActionPage implements Login
         });
         try {
             TokenMode token = ICloudSignOnService.get().getToken(authCode, this.codeVerifier, dataCenter);
+            if (CommonsPlugin.isDebugMode()) {
+                LOGGER.info("Access token SHA256 is:"
+                        + DigestUtil.sha256Hex(token.getAccessToken().getBytes()) + "\t Refresh token SHA256 is:" + DigestUtil.sha256Hex(token.getRefreshToken().getBytes()));
+            }
             ConnectionBean conn = saveConnection(token, TMCRepositoryUtil.getCloudAdminURL(dataCenter),
                     ICloudSignOnService.get().getTokenUser(TMCRepositoryUtil.getCloudAdminURL(dataCenter), token));
             if (isRefreshToken) {
@@ -571,7 +576,7 @@ public class LoginWithCloudPage extends AbstractLoginActionPage implements Login
 
     private void removeSSOConnection() {
         ConnectionUserPerReader reader = ConnectionUserPerReader.getInstance();
-        List<ConnectionBean> list = reader.readConnections();
+        List<ConnectionBean> list = reader.forceReadConnections();
         Iterator<ConnectionBean> connectionBeanIter = list.iterator();
         while (connectionBeanIter.hasNext()) {
             if (connectionBeanIter.next().isLoginViaCloud()) {
@@ -584,18 +589,16 @@ public class LoginWithCloudPage extends AbstractLoginActionPage implements Login
 
     private ConnectionBean saveConnection(TokenMode token, String adminURL, String user) {
         ConnectionUserPerReader reader = ConnectionUserPerReader.getInstance();
-        List<ConnectionBean> list = reader.readConnections();
-        ConnectionBean connection = null;
-        for (ConnectionBean bean : list) {
-            if (bean.isLoginViaCloud()) {
-                connection = bean;
-                break;
+        List<ConnectionBean> list = reader.forceReadConnections();
+        Iterator<ConnectionBean> connectionBeanIter = list.iterator();
+        while (connectionBeanIter.hasNext()) {
+            if (connectionBeanIter.next().isLoginViaCloud()) {
+                connectionBeanIter.remove();
             }
         }
-        if (connection == null) {
-            connection = ConnectionBean.getDefaultCloudConnectionBean(token.getDataCenter());
-            list.add(connection);
-        }
+        ConnectionBean connection = ConnectionBean.getDefaultCloudConnectionBean(token.getDataCenter());
+        list.add(connection);
+        
         connection.setConnectionToken(token);
         connection.setUrl(adminURL);
         connection.setUser(user);
