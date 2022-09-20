@@ -28,6 +28,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -48,6 +49,7 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.progress.IProgressService;
 import org.talend.commons.CommonsPlugin;
+import org.talend.commons.exception.CommonExceptionHandler;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.ui.runtime.exception.MessageBoxExceptionHandler;
 import org.talend.commons.ui.swt.dialogs.EventLoopProgressMonitor;
@@ -993,6 +995,7 @@ public class RunProcessContext {
         @Override
         public void run() {
             int exitValue = 0;
+            CommonExceptionHandler.log("DEBUGGING =====> start polling...");
             while (!stopThread) {
                 boolean dataPiped = extractMessages(false);
                 processMessageManager.updateConsole();
@@ -1025,6 +1028,7 @@ public class RunProcessContext {
                 } catch (IllegalThreadStateException itse) {
                     ended = false;
                 } catch (Exception e) {
+                    ExceptionHandler.process(e);
                     ended = false;
                 }
 
@@ -1039,7 +1043,19 @@ public class RunProcessContext {
                     }
                 }
             }
+            CommonExceptionHandler.log("DEBUGGING =====> last message before process ending: " + getLastMessage());
             kill(exitValue);
+        }
+
+        private String getLastMessage() {
+            LinkedList<IProcessMessage> msgList = (LinkedList<IProcessMessage>) processMessageManager.getMessages();
+            if (!msgList.isEmpty()) {
+                IProcessMessage lastMsg = msgList.get(msgList.size() - 1);
+                if (lastMsg != null) {
+                    return lastMsg.getContent();
+                }
+            }
+            return null;
         }
 
         @Override
@@ -1053,11 +1069,45 @@ public class RunProcessContext {
         private boolean extractMessages(boolean flush) {
             boolean haveErrorsMessages = false;
             boolean haveOutMessages = false;
+            Exception exception = null;
             try {
                 haveErrorsMessages = extractMessage(errIs, MsgType.STD_ERR, flush);
                 haveOutMessages = extractMessage(outIs, MsgType.STD_OUT, flush);
             } catch (IOException ioe) {
-                // don't log, since it will be for example "stream closed"
+                if (!haveErrorsMessages && !haveOutMessages) {
+                    exception = ioe;
+                    int retry = Integer.valueOf(System.getProperty("remote.run.read.retry", "10"));
+                    for (int i = 1; i <= retry; i++) {
+                        CommonExceptionHandler.log("DEBUGGING =====> retry reading: " + i);
+                        try {
+                            haveErrorsMessages = extractMessage(errIs, MsgType.STD_ERR, flush);
+                            haveOutMessages = extractMessage(outIs, MsgType.STD_OUT, flush);
+                        } catch (Exception e) {
+                            // Do nothing
+                        } finally {
+                            if (haveErrorsMessages || haveOutMessages) {
+                                exception = null;
+                                CommonExceptionHandler.log("DEBUGGING =====> successfully retry reading: " + getLastMessage());
+                                break;
+                            }
+                            try {
+                                Thread.sleep(500);
+                            } catch (InterruptedException e) {
+                                // Do nothing
+                            }
+                        }
+                    }
+                }
+            }
+
+            if (!haveErrorsMessages && !haveOutMessages) {
+                if (exception != null) {
+                    CommonExceptionHandler.log("DEBUGGING =====> failed to read with error:");
+                    CommonExceptionHandler.process(exception);
+                }
+                // we've handled the case that stream is not ready and read failure case
+                // if the stream is ready but still fail to read
+                // means the problem might be from remote
             }
             if (isESBRuntimeProcessor()) {
                 if (haveErrorsMessages || haveOutMessages) {
