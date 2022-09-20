@@ -92,7 +92,8 @@ public class ActiveIfListener implements PropertyChangeListener {
         final TaCoKitElementParameter targetParam = targetParams.get(condition.getTargetPath());
         switch (evaluationStrategy) {
             case "DEFAULT":
-                return value.equals(TOSTRING_PREPROCESSOR.apply(targetParam.getStringValue()));
+                //now tck add uiscope target, so the path may not exists in model, now not process here, only return true for that case, TODO process hide logic for studio from the json info 
+                return targetParam == null || value.equals(TOSTRING_PREPROCESSOR.apply(targetParam.getStringValue()));
             case "LENGTH":
                 if (targetParam.getValue() == null) {
                     return "0".equals(value);
