@@ -38,6 +38,7 @@ import org.apache.oro.text.regex.MalformedPatternException;
 import org.apache.oro.text.regex.Pattern;
 import org.apache.oro.text.regex.Perl5Compiler;
 import org.apache.oro.text.regex.Perl5Matcher;
+import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
@@ -426,7 +427,15 @@ public class Process extends Element implements IProcess2, IGEFProcess, ILastVer
             param.setDisplayName(EParameterName.TDQ_DEFAULT_PROJECT_DIR.getDisplayName());
             param.setNumRow(99);
             param.setShow(false);
-            if (ReponsitoryContextBridge.getRootProject().getLocation() != null) {
+            org.talend.core.model.properties.Project processPProject =
+                    ProjectManager.getInstance().getProject(this.getProperty());
+            if (processPProject != null) {
+                IProject processProject = ReponsitoryContextBridge.findProject(processPProject.getTechnicalLabel());
+                if (processProject.getLocation() != null) {
+                    param.setValue(processProject.getLocation().toPortableString());
+                }
+            }
+            if (param.getValue() == null && ReponsitoryContextBridge.getRootProject().getLocation() != null) {
                 param.setValue(ReponsitoryContextBridge.getRootProject().getLocation().toPortableString());
             }
             param.setReadOnly(true);

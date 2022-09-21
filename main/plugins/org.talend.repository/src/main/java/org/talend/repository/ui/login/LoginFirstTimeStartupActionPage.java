@@ -81,8 +81,6 @@ public class LoginFirstTimeStartupActionPage extends AbstractLoginActionPage {
 
     protected String finishButtonAction;
 
-    protected LoginHelper loginHelper;
-
     public LoginFirstTimeStartupActionPage(Composite parent, LoginDialogV2 dialog, int style) {
         super(parent, dialog, style);
     }
@@ -95,12 +93,11 @@ public class LoginFirstTimeStartupActionPage extends AbstractLoginActionPage {
     @Override
     public void init() throws Throwable {
         super.init();
-        loginHelper = LoginHelper.getInstance();
         List<ConnectionBean> storedConnections = LoginHelper.getInstance().getStoredConnections();
         if (storedConnections == null) {
             storedConnections = new ArrayList<ConnectionBean>();
         } else {
-            storedConnections = loginHelper.filterUsableConnections(storedConnections);
+            storedConnections = LoginHelper.getInstance().filterUsableConnections(storedConnections);
         }
         if (storedConnections.size() == 0) {
             defaultConnectionBean = LoginHelper.createDefaultLocalConnection();
@@ -477,7 +474,7 @@ public class LoginFirstTimeStartupActionPage extends AbstractLoginActionPage {
         if (importedDemoProjectName == null || importedDemoProjectName.isEmpty()) {
             return;
         }
-        Project selectedProject = loginHelper.getProjectByName(loginHelper.getProjects(defaultConnectionBean),
+        Project selectedProject = LoginHelper.getInstance().getProjectByName(LoginHelper.getInstance().getProjects(defaultConnectionBean),
                 importedDemoProjectName);
         openProject(selectedProject);
     }
@@ -496,7 +493,7 @@ public class LoginFirstTimeStartupActionPage extends AbstractLoginActionPage {
         if (importedExistingProjectName == null || importedExistingProjectName.isEmpty()) {
             return;
         }
-        Project selectedProject = loginHelper.getProjectByName(loginHelper.getProjects(defaultConnectionBean),
+        Project selectedProject = LoginHelper.getInstance().getProjectByName(LoginHelper.getInstance().getProjects(defaultConnectionBean),
                 importedExistingProjectName);
         openProject(selectedProject);
     }
@@ -507,9 +504,9 @@ public class LoginFirstTimeStartupActionPage extends AbstractLoginActionPage {
         }
         LoginHelper.setRepositoryContextInContext(defaultConnectionBean, LoginHelper.getUser(defaultConnectionBean), project,
                 GITConstant.NAME_TRUNK);
-        if (loginHelper.logIn(defaultConnectionBean, project)) {
-            loginHelper.saveLastConnectionBean(defaultConnectionBean);
-            loginHelper.getPrefManipulator().setLastProject(project.getLabel());
+        if (LoginHelper.getInstance().logIn(defaultConnectionBean, project)) {
+            LoginHelper.getInstance().saveLastConnectionBean(defaultConnectionBean);
+            LoginHelper.getInstance().getPrefManipulator().setLastProject(project.getLabel());
             LoginHelper.setAlwaysAskAtStartup(alwaysAsk.getSelection());
             loginDialog.okPressed();
         }
