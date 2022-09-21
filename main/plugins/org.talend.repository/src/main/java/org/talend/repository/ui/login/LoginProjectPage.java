@@ -625,7 +625,7 @@ public class LoginProjectPage extends AbstractLoginActionPage {
             switchLoginTypeButton =  new Button(connectionManageArea, SWT.NONE);
             switchLoginTypeButton.setFont(LoginDialogV2.fixedFont);
             switchLoginTypeButton.setBackground(backgroundBtnColor);
-            switchLoginTypeButton.setText("Switch sign in");   
+            switchLoginTypeButton.setText(Messages.getString("LoginProjectPage.switchLoginTypeButton"));  
         }
         
         if (isSSOMode) {
