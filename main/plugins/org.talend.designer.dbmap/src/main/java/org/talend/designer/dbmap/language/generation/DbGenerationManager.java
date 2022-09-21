@@ -1572,8 +1572,11 @@ public abstract class DbGenerationManager {
                                         } else {
                                             oriName = oriName.replaceAll("\\$", "\\\\\\$"); //$NON-NLS-1$ //$NON-NLS-2$
                                         }
+                                        String quotedTableName  = getTableName(iconn,tableValue,quote);
+                                        quotedTableName = adaptQuoteForColumnName(component, quotedTableName);
+//                                        expression = expression.replaceAll(tableValue, quotedTableName);
                                         expression = expression.replaceFirst(tableValue + "\\." + co.getLabel(), //$NON-NLS-1$
-                                                tableValue + "\\." + oriName); //$NON-NLS-1$
+                                                quotedTableName + "\\." + oriName); //$NON-NLS-1$
                                         expression = replaceAuotes(component, expression, quto_markParser, quto_mark);
                                     }
                                 }
@@ -1932,6 +1935,11 @@ public abstract class DbGenerationManager {
         if (isVariable(targetTable)) {
             targetSchemaTable += replaceVariablesForTargetTableExpression(component, targetTable);
         } else {
+            String quote = getQuote(component);
+            List<IConnection> inputConnections = (List<IConnection>) component.getIncomingConnections();
+            IConnection iconn = this.getConnectonByName(inputConnections, targetTable);
+            targetTable = getTableName(iconn,targetTable,quote);
+            targetTable = adaptQuoteForColumnName(component, targetTable);
             if (org.apache.commons.lang.StringUtils.isNotBlank(targetSchemaTable)) {
                 targetSchemaTable += targetTable;
             } else {
