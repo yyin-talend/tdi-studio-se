@@ -87,7 +87,8 @@ System.setOut(new java.io.PrintStream(new java.io.OutputStream() {
                                                                                     "<%=pluginName%>",
                                                                                     "<%=guessSchemaFamily%>",
                                                                                     "<%=guessSchemaOriginalName%>",
-                                                                                    <% if(actionName == null || actionName.isEmpty()){%> null <%}else {%> "<%=actionName%>" <%}%>
+                                                                                    <% if(actionName == null || actionName.isEmpty()){%> null <%}else {%> "<%=actionName%>" <%}%>,
+                                                                                    "<%=guessSchemaVersion%>"
                                                                                     );
     <% if ("input".equalsIgnoreCase(tacokitComponentType)) {  %>
             try {

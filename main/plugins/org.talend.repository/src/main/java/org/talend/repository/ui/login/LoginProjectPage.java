@@ -106,6 +106,7 @@ import org.talend.core.repository.services.ILoginConnectionService;
 import org.talend.core.repository.utils.ProjectHelper;
 import org.talend.core.runtime.CoreRuntimePlugin;
 import org.talend.core.runtime.util.SharedStudioUtils;
+import org.talend.core.service.ICloudSignOnService;
 import org.talend.core.services.ICoreTisService;
 import org.talend.core.ui.TalendBrowserLaunchHelper;
 import org.talend.core.ui.branding.IBrandingService;
@@ -126,7 +127,7 @@ import org.talend.utils.json.JSONObject;
 
 /**
  * created by cmeng on May 13, 2015 Detailled comment
- *
+ * 
  */
 public class LoginProjectPage extends AbstractLoginActionPage {
 
@@ -155,8 +156,14 @@ public class LoginProjectPage extends AbstractLoginActionPage {
     protected Composite connectionManageArea;
 
     protected ComboViewer connectionsViewer;
+    
+    protected Label connectionLabel;
 
     protected Button manageButton;
+    
+    protected Button switchLoginTypeButton;
+    
+    protected Label separatorLabel = null;
 
     protected Composite projectOperationArea;
 
@@ -219,8 +226,6 @@ public class LoginProjectPage extends AbstractLoginActionPage {
     protected IBrandingService brandingService = GlobalServiceRegister.getDefault().getService(
             IBrandingService.class);
 
-    protected LoginHelper loginHelper;
-
     protected LoginFetchLicenseHelper loginFetchLicenseHelper;
 
     private Map<String, Boolean> forceRefreshProjectBranchMap = Collections.synchronizedMap(new HashMap<>());
@@ -234,9 +239,16 @@ public class LoginProjectPage extends AbstractLoginActionPage {
     private List<String> projectBranches = new ArrayList<String>();
     
     private String lastSelectedBranch;
+    
+    private boolean isSSOMode = false;
 
     public LoginProjectPage(Composite parent, LoginDialogV2 dialog, int style) {
         super(parent, dialog, style);
+    }
+    
+    public LoginProjectPage(Composite parent, LoginDialogV2 dialog, int style, boolean isSSOMode) {
+        super(parent, dialog, style);
+        this.isSSOMode = isSSOMode;
     }
 
     @Override
@@ -249,9 +261,11 @@ public class LoginProjectPage extends AbstractLoginActionPage {
     public void init() throws Throwable {
         super.init();
         finishButtonAction = FINISH_ACTION_OPEN_PROJECT;
-        loginHelper = LoginHelper.getInstance();
         loginFetchLicenseHelper = LoginFetchLicenseHelper.getInstance();
         initRepositoryNodeProviderRegistryReader();
+        if (ICloudSignOnService.get() != null) {
+            ICloudSignOnService.get().reload();
+        }
     }
 
     private void scheduleCheckSandboxJob() {
@@ -381,7 +395,7 @@ public class LoginProjectPage extends AbstractLoginActionPage {
                     if (monitor.isCanceled() || Thread.currentThread().isInterrupted()) {
                         return Status.CANCEL_STATUS;
                     }
-                    projectBranches.addAll(loginHelper.getProjectBranches(currentProjectSettings, !forceRefreshBranch));
+                    projectBranches.addAll(LoginHelper.getInstance().getProjectBranches(currentProjectSettings, !forceRefreshBranch));
                 } catch (Exception e) {
                     ExceptionHandler.process(e);
                     Display.getDefault().asyncExec(() -> {
@@ -463,8 +477,8 @@ public class LoginProjectPage extends AbstractLoginActionPage {
                         if (monitor.isCanceled() || isDisposed()) {
                             return Status.CANCEL_STATUS;
                         }
-                        ConnectionBean selectedConnBean = loginHelper.getCurrentSelectedConnBean();
-                        if (selectedConnBean != null && selectedConnBean.isStoreCredentials()) {
+                        ConnectionBean selectedConnBean = LoginHelper.getInstance().getCurrentSelectedConnBean();
+                        if (selectedConnBean != null && selectedConnBean.isStoreCredentials() && !selectedConnBean.isLoginViaCloud()) {    
                             if (LoginHelper.isRestart) {
                                 LoginHelper.getInstance().getCredentials(selectedConnBean);
                             } else {
@@ -590,14 +604,33 @@ public class LoginProjectPage extends AbstractLoginActionPage {
         // Connection Area
         title = new Label(container, SWT.NONE);
         title.setFont(LoginDialogV2.fixedFont);
-        title.setText(Messages.getString("LoginProjectPage.title")); //$NON-NLS-1$
+        
         connectionManageArea = new Composite(container, SWT.NONE);
-        connectionsViewer = new ComboViewer(connectionManageArea, SWT.READ_ONLY);
-        connectionsViewer.getControl().setFont(LoginDialogV2.fixedFont);
-        manageButton = new Button(connectionManageArea, SWT.NONE);
-        manageButton.setFont(LoginDialogV2.fixedFont);
-        manageButton.setBackground(backgroundBtnColor);
-        manageButton.setText(Messages.getString("LoginProjectPage.manage")); //$NON-NLS-1$
+        if (isSSOMode) {
+            title.setText(Messages.getString("LoginProjectPage.cloud.title")); //$NON-NLS-1$
+            connectionLabel = new Label (connectionManageArea, SWT.None);
+        } else {
+            title.setText(Messages.getString("LoginProjectPage.title")); //$NON-NLS-1$
+            connectionsViewer = new ComboViewer(connectionManageArea, SWT.READ_ONLY);
+            connectionsViewer.getControl().setFont(LoginDialogV2.fixedFont);; 
+            
+            manageButton = new Button(connectionManageArea, SWT.NONE);
+            manageButton.setFont(LoginDialogV2.fixedFont);
+            manageButton.setBackground(backgroundBtnColor);
+            manageButton.setImage(ImageProvider.getImage(EImage.EDIT_ICON));
+            manageButton.setToolTipText(Messages.getString("LoginProjectPage.manage")); //$NON-NLS-1$  
+        } 
+        
+        if (brandingService.isPoweredbyTalend()) {
+            switchLoginTypeButton =  new Button(connectionManageArea, SWT.NONE);
+            switchLoginTypeButton.setFont(LoginDialogV2.fixedFont);
+            switchLoginTypeButton.setBackground(backgroundBtnColor);
+            switchLoginTypeButton.setText(Messages.getString("LoginProjectPage.switchLoginTypeButton"));  
+        }
+        
+        if (isSSOMode) {
+            separatorLabel = new Label(connectionManageArea, SWT.SEPARATOR | SWT.HORIZONTAL | SWT.SHADOW_OUT);
+        }
         // Project Operation Area
         projectOperationArea = new Composite(container, SWT.NONE);
         // Existing Project Area
@@ -704,32 +737,36 @@ public class LoginProjectPage extends AbstractLoginActionPage {
         formData.left = new FormAttachment(0, 0);
         formData.right = new FormAttachment(100, 0);
         connectionManageArea.setLayoutData(formData);
-        GridLayout gridLayout = new GridLayout(2, true);
+        GridLayout gridLayout = new GridLayout(3, false);
         gridLayout.horizontalSpacing = TAB_HORIZONTAL_PADDING_LEVEL_2;
         gridLayout.verticalSpacing = 0;
         gridLayout.marginHeight = 0;
         gridLayout.marginWidth = 0;
         connectionManageArea.setLayout(gridLayout);
 
-        // formData = new FormData();
-        // formData.top = new FormAttachment(title, TAB_VERTICAL_PADDING_LEVEL_2, SWT.BOTTOM);
-        // formData.right = new FormAttachment(100, 0);
-        // formData.left = new FormAttachment(100, -1 * LoginDialogV2.getNewButtonSize(manageButton).x);
-        // manageButton.setLayoutData(formData);
+        if (manageButton != null) {
+            GridData gridData = new GridData(SWT.BEGINNING, SWT.CENTER, false, true);
+            manageButton.setLayoutData(gridData); 
+        }
         GridData gridData = new GridData(SWT.FILL, SWT.CENTER, true, true);
-        manageButton.setLayoutData(gridData);
+        if (connectionsViewer != null) {
+            connectionsViewer.getControl().setLayoutData(gridData);
+            connectionsViewer.setContentProvider(ArrayContentProvider.getInstance());
+            connectionsViewer.setLabelProvider(new ConnectionLabelProvider());  
+        } else {
+            connectionLabel.setLayoutData(gridData);
+        }
+        
+        if (switchLoginTypeButton != null) {
+            gridData = new GridData(SWT.END, SWT.CENTER, false, true);
+            switchLoginTypeButton.setLayoutData(gridData);
+        }
 
-        // formData = new FormData();
-        // formData.top = new FormAttachment(manageButton, 0, SWT.CENTER);
-        // formData.bottom = new FormAttachment(manageButton, 0, SWT.CENTER);
-        // formData.left = new FormAttachment(title, 0, SWT.LEFT);
-        // formData.right = new FormAttachment(manageButton, -1 * TAB_HORIZONTAL_PADDING_LEVEL_2, SWT.LEFT);
-        // connectionsViewer.getControl().setLayoutData(formData);
-        gridData = new GridData(SWT.FILL, SWT.CENTER, true, true);
-        connectionsViewer.getControl().setLayoutData(gridData);
-        connectionsViewer.setContentProvider(ArrayContentProvider.getInstance());
-        connectionsViewer.setLabelProvider(new ConnectionLabelProvider());
-
+        if (separatorLabel != null) {
+            GridData separatorLabelData = new GridData(SWT.FILL, SWT.CENTER, true, true, 3, 1);
+            separatorLabelData.verticalIndent = 5;
+            separatorLabel.setLayoutData(separatorLabelData);
+        }
         /**
          * 2.3 Layout Project Operation Area
          */
@@ -898,8 +935,8 @@ public class LoginProjectPage extends AbstractLoginActionPage {
 
     protected void fillConnectionsList(IProgressMonitor monitor) {
         boolean isOnlyRemoteConnection = brandingService.getBrandingConfiguration().isOnlyRemoteConnection();
-        List<ConnectionBean> storedConnections = loginHelper.getStoredConnections();
-        storedConnections = loginHelper.filterUsableConnections(storedConnections);
+        List<ConnectionBean> storedConnections = LoginHelper.getInstance().getStoredConnections();
+        storedConnections = LoginHelper.getInstance().filterUsableConnections(storedConnections);
         if (monitor.isCanceled() || isDisposed()) {
             return;
         }
@@ -960,33 +997,39 @@ public class LoginProjectPage extends AbstractLoginActionPage {
             if (monitor.isCanceled() || isDisposed()) {
                 return;
             }
-            connectionsViewer.setInput(finalStoredConnections);
-            // Check number of connection available.
-            if (finalStoredConnections.size() == 0) {
-                //
-            } else if (finalStoredConnections.size() == 1) {
-                connectionsViewer.setSelection(new StructuredSelection(new Object[] { finalStoredConnections.get(0) }));
-            } else {
-                // select last connection used
-                boolean selected = false;
-                // for (ConnectionBean curent : storedConnections) {
-                // String stringValue = ((LabelProvider) connectionsViewer.getLabelProvider()).getText(curent);
-                // if (curent.getName().equals( lastConnection)) {
-                // selectLast(stringValue, connectionsViewer.getCombo());
-                // selected = true;
-                // }
-                // }
-                ConnectionBean selectedConnBean = loginHelper.getCurrentSelectedConnBean();
-                if (selectedConnBean != null) {
-                    connectionsViewer.setSelection(new StructuredSelection(new Object[] { selectedConnBean }));
-                    IStructuredSelection sel = (IStructuredSelection) connectionsViewer.getSelection();
-                    if (selectedConnBean.equals(sel.getFirstElement())) {
-                        selected = true;
+            if (connectionsViewer != null) {
+                connectionsViewer.setInput(finalStoredConnections);
+                // Check number of connection available.
+                if (finalStoredConnections.size() == 0) {
+                    //
+                } else if (finalStoredConnections.size() == 1) {
+                    connectionsViewer.setSelection(new StructuredSelection(new Object[] { finalStoredConnections.get(0) }));
+                } else {
+                    // select last connection used
+                    boolean selected = false;
+                    // for (ConnectionBean curent : storedConnections) {
+                    // String stringValue = ((LabelProvider) connectionsViewer.getLabelProvider()).getText(curent);
+                    // if (curent.getName().equals( lastConnection)) {
+                    // selectLast(stringValue, connectionsViewer.getCombo());
+                    // selected = true;
+                    // }
+                    // }
+                    ConnectionBean selectedConnBean = LoginHelper.getInstance().getCurrentSelectedConnBean();
+                    if (selectedConnBean != null) {
+                        connectionsViewer.setSelection(new StructuredSelection(new Object[] { selectedConnBean }));
+                        IStructuredSelection sel = (IStructuredSelection) connectionsViewer.getSelection();
+                        if (selectedConnBean.equals(sel.getFirstElement())) {
+                            selected = true;
+                        }
+                    }
+                    if (!selected) {
+                        connectionsViewer.setSelection(new StructuredSelection(new Object[] { finalStoredConnections.get(0) }));
                     }
                 }
-                if (!selected) {
-                    connectionsViewer.setSelection(new StructuredSelection(new Object[] { finalStoredConnections.get(0) }));
-                }
+            } else if (connectionLabel != null) {
+                ConnectionBean selectedConnBean = LoginHelper.getInstance().getCurrentSelectedConnBean();
+                connectionLabel.setText(selectedConnBean.getName());
+                connectionLabel.setData(selectedConnBean);
             }
         });
 
@@ -1040,14 +1083,35 @@ public class LoginProjectPage extends AbstractLoginActionPage {
     protected void addListeners() {
         super.addListeners();
 
-        connectionsViewer.addSelectionChangedListener(new ISelectionChangedListener() {
+        if (connectionsViewer != null) {
+            connectionsViewer.addSelectionChangedListener(new ISelectionChangedListener() {
 
-            @Override
-            public void selectionChanged(SelectionChangedEvent event) {
-                onConnectionSelected(new NullProgressMonitor(), false);
-            }
+                @Override
+                public void selectionChanged(SelectionChangedEvent event) {
+                    onConnectionSelected(new NullProgressMonitor(), false);
+                }
 
-        });
+            });  
+        }
+      
+        if (switchLoginTypeButton != null) {
+            switchLoginTypeButton.addSelectionListener(new SelectionAdapter() {
+
+                @Override
+                public void widgetSelected(SelectionEvent e) {
+                    LoginHelper.destroy(); // Reload connections
+                    if (getPreviousPage() == null) {
+                        AbstractActionPage page =  new LoginWithCloudPage(getParent(), loginDialog, SWT.NONE);
+                        setPreviousPage(page);
+                    }
+                    try {
+                        gotoPreviousPage();
+                    } catch (Throwable e1) {
+                        CommonExceptionHandler.process(e1);
+                    }
+                }
+            }); 
+        }
 
         selectExistingProject.addSelectionListener(new SelectionListener() {
 
@@ -1229,13 +1293,16 @@ public class LoginProjectPage extends AbstractLoginActionPage {
             }
         });
 
-        manageButton.addSelectionListener(new SelectionAdapter() {
+        if (manageButton != null) {
+            manageButton.addSelectionListener(new SelectionAdapter() {
 
-            @Override
-            public void widgetSelected(SelectionEvent e) {
-                handleOpenConnectionsDialog(false);
-            }
-        });
+                @Override
+                public void widgetSelected(SelectionEvent e) {
+                    handleOpenConnectionsDialog(false);
+                }
+            });
+        }
+
 
         finishButton.addPaintListener(new PaintListener() {
 
@@ -1362,9 +1429,9 @@ public class LoginProjectPage extends AbstractLoginActionPage {
             }
             // should save before login, since svn related codes will read them
             saveLastUsedProjectAndBranch();
-            boolean isLogInOk = loginHelper.logIn(getConnection(), getProject(), errorManager);
+            boolean isLogInOk = LoginHelper.getInstance().logIn(getConnection(), getProject(), errorManager);
             if (isLogInOk) {
-                LoginHelper.setAlwaysAskAtStartup(alwaysAsk.getSelection());
+                LoginHelper.setAlwaysAskAtStartup(alwaysAsk.getSelection());            
                 loginDialog.okPressed();
             } else {
                 fillUIProjectListWithBusyCursor();
@@ -1377,6 +1444,9 @@ public class LoginProjectPage extends AbstractLoginActionPage {
     }
 
     public void handleOpenConnectionsDialog(boolean showError) {
+       if (ICloudSignOnService.get() != null && ICloudSignOnService.get().isSignViaCloud()) {
+           return;
+       }
         try {
             if (showError && errorManager.isHasAuthException()) {
                 String[] dialogButtonLabels = new String[] { IDialogConstants.YES_LABEL, IDialogConstants.CANCEL_LABEL };
@@ -1394,8 +1464,8 @@ public class LoginProjectPage extends AbstractLoginActionPage {
             int open = connectionsDialog.open();
             if (open == Window.OK) {
                 List<ConnectionBean> storedConnections = connectionsDialog.getConnections();
-                loginHelper.setStoredConnections(storedConnections);
-                loginHelper.saveConnections();
+                LoginHelper.getInstance().setStoredConnections(storedConnections);
+                LoginHelper.getInstance().saveConnections();
                 // reset flag to connect again
                 errorManager.setAuthException(null);
                 errorManager.setHasAuthException(false);
@@ -1439,7 +1509,7 @@ public class LoginProjectPage extends AbstractLoginActionPage {
     private void saveLastUsedProjectAndBranch() {
 
         Project project = getProject();
-        loginHelper.getPrefManipulator().setLastProject(project.getLabel());
+        LoginHelper.getInstance().getPrefManipulator().setLastProject(project.getLabel());
 
         if (LoginHelper.isRemotesConnection(getConnection())) {
             String branch = getBranch();
@@ -1447,7 +1517,7 @@ public class LoginProjectPage extends AbstractLoginActionPage {
                 branch = GITConstant.EMPTY;
             }
             try {
-                loginHelper.getPrefManipulator().setLastSVNBranch(
+                LoginHelper.getInstance().getPrefManipulator().setLastSVNBranch(
                         new JSONObject(project.getEmfProject().getUrl()).getString("location"), project.getTechnicalLabel(), //$NON-NLS-1$
                         branch);
             } catch (JSONException e) {
@@ -1457,7 +1527,7 @@ public class LoginProjectPage extends AbstractLoginActionPage {
             try {
                 String jsonStr = project.getEmfProject().getUrl();
                 if (jsonStr != null && !jsonStr.isEmpty()) {
-                    String lastLogonBranch = loginHelper.getPrefManipulator()
+                    String lastLogonBranch = LoginHelper.getInstance().getPrefManipulator()
                             .getLastSVNBranch(new JSONObject(jsonStr).getString("location"), project.getTechnicalLabel()); //$NON-NLS-1$
                     ProjectManager.getInstance().setMainProjectBranch(project, lastLogonBranch);
                 }
@@ -1502,7 +1572,7 @@ public class LoginProjectPage extends AbstractLoginActionPage {
                 }
                 // need to relauch the studio automaticlly after updating
                 LoginHelper.isRestart = true;
-                loginHelper.saveLastConnectionBean(getConnection());
+                LoginHelper.getInstance().saveLastConnectionBean(getConnection());
                 finishPressed();
             } else {
                 String[] buttons = new String[] { IDialogConstants.OK_LABEL };
@@ -1521,7 +1591,7 @@ public class LoginProjectPage extends AbstractLoginActionPage {
     protected void restartStudio() {
         LoginHelper.isRestart = true;
         ConnectionBean iBean = getConnection();
-        loginHelper.saveLastConnectionBean(iBean);
+        LoginHelper.getInstance().saveLastConnectionBean(iBean);
         // update the restart command line to specify the workspace to launch
         // if relaunch, should delete the "disableLoginDialog" argument in eclipse data for bug TDI-19214
         String workspace = iBean.getWorkSpace();
@@ -1932,7 +2002,7 @@ public class LoginProjectPage extends AbstractLoginActionPage {
     protected void changeFinishButtonAction(String newAction) {
         finishButtonAction = newAction;
         if (FINISH_ACTION_OPEN_PROJECT.equals(newAction)) {
-            finishButton.setText(Messages.getString("LoginProjectPage.finish")); //$NON-NLS-1$
+            finishButton.setText(Messages.getString("LoginProjectPage.open")); //$NON-NLS-1$
         } else if (FINISH_ACTION_UPDATE.equals(newAction)) {
             finishButton.setText(Messages.getString("LoginProjectPage.update")); //$NON-NLS-1$
         } else if (FINISH_ACTION_UPDATE_DETAILS.equals(newAction)) {
@@ -2076,8 +2146,12 @@ public class LoginProjectPage extends AbstractLoginActionPage {
     public ConnectionBean getConnection() {
         ConnectionBean result[] = new ConnectionBean[1];
         Display.getDefault().syncExec(() -> {
-            IStructuredSelection sel = (IStructuredSelection) connectionsViewer.getSelection();
-            result[0] = (ConnectionBean) sel.getFirstElement();
+            if (connectionsViewer != null) {
+                IStructuredSelection sel = (IStructuredSelection) connectionsViewer.getSelection();
+                result[0] = (ConnectionBean) sel.getFirstElement();
+            } else {
+                result[0] = (ConnectionBean) connectionLabel.getData();
+            }
         });
         return result[0];
     }
@@ -2145,7 +2219,7 @@ public class LoginProjectPage extends AbstractLoginActionPage {
             if (monitor.isCanceled() || isDisposed()) {
                 return;
             }
-            projects = loginHelper.getProjects(connection, errorManager);
+            projects = LoginHelper.getInstance().getProjects(connection, errorManager);
             if (monitor.isCanceled() || isDisposed()) {
                 return;
             }
@@ -2204,10 +2278,15 @@ public class LoginProjectPage extends AbstractLoginActionPage {
         AtomicBoolean isRemote = new AtomicBoolean(false);
         Display.getDefault().syncExec(() -> {
             if (PluginChecker.isRemoteProviderPluginLoaded()) {
-                StructuredSelection selection = (StructuredSelection) connectionsViewer.getSelection();
-                Object firstElement = selection.getFirstElement();
-                if (firstElement instanceof ConnectionBean) {
-                    isRemote.set(LoginHelper.isRemotesConnection((ConnectionBean) firstElement));
+                if (connectionsViewer != null) {
+                    StructuredSelection selection = (StructuredSelection) connectionsViewer.getSelection();
+                    Object firstElement = selection.getFirstElement();
+                    if (firstElement instanceof ConnectionBean) {
+                        isRemote.set(LoginHelper.isRemotesConnection((ConnectionBean) firstElement));
+                    }
+                } else {
+                    ConnectionBean conectionBean = (ConnectionBean)connectionLabel.getData();
+                    isRemote.set(LoginHelper.isRemotesConnection(conectionBean));
                 }
             }
         });
@@ -2227,7 +2306,7 @@ public class LoginProjectPage extends AbstractLoginActionPage {
                 }
             }
             if (project == null) {
-                project = loginHelper.getLastUsedProject(projects);
+                project = LoginHelper.getInstance().getLastUsedProject(projects);
             }
             if (project == null && projects.length > 0) {
                 project = projects[0];
@@ -2318,7 +2397,7 @@ public class LoginProjectPage extends AbstractLoginActionPage {
         String lastLogonBranch = null;
         try {
             String jsonStr = project.getEmfProject().getUrl();
-            lastLogonBranch = loginHelper.getPrefManipulator()
+            lastLogonBranch = LoginHelper.getInstance().getPrefManipulator()
                                     .getLastSVNBranch(new JSONObject(jsonStr).getString("location"), project.getTechnicalLabel());
         } catch (JSONException e) {
             ExceptionHandler.process(e);
@@ -2403,7 +2482,7 @@ public class LoginProjectPage extends AbstractLoginActionPage {
     }
 
     public User getUser() {
-        return LoginHelper.getUser(loginHelper.getCurrentSelectedConnBean());
+        return LoginHelper.getUser(LoginHelper.getInstance().getCurrentSelectedConnBean());
     }
 
     public Project getProject() {
@@ -2510,10 +2589,10 @@ public class LoginProjectPage extends AbstractLoginActionPage {
 
         if (sandboxDialog.open() == Window.OK) {
             ConnectionUserPerReader instance = ConnectionUserPerReader.getInstance();
-            loginHelper.setStoredConnections(instance.forceReadConnections());
-            loginHelper.setLastConnection(sandboxDialog.getConnectionBean().getName());
+            LoginHelper.getInstance().setStoredConnections(instance.forceReadConnections());
+            LoginHelper.getInstance().setLastConnection(sandboxDialog.getConnectionBean().getName());
 
-            loginHelper.saveConnections();
+            LoginHelper.getInstance().saveConnections();
 
             refreshUIData();
         }
@@ -2580,12 +2659,12 @@ public class LoginProjectPage extends AbstractLoginActionPage {
                 checkErrors();
                 return;
             }
-            if (!forceRefresh && connection.equals(loginHelper.getCurrentSelectedConnBean())) {
+            if (!forceRefresh && connection.equals(LoginHelper.getInstance().getCurrentSelectedConnBean())) {
                 // in case they are equal but different object id
-                loginHelper.setCurrentSelectedConnBean(connection);
+                LoginHelper.getInstance().setCurrentSelectedConnBean(connection);
                 return;
             } else {
-                loginHelper.setCurrentSelectedConnBean(connection);
+                LoginHelper.getInstance().setCurrentSelectedConnBean(connection);
             }
             cancelAllBackgroundJobs(null);
             if (monitor.isCanceled() || isDisposed()) {
@@ -2800,5 +2879,6 @@ public class LoginProjectPage extends AbstractLoginActionPage {
             }
 
         }.schedule();
-    }
+    }  
+    
 }
