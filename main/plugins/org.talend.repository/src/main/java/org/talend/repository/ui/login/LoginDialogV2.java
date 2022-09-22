@@ -101,6 +101,9 @@ public class LoginDialogV2 extends TrayDialog {
     public static final Color RED_COLOR = org.talend.commons.ui.runtime.ColorConstants.RED_COLOR;
 
     public static final Color VERTICAL_SEPERATOR_LINE_COLOR = org.talend.commons.ui.runtime.ColorConstants.VERTICAL_SEPERATOR_LINE_COLOR;
+    
+    protected IBrandingService brandingService = GlobalServiceRegister.getDefault().getService(
+            IBrandingService.class);
 
     protected double realHeightRate;
 
@@ -574,14 +577,16 @@ public class LoginDialogV2 extends TrayDialog {
     
     protected boolean isShowSSOPage() {
         try {
-            if (ICloudSignOnService.get() != null) {
-                if (isFirstRunSSOFeature()) {
-                    saveFirstRunSSOFeature();
-                    return true;
-                }
-                if (ICloudSignOnService.get().isNeedShowSSOPage()) {
-                    return true;
-                }
+            if (brandingService.isPoweredbyTalend()) {
+                if (ICloudSignOnService.get() != null) {
+                    if (isFirstRunSSOFeature()) {
+                        saveFirstRunSSOFeature();
+                        return true;
+                    }
+                    if (ICloudSignOnService.get().isNeedShowSSOPage()) {
+                        return true;
+                    }
+                } 
             }
         } catch (Exception ex) {
             ExceptionHandler.process(ex);
