@@ -121,6 +121,7 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Canvas;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.IEditorInput;
@@ -1209,19 +1210,22 @@ public abstract class AbstractTalendEditor extends GraphicalEditorWithFlyoutPale
 
     @Override
     public void commandStackChanged(final EventObject event) {
-        if (isDirty()) {
-            if (!this.savePreviouslyNeeded) {
-                // remove all error status at any change of the job .
-                removeErrorStatusIfDirty();
-                this.savePreviouslyNeeded = true;
+        Display.getDefault().syncExec(() -> {
+            if (isDirty()) {
+                if (!this.savePreviouslyNeeded) {
+                    // remove all error status at any change of the job .
+                    removeErrorStatusIfDirty();
+                    this.savePreviouslyNeeded = true;
+                    firePropertyChange(IEditorPart.PROP_DIRTY);
+                }
+                checkSaveAsEnabled();
+            } else {
+                savePreviouslyNeeded = false;
                 firePropertyChange(IEditorPart.PROP_DIRTY);
             }
-            checkSaveAsEnabled();
-        } else {
-            savePreviouslyNeeded = false;
-            firePropertyChange(IEditorPart.PROP_DIRTY);
-        }
-        super.commandStackChanged(event);
+
+            super.commandStackChanged(event);
+        });
     }
 
     private void checkSaveAsEnabled() {
