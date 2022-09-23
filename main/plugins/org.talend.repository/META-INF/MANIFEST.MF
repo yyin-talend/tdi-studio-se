@@ -54,8 +54,7 @@ Require-Bundle: javax.xml.rpc,
  org.eclipse.core.net,
  org.eclipse.jface,
  org.talend.libraries.apache.axis2,
- org.talend.signon.util,
- org.talend.configurator.common
+ org.talend.signon.util
 Export-Package: org.talend.repository,
  org.talend.repository.constants,
  org.talend.repository.i18n,
@@ -106,5 +105,4 @@ Bundle-ClassPath: .,
 Import-Package: com.fasterxml.jackson.core,
  com.fasterxml.jackson.databind,
  org.slf4j,
- org.talend.commons.model,
  org.talend.utils.json;version="1.0.0"
