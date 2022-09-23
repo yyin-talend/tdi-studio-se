@@ -79,6 +79,7 @@ import org.talend.repository.i18n.Messages;
 import org.talend.repository.ui.login.connections.ConnectionUserPerReader;
 import org.talend.repository.ui.login.connections.network.LoginNetworkPreferencePage;
 import org.talend.repository.ui.login.connections.network.proxy.LoginProxyPreferencePage;
+import org.talend.repository.ui.login.connections.settings.WorkspacePreferencePage;
 import org.talend.signon.util.TMCRepositoryUtil;
 import org.talend.signon.util.TokenMode;
 import org.talend.signon.util.listener.LoginEventListener;
@@ -626,7 +627,7 @@ public class LoginWithCloudPage extends AbstractLoginActionPage implements Login
         return codeChallenge;
     }
 
-    public static void onNetworkSettingsClicked() {
+    public void onNetworkSettingsClicked() {
         PreferenceDialog pd = new PreferenceDialog(Display.getDefault().getActiveShell(), new PreferenceManager());
 
         LoginProxyPreferencePage prefPage = new LoginProxyPreferencePage();
@@ -637,10 +638,25 @@ public class LoginWithCloudPage extends AbstractLoginActionPage implements Login
         networkPage.setTitle(Messages.getString("LoginProxyPreferencePage.timeout.title"));
         pd.getPreferenceManager().addToRoot(new PreferenceNode("timeoutPage", networkPage));
 
+        WorkspacePreferencePage workspacePage = new WorkspacePreferencePage() {
+
+            @Override
+            public void restart() throws Exception {
+                doRestart();
+            };
+
+        };
+        pd.getPreferenceManager().addToRoot(new PreferenceNode("workspace", workspacePage));
+
         int open = pd.open();
         if (Window.OK == open) {
             NetworkUtil.loadAuthenticator();
         }
+    }
+
+    private void doRestart() {
+        this.removeSSOConnection();
+        loginDialog.close();
     }
 
     private void onMoreInfoLinkClicked(HyperlinkEvent e) {
