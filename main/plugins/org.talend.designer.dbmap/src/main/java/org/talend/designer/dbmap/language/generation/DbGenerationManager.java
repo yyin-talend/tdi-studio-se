@@ -1319,7 +1319,7 @@ public abstract class DbGenerationManager {
                 String handledTableName = getHandledTableName(component, inputTable.getTableName(), alias);
                 appendSqlQuery(sb, handledTableName);
                 appendSqlQuery(sb, DbMapSqlConstants.SPACE);
-                String handledField = getHandledField(component, alias);
+                String handledField = getHandledAlias(component, alias);
                 appendSqlQuery(sb, handledField);
                 aliasAlreadyDeclared.add(alias);
             } else {
@@ -1592,7 +1592,7 @@ public abstract class DbGenerationManager {
         return expression;
     }
 
-    private String adaptQuoteForColumnName(DbMapComponent component, String columnEntry) {
+    public String adaptQuoteForColumnName(DbMapComponent component, String columnEntry) {
         String quote = getQuote(component);
         String quto_mark = TalendQuoteUtils.QUOTATION_MARK;
         String quto_markParser = "[\\\\]?\\" + quto_mark; //$NON-NLS-1$
@@ -1645,7 +1645,7 @@ public abstract class DbGenerationManager {
         return false;
     }
 
-    private String getQuote(DbMapComponent component){
+    public String getQuote(DbMapComponent component){
         String delimitedCharacterText = getDelimitedCharacterText();
         if(isDelimitedCharacter()&& org.apache.commons.lang.StringUtils.isNotEmpty(delimitedCharacterText)){
             return delimitedCharacterText;
@@ -1732,34 +1732,40 @@ public abstract class DbGenerationManager {
         String quote = getQuote(component);
         List<IConnection> inputConnections = (List<IConnection>) component.getIncomingConnections();
         IConnection iconn = this.getConnectonByName(inputConnections, tableName);
-        tableName = getTableName(iconn,tableName,quote);
-        tableName = adaptQuoteForColumnName(component,tableName);
+        INode source = iconn.getSource();
+        String handledTableName = "";
+        boolean inputIsELTDBMap = false;
+        String schemaValue = "";
+        String tableValue = "";
+        boolean hasSchema = false;
+        IElementParameter schemaParam = source.getElementParameter("ELT_SCHEMA_NAME");
+        IElementParameter tableParam = source.getElementParameter("ELT_TABLE_NAME");
+        if (schemaParam != null && schemaParam.getValue() != null) {
+            schemaValue = schemaParam.getValue().toString();
+        }
+        if (tableParam != null && tableParam.getValue() != null) {
+            tableValue = tableParam.getValue().toString();
+        }
+        String schemaNoQuote = TalendTextUtils.removeQuotes(schemaValue);
+        hasSchema = !"".equals(schemaNoQuote);
+        if (hasSchema) {
+            schemaValue = handledParameterValues(schemaValue);
+            handledTableName = schemaValue + "+\".\"+";
+            handledTableName = handledTableName + tableValue;
+            return "\" +" + handledTableName + "+ \"";
+        }
         if (alias == null) {
+            tableName = getTableName(iconn,tableName,quote);
+            tableName = adaptQuoteForColumnName(component,tableName);
             return replaceVariablesForExpression(component, tableName);
         } else {
             if (iconn != null) {
-                String handledTableName = "";
-                boolean inputIsELTDBMap = false;
-                INode source = iconn.getSource();
-                String schemaValue = "";
-                String tableValue = "";
                 if (source != null) {
                     inputIsELTDBMap = isELTDBMap(source);
                     if (inputIsELTDBMap) {
                         tableValue = iconn.getName();
-                    } else {
-                        IElementParameter schemaParam = source.getElementParameter("ELT_SCHEMA_NAME");
-                        IElementParameter tableParam = source.getElementParameter("ELT_TABLE_NAME");
-                        if (schemaParam != null && schemaParam.getValue() != null) {
-                            schemaValue = schemaParam.getValue().toString();
-                        }
-                        if (tableParam != null && tableParam.getValue() != null) {
-                            tableValue = tableParam.getValue().toString();
-                        }
                     }
                 }
-                String schemaNoQuote = TalendTextUtils.removeQuotes(schemaValue);
-                boolean hasSchema = !"".equals(schemaNoQuote);
                 if (hasSchema) {
                     schemaValue = handledParameterValues(schemaValue);
                     handledTableName = schemaValue + "+\".\"+";
@@ -1857,6 +1863,28 @@ public abstract class DbGenerationManager {
             }
         }
         return field;
+    }
+    
+    protected String getHandledAlias(DbMapComponent component, String alias) {
+        if (alias != null) {
+            List<String> contextList = getContextList(component);
+            boolean haveReplace = false;
+            for (String context : contextList) {
+                if (alias.contains(context)) {
+                    alias = alias.replaceAll("\\b" + context + "\\b", "\" +" + context + "+ \""); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+                    haveReplace = true;
+                    break;
+                }
+            }
+            if (!haveReplace) {
+                String quote = getQuote(component);
+                List<IConnection> inputConnections = (List<IConnection>) component.getIncomingConnections();
+                IConnection iconn = this.getConnectonByName(inputConnections, alias);
+                alias = getTableName(iconn,alias,quote);
+                alias = adaptQuoteForColumnName(component,alias);
+            }
+        }
+        return alias;
     }
 
     public boolean isAddQuotesInColumns() {
