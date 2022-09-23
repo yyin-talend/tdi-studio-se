@@ -26,6 +26,9 @@ import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.metadata.MetadataToolHelper;
 import org.talend.core.model.process.EConnectionType;
 import org.talend.core.model.process.IConnection;
+import org.talend.core.model.process.IElementParameter;
+import org.talend.core.model.process.INode;
+import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.core.utils.TalendQuoteUtils;
 import org.talend.designer.dbmap.DbMapComponent;
 import org.talend.designer.dbmap.external.data.ExternalDbMapData;
@@ -547,6 +550,23 @@ public class OracleGenerationManager extends DbGenerationManager {
                                         expression = expression.replaceFirst(tableValue, tableName);
                                     }
                                 }
+                                INode source = iconn.getSource();
+                                String handledTableName = "";
+                                boolean inputIsELTDBMap = false;
+                                String schemaValue = "";
+                                String table = "";
+                                boolean hasSchema = false;
+                                IElementParameter schemaParam = source.getElementParameter("ELT_SCHEMA_NAME");
+                                IElementParameter tableParam = source.getElementParameter("ELT_TABLE_NAME");
+                                if (schemaParam != null && schemaParam.getValue() != null) {
+                                    schemaValue = schemaParam.getValue().toString();
+                                }
+                                if (tableParam != null && tableParam.getValue() != null) {
+                                    table = tableParam.getValue().toString();
+                                }
+                                String schemaNoQuote = TalendTextUtils.removeQuotes(schemaValue);
+                                String tableNoQuote = TalendTextUtils.removeQuotes(table);
+                                hasSchema = !"".equals(schemaNoQuote);
                                 for (IMetadataColumn co : lColumn) {
                                     if (columnValue.equals(co.getLabel())) {
                                         String oriName = co.getOriginalDbColumnName();
@@ -555,8 +575,13 @@ public class OracleGenerationManager extends DbGenerationManager {
                                             continue;
                                         }
                                         if (expression.trim().equals(tableValue + "." + oriName)) {
-                                            expression = getTableName(iconn,tableValue,quote) + "." + getColumnName(iconn, oriName, quote);
-                                            expression = expression.replaceAll(quto_markParser,"\\\\" +quto_mark); //$NON-NLS-1$
+                                            if(hasSchema) {
+                                                expression = getTableName(iconn,schemaNoQuote,quote) + "." + getTableName(iconn,tableNoQuote,quote) + "." + getColumnName(iconn, oriName, quote);
+                                                expression = expression.replaceAll(quto_markParser,"\\\\" +quto_mark); //$NON-NLS-1$
+                                            }else {
+                                                expression = getTableName(iconn,tableValue,quote) + "." + getColumnName(iconn, oriName, quote);
+                                                expression = expression.replaceAll(quto_markParser,"\\\\" +quto_mark); //$NON-NLS-1$
+                                            }
                                             continue;
                                         }
                                         if (expression.trim().equals(originaltableName + "." + oriName)) {

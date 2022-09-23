@@ -1439,8 +1439,29 @@ public abstract class DbGenerationManager {
                 }
             }
             if (!replace) {
-                tableName = getTableName(iconn,inputTable.getName(),quote);
-                tableName = adaptQuoteForColumnName(component, tableName);
+                String handledTableName = "";
+                boolean inputIsELTDBMap = false;
+                String schemaValue = "";
+                String table = "";
+                boolean hasSchema = false;
+                IElementParameter schemaParam = source.getElementParameter("ELT_SCHEMA_NAME");
+                IElementParameter tableParam = source.getElementParameter("ELT_TABLE_NAME");
+                if (schemaParam != null && schemaParam.getValue() != null) {
+                    schemaValue = schemaParam.getValue().toString();
+                }
+                if (tableParam != null && tableParam.getValue() != null) {
+                    table = tableParam.getValue().toString();
+                }
+                String schemaNoQuote = TalendTextUtils.removeQuotes(schemaValue);
+                String tableNoQuote = TalendTextUtils.removeQuotes(table);
+                hasSchema = !"".equals(schemaNoQuote);
+                if(hasSchema) {
+                    tableName = getTableName(iconn,schemaNoQuote,quote) + "." + getTableName(iconn,tableNoQuote,quote);
+                    tableName = adaptQuoteForColumnName(component, tableName);
+                }else {
+                    tableName = getTableName(iconn,inputTable.getName(),quote);
+                    tableName = adaptQuoteForColumnName(component, tableName);
+                }
                 String exp = replaceVariablesForExpression(component, tableName);
                 appendSqlQuery(sb, exp);
             }
@@ -1747,15 +1768,18 @@ public abstract class DbGenerationManager {
             tableValue = tableParam.getValue().toString();
         }
         String schemaNoQuote = TalendTextUtils.removeQuotes(schemaValue);
-        hasSchema = !"".equals(schemaNoQuote);
-        if (hasSchema) {
-            schemaValue = handledParameterValues(schemaValue);
-            handledTableName = schemaValue + "+\".\"+";
-            handledTableName = handledTableName + tableValue;
-            return "\" +" + handledTableName + "+ \"";
-        }
+        String tableNoQuote = TalendTextUtils.removeQuotes(tableValue);
+        hasSchema = org.apache.commons.lang.StringUtils.isNotBlank(schemaNoQuote);
+//        if (hasSchema) {
+//            schemaValue = handledParameterValues(schemaValue);
+//            handledTableName = schemaValue + "+\".\"+";
+//            handledTableName = handledTableName + tableValue;
+//            return "\" +" + handledTableName + "+ \"";
+//        }
         if (alias == null) {
-            tableName = getTableName(iconn,tableName,quote);
+            schemaValue = getTableName(iconn,schemaNoQuote,quote);
+            tableValue = getTableName(iconn,tableNoQuote,quote);
+            tableName = schemaValue + "." + tableValue;
             tableName = adaptQuoteForColumnName(component,tableName);
             return replaceVariablesForExpression(component, tableName);
         } else {
@@ -1767,10 +1791,14 @@ public abstract class DbGenerationManager {
                     }
                 }
                 if (hasSchema) {
-                    schemaValue = handledParameterValues(schemaValue);
+                    schemaValue = handledParameterValues(schemaNoQuote);
+                    schemaValue = getTableName(iconn,schemaNoQuote,quote);
+                    schemaValue = adaptQuoteForColumnName(component,schemaValue);
                     handledTableName = schemaValue + "+\".\"+";
                 }
-                handledTableName = handledTableName + tableValue;
+                tableName = getTableName(iconn,tableNoQuote,quote);
+                tableName = adaptQuoteForColumnName(component,tableName);
+                handledTableName = handledTableName + tableName;
                 return "\" +" + handledTableName + "+ \"";
             }
         }
