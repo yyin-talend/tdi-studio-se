@@ -75,6 +75,11 @@
 							<artifactItems>
                                 <artifactItem>
                                     <groupId>${talend.groupid}</groupId>
+                                    <artifactId>simpleexcel</artifactId>
+                                    <version>2.5-20220830</version>
+                                </artifactItem>
+                                <artifactItem>
+                                    <groupId>${talend.groupid}</groupId>
                                     <artifactId>talendMsgMailUtil</artifactId>
                                     <version>1.2-20201022</version>
                                 </artifactItem>
