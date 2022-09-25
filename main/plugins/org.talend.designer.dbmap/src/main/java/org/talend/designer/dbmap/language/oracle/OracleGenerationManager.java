@@ -433,8 +433,10 @@ public class OracleGenerationManager extends DbGenerationManager {
                 if (specialColumn.trim().startsWith("\\\"") && specialColumn.trim().endsWith("\\\"")) {
                     return expression;
                 }
-                expression = expression.substring(0, begin) + "\\\"" + expression.substring(begin, begin + length) + "\\\""
+                String quote = getQuote(component);
+                expression = expression.substring(0, begin) + quote + expression.substring(begin, begin + length) + quote
                         + expression.substring(begin + length, allLength);
+                expression = adaptQuoteForColumnName(component,expression);
                 return expression;
             }
         }

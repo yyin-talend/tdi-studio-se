@@ -1777,9 +1777,13 @@ public abstract class DbGenerationManager {
 //            return "\" +" + handledTableName + "+ \"";
 //        }
         if (alias == null) {
-            schemaValue = getTableName(iconn,schemaNoQuote,quote);
-            tableValue = getTableName(iconn,tableNoQuote,quote);
-            tableName = schemaValue + "." + tableValue;
+            if(hasSchema) {
+                schemaValue = getTableName(iconn,schemaNoQuote,quote);
+                tableValue = getTableName(iconn,tableNoQuote,quote);
+                tableName = schemaValue + "." + tableValue;
+            }else {
+                tableName = getTableName(iconn,tableNoQuote,quote);
+            }
             tableName = adaptQuoteForColumnName(component,tableName);
             return replaceVariablesForExpression(component, tableName);
         } else {
