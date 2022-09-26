@@ -411,6 +411,7 @@ public class LoginWithCloudPage extends AbstractLoginActionPage implements Login
             }
             ConnectionBean conn = saveConnection(token, TMCRepositoryUtil.getCloudAdminURL(dataCenter),
                     ICloudSignOnService.get().getTokenUser(TMCRepositoryUtil.getCloudAdminURL(dataCenter), token));
+            TMCRepositoryUtil.saveRecentDataCenter(dataCenter);
             if (isRefreshToken) {
                 Display.getDefault().asyncExec(() -> {
                     loginDialog.okPressed();
