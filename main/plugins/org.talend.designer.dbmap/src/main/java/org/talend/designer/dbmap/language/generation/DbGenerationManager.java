@@ -2097,7 +2097,9 @@ public abstract class DbGenerationManager {
                     String columnEntry = dbMapEntry.getName();
                     String expression = dbMapEntry.getExpression();
                     expression = initExpression(component, dbMapEntry);
-                    expression = addQuoteForSpecialChar(expression, component);
+                    if(!isAddQuotesInColumns()) {
+                        expression = addQuoteForSpecialChar(expression, component);
+                    }
                     //
                     if (!DEFAULT_TAB_SPACE_STRING.equals(this.tabSpaceString)) {
                         expression += DbMapSqlConstants.SPACE + DbMapSqlConstants.AS + DbMapSqlConstants.SPACE
