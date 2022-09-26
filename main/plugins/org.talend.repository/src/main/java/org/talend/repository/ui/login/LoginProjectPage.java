@@ -617,14 +617,16 @@ public class LoginProjectPage extends AbstractLoginActionPage {
             manageButton = new Button(connectionManageArea, SWT.NONE);
             manageButton.setFont(LoginDialogV2.fixedFont);
             manageButton.setBackground(backgroundBtnColor);
-            manageButton.setImage(ImageProvider.getImage(EImage.MANAGE_CONNECTION));
+            manageButton.setImage(ImageProvider.getImage(EImage.EDIT_ICON));
             manageButton.setToolTipText(Messages.getString("LoginProjectPage.manage")); //$NON-NLS-1$  
         } 
-
-        switchLoginTypeButton =  new Button(connectionManageArea, SWT.NONE);
-        switchLoginTypeButton.setFont(LoginDialogV2.fixedFont);
-        switchLoginTypeButton.setBackground(backgroundBtnColor);
-        switchLoginTypeButton.setText(Messages.getString("LoginProjectPage.switchLoginTypeButton"));  
+        
+        if (brandingService.isPoweredbyTalend()) {
+            switchLoginTypeButton =  new Button(connectionManageArea, SWT.NONE);
+            switchLoginTypeButton.setFont(LoginDialogV2.fixedFont);
+            switchLoginTypeButton.setBackground(backgroundBtnColor);
+            switchLoginTypeButton.setText("Switch sign in");   
+        }
         
         if (isSSOMode) {
             separatorLabel = new Label(connectionManageArea, SWT.SEPARATOR | SWT.HORIZONTAL | SWT.SHADOW_OUT);
@@ -754,9 +756,12 @@ public class LoginProjectPage extends AbstractLoginActionPage {
         } else {
             connectionLabel.setLayoutData(gridData);
         }
-        gridData = new GridData(SWT.END, SWT.CENTER, false, true);
-        switchLoginTypeButton.setLayoutData(gridData);
         
+        if (switchLoginTypeButton != null) {
+            gridData = new GridData(SWT.END, SWT.CENTER, false, true);
+            switchLoginTypeButton.setLayoutData(gridData);
+        }
+
         if (separatorLabel != null) {
             GridData separatorLabelData = new GridData(SWT.FILL, SWT.CENTER, true, true, 3, 1);
             separatorLabelData.verticalIndent = 5;
@@ -1089,23 +1094,24 @@ public class LoginProjectPage extends AbstractLoginActionPage {
             });  
         }
       
-        switchLoginTypeButton.addSelectionListener(new SelectionAdapter() {
+        if (switchLoginTypeButton != null) {
+            switchLoginTypeButton.addSelectionListener(new SelectionAdapter() {
 
-            @Override
-            public void widgetSelected(SelectionEvent e) {
-                LoginHelper.destroy(); // Reload connections
-                if (getPreviousPage() == null) {
-                    AbstractActionPage page =  new LoginWithCloudPage(getParent(), loginDialog, SWT.NONE);
-                    setPreviousPage(page);
+                @Override
+                public void widgetSelected(SelectionEvent e) {
+                    LoginHelper.destroy(); // Reload connections
+                    if (getPreviousPage() == null) {
+                        AbstractActionPage page =  new LoginWithCloudPage(getParent(), loginDialog, SWT.NONE);
+                        setPreviousPage(page);
+                    }
+                    try {
+                        gotoPreviousPage();
+                    } catch (Throwable e1) {
+                        CommonExceptionHandler.process(e1);
+                    }
                 }
-                try {
-                    gotoPreviousPage();
-                } catch (Throwable e1) {
-                    CommonExceptionHandler.process(e1);
-                }
-            }
-
-        });
+            }); 
+        }
 
         selectExistingProject.addSelectionListener(new SelectionListener() {
 
