@@ -1614,6 +1614,9 @@ public abstract class DbGenerationManager {
     }
 
     public String adaptQuoteForColumnName(DbMapComponent component, String columnEntry) {
+        if(ContextParameterUtils.isContainContextParam(columnEntry)) {
+            return columnEntry;
+        }
         String quote = getQuote(component);
         String quto_mark = TalendQuoteUtils.QUOTATION_MARK;
         String quto_markParser = "[\\\\]?\\" + quto_mark; //$NON-NLS-1$
@@ -1796,9 +1799,13 @@ public abstract class DbGenerationManager {
                 }
                 if (hasSchema) {
                     schemaValue = handledParameterValues(schemaNoQuote);
-                    schemaValue = getTableName(iconn,schemaNoQuote,quote);
+                    schemaValue = getTableName(iconn,schemaValue,quote);
                     schemaValue = adaptQuoteForColumnName(component,schemaValue);
                     handledTableName = schemaValue + "+\".\"+";
+                    if(ContextParameterUtils.isContainContextParam(schemaValue)) {
+                        handledTableName += tableValue;
+                        return "\" +" + handledTableName + "+ \"";
+                    }
                 }
                 tableName = getTableName(iconn,tableNoQuote,quote);
                 tableName = adaptQuoteForColumnName(component,tableName);
@@ -1849,7 +1856,7 @@ public abstract class DbGenerationManager {
     }
     
     protected String getTableName(IConnection conn, String name, String quote) {
-        if (!isRefTableConnection(conn) && isAddQuotesInTableNames()) {
+        if (!isRefTableConnection(conn) && isAddQuotesInTableNames() && !ContextParameterUtils.isContainContextParam(name)) {
             return getNameWithDelimitedIdentifier(name, quote);
         } else {
             return name;
