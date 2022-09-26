@@ -620,11 +620,11 @@ public class LoginProjectPage extends AbstractLoginActionPage {
             manageButton.setImage(ImageProvider.getImage(EImage.MANAGE_CONNECTION));
             manageButton.setToolTipText(Messages.getString("LoginProjectPage.manage")); //$NON-NLS-1$  
         } 
-        
+
         switchLoginTypeButton =  new Button(connectionManageArea, SWT.NONE);
         switchLoginTypeButton.setFont(LoginDialogV2.fixedFont);
         switchLoginTypeButton.setBackground(backgroundBtnColor);
-        switchLoginTypeButton.setText("Switch sign in"); 
+        switchLoginTypeButton.setText(Messages.getString("LoginProjectPage.switchLoginTypeButton"));  
         
         if (isSSOMode) {
             separatorLabel = new Label(connectionManageArea, SWT.SEPARATOR | SWT.HORIZONTAL | SWT.SHADOW_OUT);

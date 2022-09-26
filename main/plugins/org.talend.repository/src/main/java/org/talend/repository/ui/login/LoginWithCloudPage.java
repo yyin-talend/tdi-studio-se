@@ -613,6 +613,8 @@ public class LoginWithCloudPage extends AbstractLoginActionPage implements Login
 
         reader.saveConnections(list);
         reader.saveLastConnectionBean(connection);
+        
+        ICloudSignOnService.get().reload();
         return connection;
     }
 
