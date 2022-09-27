@@ -13,6 +13,7 @@
 package org.talend.repository.ui.login;
 
 import java.io.ByteArrayInputStream;
+import java.io.File;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -58,13 +59,9 @@ import org.osgi.service.prefs.BackingStoreException;
 import org.osgi.service.prefs.Preferences;
 import org.talend.commons.CommonsPlugin;
 import org.talend.commons.exception.ExceptionHandler;
-import org.talend.commons.model.KeyConstants;
-import org.talend.commons.model.TalendObject;
 import org.talend.commons.utils.VersionUtils;
 import org.talend.commons.utils.network.NetworkUtil;
 import org.talend.commons.utils.system.EclipseCommandLine;
-import org.talend.configurator.common.config.TalendConfiguratorManager;
-import org.talend.configurator.common.utils.Utils;
 import org.talend.core.GlobalServiceRegister;
 import org.talend.core.model.general.ConnectionBean;
 import org.talend.core.model.properties.PropertiesFactory;
@@ -73,16 +70,20 @@ import org.talend.core.prefs.GeneralParametersProvider;
 import org.talend.core.repository.model.ProxyRepositoryFactory;
 import org.talend.core.service.ICloudSignOnService;
 import org.talend.core.service.IRemoteService;
+import org.talend.core.services.ICoreTisService;
 import org.talend.core.ui.workspace.ChooseWorkspaceData;
 import org.talend.repository.RepositoryPlugin;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.ui.login.connections.ConnectionUserPerReader;
 import org.talend.repository.ui.login.connections.network.LoginNetworkPreferencePage;
 import org.talend.repository.ui.login.connections.network.proxy.LoginProxyPreferencePage;
+import org.talend.repository.ui.login.connections.settings.WorkspacePreferencePage;
 import org.talend.signon.util.TMCRepositoryUtil;
 import org.talend.signon.util.TokenMode;
 import org.talend.signon.util.listener.LoginEventListener;
+import org.talend.utils.io.FilesUtils;
 import org.talend.utils.json.JSONObject;
+import org.talend.utils.string.DigestUtil;
 
 public class LoginWithCloudPage extends AbstractLoginActionPage implements LoginEventListener {
 
@@ -113,6 +114,8 @@ public class LoginWithCloudPage extends AbstractLoginActionPage implements Login
     private boolean isSignOnCloud;
 
     private IRemoteService remoteService;
+    
+    private ICoreTisService coreTisService;
 
     public LoginWithCloudPage(Composite parent, LoginDialogV2 dialog, int style) {
         super(parent, dialog, style);
@@ -402,8 +405,13 @@ public class LoginWithCloudPage extends AbstractLoginActionPage implements Login
         });
         try {
             TokenMode token = ICloudSignOnService.get().getToken(authCode, this.codeVerifier, dataCenter);
+            if (CommonsPlugin.isDebugMode()) {
+                LOGGER.info("Access token SHA256 is:"
+                        + DigestUtil.sha256Hex(token.getAccessToken().getBytes()) + "\t Refresh token SHA256 is:" + DigestUtil.sha256Hex(token.getRefreshToken().getBytes()));
+            }
             ConnectionBean conn = saveConnection(token, TMCRepositoryUtil.getCloudAdminURL(dataCenter),
                     ICloudSignOnService.get().getTokenUser(TMCRepositoryUtil.getCloudAdminURL(dataCenter), token));
+            TMCRepositoryUtil.saveRecentDataCenter(dataCenter);
             if (isRefreshToken) {
                 Display.getDefault().asyncExec(() -> {
                     loginDialog.okPressed();
@@ -475,14 +483,14 @@ public class LoginWithCloudPage extends AbstractLoginActionPage implements Login
     }
 
     private boolean fetchLicense(ConnectionBean connection) throws Exception {
-        String crc1 = Utils.getFileCRCCode(Utils.getDefaultObjectFile());
+        File licenseFile = this.getCoreTisService().getLicenseFile();
+        long codeCurrent = FilesUtils.getChecksumAlder32(licenseFile);
         JSONObject jsonObj = getRemoteService().getLicenseKey(connection.getUser(),
                 connection.getConnectionToken().getAccessToken(), connection.getUrl(), "");
         licenseString = jsonObj.getString("customerName") + "_" + jsonObj.getString("licenseKey"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-        ByteArrayInputStream is = new ByteArrayInputStream(licenseString.getBytes());
-        String crc2 = Utils.getCRCCode(is);
-        if (!crc1.equals(crc2)) {
-            Utils.storeLicenseAndUpdateConfig(licenseString);
+        long codeNew= FilesUtils.getChecksumAlder32( new ByteArrayInputStream(licenseString.getBytes()));
+        if (codeCurrent != codeNew) {
+            getCoreTisService().storeLicenseAndUpdateConfig(licenseString);
             return false;
         }
         return true;
@@ -500,8 +508,6 @@ public class LoginWithCloudPage extends AbstractLoginActionPage implements Login
         List<StyleRange> styleRangeList = new ArrayList<StyleRange>();
         int endIndex = 0;
         try {
-            TalendObject talendObject = new TalendObject(licenseString);
-            TalendConfiguratorManager manager = new TalendConfiguratorManager(talendObject);
             message = Messages.getString("LoginWithCloudPage.LicenseInfo") + " "; //$NON-NLS-1$ //$NON-NLS-2$
             int startIndex = message.length();
             StyleRange styleRange = new StyleRange();
@@ -511,12 +517,12 @@ public class LoginWithCloudPage extends AbstractLoginActionPage implements Login
             styleRange.start = 0;
             styleRange.length = startIndex;
 
-            String product = talendObject.getString(KeyConstants.PRODUCTS_JSON_KEY + "/" + KeyConstants.PRODUCT_NAME); //$NON-NLS-1$
+            String product = getCoreTisService().getLicenseProductName(licenseString);
             if (product != null && !product.trim().isEmpty()) {
                 message = message + product + " "; //$NON-NLS-1$
             }
 
-            product = talendObject.getString(KeyConstants.PRODUCTS_JSON_KEY + "/" + KeyConstants.PRODUCT_EDITION); //$NON-NLS-1$
+            product = getCoreTisService().getLicenseProductEdition(licenseString);
             if (product != null && !product.trim().isEmpty()) {
                 message = message + product + " "; //$NON-NLS-1$
             }
@@ -529,9 +535,9 @@ public class LoginWithCloudPage extends AbstractLoginActionPage implements Login
             styleRange.start = startIndex;
             styleRange.length = endIndex - startIndex;
 
-            if (manager.isExpired()) {
+            if (getCoreTisService().isLicenseExpired(licenseString)) {
                 message += Messages.getString("LoginWithCloudPage.hasExpired"); //$NON-NLS-1$
-            } else if (!manager.isVersionCorrect()) {
+            } else if (!getCoreTisService().isLicenseVersionCorrect(licenseString)) {
                 message += Messages.getString("LoginWithCloudPage.notCorrect"); //$NON-NLS-1$
             } else {
                 validateResult = true;
@@ -568,10 +574,19 @@ public class LoginWithCloudPage extends AbstractLoginActionPage implements Login
         }
         return remoteService;
     }
+    
+    public ICoreTisService getCoreTisService() {
+        if (coreTisService == null) {
+            if (GlobalServiceRegister.getDefault().isServiceRegistered(IRemoteService.class)) {
+                coreTisService = (ICoreTisService) GlobalServiceRegister.getDefault().getService(ICoreTisService.class);
+            }
+        }
+        return coreTisService;
+    }
 
     private void removeSSOConnection() {
         ConnectionUserPerReader reader = ConnectionUserPerReader.getInstance();
-        List<ConnectionBean> list = reader.readConnections();
+        List<ConnectionBean> list = reader.forceReadConnections();
         Iterator<ConnectionBean> connectionBeanIter = list.iterator();
         while (connectionBeanIter.hasNext()) {
             if (connectionBeanIter.next().isLoginViaCloud()) {
@@ -584,24 +599,24 @@ public class LoginWithCloudPage extends AbstractLoginActionPage implements Login
 
     private ConnectionBean saveConnection(TokenMode token, String adminURL, String user) {
         ConnectionUserPerReader reader = ConnectionUserPerReader.getInstance();
-        List<ConnectionBean> list = reader.readConnections();
-        ConnectionBean connection = null;
-        for (ConnectionBean bean : list) {
-            if (bean.isLoginViaCloud()) {
-                connection = bean;
-                break;
+        List<ConnectionBean> list = reader.forceReadConnections();
+        Iterator<ConnectionBean> connectionBeanIter = list.iterator();
+        while (connectionBeanIter.hasNext()) {
+            if (connectionBeanIter.next().isLoginViaCloud()) {
+                connectionBeanIter.remove();
             }
         }
-        if (connection == null) {
-            connection = ConnectionBean.getDefaultCloudConnectionBean(token.getDataCenter());
-            list.add(connection);
-        }
+        ConnectionBean connection = ConnectionBean.getDefaultCloudConnectionBean(token.getDataCenter());
+        list.add(connection);
+        
         connection.setConnectionToken(token);
         connection.setUrl(adminURL);
         connection.setUser(user);
 
         reader.saveConnections(list);
         reader.saveLastConnectionBean(connection);
+        
+        ICloudSignOnService.get().reload();
         return connection;
     }
 
@@ -621,7 +636,7 @@ public class LoginWithCloudPage extends AbstractLoginActionPage implements Login
         return codeChallenge;
     }
 
-    public static void onNetworkSettingsClicked() {
+    public void onNetworkSettingsClicked() {
         PreferenceDialog pd = new PreferenceDialog(Display.getDefault().getActiveShell(), new PreferenceManager());
 
         LoginProxyPreferencePage prefPage = new LoginProxyPreferencePage();
@@ -632,10 +647,24 @@ public class LoginWithCloudPage extends AbstractLoginActionPage implements Login
         networkPage.setTitle(Messages.getString("LoginProxyPreferencePage.timeout.title"));
         pd.getPreferenceManager().addToRoot(new PreferenceNode("timeoutPage", networkPage));
 
+        WorkspacePreferencePage workspacePage = new WorkspacePreferencePage() {
+
+            @Override
+            public void restart() throws Exception {
+                doRestart();
+            };
+
+        };
+        pd.getPreferenceManager().addToRoot(new PreferenceNode("workspace", workspacePage));
+
         int open = pd.open();
         if (Window.OK == open) {
             NetworkUtil.loadAuthenticator();
         }
+    }
+
+    private void doRestart() {
+        loginDialog.close();
     }
 
     private void onMoreInfoLinkClicked(HyperlinkEvent e) {
