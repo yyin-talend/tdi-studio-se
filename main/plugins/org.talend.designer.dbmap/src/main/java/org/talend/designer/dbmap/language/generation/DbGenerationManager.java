@@ -1614,7 +1614,7 @@ public abstract class DbGenerationManager {
     }
 
     public String adaptQuoteForColumnName(DbMapComponent component, String columnEntry) {
-        if(ContextParameterUtils.isContainContextParam(columnEntry)) {
+        if(ContextParameterUtils.isContainContextParam(columnEntry)||parser.isContainsGlobalMapExpression(columnEntry)) {
             return columnEntry;
         }
         String quote = getQuote(component);

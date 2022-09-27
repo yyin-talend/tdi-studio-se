@@ -12,8 +12,10 @@
 // ============================================================================
 package org.talend.designer.dbmap.ui.dialog;
 
+import org.apache.commons.lang3.StringUtils;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.IDialogConstants;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
@@ -105,8 +107,15 @@ public class PropertySetDialog extends Dialog {
         addQuotesInTableNamesButton.setSelection(generationManager.isAddQuotesInTableNames());
         boolean delimitedCharacter = generationManager.isDelimitedCharacter();
         delimitedCharacterButton.setSelection(delimitedCharacter);
-        delimitedCharacterText.setText(generationManager.getDelimitedCharacterText());
+        String text = generationManager.getDelimitedCharacterText();
+        if(StringUtils.isBlank(text)) {
+            text = generationManager.getQuote(mapperManager.getComponent());
+        }
+        delimitedCharacterText.setText(text);
         delimitedCharacterText.setEditable(delimitedCharacter);
+//        delimitedCharacterText.setEnabled(delimitedCharacter);
+        
+        
         useAliasButton.setSelection(generationManager.isUseAliasInOutputTable());
 
         // Implement the column alias only for tELTTeradataMap/tELTOracleMap now.
@@ -210,10 +219,18 @@ public class PropertySetDialog extends Dialog {
     @Override
     protected void okPressed() {
         mapperManager.setAddQuotesInColumns(addQuotesInColumnsButton.getSelection());
-        mapperManager.setDelimitedCharacterText(delimitedCharacterText.getText());
+        String text = delimitedCharacterText.getText();
+        mapperManager.setDelimitedCharacterText(text);
         mapperManager.setDelimitedCharacter(delimitedCharacterButton.getSelection());
         mapperManager.setAddQuotesInTableNames(addQuotesInTableNamesButton.getSelection());
         mapperManager.useAliasInOutputTable(useAliasButton.getSelection());
+        if(delimitedCharacterButton.getSelection() && StringUtils.isBlank(text)) {
+            delimitedCharacterText.setBackground(delimitedCharacterText.getDisplay().getSystemColor(SWT.COLOR_RED));
+            MessageDialog.openError(delimitedCharacterText.getShell(),
+                    Messages.getString("PropertySetDialog.error_delimited_character.title"), //$NON-NLS-1$
+                    Messages.getString("PropertySetDialog.error_delimited_character.message"));
+            return;
+        }
         super.okPressed();
     }
 }
