@@ -3861,9 +3861,6 @@ public class Process extends Element implements IProcess2, IGEFProcess, ILastVer
                 } else if ((node.getComponent().getName() != null)) {
                     if (node.getComponent().getName().compareTo(componentName) == 0) {
                         addNodeIfNotInTheList(matchingNodes, node);
-                    } else if (isCompatibleMatching(componentName, node))  {
-                        //TUP-32758:Show the drag&drop such as mysql + Amazonmysql if property type + db version are compatible)
-                        addNodeIfNotInTheList(matchingNodes, node);
                     } else if (node.getComponent() instanceof EmfComponent) {
                         EmfComponent component = (EmfComponent) node.getComponent();
                         String eqCompName = component.getEquivalent();
@@ -5023,6 +5020,8 @@ public class Process extends Element implements IProcess2, IGEFProcess, ILastVer
                         StringUtils.equals(filterFamilyNames[filterFamilyNames.length-1], familyNames[familyNames.length-1])) {
                     if (filterComponent instanceof EmfComponent) {
                         EmfComponent emfFilterComponent = (EmfComponent) filterComponent;
+                        //Need to check if the component has been loaded or not
+                        emfFilterComponent.getShortName();
                         COMPONENTType compType = emfFilterComponent.getEmfComponentType();
                         if (compType != null && compType.getPARAMETERS() != null && compType.getPARAMETERS().getPARAMETER() != null) {
                             EList parametersList = compType.getPARAMETERS().getPARAMETER();
