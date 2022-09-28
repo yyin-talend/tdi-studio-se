@@ -316,15 +316,38 @@ public class ProjectRefSettingPage extends ProjectSettingPage {
         viewer.setInput(viewerInput);
         viewer.refresh();
     }
+    
+    private static boolean sameGitRepo(org.talend.core.model.properties.Project refProject) {
+        IGITProviderService gitSvc = IGITProviderService.get();
+        try {
+            if (gitSvc != null && gitSvc.isGITProject(ProjectManager.getInstance().getCurrentProject()) && gitSvc.isStandardMode()) {
+                String mainProjectGitUrl = gitSvc.getCleanGitRepositoryUrl(ProjectManager.getInstance().getCurrentProject().getEmfProject());
+                String refProjectGitUrl = gitSvc.getCleanGitRepositoryUrl(refProject);
+                return StringUtils.equals(refProjectGitUrl, mainProjectGitUrl);
+            }
+        } catch (Exception e) {
+            ExceptionHandler.process(e);
+        }
+        return false;
+    }
 
     private List<ProjectReferenceBean> getReferenceProjectData(Project project) {
         List<ProjectReferenceBean> result = new ArrayList<ProjectReferenceBean>();
         List<ProjectReference> list = project.getProjectReferenceList();
         for (ProjectReference pr : list) {
             ProjectReferenceBean prb = new ProjectReferenceBean();
-            prb.setReferenceProjectLabel(pr.getReferencedProject().getTechnicalLabel());
-            prb.setReferenceProject(pr.getReferencedProject());
-            prb.setReferenceBranch(pr.getReferencedBranch());
+            if (sameGitRepo(pr.getReferencedProject())) {
+                String branchOfMainProject = ProjectManager.getInstance().getMainProjectBranch(ProjectManager.getInstance().getCurrentProject());
+                prb.setReferenceProjectLabel(pr.getReferencedProject().getTechnicalLabel());
+                prb.setReferenceProject(pr.getReferencedProject());
+                // for standard mode, ref project's branch is the same as the main project
+                // change this automatically
+                prb.setReferenceBranch(branchOfMainProject);
+            } else {
+                prb.setReferenceProjectLabel(pr.getReferencedProject().getTechnicalLabel());
+                prb.setReferenceProject(pr.getReferencedProject());
+                prb.setReferenceBranch(pr.getReferencedBranch());
+            }
             result.add(prb);
         }
         List<String> invalidProjectLabelList = ReferenceProjectProblemManager.getInstance()
@@ -443,13 +466,6 @@ public class ProjectRefSettingPage extends ProjectSettingPage {
             return;
         }
         
-        String mainProjectGitUrl = null;
-        IGITProviderService gitSvc = IGITProviderService.get();
-        if (gitSvc != null) {
-            mainProjectGitUrl = gitSvc.getCleanGitRepositoryUrl(ProjectManager.getInstance().getCurrentProject().getEmfProject());
-        }
-        final String mainProjectGitUrlFinal = mainProjectGitUrl;
-        
         OverTimePopupDialogTask<List<String>> overTimePopupDialogTask = new OverTimePopupDialogTask<List<String>>() {
 
             @Override
@@ -459,14 +475,11 @@ public class ProjectRefSettingPage extends ProjectSettingPage {
                 if (repositoryService != null) {
                     
                     // for standard mode, same git repository, must be on same branch
-                    if (gitSvc != null && gitSvc.isGITProject(currentProject) && gitSvc.isStandardMode()) {
-                        String refProjectGitUrl = gitSvc.getCleanGitRepositoryUrl(lastSelectedProject.getEmfProject());
-                        if (StringUtils.equals(refProjectGitUrl, mainProjectGitUrlFinal)) {
-                            List<String> arr = new ArrayList<String>();
-                            String branchSelection = ProjectManager.getInstance().getMainProjectBranch(ProjectManager.getInstance().getCurrentProject());
-                            arr.add(branchSelection);
-                            return arr;
-                        }
+                    if (sameGitRepo(lastSelectedProject.getEmfProject())) {
+                        List<String> arr = new ArrayList<String>();
+                        String branchSelection = ProjectManager.getInstance().getMainProjectBranch(ProjectManager.getInstance().getCurrentProject());
+                        arr.add(branchSelection);
+                        return arr;
                     }
                     
                     // otherwise continue to retrieve as before
