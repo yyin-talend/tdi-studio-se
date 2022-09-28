@@ -67,7 +67,7 @@ import org.talend.repository.ui.login.connections.ConnectionUserPerReader;
  */
 public class LoginDialogV2 extends TrayDialog {
     
-    private static final String FIRST_RUN_SSO_FEATURE = "LoginDialogV2.firstRunSSOFeature";
+    private static final String FIRST_RUN_SSO_FEATURE = "PREFERENCE_TALEND_FIRST_RUN_SSO_FEATURE";
 
     public static final String FONT_TALEND_FOR_LOGIN_UI = "FONT_TALEND_FOR_LOGIN_UI"; //$NON-NLS-1$
 
