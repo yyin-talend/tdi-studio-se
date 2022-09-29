@@ -799,11 +799,19 @@ public abstract class DbGenerationManager {
         if (expression == null) {
             return null;
         }
+        String quote = getQuote(component);
+        if("\"".equals(quote)) {
+            quote = "\\\\\"";
+        }
         List<String> contextList = getContextList(component);
         boolean haveReplace = false;
         for (String context : contextList) {
             if (expression.contains(context)) {
-                expression = expression.replaceAll("\\b" + context + "\\b", "\" +" + context + "+ \""); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+                if(isAddQuotesInTableNames()) {
+                    expression = expression.replaceAll("\\b" + context + "\\b", "\" +" + "\""+quote+"\" + " + context + " + \""+quote+"\""+  "+ \""); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+                }else {
+                    expression = expression.replaceAll("\\b" + context + "\\b", "\" +" + context + "+ \""); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+                }
                 haveReplace = true;
             }
         }
@@ -811,7 +819,11 @@ public abstract class DbGenerationManager {
             List<String> connContextList = getConnectionContextList(component);
             for (String context : connContextList) {
                 if (expression.contains(context)) {
-                    expression = expression.replaceAll("\\b" + context + "\\b", "\" +" + context + "+ \""); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+                    if(isAddQuotesInTableNames()) {
+                        expression = expression.replaceAll("\\b" + context + "\\b", "\" +" + "\""+quote+"\" + " + context + " + \""+quote+"\""+  "+ \""); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+                    }else {
+                        expression = expression.replaceAll("\\b" + context + "\\b", "\" +" + context + "+ \""); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+                    }
                 }
             }
         }
@@ -824,7 +836,7 @@ public abstract class DbGenerationManager {
             }
         }
         for (String globalMapStr : globalMapList) {
-            expression = handleGlobalStringInExpression(expression, globalMapStr);
+            expression = handleGlobalStringInExpression(expression, globalMapStr, quote);
         }
         return expression;
     }
@@ -832,7 +844,7 @@ public abstract class DbGenerationManager {
     /**
      * try add [" +] before global string and add  [+ "] after if needed
      */
-    public String handleGlobalStringInExpression(String expression, String globalMapStr) {
+    public String handleGlobalStringInExpression(String expression, String globalMapStr,String quote) {
         String regex = parser.getGlobalMapExpressionRegex(globalMapStr);
         String replacement = parser.getGlobalMapReplacement(globalMapStr);
         int countMatches = org.apache.commons.lang.StringUtils.countMatches(expression, globalMapStr);
@@ -844,11 +856,23 @@ public abstract class DbGenerationManager {
             boolean foundtail = foundtail(expression, indexGlobal + globalMapStr.length(), expression.length());
             
             if(!foundhead && !foundtail) {
-                expression = expression.replaceAll(regex, "\" +" + replacement + "+ \"");//$NON-NLS-1$ //$NON-NLS-2$
+                if(isAddQuotesInTableNames()){
+                    expression = expression.replaceAll(regex, "\" +" + "\""+quote+"\" + " + replacement + " + \""+quote+"\""+ "+ \"");//$NON-NLS-1$ //$NON-NLS-2$
+                }else {
+                    expression = expression.replaceAll(regex, "\" +" + replacement + "+ \"");//$NON-NLS-1$ //$NON-NLS-2$
+                }
             } else if(!foundhead) {
-                expression = expression.replaceAll(regex, "\" +" + replacement);//$NON-NLS-1$ //$NON-NLS-2$
+                if(isAddQuotesInTableNames()) {
+                    expression = expression.replaceAll(regex, "\" +" + "\""+quote+"\" + " + replacement + " + \""+quote+"\"");//$NON-NLS-1$ //$NON-NLS-2$
+                }else {
+                    expression = expression.replaceAll(regex, "\" +" + replacement);//$NON-NLS-1$ //$NON-NLS-2$
+                }
             } else if(!foundtail){
-                expression = expression.replaceAll(regex, replacement + "+ \"");//$NON-NLS-1$ //$NON-NLS-2$
+                if(isAddQuotesInTableNames()) {
+                    expression = expression.replaceAll(regex, "\" +" + "\""+quote+"\" + " + replacement + " + \""+quote+"\"" + "+ \"");//$NON-NLS-1$ //$NON-NLS-2$
+                }else {
+                    expression = expression.replaceAll(regex, replacement + "+ \"");
+                }
             }
         } else {
             int length = globalMapStr.length();
@@ -866,11 +890,23 @@ public abstract class DbGenerationManager {
                 boolean foundtail = foundtail(expression, index[i] + globalMapStr.length(), i == index.length - 1?expression.length():index[i+1]);
                 
                 if(!foundhead && !foundtail) {
-                    globalMapStrReplacement[i] = "\" +" + replacement + "+ \"";//$NON-NLS-1$ //$NON-NLS-2$
+                    if(isAddQuotesInTableNames()){
+                        globalMapStrReplacement[i] = "\" +" + "\""+quote+"\" + " + replacement + " + \""+quote+"\""+ "+ \"";//$NON-NLS-1$ //$NON-NLS-2$
+                    }else {
+                        globalMapStrReplacement[i] = "\" +" + replacement + "+ \"";//$NON-NLS-1$ //$NON-NLS-2$
+                    }
                 } else if(!foundhead) {
-                    globalMapStrReplacement[i] = "\" +" + replacement;//$NON-NLS-1$ //$NON-NLS-2$
+                    if(isAddQuotesInTableNames()) {
+                        globalMapStrReplacement[i] = "\" +" + "\""+quote+"\" + " + replacement + " + \""+quote+"\"";//$NON-NLS-1$ //$NON-NLS-2$
+                    }else {
+                        globalMapStrReplacement[i] = "\" +" + replacement;//$NON-NLS-1$ //$NON-NLS-2$
+                    }
                 } else if(!foundtail){
-                    globalMapStrReplacement[i] = replacement + "+ \"";//$NON-NLS-1$ //$NON-NLS-2$
+                    if(isAddQuotesInTableNames()) {
+                        globalMapStrReplacement[i]  = "\" +" + "\""+quote+"\" + " + replacement + " + \""+quote+"\"" + "+ \"";//$NON-NLS-1$ //$NON-NLS-2$
+                    }else {
+                        globalMapStrReplacement[i] = replacement + "+ \"";//$NON-NLS-1$ //$NON-NLS-2$
+                    }
                 }
             }
             
@@ -941,7 +977,7 @@ public abstract class DbGenerationManager {
         if (expression == null) {
             return null;
         }
-
+        String quote = getQuote(component);
         if (TalendQuoteUtils.isStartEndsWithQuotation(expression, true, false)) {
             expression = " " + expression.substring(1);
         }
@@ -1003,7 +1039,7 @@ public abstract class DbGenerationManager {
             }
         }
         for (String globalMapStr : globalMapList) {
-            expression = handleGlobalStringInExpression(expression, globalMapStr);
+            expression = handleGlobalStringInExpression(expression, globalMapStr, quote);
         }
         return expression;
     }
@@ -1106,6 +1142,10 @@ public abstract class DbGenerationManager {
     
     protected Set<String> getGlobalMapList(DbMapComponent component, String sqlQuery) {
         return parser.getGlobalMapSet(sqlQuery);
+    }
+    
+    private boolean isContainsGlobalMap(String sqlQuery) {
+        return parser.getGlobalMapSet(sqlQuery).size()>0;
     }
 
     /**
@@ -1614,7 +1654,7 @@ public abstract class DbGenerationManager {
     }
 
     public String adaptQuoteForColumnName(DbMapComponent component, String columnEntry) {
-        if(ContextParameterUtils.isContainContextParam(columnEntry)||parser.isContainsGlobalMapExpression(columnEntry)) {
+        if(ContextParameterUtils.isContainContextParam(columnEntry)||parser.isContainsGlobalMapExpression(columnEntry) || isFieldContainsContext(component,columnEntry)) {
             return columnEntry;
         }
         String quote = getQuote(component);
@@ -1856,7 +1896,7 @@ public abstract class DbGenerationManager {
     }
     
     protected String getTableName(IConnection conn, String name, String quote) {
-        if (!isRefTableConnection(conn) && isAddQuotesInTableNames() && !ContextParameterUtils.isContainContextParam(name)) {
+        if (!isRefTableConnection(conn) && isAddQuotesInTableNames() && !ContextParameterUtils.isContainContextParam(name) && !isContainsGlobalMap(name)) {
             return getNameWithDelimitedIdentifier(name, quote);
         } else {
             return name;
@@ -1904,6 +1944,17 @@ public abstract class DbGenerationManager {
         return field;
     }
     
+    private boolean isFieldContainsContext(DbMapComponent component, String field) {
+        if(field!=null) {
+            List<String> contextList = getContextList(component);
+            for (String context : contextList) {
+                if (field.contains(context)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
     protected String getHandledAlias(DbMapComponent component, String alias) {
         if (alias != null) {
             List<String> contextList = getContextList(component);

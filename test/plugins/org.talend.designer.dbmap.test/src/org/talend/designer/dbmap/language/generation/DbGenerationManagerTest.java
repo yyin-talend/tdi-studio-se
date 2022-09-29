@@ -2123,12 +2123,13 @@ public class DbGenerationManagerTest extends DbGenerationManagerTestHelper {
     @Test
     public void testHandleGlobalString() {
         dbManager = new GenericDbGenerationManager();
+        String quote = "\"";
         //standard 
         String[] globalStrs = {"((Integer)globalMap.get(\"G_StrtCVRGskeySCHD\"))", "((Integer)globalMap.get(\"G_EndCVRGskeySCHD\"))", "((String)globalMap.get(\"sQRY_TXT\"))"};
         String expression = "SCHD_GEN_SKEY BETWEEN ((Integer)globalMap.get(\"G_StrtCVRGskeySCHD\"))  AND ((Integer)globalMap.get(\"G_EndCVRGskeySCHD\"))  AND (   ((String)globalMap.get(\"sQRY_TXT\"))    ) AND ((Integer)globalMap.get(\"G_StrtCVRGskeySCHD\")) AND 1=1";
         String expected = "SCHD_GEN_SKEY BETWEEN \" +((Integer)globalMap.get(\"G_StrtCVRGskeySCHD\"))+ \"  AND \" +((Integer)globalMap.get(\"G_EndCVRGskeySCHD\"))+ \"  AND (   \" +((String)globalMap.get(\"sQRY_TXT\"))+ \"    ) AND \" +((Integer)globalMap.get(\"G_StrtCVRGskeySCHD\"))+ \" AND 1=1";
         for(String globalStr:globalStrs) {
-            expression = dbManager.handleGlobalStringInExpression(expression, globalStr);
+            expression = dbManager.handleGlobalStringInExpression(expression, globalStr, quote);
         }
         assertEquals(expected ,expression);
         
@@ -2137,7 +2138,7 @@ public class DbGenerationManagerTest extends DbGenerationManagerTestHelper {
         expected = "SCHD_GEN_SKEY BETWEEN \"+((Integer)globalMap.get(\"G_StrtCVRGskeySCHD\"))+\"  AND \"+ ((Integer)globalMap.get(\"G_EndCVRGskeySCHD\")) + \" AND (   \" +((String)globalMap.get(\"sQRY_TXT\"))+ \"    ) AND \" +((Integer)globalMap.get(\"G_StrtCVRGskeySCHD\"))+ \" AND 1=1";
         
         for(String globalStr:globalStrs) {
-            expression = dbManager.handleGlobalStringInExpression(expression, globalStr);
+            expression = dbManager.handleGlobalStringInExpression(expression, globalStr, quote);
         }
         assertEquals(expected ,expression);
         
@@ -2146,7 +2147,7 @@ public class DbGenerationManagerTest extends DbGenerationManagerTestHelper {
         expression = "SCHD_GEN_SKEY BETWEEN \"+((Integer)globalMap.get(\"G_StrtCVRGskeySCHD\"))+\"  AND \"+ ((Integer)globalMap.get(\"G_EndCVRGskeySCHD\")) + \" AND (   ((String)globalMap.get(\"sQRY_TXT\"))    ) AND 1=1";
         expected = "SCHD_GEN_SKEY BETWEEN \"+((Integer)globalMap.get(\"G_StrtCVRGskeySCHD\"))+\"  AND \"+ ((Integer)globalMap.get(\"G_EndCVRGskeySCHD\")) + \" AND (   \" +((String)globalMap.get(\"sQRY_TXT\"))+ \"    ) AND 1=1";
         for(String globalStr:globalStrs) {
-            expression = dbManager.handleGlobalStringInExpression(expression, globalStr);
+            expression = dbManager.handleGlobalStringInExpression(expression, globalStr, quote);
         }
         assertEquals(expected ,expression);
         

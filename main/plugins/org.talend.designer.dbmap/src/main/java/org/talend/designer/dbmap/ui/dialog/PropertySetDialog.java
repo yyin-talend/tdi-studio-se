@@ -30,6 +30,7 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 import org.talend.core.model.components.IComponent;
@@ -51,7 +52,7 @@ public class PropertySetDialog extends Dialog {
     
     private Button addQuotesInTableNamesButton;
     
-    private Button delimitedCharacterButton;
+    private Label delimitedCharacterLabel;
     
     private Text delimitedCharacterText;
 
@@ -84,8 +85,8 @@ public class PropertySetDialog extends Dialog {
         FillLayout fill = new FillLayout();
         delimitedComp.setLayout(fill);
         
-        delimitedCharacterButton = new Button(delimitedComp,SWT.CHECK);
-        delimitedCharacterButton.setText(Messages.getString("PropertySetDialog.delimited_character.title"));
+        delimitedCharacterLabel = new Label(delimitedComp,SWT.NONE);
+        delimitedCharacterLabel.setText(Messages.getString("PropertySetDialog.delimited_character.title"));
         delimitedCharacterText = new Text(delimitedComp,SWT.BORDER);
         delimitedComp.layout();
         useAliasButton = new Button(container, SWT.CHECK);
@@ -106,21 +107,23 @@ public class PropertySetDialog extends Dialog {
         addQuotesInColumnsButton.setSelection(generationManager.isAddQuotesInColumns());
         addQuotesInTableNamesButton.setSelection(generationManager.isAddQuotesInTableNames());
         boolean delimitedCharacter = generationManager.isDelimitedCharacter();
-        delimitedCharacterButton.setSelection(delimitedCharacter);
         String text = generationManager.getDelimitedCharacterText();
+        IComponent component = mapperManager.getComponent().getComponent();
+        boolean isJdbcEltMap = false;
+        if (component != null && "tELTMap".equals(component.getName())) { //$NON-NLS-1$
+            isJdbcEltMap = true;
+        }
+        delimitedCharacterText.setVisible(isJdbcEltMap);
+        delimitedCharacterLabel.setVisible(isJdbcEltMap);
         if(StringUtils.isBlank(text)) {
             text = generationManager.getQuote(mapperManager.getComponent());
         }
         delimitedCharacterText.setText(text);
-        delimitedCharacterText.setEditable(delimitedCharacter);
-//        delimitedCharacterText.setEnabled(delimitedCharacter);
-        
         
         useAliasButton.setSelection(generationManager.isUseAliasInOutputTable());
 
         // Implement the column alias only for tELTTeradataMap/tELTOracleMap now.
         boolean enabled = false;
-        IComponent component = mapperManager.getComponent().getComponent();
         if (component != null && ("tELTTeradataMap".equals(component.getName()) || "tELTOracleMap".equals(component.getName()))) { //$NON-NLS-1$ //$NON-NLS-2$
             enabled = true;
         }
@@ -134,6 +137,13 @@ public class PropertySetDialog extends Dialog {
             public void widgetSelected(SelectionEvent e) {
                 mapperManager.setAddQuotesInColumns(addQuotesInColumnsButton.getSelection());
                 updateStatus();
+                if(addQuotesInColumnsButton.getSelection()) {
+                    mapperManager.setDelimitedCharacter(true);
+                }else {
+                    if(!addQuotesInTableNamesButton.getSelection()) {
+                        mapperManager.setDelimitedCharacter(false);
+                    }
+                }
             }
         });
         useAliasButton.addSelectionListener(new SelectionAdapter() {
@@ -150,24 +160,32 @@ public class PropertySetDialog extends Dialog {
             public void widgetSelected(SelectionEvent e) {
                 mapperManager.setAddQuotesInTableNames(addQuotesInTableNamesButton.getSelection());
                 updateStatus();
+                if(addQuotesInTableNamesButton.getSelection()) {
+                    mapperManager.setDelimitedCharacter(true);
+                }else {
+                    if(!addQuotesInColumnsButton.getSelection()) {
+                        mapperManager.setDelimitedCharacter(false);
+                    }
+                }
             }
         });
-        delimitedCharacterButton.addSelectionListener(new SelectionAdapter() {
-
-            @Override
-            public void widgetSelected(SelectionEvent e) {
-                boolean selected = delimitedCharacterButton.getSelection();
-                mapperManager.setDelimitedCharacter(selected);
-                delimitedCharacterText.setEditable(selected);
-                updateStatus();
-            }
-        });
+//        delimitedCharacterButton.addSelectionListener(new SelectionAdapter() {
+//
+//            @Override
+//            public void widgetSelected(SelectionEvent e) {
+//                boolean selected = delimitedCharacterButton.getSelection();
+//                mapperManager.setDelimitedCharacter(selected);
+//                delimitedCharacterText.setEditable(selected);
+//                updateStatus();
+//            }
+//        });
         
         delimitedCharacterText.addModifyListener( new ModifyListener() {
 
             public void modifyText(ModifyEvent e) {
                 mapperManager.setDelimitedCharacterText(delimitedCharacterText.getText());
                 updateStatus();
+                delimitedCharacterText.setBackground(null);
             }
 
         } );
@@ -184,14 +202,14 @@ public class PropertySetDialog extends Dialog {
         } else {
             addQuotesInTableNamesButton.setBackground(color);
         }
-        if (generationManager.isDelimitedCharacter() == delimitedCharacterButton.getSelection()) {
-            delimitedCharacterButton.setBackground(null);
-            delimitedCharacterText.setBackground(null);
-        } else {
-            delimitedCharacterButton.setBackground(color);
-            delimitedCharacterText.setBackground(color);
-
-        }
+//        if (generationManager.isDelimitedCharacter() == delimitedCharacterButton.getSelection()) {
+//            delimitedCharacterButton.setBackground(null);
+//            delimitedCharacterText.setBackground(null);
+//        } else {
+//            delimitedCharacterButton.setBackground(color);
+//            delimitedCharacterText.setBackground(color);
+//
+//        }
         if (generationManager.isUseAliasInOutputTable() == useAliasButton.getSelection()) {
             useAliasButton.setBackground(null);
         } else {
@@ -221,10 +239,10 @@ public class PropertySetDialog extends Dialog {
         mapperManager.setAddQuotesInColumns(addQuotesInColumnsButton.getSelection());
         String text = delimitedCharacterText.getText();
         mapperManager.setDelimitedCharacterText(text);
-        mapperManager.setDelimitedCharacter(delimitedCharacterButton.getSelection());
+        mapperManager.setDelimitedCharacter(addQuotesInColumnsButton.getSelection()||addQuotesInTableNamesButton.getSelection());
         mapperManager.setAddQuotesInTableNames(addQuotesInTableNamesButton.getSelection());
         mapperManager.useAliasInOutputTable(useAliasButton.getSelection());
-        if(delimitedCharacterButton.getSelection() && StringUtils.isBlank(text)) {
+        if(StringUtils.isBlank(text)&&(addQuotesInColumnsButton.getSelection()||addQuotesInTableNamesButton.getSelection())) {
             delimitedCharacterText.setBackground(delimitedCharacterText.getDisplay().getSystemColor(SWT.COLOR_RED));
             MessageDialog.openError(delimitedCharacterText.getShell(),
                     Messages.getString("PropertySetDialog.error_delimited_character.title"), //$NON-NLS-1$
