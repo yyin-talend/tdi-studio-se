@@ -389,7 +389,8 @@ public final class UpdateManagerUtils {
                                     if (checkOnlyLastVersion || version == null) {
                                         currentObj = factory.getLastVersion(currentId);
                                         // if it is joblet update, need to check whether lastest version is inside update requests.
-                                        if (isJobletUpdate(results, currentId)) {
+                                        // when version is null, it is latest version.
+                                        if (version != null && isJobletUpdate(results, currentId)) {
                                             if (!jobIdToVersion.get(currentId).contains(currentObj.getVersion())) {
                                                 currentObj = null;
                                             }

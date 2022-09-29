@@ -12,13 +12,10 @@
 // ============================================================================
 package org.talend.designer.core.utils;
 
-import java.util.Locale;
-
 import org.apache.commons.lang3.StringUtils;
 import org.eclipse.swt.program.Program;
 import org.talend.commons.utils.VersionUtils;
-import org.talend.core.CorePlugin;
-import org.talend.core.prefs.ITalendCorePrefConstants;
+import org.talend.core.prefs.GeneralParametersProvider;
 
 public class ComponentsHelpUtil {
 
@@ -54,7 +51,7 @@ public class ComponentsHelpUtil {
         } else {
             sb.append(PRODUCT_BASE_VERSION);
         }
-        sb.append("&lang=").append(getLanguage()); //$NON-NLS-1$
+        sb.append("&lang=").append(GeneralParametersProvider.getOnLineHelpLanguageSetting()); //$NON-NLS-1$
         sb.append("&env=prd");
         return sb.toString();
     }
@@ -62,20 +59,6 @@ public class ComponentsHelpUtil {
     public static void openLineHelp(String componentName) {
         String url = calOnLineHelpURL(componentName);
         Program.launch(url);
-    }
-
-    public static String getLanguage() {
-        String language = CorePlugin.getDefault().getPluginPreferences().getString(ITalendCorePrefConstants.LANGUAGE_SELECTOR);
-        if (StringUtils.isBlank(language)) {
-            language = Locale.getDefault().getLanguage();
-        }
-        if (Locale.FRENCH.getLanguage().equals(language)) {
-            return "fr";
-        }
-        if (Locale.JAPAN.getLanguage().equals(language)) {
-            return "ja";
-        }
-        return "en"; //$NON-NLS-1$ //$NON-NLS-2$
     }
 
     public static void resetVersionData(String version) {
