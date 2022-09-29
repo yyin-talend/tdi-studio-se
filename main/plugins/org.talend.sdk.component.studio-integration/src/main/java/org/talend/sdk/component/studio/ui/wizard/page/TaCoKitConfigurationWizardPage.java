@@ -25,9 +25,7 @@ import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.layout.GridData;
-import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Text;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.core.model.process.EComponentCategory;
 import org.talend.core.model.process.Element;
@@ -201,7 +199,9 @@ public class TaCoKitConfigurationWizardPage extends AbsTaCoKitWizardPage {
         if (EComponentCategory.ADVANCED == category && next == null && tacokitComposite != null) {
             tacokitComposite.setPropertyResized(true);
             tacokitComposite.addComponents(true);
+			tacokitComposite.updateParameter();
             tacokitComposite.refresh();
+
         }
         return next;
     }

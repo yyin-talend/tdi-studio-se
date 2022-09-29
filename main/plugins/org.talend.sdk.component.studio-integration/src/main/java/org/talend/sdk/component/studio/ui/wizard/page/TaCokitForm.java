@@ -69,9 +69,10 @@ public class TaCokitForm extends AbstractForm {
 	protected void initialize() {
 		if (composite != null) {
 
-			composite.updateParameter(connectionItem.getConnection());
+			composite.updateParameter();
 
 			composite.refresh();
+			//exportContextBtn.setEnabled(false);
 		}
 
 	}

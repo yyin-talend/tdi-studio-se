@@ -18,7 +18,6 @@ import org.apache.commons.lang.StringUtils;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.widgets.Composite;
 import org.talend.commons.exception.ExceptionHandler;
-import org.talend.core.model.metadata.builder.connection.Connection;
 import org.talend.core.model.process.EComponentCategory;
 import org.talend.core.model.process.EParameterFieldType;
 import org.talend.core.model.process.Element;
@@ -69,8 +68,8 @@ public class TaCoKitWizardComposite extends TaCoKitComposite {
                 .forEach(p -> p.unregisterRedrawListener("show", getRedrawListener()));
     }
 
-	public void updateParameter(Connection connection) {
-		TaCoKitConfigurationModel configurationModel = new TaCoKitConfigurationModel(connection);
+	public void updateParameter() {
+
 		boolean isContextMode = configurationModel.getConnection().isContextMode();
 		elem.getElementParameters().stream().filter(p -> p instanceof TaCoKitElementParameter)
 				.map(p -> (TaCoKitElementParameter) p).filter(TaCoKitElementParameter::isPersisted)
