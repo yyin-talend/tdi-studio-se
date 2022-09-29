@@ -30,40 +30,44 @@ import org.talend.sdk.component.studio.model.parameter.TaCoKitElementParameter.I
 import org.talend.sdk.component.studio.ui.composite.problemmanager.IProblemManager;
 
 /**
- * Stores {@link TaCoKitConfigurationModel} and sets Configuration Model Updater
- * listener for each {@link TaCoKitElementParameter}
+ * Stores {@link TaCoKitConfigurationModel} and sets Configuration Model Updater listener for each
+ * {@link TaCoKitElementParameter}
  */
 public class TaCoKitWizardComposite extends TaCoKitComposite {
 
-	private final TaCoKitConfigurationModel configurationModel;
+    private final TaCoKitConfigurationModel configurationModel;
 
-	private final IValueChangedListener configurationUpdater;
+    private final IValueChangedListener configurationUpdater;
 
-	private final boolean isNew;
+    private final boolean isNew;
 
-	public TaCoKitWizardComposite(final Composite parentComposite, final int styles, final EComponentCategory section,
-			final Element element, final TaCoKitConfigurationModel model, final boolean isCompactView,
-			final Color backgroundColor, final boolean isNew, final IProblemManager problemManager) {
-		super(parentComposite, styles, section, element, isCompactView, backgroundColor, problemManager);
-		this.configurationModel = model;
-		this.isNew = isNew;
-		configurationUpdater = new ConfigurationModelUpdater();
-		init();
-	}
+    public TaCoKitWizardComposite(final Composite parentComposite, final int styles, final EComponentCategory section,
+            final Element element, final TaCoKitConfigurationModel model, final boolean isCompactView,
+            final Color backgroundColor, final boolean isNew, final IProblemManager problemManager) {
+        super(parentComposite, styles, section, element, isCompactView, backgroundColor, problemManager);
+        this.configurationModel = model;
+        this.isNew = isNew;
+        configurationUpdater = new ConfigurationModelUpdater();
+        init();
+    }
 
-	@Override
-	protected void postInit() {
-		elem.getElementParameters().stream().filter(Objects::nonNull).filter(TaCoKitElementParameter.class::isInstance)
-				.map(TaCoKitElementParameter.class::cast)
-				.forEach(p -> p.registerRedrawListener("show", getRedrawListener()));
-	}
+    @Override
+    protected void postInit() {
+        elem.getElementParameters().stream()
+                .filter(Objects::nonNull)
+                .filter(TaCoKitElementParameter.class::isInstance)
+                .map(TaCoKitElementParameter.class::cast)
+                .forEach(p -> p.registerRedrawListener("show", getRedrawListener()));
+    }
 
-	@Override
-	protected void preDispose() {
-		elem.getElementParameters().stream().filter(Objects::nonNull).filter(TaCoKitElementParameter.class::isInstance)
-				.map(TaCoKitElementParameter.class::cast)
-				.forEach(p -> p.unregisterRedrawListener("show", getRedrawListener()));
-	}
+    @Override
+    protected void preDispose() {
+        elem.getElementParameters().stream()
+                .filter(Objects::nonNull)
+                .filter(TaCoKitElementParameter.class::isInstance)
+                .map(TaCoKitElementParameter.class::cast)
+                .forEach(p -> p.unregisterRedrawListener("show", getRedrawListener()));
+    }
 
 	public void updateParameter(Connection connection) {
 		TaCoKitConfigurationModel configurationModel = new TaCoKitConfigurationModel(connection);
@@ -95,91 +99,94 @@ public class TaCoKitWizardComposite extends TaCoKitComposite {
 
 	}
 
-	private void init() {
+    private void init() {
 		boolean isContextMode = configurationModel.getConnection().isContextMode();
-		elem.getElementParameters().stream().filter(p -> p instanceof TaCoKitElementParameter)
-				.map(p -> (TaCoKitElementParameter) p).filter(TaCoKitElementParameter::isPersisted)
-				.filter(p -> !EParameterFieldType.SCHEMA_TYPE.equals(p.getFieldType())).forEach(parameter -> {
-					parameter.addValueChangeListener(configurationUpdater);
-					try {
-						String key = parameter.getName();
-						if (isNew) {
-							parameter.setValue(parameter.getValue());
-						}
-						ValueModel valueModel = configurationModel.getValue(key);
-						if (valueModel != null) {
-							if (valueModel.getConfigurationModel() != configurationModel) {
-								parameter.setReadOnly(true);
-							}
-							if (StringUtils.isEmpty(valueModel.getValue())) {
-								return;
-							}
-
+        elem
+                .getElementParameters()
+                .stream()
+                .filter(p -> p instanceof TaCoKitElementParameter)
+                .map(p -> (TaCoKitElementParameter) p)
+                .filter(TaCoKitElementParameter::isPersisted)
+                .filter(p -> !EParameterFieldType.SCHEMA_TYPE.equals(p.getFieldType()))
+                .forEach(parameter -> {
+                    parameter.addValueChangeListener(configurationUpdater);
+                    try {
+                        String key = parameter.getName();
+                        if (isNew) {
+                            parameter.setValue(parameter.getValue());
+                        }
+                        ValueModel valueModel = configurationModel.getValue(key);
+                        if (valueModel != null) {
+                            if (valueModel.getConfigurationModel() != configurationModel) {
+                                parameter.setReadOnly(true);
+                            }
+                            if (StringUtils.isEmpty(valueModel.getValue())) {
+                                return;
+                            }
 							parameter.setContextMode(isContextMode);
 							String value = valueModel.getValue();
-
 							parameter.setValue(value);
-
 							parameter.setReadOnly(false);
-						}
-					} catch (Exception e) {
-						ExceptionHandler.process(e);
-					}
-				});
-	}
+                        }
+                    } catch (Exception e) {
+                        ExceptionHandler.process(e);
+                    }
+                });
+    }
 
-	/**
-	 * Removes {@link ConfigurationModelUpdater} from every
-	 * {@link TaCoKitElementParameter}, where it was registered
-	 */
-	@Override
-	public synchronized void dispose() {
-		elem.getElementParameters().stream().filter(p -> p instanceof TaCoKitElementParameter)
-				.map(p -> (TaCoKitElementParameter) p).forEach(p -> p.removeValueChangeListener(configurationUpdater));
-		super.dispose();
-	}
+    /**
+     * Removes {@link ConfigurationModelUpdater} from every {@link TaCoKitElementParameter}, where it was registered
+     */
+    @Override
+    public synchronized void dispose() {
+        elem
+                .getElementParameters()
+                .stream()
+                .filter(p -> p instanceof TaCoKitElementParameter)
+                .map(p -> (TaCoKitElementParameter) p)
+                .forEach(p -> p.removeValueChangeListener(configurationUpdater));
+        super.dispose();
+    }
 
-	/**
-	 * Overrides parent method as Property Type widget should not be shown in wizard
-	 * pages
-	 *
-	 * @return last Composite added
-	 */
-	@Override
-	protected Composite addCommonWidgets() {
-		return addSchemas(composite, null);
-	}
+    /**
+     * Overrides parent method as Property Type widget should not be shown in wizard pages
+     *
+     * @return last Composite added
+     */
+    @Override
+    protected Composite addCommonWidgets() {
+        return addSchemas(composite, null);
+    }
 
-	/**
-	 * Overrides implementation from parent class. This is a quickfix to skip schema
-	 * in repository widget
-	 *
-	 * @param parent    Composite on which widget will be added
-	 * @param parameter ElementParameter(Model) associated with widget
-	 */
-	@Override
-	protected void addWidgetIfActive(final Composite parent, final IElementParameter parameter) {
-		if (doShow(parameter) && !EParameterFieldType.SCHEMA_TYPE.equals(parameter.getFieldType())) {
-			addWidget(parent, parameter, null);
-		}
-	}
+    /**
+     * Overrides implementation from parent class.
+     * This is a quickfix to skip schema in repository widget
+     *
+     * @param parent    Composite on which widget will be added
+     * @param parameter ElementParameter(Model) associated with widget
+     */
+    @Override
+    protected void addWidgetIfActive(final Composite parent, final IElementParameter parameter) {
+        if (doShow(parameter) && !EParameterFieldType.SCHEMA_TYPE.equals(parameter.getFieldType())) {
+            addWidget(parent, parameter, null);
+        }
+    }
 
-	private class ConfigurationModelUpdater implements IValueChangedListener {
+    private class ConfigurationModelUpdater implements IValueChangedListener {
 
-		/**
-		 * Updates {@link TaCoKitConfigurationModel} each time some of
-		 * {@link TaCoKitElementParameter} is changed
-		 *
-		 * @param elementParameter changed {@link TaCoKitElementParameter}
-		 * @param oldValue         parameter old value
-		 * @param newValue         parameter new value
-		 */
-		@Override
-		public void onValueChanged(final TaCoKitElementParameter elementParameter, final Object oldValue,
-				final Object newValue) {
-			configurationModel.setValue(elementParameter);
-		}
+        /**
+         * Updates {@link TaCoKitConfigurationModel} each time some of {@link TaCoKitElementParameter} is changed
+         *
+         * @param elementParameter changed {@link TaCoKitElementParameter}
+         * @param oldValue         parameter old value
+         * @param newValue         parameter new value
+         */
+        @Override
+        public void onValueChanged(final TaCoKitElementParameter elementParameter, final Object oldValue,
+                final Object newValue) {
+            configurationModel.setValue(elementParameter);
+        }
 
-	}
+    }
 
 }
