@@ -353,19 +353,19 @@ public class TableController extends AbstractTableController {
         if (tableViewerCreator == null || tableViewerCreator.getTable() == null || tableViewerCreator.getTable().isDisposed()) {
             return;
         }
-		updateContextList(param);
-		Object value = param.getValue();
-		if (value instanceof List) {
-			// updateTableValues(param);
-			// (bug 5365)
-			checkAndSetDefaultValue(param);
-			if (tableViewerCreator != null) {
-				if (!tableViewerCreator.getInputList().equals(value)) {
-					tableViewerCreator.init((List) value);
-				}
-				tableViewerCreator.getTableViewer().refresh();
-			}
-		}
+        updateContextList(param);
+        Object value = param.getValue();
+        if (value instanceof List) {
+            // updateTableValues(param);
+            // (bug 5365)
+            checkAndSetDefaultValue(param);
+            if (tableViewerCreator != null) {
+                if (!tableViewerCreator.getInputList().equals(value)) {
+                    tableViewerCreator.init((List) value);
+                }
+                tableViewerCreator.getTableViewer().refresh();
+            }
+        }
 		if (param.isContextMode()) {
 			revertToolBarButtonState(false);
 			tableViewerCreator.getTable().setEnabled(false);
@@ -373,8 +373,6 @@ public class TableController extends AbstractTableController {
 			revertToolBarButtonState(true);
 			tableViewerCreator.getTable().setEnabled(true);
 		}
-
-
     }
 
     @SuppressWarnings("unchecked")
