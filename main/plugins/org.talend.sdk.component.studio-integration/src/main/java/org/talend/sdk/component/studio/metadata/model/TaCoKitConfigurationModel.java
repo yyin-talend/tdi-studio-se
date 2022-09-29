@@ -173,17 +173,18 @@ public class TaCoKitConfigurationModel {
         return false;
     }
 
-	public boolean isStringTypeParameter(final String key) {
+	public boolean isNotENUMTypeParameter(final String key) {
 		List<SimplePropertyDefinition> properties = getConfigTypeNode().getProperties();
 		if (key == null || key.isEmpty() || properties == null || properties.isEmpty()) {
 			return false;
 		}
 		for (SimplePropertyDefinition property : properties) {
 			String type = property.getType();
-			if (TaCoKitUtil.equals(key, property.getPath()) && StringUtils.equalsIgnoreCase("STRING", type)) {
+			if (TaCoKitUtil.equals(key, property.getPath()) && !StringUtils.equalsIgnoreCase("ENUM", type)) {
 				return true;
 			}
 		}
+
 		return false;
 	}
 

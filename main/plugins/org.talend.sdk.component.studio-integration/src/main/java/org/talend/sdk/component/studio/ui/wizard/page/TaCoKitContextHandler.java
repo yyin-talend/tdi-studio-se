@@ -51,8 +51,8 @@ public class TaCoKitContextHandler extends AbstractRepositoryContextHandler {
 		Map<String, String> properties = taCoKitConfigurationModel.getProperties();
 		Set<String> keySet = properties.keySet();
 		keySet.stream().forEach(k -> {
-			boolean isStringType = taCoKitConfigurationModel.isStringTypeParameter(k);
-			if (isStringType) {
+			boolean isNotENUMTypeParameter = taCoKitConfigurationModel.isNotENUMTypeParameter(k);
+			if (isNotENUMTypeParameter) {
 				TaCoKitParamName taCoKitParamName = new TaCoKitParamName(k);
 				set.add(taCoKitParamName);
 			}
@@ -136,8 +136,8 @@ public class TaCoKitContextHandler extends AbstractRepositoryContextHandler {
 		if (properties != null && properties.size() > 0) {
 			Set<String> keySet = properties.keySet();
 			keySet.stream().forEach(key -> {
-				boolean isStringType = taCoKitConfigurationModel.isStringTypeParameter(key);
-				if (isStringType) {
+				boolean isNotENUMTypeParameter = taCoKitConfigurationModel.isNotENUMTypeParameter(key);
+				if (isNotENUMTypeParameter) {
 					revertProperties(taCoKitConfigurationModel, contextType, key);
 				}
 
