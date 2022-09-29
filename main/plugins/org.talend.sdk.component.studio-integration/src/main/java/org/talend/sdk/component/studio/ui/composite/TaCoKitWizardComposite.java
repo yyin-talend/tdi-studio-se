@@ -33,8 +33,8 @@ import org.talend.sdk.component.studio.ui.composite.problemmanager.IProblemManag
  * Stores {@link TaCoKitConfigurationModel} and sets Configuration Model Updater
  * listener for each {@link TaCoKitElementParameter}
  */
-
 public class TaCoKitWizardComposite extends TaCoKitComposite {
+
 	private final TaCoKitConfigurationModel configurationModel;
 
 	private final IValueChangedListener configurationUpdater;
