@@ -25,7 +25,6 @@ import java.util.Optional;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
-import org.apache.commons.lang3.StringUtils;
 import org.talend.core.model.process.EParameterFieldType;
 import org.talend.core.model.process.IElement;
 import org.talend.core.model.process.IElementParameter;
@@ -108,20 +107,27 @@ public class TableElementParameter extends TaCoKitElementParameter {
     @Override
     public void setValue(final Object newValue) {
 		IElement elem = getElement();
-		String name = getName();
 		boolean contextMode = isContextMode();
-		if (contextMode && elem != null && StringUtils.equals("Apache Kudu", elem.getElementName())
-				&& StringUtils.equals("configuration.masterAddresses", name) && newValue instanceof String) {
+		if (contextMode && elem != null && newValue instanceof String) {
 
 			List<Map<String, Object>> table = ValueConverter.toTable((String) newValue);
 
 			if (table == null || table.size() == 0 || table.get(0).isEmpty()) {
-				String contetValue = "[{configuration.masterAddresses[].hostname=" + (String) newValue
-						+ ", configuration.masterAddresses[].port=" + newValue + "}]";
 
-				final List<Map<String, Object>> tableValue = ValueConverter.toTable((String) contetValue);
+				List<Map<String, Object>> tableValue1 = new ArrayList<Map<String, Object>>();
 
-				super.setValue(fromRepository(tableValue));
+				HashMap<String, Object> hashMap = new HashMap<String, Object>();
+
+				String[] listItemsDisplayCodeName = getListItemsDisplayCodeName();
+
+				if (listItemsDisplayCodeName != null && listItemsDisplayCodeName.length > 0) {
+					for (String s : listItemsDisplayCodeName) {
+						hashMap.put(s, (String) newValue);
+					}
+					tableValue1.add(hashMap);
+				}
+
+				super.setValue(fromRepository(tableValue1));
 			} else {
 
 				final List<Map<String, Object>> tableValue = table;
