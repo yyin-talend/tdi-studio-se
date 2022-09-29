@@ -17,34 +17,49 @@ import org.talend.core.utils.TalendQuoteUtils;
 import org.talend.designer.core.model.utils.emf.talendfile.ContextType;
 import org.talend.metadata.managment.ui.model.IConnParamName;
 import org.talend.metadata.managment.ui.utils.ConnectionContextHelper;
-import org.talend.metadata.managment.ui.utils.TaCoKitConnectionContextUtils.ETaCoKitParamName;
 import org.talend.metadata.managment.ui.wizard.context.AbstractRepositoryContextHandler;
-import org.talend.sdk.component.server.front.model.ConfigTypeNode;
 import org.talend.sdk.component.studio.metadata.model.TaCoKitConfigurationModel;
 import org.talend.sdk.component.studio.metadata.model.TaCoKitConfigurationModel.ValueModel;
 
-public class TaCoKitNeo4jContextHandler extends AbstractRepositoryContextHandler {
+public class TaCoKitContextHandler extends AbstractRepositoryContextHandler {
+
+
+	public class TaCoKitParamName implements IConnParamName {
+
+		private String name;
+
+		public TaCoKitParamName(String name) {
+			this.name = name;
+		}
+
+		public String getName() {
+			return this.name;
+		}
+	}
 
 	@Override
 	public boolean isRepositoryConType(Connection connection) {
-		String name = null;
 		boolean isTacokit = TaCoKitConfigurationModel.isTacokit(connection);
-		if (isTacokit) {
-			TaCoKitConfigurationModel taCoKitConfigurationModel = new TaCoKitConfigurationModel(connection);
-			ConfigTypeNode configTypeNode = taCoKitConfigurationModel.getConfigTypeNode();
-			name = configTypeNode.getDisplayName();
-		}
-		return StringUtils.equals(name, "Neo4j");
-	}
-	
-	@Override
-	public Set<ETaCoKitParamName> collectConParameters(){
 
-		Set<ETaCoKitParamName> set  = new HashSet<ETaCoKitParamName>();
-		set.add(ETaCoKitParamName.ConnectionUri);
-		set.add(ETaCoKitParamName.Password);
-		set.add(ETaCoKitParamName.Username);
-		
+		return isTacokit;
+	}
+
+	public Set<IConnParamName> collectConParameters(Connection conn) {
+
+		Set<IConnParamName> set = new HashSet<IConnParamName>();
+		TaCoKitConfigurationModel taCoKitConfigurationModel = new TaCoKitConfigurationModel(conn);
+		Map<String, String> properties = taCoKitConfigurationModel.getProperties();
+		Set<String> keySet = properties.keySet();
+		keySet.stream().forEach(k -> {
+			boolean isStringType = taCoKitConfigurationModel.isStringTypeParameter(k);
+			if (isStringType) {
+				TaCoKitParamName taCoKitParamName = new TaCoKitParamName(k);
+				set.add(taCoKitParamName);
+			}
+
+		});
+
+
 		return set;
 	}
 
@@ -59,24 +74,19 @@ public class TaCoKitNeo4jContextHandler extends AbstractRepositoryContextHandler
 		String paramName = null;
 
 		for (IConnParamName param : paramSet) {
-			if (param instanceof ETaCoKitParamName) {
-				ETaCoKitParamName hadoopParam = (ETaCoKitParamName) param;
-				paramName = paramPrefix + hadoopParam;
-				switch (hadoopParam) {
+			if (param instanceof TaCoKitParamName) {
+				TaCoKitParamName taCoKitParamName = (TaCoKitParamName) param;
+				String name = taCoKitParamName.getName();
+				String substringName = StringUtils.substringAfter(name, ConnectionContextHelper.DOT);
+				if (StringUtils.isNoneBlank(substringName)) {
 
-				case ConnectionUri:
-					ConnectionContextHelper.createParameters(varList, paramName,
-							properties.get("configuration.connectionUri"));
-					break;
-				case Password:
-					ConnectionContextHelper.createParameters(varList, paramName, properties.get("configuration.password"));
-					break;
-				case Username:
-					ConnectionContextHelper.createParameters(varList, paramName,
-							properties.get("configuration.username"));
-					break;
-				default:
+					paramName = paramPrefix + substringName;
+				} else {
+					paramName = paramPrefix + name;
 				}
+
+				ConnectionContextHelper.createParameters(varList, paramName, properties.get(name));
+
 			}
 		}
 
@@ -91,13 +101,21 @@ public class TaCoKitNeo4jContextHandler extends AbstractRepositoryContextHandler
 		}
 
 		String originalVariableName = prefixName + ConnectionContextHelper.LINE;
-		String hadoopVariableName = null;
+		String taCokitVariableName = null;
 		for (IConnParamName param : paramSet) {
-			if (param instanceof ETaCoKitParamName) {
-				ETaCoKitParamName hadoopConnectionParam = (ETaCoKitParamName) param;
+			if (param instanceof TaCoKitParamName) {
+				TaCoKitParamName taCoKitParam = (TaCoKitParamName) param;
 				originalVariableName = prefixName + ConnectionContextHelper.LINE;
-				hadoopVariableName = originalVariableName + hadoopConnectionParam;
-				matchContextForAttribues(connection, hadoopConnectionParam, hadoopVariableName);
+				String name = taCoKitParam.getName();
+				String substringName = StringUtils.substringAfter(name, ConnectionContextHelper.DOT);
+				if (StringUtils.isNoneBlank(substringName)) {
+
+					taCokitVariableName = originalVariableName + substringName;
+				} else {
+					taCokitVariableName = originalVariableName + name;
+				}
+
+				matchContextForAttribues(connection, taCoKitParam, taCokitVariableName);
 			}
 		}
 
@@ -114,9 +132,18 @@ public class TaCoKitNeo4jContextHandler extends AbstractRepositoryContextHandler
 	public void revertPropertiesForContextMode(Connection connection, ContextType contextType) {
 
 		TaCoKitConfigurationModel taCoKitConfigurationModel = new TaCoKitConfigurationModel(connection);
-		revertProperties(taCoKitConfigurationModel, contextType, "configuration.connectionUri");
-		revertProperties(taCoKitConfigurationModel, contextType, "configuration.password");
-		revertProperties(taCoKitConfigurationModel, contextType, "configuration.username");
+		Map<String, String> properties = taCoKitConfigurationModel.getProperties();
+		if (properties != null && properties.size() > 0) {
+			Set<String> keySet = properties.keySet();
+			keySet.stream().forEach(key -> {
+				boolean isStringType = taCoKitConfigurationModel.isStringTypeParameter(key);
+				if (isStringType) {
+					revertProperties(taCoKitConfigurationModel, contextType, key);
+				}
+
+			});
+
+		}
 	}
 
 	private void revertProperties(TaCoKitConfigurationModel taCoKitConfigurationModel, ContextType contextType,
@@ -144,25 +171,10 @@ public class TaCoKitNeo4jContextHandler extends AbstractRepositoryContextHandler
 	@Override
 	protected void matchContextForAttribues(Connection connection, IConnParamName param, String contextVariableName) {
 		TaCoKitConfigurationModel taCoKitConfigurationModel = new TaCoKitConfigurationModel(connection);
-
-		if (param instanceof ETaCoKitParamName) {
-			ETaCoKitParamName hadoopParam = (ETaCoKitParamName) param;
-			switch (hadoopParam) {
-			case ConnectionUri:
-				taCoKitConfigurationModel.setValue("configuration.connectionUri",
-						ContextParameterUtils.getNewScriptCode(contextVariableName, LANGUAGE));
-				break;
-			case Password:
-				taCoKitConfigurationModel.setValue("configuration.password",
-						ContextParameterUtils.getNewScriptCode(contextVariableName, LANGUAGE));
-				break;
-			case Username:
-				taCoKitConfigurationModel.setValue("configuration.username",
-						ContextParameterUtils.getNewScriptCode(contextVariableName, LANGUAGE));
-				break;
-			
-			default:
-			}
+		if (param instanceof TaCoKitParamName) {
+			TaCoKitParamName taCoKitParamName = (TaCoKitParamName) param;
+			taCoKitConfigurationModel.setValue(taCoKitParamName.getName(),
+					ContextParameterUtils.getNewScriptCode(contextVariableName, LANGUAGE));
 		}
 
 	}

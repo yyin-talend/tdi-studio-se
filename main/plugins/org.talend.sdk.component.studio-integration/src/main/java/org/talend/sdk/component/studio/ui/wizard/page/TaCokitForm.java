@@ -6,12 +6,10 @@ import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.widgets.Composite;
 import org.talend.core.model.properties.ConnectionItem;
+import org.talend.metadata.managment.ui.model.IConnParamName;
 import org.talend.metadata.managment.ui.utils.IRepositoryContextHandler;
 import org.talend.metadata.managment.ui.utils.RepositoryContextManager;
-import org.talend.metadata.managment.ui.utils.TaCoKitConnectionContextUtils.ETaCoKitParamName;
 import org.talend.metadata.managment.ui.wizard.AbstractForm;
-import org.talend.sdk.component.server.front.model.ConfigTypeNode;
-import org.talend.sdk.component.studio.metadata.model.TaCoKitConfigurationModel;
 import org.talend.sdk.component.studio.ui.composite.TaCoKitWizardComposite;
 
 public class TaCokitForm extends AbstractForm {
@@ -43,11 +41,11 @@ public class TaCokitForm extends AbstractForm {
 
 	protected void collectConParameters() {
 		
-		Set<ETaCoKitParamName> parameters = null;
+		Set<IConnParamName> parameters = null;
 
 		for (IRepositoryContextHandler handler : RepositoryContextManager.getHandlers()) {
 			if (connectionItem != null && handler.isRepositoryConType(connectionItem.getConnection())) {
-				parameters = handler.collectConParameters();
+				parameters = handler.collectConParameters(connectionItem.getConnection());
 				break;
 			}
 		}

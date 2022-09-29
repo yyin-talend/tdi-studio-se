@@ -332,144 +332,15 @@
   <extension
           point="org.talend.core.repository.repository_context">
        <RepositoryContext
-             class="org.talend.sdk.component.studio.ui.wizard.page.TaCoKitNetSuiteContextHandler">
+             class="org.talend.sdk.component.studio.ui.wizard.page.TaCoKitContextHandler">
        </RepositoryContext>
     </extension>
     <extension
           point="org.talend.core.runtime.service">
        <Service
-             class="org.talend.sdk.component.studio.service.TaCoKitNetSuiteContextUpdateService"
+             class="org.talend.sdk.component.studio.service.TaCoKitContextUpdateService"
              serviceId="IRepositoryContextUpdateService">
        </Service>
     </extension>
-  <extension
-          point="org.talend.core.repository.repository_context">
-       <RepositoryContext
-             class="org.talend.sdk.component.studio.ui.wizard.page.TaCoKitWorkdayContextHandler">
-       </RepositoryContext>
-    </extension>
-    <extension
-          point="org.talend.core.runtime.service">
-       <Service
-             class="org.talend.sdk.component.studio.service.TaCoKitWorkdayContextUpdateService"
-             serviceId="IRepositoryContextUpdateService">
-       </Service>
-    </extension>
-  <extension
-          point="org.talend.core.repository.repository_context">
-       <RepositoryContext
-             class="org.talend.sdk.component.studio.ui.wizard.page.TaCoKitNeo4jContextHandler">
-       </RepositoryContext>
-    </extension>
-    <extension
-          point="org.talend.core.runtime.service">
-       <Service
-             class="org.talend.sdk.component.studio.service.TaCoKitNeo4jContextUpdateService"
-             serviceId="IRepositoryContextUpdateService">
-       </Service>
-    </extension>
-  <extension
-          point="org.talend.core.repository.repository_context">
-       <RepositoryContext
-             class="org.talend.sdk.component.studio.ui.wizard.page.TaCoKitAzureContextHandler">
-       </RepositoryContext>
-    </extension>
-    <extension
-          point="org.talend.core.runtime.service">
-       <Service
-             class="org.talend.sdk.component.studio.service.TaCoKitAzureContextUpdateService"
-             serviceId="IRepositoryContextUpdateService">
-       </Service>
-    </extension>
-  <extension
-          point="org.talend.core.repository.repository_context">
-       <RepositoryContext
-             class="org.talend.sdk.component.studio.ui.wizard.page.TaCoKitRabbitMQContextHandler">
-       </RepositoryContext>
-    </extension>
-    <extension
-          point="org.talend.core.runtime.service">
-       <Service
-             class="org.talend.sdk.component.studio.service.TaCoKitRabbitMQContextUpdateService"
-             serviceId="IRepositoryContextUpdateService">
-       </Service>
-    </extension>
-  <extension
-          point="org.talend.core.repository.repository_context">
-       <RepositoryContext
-             class="org.talend.sdk.component.studio.ui.wizard.page.TaCoKitZendeskContextHandler">
-       </RepositoryContext>
-    </extension>
-    <extension
-          point="org.talend.core.runtime.service">
-       <Service
-             class="org.talend.sdk.component.studio.service.TaCoKitZendeskContextUpdateService"
-             serviceId="IRepositoryContextUpdateService">
-       </Service>
-    </extension>
-  <extension
-          point="org.talend.core.repository.repository_context">
-       <RepositoryContext
-             class="org.talend.sdk.component.studio.ui.wizard.page.TaCoKitSambaContextHandler">
-       </RepositoryContext>
-    </extension>
-    <extension
-          point="org.talend.core.runtime.service">
-       <Service
-             class="org.talend.sdk.component.studio.service.TaCoKitSambaContextUpdateService"
-             serviceId="IRepositoryContextUpdateService">
-       </Service>
-    </extension>
-  <extension
-          point="org.talend.core.repository.repository_context">
-       <RepositoryContext
-             class="org.talend.sdk.component.studio.ui.wizard.page.TaCoKitCyberarkContextHandler">
-       </RepositoryContext>
-    </extension>
-    <extension
-          point="org.talend.core.runtime.service">
-       <Service
-             class="org.talend.sdk.component.studio.service.TaCoKitCyberarkContextUpdateService"
-             serviceId="IRepositoryContextUpdateService">
-       </Service>
-    </extension>
-  <extension
-          point="org.talend.core.repository.repository_context">
-       <RepositoryContext
-             class="org.talend.sdk.component.studio.ui.wizard.page.TaCoKitTableauContextHandler">
-       </RepositoryContext>
-    </extension>
-    <extension
-          point="org.talend.core.runtime.service">
-       <Service
-             class="org.talend.sdk.component.studio.service.TaCoKitTableauContextUpdateService"
-             serviceId="IRepositoryContextUpdateService">
-       </Service>
-    </extension>
-  <extension
-          point="org.talend.core.repository.repository_context">
-       <RepositoryContext
-             class="org.talend.sdk.component.studio.ui.wizard.page.TaCoKitAnalyticsContextHandler">
-       </RepositoryContext>
-    </extension>
-    <extension
-          point="org.talend.core.runtime.service">
-       <Service
-             class="org.talend.sdk.component.studio.service.TaCoKitAnalyticsContextUpdateService"
-             serviceId="IRepositoryContextUpdateService">
-       </Service>
-    </extension>
-  <extension
-          point="org.talend.core.repository.repository_context">
-       <RepositoryContext
-             class="org.talend.sdk.component.studio.ui.wizard.page.TaCoKitKuduContextHandler">
-       </RepositoryContext>
-    </extension>
-    <extension
-          point="org.talend.core.runtime.service">
-       <Service
-             class="org.talend.sdk.component.studio.service.TaCoKitKuduContextUpdateService"
-             serviceId="IRepositoryContextUpdateService">
-       </Service>
-    </extension>
+
 </plugin>

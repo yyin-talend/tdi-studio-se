@@ -70,6 +70,13 @@ public class ActiveIfListener implements PropertyChangeListener {
         if(!"value".equals(event.getPropertyName())){
             return;
         }
+//		Object source = event.getSource();
+//		if (source instanceof TaCoKitElementParameter) {
+//			TaCoKitElementParameter parameter = (TaCoKitElementParameter) source;
+//			if (parameter.isContextMode()) {
+//				return;
+//			}
+//		}
         final boolean show = conditions.stream()
                                        .allMatch(group -> group.getAggregator()
                                                                .apply(group.getConditions().stream()

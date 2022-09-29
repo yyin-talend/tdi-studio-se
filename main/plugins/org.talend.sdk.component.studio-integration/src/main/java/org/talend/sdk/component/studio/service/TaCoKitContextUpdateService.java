@@ -12,29 +12,45 @@
 // ============================================================================
 package org.talend.sdk.component.studio.service;
 
+import java.util.Map;
+import java.util.Set;
+
 import org.apache.commons.lang3.StringUtils;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.core.AbstractRepositoryContextUpdateService;
 import org.talend.core.model.metadata.builder.connection.Connection;
-import org.talend.sdk.component.server.front.model.ConfigTypeNode;
 import org.talend.sdk.component.studio.metadata.model.TaCoKitConfigurationModel;
 import org.talend.sdk.component.studio.metadata.model.TaCoKitConfigurationModel.ValueModel;
 
-public class TaCoKitKuduContextUpdateService extends AbstractRepositoryContextUpdateService {
+public class TaCoKitContextUpdateService extends AbstractRepositoryContextUpdateService {
 
 	@Override
 	public boolean updateContextParameter(Connection conn, String oldValue, String newValue) {
 		boolean isModified = false;
 		if (conn.isContextMode()) {
 			TaCoKitConfigurationModel taCoKitConfigurationModel = new TaCoKitConfigurationModel(conn);
-			ValueModel jsonCredentialsValue;
+			Map<String, String> properties = taCoKitConfigurationModel.getProperties();
+
+			ValueModel value;
+
 			try {
-				jsonCredentialsValue = taCoKitConfigurationModel.getValue("configuration.masterAddresses");
-				if (jsonCredentialsValue != null && StringUtils.equals(oldValue, jsonCredentialsValue.getValue())) {
-					taCoKitConfigurationModel.setValue("configuration.masterAddresses",
-							jsonCredentialsValue.getValue());
-					isModified = true;
+				if (properties != null && properties.size() > 0) {
+					Set<String> keySet = properties.keySet();
+					for (String key : keySet) {
+						boolean isStringType = taCoKitConfigurationModel.isStringTypeParameter(key);
+						if (isStringType) {
+							value = taCoKitConfigurationModel.getValue(key);
+							if (value != null && StringUtils.equals(oldValue, value.getValue())) {
+								taCoKitConfigurationModel.setValue(key, value.getValue());
+								isModified = true;
+							}
+						}
+
+
+					}
+
 				}
+
 			} catch (Exception e) {
 				ExceptionHandler.process(e);
 			}
@@ -45,13 +61,8 @@ public class TaCoKitKuduContextUpdateService extends AbstractRepositoryContextUp
 
 	@Override
 	public boolean accept(Connection connection) {
-		String name = null;
 		boolean isTacokit = TaCoKitConfigurationModel.isTacokit(connection);
-		if (isTacokit) {
-			TaCoKitConfigurationModel taCoKitConfigurationModel = new TaCoKitConfigurationModel(connection);
-			ConfigTypeNode configTypeNode = taCoKitConfigurationModel.getConfigTypeNode();
-			name = configTypeNode.getDisplayName();
-		}
-		return StringUtils.equals(name, "Apache Kudu");
+
+		return isTacokit;
 	}
 }
