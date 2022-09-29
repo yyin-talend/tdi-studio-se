@@ -137,7 +137,7 @@ public class TableElementParameter extends TaCoKitElementParameter {
 		} else {
 			throw new IllegalArgumentException("wrong type on new value: " + newValue.getClass().getName());
 		}
-	}
+    }
 
     @Override
     public void updateValueOnly(final Object newValue) {
