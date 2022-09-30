@@ -37,8 +37,8 @@ public class TaCoKitContextUpdateService extends AbstractRepositoryContextUpdate
 				if (properties != null && properties.size() > 0) {
 					Set<String> keySet = properties.keySet();
 					for (String key : keySet) {
-						boolean isStringType = taCoKitConfigurationModel.isStringTypeParameter(key);
-						if (isStringType) {
+						boolean isNotENUMType = taCoKitConfigurationModel.isNotENUMTypeParameter(key);
+						if (isNotENUMType) {
 							value = taCoKitConfigurationModel.getValue(key);
 							if (value != null && StringUtils.equals(oldValue, value.getValue())) {
 								taCoKitConfigurationModel.setValue(key, value.getValue());
