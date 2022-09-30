@@ -151,7 +151,7 @@
 									<outputDirectory>${talendMQConnectionUtil.dir}</outputDirectory>
 								</artifactItem>
 								<artifactItem>
-									<groupId>org.talend.libraries</groupId>
+									<groupId>org.talend.components</groupId>
 									<artifactId>talendssl</artifactId>
 									<version>1.0-20190118</version>
 									<type>jar</type>
