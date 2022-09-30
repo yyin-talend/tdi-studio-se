@@ -596,9 +596,6 @@ public class ComboController extends AbstractElementPropertySectionController {
 		if (param.isContextMode()) {
 			combo.setBackground(Display.getDefault().getSystemColor(SWT.COLOR_YELLOW));
 			combo.setEnabled(false);
-		} else {
-			combo.setBackground(Display.getDefault().getSystemColor(SWT.COLOR_LIST_BACKGROUND));
-			combo.setEnabled(true);
 		}
 
     }
