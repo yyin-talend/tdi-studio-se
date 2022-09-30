@@ -76,8 +76,8 @@ public class TaCoKitContextHandler extends AbstractRepositoryContextHandler {
 		for (IConnParamName param : paramSet) {
 			if (param instanceof TaCoKitParamName) {
 				TaCoKitParamName taCoKitParamName = (TaCoKitParamName) param;
-				String name = taCoKitParamName.getName();
-				String substringName = StringUtils.substringAfter(name, ConnectionContextHelper.DOT);
+				String name = taCoKitParamName.getName();// configuration.accout
+				String substringName = StringUtils.substringAfter(name, ConnectionContextHelper.DOT);// accout
 				if (StringUtils.isNoneBlank(substringName)) {
 
 					paramName = paramPrefix + substringName;

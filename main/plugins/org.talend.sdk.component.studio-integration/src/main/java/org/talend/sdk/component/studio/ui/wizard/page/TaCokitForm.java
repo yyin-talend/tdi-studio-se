@@ -17,10 +17,10 @@ public class TaCokitForm extends AbstractForm {
 	private TaCoKitWizardComposite composite;
 
 
-	protected TaCokitForm(Composite parent, ConnectionItem connectionItem, int style) {
+	protected TaCokitForm(Composite parent, ConnectionItem connectionItem, boolean hasContextBtn, int style) {
 		super(parent, style);
 		setConnectionItem(connectionItem);
-		setupForm(true);
+		setupForm(hasContextBtn);
 		FormData data = new FormData();
 		data.left = new FormAttachment(0, 0);
 		data.right = new FormAttachment(100, 0);
@@ -72,7 +72,7 @@ public class TaCokitForm extends AbstractForm {
 			composite.updateParameter();
 
 			composite.refresh();
-			//exportContextBtn.setEnabled(false);
+
 		}
 
 	}

@@ -117,7 +117,10 @@ public class TaCoKitConfigurationWizardPage extends AbsTaCoKitWizardPage {
             final ConfigTypeNode configTypeNode = runtimeData.getConfigTypeNode();
             final DummyComponent component = new DummyComponent(configTypeNode.getDisplayName());
             final DataNode node = new DataNode(component, component.getName());
-            TaCokitForm  taCokitForm = new TaCokitForm(container,runtimeData.getConnectionItem(), SWT.NONE);
+			boolean hasContextBtn = EComponentCategory.BASIC == category;
+			TaCokitForm taCokitForm = new TaCokitForm(container, runtimeData.getConnectionItem(), hasContextBtn,
+					SWT.NONE);
+
             //add version params
             Map<String, ConfigTypeNode> nodes = Lookups.taCoKitCache().getConfigTypeNodeMap();
             configTypeNode.getProperties()
