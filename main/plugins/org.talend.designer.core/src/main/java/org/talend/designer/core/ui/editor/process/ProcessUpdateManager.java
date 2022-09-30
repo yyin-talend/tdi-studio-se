@@ -2382,7 +2382,7 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
                                 param.setReadOnly(true);
                             }
                         }
-                        if (node instanceof INode) {
+						if (node instanceof INode) {
 							contextData.put("NODE", (INode) node);
 						}
                         // for context mode(bug 5198)
