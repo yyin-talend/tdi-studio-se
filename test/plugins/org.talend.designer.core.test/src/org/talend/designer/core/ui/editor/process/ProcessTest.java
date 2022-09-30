@@ -165,14 +165,14 @@ public class ProcessTest {
         oracle12ConnNode.getElementParameter("DB_VERSION").setValue("ORACLE_12");
         
         List<INode> s = process.getNodesOfType("tMysqlConnection");
-        assertEquals(s.size(),2); //all
+        assertEquals(s.size(),1); 
         s = process.getNodesOfType("tAmazonMysqlConnection");
         assertEquals(s.size(),1); //amazon one
         
         s = process.getNodesOfType("tOracleConnection");
-        assertEquals(s.size(),4); //all(18,9,12,11)
+        assertEquals(s.size(),3); 
         s = process.getNodesOfType("tAmazonOracleConnection");
-        assertEquals(s.size(),3); //oracle18, 12 plus amazon one
+        assertEquals(s.size(),1); //amazon one
         
     }
 
