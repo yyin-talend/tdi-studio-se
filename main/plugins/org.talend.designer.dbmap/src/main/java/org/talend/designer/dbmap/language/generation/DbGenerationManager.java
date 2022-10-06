@@ -1847,7 +1847,11 @@ public abstract class DbGenerationManager {
                         return "\" +" + handledTableName + "+ \"";
                     }
                 }
-                tableName = getTableName(iconn,tableNoQuote,quote);
+                if(ContextParameterUtils.isContainContextParam(tableValue)) {
+                    tableName = getTableName(iconn,tableValue,quote);
+                }else {
+                    tableName = getTableName(iconn,tableNoQuote,quote);
+                }
                 tableName = adaptQuoteForColumnName(component,tableName);
                 handledTableName = handledTableName + tableName;
                 return "\" +" + handledTableName + "+ \"";
