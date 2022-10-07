@@ -146,6 +146,10 @@ public class DbGenerationManagerTest extends DbGenerationManagerTestHelper {
 
     @Test
     public void testInitExpression() {
+        process = mock(Process.class);
+        JobContextManager contextManger = new JobContextManager();
+        when(process.getContextManager()).thenReturn(contextManger);
+        dbMapComponent.setProcess(process);
     	checkValue("t1.\\\"id\\\"", extMapEntry);
         ExternalDbMapEntry extMapEntry2 = new ExternalDbMapEntry("multiple", "t1.id + t1.name");
         tableEntries.add(extMapEntry2);

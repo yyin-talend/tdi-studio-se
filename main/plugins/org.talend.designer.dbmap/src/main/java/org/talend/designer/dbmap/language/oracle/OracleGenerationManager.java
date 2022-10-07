@@ -28,6 +28,7 @@ import org.talend.core.model.process.EConnectionType;
 import org.talend.core.model.process.IConnection;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.INode;
+import org.talend.core.model.utils.ContextParameterUtils;
 import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.core.utils.TalendQuoteUtils;
 import org.talend.designer.dbmap.DbMapComponent;
@@ -434,14 +435,18 @@ public class OracleGenerationManager extends DbGenerationManager {
                     return expression;
                 }
                 String quote = getQuote(component);
+                if("\"".equals(quote)) {
+                    quote = "\\\"";
+                }
                 expression = expression.substring(0, begin) + quote + expression.substring(begin, begin + length) + quote
                         + expression.substring(begin + length, allLength);
-                expression = adaptQuoteForColumnName(component,expression);
+//                expression = adaptQuoteForColumnName(component,expression);
                 return expression;
             }
         }
         return expression;
     }
+    
 
     @Override
     protected boolean needAlias(List<IMetadataColumn> columns, ExternalDbMapEntry dbMapEntry, String expression) {
