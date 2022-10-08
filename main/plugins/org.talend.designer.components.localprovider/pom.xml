@@ -96,14 +96,7 @@
                         <configuration>
                         <stripVersion>true</stripVersion>
                             <artifactItems>
-                                <artifactItem>
-                                    <groupId>org.talend.libraries</groupId>
-                                    <artifactId>talend-webservice-input</artifactId>
-                                    <version>1.0.2</version>
-                                    <type>jar</type>
-                                    <overWrite>true</overWrite>
-                                    <outputDirectory>${webservice.dir}</outputDirectory>
-                                </artifactItem>
+                                
                                 <artifactItem>
                                     <groupId>org.talend.libraries</groupId>
                                     <artifactId>talendssl</artifactId>
@@ -131,7 +124,14 @@
 									<overWrite>true</overWrite>
 									<outputDirectory>${soap.dir}</outputDirectory>
 								</artifactItem>
-								
+								<artifactItem>
+                                    <groupId>org.talend.libraries</groupId>
+                                    <artifactId>talend-webservice-input</artifactId>
+                                    <version>1.0.2</version>
+                                    <type>jar</type>
+                                    <overWrite>true</overWrite>
+                                    <outputDirectory>${webservice.dir}</outputDirectory>
+                                </artifactItem>
 								<artifactItem>
 									<groupId>org.talend.components</groupId>
 									<artifactId>talend-ws</artifactId>
