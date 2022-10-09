@@ -70,8 +70,10 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Link;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
+import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.forms.events.HyperlinkAdapter;
 import org.eclipse.ui.forms.events.HyperlinkEvent;
 import org.eclipse.ui.forms.widgets.Hyperlink;
@@ -108,6 +110,7 @@ import org.talend.core.runtime.CoreRuntimePlugin;
 import org.talend.core.runtime.util.SharedStudioUtils;
 import org.talend.core.service.ICloudSignOnService;
 import org.talend.core.services.ICoreTisService;
+import org.talend.core.services.IGITProviderService;
 import org.talend.core.ui.TalendBrowserLaunchHelper;
 import org.talend.core.ui.branding.IBrandingService;
 import org.talend.core.ui.workspace.ChooseWorkspaceData;
@@ -241,6 +244,8 @@ public class LoginProjectPage extends AbstractLoginActionPage {
     private String lastSelectedBranch;
     
     private boolean isSSOMode = false;
+    
+    private Button gitModeBtn = null;
 
     public LoginProjectPage(Composite parent, LoginDialogV2 dialog, int style) {
         super(parent, dialog, style);
@@ -899,6 +904,29 @@ public class LoginProjectPage extends AbstractLoginActionPage {
             formData.bottom = new FormAttachment(svnBranchComboControl, 0, SWT.CENTER);
         }
         refreshProjectButton.setLayoutData(formData);
+        
+        if (!IGITProviderService.get().isStandardMode()) {
+            formData = new FormData();
+            formData.top = new FormAttachment(branchLabel, 0, SWT.CENTER);
+            formData.left = new FormAttachment(0, 0);
+
+            Composite gitInfoContainer = new Composite(projectListArea, SWT.None);
+            gitInfoContainer.setLayout(new GridLayout(2, false));
+            gitInfoContainer.setLayoutData(formData);
+
+            Label gitModeImg = new Label(gitInfoContainer, SWT.None);
+            gitModeImg.setImage(Display.getDefault().getSystemImage(SWT.ICON_INFORMATION));
+
+            Link gitModeLink = new Link(gitInfoContainer, SWT.WRAP | SWT.LEFT);
+            gitModeLink.setText(Messages.getString("LoginProjectPage.gitModeInfo"));
+
+            gitModeBtn = new Button(projectListArea, SWT.None);
+            gitModeBtn.setText(Messages.getString("LoginProjectPage.gitMode"));
+            formData = new FormData();
+            formData.top = new FormAttachment(gitInfoContainer, 0, SWT.CENTER);
+            formData.left = new FormAttachment(0, 0);
+            gitModeBtn.setLayoutData(formData);
+        }
 
         formData = new FormData();
         formData.top = new FormAttachment(0, 0);
@@ -1412,6 +1440,17 @@ public class LoginProjectPage extends AbstractLoginActionPage {
                 // nothing need to do
             }
         });
+        
+        if (!IGITProviderService.get().isStandardMode()) {
+            gitModeBtn.addSelectionListener(new SelectionAdapter() {
+
+                @Override
+                public void widgetSelected(SelectionEvent e) {
+                    IGITProviderService.get().setStandardMode(true);
+                    PlatformUI.getWorkbench().restart();
+                }
+            });
+        }
 
     }
 
