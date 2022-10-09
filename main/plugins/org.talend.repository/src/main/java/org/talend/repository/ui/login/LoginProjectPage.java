@@ -905,7 +905,7 @@ public class LoginProjectPage extends AbstractLoginActionPage {
         }
         refreshProjectButton.setLayoutData(formData);
         
-        if (!IGITProviderService.get().isStandardMode()) {
+        if (!LoginHelper.getInstance().isStandardMode()) {
             formData = new FormData();
             formData.top = new FormAttachment(branchLabel, 0, SWT.CENTER);
             formData.left = new FormAttachment(0, 0);
@@ -1441,12 +1441,12 @@ public class LoginProjectPage extends AbstractLoginActionPage {
             }
         });
         
-        if (!IGITProviderService.get().isStandardMode()) {
+        if (!LoginHelper.getInstance().isStandardMode()) {
             gitModeBtn.addSelectionListener(new SelectionAdapter() {
 
                 @Override
                 public void widgetSelected(SelectionEvent e) {
-                    IGITProviderService.get().setStandardMode(true);
+                    LoginHelper.getInstance().setGitMode(true);
                     PlatformUI.getWorkbench().restart();
                 }
             });

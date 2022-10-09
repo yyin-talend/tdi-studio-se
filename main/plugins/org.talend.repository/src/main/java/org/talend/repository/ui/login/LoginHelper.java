@@ -1108,4 +1108,11 @@ public class LoginHelper {
             gitProviderService.setStandardMode(standardMode);
         }
     }
+    
+    public boolean isStandardMode() {
+        if (gitProviderService != null) {
+            return gitProviderService.isStandardMode();
+        }
+        return false;
+    }
 }
