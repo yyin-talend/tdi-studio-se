@@ -10,9 +10,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.core.model.metadata.builder.connection.Connection;
 import org.talend.core.model.process.IContextParameter;
-import org.talend.core.model.properties.ContextItem;
 import org.talend.core.model.utils.ContextParameterUtils;
-import org.talend.core.ui.context.model.table.ConectionAdaptContextVariableModel;
 import org.talend.core.utils.TalendQuoteUtils;
 import org.talend.designer.core.model.utils.emf.talendfile.ContextType;
 import org.talend.metadata.managment.ui.model.IConnParamName;
@@ -122,13 +120,6 @@ public class TaCoKitContextHandler extends AbstractRepositoryContextHandler {
 	}
 
 	@Override
-	public void setPropertiesForExistContextMode(Connection connection, Set<IConnParamName> paramSet,
-			Map<ContextItem, List<ConectionAdaptContextVariableModel>> adaptMap) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
 	public void revertPropertiesForContextMode(Connection connection, ContextType contextType) {
 
 		TaCoKitConfigurationModel taCoKitConfigurationModel = new TaCoKitConfigurationModel(connection);
@@ -163,12 +154,6 @@ public class TaCoKitContextHandler extends AbstractRepositoryContextHandler {
 	}
 
 	@Override
-	public Set<String> getConAdditionPropertiesForContextMode(Connection conn) {
-		// TODO Auto-generated method stub
-		return new HashSet<String>();
-	}
-
-	@Override
 	protected void matchContextForAttribues(Connection connection, IConnParamName param, String contextVariableName) {
 		TaCoKitConfigurationModel taCoKitConfigurationModel = new TaCoKitConfigurationModel(connection);
 		if (param instanceof TaCoKitParamName) {
@@ -176,12 +161,6 @@ public class TaCoKitContextHandler extends AbstractRepositoryContextHandler {
 			taCoKitConfigurationModel.setValue(taCoKitParamName.getName(),
 					ContextParameterUtils.getNewScriptCode(contextVariableName, LANGUAGE));
 		}
-
-	}
-
-	@Override
-	protected void matchAdditionProperties(Connection conn,
-			Map<ContextItem, List<ConectionAdaptContextVariableModel>> adaptMap) {
 
 	}
 
