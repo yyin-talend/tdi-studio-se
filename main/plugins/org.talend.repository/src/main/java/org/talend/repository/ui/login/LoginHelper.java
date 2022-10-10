@@ -1115,4 +1115,10 @@ public class LoginHelper {
         }
         return false;
     }
+    
+    public void cleanGitHandlers() {
+        if (gitProviderService != null) {
+            gitProviderService.clean();
+        }
+    }
 }

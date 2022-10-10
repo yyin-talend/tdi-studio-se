@@ -33,8 +33,10 @@ import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.ComboViewer;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
@@ -81,6 +83,7 @@ import org.talend.commons.exception.CommonExceptionHandler;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.exception.SystemException;
+import org.talend.commons.ui.runtime.ColorConstants;
 import org.talend.commons.ui.runtime.exception.ExceptionMessageDialog;
 import org.talend.commons.ui.runtime.exception.MessageBoxExceptionHandler;
 import org.talend.commons.ui.runtime.image.EImage;
@@ -247,6 +250,14 @@ public class LoginProjectPage extends AbstractLoginActionPage {
     
     private Button gitModeBtn = null;
 
+    private Composite gitModeArea = null;
+    
+    private Link gitModeLink = null;
+    
+    private Composite gitModeInfoArea  = null;
+    
+    private Label gitModeImg = null;
+    
     public LoginProjectPage(Composite parent, LoginDialogV2 dialog, int style) {
         super(parent, dialog, style);
     }
@@ -649,6 +660,7 @@ public class LoginProjectPage extends AbstractLoginActionPage {
         projectViewer.setContentProvider(ArrayContentProvider.getInstance());
         projectViewer.setLabelProvider(new ProjectLabelProvider());
         projectViewer.setSorter(new ViewerSorter());
+
         // Branch Area
         branchArea = new Composite(projectListArea, SWT.NONE);
         branchLabel = new Label(branchArea, SWT.NONE);
@@ -662,6 +674,25 @@ public class LoginProjectPage extends AbstractLoginActionPage {
         refreshProjectButton.setFont(LoginDialogV2.fixedFont);
         refreshProjectButton.setBackground(backgroundBtnColor);
         refreshProjectButton.setImage(ImageProvider.getImage(EImage.REFRESH_ICON));
+        
+        // git mode area
+        gitModeArea = new Composite(projectListArea, SWT.None);
+        gitModeInfoArea = new Composite(gitModeArea, SWT.None);
+        gitModeInfoArea.setBackground(ColorConstants.WARN_COLOR);
+        
+        gitModeImg = new Label(gitModeInfoArea, SWT.None);
+        gitModeImg.setImage(JFaceResources.getImage(Dialog.DLG_IMG_MESSAGE_WARNING));
+        gitModeImg.setBackground(ColorConstants.WARN_COLOR);
+
+        gitModeLink = new Link(gitModeInfoArea, SWT.WRAP);
+        gitModeLink.setText(Messages.getString("LoginProjectPage.gitModeInfo"));
+        gitModeLink.setBackground(ColorConstants.WARN_COLOR);
+        gitModeLink.setFont(LoginDialogV2.fixedFont);
+        
+        gitModeBtn = new Button(gitModeArea, SWT.CHECK | SWT.HORIZONTAL);
+        gitModeBtn.setText(Messages.getString("LoginProjectPage.gitBtn"));
+        gitModeBtn.setFont(LoginDialogV2.fixedFont);
+        
         // Create New Project
         createNewProject = new Button(projectOperationArea, SWT.RADIO);
         createNewProject.setFont(LoginDialogV2.fixedFont);
@@ -874,7 +905,7 @@ public class LoginProjectPage extends AbstractLoginActionPage {
         formData = new FormData();
         formData.left = new FormAttachment(0, TAB_HORIZONTAL_PADDING_LEVEL_3);
         formData.right = new FormAttachment(100, 0);
-        formData.bottom = new FormAttachment(100, 0);
+        formData.bottom = new FormAttachment(gitModeArea, -1 * TAB_VERTICAL_PADDING_LEVEL_2, SWT.TOP);
         branchArea.setLayoutData(formData);
         branchArea.setLayout(new FormLayout());
 
@@ -905,28 +936,31 @@ public class LoginProjectPage extends AbstractLoginActionPage {
         }
         refreshProjectButton.setLayoutData(formData);
         
-        if (!LoginHelper.getInstance().isStandardMode()) {
-            formData = new FormData();
-            formData.top = new FormAttachment(branchLabel, 0, SWT.CENTER);
-            formData.left = new FormAttachment(0, 0);
+        // git mode info
+        formData = new FormData();
+        formData.right = new FormAttachment(100, 0);
+        formData.left = new FormAttachment(0, 0);
+        formData.bottom = new FormAttachment(100, 0);
+        gitModeArea.setLayoutData(formData);
+        
+        GridLayout gdl = new GridLayout(1, false);
+        gdl.marginWidth = 0;
+        gdl.marginHeight = 0;
+        gitModeArea.setLayout(gdl);
 
-            Composite gitInfoContainer = new Composite(projectListArea, SWT.None);
-            gitInfoContainer.setLayout(new GridLayout(2, false));
-            gitInfoContainer.setLayoutData(formData);
+        GridLayout gdlInfo = new GridLayout(2, false);
+        gdlInfo.marginWidth = 0;
+        gdlInfo.marginHeight = 0;
+        gitModeInfoArea.setLayout(gdlInfo);
 
-            Label gitModeImg = new Label(gitInfoContainer, SWT.None);
-            gitModeImg.setImage(Display.getDefault().getSystemImage(SWT.ICON_INFORMATION));
-
-            Link gitModeLink = new Link(gitInfoContainer, SWT.WRAP | SWT.LEFT);
-            gitModeLink.setText(Messages.getString("LoginProjectPage.gitModeInfo"));
-
-            gitModeBtn = new Button(projectListArea, SWT.None);
-            gitModeBtn.setText(Messages.getString("LoginProjectPage.gitMode"));
-            formData = new FormData();
-            formData.top = new FormAttachment(gitInfoContainer, 0, SWT.CENTER);
-            formData.left = new FormAttachment(0, 0);
-            gitModeBtn.setLayoutData(formData);
-        }
+        GridData gridData = new GridData(SWT.FILL, SWT.BEGINNING, true, false);
+        gridData.widthHint = 320;
+        gridData.grabExcessHorizontalSpace = true;
+        gitModeLink.setLayoutData(gridData);
+        
+        GridData gd = new GridData();
+        gd.horizontalSpan = 2;
+        gitModeBtn.setLayoutData(gd);
 
         formData = new FormData();
         formData.top = new FormAttachment(0, 0);
@@ -1446,8 +1480,8 @@ public class LoginProjectPage extends AbstractLoginActionPage {
 
                 @Override
                 public void widgetSelected(SelectionEvent e) {
-                    LoginHelper.getInstance().setGitMode(true);
-                    PlatformUI.getWorkbench().restart();
+                    LoginHelper.getInstance().setGitMode(gitModeBtn.getSelection());
+                    LoginHelper.getInstance().cleanGitHandlers();
                 }
             });
         }
@@ -1842,12 +1876,20 @@ public class LoginProjectPage extends AbstractLoginActionPage {
     }
 
     protected void refreshBranchAreaVisible(boolean isRemote) {
+        gitModeArea.setVisible(isRemote & !LoginHelper.getInstance().isStandardMode());
         branchArea.setVisible(isRemote);
         FormData formData = (FormData) branchArea.getLayoutData();
+        FormData formDataGitMode = (FormData) gitModeArea.getLayoutData();
         if (isRemote) {
             formData.height = -1;
+            if (gitModeArea.getVisible()) {
+                formDataGitMode.height = -1;
+            } else {
+                formDataGitMode.height = 0;
+            }
         } else {
             formData.height = 0;
+            formDataGitMode.height = 0;
         }
         formData = (FormData) projectViewer.getControl().getLayoutData();
         if (isRemote) {
