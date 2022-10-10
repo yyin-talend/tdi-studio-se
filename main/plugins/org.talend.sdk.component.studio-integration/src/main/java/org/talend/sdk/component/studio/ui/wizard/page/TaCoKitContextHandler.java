@@ -184,8 +184,7 @@ public class TaCoKitContextHandler extends AbstractRepositoryContextHandler {
 
     @Override
     public Set<String> getConAdditionPropertiesForContextMode(Connection conn) {
-        // nothing to do
-        return null;
+        return new HashSet<String>();
     }
 
     @Override
