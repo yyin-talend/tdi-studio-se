@@ -1849,12 +1849,22 @@ public abstract class DbGenerationManager {
                 }
                 if(ContextParameterUtils.isContainContextParam(tableValue)) {
                     tableName = getTableName(iconn,tableValue,quote);
+                    tableName = adaptQuoteForColumnName(component,tableName);
+                    handledTableName = handledTableName + tableName;
+                    if("\"".equals(quote)) {
+                        quote = "\\\"";
+                    }
+                    if(isAddQuotesInTableNames()) {
+                        return "\" +" + "\""+quote+"\" +" + handledTableName + "+ \""+quote+"\"+ \"";
+                    }else {
+                        return "\" +" + handledTableName + "+ \"";
+                    }
                 }else {
                     tableName = getTableName(iconn,tableNoQuote,quote);
                 }
                 tableName = adaptQuoteForColumnName(component,tableName);
                 handledTableName = handledTableName + tableName;
-                return "\" +" + handledTableName + "+ \"";
+                return "\" + \"" + handledTableName + "\" + \"";
             }
         }
         return tableName;
