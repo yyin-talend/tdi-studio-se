@@ -1929,7 +1929,9 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
                         if (item != null && item instanceof ConnectionItem) {
                             source = UpdateRepositoryUtils.getRepositorySourceName(item);
                             repositoryConnection = ((ConnectionItem) item).getConnection();
-                            if (repositoryConnection != null && repositoryConnection.getId() == null) {
+                            if (repositoryConnection != null && (repositoryConnection.getId() == null ||
+                            // TUP-36653:set the connection id for generic connection
+                                    repositoryConnection.getCompProperties() != null)) {
                                 repositoryConnection.setId(((ConnectionItem) item).getProperty().getId());
                             }
                         }
