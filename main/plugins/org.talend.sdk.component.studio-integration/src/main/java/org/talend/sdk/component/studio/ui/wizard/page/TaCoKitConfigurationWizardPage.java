@@ -133,7 +133,6 @@ public class TaCoKitConfigurationWizardPage extends AbsTaCoKitWizardPage {
                                     .findFirst()
                                     .map(n -> String.valueOf(n.getVersion())).orElse("-1")))
                     .forEach(p -> configurationModel.setValue(p));
-//
             tacokitComposite = new TaCoKitWizardComposite(container, SWT.H_SCROLL | SWT.V_SCROLL | SWT.NO_FOCUS, category,
                     element, configurationModel, true, container.getBackground(), isNew, problemManager);
             tacokitComposite.setLayoutData(createMainFormData(true));
