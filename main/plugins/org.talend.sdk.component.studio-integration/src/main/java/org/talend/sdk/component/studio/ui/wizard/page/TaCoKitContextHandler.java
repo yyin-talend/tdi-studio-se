@@ -178,17 +178,21 @@ public class TaCoKitContextHandler extends AbstractRepositoryContextHandler {
     @Override
     public void setPropertiesForExistContextMode(Connection connection, Set<IConnParamName> paramSet,
             Map<ContextItem, List<ConectionAdaptContextVariableModel>> adaptMap) {
+        // nothing to do
 
     }
 
     @Override
     public Set<String> getConAdditionPropertiesForContextMode(Connection conn) {
+        // nothing to do
         return null;
     }
 
     @Override
     protected void matchAdditionProperties(Connection conn, Map<ContextItem, List<ConectionAdaptContextVariableModel>> adaptMap) {
+        // nothing to do
 
     }
+
 
 }

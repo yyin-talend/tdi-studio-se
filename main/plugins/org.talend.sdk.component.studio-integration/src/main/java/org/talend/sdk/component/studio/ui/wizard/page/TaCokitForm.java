@@ -88,22 +88,22 @@ public class TaCokitForm extends AbstractForm {
 
     @Override
     protected void addFields() {
-
+        // nothing to do
     }
 
     @Override
     protected void addFieldsListeners() {
-
+        // nothing to do
     }
 
     @Override
     protected void adaptFormToReadOnly() {
-
+        // nothing to do
     }
 
     @Override
     protected void addUtilsButtonListeners() {
-
+        // nothing to do
     }
 
 }
