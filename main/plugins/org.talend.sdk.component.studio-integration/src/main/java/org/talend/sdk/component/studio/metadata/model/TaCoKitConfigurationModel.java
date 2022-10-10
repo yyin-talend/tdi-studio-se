@@ -160,7 +160,7 @@ public class TaCoKitConfigurationModel {
                 .orElseThrow(() -> new IllegalArgumentException("wrong key: " + key));
     }
 
-	private boolean contains(final String key) {
+    private boolean contains(final String key) {
         List<SimplePropertyDefinition> properties = getConfigTypeNode().getProperties();
         if (key == null || key.isEmpty() || properties == null || properties.isEmpty()) {
             return false;
@@ -173,20 +173,20 @@ public class TaCoKitConfigurationModel {
         return false;
     }
 
-	public boolean isNotENUMTypeParameter(final String key) {
-		List<SimplePropertyDefinition> properties = getConfigTypeNode().getProperties();
-		if (key == null || key.isEmpty() || properties == null || properties.isEmpty()) {
-			return false;
-		}
-		for (SimplePropertyDefinition property : properties) {
-			String type = property.getType();
-			if (TaCoKitUtil.equals(key, property.getPath()) && !StringUtils.equalsIgnoreCase("ENUM", type)) {
-				return true;
-			}
-		}
+    public boolean isNotENUMTypeParameter(final String key) {
+        List<SimplePropertyDefinition> properties = getConfigTypeNode().getProperties();
+        if (key == null || key.isEmpty() || properties == null || properties.isEmpty()) {
+            return false;
+        }
+        for (SimplePropertyDefinition property : properties) {
+            String type = property.getType();
+            if (TaCoKitUtil.equals(key, property.getPath()) && !StringUtils.equalsIgnoreCase("ENUM", type)) {
+                return true;
+            }
+        }
 
-		return false;
-	}
+        return false;
+    }
 
     public String getValueOfSelf(final String key) {
         String value = (String) getAllProperties().get(key);

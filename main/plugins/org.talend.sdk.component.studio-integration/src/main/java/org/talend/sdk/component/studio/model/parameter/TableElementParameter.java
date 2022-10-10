@@ -106,43 +106,43 @@ public class TableElementParameter extends TaCoKitElementParameter {
      */
     @Override
     public void setValue(final Object newValue) {
-		IElement elem = getElement();
-		boolean contextMode = isContextMode();
-		if (contextMode && elem != null && newValue instanceof String) {
+        IElement elem = getElement();
+        boolean contextMode = isContextMode();
+        if (contextMode && elem != null && newValue instanceof String) {
 
-			List<Map<String, Object>> table = ValueConverter.toTable((String) newValue);
+            List<Map<String, Object>> table = ValueConverter.toTable((String) newValue);
 
-			if (table == null || table.size() == 0 || table.get(0).isEmpty()) {
+            if (table == null || table.size() == 0 || table.get(0).isEmpty()) {
 
-				List<Map<String, Object>> tableValue1 = new ArrayList<Map<String, Object>>();
+                List<Map<String, Object>> tableValue1 = new ArrayList<Map<String, Object>>();
 
-				HashMap<String, Object> hashMap = new HashMap<String, Object>();
+                HashMap<String, Object> hashMap = new HashMap<String, Object>();
 
-				String[] listItemsDisplayCodeName = getListItemsDisplayCodeName();
+                String[] listItemsDisplayCodeName = getListItemsDisplayCodeName();
 
-				if (listItemsDisplayCodeName != null && listItemsDisplayCodeName.length > 0) {
-					for (String s : listItemsDisplayCodeName) {
-						hashMap.put(s, (String) newValue);
-					}
-					tableValue1.add(hashMap);
-				}
+                if (listItemsDisplayCodeName != null && listItemsDisplayCodeName.length > 0) {
+                    for (String s : listItemsDisplayCodeName) {
+                        hashMap.put(s, (String) newValue);
+                    }
+                    tableValue1.add(hashMap);
+                }
 
-				super.setValue(fromRepository(tableValue1));
-			} else {
+                super.setValue(fromRepository(tableValue1));
+            } else {
 
-				final List<Map<String, Object>> tableValue = table;
+                final List<Map<String, Object>> tableValue = table;
 
-				super.setValue(fromRepository(tableValue));
-			}
+                super.setValue(fromRepository(tableValue));
+            }
 
-		} else if (newValue == null || newValue instanceof String) {
-			final List<Map<String, Object>> tableValue = ValueConverter.toTable((String) newValue);
-			super.setValue(fromRepository(tableValue));
-		} else if (newValue instanceof List) {
-			super.setValue(fixClosedListColumn((List<Map<String, Object>>) newValue));
-		} else {
-			throw new IllegalArgumentException("wrong type on new value: " + newValue.getClass().getName());
-		}
+        } else if (newValue == null || newValue instanceof String) {
+            final List<Map<String, Object>> tableValue = ValueConverter.toTable((String) newValue);
+            super.setValue(fromRepository(tableValue));
+        } else if (newValue instanceof List) {
+            super.setValue(fixClosedListColumn((List<Map<String, Object>>) newValue));
+        } else {
+            throw new IllegalArgumentException("wrong type on new value: " + newValue.getClass().getName());
+        }
     }
 
     @Override

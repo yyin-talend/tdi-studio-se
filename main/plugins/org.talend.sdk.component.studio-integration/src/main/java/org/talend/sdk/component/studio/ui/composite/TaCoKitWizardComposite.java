@@ -68,38 +68,38 @@ public class TaCoKitWizardComposite extends TaCoKitComposite {
                 .forEach(p -> p.unregisterRedrawListener("show", getRedrawListener()));
     }
 
-	public void updateParameter() {
+    public void updateParameter() {
 
-		boolean isContextMode = configurationModel.getConnection().isContextMode();
-		elem.getElementParameters().stream().filter(p -> p instanceof TaCoKitElementParameter)
-				.map(p -> (TaCoKitElementParameter) p).filter(TaCoKitElementParameter::isPersisted)
-				.filter(p -> !EParameterFieldType.SCHEMA_TYPE.equals(p.getFieldType())).forEach(parameter -> {
-					parameter.addValueChangeListener(configurationUpdater);
-					try {
-						String key = parameter.getName();
+        boolean isContextMode = configurationModel.getConnection().isContextMode();
+        elem.getElementParameters().stream().filter(p -> p instanceof TaCoKitElementParameter)
+                .map(p -> (TaCoKitElementParameter) p).filter(TaCoKitElementParameter::isPersisted)
+                .filter(p -> !EParameterFieldType.SCHEMA_TYPE.equals(p.getFieldType())).forEach(parameter -> {
+                    parameter.addValueChangeListener(configurationUpdater);
+                    try {
+                        String key = parameter.getName();
 
-						ValueModel valueModel = configurationModel.getValue(key);
-						if (valueModel != null) {
-							if (valueModel.getConfigurationModel() != configurationModel) {
-								parameter.setReadOnly(true);
-							}
-							parameter.setContextMode(isContextMode);
-							String value = valueModel.getValue();
+                        ValueModel valueModel = configurationModel.getValue(key);
+                        if (valueModel != null) {
+                            if (valueModel.getConfigurationModel() != configurationModel) {
+                                parameter.setReadOnly(true);
+                            }
+                            parameter.setContextMode(isContextMode);
+                            String value = valueModel.getValue();
 
-							parameter.setValue(value);
+                            parameter.setValue(value);
 
-							parameter.setReadOnly(isContextMode);
+                            parameter.setReadOnly(isContextMode);
 
-						}
-					} catch (Exception e) {
-						ExceptionHandler.process(e);
-					}
-				});
+                        }
+                    } catch (Exception e) {
+                        ExceptionHandler.process(e);
+                    }
+                });
 
-	}
+    }
 
     private void init() {
-		boolean isContextMode = configurationModel.getConnection().isContextMode();
+        boolean isContextMode = configurationModel.getConnection().isContextMode();
         elem
                 .getElementParameters()
                 .stream()
@@ -122,10 +122,10 @@ public class TaCoKitWizardComposite extends TaCoKitComposite {
                             if (StringUtils.isEmpty(valueModel.getValue())) {
                                 return;
                             }
-							parameter.setContextMode(isContextMode);
-							String value = valueModel.getValue();
-							parameter.setValue(value);
-							parameter.setReadOnly(false);
+                            parameter.setContextMode(isContextMode);
+                            String value = valueModel.getValue();
+                            parameter.setValue(value);
+                            parameter.setReadOnly(false);
                         }
                     } catch (Exception e) {
                         ExceptionHandler.process(e);

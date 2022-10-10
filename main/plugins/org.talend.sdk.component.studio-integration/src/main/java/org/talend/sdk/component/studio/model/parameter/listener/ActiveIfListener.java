@@ -70,7 +70,6 @@ public class ActiveIfListener implements PropertyChangeListener {
         if(!"value".equals(event.getPropertyName())){
             return;
         }
-
         final boolean show = conditions.stream()
                                        .allMatch(group -> group.getAggregator()
                                                                .apply(group.getConditions().stream()

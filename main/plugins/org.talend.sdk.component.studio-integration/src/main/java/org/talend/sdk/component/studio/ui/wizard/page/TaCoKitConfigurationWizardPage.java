@@ -117,9 +117,8 @@ public class TaCoKitConfigurationWizardPage extends AbsTaCoKitWizardPage {
             final ConfigTypeNode configTypeNode = runtimeData.getConfigTypeNode();
             final DummyComponent component = new DummyComponent(configTypeNode.getDisplayName());
             final DataNode node = new DataNode(component, component.getName());
-			boolean hasContextBtn = EComponentCategory.BASIC == category;
-			TaCokitForm taCokitForm = new TaCokitForm(container, runtimeData.getConnectionItem(), hasContextBtn,
-					SWT.NONE);
+            boolean hasContextBtn = EComponentCategory.BASIC == category;
+            TaCokitForm taCokitForm = new TaCokitForm(container, runtimeData.getConnectionItem(), hasContextBtn, SWT.NONE);
 
             //add version params
             Map<String, ConfigTypeNode> nodes = Lookups.taCoKitCache().getConfigTypeNodeMap();
@@ -135,13 +134,11 @@ public class TaCoKitConfigurationWizardPage extends AbsTaCoKitWizardPage {
                                     .map(n -> String.valueOf(n.getVersion())).orElse("-1")))
                     .forEach(p -> configurationModel.setValue(p));
 //
-            tacokitComposite = new TaCoKitWizardComposite(container, SWT.H_SCROLL | SWT.V_SCROLL | SWT.NO_FOCUS,
-                    category, element, configurationModel, true, container.getBackground(), isNew, problemManager);
+            tacokitComposite = new TaCoKitWizardComposite(container, SWT.H_SCROLL | SWT.V_SCROLL | SWT.NO_FOCUS, category,
+                    element, configurationModel, true, container.getBackground(), isNew, problemManager);
             tacokitComposite.setLayoutData(createMainFormData(true));
             taCokitForm.setComposite(tacokitComposite);
-            
-            
-            
+
             setControl(container);
         } catch (Exception e) {
             throw new IllegalStateException(e);
@@ -202,7 +199,7 @@ public class TaCoKitConfigurationWizardPage extends AbsTaCoKitWizardPage {
         if (EComponentCategory.ADVANCED == category && next == null && tacokitComposite != null) {
             tacokitComposite.setPropertyResized(true);
             tacokitComposite.addComponents(true);
-			tacokitComposite.updateParameter();
+            tacokitComposite.updateParameter();
             tacokitComposite.refresh();
 
         }

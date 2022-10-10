@@ -119,13 +119,13 @@ public class TaCoKitService implements ITaCoKitService {
             throw new IllegalArgumentException("Currently only support ERepositoryObjectType, please implement it if needed");
         }
     }
-    
+
     @Override
     public boolean isTaCoKitConnection(Object connection) {
-    	if(connection instanceof Connection) {
-    		return TaCoKitConfigurationModel.isTacokit((Connection) connection);
-    	}
-    	return false;
+        if (connection instanceof Connection) {
+            return TaCoKitConfigurationModel.isTacokit((Connection) connection);
+        }
+        return false;
     }
 
     @Override
