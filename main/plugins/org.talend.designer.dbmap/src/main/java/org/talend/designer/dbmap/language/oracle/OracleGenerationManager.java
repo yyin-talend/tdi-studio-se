@@ -508,7 +508,7 @@ public class OracleGenerationManager extends DbGenerationManager {
                     Entry<String, String> entry = ite.next();
                     String columnValue = entry.getKey();
                     String tableValue = entry.getValue();
-
+                    boolean aliasFlag = false;
                     String tableNameValue = tableValue;
                     // find original table name if tableValue is alias
                     String originaltableName = tableValue;
@@ -518,6 +518,7 @@ public class OracleGenerationManager extends DbGenerationManager {
                         if (inputTable.getAlias() != null && inputTable.getAlias().equals(tableValue)) {
                             originaltableName = inputTable.getTableName();
                             tableNameValue = inputTable.getAlias();
+                            aliasFlag = true;
                         }
                     }
 
@@ -582,7 +583,7 @@ public class OracleGenerationManager extends DbGenerationManager {
                                             continue;
                                         }
                                         if (expression.trim().equals(tableValue + "." + oriName)) {
-                                            if(hasSchema) {
+                                            if(hasSchema && !aliasFlag) {
                                                 expression = getTableName(iconn,schemaNoQuote,quote) + "." + getTableName(iconn,tableNoQuote,quote) + "." + getColumnName(iconn, oriName, quote);
                                                 expression = expression.replaceAll(quto_markParser,"\\\\" +quto_mark); //$NON-NLS-1$
                                             }else {
