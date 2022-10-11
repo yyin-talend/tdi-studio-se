@@ -24,7 +24,6 @@ import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.FillLayout;
-import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
@@ -80,14 +79,14 @@ public class PropertySetDialog extends Dialog {
 
         addQuotesInTableNamesButton = new Button(container, SWT.CHECK);
         addQuotesInTableNamesButton.setText(Messages.getString("PropertySetDialog.add_quotes_in_table_names.title"));//$NON-NLS-1$
-        
-        Composite delimitedComp = new Composite(container,SWT.NONE);
+
+        Composite delimitedComp = new Composite(container, SWT.NONE);
         FillLayout fill = new FillLayout();
         delimitedComp.setLayout(fill);
-        
-        delimitedCharacterLabel = new Label(delimitedComp,SWT.NONE);
+
+        delimitedCharacterLabel = new Label(delimitedComp, SWT.NONE);
         delimitedCharacterLabel.setText(Messages.getString("PropertySetDialog.delimited_character.title"));
-        delimitedCharacterText = new Text(delimitedComp,SWT.BORDER);
+        delimitedCharacterText = new Text(delimitedComp, SWT.BORDER);
         delimitedComp.layout();
         useAliasButton = new Button(container, SWT.CHECK);
         String useAliasTitle = Messages.getString("PropertySetDialog.useAlias.title");//$NON-NLS-1$
@@ -115,11 +114,11 @@ public class PropertySetDialog extends Dialog {
         }
         delimitedCharacterText.setVisible(isJdbcEltMap);
         delimitedCharacterLabel.setVisible(isJdbcEltMap);
-        if(StringUtils.isBlank(text)) {
+        if (StringUtils.isBlank(text)) {
             text = generationManager.getQuote(mapperManager.getComponent());
         }
         delimitedCharacterText.setText(text);
-        
+
         useAliasButton.setSelection(generationManager.isUseAliasInOutputTable());
 
         // Implement the column alias only for tELTTeradataMap/tELTOracleMap now.
@@ -137,10 +136,10 @@ public class PropertySetDialog extends Dialog {
             public void widgetSelected(SelectionEvent e) {
                 mapperManager.setAddQuotesInColumns(addQuotesInColumnsButton.getSelection());
                 updateStatus();
-                if(addQuotesInColumnsButton.getSelection()) {
+                if (addQuotesInColumnsButton.getSelection()) {
                     mapperManager.setDelimitedCharacter(true);
-                }else {
-                    if(!addQuotesInTableNamesButton.getSelection()) {
+                } else {
+                    if (!addQuotesInTableNamesButton.getSelection()) {
                         mapperManager.setDelimitedCharacter(false);
                     }
                 }
@@ -160,10 +159,10 @@ public class PropertySetDialog extends Dialog {
             public void widgetSelected(SelectionEvent e) {
                 mapperManager.setAddQuotesInTableNames(addQuotesInTableNamesButton.getSelection());
                 updateStatus();
-                if(addQuotesInTableNamesButton.getSelection()) {
+                if (addQuotesInTableNamesButton.getSelection()) {
                     mapperManager.setDelimitedCharacter(true);
-                }else {
-                    if(!addQuotesInColumnsButton.getSelection()) {
+                } else {
+                    if (!addQuotesInColumnsButton.getSelection()) {
                         mapperManager.setDelimitedCharacter(false);
                     }
                 }
@@ -182,6 +181,7 @@ public class PropertySetDialog extends Dialog {
         
         delimitedCharacterText.addModifyListener( new ModifyListener() {
 
+            @Override
             public void modifyText(ModifyEvent e) {
                 mapperManager.setDelimitedCharacterText(delimitedCharacterText.getText());
                 updateStatus();
@@ -239,14 +239,18 @@ public class PropertySetDialog extends Dialog {
         mapperManager.setAddQuotesInColumns(addQuotesInColumnsButton.getSelection());
         String text = delimitedCharacterText.getText();
         mapperManager.setDelimitedCharacterText(text);
-        mapperManager.setDelimitedCharacter(addQuotesInColumnsButton.getSelection()||addQuotesInTableNamesButton.getSelection());
+        mapperManager
+                .setDelimitedCharacter(
+                        addQuotesInColumnsButton.getSelection() || addQuotesInTableNamesButton.getSelection());
         mapperManager.setAddQuotesInTableNames(addQuotesInTableNamesButton.getSelection());
         mapperManager.useAliasInOutputTable(useAliasButton.getSelection());
-        if(StringUtils.isBlank(text)&&(addQuotesInColumnsButton.getSelection()||addQuotesInTableNamesButton.getSelection())) {
+        if (StringUtils.isBlank(text)
+                && (addQuotesInColumnsButton.getSelection() || addQuotesInTableNamesButton.getSelection())) {
             delimitedCharacterText.setBackground(delimitedCharacterText.getDisplay().getSystemColor(SWT.COLOR_RED));
-            MessageDialog.openError(delimitedCharacterText.getShell(),
-                    Messages.getString("PropertySetDialog.error_delimited_character.title"), //$NON-NLS-1$
-                    Messages.getString("PropertySetDialog.error_delimited_character.message"));
+            MessageDialog
+                    .openError(delimitedCharacterText.getShell(),
+                            Messages.getString("PropertySetDialog.error_delimited_character.title"), //$NON-NLS-1$
+                            Messages.getString("PropertySetDialog.error_delimited_character.message"));
             return;
         }
         super.okPressed();

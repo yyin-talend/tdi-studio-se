@@ -170,6 +170,7 @@ public class PostgresGenerationManager extends DbGenerationManager {
         }
 
     }
+
     @Override
     protected String getHandledAlias(DbMapComponent component, String alias) {
         if (alias != null) {
@@ -186,12 +187,12 @@ public class PostgresGenerationManager extends DbGenerationManager {
                 String quote = getQuote(component);
                 List<IConnection> inputConnections = (List<IConnection>) component.getIncomingConnections();
                 IConnection iconn = this.getConnectonByName(inputConnections, alias);
-                alias = getTableName(iconn,alias,quote);
-                if(!(alias.startsWith(quote)&&alias.endsWith(quote))) {
-                    //for postgres add quote by default
-                    alias = getNameWithDelimitedIdentifier(alias,quote);
+                alias = getTableName(iconn, alias, quote);
+                if (!(alias.startsWith(quote) && alias.endsWith(quote))) {
+                    // for postgres add quote by default
+                    alias = getNameWithDelimitedIdentifier(alias, quote);
                 }
-                alias = adaptQuoteForColumnName(component,alias);
+                alias = adaptQuoteForTableAndColumnName(component, alias);
             }
         }
         return alias;

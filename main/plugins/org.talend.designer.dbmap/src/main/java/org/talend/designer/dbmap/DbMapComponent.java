@@ -182,8 +182,8 @@ public class DbMapComponent extends AbstractMapComponent {
             activeDelimitedIdentifiersEP.setFieldType(EParameterFieldType.CHECK);
             activeDelimitedIdentifiersEP.setValue(getGenerationManager().isAddQuotesInColumns());
 
-            IElementParameter activeAddQuotesInTableNameEP = origNode
-                    .getElementParameter(EParameterName.ACTIVE_ADD_QUOTES_IN_TABLE_NAME.getName());
+            IElementParameter activeAddQuotesInTableNameEP =
+                    origNode.getElementParameter(EParameterName.ACTIVE_ADD_QUOTES_IN_TABLE_NAME.getName());
             if (activeAddQuotesInTableNameEP == null) {
                 activeAddQuotesInTableNameEP = new ElementParameter(origNode);
                 activeAddQuotesInTableNameEP.setShow(false);
@@ -196,10 +196,9 @@ public class DbMapComponent extends AbstractMapComponent {
             }
             activeAddQuotesInTableNameEP.setFieldType(EParameterFieldType.CHECK);
             activeAddQuotesInTableNameEP.setValue(getGenerationManager().isAddQuotesInTableNames());
-            
 
-            IElementParameter activeDelimitedCharacterEP = origNode
-                    .getElementParameter(EParameterName.ACTIVE_DELIMITED_CHARACTER.getName());
+            IElementParameter activeDelimitedCharacterEP =
+                    origNode.getElementParameter(EParameterName.ACTIVE_DELIMITED_CHARACTER.getName());
             if (activeDelimitedCharacterEP == null) {
                 activeDelimitedCharacterEP = new ElementParameter(origNode);
                 activeDelimitedCharacterEP.setShow(false);
@@ -212,9 +211,9 @@ public class DbMapComponent extends AbstractMapComponent {
             }
             activeDelimitedCharacterEP.setFieldType(EParameterFieldType.CHECK);
             activeDelimitedCharacterEP.setValue(getGenerationManager().isDelimitedCharacter());
-            
-            IElementParameter delimitedCharacterTextEP = origNode
-                    .getElementParameter(EParameterName.DELIMITED_CHARACTER_TEXT.getName());
+
+            IElementParameter delimitedCharacterTextEP =
+                    origNode.getElementParameter(EParameterName.DELIMITED_CHARACTER_TEXT.getName());
             if (delimitedCharacterTextEP == null) {
                 delimitedCharacterTextEP = new ElementParameter(origNode);
                 delimitedCharacterTextEP.setShow(false);
@@ -724,8 +723,8 @@ public class DbMapComponent extends AbstractMapComponent {
         }
         INode oriNode = getOriginalNode();
         if (oriNode != null) {
-            IElementParameter activeDelimitedIdentifiersEP = oriNode
-                    .getElementParameter(EParameterName.ACTIVE_ADD_QUOTES_IN_TABLE_NAME.getName());
+            IElementParameter activeDelimitedIdentifiersEP =
+                    oriNode.getElementParameter(EParameterName.ACTIVE_ADD_QUOTES_IN_TABLE_NAME.getName());
             boolean activeAddQuotesInTableName = false;
             if (activeDelimitedIdentifiersEP != null) {
                 Object value = activeDelimitedIdentifiersEP.getValue();
@@ -736,15 +735,15 @@ public class DbMapComponent extends AbstractMapComponent {
             generationManager.setAddQuotesInTableNames(activeAddQuotesInTableName);
         }
     }
-    
+
     private void updateDelimitedCharacterStatus() {
         if (generationManager == null) {
             return;
         }
         INode oriNode = getOriginalNode();
         if (oriNode != null) {
-            IElementParameter activeDelimitedCharacterEP = oriNode
-                    .getElementParameter(EParameterName.ACTIVE_DELIMITED_CHARACTER.getName());
+            IElementParameter activeDelimitedCharacterEP =
+                    oriNode.getElementParameter(EParameterName.ACTIVE_DELIMITED_CHARACTER.getName());
             boolean activeDelimitedCharacter = false;
             if (activeDelimitedCharacterEP != null) {
                 Object value = activeDelimitedCharacterEP.getValue();
@@ -755,15 +754,15 @@ public class DbMapComponent extends AbstractMapComponent {
             generationManager.setDelimitedCharacter(activeDelimitedCharacter);
         }
     }
-    
+
     private void updateDelimitedCharacterText() {
         if (generationManager == null) {
             return;
         }
         INode oriNode = getOriginalNode();
         if (oriNode != null) {
-            IElementParameter delimitedIdentifiersTextEP = oriNode
-                    .getElementParameter(EParameterName.DELIMITED_CHARACTER_TEXT.getName());
+            IElementParameter delimitedIdentifiersTextEP =
+                    oriNode.getElementParameter(EParameterName.DELIMITED_CHARACTER_TEXT.getName());
             String delimitedIdentifiersText = "";
             if (delimitedIdentifiersTextEP != null) {
                 Object value = delimitedIdentifiersTextEP.getValue();

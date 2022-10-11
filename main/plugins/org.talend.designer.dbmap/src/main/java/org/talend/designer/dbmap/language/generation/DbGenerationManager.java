@@ -99,11 +99,11 @@ public abstract class DbGenerationManager {
     private Boolean addQuotesInColumns;
 
     private Boolean addQuotesInTableNames;
-    
+
     private Boolean delimitedCharacter;
-    
+
     private String delimitedCharacterText;
-    
+
     private Boolean useAliasInOutputTable;
 
     protected Set<String> subQueryTable = new HashSet<String>();
@@ -729,8 +729,8 @@ public abstract class DbGenerationManager {
          */
         if (this.addQuotesInColumns == null) {
             this.addQuotesInColumns = false;
-            IElementParameter activeDelimitedIdentifiersEP = component
-                    .getElementParameter(EParameterName.ACTIVE_DATABASE_DELIMITED_IDENTIFIERS.getName());
+            IElementParameter activeDelimitedIdentifiersEP =
+                    component.getElementParameter(EParameterName.ACTIVE_DATABASE_DELIMITED_IDENTIFIERS.getName());
             if (activeDelimitedIdentifiersEP != null) {
                 Object value = activeDelimitedIdentifiersEP.getValue();
                 if (value != null) {
@@ -738,11 +738,11 @@ public abstract class DbGenerationManager {
                 }
             }
         }
-        
+
         if (this.addQuotesInTableNames == null) {
             this.addQuotesInTableNames = false;
-            IElementParameter activeAddQuotesInTableNameEP = component
-                    .getElementParameter(EParameterName.ACTIVE_ADD_QUOTES_IN_TABLE_NAME.getName());
+            IElementParameter activeAddQuotesInTableNameEP =
+                    component.getElementParameter(EParameterName.ACTIVE_ADD_QUOTES_IN_TABLE_NAME.getName());
             if (activeAddQuotesInTableNameEP != null) {
                 Object value = activeAddQuotesInTableNameEP.getValue();
                 if (value != null) {
@@ -750,11 +750,11 @@ public abstract class DbGenerationManager {
                 }
             }
         }
-        
+
         if (this.delimitedCharacter == null) {
             this.delimitedCharacter = false;
-            IElementParameter activeDelimitedCharacterEP = component
-                    .getElementParameter(EParameterName.ACTIVE_DELIMITED_CHARACTER.getName());
+            IElementParameter activeDelimitedCharacterEP =
+                    component.getElementParameter(EParameterName.ACTIVE_DELIMITED_CHARACTER.getName());
             if (activeDelimitedCharacterEP != null) {
                 Object value = activeDelimitedCharacterEP.getValue();
                 if (value != null) {
@@ -762,11 +762,11 @@ public abstract class DbGenerationManager {
                 }
             }
         }
-        
+
         if (this.delimitedCharacterText == null) {
             this.delimitedCharacterText = "";
-            IElementParameter delimitedCharacterTextEP = component
-                    .getElementParameter(EParameterName.DELIMITED_CHARACTER_TEXT.getName());
+            IElementParameter delimitedCharacterTextEP =
+                    component.getElementParameter(EParameterName.DELIMITED_CHARACTER_TEXT.getName());
             if (delimitedCharacterTextEP != null) {
                 Object value = delimitedCharacterTextEP.getValue();
                 if (value != null) {
@@ -800,16 +800,18 @@ public abstract class DbGenerationManager {
             return null;
         }
         String quote = getQuote(component);
-        if("\"".equals(quote)) {
+        if ("\"".equals(quote)) {
             quote = "\\\\\"";
         }
         List<String> contextList = getContextList(component);
         boolean haveReplace = false;
         for (String context : contextList) {
             if (expression.contains(context)) {
-                if(isAddQuotesInTableNames()) {
-                    expression = expression.replaceAll("\\b" + context + "\\b", "\" +" + "\""+quote+"\" + " + context + " + \""+quote+"\""+  "+ \""); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
-                }else {
+                if (isAddQuotesInTableNames()) {
+                    expression = expression
+                            .replaceAll("\\b" + context + "\\b", //$NON-NLS-1$ //$NON-NLS-2$
+                                    "\" +" + "\"" + quote + "\" + " + context + " + \"" + quote + "\"" + "+ \""); //$NON-NLS-1$ //$NON-NLS-2$
+                } else {
                     expression = expression.replaceAll("\\b" + context + "\\b", "\" +" + context + "+ \""); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
                 }
                 haveReplace = true;
@@ -819,9 +821,11 @@ public abstract class DbGenerationManager {
             List<String> connContextList = getConnectionContextList(component);
             for (String context : connContextList) {
                 if (expression.contains(context)) {
-                    if(isAddQuotesInTableNames()) {
-                        expression = expression.replaceAll("\\b" + context + "\\b", "\" +" + "\""+quote+"\" + " + context + " + \""+quote+"\""+  "+ \""); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
-                    }else {
+                    if (isAddQuotesInTableNames()) {
+                        expression = expression
+                                .replaceAll("\\b" + context + "\\b", //$NON-NLS-1$ //$NON-NLS-2$
+                                        "\" +" + "\"" + quote + "\" + " + context + " + \"" + quote + "\"" + "+ \""); //$NON-NLS-1$ //$NON-NLS-2$
+                    } else {
                         expression = expression.replaceAll("\\b" + context + "\\b", "\" +" + context + "+ \""); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
                     }
                 }
@@ -855,22 +859,27 @@ public abstract class DbGenerationManager {
             
             boolean foundtail = foundtail(expression, indexGlobal + globalMapStr.length(), expression.length());
             
-            if(!foundhead && !foundtail) {
-                if(isAddQuotesInTableNames()){
-                    expression = expression.replaceAll(regex, "\" +" + "\""+quote+"\" + " + replacement + " + \""+quote+"\""+ "+ \"");//$NON-NLS-1$ //$NON-NLS-2$
-                }else {
+            if (!foundhead && !foundtail) {
+                if (isAddQuotesInTableNames()) {
+                    expression = expression
+                            .replaceAll(regex,
+                                    "\" +" + "\"" + quote + "\" + " + replacement + " + \"" + quote + "\"" + "+ \"");//$NON-NLS-1$ //$NON-NLS-2$
+                } else {
                     expression = expression.replaceAll(regex, "\" +" + replacement + "+ \"");//$NON-NLS-1$ //$NON-NLS-2$
                 }
-            } else if(!foundhead) {
-                if(isAddQuotesInTableNames()) {
-                    expression = expression.replaceAll(regex, "\" +" + "\""+quote+"\" + " + replacement + " + \""+quote+"\"");//$NON-NLS-1$ //$NON-NLS-2$
-                }else {
+            } else if (!foundhead) {
+                if (isAddQuotesInTableNames()) {
+                    expression = expression
+                            .replaceAll(regex, "\" +" + "\"" + quote + "\" + " + replacement + " + \"" + quote + "\"");//$NON-NLS-1$ //$NON-NLS-2$
+                } else {
                     expression = expression.replaceAll(regex, "\" +" + replacement);//$NON-NLS-1$ //$NON-NLS-2$
                 }
-            } else if(!foundtail){
-                if(isAddQuotesInTableNames()) {
-                    expression = expression.replaceAll(regex, "\" +" + "\""+quote+"\" + " + replacement + " + \""+quote+"\"" + "+ \"");//$NON-NLS-1$ //$NON-NLS-2$
-                }else {
+            } else if (!foundtail) {
+                if (isAddQuotesInTableNames()) {
+                    expression = expression
+                            .replaceAll(regex,
+                                    "\" +" + "\"" + quote + "\" + " + replacement + " + \"" + quote + "\"" + "+ \"");//$NON-NLS-1$ //$NON-NLS-2$
+                } else {
                     expression = expression.replaceAll(regex, replacement + "+ \"");
                 }
             }
@@ -889,22 +898,25 @@ public abstract class DbGenerationManager {
                 boolean foundhead = foundhead(expression, index[i] -1, i>0? index[i-1] + globalMapStr.length():0);
                 boolean foundtail = foundtail(expression, index[i] + globalMapStr.length(), i == index.length - 1?expression.length():index[i+1]);
                 
-                if(!foundhead && !foundtail) {
-                    if(isAddQuotesInTableNames()){
-                        globalMapStrReplacement[i] = "\" +" + "\""+quote+"\" + " + replacement + " + \""+quote+"\""+ "+ \"";//$NON-NLS-1$ //$NON-NLS-2$
-                    }else {
+                if (!foundhead && !foundtail) {
+                    if (isAddQuotesInTableNames()) {
+                        globalMapStrReplacement[i] =
+                                "\" +" + "\"" + quote + "\" + " + replacement + " + \"" + quote + "\"" + "+ \"";//$NON-NLS-1$ //$NON-NLS-2$
+                    } else {
                         globalMapStrReplacement[i] = "\" +" + replacement + "+ \"";//$NON-NLS-1$ //$NON-NLS-2$
                     }
-                } else if(!foundhead) {
-                    if(isAddQuotesInTableNames()) {
-                        globalMapStrReplacement[i] = "\" +" + "\""+quote+"\" + " + replacement + " + \""+quote+"\"";//$NON-NLS-1$ //$NON-NLS-2$
-                    }else {
+                } else if (!foundhead) {
+                    if (isAddQuotesInTableNames()) {
+                        globalMapStrReplacement[i] =
+                                "\" +" + "\"" + quote + "\" + " + replacement + " + \"" + quote + "\"";//$NON-NLS-1$ //$NON-NLS-2$
+                    } else {
                         globalMapStrReplacement[i] = "\" +" + replacement;//$NON-NLS-1$ //$NON-NLS-2$
                     }
-                } else if(!foundtail){
-                    if(isAddQuotesInTableNames()) {
-                        globalMapStrReplacement[i]  = "\" +" + "\""+quote+"\" + " + replacement + " + \""+quote+"\"" + "+ \"";//$NON-NLS-1$ //$NON-NLS-2$
-                    }else {
+                } else if (!foundtail) {
+                    if (isAddQuotesInTableNames()) {
+                        globalMapStrReplacement[i] =
+                                "\" +" + "\"" + quote + "\" + " + replacement + " + \"" + quote + "\"" + "+ \"";//$NON-NLS-1$ //$NON-NLS-2$
+                    } else {
                         globalMapStrReplacement[i] = replacement + "+ \"";//$NON-NLS-1$ //$NON-NLS-2$
                     }
                 }
@@ -1145,7 +1157,7 @@ public abstract class DbGenerationManager {
     }
     
     private boolean isContainsGlobalMap(String sqlQuery) {
-        return parser.getGlobalMapSet(sqlQuery).size()>0;
+        return parser.getGlobalMapSet(sqlQuery).size() > 0;
     }
 
     /**
@@ -1269,12 +1281,12 @@ public abstract class DbGenerationManager {
                 tableName = getHandledTableName(component, table.getName(), table.getAlias());
             } else {
                 tableName = getHandledField(component, table.getAlias());
-                if(isAddQuotesInTableNames()) {
+                if (isAddQuotesInTableNames()) {
                     String quote = getQuote(component);
                     List<IConnection> inputConnections = (List<IConnection>) component.getIncomingConnections();
                     IConnection iconn = this.getConnectonByName(inputConnections, tableName);
-                    tableName = getTableName(iconn,tableName,quote);
-                    tableName = adaptQuoteForColumnName(component,tableName);
+                    tableName = getTableName(iconn, tableName, quote);
+                    tableName = adaptQuoteForTableAndColumnName(component, tableName);
                 }
             }
             if (!subQueryTable.contains(tableName)) {
@@ -1502,15 +1514,15 @@ public abstract class DbGenerationManager {
                 String schemaNoQuote = TalendTextUtils.removeQuotes(schemaValue);
                 String tableNoQuote = TalendTextUtils.removeQuotes(table);
                 hasSchema = !"".equals(schemaNoQuote);
-                if(hasSchema) {
-                    String schemaWithQuote = getTableName(iconn,schemaNoQuote,quote);
-                    schemaWithQuote = adaptQuoteForColumnName(component, schemaWithQuote);
-                    String tableWithQuote = getTableName(iconn,tableNoQuote,quote);
-                    tableWithQuote = adaptQuoteForColumnName(component, tableWithQuote);
+                if (hasSchema) {
+                    String schemaWithQuote = getTableName(iconn, schemaNoQuote, quote);
+                    schemaWithQuote = adaptQuoteForTableAndColumnName(component, schemaWithQuote);
+                    String tableWithQuote = getTableName(iconn, tableNoQuote, quote);
+                    tableWithQuote = adaptQuoteForTableAndColumnName(component, tableWithQuote);
                     tableName = schemaWithQuote + "." + tableWithQuote;
-                }else {
-                    tableName = getTableName(iconn,inputTable.getName(),quote);
-                    tableName = adaptQuoteForColumnName(component, tableName);
+                } else {
+                    tableName = getTableName(iconn, inputTable.getName(), quote);
+                    tableName = adaptQuoteForTableAndColumnName(component, tableName);
                 }
                 String exp = replaceVariablesForExpression(component, tableName);
                 appendSqlQuery(sb, exp);
@@ -1644,12 +1656,15 @@ public abstract class DbGenerationManager {
                                             continue;
                                         }
                                         if (expression.trim().equals(tableValue + "." + oriName)) {
-                                            if(hasSchema && !aliasFlag) {
-                                                expression = getTableName(iconn,schemaNoQuote,quote) + "." + getTableName(iconn,tableNoQuote,quote) + "." + getColumnName(iconn, oriName, quote);
-                                                expression = expression.replaceAll(quto_markParser,"\\\\" +quto_mark); //$NON-NLS-1$
-                                            }else {
-                                                expression = getTableName(iconn,tableValue,quote) + "." + getColumnName(iconn, oriName, quote);
-                                                expression = expression.replaceAll(quto_markParser,"\\\\" +quto_mark); //$NON-NLS-1$
+                                            if (hasSchema && !aliasFlag) {
+                                                expression = getTableName(iconn, schemaNoQuote, quote) + "."
+                                                        + getTableName(iconn, tableNoQuote, quote) + "."
+                                                        + getColumnName(iconn, oriName, quote);
+                                                expression = expression.replaceAll(quto_markParser, "\\\\" + quto_mark); //$NON-NLS-1$
+                                            } else {
+                                                expression = getTableName(iconn, tableValue, quote) + "."
+                                                        + getColumnName(iconn, oriName, quote);
+                                                expression = expression.replaceAll(quto_markParser, "\\\\" + quto_mark); //$NON-NLS-1$
                                             }
                                             continue;
                                         }
@@ -1668,7 +1683,7 @@ public abstract class DbGenerationManager {
                                             oriName = oriName.replaceAll("\\$", "\\\\\\$"); //$NON-NLS-1$ //$NON-NLS-2$
                                         }
                                         String quotedTableName  = getTableName(iconn,tableValue,quote);
-                                        quotedTableName = adaptQuoteForColumnName(component, quotedTableName);
+                                        quotedTableName = adaptQuoteForTableAndColumnName(component, quotedTableName);
 //                                        expression = expression.replaceAll(tableValue, quotedTableName);
                                         expression = expression.replaceFirst(tableValue + "\\." + co.getLabel(), //$NON-NLS-1$
                                                 quotedTableName + "\\." + oriName); //$NON-NLS-1$
@@ -1687,8 +1702,10 @@ public abstract class DbGenerationManager {
         return expression;
     }
 
-    public String adaptQuoteForColumnName(DbMapComponent component, String columnEntry) {
-        if(ContextParameterUtils.isContainContextParam(columnEntry)||parser.isContainsGlobalMapExpression(columnEntry) || isFieldContainsContext(component,columnEntry)) {
+    public String adaptQuoteForTableAndColumnName(DbMapComponent component, String columnEntry) {
+        if (ContextParameterUtils.isContainContextParam(columnEntry)
+                || parser.isContainsGlobalMapExpression(columnEntry)
+                || isFieldContainsContext(component, columnEntry)) {
             return columnEntry;
         }
         String quote = getQuote(component);
@@ -1743,9 +1760,9 @@ public abstract class DbGenerationManager {
         return false;
     }
 
-    public String getQuote(DbMapComponent component){
+    public String getQuote(DbMapComponent component) {
         String delimitedCharacterText = getDelimitedCharacterText();
-        if(isDelimitedCharacter()&& org.apache.commons.lang.StringUtils.isNotEmpty(delimitedCharacterText)){
+        if (isDelimitedCharacter() && org.apache.commons.lang.StringUtils.isNotEmpty(delimitedCharacterText)) {
             return delimitedCharacterText;
         }
         String quote = TalendQuoteUtils.QUOTATION_MARK;
@@ -1854,14 +1871,14 @@ public abstract class DbGenerationManager {
 //            return "\" +" + handledTableName + "+ \"";
 //        }
         if (alias == null) {
-            if(hasSchema) {
-                schemaValue = getTableName(iconn,schemaNoQuote,quote);
-                tableValue = getTableName(iconn,tableNoQuote,quote);
+            if (hasSchema) {
+                schemaValue = getTableName(iconn, schemaNoQuote, quote);
+                tableValue = getTableName(iconn, tableNoQuote, quote);
                 tableName = schemaValue + "." + tableValue;
-            }else {
-                tableName = getTableName(iconn,tableNoQuote,quote);
+            } else {
+                tableName = getTableName(iconn, tableNoQuote, quote);
             }
-            tableName = adaptQuoteForColumnName(component,tableName);
+            tableName = adaptQuoteForTableAndColumnName(component, tableName);
             return replaceVariablesForExpression(component, tableName);
         } else {
             if (iconn != null) {
@@ -1873,55 +1890,55 @@ public abstract class DbGenerationManager {
                 }
                 if (hasSchema) {
                     schemaValue = handledParameterValues(schemaNoQuote);
-                    schemaValue = getTableName(iconn,schemaValue,quote);
-                    schemaValue = adaptQuoteForColumnName(component,schemaValue);
-                    if(ContextParameterUtils.isContainContextParam(schemaValue) || isContainsGlobalMap(schemaValue)) {
-                        if(isAddQuotesInTableNames()) {
-                            if("\"".equals(quote)) {
+                    schemaValue = getTableName(iconn, schemaValue, quote);
+                    schemaValue = adaptQuoteForTableAndColumnName(component,schemaValue);
+                    if (ContextParameterUtils.isContainContextParam(schemaValue) || isContainsGlobalMap(schemaValue)) {
+                        if (isAddQuotesInTableNames()) {
+                            if ("\"".equals(quote)) {
                                 quote = "\\\"";
                             }
-                            schemaValue = "\""+quote+"\" +" + schemaValue + "+ \""+quote+"\"";
+                            schemaValue = "\"" + quote + "\" +" + schemaValue + "+ \"" + quote + "\"";
                         }
-                    }else {
-                        if(isAddQuotesInTableNames()) {
-                            if("\"".equals(quote)) {
+                    } else {
+                        if (isAddQuotesInTableNames()) {
+                            if ("\"".equals(quote)) {
                                 quote = "\\\"";
                             }
-                            schemaValue = "\""+quote+"\" +" + schemaValue + "+ \""+quote+"\"";
-                        }else {
+                            schemaValue = "\"" + quote + "\" +" + schemaValue + "+ \"" + quote + "\"";
+                        } else {
                             schemaValue = "\"" + schemaValue + "\"";
                         }
                     }
                     handledTableName = schemaValue + "+\".\"+";
-                    if(ContextParameterUtils.isContainContextParam(schemaValue)) {
-                        if(isAddQuotesInTableNames()) {
-                            if("\"".equals(quote)) {
+                    if (ContextParameterUtils.isContainContextParam(schemaValue)) {
+                        if (isAddQuotesInTableNames()) {
+                            if ("\"".equals(quote)) {
                                 quote = "\\\"";
                             }
-                            tableValue = "\""+quote+"\" +" + tableValue + "+ \""+quote+"\"";
+                            tableValue = "\"" + quote + "\" +" + tableValue + "+ \"" + quote + "\"";
                         }
                         handledTableName += tableValue;
                         return "\" +" + handledTableName + "+ \"";
                     }
                 }
-                if(ContextParameterUtils.isContainContextParam(tableValue) || isContainsGlobalMap(tableValue)) {
-                    tableName = getTableName(iconn,tableValue,quote);
-                    if(isAddQuotesInTableNames()) {
-                        if("\"".equals(quote)) {
+                if (ContextParameterUtils.isContainContextParam(tableValue) || isContainsGlobalMap(tableValue)) {
+                    tableName = getTableName(iconn, tableValue, quote);
+                    if (isAddQuotesInTableNames()) {
+                        if ("\"".equals(quote)) {
                             quote = "\\\"";
                         }
-                        tableName = "\""+quote+"\" +" + tableName + "+ \""+quote+"\"";
+                        tableName = "\"" + quote + "\" +" + tableName + "+ \"" + quote + "\"";
                     }
-                }else {
-                    if(isAddQuotesInTableNames()) {
-                        tableName = getTableName(iconn,tableNoQuote,quote);
+                } else {
+                    if (isAddQuotesInTableNames()) {
+                        tableName = getTableName(iconn, tableNoQuote, quote);
                         tableName = "\"" + tableName + "\"";
-                    }else {
-                        tableName = getTableName(iconn,tableValue,quote);
+                    } else {
+                        tableName = getTableName(iconn, tableValue, quote);
                     }
                 }
-                if("\"".equals(quote)) {
-                    tableName = adaptQuoteForColumnName(component,tableName);
+                if ("\"".equals(quote)) {
+                    tableName = adaptQuoteForTableAndColumnName(component, tableName);
                 }
                 handledTableName = handledTableName + tableName;
                 return "\" +" + handledTableName + "+ \"";
@@ -1970,7 +1987,8 @@ public abstract class DbGenerationManager {
     }
     
     protected String getTableName(IConnection conn, String name, String quote) {
-        if (!isRefTableConnection(conn) && isAddQuotesInTableNames() && !ContextParameterUtils.isContainContextParam(name) && !isContainsGlobalMap(name)) {
+        if (!isRefTableConnection(conn) && isAddQuotesInTableNames()
+                && !ContextParameterUtils.isContainContextParam(name) && !isContainsGlobalMap(name)) {
             return getNameWithDelimitedIdentifier(name, quote);
         } else {
             return name;
@@ -2019,7 +2037,7 @@ public abstract class DbGenerationManager {
     }
     
     private boolean isFieldContainsContext(DbMapComponent component, String field) {
-        if(field!=null) {
+        if (field != null) {
             List<String> contextList = getContextList(component);
             for (String context : contextList) {
                 if (field.contains(context)) {
@@ -2029,6 +2047,7 @@ public abstract class DbGenerationManager {
         }
         return false;
     }
+
     protected String getHandledAlias(DbMapComponent component, String alias) {
         if (alias != null) {
             List<String> contextList = getContextList(component);
@@ -2044,8 +2063,8 @@ public abstract class DbGenerationManager {
                 String quote = getQuote(component);
                 List<IConnection> inputConnections = (List<IConnection>) component.getIncomingConnections();
                 IConnection iconn = this.getConnectonByName(inputConnections, alias);
-                alias = getTableName(iconn,alias,quote);
-                alias = adaptQuoteForColumnName(component,alias);
+                alias = getTableName(iconn, alias, quote);
+                alias = adaptQuoteForTableAndColumnName(component, alias);
             }
         }
         return alias;
@@ -2058,30 +2077,30 @@ public abstract class DbGenerationManager {
     public boolean isAddQuotesInTableNames() {
         return Boolean.TRUE.equals(this.addQuotesInTableNames);
     }
-    
+
     public boolean isDelimitedCharacter() {
         return Boolean.TRUE.equals(this.delimitedCharacter);
     }
-    
+
     public String getDelimitedCharacterText() {
-        return delimitedCharacterText == null ? "": this.delimitedCharacterText;
+        return delimitedCharacterText == null ? "" : this.delimitedCharacterText;
     }
-    
+
     public void setDelimitedCharacterText(String delimitedCharaterText) {
         this.delimitedCharacterText = delimitedCharaterText;
     }
-    
+
     public void setAddQuotesInColumns(boolean addQuotesInColumns) {
         this.addQuotesInColumns = addQuotesInColumns;
     }
-    
+
     public void setDelimitedCharacter(boolean delimitedCharacter) {
         this.delimitedCharacter = delimitedCharacter;
     }
-    
+
     public void setAddQuotesInTableNames(boolean addQuotesInTableNames) {
         this.addQuotesInTableNames = addQuotesInTableNames;
-    
+
     }
     public boolean isUseAliasInOutputTable() {
         return Boolean.TRUE.equals(this.useAliasInOutputTable);
@@ -2130,8 +2149,8 @@ public abstract class DbGenerationManager {
             String quote = getQuote(component);
             List<IConnection> inputConnections = (List<IConnection>) component.getIncomingConnections();
             IConnection iconn = this.getConnectonByName(inputConnections, targetTable);
-            targetTable = getTableName(iconn,targetTable,quote);
-            targetTable = adaptQuoteForColumnName(component, targetTable);
+            targetTable = getTableName(iconn, targetTable, quote);
+            targetTable = adaptQuoteForTableAndColumnName(component, targetTable);
             if (org.apache.commons.lang.StringUtils.isNotBlank(targetSchemaTable)) {
                 targetSchemaTable += targetTable;
             } else {
@@ -2229,7 +2248,7 @@ public abstract class DbGenerationManager {
                     String columnEntry = dbMapEntry.getName();
                     String expression = dbMapEntry.getExpression();
                     expression = initExpression(component, dbMapEntry);
-                    if(!isAddQuotesInColumns()) {
+                    if (!isAddQuotesInColumns()) {
                         expression = addQuoteForSpecialChar(expression, component);
                     }
                     //
@@ -2272,7 +2291,7 @@ public abstract class DbGenerationManager {
                         }
                         if (isAddQuotesInColumns()) {
                             columnEntry = getNameWithDelimitedIdentifier(columnEntry, getQuote(component));
-                            columnEntry = adaptQuoteForColumnName(component, columnEntry);
+                            columnEntry = adaptQuoteForTableAndColumnName(component, columnEntry);
                         }
                         appendSqlQuery(sb, addQuotes(columnEntry) + " = " + exp); //$NON-NLS-1$
                     }

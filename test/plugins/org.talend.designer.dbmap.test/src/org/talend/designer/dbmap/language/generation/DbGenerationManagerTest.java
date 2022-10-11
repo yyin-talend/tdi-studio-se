@@ -49,7 +49,6 @@ import org.talend.designer.dbmap.DbMapComponent;
 import org.talend.designer.dbmap.external.data.ExternalDbMapData;
 import org.talend.designer.dbmap.external.data.ExternalDbMapEntry;
 import org.talend.designer.dbmap.external.data.ExternalDbMapTable;
-import org.talend.designer.dbmap.language.mysql.MysqlGenerationManager;
 
 public class DbGenerationManagerTest extends DbGenerationManagerTestHelper {
 
@@ -484,7 +483,7 @@ public class DbGenerationManagerTest extends DbGenerationManagerTestHelper {
         param.setName("ELT_TABLE_NAME");
         param.setValue(tableName);
         when(node.getElementParameter("ELT_TABLE_NAME")).thenReturn(param);
-        when(connection.getName()).thenReturn("".equals(schemaName)? tableName : schemaName + "." + tableName);
+        when(connection.getName()).thenReturn("".equals(schemaName) ? tableName : schemaName + "." + tableName);
         when(connection.getSource()).thenReturn(node);
         IMetadataTable table = new MetadataTable();
         table.setLabel(tableName);
