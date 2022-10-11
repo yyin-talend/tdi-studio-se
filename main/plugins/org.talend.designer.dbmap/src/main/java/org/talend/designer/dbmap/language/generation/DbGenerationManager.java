@@ -1269,6 +1269,13 @@ public abstract class DbGenerationManager {
                 tableName = getHandledTableName(component, table.getName(), table.getAlias());
             } else {
                 tableName = getHandledField(component, table.getAlias());
+                if(isAddQuotesInTableNames()) {
+                    String quote = getQuote(component);
+                    List<IConnection> inputConnections = (List<IConnection>) component.getIncomingConnections();
+                    IConnection iconn = this.getConnectonByName(inputConnections, tableName);
+                    tableName = getTableName(iconn,tableName,quote);
+                    tableName = adaptQuoteForColumnName(component,tableName);
+                }
             }
             if (!subQueryTable.contains(tableName)) {
                 entryName = getOriginalColumnName(entryName, component, table);
@@ -1496,8 +1503,11 @@ public abstract class DbGenerationManager {
                 String tableNoQuote = TalendTextUtils.removeQuotes(table);
                 hasSchema = !"".equals(schemaNoQuote);
                 if(hasSchema) {
-                    tableName = getTableName(iconn,schemaNoQuote,quote) + "." + getTableName(iconn,tableNoQuote,quote);
-                    tableName = adaptQuoteForColumnName(component, tableName);
+                    String schemaWithQuote = getTableName(iconn,schemaNoQuote,quote);
+                    schemaWithQuote = adaptQuoteForColumnName(component, schemaWithQuote);
+                    String tableWithQuote = getTableName(iconn,tableNoQuote,quote);
+                    tableWithQuote = adaptQuoteForColumnName(component, tableWithQuote);
+                    tableName = schemaWithQuote + "." + tableWithQuote;
                 }else {
                     tableName = getTableName(iconn,inputTable.getName(),quote);
                     tableName = adaptQuoteForColumnName(component, tableName);
@@ -1558,7 +1568,7 @@ public abstract class DbGenerationManager {
                     Entry<String, String> entry = ite.next();
                     String columnValue = entry.getKey();
                     String tableValue = entry.getValue();
-
+                    boolean aliasFlag = false;
                     String tableNameValue = tableValue;
                     // find original table name if tableValue is alias
                     String originaltableName = tableValue;
@@ -1568,6 +1578,7 @@ public abstract class DbGenerationManager {
                         if (inputTable.getAlias() != null && inputTable.getAlias().equals(tableValue)) {
                             originaltableName = inputTable.getTableName();
                             tableNameValue = inputTable.getAlias();
+                            aliasFlag = true;
                         }
                     }
 
@@ -1575,6 +1586,7 @@ public abstract class DbGenerationManager {
                     if (inputConnections != null) {
 
                         for (IConnection iconn : inputConnections) {
+                            
                             IMetadataTable metadataTable = iconn.getMetadataTable();
                             String tName = iconn.getName();
                             if ((originaltableName.equals(tName) || tableValue.equals(tName)) && metadataTable != null) {
@@ -1607,6 +1619,23 @@ public abstract class DbGenerationManager {
                                         expression = expression.replaceFirst(tableValue, tableName);
                                     }
                                 }
+                                INode source = iconn.getSource();
+                                String handledTableName = "";
+                                boolean inputIsELTDBMap = false;
+                                String schemaValue = "";
+                                String table = "";
+                                boolean hasSchema = false;
+                                IElementParameter schemaParam = source.getElementParameter("ELT_SCHEMA_NAME");
+                                IElementParameter tableParam = source.getElementParameter("ELT_TABLE_NAME");
+                                if (schemaParam != null && schemaParam.getValue() != null) {
+                                    schemaValue = schemaParam.getValue().toString();
+                                }
+                                if (tableParam != null && tableParam.getValue() != null) {
+                                    table = tableParam.getValue().toString();
+                                }
+                                String schemaNoQuote = TalendTextUtils.removeQuotes(schemaValue);
+                                String tableNoQuote = TalendTextUtils.removeQuotes(table);
+                                hasSchema = !"".equals(schemaNoQuote);
                                 for (IMetadataColumn co : lColumn) {
                                     if (columnValue.equals(co.getLabel())) {
                                         String oriName = co.getOriginalDbColumnName();
@@ -1615,8 +1644,13 @@ public abstract class DbGenerationManager {
                                             continue;
                                         }
                                         if (expression.trim().equals(tableValue + "." + oriName)) {
-                                            expression = getTableName(iconn,tableValue,quote) + "." + getColumnName(iconn, oriName, quote);
-                                            expression = expression.replaceAll(quto_markParser,"\\\\" +quto_mark); //$NON-NLS-1$
+                                            if(hasSchema && !aliasFlag) {
+                                                expression = getTableName(iconn,schemaNoQuote,quote) + "." + getTableName(iconn,tableNoQuote,quote) + "." + getColumnName(iconn, oriName, quote);
+                                                expression = expression.replaceAll(quto_markParser,"\\\\" +quto_mark); //$NON-NLS-1$
+                                            }else {
+                                                expression = getTableName(iconn,tableValue,quote) + "." + getColumnName(iconn, oriName, quote);
+                                                expression = expression.replaceAll(quto_markParser,"\\\\" +quto_mark); //$NON-NLS-1$
+                                            }
                                             continue;
                                         }
                                         if (expression.trim().equals(originaltableName + "." + oriName)) {
@@ -1841,30 +1875,56 @@ public abstract class DbGenerationManager {
                     schemaValue = handledParameterValues(schemaNoQuote);
                     schemaValue = getTableName(iconn,schemaValue,quote);
                     schemaValue = adaptQuoteForColumnName(component,schemaValue);
+                    if(ContextParameterUtils.isContainContextParam(schemaValue) || isContainsGlobalMap(schemaValue)) {
+                        if(isAddQuotesInTableNames()) {
+                            if("\"".equals(quote)) {
+                                quote = "\\\"";
+                            }
+                            schemaValue = "\""+quote+"\" +" + schemaValue + "+ \""+quote+"\"";
+                        }
+                    }else {
+                        if(isAddQuotesInTableNames()) {
+                            if("\"".equals(quote)) {
+                                quote = "\\\"";
+                            }
+                            schemaValue = "\""+quote+"\" +" + schemaValue + "+ \""+quote+"\"";
+                        }else {
+                            schemaValue = "\"" + schemaValue + "\"";
+                        }
+                    }
                     handledTableName = schemaValue + "+\".\"+";
                     if(ContextParameterUtils.isContainContextParam(schemaValue)) {
+                        if(isAddQuotesInTableNames()) {
+                            if("\"".equals(quote)) {
+                                quote = "\\\"";
+                            }
+                            tableValue = "\""+quote+"\" +" + tableValue + "+ \""+quote+"\"";
+                        }
                         handledTableName += tableValue;
                         return "\" +" + handledTableName + "+ \"";
                     }
                 }
-                if(ContextParameterUtils.isContainContextParam(tableValue)) {
+                if(ContextParameterUtils.isContainContextParam(tableValue) || isContainsGlobalMap(tableValue)) {
                     tableName = getTableName(iconn,tableValue,quote);
-                    tableName = adaptQuoteForColumnName(component,tableName);
-                    handledTableName = handledTableName + tableName;
-                    if("\"".equals(quote)) {
-                        quote = "\\\"";
-                    }
                     if(isAddQuotesInTableNames()) {
-                        return "\" +" + "\""+quote+"\" +" + handledTableName + "+ \""+quote+"\"+ \"";
-                    }else {
-                        return "\" +" + handledTableName + "+ \"";
+                        if("\"".equals(quote)) {
+                            quote = "\\\"";
+                        }
+                        tableName = "\""+quote+"\" +" + tableName + "+ \""+quote+"\"";
                     }
                 }else {
-                    tableName = getTableName(iconn,tableNoQuote,quote);
+                    if(isAddQuotesInTableNames()) {
+                        tableName = getTableName(iconn,tableNoQuote,quote);
+                        tableName = "\"" + tableName + "\"";
+                    }else {
+                        tableName = getTableName(iconn,tableValue,quote);
+                    }
                 }
-                tableName = adaptQuoteForColumnName(component,tableName);
+                if("\"".equals(quote)) {
+                    tableName = adaptQuoteForColumnName(component,tableName);
+                }
                 handledTableName = handledTableName + tableName;
-                return "\" + \"" + handledTableName + "\" + \"";
+                return "\" +" + handledTableName + "+ \"";
             }
         }
         return tableName;
