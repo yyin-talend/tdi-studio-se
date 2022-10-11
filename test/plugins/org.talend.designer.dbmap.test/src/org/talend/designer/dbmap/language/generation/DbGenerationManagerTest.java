@@ -180,7 +180,7 @@ public class DbGenerationManagerTest extends DbGenerationManagerTestHelper {
         List<IConnection> incomingConnections = new ArrayList<IConnection>();
         String[] columns = new String[] { "id",  "name"};
         String[] labels = new String[] { "id",  "name"};
-        incomingConnections.add(createConnection("t1", "t1", labels, columns));
+        incomingConnections.add(createConnection("", "t1", labels, columns));
         dbMapComponentDelimited.setIncomingConnections(incomingConnections);
 
         if (dbMapComponentDelimited.getElementParameters() == null) {
@@ -200,7 +200,7 @@ public class DbGenerationManagerTest extends DbGenerationManagerTestHelper {
         List<IConnection> incomingConnections = new ArrayList<IConnection>();
         String[] columns = new String[] { "id",  "name"};
         String[] labels = new String[] { "id",  "name"};
-        incomingConnections.add(createConnection("t1", "t1", labels, columns));
+        incomingConnections.add(createConnection("", "t1", labels, columns));
         dbMapComponentDelimited.setIncomingConnections(incomingConnections);
 
         if (dbMapComponentDelimited.getElementParameters() == null) {
@@ -285,7 +285,7 @@ public class DbGenerationManagerTest extends DbGenerationManagerTestHelper {
     	List<IConnection> incomingConnections = new ArrayList<IConnection>();
         String[] columns = new String[] { "id",  "name"};
         String[] labels = new String[] { "id",  "name"};
-        incomingConnections.add(createConnection("t1", "t1", labels, columns));
+        incomingConnections.add(createConnection("", "t1", labels, columns));
         dbMapComponent.setIncomingConnections(incomingConnections);
         
         ElementParameter param = new ElementParameter(dbMapComponent);
@@ -319,6 +319,18 @@ public class DbGenerationManagerTest extends DbGenerationManagerTestHelper {
 
     private IConnection createConnection(String schemaName, String tableName, String[] labels, String[] columns) {
         Connection connection = mock(Connection.class);
+        Node node = mock(Node.class);
+        ElementParameter param = new ElementParameter(node);
+        param.setName("ELT_SCHEMA_NAME");
+        param.setValue(schemaName);
+        when(node.getElementParameter("ELT_SCHEMA_NAME")).thenReturn(param);
+        param = new ElementParameter(node);
+        param.setName("ELT_TABLE_NAME");
+        param.setValue(tableName);
+        when(node.getElementParameter("ELT_TABLE_NAME")).thenReturn(param);
+        when(connection.getName()).thenReturn("".equals(schemaName) ? tableName : schemaName + "." + tableName);
+        when(connection.getSource()).thenReturn(node);
+
         when(connection.getName()).thenReturn(tableName);
         IMetadataTable metadataTable = new MetadataTable();
         metadataTable.setLabel(tableName);
@@ -1225,7 +1237,8 @@ public class DbGenerationManagerTest extends DbGenerationManagerTestHelper {
         lookupTableContext.setType("String");
         String query = dbManager.buildSqlSelect(dbMapComponent, schema + "." + outTable1);
         String expectedQuery = "\"UPDATE dbo.tar\n" + "SET tarColumn = A.id,\n" + "tarColumn1 = A.name\n"
-                + "FROM\n \" +dbo+\".\"+src1+ \" A INNER JOIN  \" +dbo+\".\"+src2+ \" B " + "ON(" + "  B.id = A.id )\"";
+                + "FROM\n \" +\"dbo\"+\".\"+src1+ \" A INNER JOIN  \" +\"dbo\"+\".\"+src2+ \" B " + "ON("
+                + "  B.id = A.id )\"";
 
         assertEquals(expectedQuery, query);
     }
@@ -1634,7 +1647,8 @@ public class DbGenerationManagerTest extends DbGenerationManagerTestHelper {
         lookupTableContext.setType("String");
         String query = dbManager.buildSqlSelect(dbMapComponent, schema + "." + outTable1);
         String expectedQuery = "\"UPDATE ABC\n" + "SET tarColumn = A.id,\n" + "tarColumn1 = A.name\n"
-                + "FROM\n \" +dbo+\".\"+src1+ \" A INNER JOIN  \" +dbo+\".\"+src2+ \" B " + "ON(" + "  B.id = A.id )\"";
+                + "FROM\n \" +\"dbo\"+\".\"+src1+ \" A INNER JOIN  \" +\"dbo\"+\".\"+src2+ \" B " + "ON("
+                + "  B.id = A.id )\"";
         assertEquals(expectedQuery, query);
     }
 
@@ -1769,7 +1783,8 @@ public class DbGenerationManagerTest extends DbGenerationManagerTestHelper {
         lookupTableContext.setType("String");
         String query = dbManager.buildSqlSelect(dbMapComponent, schema + "." + outTable1);
         String expectedQuery = "\"UPDATE ABC A\n" + "SET tarColumn = A.id,\n" + "tarColumn1 = A.name\n"
-                + "FROM\n \" +dbo+\".\"+src1+ \" A INNER JOIN  \" +dbo+\".\"+src2+ \" B " + "ON(" + "  B.id = A.id )\"";
+                + "FROM\n \" +\"dbo\"+\".\"+src1+ \" A INNER JOIN  \" +\"dbo\"+\".\"+src2+ \" B " + "ON("
+                + "  B.id = A.id )\"";
         assertEquals(expectedQuery, query);
     }
 
@@ -1904,7 +1919,8 @@ public class DbGenerationManagerTest extends DbGenerationManagerTestHelper {
         lookupTableContext.setType("String");
         String query = dbManager.buildSqlSelect(dbMapComponent, schema + "." + outTable1);
         String expectedQuery = "\"UPDATE dbo.tar\n" + "SET tarColumn = A.id,\n" + "tarColumn1 = A.name\n"
-                + "FROM\n \" +dbo+\".\"+src1+ \" A INNER JOIN  \" +dbo+\".\"+src2+ \" B " + "ON(" + "  B.id = A.id )\"";
+                + "FROM\n \" +\"dbo\"+\".\"+src1+ \" A INNER JOIN  \" +\"dbo\"+\".\"+src2+ \" B " + "ON("
+                + "  B.id = A.id )\"";
         assertEquals(expectedQuery, query);
     }
 
@@ -2287,7 +2303,7 @@ public class DbGenerationManagerTest extends DbGenerationManagerTestHelper {
         String expectedQuery =
                 "\"UPDATE dbo.tar\n" + "SET \\\"tarColumn\\\" = A.\\\"id\\\",\n"
                         + "\\\"tarColumn1\\\" = A.\\\"name\\\"\n"
-                        + "FROM\n \" +dbo+\".\"+src1+ \" A , \" +dbo+\".\"+src2+ \" B\"";
+                        + "FROM\n \" +\"dbo\"+\".\"+src1+ \" A , \" +\"dbo\"+\".\"+src2+ \" B\"";
 
         assertEquals(expectedQuery, query);
     }
@@ -2418,7 +2434,7 @@ public class DbGenerationManagerTest extends DbGenerationManagerTestHelper {
         lookupTableContext.setType("String");
         String query = dbManager.buildSqlSelect(dbMapComponent, schema + "." + outTable1);
         String expectedQuery = "\"UPDATE dbo.tar\n" + "SET `tarColumn` = A.`id`,\n" + "`tarColumn1` = A.`name`\n"
-                + "FROM\n \" +dbo+\".\"+src1+ \" A , \" +dbo+\".\"+src2+ \" B\"";
+                + "FROM\n \" +\"dbo\"+\".\"+src1+ \" A , \" +\"dbo\"+\".\"+src2+ \" B\"";
 
         assertEquals(expectedQuery, query);
     }
