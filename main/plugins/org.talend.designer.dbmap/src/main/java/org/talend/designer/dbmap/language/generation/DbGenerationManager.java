@@ -1900,17 +1900,10 @@ public abstract class DbGenerationManager {
                             schemaValue = "\"" + quote + "\" +" + schemaValue + "+ \"" + quote + "\"";
                         }
                     } else {
-                        if (isAddQuotesInTableNames()) {
-                            if ("\"".equals(quote)) {
-                                quote = "\\\"";
-                            }
-                            schemaValue = "\"" + quote + "\" +" + schemaValue + "+ \"" + quote + "\"";
-                        } else {
-                            schemaValue = "\"" + schemaValue + "\"";
-                        }
+                        schemaValue = "\"" + schemaValue + "\"";
                     }
                     handledTableName = schemaValue + "+\".\"+";
-                    if (ContextParameterUtils.isContainContextParam(schemaValue)) {
+                    if (ContextParameterUtils.isContainContextParam(schemaValue) || isContainsGlobalMap(schemaValue)) {
                         if (isAddQuotesInTableNames()) {
                             if ("\"".equals(quote)) {
                                 quote = "\\\"";
@@ -1932,7 +1925,12 @@ public abstract class DbGenerationManager {
                 } else {
                     if (isAddQuotesInTableNames()) {
                         tableName = getTableName(iconn, tableNoQuote, quote);
+                        if ("\"".equals(quote)) {
+                            tableName = adaptQuoteForTableAndColumnName(component, tableName);
+                        }
                         tableName = "\"" + tableName + "\"";
+                        handledTableName = handledTableName + tableName;
+                        return "\" +" + handledTableName + "+ \"";
                     } else {
                         tableName = getTableName(iconn, tableValue, quote);
                     }
@@ -2127,6 +2125,7 @@ public abstract class DbGenerationManager {
 
     protected String getTargetSchemaTable(DbMapComponent component, String outTableName) {
         String targetSchemaTable = null;
+        String quote = getQuote(component);
         IElementParameter eltSchemaNameParam = source.getElementParameter("ELT_SCHEMA_NAME"); //$NON-NLS-1$
         if (eltSchemaNameParam != null && eltSchemaNameParam.getValue() != null) {
             String value = String.valueOf(eltSchemaNameParam.getValue());
@@ -2139,22 +2138,53 @@ public abstract class DbGenerationManager {
                 if (isVariable(schemaNoQuote)) {
                     targetSchemaTable = replaceVariablesForTargetTableExpression(component, schemaNoQuote);
                 }
+                if (ContextParameterUtils.isContainContextParam(schemaNoQuote) || isContainsGlobalMap(schemaNoQuote)) {
+                    if (isAddQuotesInTableNames()) {
+                        if ("\"".equals(quote)) {
+                            targetSchemaTable = "\"+ \"" + "\\\"" + targetSchemaTable + "\\\"" + "\" +\"";
+                        } else {
+                            targetSchemaTable = "\"+ \"" + quote + targetSchemaTable + quote + "\" +\"";
+                        }
+                    }
+
+                } else {
+                    if (isAddQuotesInTableNames()) {
+                        List<IConnection> inputConnections = (List<IConnection>) component.getIncomingConnections();
+                        IConnection iconn = this.getConnectonByName(inputConnections, targetSchemaTable);
+                        targetSchemaTable = getTableName(iconn, targetSchemaTable, quote);
+                        targetSchemaTable = adaptQuoteForTableAndColumnName(component, targetSchemaTable);
+                    }
+                }
                 targetSchemaTable = targetSchemaTable + "."; //$NON-NLS-1$
             }
         }
         String targetTable = getHandledField(component, outTableName);
-        if (isVariable(targetTable)) {
-            targetSchemaTable += replaceVariablesForTargetTableExpression(component, targetTable);
-        } else {
-            String quote = getQuote(component);
-            List<IConnection> inputConnections = (List<IConnection>) component.getIncomingConnections();
-            IConnection iconn = this.getConnectonByName(inputConnections, targetTable);
-            targetTable = getTableName(iconn, targetTable, quote);
-            targetTable = adaptQuoteForTableAndColumnName(component, targetTable);
+        if (ContextParameterUtils.isContainContextParam(outTableName) || isContainsGlobalMap(outTableName)) {
+            if (isAddQuotesInTableNames()) {
+                if ("\"".equals(quote)) {
+                    targetTable = "\"+ \"" + "\\\"" + targetTable + "\\\"" + "\" +\"";
+                } else {
+                    targetTable = "\"+ \"" + quote + targetTable + quote + "\" +\"";
+                }
+            }
             if (org.apache.commons.lang.StringUtils.isNotBlank(targetSchemaTable)) {
                 targetSchemaTable += targetTable;
             } else {
                 targetSchemaTable = targetTable;
+            }
+        } else {
+            if (isVariable(targetTable)) {
+                targetSchemaTable += replaceVariablesForTargetTableExpression(component, targetTable);
+            } else {
+                List<IConnection> inputConnections = (List<IConnection>) component.getIncomingConnections();
+                IConnection iconn = this.getConnectonByName(inputConnections, targetTable);
+                targetTable = getTableName(iconn, targetTable, quote);
+                targetTable = adaptQuoteForTableAndColumnName(component, targetTable);
+                if (org.apache.commons.lang.StringUtils.isNotBlank(targetSchemaTable)) {
+                    targetSchemaTable += targetTable;
+                } else {
+                    targetSchemaTable = targetTable;
+                }
             }
         }
         return targetSchemaTable;
