@@ -541,6 +541,11 @@ public class DefaultRunProcessService implements IRunProcessService {
         JobErrorsChecker.checkLastGenerationHasCompilationError(updateProblemsView);
     }
 
+    @Override
+    public void checkLastGenerationHasCompilationError(boolean updateProblemsView, boolean isJob) throws ProcessorException {
+        JobErrorsChecker.checkLastGenerationHasCompilationError(updateProblemsView, isJob);
+    }
+
     /*
      * (non-Javadoc)
      *
