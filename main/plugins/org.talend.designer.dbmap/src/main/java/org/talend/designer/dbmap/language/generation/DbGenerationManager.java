@@ -1935,9 +1935,6 @@ public abstract class DbGenerationManager {
                         tableName = getTableName(iconn, tableValue, quote);
                     }
                 }
-                if ("\"".equals(quote)) {
-                    tableName = adaptQuoteForTableAndColumnName(component, tableName);
-                }
                 handledTableName = handledTableName + tableName;
                 return "\" +" + handledTableName + "+ \"";
             }
