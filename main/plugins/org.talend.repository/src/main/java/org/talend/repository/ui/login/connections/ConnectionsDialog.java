@@ -83,6 +83,8 @@ public class ConnectionsDialog extends TitleAreaDialog {
 
     private boolean hasAuthorizationError = false;
 
+    private boolean ssoMode = false;
+
     public ConnectionsDialog(Shell parentShell) {
         super(parentShell);
         setShellStyle(getShellStyle() | SWT.RESIZE);
@@ -92,13 +94,19 @@ public class ConnectionsDialog extends TitleAreaDialog {
         setTitleAreaColor(new RGB(255, 255, 255));
     }
 
-    public ConnectionsDialog(Shell parentShell, ConnectionBean defaultConnectionSelected, boolean hasAuthorizationError) {
+    public ConnectionsDialog(Shell parentShell, ConnectionBean defaultConnectionSelected, boolean hasAuthorizationError,
+            boolean ssoMode) {
         super(parentShell);
         setShellStyle(getShellStyle() | SWT.RESIZE);
         setTitleImage();
         setTitleAreaColor(new RGB(255, 255, 255));
         this.defaultConnectionSelected = defaultConnectionSelected;
         this.hasAuthorizationError = hasAuthorizationError;
+        this.ssoMode = ssoMode;
+    }
+
+    public boolean isSsoMode() {
+        return this.ssoMode;
     }
 
     protected void setTitleImage() {

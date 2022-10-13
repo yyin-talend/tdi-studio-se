@@ -14,6 +14,7 @@ package org.talend.repository.ui.login.connections.settings;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URI;
 
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.preference.PreferencePage;
@@ -35,6 +36,7 @@ import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.PlatformUI;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.ui.runtime.exception.ExceptionMessageDialog;
+import org.talend.commons.utils.system.EclipseCommandLine;
 import org.talend.core.ui.workspace.ChooseWorkspaceData;
 import org.talend.core.ui.workspace.ChooseWorkspaceDialog;
 import org.talend.repository.i18n.Messages;
@@ -132,17 +134,19 @@ public abstract class WorkspacePreferencePage extends PreferencePage {
             if (instancePath.length() <= 0) {
                 throw new IllegalArgumentException(Messages.getString("WorkspacePreferencePage.ex.path.empty"));
             }
-//            String path = workspace.getAbsolutePath().replace(File.separatorChar, '/');
-//            URL url = new URL("file", null, path); //$NON-NLS-1$
-//            if (instanceLoc.set(url, true)) {
             launchData.writePersistedData();
+
+            URI uri = workspace.toURI();
+            String workspacePath = uri.toString();
+            workspacePath = workspacePath.replaceAll("\\\\", "\\\\\\\\"); //$NON-NLS-1$//$NON-NLS-2$
+            EclipseCommandLine.updateOrCreateExitDataPropertyWithCommand("-data", workspacePath, false); //$NON-NLS-1$
+
             if (PlatformUI.isWorkbenchRunning()) {
                 PlatformUI.getWorkbench().restart();
             } else {
                 LoginHelper.isRestart = true;
                 restart();
             }
-//            }
         } catch (Exception e) {
             ExceptionMessageDialog.openError(Display.getCurrent().getActiveShell(),
                     Messages.getString("WorkspacePreferencePage.ex.err"), e.getMessage(), e);
