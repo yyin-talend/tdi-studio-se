@@ -495,6 +495,12 @@ public class LoginHelper {
         }
         String lastUsedBranch = null;
         if (isRemoteConnection) {
+            String jsonStr = lastUsedProject.getEmfProject().getUrl();
+            try {
+                lastUsedBranch = prefManipulator.getLastSVNBranch(new JSONObject(jsonStr).getString("location"), lastUsedProject.getTechnicalLabel());
+            } catch (JSONException ex) {
+                ExceptionHandler.process(ex);
+            }
             List<String> branches = null;
             try {
                 /**

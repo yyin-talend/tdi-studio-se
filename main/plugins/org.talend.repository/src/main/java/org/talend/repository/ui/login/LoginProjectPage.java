@@ -266,6 +266,10 @@ public class LoginProjectPage extends AbstractLoginActionPage {
         if (ICloudSignOnService.get() != null) {
             ICloudSignOnService.get().reload();
         }
+        ConnectionBean selectedConnBean = LoginHelper.getInstance().getCurrentSelectedConnBean();
+        if (selectedConnBean != null && selectedConnBean.isLoginViaCloud()) {
+            selectedConnBean.setWorkSpace(getRecentWorkSpace());
+        }
     }
 
     private void scheduleCheckSandboxJob() {
@@ -613,14 +617,14 @@ public class LoginProjectPage extends AbstractLoginActionPage {
             title.setText(Messages.getString("LoginProjectPage.title")); //$NON-NLS-1$
             connectionsViewer = new ComboViewer(connectionManageArea, SWT.READ_ONLY);
             connectionsViewer.getControl().setFont(LoginDialogV2.fixedFont);; 
-            
-            manageButton = new Button(connectionManageArea, SWT.NONE);
-            manageButton.setFont(LoginDialogV2.fixedFont);
-            manageButton.setBackground(backgroundBtnColor);
-            manageButton.setImage(ImageProvider.getImage(EImage.EDIT_ICON));
-            manageButton.setToolTipText(Messages.getString("LoginProjectPage.manage")); //$NON-NLS-1$  
         } 
-        
+
+        manageButton = new Button(connectionManageArea, SWT.NONE);
+        manageButton.setFont(LoginDialogV2.fixedFont);
+        manageButton.setBackground(backgroundBtnColor);
+        manageButton.setImage(ImageProvider.getImage(EImage.EDIT_ICON));
+        manageButton.setToolTipText(Messages.getString("LoginProjectPage.manage")); //$NON-NLS-1$
+
         if (brandingService.isPoweredbyTalend()) {
             switchLoginTypeButton =  new Button(connectionManageArea, SWT.NONE);
             switchLoginTypeButton.setFont(LoginDialogV2.fixedFont);
@@ -1444,9 +1448,6 @@ public class LoginProjectPage extends AbstractLoginActionPage {
     }
 
     public void handleOpenConnectionsDialog(boolean showError) {
-       if (ICloudSignOnService.get() != null && ICloudSignOnService.get().isSignViaCloud()) {
-           return;
-       }
         try {
             if (showError && errorManager.isHasAuthException()) {
                 String[] dialogButtonLabels = new String[] { IDialogConstants.YES_LABEL, IDialogConstants.CANCEL_LABEL };
@@ -1459,9 +1460,19 @@ public class LoginProjectPage extends AbstractLoginActionPage {
                 }
             }
             final boolean hasAuthException = errorManager.isHasAuthException();
-            ConnectionsDialog connectionsDialog = new ConnectionsDialog(getShell(), getConnection(),
-                    hasAuthException);
+            ConnectionBean curConn = null;
+            if (this.isSSOMode) {
+                curConn = LoginHelper.getInstance().getCurrentSelectedConnBean();
+            } else {
+                curConn = getConnection();
+            }
+            Shell shell = getShell();
+            ConnectionsDialog connectionsDialog = new ConnectionsDialog(shell, curConn,
+                    hasAuthException, this.isSSOMode);
             int open = connectionsDialog.open();
+            if (shell != null && shell.isDisposed()) {
+                return;
+            }
             if (open == Window.OK) {
                 List<ConnectionBean> storedConnections = connectionsDialog.getConnections();
                 LoginHelper.getInstance().setStoredConnections(storedConnections);
