@@ -197,35 +197,35 @@ public class DbMapComponent extends AbstractMapComponent {
             activeAddQuotesInTableNameEP.setFieldType(EParameterFieldType.CHECK);
             activeAddQuotesInTableNameEP.setValue(getGenerationManager().isAddQuotesInTableNames());
 
-            IElementParameter activeDelimitedCharacterEP =
-                    origNode.getElementParameter(EParameterName.ACTIVE_DELIMITED_CHARACTER.getName());
-            if (activeDelimitedCharacterEP == null) {
-                activeDelimitedCharacterEP = new ElementParameter(origNode);
-                activeDelimitedCharacterEP.setShow(false);
-                activeDelimitedCharacterEP.setName(EParameterName.ACTIVE_DELIMITED_CHARACTER.getName());
-                activeDelimitedCharacterEP.setCategory(EComponentCategory.TECHNICAL);
-                activeDelimitedCharacterEP.setNumRow(99);
-                activeDelimitedCharacterEP.setReadOnly(false);
-                List<IElementParameter> elemParams = (List<IElementParameter>) origNode.getElementParameters();
-                elemParams.add(activeDelimitedCharacterEP);
-            }
-            activeDelimitedCharacterEP.setFieldType(EParameterFieldType.CHECK);
-            activeDelimitedCharacterEP.setValue(getGenerationManager().isDelimitedCharacter());
-
-            IElementParameter delimitedCharacterTextEP =
-                    origNode.getElementParameter(EParameterName.DELIMITED_CHARACTER_TEXT.getName());
-            if (delimitedCharacterTextEP == null) {
-                delimitedCharacterTextEP = new ElementParameter(origNode);
-                delimitedCharacterTextEP.setShow(false);
-                delimitedCharacterTextEP.setName(EParameterName.DELIMITED_CHARACTER_TEXT.getName());
-                delimitedCharacterTextEP.setCategory(EComponentCategory.TECHNICAL);
-                delimitedCharacterTextEP.setNumRow(99);
-                delimitedCharacterTextEP.setReadOnly(false);
-                List<IElementParameter> elemParams = (List<IElementParameter>) origNode.getElementParameters();
-                elemParams.add(delimitedCharacterTextEP);
-            }
-            delimitedCharacterTextEP.setFieldType(EParameterFieldType.TEXT);
-            delimitedCharacterTextEP.setValue(getGenerationManager().getDelimitedCharacterText());
+            // IElementParameter activeDelimitedCharacterEP =
+            // origNode.getElementParameter(EParameterName.ACTIVE_DELIMITED_CHARACTER.getName());
+            // if (activeDelimitedCharacterEP == null) {
+            // activeDelimitedCharacterEP = new ElementParameter(origNode);
+            // activeDelimitedCharacterEP.setShow(false);
+            // activeDelimitedCharacterEP.setName(EParameterName.ACTIVE_DELIMITED_CHARACTER.getName());
+            // activeDelimitedCharacterEP.setCategory(EComponentCategory.TECHNICAL);
+            // activeDelimitedCharacterEP.setNumRow(99);
+            // activeDelimitedCharacterEP.setReadOnly(false);
+            // List<IElementParameter> elemParams = (List<IElementParameter>) origNode.getElementParameters();
+            // elemParams.add(activeDelimitedCharacterEP);
+            // }
+            // activeDelimitedCharacterEP.setFieldType(EParameterFieldType.CHECK);
+            // activeDelimitedCharacterEP.setValue(getGenerationManager().isDelimitedCharacter());
+            //
+            // IElementParameter delimitedCharacterTextEP =
+            // origNode.getElementParameter(EParameterName.DELIMITED_CHARACTER_TEXT.getName());
+            // if (delimitedCharacterTextEP == null) {
+            // delimitedCharacterTextEP = new ElementParameter(origNode);
+            // delimitedCharacterTextEP.setShow(false);
+            // delimitedCharacterTextEP.setName(EParameterName.DELIMITED_CHARACTER_TEXT.getName());
+            // delimitedCharacterTextEP.setCategory(EComponentCategory.TECHNICAL);
+            // delimitedCharacterTextEP.setNumRow(99);
+            // delimitedCharacterTextEP.setReadOnly(false);
+            // List<IElementParameter> elemParams = (List<IElementParameter>) origNode.getElementParameters();
+            // elemParams.add(delimitedCharacterTextEP);
+            // }
+            // delimitedCharacterTextEP.setFieldType(EParameterFieldType.TEXT);
+            // delimitedCharacterTextEP.setValue(getGenerationManager().getDelimitedCharacterText());
             //
             IElementParameter useAliasInOutputTableEP = origNode
                     .getElementParameter(EParameterName.USE_ALIAS_IN_OUTPUT_TABLE.getName());

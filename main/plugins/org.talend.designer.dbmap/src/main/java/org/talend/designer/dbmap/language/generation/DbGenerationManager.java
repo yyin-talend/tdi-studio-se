@@ -1518,8 +1518,8 @@ public abstract class DbGenerationManager {
                 if (hasSchema) {
                     String schemaWithQuote = getTableName(iconn, schemaNoQuote, quote);
                     schemaWithQuote = adaptQuoteForTableAndColumnName(component, schemaWithQuote);
-                    schemaWithQuote = replaceVariablesForExpression(component, schemaWithQuote);
                     if (table.contains("+")) {
+                        schemaWithQuote = replaceVariablesForExpression(component, schemaWithQuote);
                         // special case , table name might be String + String , fix for tuj
                         // BugTDI32594_tELTMSSqlOutput_SingleColFunc
                         // now if table name is too complex , we have to set alias , so won't run codes here.

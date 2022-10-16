@@ -112,8 +112,11 @@ public class PropertySetDialog extends Dialog {
         if (component != null && "tELTMap".equals(component.getName())) { //$NON-NLS-1$
             isJdbcEltMap = true;
         }
-        delimitedCharacterText.setVisible(isJdbcEltMap);
-        delimitedCharacterLabel.setVisible(isJdbcEltMap);
+        // set visible as false always for now . later maybe set to isJdbcEltMap to let user override the quote.
+        delimitedCharacterText.setVisible(false);
+        delimitedCharacterLabel.setVisible(false);
+
+        addQuotesInTableNamesButton.setVisible(isJdbcEltMap);
         if (StringUtils.isBlank(text)) {
             text = generationManager.getQuote(mapperManager.getComponent());
         }
