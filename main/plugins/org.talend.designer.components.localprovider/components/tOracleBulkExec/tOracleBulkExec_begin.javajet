@@ -474,7 +474,7 @@ globalMap.put("<%=cid%>_ERROR_MESSAGE",ioe.getMessage());
     <%
     //record format begin
     String recordFormat = ElementParameterParser.getValue(node, "__RECORD_FORMAT__");
-    if(("STREAM").equals(recordFormat)){
+    if(!flagHasLob && ("STREAM").equals(recordFormat)){
         String streamTerminator = ElementParameterParser.getValue(node, "__TERMINATOR_STRING__");
         %>
         bw_<%=cid %>.write(" \"str '" + <%=streamTerminator %> + "'\"");
