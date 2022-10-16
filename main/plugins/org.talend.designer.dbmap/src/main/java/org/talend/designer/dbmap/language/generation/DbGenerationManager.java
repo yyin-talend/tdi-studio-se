@@ -1498,11 +1498,11 @@ public abstract class DbGenerationManager {
                 }
             }
             if (!replace) {
-                String handledTableName = "";
                 boolean inputIsELTDBMap = false;
                 String schemaValue = "";
                 String table = "";
                 boolean hasSchema = false;
+                String tableWithQuote = "";
                 IElementParameter schemaParam = source.getElementParameter("ELT_SCHEMA_NAME");
                 IElementParameter tableParam = source.getElementParameter("ELT_TABLE_NAME");
                 if (schemaParam != null && schemaParam.getValue() != null) {
@@ -1513,12 +1513,47 @@ public abstract class DbGenerationManager {
                 }
                 String schemaNoQuote = TalendTextUtils.removeQuotes(schemaValue);
                 String tableNoQuote = TalendTextUtils.removeQuotes(table);
+                String handledTableName = table;
                 hasSchema = !"".equals(schemaNoQuote);
                 if (hasSchema) {
                     String schemaWithQuote = getTableName(iconn, schemaNoQuote, quote);
                     schemaWithQuote = adaptQuoteForTableAndColumnName(component, schemaWithQuote);
-                    String tableWithQuote = getTableName(iconn, tableNoQuote, quote);
-                    tableWithQuote = adaptQuoteForTableAndColumnName(component, tableWithQuote);
+                    schemaWithQuote = replaceVariablesForExpression(component, schemaWithQuote);
+                    if (table.contains("+")) {
+                        // special case , table name might be String + String , fix for tuj
+                        // BugTDI32594_tELTMSSqlOutput_SingleColFunc
+                        // now if table name is too complex , we have to set alias , so won't run codes here.
+                        if (isAddQuotesInTableNames()) {
+                            if ("\"".equals(quote)) {
+                                quote = "\\\"";
+                            }
+                            handledTableName = "\"" + quote + "\" + " + table + " +" + "\"" + quote + "\"";
+                        } else {
+                            tableWithQuote = getTableName(iconn, tableNoQuote, quote);
+                            if (isAddQuotesInTableNames()) {
+                                handledTableName = adaptQuoteForTableAndColumnName(component, tableWithQuote);
+                            }
+
+                        }
+                        // String exp = replaceVariablesForExpression(component, inputTableName);
+                        String exp = "";
+                        if (ContextParameterUtils.isContainContextParam(schemaValue)
+                                || isContainsGlobalMap(schemaValue)) {
+                            exp = schemaWithQuote + ".\" +" + handledTableName + " +\"";
+                        } else {
+                            exp = schemaWithQuote + ".\"" + "+" + handledTableName + " +\"";
+                        }
+                        appendSqlQuery(sb, exp);
+                        return;
+                    } else {
+                        tableWithQuote = getTableName(iconn, tableNoQuote, quote);
+                        if (isAddQuotesInTableNames()) {
+                            tableWithQuote = adaptQuoteForTableAndColumnName(component, tableWithQuote);
+                        }
+                    }
+                    // if (isAddQuotesInTableNames()) {
+                    // tableWithQuote = adaptQuoteForTableAndColumnName(component, tableWithQuote);
+                    // }
                     tableName = schemaWithQuote + "." + tableWithQuote;
                 } else {
                     tableName = getTableName(iconn, inputTable.getName(), quote);
