@@ -202,6 +202,35 @@ public class OracleGenerationManagerTest extends DbGenerationManagerTestHelper {
         return column;
     }
 
+    // private IConnection mockConnection(String schemaName, String tableName, String[] columns, String[] dbColumns) {
+    // Connection connection = mock(Connection.class);
+    // Node node = mock(Node.class);
+    // ElementParameter param = new ElementParameter(node);
+    // param.setName("ELT_SCHEMA_NAME");
+    // param.setValue(schemaName);
+    // when(node.getElementParameter("ELT_SCHEMA_NAME")).thenReturn(param);
+    // param = new ElementParameter(node);
+    // param.setName("ELT_TABLE_NAME");
+    // param.setValue(tableName);
+    // when(node.getElementParameter("ELT_TABLE_NAME")).thenReturn(param);
+    // when(connection.getName()).thenReturn("".equals(schemaName) ? tableName : schemaName + "." + tableName);
+    // when(connection.getSource()).thenReturn(node);
+    // IMetadataTable table = new MetadataTable();
+    // table.setLabel(tableName);
+    // table.setTableName(tableName);
+    // List<IMetadataColumn> listColumns = new ArrayList<IMetadataColumn>();
+    // for (int i = 0; i < columns.length; i++) {
+    // String columnName = columns[i];
+    // IMetadataColumn column = new MetadataColumn();
+    // column.setLabel(columnName);
+    // column.setOriginalDbColumnName(dbColumns[i]);
+    // listColumns.add(column);
+    // }
+    // table.setListColumns(listColumns);
+    // when(connection.getMetadataTable()).thenReturn(table);
+    // return connection;
+    // }
+
     @Test
     public void testBuildSqlSelectForGlobalMap() {
         String schema = "((String)globalMap.get(\"schema\"))";
@@ -381,4 +410,5 @@ public class OracleGenerationManagerTest extends DbGenerationManagerTestHelper {
         String query = manager.buildSqlSelect(dbMapComponent, "grade");
         assertEquals(expectedQuery, query);
     }
+
 }
