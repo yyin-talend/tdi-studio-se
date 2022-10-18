@@ -89,6 +89,8 @@ public class ConnectionFormComposite extends Composite {
 
     private Text nameText;
 
+    private Label descriptionLabel;
+
     private Text descriptionText;
 
     private Label userLabel;
@@ -174,7 +176,7 @@ public class ConnectionFormComposite extends Composite {
         formDefaultFactory.copy().grab(true, false).span(2, 1).applyTo(nameText);
 
         // Comment
-        Label descriptionLabel = toolkit.createLabel(formBody, Messages.getString("connections.form.field.description")); //$NON-NLS-1$
+        descriptionLabel = toolkit.createLabel(formBody, Messages.getString("connections.form.field.description")); //$NON-NLS-1$
         formDefaultFactory.copy().applyTo(descriptionLabel);
 
         descriptionText = toolkit.createText(formBody, "", SWT.BORDER); //$NON-NLS-1$
@@ -399,7 +401,8 @@ public class ConnectionFormComposite extends Composite {
                 errorMsg = loginConncetion.checkConnectionValidation(getTextName(), getDesc(), getUser(), getPassword(),
                         getWorkspace(), connection.getDynamicFields().get(RepositoryConstants.REPOSITORY_URL));
             }
-        } else if (valid && checkStoreCredentialsButton.getSelection() && StringUtils.isBlank(passwordText.getText())) {
+        } else if (valid && !this.dialog.isSsoMode() && checkStoreCredentialsButton.getSelection()
+                && StringUtils.isBlank(passwordText.getText())) {
             errorMsg = Messages.getString("ConnectionFormComposite.required.password"); //$NON-NLS-1$
         } else if (valid && getTextName() != null) {
             List<ConnectionBean> connectionBeanList = dialog.getConnections();
@@ -479,6 +482,24 @@ public class ConnectionFormComposite extends Composite {
     }
 
     private void showHideTexts() {
+        if (this.dialog.isSsoMode()) {
+            showHideTextsForSso();
+            return;
+        }
+        if (repositoryCombo != null && repositoryCombo.getControl() != null && !repositoryCombo.getControl().isDisposed()) {
+            repositoryCombo.getControl().setEnabled(true);
+        }
+        if (descriptionText != null && !descriptionText.isDisposed()) {
+            hideControl(descriptionLabel, false, false);
+            hideControl(descriptionText, false, true);
+        }
+        if (nameText != null && !nameText.isDisposed()) {
+            nameText.setEnabled(true);
+        }
+        if (userLabel != null && !userLabel.isDisposed()) {
+            hideControl(userLabel, false, false);
+            hideControl(userText, false, true);
+        }
         boolean token = false;
         if (connection != null && tokenText != null && !tokenText.isDisposed()) {
             token = connection.isToken();
@@ -541,6 +562,34 @@ public class ConnectionFormComposite extends Composite {
         if (checkStoreCredentialsButton != null && !checkStoreCredentialsButton.isDisposed()) {
             hideControl(checkStoreCredentialsButton, !enableCheckStoreCredentialsField, false);
             checkStoreCredentialsButton.getParent().layout();
+        }
+    }
+
+    private void showHideTextsForSso() {
+        if (repositoryCombo != null && repositoryCombo.getControl() != null && !repositoryCombo.getControl().isDisposed()) {
+            repositoryCombo.getControl().setEnabled(false);
+        }
+        if (nameText != null && !nameText.isDisposed()) {
+            nameText.setEnabled(false);
+        }
+        if (descriptionText != null && !descriptionText.isDisposed()) {
+            hideControl(descriptionLabel, true, false);
+            hideControl(descriptionText, true, true);
+        }
+        if (userLabel != null && !userLabel.isDisposed()) {
+            hideControl(userLabel, true, false);
+            hideControl(userText, true, true);
+        }
+        if (tokenText != null && !tokenText.isDisposed()) {
+            hideControl(tokenLabel, true, false);
+            hideControl(tokenCompo, true, true);
+        }
+        if (passwordText != null && !passwordText.isDisposed()) {
+            hideControl(passwordLabel, true, false);
+            hideControl(passwordText, true, true);
+        }
+        if (checkStoreCredentialsButton != null && !checkStoreCredentialsButton.isDisposed()) {
+            hideControl(checkStoreCredentialsButton, true, true);
         }
     }
 

@@ -24,6 +24,8 @@ import org.eclipse.jface.viewers.StructuredSelection;
 import org.talend.core.GlobalServiceRegister;
 import org.talend.core.model.general.ModuleNeeded;
 import org.talend.core.model.properties.ProcessItem;
+import org.talend.core.model.properties.Property;
+import org.talend.designer.maven.utils.PomIdsHelper;
 import org.talend.designer.publish.core.models.BundleModel;
 import org.talend.designer.publish.core.models.FeaturesModel;
 import org.talend.designer.runprocess.IRunProcessService;
@@ -231,14 +233,22 @@ public abstract class AbstractPublishJobAction implements IRunnableWithProgress 
 
     private FeaturesModel getFeatureModel(File tmpJob) {
         ProcessItem processItem = (ProcessItem) node.getObject().getProperty().getItem();
-        FeaturesModel featuresModel = new FeaturesModel(groupId, artifactName, artifactVersion);
+        FeaturesModel featuresModel = new FeaturesModel(groupId, artifactName, getFeaturetVersion(processItem.getProperty()));
         featuresModel.setConfigName(node.getObject().getLabel());
         featuresModel.setContexts(JobContextUtils.getContextsMap(processItem));
-        BundleModel bundleModel = new BundleModel(groupId, artifactName, artifactVersion, tmpJob);
+        BundleModel bundleModel = new BundleModel(groupId, artifactName, getBundleVersion(processItem.getProperty()), tmpJob);
         featuresModel.addBundle(bundleModel);
         return featuresModel;
     }
-
+    
+    protected String getFeaturetVersion(Property property) {
+        return PomIdsHelper.getFeatureVersion(property, artifactVersion);
+    }
+    
+    protected String getBundleVersion(Property property) {
+        return PomIdsHelper.getBundleVersion(property, artifactVersion);
+    }
+    
     protected String getArtifactVersion() {
         return artifactVersion;
     }
