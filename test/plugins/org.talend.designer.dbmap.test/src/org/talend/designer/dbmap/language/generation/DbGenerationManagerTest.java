@@ -90,7 +90,7 @@ public class DbGenerationManagerTest extends DbGenerationManagerTestHelper {
         List<IConnection> incomingConnections = new ArrayList<IConnection>();
         String[] columns = new String[] { "\\\"id\\\"",  "\\\"name\\\""};
         String[] labels = new String[] { "id",  "name"};
-        incomingConnections.add(createConnection("t1", "t1", labels, columns));
+        incomingConnections.add(createConnection("dbo", "t1", labels, columns));
         dbMapComponent.setIncomingConnections(incomingConnections);
 
         if (dbMapComponent.getElementParameters() == null) {
@@ -151,10 +151,10 @@ public class DbGenerationManagerTest extends DbGenerationManagerTestHelper {
         JobContextManager contextManger = new JobContextManager();
         when(process.getContextManager()).thenReturn(contextManger);
         dbMapComponent.setProcess(process);
-    	checkValue("t1.\\\"id\\\"", extMapEntry);
+        checkValue("dbo.t1.\\\"id\\\"", extMapEntry);
         ExternalDbMapEntry extMapEntry2 = new ExternalDbMapEntry("multiple", "t1.id + t1.name");
         tableEntries.add(extMapEntry2);
-        checkValue("t1.\\\"id\\\" + t1.\\\"name\\\"", extMapEntry2);
+        checkValue("dbo.t1.\\\"id\\\" + dbo.t1.\\\"name\\\"", extMapEntry2);
         
         testWithQuote();
     }
@@ -501,6 +501,36 @@ public class DbGenerationManagerTest extends DbGenerationManagerTestHelper {
         IMetadataTable table = new MetadataTable();
         table.setLabel(tableName);
         table.setTableName(tableName);
+        List<IMetadataColumn> listColumns = new ArrayList<IMetadataColumn>();
+        for (int i = 0; i < columns.length; i++) {
+            String columnName = columns[i];
+            IMetadataColumn column = new MetadataColumn();
+            column.setLabel(columnName);
+            column.setOriginalDbColumnName(dbColumns[i]);
+            listColumns.add(column);
+        }
+        table.setListColumns(listColumns);
+        when(connection.getMetadataTable()).thenReturn(table);
+        return connection;
+    }
+
+    private IConnection mockConnection(String schemaName, String tableName, String targetTableName, String[] columns,
+            String[] dbColumns) {
+        Connection connection = mock(Connection.class);
+        Node node = mock(Node.class);
+        ElementParameter param = new ElementParameter(node);
+        param.setName("ELT_SCHEMA_NAME");
+        param.setValue(schemaName);
+        when(node.getElementParameter("ELT_SCHEMA_NAME")).thenReturn(param);
+        param = new ElementParameter(node);
+        param.setName("ELT_TABLE_NAME");
+        param.setValue(tableName);
+        when(node.getElementParameter("ELT_TABLE_NAME")).thenReturn(param);
+        when(connection.getName()).thenReturn("".equals(schemaName) ? tableName : schemaName + "." + tableName);
+        when(connection.getSource()).thenReturn(node);
+        IMetadataTable table = new MetadataTable();
+        table.setLabel(tableName);
+        table.setTableName(targetTableName);
         List<IMetadataColumn> listColumns = new ArrayList<IMetadataColumn>();
         for (int i = 0; i < columns.length; i++) {
             String columnName = columns[i];
@@ -2469,8 +2499,8 @@ public class DbGenerationManagerTest extends DbGenerationManagerTestHelper {
         List<ExternalDbMapTable> outputs = new ArrayList<ExternalDbMapTable>();
         // main table
         ExternalDbMapTable inputTable = new ExternalDbMapTable();
-        inputTable.setTableName(StringUtils.isNotBlank(schema) ? schema + "." + inputTable1 : schema);
-        inputTable.setName(StringUtils.isNotBlank(schema) ? schema + "." + inputTable1 : schema);
+        inputTable.setTableName(StringUtils.isNotBlank(schema) ? schema + "." + inputTable1 : inputTable1);
+        inputTable.setName(StringUtils.isNotBlank(schema) ? schema + "." + inputTable1 : inputTable1);
         if (StringUtils.isNotBlank(alias1)) {
             inputTable.setAlias(alias1);
         }
@@ -2480,28 +2510,34 @@ public class DbGenerationManagerTest extends DbGenerationManagerTestHelper {
         inputs.add(inputTable);
 
         // lookup table
-        inputTable = new ExternalDbMapTable();
-        inputTable.setTableName(StringUtils.isNotBlank(schema) ? schema + "." + inputTable2 : schema);
-        inputTable.setName(StringUtils.isNotBlank(schema) ? schema + "." + inputTable2 : schema);
+        ExternalDbMapTable lookupTable = new ExternalDbMapTable();
+        lookupTable.setTableName(StringUtils.isNotBlank(schema) ? schema + "." + inputTable2 : inputTable2);
+        lookupTable.setName(StringUtils.isNotBlank(schema) ? schema + "." + inputTable2 : inputTable2);
         if (StringUtils.isNotBlank(alias2)) {
-            inputTable.setAlias(alias2);
+            lookupTable.setAlias(alias2);
         }
         entities = getMetadataEntities(new String[] { "newColumn", "newColumn1" }, new String[2]);
         ExternalDbMapEntry newColumn = entities.get(0);
-        newColumn.setExpression("A.newColumn");
+        newColumn
+                .setExpression(StringUtils.isNotBlank(alias1) ? alias1 + ".newColumn"
+                        : inputTable.getTableName() + ".newColumn");
         newColumn.setOperator("=");
         newColumn.setJoin(true);
-        inputTable.setJoinType(joinType);
+        lookupTable.setJoinType(joinType);
 
-        inputTable.setMetadataTableEntries(entities);
-        inputs.add(inputTable);
+        lookupTable.setMetadataTableEntries(entities);
+        inputs.add(lookupTable);
 
         // output
         ExternalDbMapTable outputTable = new ExternalDbMapTable();
-        outputTable.setName(StringUtils.isNotBlank(schema) ? schema + "." + targetTable : schema);
+        outputTable.setName(StringUtils.isNotBlank(schema) ? schema + "." + targetTable : targetTable);
         outputTable.setTableName(targetTable);
         String[] names = new String[] { "tarColumn", "tarColumn1" };
-        String[] expressions = new String[] { "A.newColumn", "A.newColumn1" };
+        String outputExpression1 =
+                StringUtils.isNotBlank(alias1) ? alias1 + ".newColumn" : inputTable.getName() + ".newColumn";
+        String outputExpression2 =
+                StringUtils.isNotBlank(alias2) ? alias2 + ".newColumn1" : lookupTable.getName() + ".newColumn1";
+        String[] expressions = new String[] { outputExpression1, outputExpression2 };
         outputTable.setMetadataTableEntries(getMetadataEntities(names, expressions));
         outputs.add(outputTable);
 
@@ -2511,10 +2547,10 @@ public class DbGenerationManagerTest extends DbGenerationManagerTestHelper {
 
         List<IConnection> incomingConnections = new ArrayList<IConnection>();
         incomingConnections
-                .add(mockConnection(schema, inputTable1, new String[] { "newColumn", "newColumn1" },
+                .add(mockConnection(schema, inputTable1, targetTable, new String[] { "newColumn", "newColumn1" },
                         new String[] { "id", "name" }));
         incomingConnections
-                .add(mockConnection(schema, inputTable2, new String[] { "newColumn", "newColumn1" },
+                .add(mockConnection(schema, inputTable2, targetTable, new String[] { "newColumn", "newColumn1" },
                         new String[] { "id", "name" }));
         dbMapComponent.setIncomingConnections(incomingConnections);
 
@@ -2542,7 +2578,7 @@ public class DbGenerationManagerTest extends DbGenerationManagerTestHelper {
         output.setComponent(targetComponent);
 
         DataConnection dataConnection = new DataConnection();
-        dataConnection.setName(StringUtils.isNotBlank(schema) ? schema + "." + targetTable : schema);
+        dataConnection.setName(StringUtils.isNotBlank(schema) ? schema + "." + targetTable : targetTable);
         dataConnection.setActivate(true);
         dataConnection.setLineStyle(EConnectionType.FLOW_MAIN);
         dataConnection.setTarget(output);
@@ -2563,8 +2599,26 @@ public class DbGenerationManagerTest extends DbGenerationManagerTestHelper {
         outputConnections.add(connection);
         dbMapComponent.setOutgoingConnections(outputConnections);
 
+        JobContext newContext = new JobContext("Default");
+        List<IContextParameter> newParamList = new ArrayList<IContextParameter>();
+        newContext.setContextParameterList(newParamList);
+        JobContextParameter cparam = new JobContextParameter();
+        cparam.setName("schema");
+        cparam.setValue("dbo");
+        newParamList.add(cparam);
+        cparam = new JobContextParameter();
+        cparam.setName("input1");
+        cparam.setValue("src1");
+        newParamList.add(cparam);
+        cparam = new JobContextParameter();
+        cparam.setName("input2");
+        cparam.setValue("src2");
+        newParamList.add(cparam);
+
+        JobContextManager contextManger = new JobContextManager();
+        contextManger.setDefaultContext(newContext);
         Process process = mock(Process.class);
-        when(process.getContextManager()).thenReturn(new JobContextManager());
+        when(process.getContextManager()).thenReturn(contextManger);
         dbMapComponent.setProcess(process);
 
         IContextParameter lookupTableContext = new JobContextParameter();
@@ -2590,7 +2644,7 @@ public class DbGenerationManagerTest extends DbGenerationManagerTestHelper {
 
         String query = dbManager.buildSqlSelect(dbMapComponent, schema + "." + targetTable);
         String expectedQuery = "\"UPDATE \\\"dbo\\\".\\\"tar\\\"\n" + "SET tarColumn = \\\"A\\\".id,\n"
-                + "tarColumn1 = \\\"A\\\".name\n"
+                + "tarColumn1 = \\\"B\\\".name\n"
                 + "FROM\n \" +\"\\\"dbo\\\"\"+\".\"+\"\\\"src1\\\"\"+ \" \\\"A\\\" , \" +\"\\\"dbo\\\"\"+\".\"+\"\\\"src2\\\"\"+ \" \\\"B\\\" \"";
 
         assertEquals(expectedQuery, query);
@@ -2613,7 +2667,7 @@ public class DbGenerationManagerTest extends DbGenerationManagerTestHelper {
 
         String query = dbManager.buildSqlSelect(dbMapComponent, schema + "." + targetTable);
         String expectedQuery = "\"UPDATE \\\"dbo\\\".\\\"tar\\\"\n" + "SET tarColumn = \\\"A\\\".id,\n"
-                + "tarColumn1 = \\\"A\\\".name\n"
+                + "tarColumn1 = \\\"B\\\".name\n"
                 + "FROM\n \" +\"\\\"dbo\\\"\"+\".\"+\"\\\"src1\\\"\"+ \" \\\"A\\\" INNER JOIN  \" +\"\\\"dbo\\\"\"+\".\"+\"\\\"src2\\\"\"+ \" \\\"B\\\" ON(  \\\"B\\\".id = \\\"A\\\".id )\"";
 
         assertEquals(expectedQuery, query);
@@ -2636,7 +2690,7 @@ public class DbGenerationManagerTest extends DbGenerationManagerTestHelper {
 
         String query = dbManager.buildSqlSelect(dbMapComponent, schema + "." + targetTable);
         String expectedQuery = "\"UPDATE \\\"dbo\\\".\\\"tar\\\"\n" + "SET tarColumn = \\\"A\\\".id,\n"
-                + "tarColumn1 = \\\"A\\\".name\n"
+                + "tarColumn1 = \\\"B\\\".name\n"
                 + "FROM\n \" +\"\\\"dbo\\\"\"+\".\"+\"\\\"src1\\\"\"+ \" \\\"A\\\" LEFT OUTER JOIN  \" +\"\\\"dbo\\\"\"+\".\"+\"\\\"src2\\\"\"+ \" \\\"B\\\" ON(  \\\"B\\\".id = \\\"A\\\".id )\"";
 
         assertEquals(expectedQuery, query);
@@ -2659,7 +2713,7 @@ public class DbGenerationManagerTest extends DbGenerationManagerTestHelper {
 
         String query = dbManager.buildSqlSelect(dbMapComponent, schema + "." + targetTable);
         String expectedQuery = "\"UPDATE \\\"dbo\\\".\\\"tar\\\"\n" + "SET tarColumn = \\\"A\\\".id,\n"
-                + "tarColumn1 = \\\"A\\\".name\n"
+                + "tarColumn1 = \\\"B\\\".name\n"
                 + "FROM\n \" +\"\\\"dbo\\\"\"+\".\"+\"\\\"src1\\\"\"+ \" \\\"A\\\" RIGHT OUTER JOIN  \" +\"\\\"dbo\\\"\"+\".\"+\"\\\"src2\\\"\"+ \" \\\"B\\\" ON(  \\\"B\\\".id = \\\"A\\\".id )\"";
 
         assertEquals(expectedQuery, query);
@@ -2682,7 +2736,7 @@ public class DbGenerationManagerTest extends DbGenerationManagerTestHelper {
 
         String query = dbManager.buildSqlSelect(dbMapComponent, schema + "." + targetTable);
         String expectedQuery = "\"UPDATE \\\"dbo\\\".\\\"tar\\\"\n" + "SET tarColumn = \\\"A\\\".id,\n"
-                + "tarColumn1 = \\\"A\\\".name\n"
+                + "tarColumn1 = \\\"B\\\".name\n"
                 + "FROM\n \" +\"\\\"dbo\\\"\"+\".\"+\"\\\"src1\\\"\"+ \" \\\"A\\\" FULL OUTER JOIN  \" +\"\\\"dbo\\\"\"+\".\"+\"\\\"src2\\\"\"+ \" \\\"B\\\" ON(  \\\"B\\\".id = \\\"A\\\".id )\"";
 
         assertEquals(expectedQuery, query);
@@ -2705,7 +2759,7 @@ public class DbGenerationManagerTest extends DbGenerationManagerTestHelper {
 
         String query = dbManager.buildSqlSelect(dbMapComponent, schema + "." + targetTable);
         String expectedQuery = "\"UPDATE \\\"dbo\\\".\\\"tar\\\"\n" + "SET tarColumn = \\\"A\\\".id,\n"
-                + "tarColumn1 = \\\"A\\\".name\n"
+                + "tarColumn1 = \\\"B\\\".name\n"
                 + "FROM\n \" +\"\\\"dbo\\\"\"+\".\"+\"\\\"src1\\\"\"+ \" \\\"A\\\" CROSS JOIN  \n\" +\"\\\"dbo\\\"\"+\".\"+\"\\\"src2\\\"\"+ \" \\\"B\\\"\nWHERE\n  \\\"B\\\".id = \\\"A\\\".id\"";
 
         assertEquals(expectedQuery, query);
@@ -2727,7 +2781,7 @@ public class DbGenerationManagerTest extends DbGenerationManagerTestHelper {
                 isUpdate, dbType);
 
         String query = dbManager.buildSqlSelect(dbMapComponent, schema + "." + targetTable);
-        String expectedQuery = "\"UPDATE `dbo`.`tar`\n" + "SET tarColumn = `A`.id,\n" + "tarColumn1 = `A`.name\n"
+        String expectedQuery = "\"UPDATE `dbo`.`tar`\n" + "SET tarColumn = `A`.id,\n" + "tarColumn1 = `B`.name\n"
                 + "FROM\n \" +\"`dbo`\"+\".\"+\"`src1`\"+ \" `A` , \" +\"`dbo`\"+\".\"+\"`src2`\"+ \" `B`\"";
 
         assertEquals(expectedQuery, query);
@@ -2749,7 +2803,7 @@ public class DbGenerationManagerTest extends DbGenerationManagerTestHelper {
                 isUpdate, dbType);
 
         String query = dbManager.buildSqlSelect(dbMapComponent, schema + "." + targetTable);
-        String expectedQuery = "\"UPDATE `dbo`.`tar`\n" + "SET tarColumn = `A`.id,\n" + "tarColumn1 = `A`.name\n"
+        String expectedQuery = "\"UPDATE `dbo`.`tar`\n" + "SET tarColumn = `A`.id,\n" + "tarColumn1 = `B`.name\n"
                 + "FROM\n \" +\"`dbo`\"+\".\"+\"`src1`\"+ \" `A` INNER JOIN  \" +\"`dbo`\"+\".\"+\"`src2`\"+ \" `B` ON(  `B`.id = `A`.id )\"";
 
         assertEquals(expectedQuery, query);
@@ -2771,7 +2825,7 @@ public class DbGenerationManagerTest extends DbGenerationManagerTestHelper {
                 isUpdate, dbType);
 
         String query = dbManager.buildSqlSelect(dbMapComponent, schema + "." + targetTable);
-        String expectedQuery = "\"UPDATE `dbo`.`tar`\n" + "SET tarColumn = `A`.id,\n" + "tarColumn1 = `A`.name\n"
+        String expectedQuery = "\"UPDATE `dbo`.`tar`\n" + "SET tarColumn = `A`.id,\n" + "tarColumn1 = `B`.name\n"
                 + "FROM\n \" +\"`dbo`\"+\".\"+\"`src1`\"+ \" `A` LEFT OUTER JOIN  \" +\"`dbo`\"+\".\"+\"`src2`\"+ \" `B` ON(  `B`.id = `A`.id )\"";
 
         assertEquals(expectedQuery, query);
@@ -2793,7 +2847,7 @@ public class DbGenerationManagerTest extends DbGenerationManagerTestHelper {
                 isUpdate, dbType);
 
         String query = dbManager.buildSqlSelect(dbMapComponent, schema + "." + targetTable);
-        String expectedQuery = "\"UPDATE `dbo`.`tar`\n" + "SET tarColumn = `A`.id,\n" + "tarColumn1 = `A`.name\n"
+        String expectedQuery = "\"UPDATE `dbo`.`tar`\n" + "SET tarColumn = `A`.id,\n" + "tarColumn1 = `B`.name\n"
                 + "FROM\n \" +\"`dbo`\"+\".\"+\"`src1`\"+ \" `A` RIGHT OUTER JOIN  \" +\"`dbo`\"+\".\"+\"`src2`\"+ \" `B` ON(  `B`.id = `A`.id )\"";
 
         assertEquals(expectedQuery, query);
@@ -2815,7 +2869,7 @@ public class DbGenerationManagerTest extends DbGenerationManagerTestHelper {
                 isUpdate, dbType);
 
         String query = dbManager.buildSqlSelect(dbMapComponent, schema + "." + targetTable);
-        String expectedQuery = "\"UPDATE `dbo`.`tar`\n" + "SET tarColumn = `A`.id,\n" + "tarColumn1 = `A`.name\n"
+        String expectedQuery = "\"UPDATE `dbo`.`tar`\n" + "SET tarColumn = `A`.id,\n" + "tarColumn1 = `B`.name\n"
                 + "FROM\n \" +\"`dbo`\"+\".\"+\"`src1`\"+ \" `A` FULL OUTER JOIN  \" +\"`dbo`\"+\".\"+\"`src2`\"+ \" `B` ON(  `B`.id = `A`.id )\"";
 
         assertEquals(expectedQuery, query);
@@ -2837,10 +2891,463 @@ public class DbGenerationManagerTest extends DbGenerationManagerTestHelper {
                 isUpdate, dbType);
 
         String query = dbManager.buildSqlSelect(dbMapComponent, schema + "." + targetTable);
-        String expectedQuery = "\"UPDATE `dbo`.`tar`\n" + "SET tarColumn = `A`.id,\n" + "tarColumn1 = `A`.name\n"
+        String expectedQuery = "\"UPDATE `dbo`.`tar`\n" + "SET tarColumn = `A`.id,\n" + "tarColumn1 = `B`.name\n"
                 + "FROM\n \" +\"`dbo`\"+\".\"+\"`src1`\"+ \" `A` CROSS JOIN  \n\" +\"`dbo`\"+\".\"+\"`src2`\"+ \" `B`\nWHERE\n  `B`.id = `A`.id\"";
 
         assertEquals(expectedQuery, query);
     }
 
+    @Test
+    public void testELTMapJoinWithUpdateAndTableNameQuoteSnowflakeWithAliasNoJoin() {
+        String schema = "dbo";
+        String inputTable1 = "src1";
+        String alias1 = "A";
+        String targetTable = "tar";
+        String inputTable2 = "src2";
+        String alias2 = "B";
+        boolean addQuotesInTableNames = true;
+        String joinType = "NO_JOIN";
+        boolean isUpdate = true;
+        String dbType = "snowflake_id";
+        initTestParams(schema, inputTable1, alias1, inputTable2, alias2, targetTable, addQuotesInTableNames, joinType,
+                isUpdate, dbType);
+
+        String query = dbManager.buildSqlSelect(dbMapComponent, schema + "." + targetTable);
+        String expectedQuery = "\"UPDATE \\\"dbo\\\".\\\"tar\\\"\n" + "SET tarColumn = \\\"A\\\".id,\n"
+                + "tarColumn1 = \\\"B\\\".name\n"
+                + "FROM\n \" +\"\\\"dbo\\\"\"+\".\"+\"\\\"src1\\\"\"+ \" \\\"A\\\" , \" +\"\\\"dbo\\\"\"+\".\"+\"\\\"src2\\\"\"+ \" \\\"B\\\" \"";
+
+        assertEquals(expectedQuery, query);
+    }
+
+    @Test
+    public void testELTMapJoinWithUpdateAndTableNameQuoteSnowflakeWithAliasInnerJoin() {
+        String schema = "dbo";
+        String inputTable1 = "src1";
+        String alias1 = "A";
+        String targetTable = "tar";
+        String inputTable2 = "src2";
+        String alias2 = "B";
+        boolean addQuotesInTableNames = true;
+        String joinType = "INNER_JOIN";
+        boolean isUpdate = true;
+        String dbType = "snowflake_id";
+        initTestParams(schema, inputTable1, alias1, inputTable2, alias2, targetTable, addQuotesInTableNames, joinType,
+                isUpdate, dbType);
+
+        String query = dbManager.buildSqlSelect(dbMapComponent, schema + "." + targetTable);
+        String expectedQuery = "\"UPDATE \\\"dbo\\\".\\\"tar\\\"\n" + "SET tarColumn = \\\"A\\\".id,\n"
+                + "tarColumn1 = \\\"B\\\".name\n"
+                + "FROM\n \" +\"\\\"dbo\\\"\"+\".\"+\"\\\"src1\\\"\"+ \" \\\"A\\\" INNER JOIN  \" +\"\\\"dbo\\\"\"+\".\"+\"\\\"src2\\\"\"+ \" \\\"B\\\" ON(  \\\"B\\\".id = \\\"A\\\".id )\"";
+
+        assertEquals(expectedQuery, query);
+    }
+
+    @Test
+    public void testELTMapJoinWithUpdateAndTableNameQuoteSnowflakeWithAliasLeftOutterJoin() {
+        String schema = "dbo";
+        String inputTable1 = "src1";
+        String alias1 = "A";
+        String targetTable = "tar";
+        String inputTable2 = "src2";
+        String alias2 = "B";
+        boolean addQuotesInTableNames = true;
+        String joinType = "LEFT_OUTER_JOIN";
+        boolean isUpdate = true;
+        String dbType = "snowflake_id";
+        initTestParams(schema, inputTable1, alias1, inputTable2, alias2, targetTable, addQuotesInTableNames, joinType,
+                isUpdate, dbType);
+
+        String query = dbManager.buildSqlSelect(dbMapComponent, schema + "." + targetTable);
+        String expectedQuery = "\"UPDATE \\\"dbo\\\".\\\"tar\\\"\n" + "SET tarColumn = \\\"A\\\".id,\n"
+                + "tarColumn1 = \\\"B\\\".name\n"
+                + "FROM\n \" +\"\\\"dbo\\\"\"+\".\"+\"\\\"src1\\\"\"+ \" \\\"A\\\" LEFT OUTER JOIN  \" +\"\\\"dbo\\\"\"+\".\"+\"\\\"src2\\\"\"+ \" \\\"B\\\" ON(  \\\"B\\\".id = \\\"A\\\".id )\"";
+
+        assertEquals(expectedQuery, query);
+    }
+
+    @Test
+    public void testELTMapJoinWithUpdateAndTableNameQuoteSnowflakeWithAliasRightOutterJoin() {
+        String schema = "dbo";
+        String inputTable1 = "src1";
+        String alias1 = "A";
+        String targetTable = "tar";
+        String inputTable2 = "src2";
+        String alias2 = "B";
+        boolean addQuotesInTableNames = true;
+        String joinType = "RIGHT_OUTER_JOIN";
+        boolean isUpdate = true;
+        String dbType = "snowflake_id";
+        initTestParams(schema, inputTable1, alias1, inputTable2, alias2, targetTable, addQuotesInTableNames, joinType,
+                isUpdate, dbType);
+
+        String query = dbManager.buildSqlSelect(dbMapComponent, schema + "." + targetTable);
+        String expectedQuery = "\"UPDATE \\\"dbo\\\".\\\"tar\\\"\n" + "SET tarColumn = \\\"A\\\".id,\n"
+                + "tarColumn1 = \\\"B\\\".name\n"
+                + "FROM\n \" +\"\\\"dbo\\\"\"+\".\"+\"\\\"src1\\\"\"+ \" \\\"A\\\" RIGHT OUTER JOIN  \" +\"\\\"dbo\\\"\"+\".\"+\"\\\"src2\\\"\"+ \" \\\"B\\\" ON(  \\\"B\\\".id = \\\"A\\\".id )\"";
+
+        assertEquals(expectedQuery, query);
+    }
+
+    @Test
+    public void testELTMapJoinWithUpdateAndTableNameQuoteSnowflakeWithAliasFullOutterJoin() {
+        String schema = "dbo";
+        String inputTable1 = "src1";
+        String alias1 = "A";
+        String targetTable = "tar";
+        String inputTable2 = "src2";
+        String alias2 = "B";
+        boolean addQuotesInTableNames = true;
+        String joinType = "FULL_OUTER_JOIN";
+        boolean isUpdate = true;
+        String dbType = "snowflake_id";
+        initTestParams(schema, inputTable1, alias1, inputTable2, alias2, targetTable, addQuotesInTableNames, joinType,
+                isUpdate, dbType);
+
+        String query = dbManager.buildSqlSelect(dbMapComponent, schema + "." + targetTable);
+        String expectedQuery = "\"UPDATE \\\"dbo\\\".\\\"tar\\\"\n" + "SET tarColumn = \\\"A\\\".id,\n"
+                + "tarColumn1 = \\\"B\\\".name\n"
+                + "FROM\n \" +\"\\\"dbo\\\"\"+\".\"+\"\\\"src1\\\"\"+ \" \\\"A\\\" FULL OUTER JOIN  \" +\"\\\"dbo\\\"\"+\".\"+\"\\\"src2\\\"\"+ \" \\\"B\\\" ON(  \\\"B\\\".id = \\\"A\\\".id )\"";
+
+        assertEquals(expectedQuery, query);
+    }
+
+    @Test
+    public void testELTMapJoinWithUpdateAndTableNameQuoteSnowflakeWithAliasCrossJoin() {
+        String schema = "dbo";
+        String inputTable1 = "src1";
+        String alias1 = "A";
+        String targetTable = "tar";
+        String inputTable2 = "src2";
+        String alias2 = "B";
+        boolean addQuotesInTableNames = true;
+        String joinType = "CROSS_JOIN";
+        boolean isUpdate = true;
+        String dbType = "snowflake_id";
+        initTestParams(schema, inputTable1, alias1, inputTable2, alias2, targetTable, addQuotesInTableNames, joinType,
+                isUpdate, dbType);
+
+        String query = dbManager.buildSqlSelect(dbMapComponent, schema + "." + targetTable);
+        String expectedQuery = "\"UPDATE \\\"dbo\\\".\\\"tar\\\"\n" + "SET tarColumn = \\\"A\\\".id,\n"
+                + "tarColumn1 = \\\"B\\\".name\n"
+                + "FROM\n \" +\"\\\"dbo\\\"\"+\".\"+\"\\\"src1\\\"\"+ \" \\\"A\\\" CROSS JOIN  \n\" +\"\\\"dbo\\\"\"+\".\"+\"\\\"src2\\\"\"+ \" \\\"B\\\"\nWHERE\n  \\\"B\\\".id = \\\"A\\\".id\"";
+
+        assertEquals(expectedQuery, query);
+    }
+
+    @Test
+    public void testELTMapJoinWithUpdateAndTableNameQuoteOracleWithoutAliasNoJoin() {
+        String schema = "dbo";
+        String inputTable1 = "src1";
+        String alias1 = "";
+        String targetTable = "tar";
+        String inputTable2 = "src2";
+        String alias2 = "";
+        boolean addQuotesInTableNames = true;
+        String joinType = "NO_JOIN";
+        boolean isUpdate = true;
+        String dbType = "oracle_id";
+        initTestParams(schema, inputTable1, alias1, inputTable2, alias2, targetTable, addQuotesInTableNames, joinType,
+                isUpdate, dbType);
+
+        String query = dbManager.buildSqlSelect(dbMapComponent, schema + "." + targetTable);
+        String expectedQuery = "\"UPDATE \\\"dbo\\\".\\\"tar\\\"\n" + "SET tarColumn = \\\"dbo\\\".\\\"src1\\\".id,\n"
+                + "tarColumn1 = \\\"dbo\\\".\\\"src2\\\".name\n"
+                + "FROM\n \\\"dbo\\\".\\\"src1\\\" , \\\"dbo\\\".\\\"src2\\\" \"";
+
+        assertEquals(expectedQuery, query);
+    }
+
+    @Test
+    public void testELTMapJoinWithUpdateAndTableNameQuoteOracleWithoutAliasInnerJoin() {
+        String schema = "dbo";
+        String inputTable1 = "src1";
+        String alias1 = "";
+        String targetTable = "tar";
+        String inputTable2 = "src2";
+        String alias2 = "";
+        boolean addQuotesInTableNames = true;
+        String joinType = "INNER_JOIN";
+        boolean isUpdate = true;
+        String dbType = "oracle_id";
+        initTestParams(schema, inputTable1, alias1, inputTable2, alias2, targetTable, addQuotesInTableNames, joinType,
+                isUpdate, dbType);
+
+        String query = dbManager.buildSqlSelect(dbMapComponent, schema + "." + targetTable);
+        String expectedQuery = "\"UPDATE \\\"dbo\\\".\\\"tar\\\"\n" + "SET tarColumn = \\\"dbo\\\".\\\"src1\\\".id,\n"
+                + "tarColumn1 = \\\"dbo\\\".\\\"src2\\\".name\n"
+                + "FROM\n \\\"dbo\\\".\\\"src1\\\" INNER JOIN  \\\"dbo\\\".\\\"src2\\\" ON(  \\\"dbo\\\".\\\"src2\\\".id = \\\"dbo\\\".\\\"src1\\\".id )\"";
+        assertEquals(expectedQuery, query);
+    }
+
+    @Test
+    public void testELTMapJoinWithUpdateAndTableNameQuoteOracleWithoutAliasLeftOuterJoin() {
+        String schema = "dbo";
+        String inputTable1 = "src1";
+        String alias1 = "";
+        String targetTable = "tar";
+        String inputTable2 = "src2";
+        String alias2 = "";
+        boolean addQuotesInTableNames = true;
+        String joinType = "LEFT_OUTER_JOIN";
+        boolean isUpdate = true;
+        String dbType = "oracle_id";
+        initTestParams(schema, inputTable1, alias1, inputTable2, alias2, targetTable, addQuotesInTableNames, joinType,
+                isUpdate, dbType);
+
+        String query = dbManager.buildSqlSelect(dbMapComponent, schema + "." + targetTable);
+        String expectedQuery = "\"UPDATE \\\"dbo\\\".\\\"tar\\\"\n" + "SET tarColumn = \\\"dbo\\\".\\\"src1\\\".id,\n"
+                + "tarColumn1 = \\\"dbo\\\".\\\"src2\\\".name\n"
+                + "FROM\n \\\"dbo\\\".\\\"src1\\\" LEFT OUTER JOIN  \\\"dbo\\\".\\\"src2\\\" ON(  \\\"dbo\\\".\\\"src2\\\".id = \\\"dbo\\\".\\\"src1\\\".id )\"";
+        assertEquals(expectedQuery, query);
+    }
+
+    @Test
+    public void testELTMapJoinWithUpdateAndTableNameQuoteOracleWithoutAliasRightOuterJoin() {
+        String schema = "dbo";
+        String inputTable1 = "src1";
+        String alias1 = "";
+        String targetTable = "tar";
+        String inputTable2 = "src2";
+        String alias2 = "";
+        boolean addQuotesInTableNames = true;
+        String joinType = "RIGHT_OUTER_JOIN";
+        boolean isUpdate = true;
+        String dbType = "oracle_id";
+        initTestParams(schema, inputTable1, alias1, inputTable2, alias2, targetTable, addQuotesInTableNames, joinType,
+                isUpdate, dbType);
+
+        String query = dbManager.buildSqlSelect(dbMapComponent, schema + "." + targetTable);
+        String expectedQuery = "\"UPDATE \\\"dbo\\\".\\\"tar\\\"\n" + "SET tarColumn = \\\"dbo\\\".\\\"src1\\\".id,\n"
+                + "tarColumn1 = \\\"dbo\\\".\\\"src2\\\".name\n"
+                + "FROM\n \\\"dbo\\\".\\\"src1\\\" RIGHT OUTER JOIN  \\\"dbo\\\".\\\"src2\\\" ON(  \\\"dbo\\\".\\\"src2\\\".id = \\\"dbo\\\".\\\"src1\\\".id )\"";
+        assertEquals(expectedQuery, query);
+    }
+
+    @Test
+    public void testELTMapJoinWithUpdateAndTableNameQuoteOracleWithoutAliasFullOuterJoin() {
+        String schema = "dbo";
+        String inputTable1 = "src1";
+        String alias1 = "";
+        String targetTable = "tar";
+        String inputTable2 = "src2";
+        String alias2 = "";
+        boolean addQuotesInTableNames = true;
+        String joinType = "FULL_OUTER_JOIN";
+        boolean isUpdate = true;
+        String dbType = "oracle_id";
+        initTestParams(schema, inputTable1, alias1, inputTable2, alias2, targetTable, addQuotesInTableNames, joinType,
+                isUpdate, dbType);
+
+        String query = dbManager.buildSqlSelect(dbMapComponent, schema + "." + targetTable);
+        String expectedQuery = "\"UPDATE \\\"dbo\\\".\\\"tar\\\"\n" + "SET tarColumn = \\\"dbo\\\".\\\"src1\\\".id,\n"
+                + "tarColumn1 = \\\"dbo\\\".\\\"src2\\\".name\n"
+                + "FROM\n \\\"dbo\\\".\\\"src1\\\" FULL OUTER JOIN  \\\"dbo\\\".\\\"src2\\\" ON(  \\\"dbo\\\".\\\"src2\\\".id = \\\"dbo\\\".\\\"src1\\\".id )\"";
+        assertEquals(expectedQuery, query);
+    }
+
+    @Test
+    public void testELTMapJoinWithUpdateAndTableNameQuoteOracleWithoutAliasCrossJoin() {
+        String schema = "dbo";
+        String inputTable1 = "src1";
+        String alias1 = "";
+        String targetTable = "tar";
+        String inputTable2 = "src2";
+        String alias2 = "";
+        boolean addQuotesInTableNames = true;
+        String joinType = "CROSS_JOIN";
+        boolean isUpdate = true;
+        String dbType = "oracle_id";
+        initTestParams(schema, inputTable1, alias1, inputTable2, alias2, targetTable, addQuotesInTableNames, joinType,
+                isUpdate, dbType);
+
+        String query = dbManager.buildSqlSelect(dbMapComponent, schema + "." + targetTable);
+        String expectedQuery = "\"UPDATE \\\"dbo\\\".\\\"tar\\\"\n" + "SET tarColumn = \\\"dbo\\\".\\\"src1\\\".id,\n"
+                + "tarColumn1 = \\\"dbo\\\".\\\"src2\\\".name\n"
+                + "FROM\n \\\"dbo\\\".\\\"src1\\\" CROSS JOIN  \n\\\"dbo\\\".\\\"src2\\\"\nWHERE\n  \\\"dbo\\\".\\\"src2\\\".id = \\\"dbo\\\".\\\"src1\\\".id\"";
+        assertEquals(expectedQuery, query);
+    }
+
+    @Test
+    public void testELTMapJoinWithUpdateAndTableNameQuoteMysqlWithoutAliasNoJoin() {
+        String schema = "dbo";
+        String inputTable1 = "src1";
+        String alias1 = "";
+        String targetTable = "tar";
+        String inputTable2 = "src2";
+        String alias2 = "";
+        boolean addQuotesInTableNames = true;
+        String joinType = "NO_JOIN";
+        boolean isUpdate = true;
+        String dbType = "mysql_id";
+        initTestParams(schema, inputTable1, alias1, inputTable2, alias2, targetTable, addQuotesInTableNames, joinType,
+                isUpdate, dbType);
+
+        String query = dbManager.buildSqlSelect(dbMapComponent, schema + "." + targetTable);
+        String expectedQuery = "\"UPDATE `dbo`.`tar`\n" + "SET tarColumn = `dbo`.`src1`.id,\n"
+                + "tarColumn1 = `dbo`.`src2`.name\n" + "FROM\n `dbo`.`src1` , `dbo`.`src2`\"";
+
+        assertEquals(expectedQuery, query);
+    }
+
+    @Test
+    public void testELTMapJoinWithUpdateAndTableNameQuoteMysqlWithoutAliasInnerJoin() {
+        String schema = "dbo";
+        String inputTable1 = "src1";
+        String alias1 = "";
+        String targetTable = "tar";
+        String inputTable2 = "src2";
+        String alias2 = "";
+        boolean addQuotesInTableNames = true;
+        String joinType = "INNER_JOIN";
+        boolean isUpdate = true;
+        String dbType = "mysql_id";
+        initTestParams(schema, inputTable1, alias1, inputTable2, alias2, targetTable, addQuotesInTableNames, joinType,
+                isUpdate, dbType);
+
+        String query = dbManager.buildSqlSelect(dbMapComponent, schema + "." + targetTable);
+        String expectedQuery =
+                "\"UPDATE `dbo`.`tar`\n" + "SET tarColumn = `dbo`.`src1`.id,\n" + "tarColumn1 = `dbo`.`src2`.name\n"
+                        + "FROM\n `dbo`.`src1` INNER JOIN  `dbo`.`src2` ON(  `dbo`.`src2`.id = `dbo`.`src1`.id )\"";
+        assertEquals(expectedQuery, query);
+    }
+
+    @Test
+    public void testELTMapJoinWithUpdateAndTableNameQuoteMysqlWithoutAliasLeftOuterJoin() {
+        String schema = "dbo";
+        String inputTable1 = "src1";
+        String alias1 = "";
+        String targetTable = "tar";
+        String inputTable2 = "src2";
+        String alias2 = "";
+        boolean addQuotesInTableNames = true;
+        String joinType = "LEFT_OUTER_JOIN";
+        boolean isUpdate = true;
+        String dbType = "mysql_id";
+        initTestParams(schema, inputTable1, alias1, inputTable2, alias2, targetTable, addQuotesInTableNames, joinType,
+                isUpdate, dbType);
+
+        String query = dbManager.buildSqlSelect(dbMapComponent, schema + "." + targetTable);
+        String expectedQuery = "\"UPDATE `dbo`.`tar`\n" + "SET tarColumn = `dbo`.`src1`.id,\n"
+                + "tarColumn1 = `dbo`.`src2`.name\n"
+                + "FROM\n `dbo`.`src1` LEFT OUTER JOIN  `dbo`.`src2` ON(  `dbo`.`src2`.id = `dbo`.`src1`.id )\"";
+        assertEquals(expectedQuery, query);
+    }
+
+    @Test
+    public void testELTMapJoinWithUpdateAndTableNameQuoteMysqlWithoutAliasRightOuterJoin() {
+        String schema = "dbo";
+        String inputTable1 = "src1";
+        String alias1 = "";
+        String targetTable = "tar";
+        String inputTable2 = "src2";
+        String alias2 = "";
+        boolean addQuotesInTableNames = true;
+        String joinType = "RIGHT_OUTER_JOIN";
+        boolean isUpdate = true;
+        String dbType = "mysql_id";
+        initTestParams(schema, inputTable1, alias1, inputTable2, alias2, targetTable, addQuotesInTableNames, joinType,
+                isUpdate, dbType);
+
+        String query = dbManager.buildSqlSelect(dbMapComponent, schema + "." + targetTable);
+        String expectedQuery = "\"UPDATE `dbo`.`tar`\n" + "SET tarColumn = `dbo`.`src1`.id,\n"
+                + "tarColumn1 = `dbo`.`src2`.name\n"
+                + "FROM\n `dbo`.`src1` RIGHT OUTER JOIN  `dbo`.`src2` ON(  `dbo`.`src2`.id = `dbo`.`src1`.id )\"";
+        assertEquals(expectedQuery, query);
+    }
+
+    @Test
+    public void testELTMapJoinWithUpdateAndTableNameQuoteMysqlWithoutAliasFullOuterJoin() {
+        String schema = "dbo";
+        String inputTable1 = "src1";
+        String alias1 = "";
+        String targetTable = "tar";
+        String inputTable2 = "src2";
+        String alias2 = "";
+        boolean addQuotesInTableNames = true;
+        String joinType = "FULL_OUTER_JOIN";
+        boolean isUpdate = true;
+        String dbType = "mysql_id";
+        initTestParams(schema, inputTable1, alias1, inputTable2, alias2, targetTable, addQuotesInTableNames, joinType,
+                isUpdate, dbType);
+
+        String query = dbManager.buildSqlSelect(dbMapComponent, schema + "." + targetTable);
+        String expectedQuery = "\"UPDATE `dbo`.`tar`\n" + "SET tarColumn = `dbo`.`src1`.id,\n"
+                + "tarColumn1 = `dbo`.`src2`.name\n"
+                + "FROM\n `dbo`.`src1` FULL OUTER JOIN  `dbo`.`src2` ON(  `dbo`.`src2`.id = `dbo`.`src1`.id )\"";
+        assertEquals(expectedQuery, query);
+    }
+
+    @Test
+    public void testELTMapJoinWithUpdateAndTableNameQuoteMysqlWithoutAliasCrossJoin() {
+        String schema = "dbo";
+        String inputTable1 = "src1";
+        String alias1 = "";
+        String targetTable = "tar";
+        String inputTable2 = "src2";
+        String alias2 = "";
+        boolean addQuotesInTableNames = true;
+        String joinType = "CROSS_JOIN";
+        boolean isUpdate = true;
+        String dbType = "mysql_id";
+        initTestParams(schema, inputTable1, alias1, inputTable2, alias2, targetTable, addQuotesInTableNames, joinType,
+                isUpdate, dbType);
+
+        String query = dbManager.buildSqlSelect(dbMapComponent, schema + "." + targetTable);
+        String expectedQuery = "\"UPDATE `dbo`.`tar`\n" + "SET tarColumn = `dbo`.`src1`.id,\n"
+                + "tarColumn1 = `dbo`.`src2`.name\n"
+                + "FROM\n `dbo`.`src1` CROSS JOIN  \n`dbo`.`src2`\nWHERE\n  `dbo`.`src2`.id = `dbo`.`src1`.id\"";
+        assertEquals(expectedQuery, query);
+    }
+
+    @Test
+    public void testELTMapJoinWithUpdateAndTableNameQuoteMysqlWithoutAliasNoJoinContextMode() {
+        String schema = "context.schema";
+        String inputTable1 = "context.input1";
+        String alias1 = "";
+        String targetTable = "context.target";
+        String inputTable2 = "context.input2";
+        String alias2 = "";
+        boolean addQuotesInTableNames = true;
+        String joinType = "NO_JOIN";
+        boolean isUpdate = true;
+        String dbType = "mysql_id";
+        initTestParams(schema, inputTable1, alias1, inputTable2, alias2, targetTable, addQuotesInTableNames, joinType,
+                isUpdate, dbType);
+
+        String query = dbManager.buildSqlSelect(dbMapComponent, schema + "." + targetTable);
+        String expectedQuery =
+                "\"UPDATE \"+ \"`\" +context.schema+ \"`\" +\".\"+ \"`context.target`\" +\"\nSET tarColumn = \" +\"`\" + context.schema + \"`\"+ \".\" +\"`\" + context.input1 + \"`\"+ \".id,\n"
+                        + "tarColumn1 = \" +\"`\" + context.schema + \"`\"+ \".\" +\"`\" + context.input2 + \"`\"+ \".name\nFROM\n \" +\"`\" + context.schema + \"`\"+ \".\" +\"`\" + context.input1 + \"`\"+ "
+                        + "\" , \" +\"`\" + context.schema + \"`\"+ \".\" +\"`\" + context.input2 + \"`\"";
+
+        assertEquals(expectedQuery, query);
+    }
+
+    @Test
+    public void testELTMapJoinWithUpdateAndTableNameQuoteMysqlWithoutAliasInnerJoinContextMode() {
+        String schema = "context.schema";
+        String inputTable1 = "context.input1";
+        String alias1 = "";
+        String targetTable = "context.target";
+        String inputTable2 = "context.input2";
+        String alias2 = "";
+        boolean addQuotesInTableNames = true;
+        String joinType = "INNER_JOIN";
+        boolean isUpdate = true;
+        String dbType = "mysql_id";
+        initTestParams(schema, inputTable1, alias1, inputTable2, alias2, targetTable, addQuotesInTableNames, joinType,
+                isUpdate, dbType);
+
+        String query = dbManager.buildSqlSelect(dbMapComponent, schema + "." + targetTable);
+        String expectedQuery =
+                "\"UPDATE \"+ \"`\" +context.schema+ \"`\" +\".\"+ \"`context.target`\" +\"\nSET tarColumn = \" +\"`\" + context.schema + \"`\"+ \".\" +\"`\" + context.input1 + \"`\"+ \".id,\n"
+                        + "tarColumn1 = \" +\"`\" + context.schema + \"`\"+ \".\" +\"`\" + context.input2 + \"`\"+ \".name\nFROM\n \" +\"`\" + context.schema + \"`\"+ \".\" +\"`\" + context.input1 + \"`\"+ "
+                        + "\" INNER JOIN  \" +\"`\" + context.schema + \"`\"+ \".\" +\"`\" + context.input2 + \"`\"+ \" ON(  \" +\"`\" + context.schema + \"`\"+ \".\" +\"`\" + context.input2 + \"`\"+ \".id"
+                        + " = \" +\"`\" + context.schema + \"`\"+ \".\" +\"`\" + context.input1 + \"`\"+ \".id )\"";
+
+        assertEquals(expectedQuery, query);
+    }
+
 }
+

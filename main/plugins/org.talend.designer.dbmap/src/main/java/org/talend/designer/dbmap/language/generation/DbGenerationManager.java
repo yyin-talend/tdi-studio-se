@@ -1705,7 +1705,7 @@ public abstract class DbGenerationManager {
                                         }
                                         if (expression.trim().equals(originaltableName + "." + oriName)) {
                                             expression = originaltableName + "." + getColumnName(iconn, oriName, quote);
-                                            expression = expression.replaceAll(quto_markParser,"\\\\" +quto_mark); //$NON-NLS-1$
+                                            expression = expression.replaceAll(quto_markParser, "\\\\" + quto_mark); //$NON-NLS-1$
                                             continue;
                                         }
                                         // if it is temp delived table, use label to generate sql
@@ -1717,9 +1717,27 @@ public abstract class DbGenerationManager {
                                         } else {
                                             oriName = oriName.replaceAll("\\$", "\\\\\\$"); //$NON-NLS-1$ //$NON-NLS-2$
                                         }
-                                        String quotedTableName  = getTableName(iconn,tableValue,quote);
-                                        quotedTableName = adaptQuoteForTableAndColumnName(component, quotedTableName);
-//                                        expression = expression.replaceAll(tableValue, quotedTableName);
+                                        // String quotedTableName = getTableName(iconn,tableValue,quote);
+                                        // quotedTableName = adaptQuoteForTableAndColumnName(component,
+                                        // quotedTableName);
+                                        //// expression = expression.replaceAll(tableValue, quotedTableName);
+                                        // expression = expression.replaceFirst(tableValue + "\\." + co.getLabel(),
+                                        // //$NON-NLS-1$
+                                        // quotedTableName + "\\." + oriName); //$NON-NLS-1$
+                                        // expression = replaceAuotes(component, expression, quto_markParser,
+                                        // quto_mark);
+                                        String quotedTableName = "";
+                                        if (hasSchema && !aliasFlag) {
+                                            String quotedSchemaName = getTableName(iconn, schemaNoQuote, quote);
+                                            quotedSchemaName =
+                                                    adaptQuoteForTableAndColumnName(component, quotedSchemaName);
+                                            quotedTableName = getTableName(iconn, tableNoQuote, quote);
+                                            quotedTableName =
+                                                    adaptQuoteForTableAndColumnName(component, quotedTableName);
+                                            quotedTableName = quotedSchemaName + "." + quotedTableName;
+                                        } else {
+                                            quotedTableName = getTableName(iconn, tableValue, quote);
+                                        }
                                         expression = expression.replaceFirst(tableValue + "\\." + co.getLabel(), //$NON-NLS-1$
                                                 quotedTableName + "\\." + oriName); //$NON-NLS-1$
                                         expression = replaceAuotes(component, expression, quto_markParser, quto_mark);
