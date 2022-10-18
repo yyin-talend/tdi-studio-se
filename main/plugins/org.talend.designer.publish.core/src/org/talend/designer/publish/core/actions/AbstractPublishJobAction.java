@@ -242,11 +242,11 @@ public abstract class AbstractPublishJobAction implements IRunnableWithProgress 
     }
 
     protected String getFeaturetVersion(Property property) {
-        return PomIdsHelper.getFeatureVersion(property, artifactVersion);
+        return PomIdsHelper.getNotIteratedFeatureVersion(property, artifactVersion);
     }
 
     protected String getBundleVersion(Property property) {
-        return PomIdsHelper.getBundleVersion(property, artifactVersion);
+        return PomIdsHelper.getNotIteratedBundleVersion(property, artifactVersion);
     }
 
     protected String getArtifactVersion() {
