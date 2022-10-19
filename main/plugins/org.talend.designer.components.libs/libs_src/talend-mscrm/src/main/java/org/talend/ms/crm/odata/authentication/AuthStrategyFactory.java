@@ -36,6 +36,9 @@ public final class AuthStrategyFactory {
             case OAUTH_PREMISE:
                 authStrategy = new OAuthPremiseStrategyImpl(conf);
                 break;
+            case OAUTH_ROPC_PREMISE:
+                authStrategy = new OAuthPremiseROPCStrategyImpl(conf);
+                break;
         }
 
         return authStrategy;

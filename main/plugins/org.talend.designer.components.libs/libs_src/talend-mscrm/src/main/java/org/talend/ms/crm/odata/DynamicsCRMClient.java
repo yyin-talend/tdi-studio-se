@@ -126,6 +126,7 @@ public class DynamicsCRMClient implements IHttpClientFactoryObserver {
 
     private void init() throws AuthenticationException {
         odataClient = ODataClientFactory.getClient();
+
         if (clientConfiguration != null && serviceRootURL != null && serviceRootURL.indexOf("/api/data") > 0) {
             clientConfiguration.setResource(serviceRootURL.substring(0, serviceRootURL.indexOf("/api/data")));
         }

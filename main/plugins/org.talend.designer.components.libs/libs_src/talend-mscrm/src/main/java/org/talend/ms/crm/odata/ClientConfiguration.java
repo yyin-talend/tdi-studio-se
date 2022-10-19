@@ -19,7 +19,7 @@ public final class ClientConfiguration {
     /*
      * Implemented authentication strategies for OData/MS CRM.
      */
-    public static enum AuthStrategyEnum {NTLM, OAUTH, OAUTH_PREMISE};
+    public static enum AuthStrategyEnum {NTLM, OAUTH, OAUTH_PREMISE, OAUTH_ROPC_PREMISE};
 
     /*
      * Kind of registered app on azure
@@ -47,6 +47,11 @@ public final class ClientConfiguration {
     private String resource;
 
     /*
+     * Scopes with a space delimitation
+     */
+    private String scope;
+
+    /*
      * Username of the managed or federated user.
      */
     private String userName;
@@ -72,13 +77,15 @@ public final class ClientConfiguration {
     private String authoryEndpoint;
 
     /*
+     * The OAuth token endpoint for ROPC
+     */
+    private String oauthTokenEndpoint;
+
+    /*
      * The redirect URL
      */
     private String redirectURL;
 
-    /*
-     * The service API to retrieve the resource we ask for with oauth on-premise
-     */
     private String serviceAPI;
 
     private int maxRetryTimes = 5;
@@ -152,6 +159,14 @@ public final class ClientConfiguration {
         this.resource = resource;
     }
 
+    public String getScope(){
+        return this.scope;
+    }
+
+    public void setScope(String scope){
+        this.scope = scope;
+    }
+
     public String getUserName() {
         return userName;
     }
@@ -176,6 +191,14 @@ public final class ClientConfiguration {
         this.authoryEndpoint = authoryEndpoint;
     }
 
+    public String getOAuthTokenEndpoint(){
+        return this.oauthTokenEndpoint;
+    }
+
+    public void setOAuthTokenEndpoint(String oauthTokenEndpoint){
+        this.oauthTokenEndpoint = oauthTokenEndpoint;
+    }
+
     public int getMaxRetryTimes() {
         return maxRetryTimes;
     }
@@ -191,7 +214,6 @@ public final class ClientConfiguration {
         }
 
     }
-
 
     public void setTimeout(int timeout) {
         this.timeout = timeout;

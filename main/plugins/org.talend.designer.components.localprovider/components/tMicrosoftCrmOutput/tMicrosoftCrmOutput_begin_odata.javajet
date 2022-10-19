@@ -8,6 +8,12 @@
 	String applicationId = ElementParameterParser.getValue(node, "__APPLICATION_ID__");
 	String clientSecret = ElementParameterParser.getValue(node, "__CLIENT_SECRET__");
 	String authority = ElementParameterParser.getValue(node, "__AUTHORITY__");
+	String oauthTokenEndpoint = ElementParameterParser.getValue(node, "__OAUTH_TOKEN_ENDPOINT__");
+	String premiseOAuthFlow = ElementParameterParser.getValue(node, "__PREMISE_AUTH_FLOW__");
+	if(premiseOAuthFlow == null || premiseOAuthFlow.trim().isEmpty()){
+		// I set a default value
+		premiseOAuthFlow = "AUTHORIZATION_CODE";
+	}
 	
 	String timeout = ElementParameterParser.getValue(node, "__TIMEOUT__");
 	boolean reuseHttpClient = ("true").equals(ElementParameterParser.getValue(node,"__REUSE_HTTP_CLIENT__"));
@@ -18,6 +24,8 @@
         boolean force_oauth_resource = ("true").equals(ElementParameterParser.getValue(node, "__FORCE_OAUTH_RESOURCE__"));
         String oauth_resource = ElementParameterParser.getValue(node, "__OAUTH_RESOURCE__");
         oauth_resource = force_oauth_resource ? oauth_resource : null;
+
+	String oauth_scope = ElementParameterParser.getValue(node, "__OAUTH_SCOPE__");
 
 	%>
 	int nb_line_<%=cid%> = 0;
@@ -78,10 +86,19 @@
     <%
        }
        else {
-    %>
-    org.talend.ms.crm.odata.ClientConfiguration clientConfig_<%=cid%> = org.talend.ms.crm.odata.ClientConfigurationFactory
-            .buildOAuthPremiseClientConfiguration(<%=userName%>, decryptedPassword_<%=cid%>, <%=authority%>, <%=serviceURL%>,<%=applicationId%>, <%=clientSecret%>, <%=redirectUrl%>, <%=oauth_resource%>);
-    <%
+			if("ROPC".equals(premiseOAuthFlow)) {
+	%>
+			    org.talend.ms.crm.odata.ClientConfiguration clientConfig_<%=cid%> = org.talend.ms.crm.odata.ClientConfigurationFactory
+			.buildOAuthPremiseROPCClientConfiguration(<%=userName%>, decryptedPassword_<%=cid%>, <%=oauthTokenEndpoint%>, <%=serviceURL%>, <%=applicationId%>, <%=clientSecret%>, <%=oauth_resource%>, <%=oauth_scope%>);
+			
+	<%
+			}
+			else {
+	%>
+			    org.talend.ms.crm.odata.ClientConfiguration clientConfig_<%=cid%> = org.talend.ms.crm.odata.ClientConfigurationFactory
+				    .buildOAuthPremiseClientConfiguration(<%=userName%>, decryptedPassword_<%=cid%>, <%=authority%>, <%=serviceURL%>,<%=applicationId%>, <%=clientSecret%>, <%=redirectUrl%>, <%=oauth_resource%>);
+	<%
+			}
        }
     } else {
     	if("NATIVE".equals(onlineRegisterApp)){
