@@ -852,6 +852,9 @@ public abstract class DbGenerationManager {
         String regex = parser.getGlobalMapExpressionRegex(globalMapStr);
         String replacement = parser.getGlobalMapReplacement(globalMapStr);
         int countMatches = org.apache.commons.lang.StringUtils.countMatches(expression, globalMapStr);
+        if ("\"".equals(quote)) {
+            quote = "\\\\\"";
+        }
         if( 1 == countMatches) {
             int indexGlobal = expression.indexOf(globalMapStr);
             
@@ -2187,16 +2190,24 @@ public abstract class DbGenerationManager {
                 targetSchemaTable = getHandledField(component, schemaNoQuote);
                 if (isVariable(schemaNoQuote)) {
                     targetSchemaTable = replaceVariablesForTargetTableExpression(component, schemaNoQuote);
-                }
-                if (ContextParameterUtils.isContainContextParam(schemaNoQuote) || isContainsGlobalMap(schemaNoQuote)) {
-                    if (isAddQuotesInTableNames()) {
-                        if ("\"".equals(quote)) {
-                            targetSchemaTable = "\"+ \"" + "\\\"" + targetSchemaTable + "\\\"" + "\" +\"";
-                        } else {
-                            targetSchemaTable = "\"+ \"" + quote + targetSchemaTable + quote + "\" +\"";
+                    if (ContextParameterUtils.isContainContextParam(schemaNoQuote)){
+                        // context won't add quote , so here use special check
+                        if (isAddQuotesInTableNames()) {
+                            if ("\"".equals(quote)) {
+                                targetSchemaTable = "\"+ \"" + "\\\"" + targetSchemaTable + "\\\"" + "\" +\"";
+                            } else {
+                                targetSchemaTable = "\"+ \"" + quote + targetSchemaTable + quote + "\" +\"";
+                            }
+                        }
+
+                    } else {
+                        if (isAddQuotesInTableNames()) {
+                            List<IConnection> inputConnections = (List<IConnection>) component.getIncomingConnections();
+                            IConnection iconn = this.getConnectonByName(inputConnections, targetSchemaTable);
+                            targetSchemaTable = getTableName(iconn, targetSchemaTable, quote);
+                            targetSchemaTable = adaptQuoteForTableAndColumnName(component, targetSchemaTable);
                         }
                     }
-
                 } else {
                     if (isAddQuotesInTableNames()) {
                         List<IConnection> inputConnections = (List<IConnection>) component.getIncomingConnections();
@@ -2205,18 +2216,43 @@ public abstract class DbGenerationManager {
                         targetSchemaTable = adaptQuoteForTableAndColumnName(component, targetSchemaTable);
                     }
                 }
+                // if (ContextParameterUtils.isContainContextParam(schemaNoQuote) || isContainsGlobalMap(schemaNoQuote))
+                // {
+                // if (isAddQuotesInTableNames()) {
+                // if ("\"".equals(quote)) {
+                // targetSchemaTable = "\"+ \"" + "\\\"" + targetSchemaTable + "\\\"" + "\" +\"";
+                // } else {
+                // targetSchemaTable = "\"+ \"" + quote + targetSchemaTable + quote + "\" +\"";
+                // }
+                // }
+                //
+                // } else {
+                // if (isAddQuotesInTableNames()) {
+                // List<IConnection> inputConnections = (List<IConnection>) component.getIncomingConnections();
+                // IConnection iconn = this.getConnectonByName(inputConnections, targetSchemaTable);
+                // targetSchemaTable = getTableName(iconn, targetSchemaTable, quote);
+                // targetSchemaTable = adaptQuoteForTableAndColumnName(component, targetSchemaTable);
+                // }
+                // }
                 targetSchemaTable = targetSchemaTable + "."; //$NON-NLS-1$
             }
         }
-        String targetTable = getHandledField(component, outTableName);
-        if (ContextParameterUtils.isContainContextParam(outTableName) || isContainsGlobalMap(outTableName)) {
-            if (isAddQuotesInTableNames()) {
-                if ("\"".equals(quote)) {
-                    targetTable = "\"+ \"" + "\\\"" + targetTable + "\\\"" + "\" +\"";
-                } else {
-                    targetTable = "\"+ \"" + quote + targetTable + quote + "\" +\"";
-                }
-            }
+        String targetTable = outTableName;
+        if (TalendQuoteUtils.isStartEndsWithQuotation(outTableName, true, false) && !isVariable(outTableName)) {
+            targetTable = TalendQuoteUtils.removeQuotesIfExist(outTableName);
+        }
+        if (isVariable(targetTable)) {
+            targetTable = replaceVariablesForTargetTableExpression(component, targetTable);
+            if(ContextParameterUtils.isContainContextParam(outTableName)) {
+                // context won't add quote , so here use special check
+               if (isAddQuotesInTableNames()) {
+                   if ("\"".equals(quote)) {
+                       targetTable = "\"+ \"" + "\\\"" + targetTable + "\\\"" + "\" +\"";
+                   } else {
+                       targetTable = "\"+ \"" + quote + targetTable + quote + "\" +\"";
+                   }
+               }
+           }
             if (org.apache.commons.lang.StringUtils.isNotBlank(targetSchemaTable)) {
                 targetSchemaTable += targetTable;
             } else {
@@ -2237,6 +2273,35 @@ public abstract class DbGenerationManager {
                 }
             }
         }
+//         if (ContextParameterUtils.isContainContextParam(outTableName)) {
+//          // context won't add quote , so here use special check
+//         if (isAddQuotesInTableNames()) {
+//         if ("\"".equals(quote)) {
+//         targetTable = "\"+ \"" + "\\\"" + targetTable + "\\\"" + "\" +\"";
+//         } else {
+//         targetTable = "\"+ \"" + quote + "\" + " + targetTable + quote + "\" +\"";
+//         }
+//         }
+//         if (org.apache.commons.lang.StringUtils.isNotBlank(targetSchemaTable)) {
+//         targetSchemaTable += targetTable;
+//         } else {
+//         targetSchemaTable = targetTable;
+//         }
+//         } else {
+//         if (isVariable(targetTable)) {
+//         targetSchemaTable += replaceVariablesForTargetTableExpression(component, targetTable);
+//         } else {
+//         List<IConnection> inputConnections = (List<IConnection>) component.getIncomingConnections();
+//         IConnection iconn = this.getConnectonByName(inputConnections, targetTable);
+//         targetTable = getTableName(iconn, targetTable, quote);
+//         targetTable = adaptQuoteForTableAndColumnName(component, targetTable);
+//         if (org.apache.commons.lang.StringUtils.isNotBlank(targetSchemaTable)) {
+//         targetSchemaTable += targetTable;
+//         } else {
+//         targetSchemaTable = targetTable;
+//         }
+//         }
+//         }
         return targetSchemaTable;
     }
 

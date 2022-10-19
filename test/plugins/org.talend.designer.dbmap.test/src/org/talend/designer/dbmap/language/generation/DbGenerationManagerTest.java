@@ -2614,6 +2614,10 @@ public class DbGenerationManagerTest extends DbGenerationManagerTestHelper {
         cparam.setName("input2");
         cparam.setValue("src2");
         newParamList.add(cparam);
+        cparam = new JobContextParameter();
+        cparam.setName("target");
+        cparam.setValue("tar");
+        newParamList.add(cparam);
 
         JobContextManager contextManger = new JobContextManager();
         contextManger.setDefaultContext(newContext);
@@ -3317,7 +3321,7 @@ public class DbGenerationManagerTest extends DbGenerationManagerTestHelper {
 
         String query = dbManager.buildSqlSelect(dbMapComponent, schema + "." + targetTable);
         String expectedQuery =
-                "\"UPDATE \"+ \"`\" +context.schema+ \"`\" +\".\"+ \"`context.target`\" +\"\nSET tarColumn = \" +\"`\" + context.schema + \"`\"+ \".\" +\"`\" + context.input1 + \"`\"+ \".id,\n"
+                "\"UPDATE \"+ \"`\" +context.schema+ \"`\" +\".\"+ \"`\" +context.target+ \"`\" +\"\nSET tarColumn = \" +\"`\" + context.schema + \"`\"+ \".\" +\"`\" + context.input1 + \"`\"+ \".id,\n"
                         + "tarColumn1 = \" +\"`\" + context.schema + \"`\"+ \".\" +\"`\" + context.input2 + \"`\"+ \".name\nFROM\n \" +\"`\" + context.schema + \"`\"+ \".\" +\"`\" + context.input1 + \"`\"+ "
                         + "\" , \" +\"`\" + context.schema + \"`\"+ \".\" +\"`\" + context.input2 + \"`\"";
 
@@ -3341,7 +3345,7 @@ public class DbGenerationManagerTest extends DbGenerationManagerTestHelper {
 
         String query = dbManager.buildSqlSelect(dbMapComponent, schema + "." + targetTable);
         String expectedQuery =
-                "\"UPDATE \"+ \"`\" +context.schema+ \"`\" +\".\"+ \"`context.target`\" +\"\nSET tarColumn = \" +\"`\" + context.schema + \"`\"+ \".\" +\"`\" + context.input1 + \"`\"+ \".id,\n"
+                "\"UPDATE \"+ \"`\" +context.schema+ \"`\" +\".\"+ \"`\" +context.target+ \"`\" +\"\nSET tarColumn = \" +\"`\" + context.schema + \"`\"+ \".\" +\"`\" + context.input1 + \"`\"+ \".id,\n"
                         + "tarColumn1 = \" +\"`\" + context.schema + \"`\"+ \".\" +\"`\" + context.input2 + \"`\"+ \".name\nFROM\n \" +\"`\" + context.schema + \"`\"+ \".\" +\"`\" + context.input1 + \"`\"+ "
                         + "\" INNER JOIN  \" +\"`\" + context.schema + \"`\"+ \".\" +\"`\" + context.input2 + \"`\"+ \" ON(  \" +\"`\" + context.schema + \"`\"+ \".\" +\"`\" + context.input2 + \"`\"+ \".id"
                         + " = \" +\"`\" + context.schema + \"`\"+ \".\" +\"`\" + context.input1 + \"`\"+ \".id )\"";
@@ -3349,5 +3353,419 @@ public class DbGenerationManagerTest extends DbGenerationManagerTestHelper {
         assertEquals(expectedQuery, query);
     }
 
+    @Test
+    public void testELTMapJoinWithUpdateAndTableNameQuoteSnowflakeWithoutAliasNoJoinContextMode() {
+        String schema = "context.schema";
+        String inputTable1 = "context.input1";
+        String alias1 = "";
+        String targetTable = "context.target";
+        String inputTable2 = "context.input2";
+        String alias2 = "";
+        boolean addQuotesInTableNames = true;
+        String joinType = "NO_JOIN";
+        boolean isUpdate = true;
+        String dbType = "snowflake_id";
+        initTestParams(schema, inputTable1, alias1, inputTable2, alias2, targetTable, addQuotesInTableNames, joinType,
+                isUpdate, dbType);
+
+        String query = dbManager.buildSqlSelect(dbMapComponent, schema + "." + targetTable);
+        String expectedQuery =
+                "\"UPDATE \"+ \"\\\"\" +context.schema+ \"\\\"\" +\".\"+ \"\\\"\" +context.target+ \"\\\"\" +\"\nSET tarColumn = \" +\"\\\"\" + context.schema + \"\\\"\"+ \".\" +\"\\\"\" + context.input1 + \"\\\"\"+ \".id,\n"
+                        + "tarColumn1 = \" +\"\\\"\" + context.schema + \"\\\"\"+ \".\" +\"\\\"\" + context.input2 + \"\\\"\"+ \".name\nFROM\n \" +\"\\\"\" + context.schema + \"\\\"\"+ \".\" +\"\\\"\" + context.input1 + \"\\\"\"+ "
+                        + "\" , \" +\"\\\"\" + context.schema + \"\\\"\"+ \".\" +\"\\\"\" + context.input2 + \"\\\"\"";
+
+        assertEquals(expectedQuery, query);
+    }
+
+    @Test
+    public void testELTMapJoinWithUpdateAndTableNameQuoteSnowflakeWithoutAliasInnerJoinContextMode() {
+        String schema = "context.schema";
+        String inputTable1 = "context.input1";
+        String alias1 = "";
+        String targetTable = "context.target";
+        String inputTable2 = "context.input2";
+        String alias2 = "";
+        boolean addQuotesInTableNames = true;
+        String joinType = "INNER_JOIN";
+        boolean isUpdate = true;
+        String dbType = "snowflake_id";
+        initTestParams(schema, inputTable1, alias1, inputTable2, alias2, targetTable, addQuotesInTableNames, joinType,
+                isUpdate, dbType);
+
+        String query = dbManager.buildSqlSelect(dbMapComponent, schema + "." + targetTable);
+        String expectedQuery =
+                "\"UPDATE \"+ \"\\\"\" +context.schema+ \"\\\"\" +\".\"+ \"\\\"\" +context.target+ \"\\\"\" +\"\nSET tarColumn = \" +\"\\\"\" + context.schema + \"\\\"\"+ \".\" +\"\\\"\" + context.input1 + \"\\\"\"+ \".id,\n"
+                        + "tarColumn1 = \" +\"\\\"\" + context.schema + \"\\\"\"+ \".\" +\"\\\"\" + context.input2 + \"\\\"\"+ \".name\nFROM\n \" +\"\\\"\" + context.schema + \"\\\"\"+ \".\" +\"\\\"\" + context.input1 + \"\\\"\"+ "
+                        + "\" INNER JOIN  \" +\"\\\"\" + context.schema + \"\\\"\"+ \".\" +\"\\\"\" + context.input2 + \"\\\"\"+ \" ON(  \" +\"\\\"\" + context.schema + \"\\\"\"+ \".\" +\"\\\"\" + context.input2 + \"\\\"\"+ \".id"
+                        + " = \" +\"\\\"\" + context.schema + \"\\\"\"+ \".\" +\"\\\"\" + context.input1 + \"\\\"\"+ \".id )\"";
+
+        assertEquals(expectedQuery, query);
+    }
+
+    @Test
+    public void testELTMapJoinWithUpdateAndTableNameQuoteSnowflakeWithAliasNoJoinContextMode() {
+        String schema = "context.schema";
+        String inputTable1 = "context.input1";
+        String alias1 = "A";
+        String targetTable = "context.target";
+        String inputTable2 = "context.input2";
+        String alias2 = "B";
+        boolean addQuotesInTableNames = true;
+        String joinType = "NO_JOIN";
+        boolean isUpdate = true;
+        String dbType = "snowflake_id";
+        initTestParams(schema, inputTable1, alias1, inputTable2, alias2, targetTable, addQuotesInTableNames, joinType,
+                isUpdate, dbType);
+
+        String query = dbManager.buildSqlSelect(dbMapComponent, schema + "." + targetTable);
+        String expectedQuery =
+                "\"UPDATE \"+ \"\\\"\" +context.schema+ \"\\\"\" +\".\"+ \"\\\"\" +context.target+ \"\\\"\" +\"\nSET tarColumn = \\\"A\\\".id,\n"
+                        + "tarColumn1 = \\\"B\\\".name\nFROM\n \" +\"\\\"\" +context.schema+ \"\\\"\"+\".\"+\"\\\"\" +context.input1+ \"\\\"\"+ \" \\\"A\\\" , "
+                        + "\" +\"\\\"\" +context.schema+ \"\\\"\"+\".\"+\"\\\"\" +context.input2+ \"\\\"\"+ \" \\\"B\\\" \"";
+
+        assertEquals(expectedQuery, query);
+    }
+
+    @Test
+    public void testELTMapJoinWithUpdateAndTableNameQuoteSnowflakeWithAliasInnerJoinContextMode() {
+        String schema = "context.schema";
+        String inputTable1 = "context.input1";
+        String alias1 = "A";
+        String targetTable = "context.target";
+        String inputTable2 = "context.input2";
+        String alias2 = "B";
+        boolean addQuotesInTableNames = true;
+        String joinType = "INNER_JOIN";
+        boolean isUpdate = true;
+        String dbType = "snowflake_id";
+        initTestParams(schema, inputTable1, alias1, inputTable2, alias2, targetTable, addQuotesInTableNames, joinType,
+                isUpdate, dbType);
+
+        String query = dbManager.buildSqlSelect(dbMapComponent, schema + "." + targetTable);
+        String expectedQuery =
+                "\"UPDATE \"+ \"\\\"\" +context.schema+ \"\\\"\" +\".\"+ \"\\\"\" +context.target+ \"\\\"\" +\"\nSET tarColumn = \\\"A\\\".id,\n"
+                        + "tarColumn1 = \\\"B\\\".name\nFROM\n \" +\"\\\"\" +context.schema+ \"\\\"\"+\".\"+\"\\\"\" +context.input1+ \"\\\"\"+ \" \\\"A\\\" INNER JOIN  "
+                        + "\" +\"\\\"\" +context.schema+ \"\\\"\"+\".\"+\"\\\"\" +context.input2+ \"\\\"\"+ \" \\\"B\\\" ON(  \\\"B\\\".id = \\\"A\\\".id )\"";
+
+        assertEquals(expectedQuery, query);
+    }
+
+    @Test
+    public void testELTMapJoinWithUpdateAndTableNameQuoteMysqlWithAliasNoJoinContextMode() {
+        String schema = "context.schema";
+        String inputTable1 = "context.input1";
+        String alias1 = "A";
+        String targetTable = "context.target";
+        String inputTable2 = "context.input2";
+        String alias2 = "B";
+        boolean addQuotesInTableNames = true;
+        String joinType = "NO_JOIN";
+        boolean isUpdate = true;
+        String dbType = "mysql_id";
+        initTestParams(schema, inputTable1, alias1, inputTable2, alias2, targetTable, addQuotesInTableNames, joinType,
+                isUpdate, dbType);
+
+        String query = dbManager.buildSqlSelect(dbMapComponent, schema + "." + targetTable);
+        String expectedQuery =
+                "\"UPDATE \"+ \"`\" +context.schema+ \"`\" +\".\"+ \"`\" +context.target+ \"`\" +\"\nSET tarColumn = `A`.id,\n"
+                        + "tarColumn1 = `B`.name\nFROM\n \" +\"`\" +context.schema+ \"`\"+\".\"+\"`\" +context.input1+ \"`\"+ \" `A` , "
+                        + "\" +\"`\" +context.schema+ \"`\"+\".\"+\"`\" +context.input2+ \"`\"+ \" `B`\"";
+
+        assertEquals(expectedQuery, query);
+    }
+
+    @Test
+    public void testELTMapJoinWithUpdateAndTableNameQuoteMysqlWithAliasInnerJoinContextMode() {
+        String schema = "context.schema";
+        String inputTable1 = "context.input1";
+        String alias1 = "A";
+        String targetTable = "context.target";
+        String inputTable2 = "context.input2";
+        String alias2 = "B";
+        boolean addQuotesInTableNames = true;
+        String joinType = "INNER_JOIN";
+        boolean isUpdate = true;
+        String dbType = "mysql_id";
+        initTestParams(schema, inputTable1, alias1, inputTable2, alias2, targetTable, addQuotesInTableNames, joinType,
+                isUpdate, dbType);
+
+        String query = dbManager.buildSqlSelect(dbMapComponent, schema + "." + targetTable);
+        String expectedQuery =
+                "\"UPDATE \"+ \"`\" +context.schema+ \"`\" +\".\"+ \"`\" +context.target+ \"`\" +\"\nSET tarColumn = `A`.id,\n"
+                        + "tarColumn1 = `B`.name\nFROM\n \" +\"`\" +context.schema+ \"`\"+\".\"+\"`\" +context.input1+ \"`\"+ \" `A` INNER JOIN  "
+                        + "\" +\"`\" +context.schema+ \"`\"+\".\"+\"`\" +context.input2+ \"`\"+ \" `B` ON(  `B`.id = `A`.id )\"";
+
+        assertEquals(expectedQuery, query);
+    }
+
+    @Test
+    public void testELTMapJoinWithUpdateAndTableNameQuoteMysqlWithAliasNoJoinGloableMap() {
+        String schema = "((String)globalMap.get(\"schema\"))";
+        String inputTable1 = "((String)globalMap.get(\"input1\"))";
+        String alias1 = "A";
+        String targetTable = "((String)globalMap.get(\"target\"))";
+        String inputTable2 = "((String)globalMap.get(\"input2\"))";
+        String alias2 = "B";
+        boolean addQuotesInTableNames = true;
+        String joinType = "NO_JOIN";
+        boolean isUpdate = true;
+        String dbType = "mysql_id";
+        initTestParams(schema, inputTable1, alias1, inputTable2, alias2, targetTable, addQuotesInTableNames, joinType,
+                isUpdate, dbType);
+
+        String query = dbManager.buildSqlSelect(dbMapComponent, schema + "." + targetTable);
+        String expectedQuery =
+                "\"UPDATE \" +\"`\" + ((String)globalMap.get(\"schema\")) + \"`\"+ \".\" +\"`\" + ((String)globalMap.get(\"target\")) + \"`\"+ \"\nSET tarColumn = `A`.id,\n"
+                        + "tarColumn1 = `B`.name\nFROM\n \" +\"`\" +((String)globalMap.get(\"schema\"))+ \"`\"+\".\"+\"`\" +((String)globalMap.get(\"input1\"))+ \"`\"+ \" `A` , "
+                        + "\" +\"`\" +((String)globalMap.get(\"schema\"))+ \"`\"+\".\"+\"`\" +((String)globalMap.get(\"input2\"))+ \"`\"+ \" `B`\"";
+
+        assertEquals(expectedQuery, query);
+    }
+
+    @Test
+    public void testELTMapJoinWithUpdateAndTableNameQuoteMysqlWithAliasInnerJoinGloableMap() {
+        String schema = "((String)globalMap.get(\"schema\"))";
+        String inputTable1 = "((String)globalMap.get(\"input1\"))";
+        String alias1 = "A";
+        String targetTable = "((String)globalMap.get(\"target\"))";
+        String inputTable2 = "((String)globalMap.get(\"input2\"))";
+        String alias2 = "B";
+        boolean addQuotesInTableNames = true;
+        String joinType = "INNER_JOIN";
+        boolean isUpdate = true;
+        String dbType = "mysql_id";
+        initTestParams(schema, inputTable1, alias1, inputTable2, alias2, targetTable, addQuotesInTableNames, joinType,
+                isUpdate, dbType);
+
+        String query = dbManager.buildSqlSelect(dbMapComponent, schema + "." + targetTable);
+        String expectedQuery =
+                "\"UPDATE \" +\"`\" + ((String)globalMap.get(\"schema\")) + \"`\"+ \".\" +\"`\" + ((String)globalMap.get(\"target\")) + \"`\"+ \"\nSET tarColumn = `A`.id,\n"
+                        + "tarColumn1 = `B`.name\nFROM\n \" +\"`\" +((String)globalMap.get(\"schema\"))+ \"`\"+\".\"+\"`\" +((String)globalMap.get(\"input1\"))+ \"`\"+ \" `A` INNER JOIN  "
+                        + "\" +\"`\" +((String)globalMap.get(\"schema\"))+ \"`\"+\".\"+\"`\" +((String)globalMap.get(\"input2\"))+ \"`\"+ \" `B` ON(  `B`.id = `A`.id )\"";
+
+        assertEquals(expectedQuery, query);
+    }
+
+    @Test
+    public void testELTMapJoinWithUpdateAndTableNameQuoteSnowflakeWithAliasNoJoinGloableMap() {
+        String schema = "((String)globalMap.get(\"schema\"))";
+        String inputTable1 = "((String)globalMap.get(\"input1\"))";
+        String alias1 = "A";
+        String targetTable = "((String)globalMap.get(\"target\"))";
+        String inputTable2 = "((String)globalMap.get(\"input2\"))";
+        String alias2 = "B";
+        boolean addQuotesInTableNames = true;
+        String joinType = "NO_JOIN";
+        boolean isUpdate = true;
+        String dbType = "snowflake_id";
+        initTestParams(schema, inputTable1, alias1, inputTable2, alias2, targetTable, addQuotesInTableNames, joinType,
+                isUpdate, dbType);
+
+        String query = dbManager.buildSqlSelect(dbMapComponent, schema + "." + targetTable);
+        String expectedQuery =
+                "\"UPDATE \" +\"\\\"\" + ((String)globalMap.get(\"schema\")) + \"\\\"\"+ \".\" +\"\\\"\" + ((String)globalMap.get(\"target\")) + \"\\\"\"+ \"\nSET tarColumn = \\\"A\\\".id,\n"
+                        + "tarColumn1 = \\\"B\\\".name\nFROM\n \" +\"\\\"\" +((String)globalMap.get(\"schema\"))+ \"\\\"\"+\".\"+\"\\\"\" +((String)globalMap.get(\"input1\"))+ \"\\\"\"+ \" \\\"A\\\" , "
+                        + "\" +\"\\\"\" +((String)globalMap.get(\"schema\"))+ \"\\\"\"+\".\"+\"\\\"\" +((String)globalMap.get(\"input2\"))+ \"\\\"\"+ \" \\\"B\\\" \"";
+
+        assertEquals(expectedQuery, query);
+    }
+
+    @Test
+    public void testELTMapJoinWithUpdateAndTableNameQuoteSnowflakeWithAliasInnerJoinGloableMap() {
+        String schema = "((String)globalMap.get(\"schema\"))";
+        String inputTable1 = "((String)globalMap.get(\"input1\"))";
+        String alias1 = "A";
+        String targetTable = "((String)globalMap.get(\"target\"))";
+        String inputTable2 = "((String)globalMap.get(\"input2\"))";
+        String alias2 = "B";
+        boolean addQuotesInTableNames = true;
+        String joinType = "INNER_JOIN";
+        boolean isUpdate = true;
+        String dbType = "snowflake_id";
+        initTestParams(schema, inputTable1, alias1, inputTable2, alias2, targetTable, addQuotesInTableNames, joinType,
+                isUpdate, dbType);
+
+        String query = dbManager.buildSqlSelect(dbMapComponent, schema + "." + targetTable);
+        String expectedQuery =
+                "\"UPDATE \" +\"\\\"\" + ((String)globalMap.get(\"schema\")) + \"\\\"\"+ \".\" +\"\\\"\" + ((String)globalMap.get(\"target\")) + \"\\\"\"+ \"\nSET tarColumn = \\\"A\\\".id,\n"
+                        + "tarColumn1 = \\\"B\\\".name\nFROM\n \" +\"\\\"\" +((String)globalMap.get(\"schema\"))+ \"\\\"\"+\".\"+\"\\\"\" +((String)globalMap.get(\"input1\"))+ \"\\\"\"+ \" \\\"A\\\" INNER JOIN  "
+                        + "\" +\"\\\"\" +((String)globalMap.get(\"schema\"))+ \"\\\"\"+\".\"+\"\\\"\" +((String)globalMap.get(\"input2\"))+ \"\\\"\"+ \" \\\"B\\\" ON(  \\\"B\\\".id = \\\"A\\\".id )\"";
+
+        assertEquals(expectedQuery, query);
+    }
+
+    @Test
+    public void testELTMapJoinWithUpdateAndTableNameQuoteSnowflakeWithoutAliasInnerJoinGloableMap() {
+        String schema = "((String)globalMap.get(\"schema\"))";
+        String inputTable1 = "((String)globalMap.get(\"input1\"))";
+        String alias1 = "";
+        String targetTable = "((String)globalMap.get(\"target\"))";
+        String inputTable2 = "((String)globalMap.get(\"input2\"))";
+        String alias2 = "B";
+        boolean addQuotesInTableNames = true;
+        String joinType = "INNER_JOIN";
+        boolean isUpdate = true;
+        String dbType = "snowflake_id";
+        initTestParams(schema, inputTable1, alias1, inputTable2, alias2, targetTable, addQuotesInTableNames, joinType,
+                isUpdate, dbType);
+
+        String query = dbManager.buildSqlSelect(dbMapComponent, schema + "." + targetTable);
+        String expectedQuery =
+                "\"UPDATE \" +\"\\\"\" + ((String)globalMap.get(\"schema\")) + \"\\\"\"+ \".\" +\"\\\"\" + ((String)globalMap.get(\"target\")) + \"\\\"\"+ \"\nSET tarColumn = \" +\"\\\"\" + ((String)globalMap.get(\"schema\")) + \"\\\"\"+ \".\" +\"\\\"\" + ((String)globalMap.get(\"input1\")) + \"\\\"\"+ \".newColumn,\n"
+                        + "tarColumn1 = \\\"B\\\".name\nFROM\n \" +\"\\\"\" + ((String)globalMap.get(\"schema\")) + \"\\\"\"+ \".\" +\"\\\"\" + ((String)globalMap.get(\"input1\")) + \"\\\"\"+ \" INNER JOIN  "
+                        + "\" +\"\\\"\" +((String)globalMap.get(\"schema\"))+ \"\\\"\"+\".\"+\"\\\"\" +((String)globalMap.get(\"input2\"))+ \"\\\"\"+ \" \\\"B\\\" ON(  \\\"B\\\".id = \" +\"\\\"\" + ((String)globalMap.get(\"schema\")) + \"\\\"\"+ \".\" +\"\\\"\" + ((String)globalMap.get(\"input1\")) + \"\\\"\"+ \".newColumn )\"";
+
+        assertEquals(expectedQuery, query);
+
+    }
+
+    @Test
+    public void testELTMapJoinWithUpdateAndTableNameQuoteSnowflakeWithoutAliasInnerJoinGloableMapNoSchema() {
+        String schema = "";
+        String inputTable1 = "((String)globalMap.get(\"input1\"))";
+        String alias1 = "";
+        String targetTable = "((String)globalMap.get(\"target\"))";
+        String inputTable2 = "((String)globalMap.get(\"input2\"))";
+        String alias2 = "B";
+        boolean addQuotesInTableNames = true;
+        String joinType = "INNER_JOIN";
+        boolean isUpdate = true;
+        String dbType = "snowflake_id";
+        initTestParams(schema, inputTable1, alias1, inputTable2, alias2, targetTable, addQuotesInTableNames, joinType,
+                isUpdate, dbType);
+
+        String query = dbManager.buildSqlSelect(dbMapComponent, targetTable);
+        String expectedQuery =
+                "\"UPDATE \" +\"\\\"\" + ((String)globalMap.get(\"target\")) + \"\\\"\"+ \"\nSET tarColumn = \" +\"\\\"\" + ((String)globalMap.get(\"input1\")) + \"\\\"\"+ \".newColumn,\n"
+                        + "tarColumn1 = \\\"B\\\".name\nFROM\n \" +\"\\\"\" + ((String)globalMap.get(\"input1\")) + \"\\\"\"+ \" INNER JOIN  "
+                        + "\" +\"\\\"\" +((String)globalMap.get(\"input2\"))+ \"\\\"\"+ \" \\\"B\\\" ON(  \\\"B\\\".id = \" +\"\\\"\" + ((String)globalMap.get(\"input1\")) + \"\\\"\"+ \".newColumn )\"";
+
+        assertEquals(expectedQuery, query);
+
+    }
+
+    @Test
+    public void testELTMapJoinWithUpdateAndTableNameQuoteSnowflakeWithoutAliasNoJoinGloableMapNoSchema() {
+        String schema = "";
+        String inputTable1 = "input1";
+        String alias1 = "";
+        String targetTable = "((String)globalMap.get(\"target\"))";
+        String inputTable2 = "((String)globalMap.get(\"input2\"))";
+        String alias2 = "B";
+        boolean addQuotesInTableNames = true;
+        String joinType = "NO_JOIN";
+        boolean isUpdate = true;
+        String dbType = "snowflake_id";
+        initTestParams(schema, inputTable1, alias1, inputTable2, alias2, targetTable, addQuotesInTableNames, joinType,
+                isUpdate, dbType);
+
+        String query = dbManager.buildSqlSelect(dbMapComponent, targetTable);
+        String expectedQuery =
+                "\"UPDATE \" +\"\\\"\" + ((String)globalMap.get(\"target\")) + \"\\\"\"+ \"\nSET tarColumn = \\\"input1\\\".id,\n"
+                        + "tarColumn1 = \\\"B\\\".name\nFROM\n \\\"input1\\\" , "
+                        + "\" +\"\\\"\" +((String)globalMap.get(\"input2\"))+ \"\\\"\"+ \" \\\"B\\\" \"";
+
+        assertEquals(expectedQuery, query);
+
+    }
+
+    @Test
+    public void testELTMapJoinWithUpdateAndTableNameQuoteMysqlWithoutAliasInnerJoinGloableMapNoSchema() {
+        String schema = "";
+        String inputTable1 = "((String)globalMap.get(\"input1\"))";
+        String alias1 = "";
+        String targetTable = "((String)globalMap.get(\"target\"))";
+        String inputTable2 = "((String)globalMap.get(\"input2\"))";
+        String alias2 = "B";
+        boolean addQuotesInTableNames = true;
+        String joinType = "INNER_JOIN";
+        boolean isUpdate = true;
+        String dbType = "mysql_id";
+        initTestParams(schema, inputTable1, alias1, inputTable2, alias2, targetTable, addQuotesInTableNames, joinType,
+                isUpdate, dbType);
+
+        String query = dbManager.buildSqlSelect(dbMapComponent, targetTable);
+        String expectedQuery =
+                "\"UPDATE \" +\"`\" + ((String)globalMap.get(\"target\")) + \"`\"+ \"\nSET tarColumn = \" +\"`\" + ((String)globalMap.get(\"input1\")) + \"`\"+ \".newColumn,\n"
+                        + "tarColumn1 = `B`.name\nFROM\n \" +\"`\" + ((String)globalMap.get(\"input1\")) + \"`\"+ \" INNER JOIN  "
+                        + "\" +\"`\" +((String)globalMap.get(\"input2\"))+ \"`\"+ \" `B` ON(  `B`.id = \" +\"`\" + ((String)globalMap.get(\"input1\")) + \"`\"+ \".newColumn )\"";
+
+        assertEquals(expectedQuery, query);
+
+    }
+
+    @Test
+    public void testELTMapJoinWithUpdateAndTableNameQuoteMysqlWithoutAliasNoJoinGloableMapNoSchema() {
+        String schema = "";
+        String inputTable1 = "input1";
+        String alias1 = "";
+        String targetTable = "((String)globalMap.get(\"target\"))";
+        String inputTable2 = "((String)globalMap.get(\"input2\"))";
+        String alias2 = "B";
+        boolean addQuotesInTableNames = true;
+        String joinType = "NO_JOIN";
+        boolean isUpdate = true;
+        String dbType = "mysql_id";
+        initTestParams(schema, inputTable1, alias1, inputTable2, alias2, targetTable, addQuotesInTableNames, joinType,
+                isUpdate, dbType);
+
+        String query = dbManager.buildSqlSelect(dbMapComponent, targetTable);
+        String expectedQuery =
+                "\"UPDATE \" +\"`\" + ((String)globalMap.get(\"target\")) + \"`\"+ \"\nSET tarColumn = `input1`.id,\n"
+                        + "tarColumn1 = `B`.name\nFROM\n `input1` , "
+                        + "\" +\"`\" +((String)globalMap.get(\"input2\"))+ \"`\"+ \" `B`\"";
+
+        assertEquals(expectedQuery, query);
+
+    }
+
+    @Test
+    public void testELTMapJoinWithUpdateAndTableNameQuoteMysqlWithoutAliasInnerJoinContextNoSchema() {
+        String schema = "";
+        String inputTable1 = "input1";
+        String alias1 = "";
+        String targetTable = "tar";
+        String inputTable2 = "context.input2";
+        String alias2 = "B";
+        boolean addQuotesInTableNames = true;
+        String joinType = "INNER_JOIN";
+        boolean isUpdate = true;
+        String dbType = "mysql_id";
+        initTestParams(schema, inputTable1, alias1, inputTable2, alias2, targetTable, addQuotesInTableNames, joinType,
+                isUpdate, dbType);
+
+        String query = dbManager.buildSqlSelect(dbMapComponent, targetTable);
+        String expectedQuery =
+                "\"UPDATE `tar`\nSET tarColumn = `input1`.id,\n" + "tarColumn1 = `B`.name\nFROM\n `input1` INNER JOIN  "
+                        + "\" +\"`\" +context.input2+ \"`\"+ \" `B` ON(  `B`.id = `input1`.id )\"";
+
+        assertEquals(expectedQuery, query);
+
+    }
+
+    @Test
+    public void testELTMapJoinWithUpdateAndTableNameQuoteSnowflakeWithoutAliasInnerJoinContextNoSchema() {
+        String schema = "";
+        String inputTable1 = "input1";
+        String alias1 = "";
+        String targetTable = "tar";
+        String inputTable2 = "context.input2";
+        String alias2 = "B";
+        boolean addQuotesInTableNames = true;
+        String joinType = "INNER_JOIN";
+        boolean isUpdate = true;
+        String dbType = "snowflake_id";
+        initTestParams(schema, inputTable1, alias1, inputTable2, alias2, targetTable, addQuotesInTableNames, joinType,
+                isUpdate, dbType);
+
+        String query = dbManager.buildSqlSelect(dbMapComponent, targetTable);
+        String expectedQuery =
+                "\"UPDATE \\\"tar\\\"\nSET tarColumn = \\\"input1\\\".id,\n"
+                        + "tarColumn1 = \\\"B\\\".name\nFROM\n \\\"input1\\\" INNER JOIN  "
+                        + "\" +\"\\\"\" +context.input2+ \"\\\"\"+ \" \\\"B\\\" ON(  \\\"B\\\".id = \\\"input1\\\".id )\"";
+
+        assertEquals(expectedQuery, query);
+
+    }
 }
 
