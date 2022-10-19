@@ -163,7 +163,7 @@ public class PendoMapperManagerTest {
         Mockito.when(mockMapperManager.getOutputTables()).thenReturn(outputTableList);
         Mockito.when(mockMapperManager.getVarsTables()).thenReturn(varTableList);
         Mockito.when(mockMapperManager.getLinks()).thenReturn(linkList);
-        PendoTMapProperties properties = pendoManager.calculateProperties();
+        PendoTMapProperties properties = (PendoTMapProperties) pendoManager.collectProperties();
         String outputFieldTypes = properties.getOutputFieldTypes();
         assertTrue(outputFieldTypes.contains("String") && outputFieldTypes.contains("Integer"));
         assertEquals(1, properties.getDestinationNumber());
