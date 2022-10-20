@@ -55,6 +55,26 @@ public final class TaCoKitNode {
         final String componentId = getComponentId(node).orElseThrow(() ->
                 new IllegalStateException("No component detail for " + node.getComponentName()));
         this.detail = Lookups.service().getDetailById(componentId);
+        EList parameters = node.getElementParameter();
+
+        boolean exist = false;
+        for (Object p : parameters) {
+            if (p instanceof ElementParameterTypeImpl) {
+                ElementParameterTypeImpl ele = (ElementParameterTypeImpl) p;
+                if (StringUtils.equals("configuration.dataSet.dataStore.__version", ele.getName())) {
+                    exist = true;
+                    break;
+                }
+            }
+        }
+        if (!exist) {
+            ElementParameterTypeImpl parameter = new ElementParameter();
+            parameter.setName("configuration.dataSet.dataStore.__version");
+            parameter.setValue("-1");
+            parameter.setField(EParameterFieldType.TECHNICAL.getName());
+            parameter.setShow(false);
+            parameters.add(parameter);
+        }
     }
 
     public String getId() {
@@ -87,7 +107,12 @@ public final class TaCoKitNode {
                 }
             }
         }
-        return properties;
+//        if (!properties.containsKey("configuration.dataSet.dataStore.__version")) {
+//            final String value = Base64.getUrlEncoder().encodeToString("-1".getBytes(UTF_8));
+//
+//            properties.put("configuration.dataSet.dataStore.__version", BASE64_PREFIX + value);
+//        }
+        return properties;// configuration.dataSet.dataStore.__version=base64://LTE=
     }
 
     private void addTableElementValue(Map<String, String> properties, ElementParameterTypeImpl tableElementParam) {
