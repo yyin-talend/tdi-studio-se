@@ -15,6 +15,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.regex.Pattern;
 
+import org.apache.commons.lang3.StringUtils;
 import org.eclipse.emf.common.util.EList;
 import org.talend.core.model.process.EParameterFieldType;
 import org.talend.designer.core.model.components.EParameterName;
@@ -128,12 +129,33 @@ public final class TaCoKitNode {
         return detail.getProperties().stream().anyMatch(property -> property.getPath().equals(name));
     }
 
+    private boolean isUseExistingConnectionProperty(final String name) {
+
+        return StringUtils.equals(name, "USE_EXISTING_CONNECTION") || StringUtils.equals(name, "CONNECTION");
+    }
+
     @SuppressWarnings("unchecked")
     public void migrate(final Map<String, String> properties) {
         final List<ElementParameterTypeImpl> noMigration = getParametersExcludedFromMigration();
         final List<ElementParameterTypeImpl> tableFieldParamList = getTableFieldParameterFromMigration();
         node.getElementParameter().clear();
         node.getElementParameter().addAll(noMigration);
+
+        properties.entrySet().stream().filter(e -> isUseExistingConnectionProperty(e.getKey())).forEach(e -> {
+            final ElementParameterTypeImpl parameter = new ElementParameter();
+            parameter.setName(e.getKey());
+            parameter.setValue(e.getValue());
+            String field = null;
+            if (StringUtils.equals(e.getKey(), "USE_EXISTING_CONNECTION")) {
+                field = EParameterFieldType.CHECK.getName();
+            }
+            if (StringUtils.equals(e.getKey(), "CONNECTION")) {
+                field = EParameterFieldType.CLOSED_LIST.getName();
+            }
+            parameter.setField(field);
+            node.getElementParameter().add(parameter);
+        });
+        
         properties.entrySet().stream()
                 .filter(e -> (isComponentProperty(e.getKey()) && !(Pattern.compile("(\\[)\\d+(\\])").matcher(e.getKey())
                         .find())))
