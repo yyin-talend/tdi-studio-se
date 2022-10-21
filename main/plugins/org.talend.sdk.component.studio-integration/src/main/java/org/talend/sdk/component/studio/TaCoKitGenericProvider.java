@@ -23,6 +23,7 @@ import java.util.Locale;
 import java.util.Set;
 import java.util.stream.Stream;
 
+import org.apache.commons.lang3.StringUtils;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.talend.commons.CommonsPlugin;
 import org.talend.commons.exception.ExceptionHandler;
@@ -42,7 +43,6 @@ import org.talend.sdk.component.server.front.model.ComponentDetail;
 import org.talend.sdk.component.server.front.model.ComponentIndex;
 import org.talend.sdk.component.server.front.model.ConfigTypeNodes;
 import org.talend.sdk.component.studio.VirtualComponentModel.VirtualComponentModelType;
-import org.talend.sdk.component.studio.enums.ETaCoKitComponentType;
 import org.talend.sdk.component.studio.lang.Pair;
 import org.talend.sdk.component.studio.service.ComponentService;
 import org.talend.sdk.component.studio.util.TaCoKitConst;
@@ -175,6 +175,15 @@ public class TaCoKitGenericProvider implements IGenericProvider {
             if (imageDesc == null) {
                 imageDesc = ComponentService.DEFAULT_IMAGE;
             }
+            detail.getProperties().forEach(p -> {
+                String path = p.getPath();
+                if (path.contains("dataSet.dataStore.")) {
+                    String newPath = StringUtils.substringBefore(path, "dataSet.dataStore.")
+                            + StringUtils.substringAfter(path, "dataSet.dataStore.");
+                    p.setPath(newPath);
+                }
+            });
+            ;
             model = new VirtualComponentModel(index, detail, configTypeNodes, imageDesc, reportPath, isCatcherAvailable,
                     VirtualComponentModelType.CONNECTION);
             Lookups.taCoKitCache().registeVirtualComponent(model);

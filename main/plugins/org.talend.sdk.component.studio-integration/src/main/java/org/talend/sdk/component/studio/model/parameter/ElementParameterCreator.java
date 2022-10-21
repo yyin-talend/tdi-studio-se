@@ -158,6 +158,38 @@ public class ElementParameterCreator {
         if(TaCoKitUtil.isSupportUseExistConnection(component) && isShowPropertyParameter()) {
             addDatastoreParameter();
         }
+        if (TaCoKitUtil.isConnectionVirtualComponentModel(component)) {
+            boolean exist = false;
+            for (Object p : parameters) {
+                if (p instanceof TaCoKitElementParameter) {
+                    TaCoKitElementParameter ele = (TaCoKitElementParameter) p;
+                    if (StringUtils.equals("configuration.dataSet.dataStore.__version", ele.getName())) {
+                        exist = true;
+                        break;
+                    }
+                }
+            }
+            if (!exist) {
+                Collection<PropertyDefinitionDecorator> properties = PropertyDefinitionDecorator.wrap(detail.getProperties());
+
+                PropertyDefinitionDecorator proper = null;
+                for (PropertyDefinitionDecorator p : properties) {
+                    if (StringUtils.equals("configuration.dataSet.dataStore", p.getPath())) {
+                        proper = p;
+                        break;
+                    }
+
+                }
+                if (proper != null) {
+//                    String version = String.valueOf(TaCoKitUtil.getConfigTypeVersion(proper, component.getConfigTypeNodes(),
+//                            component.getId().getFamilyId()));
+
+                    VersionParameter versionParameter = new VersionParameter(node, proper.getPath(), "-1");
+                    parameters.add(versionParameter);
+                }
+
+            }
+        }
     }
 
     private void addLayoutParameter(final PropertyNode root, final String form) {

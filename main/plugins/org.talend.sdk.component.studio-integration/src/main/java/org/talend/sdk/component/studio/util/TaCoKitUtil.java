@@ -562,6 +562,17 @@ public class TaCoKitUtil {
         return isSupport;
     }
     
+    public static boolean isConnectionVirtualComponentModel(ComponentModel component) {
+        boolean isConnectionVirtual = false;
+        if (component instanceof VirtualComponentModel) {
+            if (((VirtualComponentModel) component).getModelType() == VirtualComponentModelType.CONNECTION) {
+                isConnectionVirtual = true;
+
+            }
+        }
+        return isConnectionVirtual;
+    }
+
     /**
      *  Get component datasotre properties
      * @param component

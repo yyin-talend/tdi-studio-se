@@ -151,6 +151,14 @@ public final class TaCoKitNode {
     }
 
     private boolean isComponentProperty(final String name) {
+
+        if (StringUtils.endsWith(node.getComponentName(), "Connection")) {
+            if (!name.endsWith("__version") && name.contains("dataSet.dataStore.")) {
+                final String newName = StringUtils.substringBefore(name, "dataSet.dataStore.")
+                        + StringUtils.substringAfter(name, "dataSet.dataStore.");
+                return detail.getProperties().stream().anyMatch(property -> property.getPath().equals(newName));
+            }
+        }
         return detail.getProperties().stream().anyMatch(property -> property.getPath().equals(name));
     }
 
@@ -246,10 +254,17 @@ public final class TaCoKitNode {
     }
 
     private ElementParameterTypeImpl createParameter(final String name, final String value) {
+        String newName = name;
+        if (StringUtils.endsWith(node.getComponentName(), "Connection")) {
+            if (!name.endsWith("__version") && name.contains("dataSet.dataStore.")) {
+                newName = StringUtils.substringBefore(name, "dataSet.dataStore.")
+                        + StringUtils.substringAfter(name, "dataSet.dataStore.");
+            }
+        }
         final ElementParameterTypeImpl parameter = new ElementParameter();
-        parameter.setName(name);
+        parameter.setName(newName);
         parameter.setValue(value);
-        parameter.setField(getPropertyType(name));
+        parameter.setField(getPropertyType(newName));
         return parameter;
     }
 
