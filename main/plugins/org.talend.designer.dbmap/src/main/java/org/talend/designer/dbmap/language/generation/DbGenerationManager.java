@@ -1619,17 +1619,33 @@ public abstract class DbGenerationManager {
                     String columnValue = entry.getKey();
                     String tableValue = entry.getValue();
                     boolean aliasFlag = false;
+                    boolean globalMapSpecialCase = false;
+                    String specialCaseColumnName = "";
                     String tableNameValue = tableValue;
                     // find original table name if tableValue is alias
                     String originaltableName = tableValue;
                     ExternalDbMapData externalData = component.getExternalData();
                     final List<ExternalDbMapTable> inputTables = externalData.getInputTables();
                     for (ExternalDbMapTable inputTable : inputTables) {
+                        String inputTableName = inputTable.getTableName();
                         if (inputTable.getAlias() != null && inputTable.getAlias().equals(tableValue)) {
-                            originaltableName = inputTable.getTableName();
+                            originaltableName = inputTableName;
                             tableNameValue = inputTable.getAlias();
                             aliasFlag = true;
+                            break;
                         }
+                        if (isContainsGlobalMap(inputTableName) && expression.contains(inputTableName)) {
+                            // handle special case dbo.((String)globalMap.get("input2"))
+                            // can't change the expression or it will break everything , so here use hard code
+                            originaltableName = inputTableName;
+                            tableValue = inputTableName;
+                            globalMapSpecialCase = true;
+                            specialCaseColumnName = expression.replace(inputTableName, "");
+                            if (specialCaseColumnName.startsWith(".")) {
+                                specialCaseColumnName = specialCaseColumnName.substring(1).trim();
+                            }
+                        }
+
                     }
 
                     List<IConnection> inputConnections = (List<IConnection>) component.getIncomingConnections();
@@ -1686,6 +1702,12 @@ public abstract class DbGenerationManager {
                                 String schemaNoQuote = TalendTextUtils.removeQuotes(schemaValue);
                                 String tableNoQuote = TalendTextUtils.removeQuotes(table);
                                 hasSchema = !"".equals(schemaNoQuote);
+                                if (globalMapSpecialCase
+                                        && org.apache.commons.lang.StringUtils.isNotBlank(specialCaseColumnName)) {
+                                    // when tableName contains globalMap , expression can't get correct table name
+                                    // and column name
+                                    columnValue = specialCaseColumnName;
+                                }
                                 for (IMetadataColumn co : lColumn) {
                                     if (columnValue.equals(co.getLabel())) {
                                         String oriName = co.getOriginalDbColumnName();
@@ -1740,6 +1762,16 @@ public abstract class DbGenerationManager {
                                             quotedTableName = quotedSchemaName + "." + quotedTableName;
                                         } else {
                                             quotedTableName = getTableName(iconn, tableValue, quote);
+                                        }
+                                        if (globalMapSpecialCase && org.apache.commons.lang.StringUtils
+                                                .isNotBlank(specialCaseColumnName)) {
+                                            // seems have bug before, it should be oriName , but to remain same , so
+                                            // don't change logic here
+                                            expression =
+                                                    quotedTableName + "." + co.getLabel();
+                                            expression =
+                                                    replaceAuotes(component, expression, quto_markParser, quto_mark);
+                                            continue;
                                         }
                                         expression = expression.replaceFirst(tableValue + "\\." + co.getLabel(), //$NON-NLS-1$
                                                 quotedTableName + "\\." + oriName); //$NON-NLS-1$
@@ -1930,6 +1962,10 @@ public abstract class DbGenerationManager {
             if (hasSchema) {
                 schemaValue = getTableName(iconn, schemaNoQuote, quote);
                 tableValue = getTableName(iconn, tableNoQuote, quote);
+                if(isAddQuotesInTableNames()) {
+                    schemaValue = adaptQuoteForTableAndColumnName(component, schemaValue);
+                    tableValue = adaptQuoteForTableAndColumnName(component,tableValue);
+                }
                 tableName = schemaValue + "." + tableValue;
             } else {
                 tableName = getTableName(iconn, tableNoQuote, quote);
@@ -1951,24 +1987,25 @@ public abstract class DbGenerationManager {
                     if (ContextParameterUtils.isContainContextParam(schemaValue) || isContainsGlobalMap(schemaValue)) {
                         if (isAddQuotesInTableNames()) {
                             if ("\"".equals(quote)) {
-                                quote = "\\\"";
+                                schemaValue = "\"" + "\\\"" + "\" +" + schemaValue + "+ \"" + "\\\"" + "\"";
+                            } else {
+                                schemaValue = "\"" + quote + "\" +" + schemaValue + "+ \"" + quote + "\"";
                             }
-                            schemaValue = "\"" + quote + "\" +" + schemaValue + "+ \"" + quote + "\"";
                         }
                     } else {
                         schemaValue = "\"" + schemaValue + "\"";
                     }
                     handledTableName = schemaValue + "+\".\"+";
-                    if (ContextParameterUtils.isContainContextParam(schemaValue) || isContainsGlobalMap(schemaValue)) {
-                        if (isAddQuotesInTableNames()) {
-                            if ("\"".equals(quote)) {
-                                quote = "\\\"";
-                            }
-                            tableValue = "\"" + quote + "\" +" + tableValue + "+ \"" + quote + "\"";
-                        }
-                        handledTableName += tableValue;
-                        return "\" +" + handledTableName + "+ \"";
-                    }
+                    // if (ContextParameterUtils.isContainContextParam(tableValue) || isContainsGlobalMap(tableValue)) {
+                    // if (isAddQuotesInTableNames()) {
+                    // if ("\"".equals(quote)) {
+                    // quote = "\\\"";
+                    // }
+                    // tableValue = "\"" + quote + "\" +" + tableValue + "+ \"" + quote + "\"";
+                    // }
+                    // handledTableName += tableValue;
+                    // return "\" +" + handledTableName + "+ \"";
+                    // }
                 }
                 if (ContextParameterUtils.isContainContextParam(tableValue) || isContainsGlobalMap(tableValue)) {
                     tableName = getTableName(iconn, tableValue, quote);
