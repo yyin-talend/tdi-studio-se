@@ -1634,7 +1634,8 @@ public abstract class DbGenerationManager {
                             aliasFlag = true;
                             break;
                         }
-                        if (isContainsGlobalMap(inputTableName) && expression.contains(inputTableName)) {
+                        if (isAddQuotesInTableNames() && isContainsGlobalMap(inputTableName)
+                                && expression.contains(inputTableName)) {
                             // handle special case dbo.((String)globalMap.get("input2"))
                             // can't change the expression or it will break everything , so here use hard code
                             originaltableName = inputTableName;
