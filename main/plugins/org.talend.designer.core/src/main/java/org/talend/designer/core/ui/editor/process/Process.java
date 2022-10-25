@@ -1423,10 +1423,7 @@ public class Process extends Element implements IProcess2, IGEFProcess, ILastVer
                         boolean isActiveDatabase = false;
                         String paramName = pType.getName();
                         if (EParameterName.ACTIVE_DATABASE_DELIMITED_IDENTIFIERS.getName().equals(paramName)
-                                || EParameterName.USE_ALIAS_IN_OUTPUT_TABLE.getName().equals(paramName)
-                                || EParameterName.ACTIVE_ADD_QUOTES_IN_TABLE_NAME.getName().equals(paramName)
-                                || EParameterName.ACTIVE_DELIMITED_CHARACTER.getName().equals(paramName)
-                                || EParameterName.DELIMITED_CHARACTER_TEXT.getName().equals(paramName)) {
+                                || EParameterName.USE_ALIAS_IN_OUTPUT_TABLE.getName().equals(paramName)) {
                             canAddElementParameter = true;
                             isActiveDatabase = true;
                         }
@@ -1437,11 +1434,7 @@ public class Process extends Element implements IProcess2, IGEFProcess, ILastVer
                             param.setCategory(EComponentCategory.TECHNICAL);
                             String fieldName = pType.getField();
                             if (isActiveDatabase && fieldName == null) {
-                                if (EParameterName.DELIMITED_CHARACTER_TEXT.getName().equals(paramName)) {
-                                    fieldName = EParameterFieldType.TEXT.getName();
-                                } else {
-                                    fieldName = EParameterFieldType.CHECK.getName();
-                                }
+                                fieldName = EParameterFieldType.CHECK.getName();
                             }
                             EParameterFieldType fieldType = null;
                             if (StringUtils.isNotBlank(fieldName)) {

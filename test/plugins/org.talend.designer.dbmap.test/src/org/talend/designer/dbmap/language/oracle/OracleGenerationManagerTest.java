@@ -24,13 +24,11 @@ import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import org.talend.core.model.context.JobContextManager;
 import org.talend.core.model.metadata.IMetadataColumn;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.metadata.MetadataColumn;
 import org.talend.core.model.metadata.MetadataTable;
 import org.talend.core.model.process.IConnection;
-import org.talend.designer.core.ui.editor.process.Process;
 import org.talend.designer.dbmap.DbMapComponent;
 import org.talend.designer.dbmap.language.generation.DbGenerationManagerTestHelper;
 
@@ -60,9 +58,7 @@ public class OracleGenerationManagerTest extends DbGenerationManagerTestHelper {
         }
 
         oracleManager = new OracleGenerationManager();
-        Process process = mock(Process.class);
-        when(process.getContextManager()).thenReturn(new JobContextManager());
-        dbMapComponent.setProcess(process);
+
     }
 
     @After

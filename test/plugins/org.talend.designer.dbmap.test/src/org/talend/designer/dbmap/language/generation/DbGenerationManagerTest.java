@@ -146,10 +146,6 @@ public class DbGenerationManagerTest extends DbGenerationManagerTestHelper {
 
     @Test
     public void testInitExpression() {
-        process = mock(Process.class);
-        JobContextManager contextManger = new JobContextManager();
-        when(process.getContextManager()).thenReturn(contextManger);
-        dbMapComponent.setProcess(process);
     	checkValue("t1.\\\"id\\\"", extMapEntry);
         ExternalDbMapEntry extMapEntry2 = new ExternalDbMapEntry("multiple", "t1.id + t1.name");
         tableEntries.add(extMapEntry2);
@@ -160,12 +156,12 @@ public class DbGenerationManagerTest extends DbGenerationManagerTestHelper {
     
     @Test
     public void testInitExpressionDelimitedIdentifiers() {
-        //when setAddQuotesInColumns true
-        dbManager.setAddQuotesInColumns(true);
+        //when DelimitedIdentifiers true
+        dbManager.setUseDelimitedIdentifiers(true);
         checkSnowFlakeValue("t1.\\\"id\\\"",extMapEntry);
         checkMysqlValue("t1.`id`",extMapEntry);
-        //when setAddQuotesInColumns false
-        dbManager.setAddQuotesInColumns(false);
+        //when DelimitedIdentifiers false
+        dbManager.setUseDelimitedIdentifiers(false);
         checkSnowFlakeValue("t1.id",extMapEntry);
         checkMysqlValue("t1.id",extMapEntry);
     }
@@ -180,7 +176,7 @@ public class DbGenerationManagerTest extends DbGenerationManagerTestHelper {
         List<IConnection> incomingConnections = new ArrayList<IConnection>();
         String[] columns = new String[] { "id",  "name"};
         String[] labels = new String[] { "id",  "name"};
-        incomingConnections.add(createConnection("", "t1", labels, columns));
+        incomingConnections.add(createConnection("t1", "t1", labels, columns));
         dbMapComponentDelimited.setIncomingConnections(incomingConnections);
 
         if (dbMapComponentDelimited.getElementParameters() == null) {
@@ -200,7 +196,7 @@ public class DbGenerationManagerTest extends DbGenerationManagerTestHelper {
         List<IConnection> incomingConnections = new ArrayList<IConnection>();
         String[] columns = new String[] { "id",  "name"};
         String[] labels = new String[] { "id",  "name"};
-        incomingConnections.add(createConnection("", "t1", labels, columns));
+        incomingConnections.add(createConnection("t1", "t1", labels, columns));
         dbMapComponentDelimited.setIncomingConnections(incomingConnections);
 
         if (dbMapComponentDelimited.getElementParameters() == null) {
@@ -281,11 +277,11 @@ public class DbGenerationManagerTest extends DbGenerationManagerTestHelper {
     }
 
     private void testWithQuote(){
-    	dbManager.setAddQuotesInColumns(true);
+    	dbManager.setUseDelimitedIdentifiers(true);
     	List<IConnection> incomingConnections = new ArrayList<IConnection>();
         String[] columns = new String[] { "id",  "name"};
         String[] labels = new String[] { "id",  "name"};
-        incomingConnections.add(createConnection("", "t1", labels, columns));
+        incomingConnections.add(createConnection("t1", "t1", labels, columns));
         dbMapComponent.setIncomingConnections(incomingConnections);
         
         ElementParameter param = new ElementParameter(dbMapComponent);
@@ -319,18 +315,6 @@ public class DbGenerationManagerTest extends DbGenerationManagerTestHelper {
 
     private IConnection createConnection(String schemaName, String tableName, String[] labels, String[] columns) {
         Connection connection = mock(Connection.class);
-        Node node = mock(Node.class);
-        ElementParameter param = new ElementParameter(node);
-        param.setName("ELT_SCHEMA_NAME");
-        param.setValue(schemaName);
-        when(node.getElementParameter("ELT_SCHEMA_NAME")).thenReturn(param);
-        param = new ElementParameter(node);
-        param.setName("ELT_TABLE_NAME");
-        param.setValue(tableName);
-        when(node.getElementParameter("ELT_TABLE_NAME")).thenReturn(param);
-        when(connection.getName()).thenReturn("".equals(schemaName) ? tableName : schemaName + "." + tableName);
-        when(connection.getSource()).thenReturn(node);
-
         when(connection.getName()).thenReturn(tableName);
         IMetadataTable metadataTable = new MetadataTable();
         metadataTable.setLabel(tableName);
@@ -495,7 +479,7 @@ public class DbGenerationManagerTest extends DbGenerationManagerTestHelper {
         param.setName("ELT_TABLE_NAME");
         param.setValue(tableName);
         when(node.getElementParameter("ELT_TABLE_NAME")).thenReturn(param);
-        when(connection.getName()).thenReturn("".equals(schemaName) ? tableName : schemaName + "." + tableName);
+        when(connection.getName()).thenReturn(schemaName + "." + tableName);
         when(connection.getSource()).thenReturn(node);
         IMetadataTable table = new MetadataTable();
         table.setLabel(tableName);
@@ -1237,8 +1221,7 @@ public class DbGenerationManagerTest extends DbGenerationManagerTestHelper {
         lookupTableContext.setType("String");
         String query = dbManager.buildSqlSelect(dbMapComponent, schema + "." + outTable1);
         String expectedQuery = "\"UPDATE dbo.tar\n" + "SET tarColumn = A.id,\n" + "tarColumn1 = A.name\n"
-                + "FROM\n \" +\"dbo\"+\".\"+src1+ \" A INNER JOIN  \" +\"dbo\"+\".\"+src2+ \" B " + "ON("
-                + "  B.id = A.id )\"";
+                + "FROM\n \" +dbo+\".\"+src1+ \" A INNER JOIN  \" +dbo+\".\"+src2+ \" B " + "ON(" + "  B.id = A.id )\"";
 
         assertEquals(expectedQuery, query);
     }
@@ -1647,8 +1630,7 @@ public class DbGenerationManagerTest extends DbGenerationManagerTestHelper {
         lookupTableContext.setType("String");
         String query = dbManager.buildSqlSelect(dbMapComponent, schema + "." + outTable1);
         String expectedQuery = "\"UPDATE ABC\n" + "SET tarColumn = A.id,\n" + "tarColumn1 = A.name\n"
-                + "FROM\n \" +\"dbo\"+\".\"+src1+ \" A INNER JOIN  \" +\"dbo\"+\".\"+src2+ \" B " + "ON("
-                + "  B.id = A.id )\"";
+                + "FROM\n \" +dbo+\".\"+src1+ \" A INNER JOIN  \" +dbo+\".\"+src2+ \" B " + "ON(" + "  B.id = A.id )\"";
         assertEquals(expectedQuery, query);
     }
 
@@ -1783,8 +1765,7 @@ public class DbGenerationManagerTest extends DbGenerationManagerTestHelper {
         lookupTableContext.setType("String");
         String query = dbManager.buildSqlSelect(dbMapComponent, schema + "." + outTable1);
         String expectedQuery = "\"UPDATE ABC A\n" + "SET tarColumn = A.id,\n" + "tarColumn1 = A.name\n"
-                + "FROM\n \" +\"dbo\"+\".\"+src1+ \" A INNER JOIN  \" +\"dbo\"+\".\"+src2+ \" B " + "ON("
-                + "  B.id = A.id )\"";
+                + "FROM\n \" +dbo+\".\"+src1+ \" A INNER JOIN  \" +dbo+\".\"+src2+ \" B " + "ON(" + "  B.id = A.id )\"";
         assertEquals(expectedQuery, query);
     }
 
@@ -1919,8 +1900,7 @@ public class DbGenerationManagerTest extends DbGenerationManagerTestHelper {
         lookupTableContext.setType("String");
         String query = dbManager.buildSqlSelect(dbMapComponent, schema + "." + outTable1);
         String expectedQuery = "\"UPDATE dbo.tar\n" + "SET tarColumn = A.id,\n" + "tarColumn1 = A.name\n"
-                + "FROM\n \" +\"dbo\"+\".\"+src1+ \" A INNER JOIN  \" +\"dbo\"+\".\"+src2+ \" B " + "ON("
-                + "  B.id = A.id )\"";
+                + "FROM\n \" +dbo+\".\"+src1+ \" A INNER JOIN  \" +dbo+\".\"+src2+ \" B " + "ON(" + "  B.id = A.id )\"";
         assertEquals(expectedQuery, query);
     }
 
@@ -2143,13 +2123,12 @@ public class DbGenerationManagerTest extends DbGenerationManagerTestHelper {
     @Test
     public void testHandleGlobalString() {
         dbManager = new GenericDbGenerationManager();
-        String quote = "\"";
         //standard 
         String[] globalStrs = {"((Integer)globalMap.get(\"G_StrtCVRGskeySCHD\"))", "((Integer)globalMap.get(\"G_EndCVRGskeySCHD\"))", "((String)globalMap.get(\"sQRY_TXT\"))"};
         String expression = "SCHD_GEN_SKEY BETWEEN ((Integer)globalMap.get(\"G_StrtCVRGskeySCHD\"))  AND ((Integer)globalMap.get(\"G_EndCVRGskeySCHD\"))  AND (   ((String)globalMap.get(\"sQRY_TXT\"))    ) AND ((Integer)globalMap.get(\"G_StrtCVRGskeySCHD\")) AND 1=1";
         String expected = "SCHD_GEN_SKEY BETWEEN \" +((Integer)globalMap.get(\"G_StrtCVRGskeySCHD\"))+ \"  AND \" +((Integer)globalMap.get(\"G_EndCVRGskeySCHD\"))+ \"  AND (   \" +((String)globalMap.get(\"sQRY_TXT\"))+ \"    ) AND \" +((Integer)globalMap.get(\"G_StrtCVRGskeySCHD\"))+ \" AND 1=1";
         for(String globalStr:globalStrs) {
-            expression = dbManager.handleGlobalStringInExpression(expression, globalStr, quote);
+            expression = dbManager.handleGlobalStringInExpression(expression, globalStr);
         }
         assertEquals(expected ,expression);
         
@@ -2158,7 +2137,7 @@ public class DbGenerationManagerTest extends DbGenerationManagerTestHelper {
         expected = "SCHD_GEN_SKEY BETWEEN \"+((Integer)globalMap.get(\"G_StrtCVRGskeySCHD\"))+\"  AND \"+ ((Integer)globalMap.get(\"G_EndCVRGskeySCHD\")) + \" AND (   \" +((String)globalMap.get(\"sQRY_TXT\"))+ \"    ) AND \" +((Integer)globalMap.get(\"G_StrtCVRGskeySCHD\"))+ \" AND 1=1";
         
         for(String globalStr:globalStrs) {
-            expression = dbManager.handleGlobalStringInExpression(expression, globalStr, quote);
+            expression = dbManager.handleGlobalStringInExpression(expression, globalStr);
         }
         assertEquals(expected ,expression);
         
@@ -2167,7 +2146,7 @@ public class DbGenerationManagerTest extends DbGenerationManagerTestHelper {
         expression = "SCHD_GEN_SKEY BETWEEN \"+((Integer)globalMap.get(\"G_StrtCVRGskeySCHD\"))+\"  AND \"+ ((Integer)globalMap.get(\"G_EndCVRGskeySCHD\")) + \" AND (   ((String)globalMap.get(\"sQRY_TXT\"))    ) AND 1=1";
         expected = "SCHD_GEN_SKEY BETWEEN \"+((Integer)globalMap.get(\"G_StrtCVRGskeySCHD\"))+\"  AND \"+ ((Integer)globalMap.get(\"G_EndCVRGskeySCHD\")) + \" AND (   \" +((String)globalMap.get(\"sQRY_TXT\"))+ \"    ) AND 1=1";
         for(String globalStr:globalStrs) {
-            expression = dbManager.handleGlobalStringInExpression(expression, globalStr, quote);
+            expression = dbManager.handleGlobalStringInExpression(expression, globalStr);
         }
         assertEquals(expected ,expression);
         
@@ -2178,7 +2157,7 @@ public class DbGenerationManagerTest extends DbGenerationManagerTestHelper {
     @Test
     public void testELTMapJoinWithUpdateAndQuoteSnowflake() {
         dbManager = new GenericDbGenerationManager();
-        dbManager.setAddQuotesInColumns(true);
+        dbManager.setUseDelimitedIdentifiers(true);
         String schema = "dbo";
         String inputTable1 = "src1";
         String inputTable2 = "src2";
@@ -2303,7 +2282,7 @@ public class DbGenerationManagerTest extends DbGenerationManagerTestHelper {
         String expectedQuery =
                 "\"UPDATE dbo.tar\n" + "SET \\\"tarColumn\\\" = A.\\\"id\\\",\n"
                         + "\\\"tarColumn1\\\" = A.\\\"name\\\"\n"
-                        + "FROM\n \" +\"dbo\"+\".\"+src1+ \" A , \" +\"dbo\"+\".\"+src2+ \" B\"";
+                        + "FROM\n \" +dbo+\".\"+src1+ \" A , \" +dbo+\".\"+src2+ \" B\"";
 
         assertEquals(expectedQuery, query);
     }
@@ -2311,7 +2290,7 @@ public class DbGenerationManagerTest extends DbGenerationManagerTestHelper {
     @Test
     public void testELTMapJoinWithUpdateAndQuoteMysql() {
         dbManager = new GenericDbGenerationManager();
-        dbManager.setAddQuotesInColumns(true);
+        dbManager.setUseDelimitedIdentifiers(true);
         String schema = "dbo";
         String inputTable1 = "src1";
         String inputTable2 = "src2";
@@ -2434,9 +2413,8 @@ public class DbGenerationManagerTest extends DbGenerationManagerTestHelper {
         lookupTableContext.setType("String");
         String query = dbManager.buildSqlSelect(dbMapComponent, schema + "." + outTable1);
         String expectedQuery = "\"UPDATE dbo.tar\n" + "SET `tarColumn` = A.`id`,\n" + "`tarColumn1` = A.`name`\n"
-                + "FROM\n \" +\"dbo\"+\".\"+src1+ \" A , \" +\"dbo\"+\".\"+src2+ \" B\"";
+                + "FROM\n \" +dbo+\".\"+src1+ \" A , \" +dbo+\".\"+src2+ \" B\"";
 
         assertEquals(expectedQuery, query);
     }
-
 }
