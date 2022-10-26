@@ -351,9 +351,24 @@
 	<CODEGENERATION>
 		<IMPORTS>
 			<IMPORT
-				NAME="aws-java-sdk-1.12.297.jar"
-				MODULE="aws-java-sdk-1.12.297.jar"
-				MVN="mvn:com.amazonaws/aws-java-sdk/1.12.297"
+				NAME="aws-java-sdk-core-1.12.315.jar"
+				MODULE="aws-java-sdk-core-1.12.315.jar"
+				MVN="mvn:com.amazonaws/aws-java-sdk-core/1.12.315"
+				REQUIRED_IF="USE_EXISTING_CONNECTION == 'false'" />
+			<IMPORT
+				NAME="aws-java-sdk-sts-1.12.315.jar"
+				MODULE="aws-java-sdk-sts-1.12.315.jar"
+				MVN="mvn:com.amazonaws/aws-java-sdk-sts/1.12.315"
+				REQUIRED_IF="USE_EXISTING_CONNECTION == 'false'" />
+			<IMPORT
+				NAME="aws-java-sdk-sqs-1.12.315.jar"
+				MODULE="aws-java-sdk-sqs-1.12.315.jar"
+				MVN="mvn:com.amazonaws/aws-java-sdk-sqs/1.12.315"
+				REQUIRED_IF="USE_EXISTING_CONNECTION == 'false'" />
+			<IMPORT
+				NAME="jmespath-java-1.12.315.jar"
+				MODULE="jmespath-java-1.12.315.jar"
+				MVN="mvn:com.amazonaws/jmespath-java/1.12.315"
 				REQUIRED_IF="USE_EXISTING_CONNECTION == 'false'" />
 			<IMPORT
 				NAME="jackson-core-2.13.2.jar"
