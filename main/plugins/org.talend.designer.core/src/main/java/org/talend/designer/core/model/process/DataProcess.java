@@ -192,9 +192,12 @@ public class DataProcess implements IGeneratingProcess {
                     sourceElement.getElementParameter(EParameterName.DBNAME.getName())
                             .setValue(sourceElement.getElementParameter(EParameterName.DBFILE.getName()).getValue());
                 }
-
                 targetParam.setContextMode(sourceParam.isContextMode());
-                targetParam.setValue(sourceParam.getValue());
+
+                if (sourceParam.getFieldType() != EParameterFieldType.SCHEMA_REFERENCE) {
+                    targetParam.setValue(sourceParam.getValue());
+                }
+
                 if (sourceElement instanceof INode && sourceParam instanceof IGenericElementParameter) {
                     IComponent component = ((INode) sourceElement).getComponent();
                     if (component instanceof AbstractBasicComponent
