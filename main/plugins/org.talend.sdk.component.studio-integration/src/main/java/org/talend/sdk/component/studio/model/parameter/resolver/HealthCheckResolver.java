@@ -21,9 +21,13 @@ import java.util.Collection;
 import java.util.Map;
 import java.util.Objects;
 
+import org.talend.core.model.components.IComponent;
+import org.talend.core.model.metadata.builder.connection.Connection;
 import org.talend.core.model.process.EComponentCategory;
 import org.talend.core.model.process.IElement;
 import org.talend.core.model.process.IElementParameter;
+import org.talend.designer.core.model.components.DummyComponent;
+import org.talend.designer.core.model.process.DataNode;
 import org.talend.sdk.component.server.front.model.ActionReference;
 import org.talend.sdk.component.studio.i18n.Messages;
 import org.talend.sdk.component.studio.model.action.Action;
@@ -78,7 +82,16 @@ public class HealthCheckResolver {
         final String alias = getParameterAlias();
         final PathCollector collector = new PathCollector();
         node.accept(collector);
-        final AsyncAction command = new AsyncAction(new Action(node.getProperty().getHealthCheckName(), family, Action.Type.HEALTHCHECK));
+        DataNode dataNode = (DataNode) element;
+        Connection connection = null;
+        IComponent component = dataNode.getComponent();
+        if (component instanceof DummyComponent) {
+            DummyComponent dc = (DummyComponent) component;
+            connection = dc.getConnection();
+        }
+        Action<String> newAction = new Action<String>(node.getProperty().getHealthCheckName(), family, Action.Type.HEALTHCHECK,
+                connection);
+        final AsyncAction command = new AsyncAction(newAction);
         collector.getPaths().stream().map(settings::get).filter(Objects::nonNull).map(p -> (TaCoKitElementParameter) p)
                 .forEach(p -> {
                     final String parameter = p.getName().replace(basePath, alias);

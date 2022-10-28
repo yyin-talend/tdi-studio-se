@@ -16,12 +16,15 @@
 package org.talend.sdk.component.studio.model.action;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
 
 import org.eclipse.jface.window.Window;
 import org.eclipse.swt.widgets.Display;
@@ -31,13 +34,19 @@ import org.eclipse.ui.PlatformUI;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.talend.commons.CommonsPlugin;
+import org.talend.commons.utils.PasswordEncryptUtil;
+import org.talend.core.model.metadata.builder.connection.Connection;
 import org.talend.core.model.process.IContext;
 import org.talend.core.model.process.IContextManager;
 import org.talend.core.model.process.IContextParameter;
 import org.talend.designer.core.ui.editor.properties.controllers.uidialog.OpenContextChooseComboDialog;
+import org.talend.metadata.managment.ui.utils.ConnectionContextHelper;
 import org.talend.sdk.component.studio.Lookups;
+import org.talend.sdk.component.studio.lang.Pair;
 import org.talend.sdk.component.studio.model.parameter.TableActionParameter;
 import org.talend.sdk.component.studio.websocket.WebSocketClient.V1Action;
+import org.talend.utils.security.PasswordMigrationUtil;
+
 
 public class Action<T> {
 
@@ -66,10 +75,28 @@ public class Action<T> {
 
     private IContextManager contextManager;
 
+    private IContext context;
+
+    private Connection connection;
+
     public Action(final String actionName, final String family, final Type type) {
         this.actionName = actionName;
         this.family = family;
         this.type = type.toString();
+    }
+
+    public Action(final String actionName, final String family, final Type type, IContext context) {
+        this.actionName = actionName;
+        this.family = family;
+        this.type = type.toString();
+        this.context = context;
+    }
+
+    public Action(final String actionName, final String family, final Type type, Connection connection) {
+        this.actionName = actionName;
+        this.family = family;
+        this.type = type.toString();
+        this.connection = connection;
     }
 
     /**
@@ -131,6 +158,50 @@ public class Action<T> {
     }
 
     protected final Map<String, String> payload() {
+        final Map<String, String> payload = new HashMap<>();
+        Set<Entry<String, List<IActionParameter>>> entrySet = parameters.entrySet();
+        for (Entry<String, List<IActionParameter>> entry : entrySet) {
+            List<IActionParameter> listValues = entry.getValue();
+
+            for (IActionParameter actPrameter : listValues) {
+                Collection<Pair<String, String>> parameters2 = actPrameter.parameters();
+                for (Pair<String, String> pair : parameters2) {
+                    String first = pair.getFirst();
+                    String second = pair.getSecond();
+                    String value = second;
+                    if (connection != null && connection.isContextMode()) {
+                        if (second instanceof String) {
+                            value = ConnectionContextHelper.getParamValueOffContext(connection, second);
+                            if (second.endsWith("password")) {
+                                boolean encrypted = PasswordEncryptUtil.isEncrypted(value);
+                                if (encrypted) {
+                                    try {
+                                        value = PasswordMigrationUtil.decryptPassword(value);
+//                                        decryptPassword = PasswordMigrationUtil.decryptPassword(
+//                                                "enc:system.encryption.key.v1:N4Di/jMEWw4UcoXBxK18MBwHY0qQ2koZbFqc03WAhhpztA==");
+//                                        PasswordEncryptUtil.isEncrypted(
+//                                                "enc:system.encryption.key.v1:N4Di/jMEWw4UcoXBxK18MBwHY0qQ2koZbFqc03WAhhpztA==");
+                                    } catch (Exception e) {
+                                        e.printStackTrace();
+                                    }
+                                }
+
+                            }
+
+                        }
+                    }
+                    payload.put(first, value.toString());
+
+                }
+
+            }
+
+        }
+
+        return payload;
+    }
+
+    protected final Map<String, String> payload2() {
         final Map<String, String> payload = new HashMap<>();
         IContext context = selectContext();
         parameters.values().stream()

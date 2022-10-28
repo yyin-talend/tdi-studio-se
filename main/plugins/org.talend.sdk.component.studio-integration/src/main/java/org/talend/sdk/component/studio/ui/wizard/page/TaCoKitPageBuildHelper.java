@@ -4,10 +4,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.talend.core.model.metadata.builder.connection.Connection;
 import org.talend.core.model.process.EComponentCategory;
 import org.talend.core.model.process.EParameterFieldType;
 import org.talend.core.model.process.Element;
 import org.talend.core.model.process.IElementParameter;
+import org.talend.core.model.properties.ConnectionItem;
 import org.talend.designer.core.model.FakeElement;
 import org.talend.designer.core.model.components.DummyComponent;
 import org.talend.designer.core.model.components.EParameterName;
@@ -36,8 +38,15 @@ public class TaCoKitPageBuildHelper {
         element.setReadOnly(runtimeData.isReadonly());
         final ElementParameter updateParameter = createUpdateComponentsParameter(element);
         this.parameters.add(updateParameter);
+        ConnectionItem connectionItem = runtimeData.getConnectionItem();
+        Connection connection = null;
+        if (connectionItem != null) {
+            connection = connectionItem.getConnection();
+        }
 
-        final DummyComponent component = new DummyComponent(configTypeNode.getDisplayName());
+        final DummyComponent component = new DummyComponent(configTypeNode.getDisplayName(),
+                connection);
+
         final DataNode node = new DataNode(component, component.getName());
         this.settingsCreator = new SettingVisitor(node, updateParameter, configTypeNode);
     }

@@ -28,8 +28,11 @@ import org.talend.core.context.RepositoryContext;
 import org.talend.core.model.metadata.builder.connection.Connection;
 import org.talend.core.model.metadata.builder.connection.ConnectionFactory;
 import org.talend.core.model.properties.ConnectionItem;
+import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.PropertiesFactory;
 import org.talend.core.model.properties.Property;
+import org.talend.core.model.properties.impl.ConnectionItemImpl;
+import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.sdk.component.server.front.model.ConfigTypeNode;
 import org.talend.sdk.component.studio.metadata.model.TaCoKitConfigurationModel;
@@ -134,6 +137,28 @@ public class CreateTaCoKitConfigurationAction extends TaCoKitMetadataContextualA
         if (id != null) {
             configurationModel.setParentItemId(id);
         }
+        IRepositoryViewObject object = repositoryNode.getObject();
+        if (object != null) {
+            Property parentProperty = object.getProperty();
+            if (parentProperty != null) {
+                Item item = parentProperty.getItem();
+                if (item instanceof ConnectionItemImpl) {
+                    Connection parentConnection = ((ConnectionItemImpl) item).getConnection();
+
+                    if (parentConnection != null) {
+                        boolean contextMode = parentConnection.isContextMode();
+                        String contextId = parentConnection.getContextId();
+                        Connection childConnection = connectionItem.getConnection();
+                        childConnection.setContextMode(contextMode);
+                        childConnection.setContextId(contextId);
+                        childConnection.setContextName(parentConnection.getContextName());
+
+                    }
+                }
+            }
+
+        }
+
         return connectionItem;
     }
 
