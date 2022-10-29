@@ -157,8 +157,8 @@ public class Action<T> {
         return this.type;
     }
 
-    protected final Map<String, String> payload() {
-        final Map<String, String> payload = new HashMap<>();
+    protected final Map<String, String> payloadWithConnection(Map<String, String> payload) {
+
         Set<Entry<String, List<IActionParameter>>> entrySet = parameters.entrySet();
         for (Entry<String, List<IActionParameter>> entry : entrySet) {
             List<IActionParameter> listValues = entry.getValue();
@@ -201,8 +201,11 @@ public class Action<T> {
         return payload;
     }
 
-    protected final Map<String, String> payload2() {
+    protected final Map<String, String> payload() {
         final Map<String, String> payload = new HashMap<>();
+        if (connection != null && connection.isContextMode()) {
+            return payloadWithConnection(payload);
+        }
         IContext context = selectContext();
         parameters.values().stream()
                 .flatMap(List::stream)
