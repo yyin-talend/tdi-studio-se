@@ -225,22 +225,23 @@ public class ConnectionsDialog extends TitleAreaDialog {
             pd.getPreferenceManager().addToRoot(new PreferenceNode("updateSitePage", updateSitePage));
         }
 
-        WorkspacePreferencePage workspacePage = new WorkspacePreferencePage() {
+        if (ssoMode) {
+            WorkspacePreferencePage workspacePage = new WorkspacePreferencePage() {
 
-            @Override
-            public void restart() throws Exception {
-                Shell parentShell = getParentShell();
-                if (parentShell != null) {
-                    parentShell.close();
-                } else {
-                    Exception e = new Exception(Messages.getString("WorkspacePreferencePage.ex.startManually"));
-                    ExceptionMessageDialog.openError(null, Messages.getString("WorkspacePreferencePage.ex.err"), e.getMessage(),
-                            e);
+                @Override
+                public void restart() throws Exception {
+                    Shell parentShell = getParentShell();
+                    if (parentShell != null) {
+                        parentShell.close();
+                    } else {
+                        Exception e = new Exception(Messages.getString("WorkspacePreferencePage.ex.startManually"));
+                        ExceptionMessageDialog.openError(null, Messages.getString("WorkspacePreferencePage.ex.err"), e.getMessage(),
+                                e);
+                    }
                 }
-            }
-
-        };
-        pd.getPreferenceManager().addToRoot(new PreferenceNode("workspace", workspacePage));
+            };
+            pd.getPreferenceManager().addToRoot(new PreferenceNode("workspace", workspacePage));
+        }
 
         int open = pd.open();
         if (Window.OK == open) {
