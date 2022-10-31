@@ -12,6 +12,8 @@
  */
 package org.talend.sdk.component.studio.ui.wizard;
 
+import java.util.List;
+
 import org.apache.commons.lang3.StringUtils;
 import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.IWorkspaceRunnable;
@@ -27,6 +29,7 @@ import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.PlatformUI;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.ui.runtime.exception.ExceptionMessageDialog;
+import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.properties.ConnectionItem;
 import org.talend.metadata.managment.ui.wizard.CheckLastVersionRepositoryWizard;
 import org.talend.metadata.managment.ui.wizard.metadata.connection.Step0WizardPage;
@@ -162,10 +165,13 @@ public abstract class TaCoKitConfigurationWizard extends CheckLastVersionReposit
         helper.terminate();
         if (root.hasLeaves(Metadatas.MAIN_FORM)) {
 
+            List<IElementParameter> parameters = helper.getParameters(Metadatas.MAIN_FORM);
+            List<IElementParameter> parametersForAdvanced = helper.getParameters(Metadatas.ADVANCED_FORM);
+            parameters.addAll(parametersForAdvanced);
             mainPage = new TaCoKitConfigurationWizardPage(runtimeData,
                     Metadatas.MAIN_FORM,
                     isNew(),
-                    helper.getParameters(Metadatas.MAIN_FORM));
+                    parameters);
             addPage(mainPage);
         }
         if (root.hasLeaves(Metadatas.ADVANCED_FORM)) {

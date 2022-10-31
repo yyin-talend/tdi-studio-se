@@ -26,6 +26,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 
+import org.apache.commons.lang3.StringUtils;
 import org.eclipse.jface.window.Window;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
@@ -44,6 +45,7 @@ import org.talend.metadata.managment.ui.utils.ConnectionContextHelper;
 import org.talend.sdk.component.studio.Lookups;
 import org.talend.sdk.component.studio.lang.Pair;
 import org.talend.sdk.component.studio.model.parameter.TableActionParameter;
+import org.talend.sdk.component.studio.model.parameter.ValueConverter;
 import org.talend.sdk.component.studio.websocket.WebSocketClient.V1Action;
 import org.talend.utils.security.PasswordMigrationUtil;
 
@@ -160,42 +162,62 @@ public class Action<T> {
     protected final Map<String, String> payloadWithConnection(Map<String, String> payload) {
 
         Set<Entry<String, List<IActionParameter>>> entrySet = parameters.entrySet();
-        for (Entry<String, List<IActionParameter>> entry : entrySet) {
-            List<IActionParameter> listValues = entry.getValue();
+        if (connection != null && connection.isContextMode()) {
+            for (Entry<String, List<IActionParameter>> entry : entrySet) {
+                List<IActionParameter> listValues = entry.getValue();
 
-            for (IActionParameter actPrameter : listValues) {
-                Collection<Pair<String, String>> parameters2 = actPrameter.parameters();
-                for (Pair<String, String> pair : parameters2) {
-                    String first = pair.getFirst();
-                    String second = pair.getSecond();
-                    String value = second;
-                    if (connection != null && connection.isContextMode()) {
+                for (IActionParameter actPrameter : listValues) {
+                    Collection<Pair<String, String>> parameters2 = actPrameter.parameters();
+                    for (Pair<String, String> pair : parameters2) {
+                        String first = pair.getFirst();
+                        String second = pair.getSecond();
+                        String value = second;
+
                         if (second instanceof String) {
                             value = ConnectionContextHelper.getParamValueOffContext(connection, second);
+
                             if (second.endsWith("password")) {
                                 boolean encrypted = PasswordEncryptUtil.isEncrypted(value);
                                 if (encrypted) {
                                     try {
                                         value = PasswordMigrationUtil.decryptPassword(value);
-//                                        decryptPassword = PasswordMigrationUtil.decryptPassword(
-//                                                "enc:system.encryption.key.v1:N4Di/jMEWw4UcoXBxK18MBwHY0qQ2koZbFqc03WAhhpztA==");
-//                                        PasswordEncryptUtil.isEncrypted(
-//                                                "enc:system.encryption.key.v1:N4Di/jMEWw4UcoXBxK18MBwHY0qQ2koZbFqc03WAhhpztA==");
                                     } catch (Exception e) {
                                         e.printStackTrace();
                                     }
                                 }
 
                             }
+                            if (actPrameter instanceof TableActionParameter) {
+                                List<Map<String, Object>> tableValue = ValueConverter.toTable((String) value);
+                                for (int i = 0; i < tableValue.size(); i++) {
+                                    if (first.contains("[" + i + "]")) {
+                                        Map<String, Object> map = tableValue.get(i);
+                                        Set<Entry<String, Object>> entrySetTable = map.entrySet();
+
+                                        String firstAfter = StringUtils.substringAfterLast(first, ConnectionContextHelper.DOT);
+                                        for (Entry<String, Object> entryTable : entrySetTable) {
+                                            String key = entryTable.getKey();
+                                            String keyAfter = StringUtils.substringAfterLast(key, ConnectionContextHelper.DOT);
+                                            if (StringUtils.equals(keyAfter, firstAfter)) {
+                                                value = (String) entryTable.getValue();
+                                            }
+                                        }
+
+                                    }
+
+                                }
+                            }
 
                         }
+                        if (!StringUtils.isBlank(value) && !StringUtils.equals(value, "[]")) {
+                            payload.put(first, value.toString());
+                        }
+
                     }
-                    payload.put(first, value.toString());
 
                 }
 
             }
-
         }
 
         return payload;
@@ -218,7 +240,10 @@ public class Action<T> {
                                     .map(IContextParameter::getValue)
                                     .orElse(initialValue)
                             ).orElse(initialValue);
-                    payload.put(param.getFirst(), value);
+                    if (StringUtils.isNotBlank(value)) {
+                        payload.put(param.getFirst(), value);
+                    }
+
                 });
         return payload;
     }

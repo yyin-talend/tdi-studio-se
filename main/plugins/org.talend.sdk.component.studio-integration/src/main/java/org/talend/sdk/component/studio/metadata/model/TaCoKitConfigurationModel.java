@@ -180,7 +180,8 @@ public class TaCoKitConfigurationModel {
         }
         for (SimplePropertyDefinition property : properties) {
             String type = property.getType();
-            if (TaCoKitUtil.equals(key, property.getPath()) && !StringUtils.equalsIgnoreCase("ENUM", type)) {
+            if (TaCoKitUtil.equals(key, property.getPath()) && !StringUtils.equalsIgnoreCase("ENUM", type)
+                    && !StringUtils.equalsIgnoreCase("BOOLEAN", type)) {
                 return true;
             }
         }

@@ -198,7 +198,6 @@ public class TaCoKitConfigurationWizardPage extends AbsTaCoKitWizardPage {
         if (EComponentCategory.ADVANCED == category && next == null && tacokitComposite != null) {
             tacokitComposite.setPropertyResized(true);
             tacokitComposite.addComponents(true);
-            tacokitComposite.updateParameter();
             tacokitComposite.refresh();
 
         }
