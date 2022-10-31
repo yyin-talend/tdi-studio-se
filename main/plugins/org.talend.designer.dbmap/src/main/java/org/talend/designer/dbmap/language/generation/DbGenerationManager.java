@@ -1560,7 +1560,9 @@ public abstract class DbGenerationManager {
                     tableName = schemaWithQuote + "." + tableWithQuote;
                 } else {
                     tableName = getTableName(iconn, inputTable.getName(), quote);
-                    tableName = adaptQuoteForTableAndColumnName(component, tableName);
+                    if (isAddQuotesInTableNames()) {
+                        tableName = adaptQuoteForTableAndColumnName(component, tableName);
+                    }
                 }
                 String exp = replaceVariablesForExpression(component, tableName);
                 appendSqlQuery(sb, exp);
@@ -1716,7 +1718,8 @@ public abstract class DbGenerationManager {
                                         if (oriName == null || "".equals(oriName)) { //$NON-NLS-1$
                                             continue;
                                         }
-                                        if (expression.trim().equals(tableValue + "." + oriName)) {
+                                        if (expression.trim().equals(tableValue + "." + oriName)
+                                                && !globalMapSpecialCase) {
                                             if (hasSchema && !aliasFlag) {
                                                 expression = getTableName(iconn, schemaNoQuote, quote) + "."
                                                         + getTableName(iconn, tableNoQuote, quote) + "."
@@ -1729,7 +1732,8 @@ public abstract class DbGenerationManager {
                                             }
                                             continue;
                                         }
-                                        if (expression.trim().equals(originaltableName + "." + oriName)) {
+                                        if (expression.trim().equals(originaltableName + "." + oriName)
+                                                && !globalMapSpecialCase) {
                                             expression = originaltableName + "." + getColumnName(iconn, oriName, quote);
                                             expression = expression.replaceAll(quto_markParser, "\\\\" + quto_mark); //$NON-NLS-1$
                                             continue;
