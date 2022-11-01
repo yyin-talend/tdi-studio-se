@@ -1159,7 +1159,7 @@ public abstract class DbGenerationManager {
         return parser.getGlobalMapSet(sqlQuery);
     }
     
-    private boolean isContainsGlobalMap(String sqlQuery) {
+    protected boolean isContainsGlobalMap(String sqlQuery) {
         return parser.getGlobalMapSet(sqlQuery).size() > 0;
     }
 
@@ -2479,8 +2479,10 @@ public abstract class DbGenerationManager {
                         if (isAddQuotesInColumns()) {
                             columnEntry = getNameWithDelimitedIdentifier(columnEntry, getQuote(component));
                             columnEntry = adaptQuoteForTableAndColumnName(component, columnEntry);
+                            appendSqlQuery(sb, columnEntry + " = " + exp); //$NON-NLS-1$
+                        } else {
+                            appendSqlQuery(sb, addQuotes(columnEntry) + " = " + exp); //$NON-NLS-1$
                         }
-                        appendSqlQuery(sb, addQuotes(columnEntry) + " = " + exp); //$NON-NLS-1$
                     }
                 }
             }

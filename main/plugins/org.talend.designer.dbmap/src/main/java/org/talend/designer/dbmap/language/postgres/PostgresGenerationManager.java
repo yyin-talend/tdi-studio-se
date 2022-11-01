@@ -22,6 +22,7 @@ import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.process.IConnection;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.INode;
+import org.talend.core.model.utils.ContextParameterUtils;
 import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.designer.dbmap.DbMapComponent;
 import org.talend.designer.dbmap.external.data.ExternalDbMapData;
@@ -351,5 +352,14 @@ public class PostgresGenerationManager extends DbGenerationManager {
             expression = expression.replaceAll("\\b" + context + "\\b", "\" +" + context + "+ \"");
         }
         return expression;
+    }
+
+    @Override
+    protected String getTableName(IConnection conn, String name, String quote) {
+        if (!ContextParameterUtils.isContainContextParam(name) && !isContainsGlobalMap(name)) {
+            return getNameWithDelimitedIdentifier(name, quote);
+        } else {
+            return name;
+        }
     }
 }
