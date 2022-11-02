@@ -320,6 +320,11 @@ public class RunProcessService implements IRunProcessService {
         delegateService.checkLastGenerationHasCompilationError(updateProblemsView);
     }
 
+    @Override
+    public void checkLastGenerationHasCompilationError(boolean updateProblemsView, boolean isJob) throws ProcessorException {
+        delegateService.checkLastGenerationHasCompilationError(updateProblemsView, isJob);
+    }
+
     /*
      * (non-Javadoc)
      *

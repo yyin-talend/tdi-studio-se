@@ -91,7 +91,7 @@
 					<plugin>
 						<groupId>org.talend.ci</groupId>
 						<artifactId>signer-maven-plugin</artifactId>
-						<version>8.0.3</version>
+						<version>${signer.version}</version>
 						<executions>
 							<execution>
 								<id>sign</id>
@@ -304,6 +304,32 @@
 			        </plugin>
 			    </plugins>
 			</build>
+		</profile>
+		<profile>
+		    <id>include-microservice-prometheus-dependencies</id>
+		    <activation>
+		        <property>
+		            <name>studio.prometheus.metrics</name>
+		            <value>true</value>
+		        </property>
+		    </activation>
+		    <dependencies>
+		        <dependency>
+		            <groupId>io.micrometer</groupId>
+		            <artifactId>micrometer-registry-prometheus</artifactId>
+		            <version>1.8.0</version>
+		            </dependency>
+		        <dependency>
+		            <groupId>io.prometheus.jmx</groupId>
+		            <artifactId>collector</artifactId>
+		            <version>0.16.1</version>
+		        </dependency>
+		        <dependency>
+		            <groupId>org.springframework.boot</groupId>
+		            <artifactId>spring-boot-starter-security</artifactId>
+		            <version>2.6.8</version>
+		        </dependency>
+		    </dependencies>
 		</profile>
 	</profiles>
 </project>

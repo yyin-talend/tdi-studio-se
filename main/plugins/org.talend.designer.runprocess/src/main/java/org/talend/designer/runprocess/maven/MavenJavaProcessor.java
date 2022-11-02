@@ -268,8 +268,9 @@ public class MavenJavaProcessor extends JavaProcessor {
             buildChildrenJobs.clear();
         }
         isMainJob = BitwiseOptionUtils.containOption(option, TalendProcessOptionConstants.GENERATE_IS_MAINJOB);
+        boolean noResetDq = BitwiseOptionUtils.containOption(option, TalendProcessOptionConstants.GENERATE_NO_RESET_DQ);
         if (ProcessorUtilities.isGeneratePomOnly()) {
-            ProcessorUtilities.resetExportConfig();
+            ProcessorUtilities.resetExportConfig(noResetDq);
         } else {
             initJobClasspath();
         }
@@ -311,7 +312,7 @@ public class MavenJavaProcessor extends JavaProcessor {
         if (StringUtils.isBlank(buildTypeName) && GlobalServiceRegister.getDefault().isServiceRegistered(IESBService.class)) {
             List<IRepositoryViewObject> serviceRepoList = null;
 
-            IESBService service = (IESBService) GlobalServiceRegister.getDefault().getService(IESBService.class);
+            IESBService service = GlobalServiceRegister.getDefault().getService(IESBService.class);
 
             try {
                 IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
@@ -386,7 +387,7 @@ public class MavenJavaProcessor extends JavaProcessor {
         boolean isRoutelet =
             ERepositoryObjectType.PROCESS_ROUTELET != null && getProperty() != null && getProperty().getItem() != null
                         && ERepositoryObjectType.PROCESS_ROUTELET.equals(ERepositoryObjectType.getType(getProperty()));
-        if ((!isMainJob && isGoalInstall) || isRoutelet) {
+        if (!isMainJob && (isGoalInstall || isRoutelet)) {
             if (!buildCacheManager.isJobBuild(getProperty())) {
                 deleteExistedJobJarFile(talendJavaProject);
                 String buildType = getBuildType(getProperty());

@@ -36,6 +36,7 @@ import org.talend.components.api.service.ComponentService;
 import org.talend.core.model.components.EComponentType;
 import org.talend.core.model.components.IComponent;
 import org.talend.core.model.metadata.IMetadataTable;
+import org.talend.core.model.metadata.MetadataTalendType;
 import org.talend.core.model.metadata.MetadataToolAvroHelper;
 import org.talend.core.model.metadata.MetadataToolHelper;
 import org.talend.core.model.metadata.builder.connection.MetadataTable;
@@ -302,7 +303,7 @@ public class GenericElementParameter extends ElementParameter implements IGeneri
             @Override
             public Object getData(String key) {
                 if("MAPPING_LOCATION".equals(key)) {
-                    return System.getProperty("talend.mappings.url");
+                    return MetadataTalendType.getProjectTempMappingFolder().toString();
                 }
 
                 return null;

@@ -33,6 +33,7 @@ import org.talend.core.model.components.IComponent;
 import org.talend.core.model.process.BigDataNode;
 import org.talend.core.model.process.EComponentCategory;
 import org.talend.core.model.process.EParameterFieldType;
+import org.talend.core.model.process.ElementParameterValueModel;
 import org.talend.core.model.process.IProcess;
 import org.talend.core.model.properties.PropertiesFactory;
 import org.talend.core.model.properties.Property;
@@ -63,7 +64,7 @@ public class TaCoKitUtilTest {
     public void testGetDisplayName1() throws Exception {
         final ComponentId id = new ComponentId("Y291Y2hiYXNlI0NvdWNoYmFzZSNJbnB1dA", "Y291Y2hiYXNlI0NvdWNoYmFzZQ", "test",
                 "org.test.components:test:1.1.0-SNAPSHOT", "Test", "Input");
-        final ComponentIndex index = new ComponentIndex(id, "Test Input", null, null, null, 1, Arrays.asList("Local", "File"),
+        final ComponentIndex index = new ComponentIndex(id, "Test Input", null, null, null, null, 1, Arrays.asList("Local", "File"),
                 null, emptyMap());
         String displayName = TaCoKitUtil.getDisplayName(index);
         Assert.assertEquals("TestInput", displayName);//$NON-NLS-1$
@@ -73,7 +74,7 @@ public class TaCoKitUtilTest {
     public void testGetDisplayName2() throws Exception {
         final ComponentId id = new ComponentId("Y291Y2hiYXNlI0NvdWNoYmFzZSNJbnB1dA", "Y291Y2hiYXNlI0NvdWNoYmFzZQ", "test",
                 "org.talend.components:test:1.1.0-SNAPSHOT", "Test", "Input");
-        final ComponentIndex index = new ComponentIndex(id, "Test Input", null, null, null, 1, Arrays.asList("Local", "File"),
+        final ComponentIndex index = new ComponentIndex(id, "Test Input", null, null, null, null, 1, Arrays.asList("Local", "File"),
                 null, emptyMap());
         String displayName = TaCoKitUtil.getDisplayName(index);
         Assert.assertEquals("tTestInput", displayName);//$NON-NLS-1$
@@ -88,7 +89,7 @@ public class TaCoKitUtilTest {
     public void testisTaCoKitComponentMadeByTalendEmpty() throws Exception {
         final ComponentId id = new ComponentId("Y291Y2hiYXNlI0NvdWNoYmFzZSNJbnB1dA", "Y291Y2hiYXNlI0NvdWNoYmFzZQ", "test", "",
                 "Test", "Input");
-        final ComponentIndex index = new ComponentIndex(id, "Test Input", null, null, null, 1, Arrays.asList("Local", "File"),
+        final ComponentIndex index = new ComponentIndex(id, "Test Input", null, null, null, null, 1, Arrays.asList("Local", "File"),
                 null, emptyMap());
         Assert.assertFalse(TaCoKitUtil.isTaCoKitComponentMadeByTalend(index));
     }
@@ -97,7 +98,7 @@ public class TaCoKitUtilTest {
     public void testisTaCoKitComponentMadeByTalendFalse() throws Exception {
         final ComponentId id = new ComponentId("Y291Y2hiYXNlI0NvdWNoYmFzZSNJbnB1dA", "Y291Y2hiYXNlI0NvdWNoYmFzZQ", "test",
                 "org.test.components:test:1.1.0-SNAPSHOT", "Test", "Input");
-        final ComponentIndex index = new ComponentIndex(id, "Test Input", null, null, null, 1, Arrays.asList("Local", "File"),
+        final ComponentIndex index = new ComponentIndex(id, "Test Input", null, null, null, null, 1, Arrays.asList("Local", "File"),
                 null, emptyMap());
         Assert.assertFalse(TaCoKitUtil.isTaCoKitComponentMadeByTalend(index));
     }
@@ -106,7 +107,7 @@ public class TaCoKitUtilTest {
     public void testisTaCoKitComponentMadeByTalendTrue() throws Exception {
         final ComponentId id = new ComponentId("Y291Y2hiYXNlI0NvdWNoYmFzZSNJbnB1dA", "Y291Y2hiYXNlI0NvdWNoYmFzZQ", "test",
                 "org.talend.components:test:1.1.0-SNAPSHOT", "Test", "Input");
-        final ComponentIndex index = new ComponentIndex(id, "Test Input", null, null, null, 1, Arrays.asList("Local", "File"),
+        final ComponentIndex index = new ComponentIndex(id, "Test Input", null, null, null, null, 1, Arrays.asList("Local", "File"),
                 null, emptyMap());
         Assert.assertTrue(TaCoKitUtil.isTaCoKitComponentMadeByTalend(index));
     }
@@ -200,9 +201,12 @@ public class TaCoKitUtilTest {
         parameter.setTaggedValue("org.talend.sdk.component.source", "tacokit");
         parameter.setFieldType(EParameterFieldType.TABLE);
         List list = new ArrayList();
-        Map<String, String> row = new HashMap<String, String>();
+        Map<String, Object> row = new HashMap<String, Object>();
+        ElementParameterValueModel model = new ElementParameterValueModel();
+        model.setLabel("name (ga:name)");
+        model.setValue("ga:name");
         row.put("configuration.dataSet.recordType", "Account");
-        row.put("configuration.searchCondition[0].field", "name (ga:name)");
+        row.put("configuration.searchCondition[0].field", model);
         row.put("configuration.searchCondition[0].operator", "List.anyOf");
         row.put("configuration.searchCondition[0].searchValue", "test");
         row.put("configuration.searchCondition[0].additionalSearchValue", "");
@@ -210,8 +214,10 @@ public class TaCoKitUtilTest {
         parameter.setValue(list);
         ValueSelectionParameter fieldParam = new ValueSelectionParameter(fakeNode, new SuggestionsAction("test", "test"));
         fieldParam.setName("configuration.searchCondition[0].field");
+        fieldParam.setFieldType(EParameterFieldType.TACOKIT_VALUE_SELECTION);
         ValueSelectionParameter operatorParam = new ValueSelectionParameter(fakeNode, new SuggestionsAction("test", "test"));
         operatorParam.setName("configuration.searchCondition[0].operator");
+        operatorParam.setFieldType(EParameterFieldType.TACOKIT_VALUE_SELECTION);
         TextElementParameter searchValueParam = new TextElementParameter(fakeNode);
         searchValueParam.setName("configuration.searchCondition[0].searchValue");
         TextElementParameter additionParam = new TextElementParameter(fakeNode);

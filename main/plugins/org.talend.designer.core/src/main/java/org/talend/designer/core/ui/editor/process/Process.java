@@ -38,6 +38,7 @@ import org.apache.oro.text.regex.MalformedPatternException;
 import org.apache.oro.text.regex.Pattern;
 import org.apache.oro.text.regex.Perl5Compiler;
 import org.apache.oro.text.regex.Perl5Matcher;
+import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
@@ -94,6 +95,7 @@ import org.talend.core.model.process.EComponentCategory;
 import org.talend.core.model.process.EConnectionType;
 import org.talend.core.model.process.EParameterFieldType;
 import org.talend.core.model.process.Element;
+import org.talend.core.model.process.ElementParameterValueModel;
 import org.talend.core.model.process.IConnection;
 import org.talend.core.model.process.IConnectionCategory;
 import org.talend.core.model.process.IContext;
@@ -425,7 +427,15 @@ public class Process extends Element implements IProcess2, IGEFProcess, ILastVer
             param.setDisplayName(EParameterName.TDQ_DEFAULT_PROJECT_DIR.getDisplayName());
             param.setNumRow(99);
             param.setShow(false);
-            if (ReponsitoryContextBridge.getRootProject().getLocation() != null) {
+            org.talend.core.model.properties.Project processPProject =
+                    ProjectManager.getInstance().getProject(this.getProperty());
+            if (processPProject != null) {
+                IProject processProject = ReponsitoryContextBridge.findProject(processPProject.getTechnicalLabel());
+                if (processProject.getLocation() != null) {
+                    param.setValue(processProject.getLocation().toPortableString());
+                }
+            }
+            if (param.getValue() == null && ReponsitoryContextBridge.getRootProject().getLocation() != null) {
                 param.setValue(ReponsitoryContextBridge.getRootProject().getLocation().toPortableString());
             }
             param.setReadOnly(true);
@@ -1235,10 +1245,12 @@ public class Process extends Element implements IProcess2, IGEFProcess, ILastVer
                                     ExceptionHandler.process(e);
                                 }
                             }
-                        } else {
-                            if (o instanceof Boolean) {
-                                strValue = ((Boolean) o).toString();
-                            }
+                        } else if (o instanceof Boolean) {
+                            strValue = ((Boolean) o).toString();
+                        } else if (o instanceof ElementParameterValueModel) {
+                            ElementParameterValueModel model = (ElementParameterValueModel) o;
+                            elementValue.setLabel(model.getLabel());
+                            strValue = model.getValue();
                         }
                     }
                     if (tmpParam != null && EParameterFieldType.isPassword(tmpParam.getFieldType())) {
@@ -1504,6 +1516,7 @@ public class Process extends Element implements IProcess2, IGEFProcess, ILastVer
                 }
             } else if (isTable(param)) {
                 List<Map<String, Object>> tableValues = new ArrayList<Map<String, Object>>();
+                Map<String, EParameterFieldType> paramFieldTypes = getTableListEleParamFieldTypes(param);
                 String[] codeList = param.getListItemsDisplayCodeName();
                 Map<String, Object> lineValues = null;
                 for (ElementValueType elementValue : (List<ElementValueType>) pType.getElementValue()) {
@@ -1548,7 +1561,15 @@ public class Process extends Element implements IProcess2, IGEFProcess, ILastVer
                         if (needRemoveQuotes) {
                             elemValue = TalendTextUtils.removeQuotes(elemValue);
                         }
-                        lineValues.put(elementValue.getElementRef(), elemValue);
+
+                        ElementParameterValueModel model = null;
+                        EParameterFieldType elementValueFieldType = paramFieldTypes.get(elementValue.getElementRef());
+                        if (EParameterFieldType.TACOKIT_VALUE_SELECTION.equals(elementValueFieldType)) {
+                            model = new ElementParameterValueModel();
+                            model.setLabel(elementValue.getLabel());
+                            model.setValue(elemValue);
+                        }
+                        lineValues.put(elementValue.getElementRef(), model != null ? model : elemValue);
                         if (elementValue.getType() != null) {
                             lineValues.put(elementValue.getElementRef() + IEbcdicConstant.REF_TYPE, elementValue.getType());
                         }
@@ -1635,6 +1656,18 @@ public class Process extends Element implements IProcess2, IGEFProcess, ILastVer
             elemParam.setPropertyValue(Process.TABLE_ACTION, "CLEAR"); //$NON-NLS-1$
             UpdateTheJobsActionsOnTable.isClear = false;
         }
+    }
+
+    private Map<String, EParameterFieldType> getTableListEleParamFieldTypes(IElementParameter param) {
+        Map<String, EParameterFieldType> paramTypeMap = new HashMap<String, EParameterFieldType>();
+        Object[] listItemsValue = param.getListItemsValue();
+        for (Object listItem : listItemsValue) {
+            if (listItem instanceof IElementParameter) {
+                IElementParameter listItemParam = (IElementParameter) listItem;
+                paramTypeMap.put(listItemParam.getName(), listItemParam.getFieldType());
+            }
+        }
+        return paramTypeMap;
     }
 
     protected ProcessType createProcessType(TalendFileFactory fileFact) {
@@ -3866,9 +3899,6 @@ public class Process extends Element implements IProcess2, IGEFProcess, ILastVer
                 } else if ((node.getComponent().getName() != null)) {
                     if (node.getComponent().getName().compareTo(componentName) == 0) {
                         addNodeIfNotInTheList(matchingNodes, node);
-                    } else if (isCompatibleMatching(componentName, node))  {
-                        //TUP-32758:Show the drag&drop such as mysql + Amazonmysql if property type + db version are compatible)
-                        addNodeIfNotInTheList(matchingNodes, node);
                     } else if (node.getComponent() instanceof EmfComponent) {
                         EmfComponent component = (EmfComponent) node.getComponent();
                         String eqCompName = component.getEquivalent();
@@ -5023,6 +5053,8 @@ public class Process extends Element implements IProcess2, IGEFProcess, ILastVer
                         StringUtils.equals(filterFamilyNames[filterFamilyNames.length-1], familyNames[familyNames.length-1])) {
                     if (filterComponent instanceof EmfComponent) {
                         EmfComponent emfFilterComponent = (EmfComponent) filterComponent;
+                        //Need to check if the component has been loaded or not
+                        emfFilterComponent.getShortName();
                         COMPONENTType compType = emfFilterComponent.getEmfComponentType();
                         if (compType != null && compType.getPARAMETERS() != null && compType.getPARAMETERS().getPARAMETER() != null) {
                             EList parametersList = compType.getPARAMETERS().getPARAMETER();

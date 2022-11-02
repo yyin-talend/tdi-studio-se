@@ -238,12 +238,7 @@ for(int i = 0; i &lt; result.length; i++){
 				UrlPath="platform:/plugin/org.talend.libraries.apache.axis2/lib/activation.jar"
 				REQUIRED="true"
 			/>
-			<IMPORT
-				NAME="SOAP-JavaMail"
-				MODULE="javax.mail-1.6.2.jar"
-				MVN="mvn:com.sun.mail/javax.mail/1.6.2"
-				REQUIRED="true"
-			/>
+            <IMPORT NAME="jakartaMail" MODULE="jakarta.mail-1.6.7.jar" MVN="mvn:com.sun.mail/jakarta.mail/1.6.7" REQUIRED="true"/>
 			<IMPORT
 				NAME="WSDL4J-1_6_3"
 				MODULE="wsdl4j-1.6.3.jar"
@@ -285,8 +280,8 @@ for(int i = 0; i &lt; result.length; i++){
 			/>
 			<IMPORT
 				NAME="WOODSTOX-CORE"
-				MODULE="woodstox-core-5.2.0.jar"
-				MVN="mvn:com.fasterxml.woodstox/woodstox-core/5.2.0"
+				MODULE="woodstox-core-6.2.8.jar"
+				MVN="mvn:com.fasterxml.woodstox/woodstox-core/6.2.8"
 				REQUIRED_IF="(API=='CXF')"
 			/>
 			<IMPORT
@@ -361,18 +356,6 @@ for(int i = 0; i &lt; result.length; i++){
 				NAME="talend-ws"
 				MODULE="talend-ws-1.0.6-20220304.jar"
 				MVN="mvn:org.talend.components/talend-ws/1.0.6-20220304"
-				REQUIRED_IF="(API=='CXF')"
-			/>
-			<IMPORT
-				NAME="xalan"
-				MODULE="xalan-2.7.2.jar"
-				MVN="mvn:xalan/xalan/2.7.2"
-				REQUIRED_IF="(API=='CXF')"
-			/>
-			<IMPORT
-				NAME="serializer"
-				MODULE="serializer-2.7.2.jar"
-				MVN="mvn:xalan/serializer/2.7.2"
 				REQUIRED_IF="(API=='CXF')"
 			/>
 	

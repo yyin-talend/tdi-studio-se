@@ -2119,4 +2119,302 @@ public class DbGenerationManagerTest extends DbGenerationManagerTestHelper {
 
         return contextManager;
     }
+    
+    @Test
+    public void testHandleGlobalString() {
+        dbManager = new GenericDbGenerationManager();
+        //standard 
+        String[] globalStrs = {"((Integer)globalMap.get(\"G_StrtCVRGskeySCHD\"))", "((Integer)globalMap.get(\"G_EndCVRGskeySCHD\"))", "((String)globalMap.get(\"sQRY_TXT\"))"};
+        String expression = "SCHD_GEN_SKEY BETWEEN ((Integer)globalMap.get(\"G_StrtCVRGskeySCHD\"))  AND ((Integer)globalMap.get(\"G_EndCVRGskeySCHD\"))  AND (   ((String)globalMap.get(\"sQRY_TXT\"))    ) AND ((Integer)globalMap.get(\"G_StrtCVRGskeySCHD\")) AND 1=1";
+        String expected = "SCHD_GEN_SKEY BETWEEN \" +((Integer)globalMap.get(\"G_StrtCVRGskeySCHD\"))+ \"  AND \" +((Integer)globalMap.get(\"G_EndCVRGskeySCHD\"))+ \"  AND (   \" +((String)globalMap.get(\"sQRY_TXT\"))+ \"    ) AND \" +((Integer)globalMap.get(\"G_StrtCVRGskeySCHD\"))+ \" AND 1=1";
+        for(String globalStr:globalStrs) {
+            expression = dbManager.handleGlobalStringInExpression(expression, globalStr);
+        }
+        assertEquals(expected ,expression);
+        
+        //had duplicated global string
+        expression = "SCHD_GEN_SKEY BETWEEN \"+((Integer)globalMap.get(\"G_StrtCVRGskeySCHD\"))+\"  AND \"+ ((Integer)globalMap.get(\"G_EndCVRGskeySCHD\")) + \" AND (   ((String)globalMap.get(\"sQRY_TXT\"))    ) AND ((Integer)globalMap.get(\"G_StrtCVRGskeySCHD\")) AND 1=1";
+        expected = "SCHD_GEN_SKEY BETWEEN \"+((Integer)globalMap.get(\"G_StrtCVRGskeySCHD\"))+\"  AND \"+ ((Integer)globalMap.get(\"G_EndCVRGskeySCHD\")) + \" AND (   \" +((String)globalMap.get(\"sQRY_TXT\"))+ \"    ) AND \" +((Integer)globalMap.get(\"G_StrtCVRGskeySCHD\"))+ \" AND 1=1";
+        
+        for(String globalStr:globalStrs) {
+            expression = dbManager.handleGlobalStringInExpression(expression, globalStr);
+        }
+        assertEquals(expected ,expression);
+        
+        
+        // no duplicated global string
+        expression = "SCHD_GEN_SKEY BETWEEN \"+((Integer)globalMap.get(\"G_StrtCVRGskeySCHD\"))+\"  AND \"+ ((Integer)globalMap.get(\"G_EndCVRGskeySCHD\")) + \" AND (   ((String)globalMap.get(\"sQRY_TXT\"))    ) AND 1=1";
+        expected = "SCHD_GEN_SKEY BETWEEN \"+((Integer)globalMap.get(\"G_StrtCVRGskeySCHD\"))+\"  AND \"+ ((Integer)globalMap.get(\"G_EndCVRGskeySCHD\")) + \" AND (   \" +((String)globalMap.get(\"sQRY_TXT\"))+ \"    ) AND 1=1";
+        for(String globalStr:globalStrs) {
+            expression = dbManager.handleGlobalStringInExpression(expression, globalStr);
+        }
+        assertEquals(expected ,expression);
+        
+        
+        
+    }
+
+    @Test
+    public void testELTMapJoinWithUpdateAndQuoteSnowflake() {
+        dbManager = new GenericDbGenerationManager();
+        dbManager.setUseDelimitedIdentifiers(true);
+        String schema = "dbo";
+        String inputTable1 = "src1";
+        String inputTable2 = "src2";
+        String outTable1 = "tar";
+
+        dbMapComponent = new DbMapComponent();
+
+        List<IMetadataTable> metadataList = new ArrayList<IMetadataTable>();
+
+        MetadataTable metadataTable =
+                getMetadataTable(new String[] { "newColumn", "newColumn1" }, new String[] { "id", "name" });
+        metadataTable.setLabel(schema + "." + outTable1);
+        metadataList.add(metadataTable);
+
+        dbMapComponent.setMetadataList(metadataList);
+
+        // mysql
+        ElementParameter paramMapping = new ElementParameter(dbMapComponent);
+        paramMapping.setFieldType(EParameterFieldType.MAPPING_TYPE);
+        paramMapping.setName(EParameterName.MAPPING.getName());
+        paramMapping.setValue("snowflake_id");
+        ((List<IElementParameter>) dbMapComponent.getElementParameters()).add(paramMapping);
+
+        // main table
+        ExternalDbMapData externalData = new ExternalDbMapData();
+        List<ExternalDbMapTable> inputs = new ArrayList<ExternalDbMapTable>();
+        List<ExternalDbMapTable> outputs = new ArrayList<ExternalDbMapTable>();
+        // main table
+        ExternalDbMapTable inputTable = new ExternalDbMapTable();
+        inputTable.setTableName(schema + "." + inputTable1);
+        inputTable.setName(schema + "." + inputTable1);
+        inputTable.setAlias("A");
+        List<ExternalDbMapEntry> entities =
+                getMetadataEntities(new String[] { "newColumn", "newColumn1" }, new String[2]);
+        inputTable.setMetadataTableEntries(entities);
+        inputs.add(inputTable);
+
+        // lookup table
+        inputTable = new ExternalDbMapTable();
+        inputTable.setTableName(schema + "." + inputTable2);
+        inputTable.setName(schema + "." + inputTable2);
+        inputTable.setAlias("B");
+        entities = getMetadataEntities(new String[] { "newColumn", "newColumn1" }, new String[2]);
+        ExternalDbMapEntry newColumn = entities.get(0);
+        newColumn.setExpression("A.newColumn");
+        newColumn.setOperator("=");
+        newColumn.setJoin(true);
+        inputTable.setMetadataTableEntries(entities);
+        inputs.add(inputTable);
+
+        // output
+        ExternalDbMapTable outputTable = new ExternalDbMapTable();
+        outputTable.setName(schema + "." + outTable1);
+        outputTable.setTableName(schema + "." + outTable1);
+        String[] names = new String[] { "tarColumn", "tarColumn1" };
+        String[] expressions = new String[] { "A.newColumn", "A.newColumn1" };
+        outputTable.setMetadataTableEntries(getMetadataEntities(names, expressions));
+        outputs.add(outputTable);
+
+        externalData.setInputTables(inputs);
+        externalData.setOutputTables(outputs);
+        dbMapComponent.setExternalData(externalData);
+
+        List<IConnection> incomingConnections = new ArrayList<IConnection>();
+        incomingConnections
+                .add(mockConnection(schema, inputTable1, new String[] { "newColumn", "newColumn1" },
+                        new String[] { "id", "name" }));
+        incomingConnections
+                .add(mockConnection(schema, inputTable2, new String[] { "newColumn", "newColumn1" },
+                        new String[] { "id", "name" }));
+        dbMapComponent.setIncomingConnections(incomingConnections);
+
+        List<IConnection> outputConnections = new ArrayList<IConnection>();
+        Node map1 = mockNode(dbMapComponent);
+        IConnection connection = mockConnection(map1, schema, inputTable1, new String[] { "id", "name" });
+        targetComponent = ComponentsFactoryProvider
+                .getInstance()
+                .get("tELTMsSqlOutput", ComponentCategory.CATEGORY_4_DI.getName());
+        connection.getMetadataTable().getColumn("id").setLabel("newColumn");
+        connection.getMetadataTable().getColumn("name").setLabel("newColumn1");
+        // add target
+        DataNode output = new DataNode();
+        List<IElementParameter> paraList = new ArrayList<IElementParameter>();
+        ElementParameter param = new ElementParameter(output);
+        param.setName("USE_UPDATE_STATEMENT"); //$NON-NLS-1$
+        param.setValue("true"); //$NON-NLS-1$
+        paraList.add(param);
+        output.setElementParameters(paraList);
+        output.setComponent(targetComponent);
+
+        DataConnection dataConnection = new DataConnection();
+        dataConnection.setName(schema + "." + outTable1);
+        dataConnection.setActivate(true);
+        dataConnection.setLineStyle(EConnectionType.FLOW_MAIN);
+        dataConnection.setTarget(output);
+        IMetadataTable table = new MetadataTable();
+        table.setLabel(outTable1);
+        table.setTableName(outTable1);
+        List<IMetadataColumn> listColumns = new ArrayList<IMetadataColumn>();
+        for (String columnName : new String[] { "id", "name" }) {
+            IMetadataColumn column = new MetadataColumn();
+            column.setLabel(columnName);
+            column.setOriginalDbColumnName(columnName);
+            listColumns.add(column);
+        }
+        table.setListColumns(listColumns);
+        dataConnection.setMetadataTable(table);
+        // List<DataConnection> dataConnections = new ArrayList<>();
+        outputConnections.add(dataConnection);
+        outputConnections.add(connection);
+        dbMapComponent.setOutgoingConnections(outputConnections);
+
+        Process process = mock(Process.class);
+        when(process.getContextManager()).thenReturn(new JobContextManager());
+        dbMapComponent.setProcess(process);
+
+        IContextParameter lookupTableContext = new JobContextParameter();
+        lookupTableContext.setName("lookup");
+        lookupTableContext.setValue("lookupTable");
+        lookupTableContext.setType("String");
+        String query = dbManager.buildSqlSelect(dbMapComponent, schema + "." + outTable1);
+        String expectedQuery =
+                "\"UPDATE dbo.tar\n" + "SET \\\"tarColumn\\\" = A.\\\"id\\\",\n"
+                        + "\\\"tarColumn1\\\" = A.\\\"name\\\"\n"
+                        + "FROM\n \" +dbo+\".\"+src1+ \" A , \" +dbo+\".\"+src2+ \" B\"";
+
+        assertEquals(expectedQuery, query);
+    }
+
+    @Test
+    public void testELTMapJoinWithUpdateAndQuoteMysql() {
+        dbManager = new GenericDbGenerationManager();
+        dbManager.setUseDelimitedIdentifiers(true);
+        String schema = "dbo";
+        String inputTable1 = "src1";
+        String inputTable2 = "src2";
+        String outTable1 = "tar";
+
+        dbMapComponent = new DbMapComponent();
+
+        List<IMetadataTable> metadataList = new ArrayList<IMetadataTable>();
+
+        MetadataTable metadataTable =
+                getMetadataTable(new String[] { "newColumn", "newColumn1" }, new String[] { "id", "name" });
+        metadataTable.setLabel(schema + "." + outTable1);
+        metadataList.add(metadataTable);
+
+        dbMapComponent.setMetadataList(metadataList);
+
+        // mysql
+        ElementParameter paramMapping = new ElementParameter(dbMapComponent);
+        paramMapping.setFieldType(EParameterFieldType.MAPPING_TYPE);
+        paramMapping.setName(EParameterName.MAPPING.getName());
+        paramMapping.setValue("mysql_id");
+        ((List<IElementParameter>) dbMapComponent.getElementParameters()).add(paramMapping);
+
+        // main table
+        ExternalDbMapData externalData = new ExternalDbMapData();
+        List<ExternalDbMapTable> inputs = new ArrayList<ExternalDbMapTable>();
+        List<ExternalDbMapTable> outputs = new ArrayList<ExternalDbMapTable>();
+        // main table
+        ExternalDbMapTable inputTable = new ExternalDbMapTable();
+        inputTable.setTableName(schema + "." + inputTable1);
+        inputTable.setName(schema + "." + inputTable1);
+        inputTable.setAlias("A");
+        List<ExternalDbMapEntry> entities =
+                getMetadataEntities(new String[] { "newColumn", "newColumn1" }, new String[2]);
+        inputTable.setMetadataTableEntries(entities);
+        inputs.add(inputTable);
+
+        // lookup table
+        inputTable = new ExternalDbMapTable();
+        inputTable.setTableName(schema + "." + inputTable2);
+        inputTable.setName(schema + "." + inputTable2);
+        inputTable.setAlias("B");
+        entities = getMetadataEntities(new String[] { "newColumn", "newColumn1" }, new String[2]);
+        ExternalDbMapEntry newColumn = entities.get(0);
+        newColumn.setExpression("A.newColumn");
+        newColumn.setOperator("=");
+        newColumn.setJoin(true);
+        inputTable.setMetadataTableEntries(entities);
+        inputs.add(inputTable);
+
+        // output
+        ExternalDbMapTable outputTable = new ExternalDbMapTable();
+        outputTable.setName(schema + "." + outTable1);
+        outputTable.setTableName(schema + "." + outTable1);
+        String[] names = new String[] { "tarColumn", "tarColumn1" };
+        String[] expressions = new String[] { "A.newColumn", "A.newColumn1" };
+        outputTable.setMetadataTableEntries(getMetadataEntities(names, expressions));
+        outputs.add(outputTable);
+
+        externalData.setInputTables(inputs);
+        externalData.setOutputTables(outputs);
+        dbMapComponent.setExternalData(externalData);
+
+        List<IConnection> incomingConnections = new ArrayList<IConnection>();
+        incomingConnections
+                .add(mockConnection(schema, inputTable1, new String[] { "newColumn", "newColumn1" },
+                        new String[] { "id", "name" }));
+        incomingConnections
+                .add(mockConnection(schema, inputTable2, new String[] { "newColumn", "newColumn1" },
+                        new String[] { "id", "name" }));
+        dbMapComponent.setIncomingConnections(incomingConnections);
+
+        List<IConnection> outputConnections = new ArrayList<IConnection>();
+        Node map1 = mockNode(dbMapComponent);
+        IConnection connection = mockConnection(map1, schema, inputTable1, new String[] { "id", "name" });
+        targetComponent = ComponentsFactoryProvider
+                .getInstance()
+                .get("tELTMsSqlOutput", ComponentCategory.CATEGORY_4_DI.getName());
+        connection.getMetadataTable().getColumn("id").setLabel("newColumn");
+        connection.getMetadataTable().getColumn("name").setLabel("newColumn1");
+        // add target
+        DataNode output = new DataNode();
+        List<IElementParameter> paraList = new ArrayList<IElementParameter>();
+        ElementParameter param = new ElementParameter(output);
+        param.setName("USE_UPDATE_STATEMENT"); //$NON-NLS-1$
+        param.setValue("true"); //$NON-NLS-1$
+        paraList.add(param);
+        output.setElementParameters(paraList);
+        output.setComponent(targetComponent);
+
+        DataConnection dataConnection = new DataConnection();
+        dataConnection.setName(schema + "." + outTable1);
+        dataConnection.setActivate(true);
+        dataConnection.setLineStyle(EConnectionType.FLOW_MAIN);
+        dataConnection.setTarget(output);
+        IMetadataTable table = new MetadataTable();
+        table.setLabel(outTable1);
+        table.setTableName(outTable1);
+        List<IMetadataColumn> listColumns = new ArrayList<IMetadataColumn>();
+        for (String columnName : new String[] { "id", "name" }) {
+            IMetadataColumn column = new MetadataColumn();
+            column.setLabel(columnName);
+            column.setOriginalDbColumnName(columnName);
+            listColumns.add(column);
+        }
+        table.setListColumns(listColumns);
+        dataConnection.setMetadataTable(table);
+        // List<DataConnection> dataConnections = new ArrayList<>();
+        outputConnections.add(dataConnection);
+        outputConnections.add(connection);
+        dbMapComponent.setOutgoingConnections(outputConnections);
+
+        Process process = mock(Process.class);
+        when(process.getContextManager()).thenReturn(new JobContextManager());
+        dbMapComponent.setProcess(process);
+
+        IContextParameter lookupTableContext = new JobContextParameter();
+        lookupTableContext.setName("lookup");
+        lookupTableContext.setValue("lookupTable");
+        lookupTableContext.setType("String");
+        String query = dbManager.buildSqlSelect(dbMapComponent, schema + "." + outTable1);
+        String expectedQuery = "\"UPDATE dbo.tar\n" + "SET `tarColumn` = A.`id`,\n" + "`tarColumn1` = A.`name`\n"
+                + "FROM\n \" +dbo+\".\"+src1+ \" A , \" +dbo+\".\"+src2+ \" B\"";
+
+        assertEquals(expectedQuery, query);
+    }
 }

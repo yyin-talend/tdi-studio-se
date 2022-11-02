@@ -345,9 +345,18 @@
 
 	<CODEGENERATION>
 		<IMPORTS>
-			<IMPORT NAME="aws-java-sdk-1.11.848.jar" MODULE="aws-java-sdk-1.11.848.jar"
-				MVN="mvn:com.amazonaws/aws-java-sdk/1.11.848"
+			<IMPORT NAME="aws-java-sdk-core-1.12.315.jar" MODULE="aws-java-sdk-core-1.12.315.jar"
+				MVN="mvn:com.amazonaws/aws-java-sdk-core/1.12.315"
 				REQUIRED="true" />
+			<IMPORT NAME="aws-java-sdk-sts-1.12.315.jar" MODULE="aws-java-sdk-sts-1.12.315.jar"
+				MVN="mvn:com.amazonaws/aws-java-sdk-sts/1.12.315"
+				REQUIRED="true" />
+			<IMPORT NAME="aws-java-sdk-redshift-1.12.315.jar" MODULE="aws-java-sdk-redshift-1.12.315.jar"
+				MVN="mvn:com.amazonaws/aws-java-sdk-redshift/1.12.315"
+				REQUIRED="true" />
+			<IMPORT NAME="jmespath-java-1.12.315.jar" MODULE="jmespath-java-1.12.315.jar"
+					MVN="mvn:com.amazonaws/jmespath-java/1.12.315"
+					REQUIRED="true" />
 			<IMPORT NAME="jackson-core-2.13.2.jar" MODULE="jackson-core-2.13.2.jar"
 				MVN="mvn:com.fasterxml.jackson.core/jackson-core/2.13.2"
 				REQUIRED="true" />

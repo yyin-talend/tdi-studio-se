@@ -56,8 +56,9 @@
 	String jobClassPackageFolder = codeGenArgument.getCurrentProjectName().toLowerCase() + '/' + jobFolderName;
 
     boolean isLog4jEnabled = ("true").equals(ElementParameterParser.getValue(process, "__LOG4J_ACTIVATE__"));//log4j enable
-	boolean isLog4j2Enabled = ("true").equals(ElementParameterParser.getValue(process, "__LOG4J2_ACTIVATE__"));//log4j2 enable
-	boolean isLog4j1Enabled = !isLog4j2Enabled;//log4j1 enable
+    boolean isLog4j2Enabled = ("true").equals(ElementParameterParser.getValue(process, "__LOG4J2_ACTIVATE__"));//log4j2 enable
+    boolean isLog4j1Enabled = !isLog4j2Enabled;//log4j1 enable
+    String MDC_CLASS = "org.slf4j.MDC";
 
     boolean exist_tParallelize = false;
     List<? extends INode> tParallelizeList = process.getNodesOfType("tParallelize");
@@ -321,6 +322,8 @@
     	globalMap.put(GLOBAL_CONNECTION_POOL_KEY, connectionPool);
     }
     <%}%>
+    
+    private final static java.util.Properties jobInfo = new java.util.Properties();
 
     public static void main(String[] args){
         final <%=className %> <%=className %>Class = new <%=className %>();
@@ -333,6 +336,42 @@
         <%}%>
 
         System.exit(exitCode);
+    }
+	
+
+	
+	
+	private void getjobInfo() {
+		final String TEMPLATE_PATH = "src/main/templates/jobInfo_template.properties";
+		final String BUILD_PATH = "../jobInfo.properties";
+		final String path = this.getClass().getResource("").getPath();
+		if(path.lastIndexOf("target") > 0) {
+			final java.io.File templateFile = new java.io.File(
+					path.substring(0, path.lastIndexOf("target")).concat(TEMPLATE_PATH));
+			if (templateFile.exists()) {
+				readJobInfo(templateFile);
+				return;
+			}
+		}
+			readJobInfo(new java.io.File(BUILD_PATH));
+	}
+
+    private void readJobInfo(java.io.File jobInfoFile){
+	
+        if(jobInfoFile.exists()) {
+            try {
+            	jobInfo.load(new java.io.FileInputStream(jobInfoFile));
+            } catch (IOException e) {
+            	 <%if(isLog4jEnabled){%>
+                log.debug("Read jobInfo.properties file fail: " + e.getMessage());
+                <%}%>
+                
+            }
+        }
+            <%if(isLog4jEnabled){%>
+		log.info(String.format("Project name: %s\tJob name: %s\tGIT Commit ID: %s\tTalend Version: %s",
+				projectName,jobName,jobInfo.getProperty("gitCommitId"), "<%=System.getProperties().getProperty("talend.studio.version")%>"));
+		<%}%>
     }
 
    <%
@@ -515,8 +554,34 @@
 				org.apache.logging.log4j.core.config.Configurator.setLevel(org.apache.logging.log4j.LogManager.getRootLogger().getName(), log.getLevel());
 				<%}%>
 			}
+
+	        getjobInfo();
 			log.info("TalendJob: '<%=codeGenArgument.getJobName()%>' - Start.");
 		<%}%>
+
+            <%if(isLog4jEnabled && isLog4j2Enabled) {%>
+                java.util.Set<Object> jobInfoKeys = jobInfo.keySet();
+                for(Object jobInfoKey: jobInfoKeys) {
+                    <%=MDC_CLASS%>.put("_" + jobInfoKey.toString(), jobInfo.get(jobInfoKey).toString());
+                }
+                <%=MDC_CLASS%>.put("_pid", pid);
+                <%=MDC_CLASS%>.put("_rootPid", rootPid);
+                <%=MDC_CLASS%>.put("_fatherPid", fatherPid);
+                <%=MDC_CLASS%>.put("_projectName", projectName);
+                <%=MDC_CLASS%>.put("_startTimestamp",java.time.ZonedDateTime.now(java.time.ZoneOffset.UTC ).format( java.time.format.DateTimeFormatter.ISO_INSTANT ));
+                <%=MDC_CLASS%>.put("_jobRepositoryId","<%=process.getId() %>");
+                <%=MDC_CLASS%>.put("_compiledAtTimestamp","<%=java.time.ZonedDateTime.now(java.time.ZoneOffset.UTC ).format( java.time.format.DateTimeFormatter.ISO_INSTANT )%>");
+
+                java.lang.management.RuntimeMXBean mx = java.lang.management.ManagementFactory.getRuntimeMXBean();
+                String[] mxNameTable = mx.getName().split("@"); //$NON-NLS-1$
+                if (mxNameTable.length == 2) {
+                    <%=MDC_CLASS%>.put("_systemPid", mxNameTable[0]);
+                } else {
+                    <%=MDC_CLASS%>.put("_systemPid", String.valueOf(java.lang.Thread.currentThread().getId()));
+                }
+
+                <%
+            }%>
 		
 		<%
 		INode jobCatcherNode = null;
@@ -642,14 +707,26 @@
             pid = TalendString.getAsciiRandomString(6);
         }
 
+        <%if(isLog4jEnabled && isLog4j2Enabled) {%>
+            <%=MDC_CLASS%>.put("_pid", pid);
+        <%}%>
+
         if (rootPid==null) {
             rootPid = pid;
         }
+
+        <%if(isLog4jEnabled && isLog4j2Enabled) {%>
+            <%=MDC_CLASS%>.put("_rootPid", rootPid);
+        <%}%>
+
         if (fatherPid==null) {
             fatherPid = pid;
         }else{
             isChildJob = true;
         }
+        <%if(isLog4jEnabled && isLog4j2Enabled) {%>
+            <%=MDC_CLASS%>.put("_fatherPid", fatherPid);
+        <%}%>
 
 <%
         if (stats) {
@@ -883,7 +960,12 @@
         }
 %>
         //Resume: jobStart
-        resumeUtil.addLog("JOB_STARTED", "JOB:" + jobName, parent_part_launcher, Thread.currentThread().getId() + "", "","","","",resumeUtil.convertToJsonText(context,parametersToEncrypt));
+        resumeUtil.addLog("JOB_STARTED", "JOB:" + jobName, parent_part_launcher, Thread.currentThread().getId() + "", "","","","",resumeUtil.convertToJsonText(context,ContextProperties.class,parametersToEncrypt));
+
+        <%if(isLog4jEnabled && isLog4j2Enabled) {%>
+            <%=MDC_CLASS%>.put("_context", contextStr);
+            log.info("TalendJob: '<%=codeGenArgument.getJobName()%>' - Started.");
+        <%}%>
 
 <%
         if (stats) {
@@ -1156,9 +1238,15 @@ this.globalResumeTicket = false;//to run others jobs
             if (!componentName.equals("tJobStructureCatcher") && !componentName.equals("tLogCatcher") && !componentName.equals("tFlowMeterCatcher") && !componentName.equals("tAssertCatcher") && !componentName.equals("tStatCatcher") && !componentName.equals("tAsyncIn")) {
 %>
 <%=createCallProcess(rootNode, className, false) %>
-<%    }
-    }
-}// end if(isRunInMultiThread)
+<%
+                if (process.getNodesOfType("tStatCatcher").size() > 0) {
+%>
+<%=statsErrorHandlingAfterMainCall(rootNode, process.getNodesOfType("tStatCatcher"))%>
+<%
+                }
+            }
+        }
+    }// end if(isRunInMultiThread)
 %>
 
 this.globalResumeTicket = true;//to run tPostJob
@@ -1292,6 +1380,15 @@ if (execStat) {
          returnCode = errorCode.intValue();
     }
     resumeUtil.addLog("JOB_ENDED", "JOB:" + jobName, parent_part_launcher, Thread.currentThread().getId() + "", "","" + returnCode,"","","");
+    resumeUtil.flush();
+
+    <%if(isLog4jEnabled && isLog4j2Enabled) {%>
+
+        <%=MDC_CLASS%>.remove("_subJobName");
+        <%=MDC_CLASS%>.remove("_subJobPid");
+        <%=MDC_CLASS%>.remove("_systemPid");
+        log.info("TalendJob: '<%=codeGenArgument.getJobName()%>' - Finished - status: " + status + " returnCode: " + returnCode );
+    <%}%>
 
     return returnCode;
 

@@ -344,14 +344,15 @@ public class DbTableController extends AbstractElementPropertySectionController 
                             List<IContext> iContexts = new ArrayList<IContext>();
                             for (ContextType contextType : (List<ContextType>) contextItem.getContext()) {
                                 IContext context = ContextUtils.convert2IContext(contextType, contextItem.getProperty().getId());
-                                if (contextType.getName().equals(connection.getContextName())) {
+                                if (contextType.getName().equals(contextItem.getDefaultContext())) {
                                     defaultContext = context;
                                 }
                                 iContexts.add(context);
                             }
                             if (iContexts.size() > 0) {
                                 selectContext = ConnectionContextHelper
-                                        .promptConfirmLauch(PlatformUI.getWorkbench().getDisplay().getActiveShell(), iContexts);
+                                        .promptConfirmLauch(PlatformUI.getWorkbench().getDisplay().getActiveShell(), iContexts,
+                                                defaultContext);
                                 if (selectContext == null) {
                                     if (ConnectionContextHelper.isPromptNeeded(iContexts)) {
                                         button.setEnabled(true);
@@ -623,7 +624,11 @@ public class DbTableController extends AbstractElementPropertySectionController 
 
                         @Override
                         public void run() {
-                            IMetadataConnection convert = ConvertionHelper.convert(con, false, connParameters.getSelectContext());
+                            String selectContext = connParameters.getSelectContext();
+                            if (contextManager != null && contextManager instanceof EmptyContextManager && con.isContextMode()) {
+                                selectContext = con.getContextName();
+                            }
+                            IMetadataConnection convert = ConvertionHelper.convert(con, false, selectContext);
                             iMetadata[0] = convert;
                         }
                     });
@@ -844,7 +849,7 @@ public class DbTableController extends AbstractElementPropertySectionController 
                     filePath.toLowerCase(), datasource, dbRootPath, additionParam);
 
             ConnectionStatus testConnection = ExtractMetaDataFromDataBase.testConnection(DBType, newURL, userName, password,
-                    schema, driveClass, driverJarPath, dbVersion, additionalParams);
+                    schema, driveClass, driverJarPath, dbVersion, additionalParams, metadataConnection.isSupportNLS());
             ConnectionParameters connParameters2 = new ConnectionParameters();
             if (connParameters == null) {
                 connParameters = connParameters2;
@@ -872,7 +877,7 @@ public class DbTableController extends AbstractElementPropertySectionController 
             ConnectionStatus testConnection = ExtractMetaDataFromDataBase.testConnection(metadataConnection.getDbType(),
                     metadataConnection.getUrl(), metadataConnection.getUsername(), metadataConnection.getPassword(),
                     metadataConnection.getSchema(), metadataConnection.getDriverClass(), metadataConnection.getDriverJarPath(),
-                    metadataConnection.getDbVersionString(), metadataConnection.getAdditionalParams());
+                    metadataConnection.getDbVersionString(), metadataConnection.getAdditionalParams(), metadataConnection.isSupportNLS());
             connParameters.setConnectionComment(testConnection.getMessageException());
 
             if (EDatabaseTypeName.ACCESS.getDisplayName().equals(connParameters.getDbType())) {

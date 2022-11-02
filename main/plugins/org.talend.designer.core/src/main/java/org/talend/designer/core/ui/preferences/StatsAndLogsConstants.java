@@ -89,8 +89,9 @@ public class StatsAndLogsConstants {
             "tPostgresPlusOutput", "tPostgresqlOutput", "tDB2Output", "tSybaseOutput", "tSQLiteOutput", "tFirebirdOutput" }; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$
 
     private static final String[] JAVA_DB_COMPONENTS = new String[] {
-            "tJDBCOutput", "tMysqlOutput", "tMSSqlOutput", ORACLE_SID_ALIAS, ORACLE_SN_ALIAS, ORACLE_OCI_ALIAS,//$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-            "tPostgresPlusOutput", "tPostgresqlOutput", "tDB2Output", "tSybaseOutput", "tIngresOutput", "tInterbaseOutput", "tSQLiteOutput", "tFirebirdOutput", "tInformixOutput", "tAccessOutput", "tTeradataOutput" }; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$ //$NON-NLS-7$ //$NON-NLS-8$ //$NON-NLS-9$ //$NON-NLS-10$
+            "tJDBCOutput", "tMysqlOutput", "tMSSqlOutput", ORACLE_SID_ALIAS, ORACLE_SN_ALIAS, ORACLE_OCI_ALIAS, //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+            "tPostgresPlusOutput", "tPostgresqlOutput", "tDB2Output", "tSybaseOutput", "tSQLiteOutput", "tFirebirdOutput", //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$
+            "tInformixOutput", "tAccessOutput", "tTeradataOutput" }; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 
     private static final String[] PERL_REPOSITORY_ITEMS = new String[] { MYSQL, ORACLE_WITH_SID_CONN_TYPE,
             ORACLE_WITH_SERVICE_CONN_TYPE, ORACLE_OCI, POSTGRESPLUS, POSTGRESQL, IBM_DB2, SYBASE, SQLITE, FIREBIRD };
@@ -136,7 +137,7 @@ public class StatsAndLogsConstants {
 
     public static final String[] DB_VERSION_DISPLAY = new String[] { "Oracle 18 and above", "Oracle 12", "Oracle 11", "Oracle 10",
             "Oracle 9", "Oracle 8", "MySQL 8", "MySQL 5", "MariaDB", "Open source JTDS", "Microsoft", "Access 2003",
-            "Access 2007", "Prior to v9", "v9 +", "Sybase 16 (SQL Anywhere)", "Sybase 16", "Sybase 12/15" };
+            "Access 2007", "Prior to v9", "v9 +", "Sybase 16 (SQL Anywhere) and above", "Sybase 16", "Sybase 12/15" };
 
 
     public static final String[] DB_VERSION_CODE = new String[] {"ORACLE_18", "ORACLE_12", "ORACLE_11", "ORACLE_10", "ORACLE_9", "ORACLE_8",
@@ -164,12 +165,13 @@ public class StatsAndLogsConstants {
 
     public static final String[] PSQL_VERSION_DISPLAY = new String[] {"v9 and later","Prior to v9" }; //$NON-NLS-1$ //$NON-NLS-2$
 
-    public static final String[] SYBASE_VERSION_DISPLAY = new String[] {"Sybase 16 (SQL Anywhere)", "Sybase 16", "Sybase 12/15" }; //$NON-NLS-1$ //$NON-NLS-2$
+    public static final String[] SYBASE_VERSION_DISPLAY = new String[] { "Sybase 16 (SQL Anywhere) and above", //$NON-NLS-1$
+            "Sybase 16", "Sybase 12/15" }; //$NON-NLS-1$
     public static final String[] SYBASE_VERSION_CODE = new String[] {"SYBSEIQ_16_SA", "SYBSEIQ_16", "SYBSEIQ_12_15" };
     public static final String[] PSQL_VERSION_CODE = new String[] {  "V9_X","PRIOR_TO_V9" }; //$NON-NLS-1$ //$NON-NLS-2$
 
     public static final String[] PSQL_VERSION_DRIVER = new String[] {
-            "postgresql-42.2.25.jar", "postgresql-8.4-703.jdbc4.jar" }; //$NON-NLS-1$ //$NON-NLS-2$
+            "postgresql-42.2.26.jar", "postgresql-8.4-703.jdbc4.jar" }; //$NON-NLS-1$ //$NON-NLS-2$
 
     public static final String[][] DISPLAY_DBNAMES = new String[][] { PERL_DISPLAY_DBNAMES, JAVA_DISPLAY_DBNAMES };
 

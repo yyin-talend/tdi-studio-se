@@ -159,10 +159,10 @@ if(("UPDATE").equals(dataAction)) {
 			log.info("<%=cid%> - Create temp table " + tableName_<%=cid%> + " has succeeded.");
 			log.info("<%=cid%> - Bulk inserting data into " + tableName_<%=cid%> + "." );
 		<%}%>
-		stmtTmpBulk_<%=cid %>.execute("SET character_set_database=" + charset_<%=cid %>);
 		stmtTmpBulk_<%=cid %>.execute(
 			"LOAD DATA LOCAL INFILE '" + file_<%=cid %> + "' "
 			+ " INTO TABLE " + tableName_<%=cid %>
+			+ " CHARACTER SET " + charset_<%=cid %>
 			+ " FIELDS TERMINATED BY '" + field_separator_<%=cid %>.replaceAll("\\\\", "\\\\\\\\") + "'"
 			+ " ENCLOSED BY '"+("'".equals(enclosed_str_<%=cid %>)?"\\":"")+ enclosed_str_<%=cid %>.replaceAll("\\\\", "\\\\\\\\") + "'"
 			+ " ESCAPED BY '" +("'".equals(escaped_str_<%=cid %>)?"\\":"")+ escaped_str_<%=cid %>.replaceAll("\\\\", "\\\\\\\\")+ "'"
@@ -237,6 +237,7 @@ if(("UPDATE").equals(dataAction)) {
 	String bulkSQL_<%=cid%> = "LOAD DATA LOCAL INFILE '" + file_<%=cid %> + "' "
 		+ replace_<%=cid%>
 		+ " INTO TABLE " + tableName_<%=cid %>
+		+ " CHARACTER SET " + charset_<%=cid %>
 		+ " FIELDS TERMINATED BY '" + field_separator_<%=cid %>.replaceAll("\\\\", "\\\\\\\\") + "'"
 		+ " ENCLOSED BY '"+("'".equals(enclosed_str_<%=cid %>)?"\\":"") + enclosed_str_<%=cid %>.replaceAll("\\\\", "\\\\\\\\") + "'"
 		+ " ESCAPED BY '" + ("'".equals(escaped_str_<%=cid %>)?"\\":"")+ escaped_str_<%=cid %>.replaceAll("\\\\", "\\\\\\\\") + "'"
@@ -261,7 +262,6 @@ if(("UPDATE").equals(dataAction)) {
 %>;
 	<%log4jCodeGenerateUtil.logInfo(node,"debug",cid+" - Bulk SQL:\"+bulkSQL_"+cid+"+\".");%>
 	java.sql.Statement stmt_<%=cid %>=conn_<%=cid %>.createStatement();
-	stmt_<%=cid %>.execute("SET character_set_database=" + charset_<%=cid %>);
 	
 	stmt_<%=cid %>.execute(bulkSQL_<%=cid%>);
 	<%if(isLog4jEnabled){
