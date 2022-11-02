@@ -16,11 +16,13 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.core.model.metadata.builder.connection.Connection;
+import org.talend.core.model.process.EParameterFieldType;
 import org.talend.core.model.process.IContextParameter;
 import org.talend.core.model.properties.ContextItem;
 import org.talend.core.model.utils.ContextParameterUtils;
@@ -32,6 +34,7 @@ import org.talend.metadata.managment.ui.utils.ConnectionContextHelper;
 import org.talend.metadata.managment.ui.wizard.context.AbstractRepositoryContextHandler;
 import org.talend.sdk.component.studio.metadata.model.TaCoKitConfigurationModel;
 import org.talend.sdk.component.studio.metadata.model.TaCoKitConfigurationModel.ValueModel;
+import org.talend.sdk.component.studio.model.parameter.ValueConverter;
 
 public class TaCoKitContextHandler extends AbstractRepositoryContextHandler {
 
@@ -39,12 +42,29 @@ public class TaCoKitContextHandler extends AbstractRepositoryContextHandler {
 
         private String name;
 
-        public TaCoKitParamName(String name) {
+        private String value;
+
+        private EParameterFieldType eParameterFieldType;
+
+        public String getValue() {
+            return value;
+        }
+
+        public void setValue(String value) {
+            this.value = value;
+        }
+
+        public TaCoKitParamName(String name, EParameterFieldType eParameterFieldType) {
             this.name = name;
+            this.eParameterFieldType = eParameterFieldType;
         }
 
         public String getName() {
             return this.name;
+        }
+
+        public EParameterFieldType getType() {
+            return this.eParameterFieldType;
         }
     }
 
@@ -58,18 +78,55 @@ public class TaCoKitContextHandler extends AbstractRepositoryContextHandler {
     public Set<IConnParamName> collectConParameters(Connection conn) {
 
         Set<IConnParamName> set = new HashSet<IConnParamName>();
+        Set<IConnParamName> tableSet = new HashSet<IConnParamName>();
         TaCoKitConfigurationModel taCoKitConfigurationModel = new TaCoKitConfigurationModel(conn);
-        Map<String, String> properties = taCoKitConfigurationModel.getProperties();
-        Set<String> keySet = properties.keySet();
-        keySet.stream().forEach(k -> {
-            boolean isNotENUMTypeParameter = taCoKitConfigurationModel.isNotENUMTypeParameter(k);
+        Map<String, String> modelProperties = taCoKitConfigurationModel.getProperties();
+
+        Set<Entry<String, String>> entrySet = modelProperties.entrySet();
+        for (Entry<String, String> enty : entrySet) {
+
+            String key = enty.getKey();
+            String value = enty.getValue();
+            boolean isNotENUMTypeParameter = taCoKitConfigurationModel.isNotENUMTypeParameter(key);
             if (isNotENUMTypeParameter) {
-                TaCoKitParamName taCoKitParamName = new TaCoKitParamName(k);
+                
+                EParameterFieldType eParameterFieldType = taCoKitConfigurationModel.getEParameterFieldType(key);
+                
+                TaCoKitParamName taCoKitParamName = new TaCoKitParamName(key, eParameterFieldType);
+                
+                taCoKitParamName.setValue(value);
+                
+                if (eParameterFieldType == EParameterFieldType.TABLE) {
+                  tableSet.add(taCoKitParamName);
+                }
+                
                 set.add(taCoKitParamName);
             }
 
-        });
+        }
 
+
+        for (IConnParamName cp : tableSet) {
+            String name = ((TaCoKitParamName) cp).getName();
+            String arryValue = modelProperties.get(name);
+            List<Map<String, Object>> tableValue = ValueConverter.toTable((String) arryValue);
+
+            for (int i = 0; i < tableValue.size(); i++) {
+                Map<String, Object> map = tableValue.get(i);
+                Set<Entry<String, Object>> entrySetTable = map.entrySet();
+                //
+                for (Entry<String, Object> entryTable : entrySetTable) {
+                    String key = entryTable.getKey();
+                    String newValue = (String) entryTable.getValue();
+                    String replacePath = key.replace("[]", "[" + i + "]");
+                    TaCoKitParamName taCoKitParamName = new TaCoKitParamName(replacePath, null);
+                    taCoKitParamName.setValue(newValue);
+                    set.add(taCoKitParamName);
+                }
+
+            }
+
+        }
         return set;
     }
 
@@ -86,6 +143,9 @@ public class TaCoKitContextHandler extends AbstractRepositoryContextHandler {
         for (IConnParamName param : paramSet) {
             if (param instanceof TaCoKitParamName) {
                 TaCoKitParamName taCoKitParamName = (TaCoKitParamName) param;
+                if (taCoKitParamName.getType() == null) {
+                    continue;// remove "configuration.connectionParametersList[1].parameterValue"
+                }
                 String name = taCoKitParamName.getName();// configuration.accout
                 String substringName = StringUtils.substringAfter(name, ConnectionContextHelper.DOT);// accout
                 if (StringUtils.isNoneBlank(substringName)) {
@@ -94,8 +154,36 @@ public class TaCoKitContextHandler extends AbstractRepositoryContextHandler {
                 } else {
                     paramName = paramPrefix + name;
                 }
+                String value = properties.get(name);
+                EParameterFieldType eParameterFieldType = taCoKitConfigurationModel.getEParameterFieldType(name);
+                if (eParameterFieldType == EParameterFieldType.TABLE) {
+                    String arryValue = properties.get(name);
 
-                ConnectionContextHelper.createParameters(varList, paramName, properties.get(name));
+                    List<Map<String, Object>> tableValue = ValueConverter.toTable((String) arryValue);
+
+                    for (int i = 0; i < tableValue.size(); i++) {
+                        Map<String, Object> map = tableValue.get(i);
+                        Set<Entry<String, Object>> entrySetTable = map.entrySet();
+                        //
+                        for (Entry<String, Object> entryTable : entrySetTable) {
+                            String key = entryTable.getKey();
+                            String keyAfter = StringUtils.substringAfterLast(key, ConnectionContextHelper.DOT);
+                            String newValue = (String) entryTable.getValue();
+                            String paramArry = StringUtils.substringAfter(name, ConnectionContextHelper.DOT);
+                            String newParamName = paramPrefix + paramArry + "_" + i + "_" + keyAfter;
+                            Object[] array = varList.stream().filter(v -> {
+                                return v.getName().equals(newParamName);
+                            }).toArray();
+                            if (array == null || array.length == 0) {
+                                ConnectionContextHelper.createParameters(varList, newParamName, newValue);
+                            }
+
+                        }
+
+                    }
+                }
+
+                ConnectionContextHelper.createParameters(varList, paramName, value);
 
             }
         }
@@ -112,6 +200,7 @@ public class TaCoKitContextHandler extends AbstractRepositoryContextHandler {
 
         String originalVariableName = prefixName + ConnectionContextHelper.LINE;
         String taCokitVariableName = null;
+        TaCoKitConfigurationModel taCoKitConfigurationModel = new TaCoKitConfigurationModel(connection);
         for (IConnParamName param : paramSet) {
             if (param instanceof TaCoKitParamName) {
                 TaCoKitParamName taCoKitParam = (TaCoKitParamName) param;
@@ -125,7 +214,50 @@ public class TaCoKitContextHandler extends AbstractRepositoryContextHandler {
                     taCokitVariableName = originalVariableName + name;
                 }
 
-                matchContextForAttribues(connection, taCoKitParam, taCokitVariableName);
+                String newScriptCode = ContextParameterUtils.getNewScriptCode(taCokitVariableName, LANGUAGE);
+
+                taCoKitConfigurationModel.setValue(taCoKitParam.getName(), newScriptCode);
+
+                if (taCoKitParam.getType() == EParameterFieldType.TABLE) {
+                    String arryValue = taCoKitParam.getValue();
+                    List<Map<String, Object>> tableValue = ValueConverter.toTable((String) arryValue);
+
+                    for (int i = 0; i < tableValue.size(); i++) {
+                        Map<String, Object> map = tableValue.get(i);
+                        Set<Entry<String, Object>> entrySetTable = map.entrySet();
+                        for (Entry<String, Object> entryTable : entrySetTable) {
+                            String key = entryTable.getKey();
+
+                            String newKey = key.replace("[]", "[" + i + "]");
+
+                            String valueNoConfig = originalVariableName
+                                    + StringUtils.substringAfter(newKey, ConnectionContextHelper.DOT);
+                            String replaced = valueNoConfig.replace("[", "_");
+                            if (StringUtils.isNoneBlank(replaced) && StringUtils.contains(replaced, "].")) {
+                                String scriptCode = replaced.replace("].", "_");
+                                String newValueScriptCode = ContextParameterUtils.getNewScriptCode(scriptCode, LANGUAGE);
+                                taCoKitConfigurationModel.setValue(newKey, newValueScriptCode);
+
+                                EParameterFieldType eParameterFieldType = taCoKitConfigurationModel
+                                        .getEParameterFieldType(entryTable.getKey());
+                                // avoid context for table parameter name,"CONNECTION TIMEOUT"
+                                if (eParameterFieldType == EParameterFieldType.TEXT) {
+
+                                    entryTable.setValue(newValueScriptCode);
+                                }
+                            }
+
+                        }
+
+                    }
+                    if (tableValue != null && tableValue.size() > 0) {
+                        String contextString = tableValue.toString();
+                        taCoKitConfigurationModel.setValue(taCoKitParam.getName(), contextString);
+                    } else {
+                        taCoKitConfigurationModel.setValue(taCoKitParam.getName(), "");
+                    }
+
+                }
             }
         }
 
@@ -152,7 +284,30 @@ public class TaCoKitContextHandler extends AbstractRepositoryContextHandler {
     private void revertProperties(TaCoKitConfigurationModel taCoKitConfigurationModel, ContextType contextType, String key) {
         try {
             ValueModel valueModel = taCoKitConfigurationModel.getValue(key);
+            EParameterFieldType eParameterFieldType = taCoKitConfigurationModel.getEParameterFieldType(key);
+
             if (valueModel != null) {
+                if (eParameterFieldType == EParameterFieldType.TABLE) {
+                    String tableValue = valueModel.getValue();
+                    List<Map<String, Object>> tableValueList = ValueConverter.toTable((String) tableValue);
+                    for (int i = 0; i < tableValueList.size(); i++) {
+                        Map<String, Object> map = tableValueList.get(i);
+                        Set<Entry<String, Object>> entrySetTable = map.entrySet();
+                        for (Entry<String, Object> entryTable : entrySetTable) {
+                            Object value = entryTable.getValue();
+                            if (value instanceof String) {
+                                String originalValue = TalendQuoteUtils
+                                        .removeQuotes(ContextParameterUtils.getOriginalValue(contextType, value.toString()));
+                                entryTable.setValue(originalValue);
+                            }
+
+                        }
+
+                    }
+                    String tableOriginalValue = tableValueList.toString();
+                    taCoKitConfigurationModel.setValue(key, tableOriginalValue);
+                    return;
+                }
                 String applicationId = TalendQuoteUtils
                         .removeQuotes(ContextParameterUtils.getOriginalValue(contextType, valueModel.getValue()));
                 taCoKitConfigurationModel.setValue(key, applicationId);
