@@ -22,6 +22,7 @@ import java.util.Set;
 import org.apache.commons.lang3.StringUtils;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.core.model.metadata.builder.connection.Connection;
+import org.talend.core.model.metadata.types.JavaTypesManager;
 import org.talend.core.model.process.EParameterFieldType;
 import org.talend.core.model.process.IContextParameter;
 import org.talend.core.model.properties.ContextItem;
@@ -182,8 +183,12 @@ public class TaCoKitContextHandler extends AbstractRepositoryContextHandler {
 
                     }
                 }
+                if (taCoKitParamName.getType() == EParameterFieldType.PASSWORD) {
+                    ConnectionContextHelper.createParameters(varList, paramName, value, JavaTypesManager.PASSWORD);
+                } else {
 
-                ConnectionContextHelper.createParameters(varList, paramName, value);
+                    ConnectionContextHelper.createParameters(varList, paramName, value);
+                }
 
             }
         }
@@ -254,7 +259,7 @@ public class TaCoKitContextHandler extends AbstractRepositoryContextHandler {
                         String contextString = tableValue.toString();
                         taCoKitConfigurationModel.setValue(taCoKitParam.getName(), contextString);
                     } else {
-                        taCoKitConfigurationModel.setValue(taCoKitParam.getName(), "");
+                        taCoKitConfigurationModel.setValue(taCoKitParam.getName(), "[]");
                     }
 
                 }

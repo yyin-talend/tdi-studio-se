@@ -108,7 +108,7 @@ public class TableElementParameter extends TaCoKitElementParameter {
     public void setValue(final Object newValue) {
         IElement elem = getElement();
         boolean contextMode = isContextMode();
-        if (contextMode && elem != null && newValue instanceof String) {
+        if (contextMode && elem != null && newValue instanceof String && newValue != "[]") {
 
             List<Map<String, Object>> table = ValueConverter.toTable((String) newValue);
 
