@@ -82,12 +82,23 @@ public class TaCoKitContextHandler extends AbstractRepositoryContextHandler {
         Set<IConnParamName> tableSet = new HashSet<IConnParamName>();
         TaCoKitConfigurationModel taCoKitConfigurationModel = new TaCoKitConfigurationModel(conn);
         Map<String, String> modelProperties = taCoKitConfigurationModel.getProperties();
+        TaCoKitConfigurationModel parentConfigurationModel = null;
+        try {
+            parentConfigurationModel = taCoKitConfigurationModel.getParentConfigurationModel();
+
+        } catch (Exception e) {
+            ExceptionHandler.process(e);
+        }
 
         Set<Entry<String, String>> entrySet = modelProperties.entrySet();
         for (Entry<String, String> enty : entrySet) {
 
             String key = enty.getKey();
             String value = enty.getValue();
+            boolean isParentModelParameter = taCoKitConfigurationModel.isCurrentModelParameter(key);
+            if (isParentModelParameter && parentConfigurationModel != null) {
+                continue;
+            }
             boolean isNotENUMTypeParameter = taCoKitConfigurationModel.isNotENUMTypeParameter(key);
             if (isNotENUMTypeParameter) {
                 
@@ -272,16 +283,32 @@ public class TaCoKitContextHandler extends AbstractRepositoryContextHandler {
     public void revertPropertiesForContextMode(Connection connection, ContextType contextType) {
 
         TaCoKitConfigurationModel taCoKitConfigurationModel = new TaCoKitConfigurationModel(connection);
+
+        TaCoKitConfigurationModel parentConfigurationModel = null;
+        try {
+            parentConfigurationModel = taCoKitConfigurationModel.getParentConfigurationModel();
+
+        } catch (Exception e) {
+            ExceptionHandler.process(e);
+        }
+
         Map<String, String> properties = taCoKitConfigurationModel.getProperties();
         if (properties != null && properties.size() > 0) {
             Set<String> keySet = properties.keySet();
-            keySet.stream().forEach(key -> {
+            for (String key : keySet) {
+
+                if (parentConfigurationModel != null) {
+                    boolean isParentModelParameter = taCoKitConfigurationModel.isCurrentModelParameter(key);
+                    if (isParentModelParameter) {
+                        continue;
+                    }
+                }
+
                 boolean isNotENUMTypeParameter = taCoKitConfigurationModel.isNotENUMTypeParameter(key);
                 if (isNotENUMTypeParameter) {
                     revertProperties(taCoKitConfigurationModel, contextType, key);
                 }
-
-            });
+            }
 
         }
     }

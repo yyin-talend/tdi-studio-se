@@ -121,6 +121,18 @@ public class TaCoKitConfigurationModel {
         getAllProperties().put(TACOKIT_PARENT_ITEM_ID, parentItemId);
     }
 
+    public boolean isCurrentModelParameter(final String key) {
+        final Map<String, PropertyDefinitionDecorator> tree = buildPropertyTree();
+        Optional<String> configPath;
+        try {
+            configPath = findConfigPath(tree, key);
+            return configPath.isPresent();
+        } catch (Exception e) {
+            ExceptionHandler.process(e);
+        }
+        return false;
+    }
+
     public ValueModel getValue(final String key) throws Exception {
         TaCoKitConfigurationModel parentModel = getParentConfigurationModel();
         if (parentModel != null) {
@@ -137,6 +149,19 @@ public class TaCoKitConfigurationModel {
                     return new ValueModel(parentModel, null, getValueType(parentModel.getConfigTypeNode(), key));
                 }
             } else {
+                String type = modelValue.getType();
+                if (StringUtils.equals(type, "ARRAY")) {
+                    EParameterFieldType eParameterFieldType = getEParameterFieldType(key);
+                    if (eParameterFieldType == EParameterFieldType.TABLE) {
+                        String value = modelValue.getValue();
+                        if (value.contains(keyStr)) {
+                            String newValue = value.replaceAll(keyStr, key);
+                            return new ValueModel(parentModel, newValue, type);
+
+                        }
+
+                    }
+                }
                 return modelValue;
             }
         }

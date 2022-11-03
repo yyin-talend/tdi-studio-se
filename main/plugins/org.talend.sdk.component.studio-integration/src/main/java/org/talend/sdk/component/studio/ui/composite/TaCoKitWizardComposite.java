@@ -18,6 +18,7 @@ import org.apache.commons.lang.StringUtils;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.widgets.Composite;
 import org.talend.commons.exception.ExceptionHandler;
+import org.talend.core.model.metadata.builder.connection.Connection;
 import org.talend.core.model.process.EComponentCategory;
 import org.talend.core.model.process.EParameterFieldType;
 import org.talend.core.model.process.Element;
@@ -79,16 +80,34 @@ public class TaCoKitWizardComposite extends TaCoKitComposite {
                         String key = parameter.getName();
 
                         ValueModel valueModel = configurationModel.getValue(key);
+                        parameter.setContextMode(isContextMode);
+                        parameter.setReadOnly(isContextMode);
                         if (valueModel != null) {
                             if (valueModel.getConfigurationModel() != configurationModel) {
                                 parameter.setReadOnly(true);
+
+                                TaCoKitConfigurationModel parentConfigurationModel = configurationModel
+                                        .getParentConfigurationModel();
+
+                                if (parentConfigurationModel != null) {
+
+                                    Connection parentConnection = parentConfigurationModel.getConnection();
+                                    if (parentConnection != null) {
+
+                                        boolean contextMode = parentConnection.isContextMode();
+
+                                        parameter.setContextMode(contextMode);
+
+                                    }
+
+                                }
                             }
-                            parameter.setContextMode(isContextMode);
+
                             String value = valueModel.getValue();
 
                             parameter.setValue(value);
 
-                            parameter.setReadOnly(isContextMode);
+
 
                         }
                     } catch (Exception e) {
@@ -100,8 +119,7 @@ public class TaCoKitWizardComposite extends TaCoKitComposite {
 
     private void init() {
         boolean isContextMode = configurationModel.getConnection().isContextMode();
-        elem
-                .getElementParameters()
+        elem.getElementParameters()
                 .stream()
                 .filter(p -> p instanceof TaCoKitElementParameter)
                 .map(p -> (TaCoKitElementParameter) p)
@@ -114,18 +132,37 @@ public class TaCoKitWizardComposite extends TaCoKitComposite {
                         if (isNew) {
                             parameter.setValue(parameter.getValue());
                         }
+                        parameter.setContextMode(isContextMode);
+                        parameter.setReadOnly(isContextMode);
                         ValueModel valueModel = configurationModel.getValue(key);
                         if (valueModel != null) {
                             if (valueModel.getConfigurationModel() != configurationModel) {
+
                                 parameter.setReadOnly(true);
+
+                                TaCoKitConfigurationModel parentConfigurationModel = configurationModel
+                                        .getParentConfigurationModel();
+
+                                if (parentConfigurationModel != null) {
+
+                                    Connection parentConnection = parentConfigurationModel.getConnection();
+                                    if (parentConnection != null) {
+
+                                        boolean contextMode = parentConnection.isContextMode();
+
+                                        parameter.setContextMode(contextMode);
+
+                                    }
+
+                                }
+
                             }
                             if (StringUtils.isEmpty(valueModel.getValue())) {
                                 return;
                             }
-                            parameter.setContextMode(isContextMode);
+
                             String value = valueModel.getValue();
                             parameter.setValue(value);
-                            parameter.setReadOnly(false);
                         }
                     } catch (Exception e) {
                         ExceptionHandler.process(e);
