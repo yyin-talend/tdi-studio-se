@@ -19,7 +19,8 @@ skeleton="../templates/db_output_bulk.skeleton"
 	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 	INode node = (INode)codeGenArgument.getArgument();
 	String cid = node.getUniqueName();
-	
+
+	boolean isLog4jEnabled = ("true").equals(ElementParameterParser.getValue(node.getProcess(), "__LOG4J_ACTIVATE__"));
 	String host = ElementParameterParser.getValue(node, "__HOST__");
 	String port = ElementParameterParser.getValue(node, "__PORT__");
 	String dbName = ElementParameterParser.getValue(node, "__DBNAME__");
@@ -271,8 +272,12 @@ skeleton="../templates/db_output_bulk.skeleton"
 				final String decryptedPwd_<%=cid%> = <%= ElementParameterParser.getValue(current_node, passwordFieldKey)%>; 
 <%
 			}
-    	}
-    }
+		}
+	} else {
+%>
+		final String decryptedPwd_<%=cid%> = "";
+<%
+	}
 	if(avroMode) {
 		String avro_mapping = ElementParameterParser.getValue(node, "__JSON_MAPPING__");
 %>
@@ -548,6 +553,16 @@ skeleton="../templates/db_output_bulk.skeleton"
 	}//!parquetMode
 %>
 	java.sql.Statement stmt_<%=cid %>=conn_<%=cid %>.createStatement();
+<%
+	if (isLog4jEnabled) {
+%>
+		String log_command_<%=cid%> = decryptedPwd_<%=cid %>.isEmpty()
+			? command_<%=cid%>.toString()
+			: command_<%=cid%>.toString().replace(decryptedPwd_<%=cid %>, "****");
+		log.debug("Executing COPY command: " + log_command_<%=cid%>);
+<%
+	}
+%>
 	stmt_<%=cid %>.execute(command_<%=cid%>.toString());
 <%
 	if(isSetMaxError) {

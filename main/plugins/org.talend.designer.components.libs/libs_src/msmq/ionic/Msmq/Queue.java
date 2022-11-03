@@ -27,7 +27,8 @@
 
 package ionic.Msmq;
 
-
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * The Queue class represents a message queue in MSMQ.
@@ -95,6 +96,8 @@ public class Queue
         int getValue()   { return _accessFlag; }
     }
 
+    private static final Logger LOG = Logger.getLogger(Queue.class.getName());
+    private static boolean initialized;
 
     /**
      * <p>Call this constructor to open a queue by name for SEND and
@@ -133,6 +136,7 @@ public class Queue
     private void _init(String queueName, int access)
         throws  MessageQueueException
     {
+        initialize();
         // the openQueue native method causes the _queueSlot to be set.
         int rc = 0;
         if (access == 0x01) // RECEIVE
@@ -149,7 +153,9 @@ public class Queue
         }
         else { rc= 0xC00E0006; /* MQ_INVALID_PARAMETER */ }
 
-        if (rc!=0) throw new  MessageQueueException("Cannot open queue.", rc);
+        if (rc!=0) {
+            throw new MessageQueueException("Cannot open queue.", rc);
+        }
 
         _name= queueName;
         _formatName= "unknown";
@@ -176,14 +182,17 @@ public class Queue
     public static Queue create(String queuePath, String queueLabel, boolean isTransactional)
         throws  MessageQueueException
     {
+        initialize();
         int rc= nativeCreateQueue( queuePath,  queueLabel,  (isTransactional)?1:0);
-        if (rc!=0)
+        if (rc!=0) {
             throw new  MessageQueueException("Cannot create queue.", rc);
+        }
         // DIRECT=OS  ?  or DIRECT=TCP ?
         String a1= "OS";
         char[] c= queuePath.toCharArray();
-        if ((c[0]>='1')
-            && (c[0]<='9')) a1= "TCP"; // assume ip address
+        if ((c[0]>='1') && (c[0]<='9')) {
+            a1= "TCP"; // assume ip address
+        }
 
         Queue q= new Queue("DIRECT=" + a1 + ":" + queuePath);
         q._name= queuePath;
@@ -201,9 +210,11 @@ public class Queue
     public static void delete(String queuePath)
         throws  MessageQueueException
     {
+        initialize();
         int rc= nativeDeleteQueue( queuePath );
-        if (rc!=0)
+        if (rc!=0) {
             throw new  MessageQueueException("Cannot delete queue.", rc);
+        }
     }
 
 
@@ -218,14 +229,16 @@ public class Queue
     public void send(Message msg, boolean highPriority, TransactionType t)
         throws  MessageQueueException
     {
+        initialize();
         int rc= nativeSendBytes(msg.getBody(),
                                 msg.getLabel(),
                                 msg.getCorrelationId(),
                                 t.getValue(),
                                 highPriority
                                 );
-        if (rc!=0)
+        if (rc!=0) {
             throw new MessageQueueException("Cannot send.", rc);
+        }
     }
 
 
@@ -271,14 +284,16 @@ public class Queue
         throws  MessageQueueException, java.io.UnsupportedEncodingException
 
     {
+        initialize();
         int rc= nativeSendBytes(s.getBytes("UTF-8"), // bytes of string
                                 "",                  // empty label
                                 null,                // empty correlationId
                                 0,                   // outside any transaction
                                 false                // false = not high priority
                                 );
-        if (rc!=0)
+        if (rc!=0) {
             throw new MessageQueueException("Cannot send.", rc);
+        }
     }
 
 
@@ -291,14 +306,16 @@ public class Queue
     public void send(byte[] b)
         throws  MessageQueueException
     {
+        initialize();
         int rc= nativeSendBytes(b,
                                 "",                 // empty label
                                 null,                 // empty correlationId
                                 0,                  // outside any transaction
                                 false               // false = not high priority
                                 );
-        if (rc!=0)
+        if (rc!=0) {
             throw new MessageQueueException("Cannot send.", rc);
+        }
     }
 
 
@@ -308,13 +325,15 @@ public class Queue
     private ionic.Msmq.Message _internal_receive(int timeout, int ReadOrPeek)
         throws  MessageQueueException
     {
+        initialize();
         Message msg = new Message();
 
         int rc = nativeReceiveBytes(msg, timeout, ReadOrPeek);
         //int rc = nativeReceiveBytes(timeout, ReadOrPeek);
 
-        if (rc!=0)
+        if (rc!=0) {
             throw new MessageQueueException("Cannot receive.", rc);
+        }
 
         return msg;
     }
@@ -378,10 +397,11 @@ public class Queue
     public void close()
         throws  MessageQueueException
     {
-
+        initialize();
         int rc=nativeClose();
-        if (rc!=0)
+        if (rc!=0) {
             throw new MessageQueueException("Cannot close.", rc);
+        }
     }
 
 
@@ -440,38 +460,59 @@ public class Queue
 
     // --------------------------------------------
     // private members
-    int   _queueSlot = 0;
-    String _name;
-    String _formatName;
-    String _label;
-    boolean _isTransactional;
+    private int   _queueSlot = 0;
+    private String _name;
+    private String _formatName;
+    private String _label;
+    private boolean _isTransactional;
 
     // --------------------------------------------
     // static initializer
-    static {
-        //System.loadLibrary("MsmqJava");
-    	loadLib();
-        nativeInit();
+    private static void initialize() {
+        if (initialized) {
+            return;
+        }
+        synchronized (Queue.class) {
+            if (initialized) {
+                return;
+            }
+            try {
+    	        loadLib();
+                nativeInit();
+                initialized = true;
+            } catch (Throwable e) {
+                LOG.log(Level.SEVERE, "Error during library initialization. ", e);
+                if (e instanceof Error) {
+                    throw (Error) e;
+                }
+                if (e instanceof RuntimeException) {
+                    throw (RuntimeException) e;
+                }
+                throw new IllegalStateException("Initialization failure. ", e);
+            }
+        }
     }
     
     /* Try extracting and loading library from jar */
     
-    private static void loadLib() {
-        String dllName = "MsmqJava.dll";
+    private static void loadLib() throws Exception {
+        String libName = "MsmqJava";
+        String dllName = libName + ".dll";
         String TMP_HOME = System.getProperty("java.io.tmpdir");
-        // TMP_HOME = "d:";
         String SEPARATOR = System.getProperty("file.separator");
         String fileName = TMP_HOME + SEPARATOR + dllName;
         java.io.File file = new java.io.File(fileName);
         java.io.FileOutputStream os = null;
         java.io.InputStream is = null;
         boolean extracted = false;
+        boolean useLocalLib = true;
+        boolean loadSuccess = true;
 
         try {
             if (!file.exists()) {
-
                 is = Queue.class.getResourceAsStream("/" + dllName);
                 if (is != null) {
+                    LOG.info("Unpacking local native library.");
                     extracted = true;
                     int read;
                     byte[] buffer = new byte[4096];
@@ -479,31 +520,62 @@ public class Queue
                     while ((read = is.read(buffer)) != -1) {
                         os.write(buffer, 0, read);
                     }
-                    os.close();
-                    is.close();
+                } else {
+                    LOG.info("No local native library found.");
+                    useLocalLib = false;
                 }
             }
-            if (fileName.indexOf(SEPARATOR) != -1) {
-
+            loadSuccess = false;
+            if (useLocalLib) {
+                LOG.info("Using previously unpacked local native library.");
                 System.load(fileName);
             } else {
-                System.loadLibrary(fileName);
+                LOG.info("Using native library from system.");
+                System.loadLibrary(libName);
             }
+            loadSuccess = true;
         } catch (Throwable e) {
+            if (loadSuccess) {
+                throw e; // throw exception if unrelated to library loading
+            }
+            if (useLocalLib) {
+                LOG.warning("Unable to load local native library \"" + dllName
+                        + "\" with system path \"" + System.getenv("PATH")
+                        + "\", trying to load from system. ");
+                try {
+                    System.loadLibrary(libName);
+                    loadSuccess = true; // successfully recovered from error condition
+                    LOG.info("Native library \"" + dllName + "\" loaded from system.");
+                } catch (Throwable t) {
+                    LOG.log(Level.WARNING, "Loading native library failed. ", t);
+                }
+            }
+            if (!loadSuccess) {
+                LOG.severe("Unable to load native library \"" + dllName
+                        + "\" with library path \"" + System.getProperty("java.library.path")
+                        + "\" and system path \"" + System.getenv("PATH") + "\"");
+                throw e;
+            }
+        } finally {
             try {
                 if (os != null)
                     os.close();
-            } catch (java.io.IOException e1) {
+            } catch (Throwable e) {
+                LOG.log(Level.WARNING, "Closing library file output stream failed. ", e);
             }
             try {
                 if (is != null)
                     is.close();
-            } catch (java.io.IOException e1) {
+            } catch (Throwable e) {
+                LOG.log(Level.WARNING, "Closing library resource stream failed. ", e);
             }
-            if (extracted && file.exists())
-                file.delete();
-            
-            e.printStackTrace();
+            try {
+                if (extracted && file.exists()) {
+                    file.delete();
+                }
+            } catch (Throwable e) {
+                LOG.log(Level.WARNING, "Removing library file failed. ", e);
+            }
         }
     }
 }

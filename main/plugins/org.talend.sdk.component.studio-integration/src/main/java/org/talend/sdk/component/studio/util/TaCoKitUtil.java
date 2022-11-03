@@ -463,6 +463,8 @@ public class TaCoKitUtil {
      *            com.tutorial:tutorial-component:0.0.1
      *            or
      *            com.tutorial:tutorial-component:jar:0.0.1:compile
+     *            or
+     *            com.tutorial:tutorial-component:jar:[classifier]:0.0.1:compile
      *
      * @return a translated maven path
      */
@@ -477,6 +479,10 @@ public class TaCoKitUtil {
         String version = "";
         if (segments.length == 3) {
             version = segments[2];
+        } else if (segments.length == 6) { //dependency classifier present
+            final String classifier = segments[3].isEmpty() ? "" : "-" + segments[3];
+            version = segments[4];
+            return String.format(jarPathFmt, group, artifact, version, artifact, version + classifier);
         } else {
             version = segments[3];
         }
@@ -535,7 +541,7 @@ public class TaCoKitUtil {
      */
     public static boolean isSupportUseExistConnection(ComponentModel component) {
         boolean isSupport = false;
-        ActionList actionList = Lookups.taCoKitCache().getActionList(component.getIndex().getFamilyDisplayName());
+        ActionList actionList = Lookups.taCoKitCache().getActionList(component.getIndex().getId().getFamily());
         if (actionList != null) {
             for (ActionItem action : actionList.getItems()) {
                 if (TaCoKitConst.CREATE_CONNECTION_ATCION_NAME.equals(action.getType())
@@ -549,6 +555,9 @@ public class TaCoKitUtil {
             if (((VirtualComponentModel) component).getModelType() == VirtualComponentModelType.CONNECTION) {
                 isSupport = false;
             }
+        }
+        if(isSupport && component.getDetail().getId().getName().endsWith("OutputBulk")) {
+            isSupport = false;
         }
         return isSupport;
     }

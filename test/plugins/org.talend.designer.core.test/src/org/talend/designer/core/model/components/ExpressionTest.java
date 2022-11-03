@@ -35,6 +35,8 @@ import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.INode;
 import org.talend.core.model.process.IProcess;
 import org.talend.core.model.runprocess.shadow.TextElementParameter;
+import org.talend.designer.core.model.process.jobsettings.JobSettingsConstants;
+import org.talend.designer.core.ui.preferences.StatsAndLogsConstants;
 import org.talend.hadoop.distribution.ESparkVersion;
 
 /**
@@ -317,5 +319,14 @@ public class ExpressionTest {
         ElementParameter currentParam = mock(ElementParameter.class);
         when(currentParam.getElement()).thenReturn(node);
         assertTrue(Expression.evaluateSparkVersion("SPARK_VERSION ge 'SPARK_3_0'", null, currentParam));
+    }
+
+    @Test
+    public void testListItemsDisplayCodeNameMatchesListItemsValue() {
+        // evaluateSimpleExpression, check for statsAndLogs
+        // when value instanceof String and testedParameter.getListItemsValue() instanceof Object[]
+        String errorMessage = "ListItemsDisplayCodeName doesn't match ListItemsValue";
+        assertTrue(errorMessage, StatsAndLogsConstants.CODE_LIST[1].length == StatsAndLogsConstants.DISPLAY_DBNAMES[1].length);
+        assertTrue(errorMessage, StatsAndLogsConstants.CODE_LIST[1].length == JobSettingsConstants.DB_INPUT_COMPONENTS[1].length);
     }
 }

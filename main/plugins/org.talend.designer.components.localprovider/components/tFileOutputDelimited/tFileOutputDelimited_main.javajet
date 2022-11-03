@@ -270,6 +270,7 @@ if(("false").equals(ElementParameterParser.getValue(node,"__CSV_OPTION__"))) {
                             <%}%>
                             out<%=cid %> = new <%=isInRowMode?"routines.system.BufferedOutput":"java.io.BufferedWriter"%>(new java.io.OutputStreamWriter(
                                     new java.io.FileOutputStream(fullName_<%=cid%> + splitedFileNo_<%=cid%> + extension_<%=cid%>, <%= isAppend%>),<%= encoding%>));
+                            resourceMap.put("out_<%=cid%>", out<%=cid %>);
                             <%
                             if(isIncludeHeader){
                                 %>
@@ -643,12 +644,15 @@ if(("false").equals(ElementParameterParser.getValue(node,"__CSV_OPTION__"))) {
                                 strWriter<%=cid%> = new java.io.StringWriter();
                                 CsvWriter<%=cid%> = new com.talend.csv.CSVWriter(strWriter<%=cid%>);
                                 CsvWriter<%=cid%>.setSeparator(csvSettings_<%=cid %>.getFieldDelim());
+                                resourceMap.put("out_<%=cid%>", out<%=cid%>);
                                 <%}else{%>
                                 CsvWriter<%=cid%> = new com.talend.csv.CSVWriter(new java.io.BufferedWriter(new java.io.OutputStreamWriter(
                                     new java.io.FileOutputStream(fullName_<%=cid%> + splitedFileNo_<%=cid%> + extension_<%=cid%>, <%=isAppend%>),<%=encoding%>)));
                                 CsvWriter<%=cid%>.setSeparator(csvSettings_<%=cid %>.getFieldDelim());
                                 <%}%>
-
+                                
+                                resourceMap.put("CsvWriter_<%=cid%>", CsvWriter<%=cid%>);
+                                
                                 <%
                                 if(!useOSLineSeparator) {
                                 %>

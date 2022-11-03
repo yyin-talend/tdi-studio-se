@@ -1806,7 +1806,7 @@ public class EmfComponent extends AbstractBasicComponent {
             newParam.setRepositoryValue(componentType.getVersionRepositoryValueParameter());
             for (DistributionBean b : hadoopDistributions) {
                 IElementParameterDefaultValue defaultType = new ElementParameterDefaultValue();
-                final DistributionVersion defaultVersion = b.getDefaultVersion();
+                final DistributionVersion defaultVersion = "SPARK".equals(b.name) ? b.getVersion("SPARK_3_2_x", false) : b.getDefaultVersion();
                 if (defaultVersion == null || defaultVersion.version == null || defaultVersion.version.isEmpty()) {
                     defaultType.setDefaultValue(defaultValue);
                 } else {
@@ -1910,9 +1910,11 @@ public class EmfComponent extends AbstractBasicComponent {
                 newParam.setListItemsShowIf(databricksRuntimeVersionDisplayConditions);
                 newParam.setListItemsNotShowIf(new String[DatabricksRuntimeVersion.getAvailableRuntimeAndSparkVersion().size()]);
                 newParam.setNumRow(xmlParam.getNUMROW() + 1);
-                newParam.setFieldType(EParameterFieldType.CLOSED_LIST);
+                newParam.setFieldType(EParameterFieldType.OPENED_LIST);
+                newParam.setRepositoryValue(SparkBatchConstant.DATABRICKS_RUNTIME_VERSION);
                 newParam.setShow(true);
                 newParam.setGroup(xmlParam.getGROUP());
+                newParam.setDefaultValues(Arrays.asList(new ElementParameterDefaultValue("", "'true'=='true'")));
                 listParam.add(newParam);
             }
         }

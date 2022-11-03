@@ -167,7 +167,11 @@ imports="
                             <%
                             if (("PUBLICKEY").equals(authMethod)) {
                             %>
-                                java.nio.file.Files.write(privateKey_<%=cid%>,lines_<%=cid%>);
+                            try {
+                    			java.nio.file.Files.write(privateKey_<%=cid%>,lines_<%=cid%>);
+                            } catch (java.lang.Exception e) {
+                            	//ignore
+                            }
                             <%}%>
                                 if(14 == se_<%=cid%>.getDisconnectCode()){
                                     throw new IllegalArgumentException("Authentication failed.");
