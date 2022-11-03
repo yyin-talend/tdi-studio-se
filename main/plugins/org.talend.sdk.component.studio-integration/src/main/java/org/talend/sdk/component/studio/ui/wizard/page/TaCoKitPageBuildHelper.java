@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.talend.commons.exception.ExceptionHandler;
 import org.talend.core.model.metadata.builder.connection.Connection;
 import org.talend.core.model.process.EComponentCategory;
 import org.talend.core.model.process.EParameterFieldType;
@@ -16,6 +17,7 @@ import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.model.components.ElementParameter;
 import org.talend.designer.core.model.process.DataNode;
 import org.talend.sdk.component.server.front.model.ConfigTypeNode;
+import org.talend.sdk.component.studio.metadata.model.TaCoKitConfigurationModel;
 import org.talend.sdk.component.studio.model.parameter.Metadatas;
 import org.talend.sdk.component.studio.model.parameter.PropertyNode;
 import org.talend.sdk.component.studio.model.parameter.PropertyTreeCreator;
@@ -42,6 +44,16 @@ public class TaCoKitPageBuildHelper {
         Connection connection = null;
         if (connectionItem != null) {
             connection = connectionItem.getConnection();
+            TaCoKitConfigurationModel taCoKitConfigurationModel = new TaCoKitConfigurationModel(connection);
+            try {
+                TaCoKitConfigurationModel parentConfigurationModel = taCoKitConfigurationModel.getParentConfigurationModel();
+                if (parentConfigurationModel != null) {
+                    connection = parentConfigurationModel.getConnection();
+                }
+
+            } catch (Exception e) {
+                ExceptionHandler.process(e);
+            }
         }
 
         final DummyComponent component = new DummyComponent(configTypeNode.getDisplayName(),
