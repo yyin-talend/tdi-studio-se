@@ -26,8 +26,10 @@ import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.metadata.types.JavaType;
 import org.talend.core.model.metadata.types.JavaTypesManager;
 import org.talend.core.model.process.EConnectionType;
+import org.talend.core.pendo.AbstractPendoTrackManager;
 import org.talend.core.pendo.PendoTrackDataUtil;
-import org.talend.core.pendo.mapper.AbstractPendoTMapManager;
+import org.talend.core.pendo.TrackEvent;
+import org.talend.core.pendo.properties.IPendoDataProperties;
 import org.talend.core.pendo.properties.PendoTMapProperties;
 import org.talend.designer.abstractmap.model.tableentry.IColumnEntry;
 import org.talend.designer.abstractmap.ui.visualmap.link.IMapperLink;
@@ -41,7 +43,7 @@ import org.talend.designer.mapper.utils.DataMapExpressionParser;
 /**
  * DOC jding  class global comment. Detailled comment
  */
-public class PendoMapperManager extends AbstractPendoTMapManager {
+public class PendoMapperManager extends AbstractPendoTrackManager {
 
     private MapperManager mapperManager;
 
@@ -54,7 +56,7 @@ public class PendoMapperManager extends AbstractPendoTMapManager {
     }
 
     @Override
-    protected PendoTMapProperties calculateProperties() {
+    public IPendoDataProperties collectProperties() {
         String[] mainInputTable = new String[1];
         PendoTMapProperties properties = new PendoTMapProperties();
         mapperManager.getInputTables().forEach(table -> {
@@ -302,5 +304,10 @@ public class PendoMapperManager extends AbstractPendoTMapManager {
             }
         }
         return sourceDestMap;
+    }
+
+    @Override
+    public TrackEvent getTrackEvent() {
+        return TrackEvent.TMAP;
     }
 }
