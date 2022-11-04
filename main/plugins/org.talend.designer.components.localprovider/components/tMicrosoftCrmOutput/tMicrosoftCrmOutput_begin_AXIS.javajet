@@ -69,8 +69,8 @@ imports="
             options_<%=cid%> .setProperty(org.apache.axis2.transport.http.HTTPConstants.SO_TIMEOUT,new Integer(<%=timeout%>));
             options_<%=cid%> .setProperty(org.apache.axis2.transport.http.HTTPConstants.CONNECTION_TIMEOUT, new Integer(<%=timeout%>));
 
-            com.microsoft.schemas.crm._2007.webservices.CrmAuthenticationTokenDocument catd_<%=cid%> = com.microsoft.schemas.crm._2007.webservices.CrmAuthenticationTokenDocument.Factory.newInstance();
-            com.microsoft.schemas.crm._2007.coretypes.CrmAuthenticationToken token_<%=cid%> = com.microsoft.schemas.crm._2007.coretypes.CrmAuthenticationToken.Factory.newInstance();
+            com.microsoft.schemas.crm._2007.webservices.CrmAuthenticationTokenDocument catd_<%=cid%> = com.microsoft.schemas.crm._2007.webservices.CrmAuthenticationTokenDocument.StaticFactory.newInstance();
+            com.microsoft.schemas.crm._2007.coretypes.CrmAuthenticationToken token_<%=cid%> = com.microsoft.schemas.crm._2007.coretypes.CrmAuthenticationToken.StaticFactory.newInstance();
             token_<%=cid%>.setAuthenticationType(0);
             token_<%=cid%>.setOrganizationName(<%=orgName%>);
             catd_<%=cid%>.setCrmAuthenticationToken(token_<%=cid%>);
@@ -87,8 +87,8 @@ imports="
             options_<%=cid%> .setProperty(org.apache.axis2.transport.http.HTTPConstants.SO_TIMEOUT,new Integer(<%=timeout%>));
             options_<%=cid%> .setProperty(org.apache.axis2.transport.http.HTTPConstants.CONNECTION_TIMEOUT, new Integer(<%=timeout%>));
 
-        	com.microsoft.schemas.crm._2007.webservices.CrmAuthenticationTokenDocument catd_<%=cid%> = com.microsoft.schemas.crm._2007.webservices.CrmAuthenticationTokenDocument.Factory.newInstance();
-            com.microsoft.schemas.crm._2007.coretypes.CrmAuthenticationToken token_<%=cid%> = com.microsoft.schemas.crm._2007.coretypes.CrmAuthenticationToken.Factory.newInstance();
+        	com.microsoft.schemas.crm._2007.webservices.CrmAuthenticationTokenDocument catd_<%=cid%> = com.microsoft.schemas.crm._2007.webservices.CrmAuthenticationTokenDocument.StaticFactory.newInstance();
+            com.microsoft.schemas.crm._2007.coretypes.CrmAuthenticationToken token_<%=cid%> = com.microsoft.schemas.crm._2007.coretypes.CrmAuthenticationToken.StaticFactory.newInstance();
             token_<%=cid%>.setAuthenticationType(1);
             token_<%=cid%>.setOrganizationName(<%=orgName%>);
             token_<%=cid%>.setCrmTicket(crmTicket_<%=cid%>);

@@ -87,8 +87,8 @@ if ((metadatas != null) && (metadatas.size() > 0)) {
 		            options_<%=cid%> .setProperty(org.apache.axis2.transport.http.HTTPConstants.SO_TIMEOUT,new Integer(<%=timeout%>));
 		            options_<%=cid%> .setProperty(org.apache.axis2.transport.http.HTTPConstants.CONNECTION_TIMEOUT, new Integer(<%=timeout%>));
 
-		            com.microsoft.schemas.crm._2007.webservices.CrmAuthenticationTokenDocument catd_<%=cid%> = com.microsoft.schemas.crm._2007.webservices.CrmAuthenticationTokenDocument.Factory.newInstance();
-		            com.microsoft.schemas.crm._2007.coretypes.CrmAuthenticationToken token_<%=cid%> = com.microsoft.schemas.crm._2007.coretypes.CrmAuthenticationToken.Factory.newInstance();
+		            com.microsoft.schemas.crm._2007.webservices.CrmAuthenticationTokenDocument catd_<%=cid%> = com.microsoft.schemas.crm._2007.webservices.CrmAuthenticationTokenDocument.StaticFactory.newInstance();
+		            com.microsoft.schemas.crm._2007.coretypes.CrmAuthenticationToken token_<%=cid%> = com.microsoft.schemas.crm._2007.coretypes.CrmAuthenticationToken.StaticFactory.newInstance();
 		            token_<%=cid%>.setAuthenticationType(0);
 		            token_<%=cid%>.setOrganizationName(<%=orgName%>);
 		            catd_<%=cid%>.setCrmAuthenticationToken(token_<%=cid%>);
@@ -105,8 +105,8 @@ if ((metadatas != null) && (metadatas.size() > 0)) {
 		            options_<%=cid%> .setProperty(org.apache.axis2.transport.http.HTTPConstants.SO_TIMEOUT,new Integer(<%=timeout%>));
 		            options_<%=cid%> .setProperty(org.apache.axis2.transport.http.HTTPConstants.CONNECTION_TIMEOUT, new Integer(<%=timeout%>));
 
-		        	com.microsoft.schemas.crm._2007.webservices.CrmAuthenticationTokenDocument catd_<%=cid%> = com.microsoft.schemas.crm._2007.webservices.CrmAuthenticationTokenDocument.Factory.newInstance();
-		            com.microsoft.schemas.crm._2007.coretypes.CrmAuthenticationToken token_<%=cid%> = com.microsoft.schemas.crm._2007.coretypes.CrmAuthenticationToken.Factory.newInstance();
+		        	com.microsoft.schemas.crm._2007.webservices.CrmAuthenticationTokenDocument catd_<%=cid%> = com.microsoft.schemas.crm._2007.webservices.CrmAuthenticationTokenDocument.StaticFactory.newInstance();
+		            com.microsoft.schemas.crm._2007.coretypes.CrmAuthenticationToken token_<%=cid%> = com.microsoft.schemas.crm._2007.coretypes.CrmAuthenticationToken.StaticFactory.newInstance();
 		            token_<%=cid%>.setAuthenticationType(1);
 		            token_<%=cid%>.setOrganizationName(<%=orgName%>);
 		            token_<%=cid%>.setCrmTicket(crmTicket_<%=cid%>);
@@ -123,9 +123,9 @@ if ((metadatas != null) && (metadatas.size() > 0)) {
 	     		String logical = ElementParameterParser.getValue(node,"__LOGICAL_OP__");
 	     		List<Map<String, String>> keyColumns = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__CONDITIONS__");
 	     		%>
-	        	com.microsoft.schemas.crm._2006.query.QueryExpression query_<%=cid%> = com.microsoft.schemas.crm._2006.query.QueryExpression.Factory.newInstance();
-	        	com.microsoft.schemas.crm._2006.query.ColumnSet cols_<%=cid%> = com.microsoft.schemas.crm._2006.query.ColumnSet.Factory.newInstance();
-	        	com.microsoft.schemas.crm._2006.query.ArrayOfString aos_<%=cid%> = com.microsoft.schemas.crm._2006.query.ArrayOfString.Factory.newInstance();
+	        	com.microsoft.schemas.crm._2006.query.QueryExpression query_<%=cid%> = com.microsoft.schemas.crm._2006.query.QueryExpression.StaticFactory.newInstance();
+	        	com.microsoft.schemas.crm._2006.query.ColumnSet cols_<%=cid%> = com.microsoft.schemas.crm._2006.query.ColumnSet.StaticFactory.newInstance();
+	        	com.microsoft.schemas.crm._2006.query.ArrayOfString aos_<%=cid%> = com.microsoft.schemas.crm._2006.query.ArrayOfString.StaticFactory.newInstance();
 	       		<%
 	        	if(keyColumns.size()>0 ){
 	            	StringBuffer conditionList = new StringBuffer("");
@@ -134,14 +134,14 @@ if ((metadatas != null) && (metadatas.size() > 0)) {
 	            		nbCondition++;
 	            		String conditionID = cid + "_" + String.valueOf(nbCondition);
 	        			%>
-	            		com.microsoft.schemas.crm._2006.query.ConditionExpression condition_<%=conditionID%> = com.microsoft.schemas.crm._2006.query.ConditionExpression.Factory.newInstance();
+	            		com.microsoft.schemas.crm._2006.query.ConditionExpression condition_<%=conditionID%> = com.microsoft.schemas.crm._2006.query.ConditionExpression.StaticFactory.newInstance();
 	            		condition_<%=conditionID%>.setAttributeName("<%=keyColumn.get("INPUT_COLUMN")%>");
 	            		condition_<%=conditionID%>.setOperator(com.microsoft.schemas.crm._2006.query.ConditionOperator.Enum.forString("<%=keyColumn.get("OPERATOR")%>"));
 	        			<%
 	        			if(!("").equals(keyColumn.get("RVALUE"))){
 	        			%>
-	            			com.microsoft.schemas.crm._2006.query.ArrayOfAnyType values_<%=conditionID%> = com.microsoft.schemas.crm._2006.query.ArrayOfAnyType.Factory.newInstance();
-	            			org.xmlsoap.schemas.soap.encoding.String StringValue_<%=conditionID%> = org.xmlsoap.schemas.soap.encoding.String.Factory.newInstance();
+	            			com.microsoft.schemas.crm._2006.query.ArrayOfAnyType values_<%=conditionID%> = com.microsoft.schemas.crm._2006.query.ArrayOfAnyType.StaticFactory.newInstance();
+	            			org.xmlsoap.schemas.soap.encoding.String StringValue_<%=conditionID%> = org.xmlsoap.schemas.soap.encoding.String.StaticFactory.newInstance();
 	            			StringValue_<%=conditionID%>.setStringValue(<%=keyColumn.get("RVALUE")%>);
 	            			values_<%=conditionID%>.setValueArray(new org.xmlsoap.schemas.soap.encoding.String[] { StringValue_<%=conditionID%> });
 	            			condition_<%=conditionID%>.setValues(values_<%=conditionID%>);
@@ -151,12 +151,12 @@ if ((metadatas != null) && (metadatas.size() > 0)) {
 	        		}
 	        		conditionList.deleteCharAt(conditionList.lastIndexOf(","));
 	        		%>
-	        		com.microsoft.schemas.crm._2006.query.ArrayOfConditionExpression conditions_<%=cid%> = com.microsoft.schemas.crm._2006.query.ArrayOfConditionExpression.Factory.newInstance();
+	        		com.microsoft.schemas.crm._2006.query.ArrayOfConditionExpression conditions_<%=cid%> = com.microsoft.schemas.crm._2006.query.ArrayOfConditionExpression.StaticFactory.newInstance();
 	        		conditions_<%=cid%>.setConditionArray(new com.microsoft.schemas.crm._2006.query.ConditionExpression[] { <%=conditionList%> });
 	        		<%
 	        		if(!("").equals(logical)){
 	        		%>
-	        			com.microsoft.schemas.crm._2006.query.FilterExpression filter_<%=cid%> = com.microsoft.schemas.crm._2006.query.FilterExpression.Factory.newInstance();
+	        			com.microsoft.schemas.crm._2006.query.FilterExpression filter_<%=cid%> = com.microsoft.schemas.crm._2006.query.FilterExpression.StaticFactory.newInstance();
 	        			filter_<%=cid%>.setFilterOperator(com.microsoft.schemas.crm._2006.query.LogicalOperator.Enum.forString("<%=logical%>"));
 	        			filter_<%=cid%>.setConditions(conditions_<%=cid%>);
 	        			query_<%=cid%>.setCriteria(filter_<%=cid%>);
@@ -181,7 +181,7 @@ if ((metadatas != null) && (metadatas.size() > 0)) {
 	        	query_<%=cid%>.setColumnSet(cols_<%=cid%>);
 	        	query_<%=cid%>.setEntityName("<%=entitynamealllower%>");
 
-	        	com.microsoft.schemas.crm._2006.query.PagingInfo pagingInfo_<%=cid%> = com.microsoft.schemas.crm._2006.query.PagingInfo.Factory.newInstance();
+	        	com.microsoft.schemas.crm._2006.query.PagingInfo pagingInfo_<%=cid%> = com.microsoft.schemas.crm._2006.query.PagingInfo.StaticFactory.newInstance();
 	        	int pageNumber_<%=cid%> = 1;
 	        	pagingInfo_<%=cid%>.setPageNumber(pageNumber_<%=cid%>);
 	        	<%boolean debugPaging=false;
@@ -190,14 +190,14 @@ if ((metadatas != null) && (metadatas.size() > 0)) {
 	        	<%}%>
 	        	query_<%=cid%>.setPageInfo(pagingInfo_<%=cid%>);
 
-	        	com.microsoft.schemas.crm._2007.webservices.RetrieveMultipleRequest rmr_<%=cid%> = com.microsoft.schemas.crm._2007.webservices.RetrieveMultipleRequest.Factory.newInstance();
-	        	com.microsoft.schemas.crm._2007.webservices.ExecuteDocument.Execute execute_<%=cid%> = com.microsoft.schemas.crm._2007.webservices.ExecuteDocument.Execute.Factory.newInstance();
-	        	com.microsoft.schemas.crm._2007.webservices.ExecuteDocument executeDoc_<%=cid%> = com.microsoft.schemas.crm._2007.webservices.ExecuteDocument.Factory.newInstance();
+	        	com.microsoft.schemas.crm._2007.webservices.RetrieveMultipleRequest rmr_<%=cid%> = com.microsoft.schemas.crm._2007.webservices.RetrieveMultipleRequest.StaticFactory.newInstance();
+	        	com.microsoft.schemas.crm._2007.webservices.ExecuteDocument.Execute execute_<%=cid%> = com.microsoft.schemas.crm._2007.webservices.ExecuteDocument.Execute.StaticFactory.newInstance();
+	        	com.microsoft.schemas.crm._2007.webservices.ExecuteDocument executeDoc_<%=cid%> = com.microsoft.schemas.crm._2007.webservices.ExecuteDocument.StaticFactory.newInstance();
 	        	rmr_<%=cid%>.setReturnDynamicEntities(true);
 	        	rmr_<%=cid%>.setQuery(query_<%=cid%>);
 	        	execute_<%=cid%>.setRequest(rmr_<%=cid%>);
 	        	executeDoc_<%=cid%>.setExecute(execute_<%=cid%>);
-	        	executeDoc_<%=cid%> = com.microsoft.schemas.crm._2007.webservices.ExecuteDocument.Factory.parse(executeDoc_<%=cid%>.toString());
+	        	executeDoc_<%=cid%> = com.microsoft.schemas.crm._2007.webservices.ExecuteDocument.StaticFactory.parse(executeDoc_<%=cid%>.toString());
 	        	com.microsoft.schemas.crm._2007.webservices.ExecuteResponseDocument result_<%=cid%>;
 	        	boolean fetchMore_<%=cid%> = true;
 	        	while (fetchMore_<%=cid%>) {
@@ -371,13 +371,13 @@ if ((metadatas != null) && (metadatas.size() > 0)) {
 	     		String logical = ElementParameterParser.getValue(node,"__LOGICAL_OP__");
 	     		List<Map<String, String>> keyColumns = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__CONDITIONS__");
 	     		%>
-	        	com.microsoft.schemas.xrm._2011.contracts.QueryExpression query_<%=cid%> = com.microsoft.schemas.xrm._2011.contracts.QueryExpression.Factory.newInstance();
-	        	com.microsoft.schemas.xrm._2011.contracts.ColumnSet cols_<%=cid%> = com.microsoft.schemas.xrm._2011.contracts.ColumnSet.Factory.newInstance();
-	        	com.microsoft.schemas._2003._10.serialization.arrays.ArrayOfstring aos_<%=cid%> = com.microsoft.schemas._2003._10.serialization.arrays.ArrayOfstring.Factory.newInstance();
+	        	com.microsoft.schemas.xrm._2011.contracts.QueryExpression query_<%=cid%> = com.microsoft.schemas.xrm._2011.contracts.QueryExpression.StaticFactory.newInstance();
+	        	com.microsoft.schemas.xrm._2011.contracts.ColumnSet cols_<%=cid%> = com.microsoft.schemas.xrm._2011.contracts.ColumnSet.StaticFactory.newInstance();
+	        	com.microsoft.schemas._2003._10.serialization.arrays.ArrayOfstring aos_<%=cid%> = com.microsoft.schemas._2003._10.serialization.arrays.ArrayOfstring.StaticFactory.newInstance();
 	       		<%
 	        	if(keyColumns.size()>0 ){
 				%>
-	        		com.microsoft.schemas.xrm._2011.contracts.ArrayOfConditionExpression conditions_<%=cid%> = com.microsoft.schemas.xrm._2011.contracts.ArrayOfConditionExpression.Factory.newInstance();
+	        		com.microsoft.schemas.xrm._2011.contracts.ArrayOfConditionExpression conditions_<%=cid%> = com.microsoft.schemas.xrm._2011.contracts.ArrayOfConditionExpression.StaticFactory.newInstance();
 	        		com.microsoft.schemas.xrm._2011.contracts.ConditionExpression condition_<%=cid%> = null;
 	        		com.microsoft.schemas._2003._10.serialization.arrays.ArrayOfanyType values_<%=cid%> = null;
 	        		org.apache.xmlbeans.XmlString conditionValue_<%=cid%> = null;
@@ -390,8 +390,8 @@ if ((metadatas != null) && (metadatas.size() > 0)) {
 						<%
 	        			if(!("").equals(keyColumn.get("RVALUE"))){
 	        			%>
-	            			values_<%=cid%> = com.microsoft.schemas._2003._10.serialization.arrays.ArrayOfanyType.Factory.newInstance();
-	            			conditionValue_<%=cid%> = org.apache.xmlbeans.XmlString.Factory.newInstance();
+	            			values_<%=cid%> = com.microsoft.schemas._2003._10.serialization.arrays.ArrayOfanyType.StaticFactory.newInstance();
+	            			conditionValue_<%=cid%> = org.apache.xmlbeans.XmlString.StaticFactory.newInstance();
 	            			conditionValue_<%=cid%>.setStringValue(<%=keyColumn.get("RVALUE")%>);
 	            			values_<%=cid%>.setAnyTypeArray(new org.apache.xmlbeans.XmlString[]{conditionValue_<%=cid%>});
 	            			condition_<%=cid%>.setValues(values_<%=cid%>);
@@ -402,7 +402,7 @@ if ((metadatas != null) && (metadatas.size() > 0)) {
 	        		<%
 	        		if(!("").equals(logical)){
 	        		%>
-	        			com.microsoft.schemas.xrm._2011.contracts.FilterExpression filter_<%=cid%> = com.microsoft.schemas.xrm._2011.contracts.FilterExpression.Factory.newInstance();
+	        			com.microsoft.schemas.xrm._2011.contracts.FilterExpression filter_<%=cid%> = com.microsoft.schemas.xrm._2011.contracts.FilterExpression.StaticFactory.newInstance();
 	        			filter_<%=cid%>.setFilterOperator(com.microsoft.schemas.xrm._2011.contracts.LogicalOperator.Enum.forString("<%=logical%>"));
 	        			filter_<%=cid%>.setConditions(conditions_<%=cid%>);
 	        			query_<%=cid%>.setCriteria(filter_<%=cid%>);
@@ -427,7 +427,7 @@ if ((metadatas != null) && (metadatas.size() > 0)) {
 	        	query_<%=cid%>.setColumnSet(cols_<%=cid%>);
 	        	query_<%=cid%>.setEntityName("<%=entitynamealllower%>");
 
-	        	com.microsoft.schemas.xrm._2011.contracts.PagingInfo pagingInfo_<%=cid%> = com.microsoft.schemas.xrm._2011.contracts.PagingInfo.Factory.newInstance();
+	        	com.microsoft.schemas.xrm._2011.contracts.PagingInfo pagingInfo_<%=cid%> = com.microsoft.schemas.xrm._2011.contracts.PagingInfo.StaticFactory.newInstance();
 	        	int pageNumber_<%=cid%> = 1;
 	        	pagingInfo_<%=cid%>.setPageNumber(pageNumber_<%=cid%>);
 	        	<%boolean debugPaging=false;
@@ -436,11 +436,11 @@ if ((metadatas != null) && (metadatas.size() > 0)) {
 	        	<%}%>
 	        	query_<%=cid%>.setPageInfo(pagingInfo_<%=cid%>);
 
-	        	com.microsoft.schemas.xrm._2011.contracts.services.RetrieveMultipleDocument.RetrieveMultiple rmr_<%=cid%> = com.microsoft.schemas.xrm._2011.contracts.services.RetrieveMultipleDocument.RetrieveMultiple.Factory.newInstance();
+	        	com.microsoft.schemas.xrm._2011.contracts.services.RetrieveMultipleDocument.RetrieveMultiple rmr_<%=cid%> = com.microsoft.schemas.xrm._2011.contracts.services.RetrieveMultipleDocument.RetrieveMultiple.StaticFactory.newInstance();
 	        	com.microsoft.schemas.xrm._2011.contracts.services.RetrieveMultipleResponseDocument.RetrieveMultipleResponse retrieveMultipleResp_<%=cid%> = null;
 	        	while(true){
 	        		rmr_<%=cid%>.setQuery(query_<%=cid%>);
-	        		com.microsoft.schemas.xrm._2011.contracts.services.RetrieveMultipleDocument rmrdoc_<%=cid%> = com.microsoft.schemas.xrm._2011.contracts.services.RetrieveMultipleDocument.Factory.newInstance();
+	        		com.microsoft.schemas.xrm._2011.contracts.services.RetrieveMultipleDocument rmrdoc_<%=cid%> = com.microsoft.schemas.xrm._2011.contracts.services.RetrieveMultipleDocument.StaticFactory.newInstance();
 	        		rmrdoc_<%=cid%>.setRetrieveMultiple(rmr_<%=cid%>);
 	        		try{
 	        			retrieveMultipleResp_<%=cid%> = serviceStub_<%=cid%>.retrieveMultiple(rmrdoc_<%=cid%>).getRetrieveMultipleResponse();

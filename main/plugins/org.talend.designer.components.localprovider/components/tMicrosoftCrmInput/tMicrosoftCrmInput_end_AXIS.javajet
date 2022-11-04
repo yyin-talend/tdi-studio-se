@@ -41,7 +41,7 @@ if ((metadatas != null) && (metadatas.size() > 0)) {
 	                    rmr_<%=cid%>.setQuery(query_<%=cid%>);
 	                    execute_<%=cid%>.setRequest(rmr_<%=cid%>);
 	        			executeDoc_<%=cid%>.setExecute(execute_<%=cid%>);
-	        			executeDoc_<%=cid%> = com.microsoft.schemas.crm._2007.webservices.ExecuteDocument.Factory.parse(executeDoc_<%=cid%>.toString());
+	        			executeDoc_<%=cid%> = com.microsoft.schemas.crm._2007.webservices.ExecuteDocument.StaticFactory.parse(executeDoc_<%=cid%>.toString());
         			}
 				}
 
