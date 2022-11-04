@@ -144,8 +144,8 @@ import org.talend.core.model.utils.IComponentName;
 import org.talend.core.model.utils.IDragAndDropServiceHandler;
 import org.talend.core.model.utils.SQLPatternUtils;
 import org.talend.core.model.utils.TalendTextUtils;
-import org.talend.core.pendo.PendoTrackDataUtil.TrackEvent;
-import org.talend.core.pendo.PendoTrackSender;
+import org.talend.core.pendo.PendoDataTrackFactory;
+import org.talend.core.pendo.TrackEvent;
 import org.talend.core.pendo.properties.PendoUseAPIProperties;
 import org.talend.core.repository.RepositoryComponentManager;
 import org.talend.core.repository.RepositoryComponentSetting;
@@ -1104,7 +1104,7 @@ public class TalendEditorDropTargetListener extends TemplateTransferDropTargetLi
                         ERepositoryObjectType restType = ERepositoryObjectType.valueOf(ERepositoryObjectType.class,
                                 "METADATA_DATASERVICES_REST");
                         if (restType != null && type.equals(restType)) {
-                            PendoTrackSender.getInstance().sendToPendo(TrackEvent.USE_API_DEF,
+                            PendoDataTrackFactory.getInstance().sendGenericTrack(TrackEvent.USE_API_DEF,
                                     new PendoUseAPIProperties(store.component.getName()));
                         }
                     } catch (Exception e) {
