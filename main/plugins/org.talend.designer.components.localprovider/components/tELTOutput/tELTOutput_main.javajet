@@ -67,12 +67,6 @@ skeleton="../templates/db_output_bulk.skeleton"
           tableName = "\"" + tableName + "\"";
      }%>
 
-    String dbschema_<%=cid%> = <%=dbschema%>;
-    if(dbschema_<%=cid%> != null && dbschema_<%=cid%>.trim().length() > 0) {
-        tableName_<%=cid%> = <%=dbschema%> + "." + <%=tableName%>;
-    }else {
-        tableName_<%=cid%> = <%=tableName%>;
-    }
     <%
     String dataAction = ElementParameterParser.getValue(node,"__DATA_ACTION__");
     String driverClass = null;
@@ -81,6 +75,7 @@ skeleton="../templates/db_output_bulk.skeleton"
     boolean useExistingConn = false;
     boolean dryRun = false;
     boolean autoWrapColumnName = false;
+    boolean autoWrapTableName = false;
     if(previousNode != null) {
         dryRun = ("true").equals(ElementParameterParser.getValue(previousNode, "__DRY_RUN__"));
         if(!dryRun){
@@ -90,12 +85,56 @@ skeleton="../templates/db_output_bulk.skeleton"
             useExistingConn = ("true").equals(ElementParameterParser.getValue(previousNode, "__USE_EXISTING_CONNECTION__"));
         }
         autoWrapColumnName = "true".equals(ElementParameterParser.getValue(previousNode, "__ACTIVE_DATABASE_DELIMITED_IDENTIFIERS__"));
+        autoWrapTableName = "true".equals(ElementParameterParser.getValue(previousNode, "__ACTIVE_ADD_QUOTES_IN_TABLE_NAME__"));
     }
 
     boolean useWhereTable = ("true").equals(ElementParameterParser.getValue(node, "__USE_WHERE_CONDITIONS_TABLE__"));
 	String whereClause = ElementParameterParser.getValue(node, "__WHERE_CLAUSE__");
 	List<Map<String, String>> whereConditions = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__WHERE_CONDITIONS_TABLE__");
+%>
+    String lProtectedChar_<%=cid %> = "";
+    String rProtectedChar_<%=cid %> = "";
+    class ProtectedUtil_<%=cid%>{
+        public String getProtectedValue(String value, String lProtectedChar,String rProtectedChar){
+            if(!isEmpty(value) && !isEmpty(lProtectedChar) && !isEmpty(rProtectedChar)){
+                if (!value.startsWith(lProtectedChar) || !value.endsWith(rProtectedChar)) {
+                    return lProtectedChar + value + rProtectedChar;
+                }
+            }
+            return value;
+        }
+        boolean isEmpty(String value){
+            return value==null || value.trim().isEmpty();
+        }
+    }
+    ProtectedUtil_<%=cid%> util_<%=cid%> = new ProtectedUtil_<%=cid%>();
+<%
+    if(autoWrapTableName){
     %>
+    <%
+            if(MYSQL.equalsIgnoreCase(dbmsId) || SINGLESTORE.equalsIgnoreCase(dbmsId) || "amazon_aurora_id".equalsIgnoreCase(dbmsId)) {
+            %>
+            rProtectedChar_<%=cid %> = lProtectedChar_<%=cid %> = "`";
+            <%
+            } else if(ACCESS.equalsIgnoreCase(dbmsId) || MSSQL.equalsIgnoreCase(dbmsId)) {
+            %>
+            lProtectedChar_<%=cid %> = "[";
+            rProtectedChar_<%=cid %> = "]";
+            <%
+            } else {
+            %>
+            rProtectedChar_<%=cid %> = lProtectedChar_<%=cid %> = "\"";
+            <%
+            }
+    }
+    %>
+    tableName_<%=cid%> = util_<%=cid%>.getProtectedValue(<%=tableName%>,lProtectedChar_<%=cid %>,rProtectedChar_<%=cid %>);
+    String dbschema_<%=cid%> = <%=dbschema%>;
+    if(dbschema_<%=cid%> != null && dbschema_<%=cid%>.trim().length() > 0) {
+       dbschema_<%=cid%>=util_<%=cid%>.getProtectedValue(dbschema_<%=cid%>,lProtectedChar_<%=cid %>,rProtectedChar_<%=cid %>);
+       tableName_<%=cid%> = dbschema_<%=cid%> + "." + tableName_<%=cid%>;
+    }
+    
     String dbUser_<%=cid %> = null;
 <%
     if(!dryRun){

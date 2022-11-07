@@ -183,7 +183,8 @@ public class EditPropertiesAction extends AContextualAction {
 
             // warn re-generate all pom after codejar rename
             ERepositoryObjectType objectType = node.getObjectType();
-            if (!originalName.equals(object.getProperty().getLabel())
+            Property property = object.getProperty();
+            if (property != null && !originalName.equals(property.getLabel())
                     && ERepositoryObjectType.getAllTypesOfCodesJar().contains(objectType)) {
                 String relationType = null;
                 if (ERepositoryObjectType.ROUTINESJAR != null && ERepositoryObjectType.ROUTINESJAR.equals(objectType)) {
