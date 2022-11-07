@@ -316,15 +316,38 @@ public class ProjectRefSettingPage extends ProjectSettingPage {
         viewer.setInput(viewerInput);
         viewer.refresh();
     }
+    
+    private static boolean sameGitRepo(org.talend.core.model.properties.Project refProject) {
+        IGITProviderService gitSvc = IGITProviderService.get();
+        try {
+            if (gitSvc != null && gitSvc.isGITProject(ProjectManager.getInstance().getCurrentProject()) && gitSvc.isStandardMode()) {
+                String mainProjectGitUrl = gitSvc.getCleanGitRepositoryUrl(ProjectManager.getInstance().getCurrentProject().getEmfProject());
+                String refProjectGitUrl = gitSvc.getCleanGitRepositoryUrl(refProject);
+                return StringUtils.equals(refProjectGitUrl, mainProjectGitUrl);
+            }
+        } catch (Exception e) {
+            ExceptionHandler.process(e);
+        }
+        return false;
+    }
 
     private List<ProjectReferenceBean> getReferenceProjectData(Project project) {
         List<ProjectReferenceBean> result = new ArrayList<ProjectReferenceBean>();
         List<ProjectReference> list = project.getProjectReferenceList();
         for (ProjectReference pr : list) {
             ProjectReferenceBean prb = new ProjectReferenceBean();
-            prb.setReferenceProjectLabel(pr.getReferencedProject().getTechnicalLabel());
-            prb.setReferenceProject(pr.getReferencedProject());
-            prb.setReferenceBranch(pr.getReferencedBranch());
+            if (sameGitRepo(pr.getReferencedProject())) {
+                String branchOfMainProject = ProjectManager.getInstance().getMainProjectBranch(ProjectManager.getInstance().getCurrentProject());
+                prb.setReferenceProjectLabel(pr.getReferencedProject().getTechnicalLabel());
+                prb.setReferenceProject(pr.getReferencedProject());
+                // for standard mode, ref project's branch is the same as the main project
+                // change this automatically
+                prb.setReferenceBranch(branchOfMainProject);
+            } else {
+                prb.setReferenceProjectLabel(pr.getReferencedProject().getTechnicalLabel());
+                prb.setReferenceProject(pr.getReferencedProject());
+                prb.setReferenceBranch(pr.getReferencedBranch());
+            }
             result.add(prb);
         }
         List<String> invalidProjectLabelList = ReferenceProjectProblemManager.getInstance()
@@ -442,6 +465,7 @@ public class ProjectRefSettingPage extends ProjectSettingPage {
         if (REPOSITORY_LOCAL == projectRepositoryType) {
             return;
         }
+        
         OverTimePopupDialogTask<List<String>> overTimePopupDialogTask = new OverTimePopupDialogTask<List<String>>() {
 
             @Override
@@ -449,6 +473,16 @@ public class ProjectRefSettingPage extends ProjectSettingPage {
                 IRepositoryService repositoryService = (IRepositoryService) GlobalServiceRegister.getDefault()
                         .getService(IRepositoryService.class);
                 if (repositoryService != null) {
+                    
+                    // for standard mode, same git repository, must be on same branch
+                    if (sameGitRepo(lastSelectedProject.getEmfProject())) {
+                        List<String> arr = new ArrayList<String>();
+                        String branchSelection = ProjectManager.getInstance().getMainProjectBranch(ProjectManager.getInstance().getCurrentProject());
+                        arr.add(branchSelection);
+                        return arr;
+                    }
+                    
+                    // otherwise continue to retrieve as before
                     return repositoryService.getProjectBranch(lastSelectedProject, false);
                 }
                 return null;
@@ -615,6 +649,7 @@ public class ProjectRefSettingPage extends ProjectSettingPage {
                         public void run(IProgressMonitor monitor) throws CoreException {
                             try {
                                 relogin(mainProjectLabel, false, monitor);
+                                // update reference project
                                 saveData();
                             } catch (Exception ex) {
                                 errorException = ex;

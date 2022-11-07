@@ -1108,4 +1108,23 @@ public class LoginHelper {
         });
         return aRef.get();
     }
+    
+    public void setGitMode(boolean standardMode) {
+        if (gitProviderService != null) {
+            gitProviderService.setStandardMode(standardMode);
+        }
+    }
+    
+    public boolean isStandardMode() {
+        if (gitProviderService != null) {
+            return gitProviderService.isStandardMode();
+        }
+        return false;
+    }
+    
+    public void cleanGitHandlers() {
+        if (gitProviderService != null) {
+            gitProviderService.clean();
+        }
+    }
 }

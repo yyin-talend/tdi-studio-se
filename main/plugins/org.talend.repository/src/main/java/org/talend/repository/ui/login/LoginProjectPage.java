@@ -33,8 +33,10 @@ import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.ComboViewer;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
@@ -70,8 +72,10 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Link;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
+import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.forms.events.HyperlinkAdapter;
 import org.eclipse.ui.forms.events.HyperlinkEvent;
 import org.eclipse.ui.forms.widgets.Hyperlink;
@@ -79,6 +83,7 @@ import org.talend.commons.exception.CommonExceptionHandler;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.exception.SystemException;
+import org.talend.commons.ui.runtime.ColorConstants;
 import org.talend.commons.ui.runtime.exception.ExceptionMessageDialog;
 import org.talend.commons.ui.runtime.exception.MessageBoxExceptionHandler;
 import org.talend.commons.ui.runtime.image.EImage;
@@ -108,6 +113,7 @@ import org.talend.core.runtime.CoreRuntimePlugin;
 import org.talend.core.runtime.util.SharedStudioUtils;
 import org.talend.core.service.ICloudSignOnService;
 import org.talend.core.services.ICoreTisService;
+import org.talend.core.services.IGITProviderService;
 import org.talend.core.ui.TalendBrowserLaunchHelper;
 import org.talend.core.ui.branding.IBrandingService;
 import org.talend.core.ui.workspace.ChooseWorkspaceData;
@@ -241,7 +247,17 @@ public class LoginProjectPage extends AbstractLoginActionPage {
     private String lastSelectedBranch;
     
     private boolean isSSOMode = false;
+    
+    private Button gitModeBtn = null;
 
+    private Composite gitModeArea = null;
+    
+    private Link gitModeLink = null;
+    
+    private Composite gitModeInfoArea  = null;
+    
+    private Label gitModeImg = null;
+    
     public LoginProjectPage(Composite parent, LoginDialogV2 dialog, int style) {
         super(parent, dialog, style);
     }
@@ -648,6 +664,7 @@ public class LoginProjectPage extends AbstractLoginActionPage {
         projectViewer.setContentProvider(ArrayContentProvider.getInstance());
         projectViewer.setLabelProvider(new ProjectLabelProvider());
         projectViewer.setSorter(new ViewerSorter());
+
         // Branch Area
         branchArea = new Composite(projectListArea, SWT.NONE);
         branchLabel = new Label(branchArea, SWT.NONE);
@@ -661,6 +678,25 @@ public class LoginProjectPage extends AbstractLoginActionPage {
         refreshProjectButton.setFont(LoginDialogV2.fixedFont);
         refreshProjectButton.setBackground(backgroundBtnColor);
         refreshProjectButton.setImage(ImageProvider.getImage(EImage.REFRESH_ICON));
+        
+        // git mode area
+        gitModeArea = new Composite(projectListArea, SWT.None);
+        gitModeInfoArea = new Composite(gitModeArea, SWT.None);
+        gitModeInfoArea.setBackground(ColorConstants.WARN_COLOR);
+        
+        gitModeImg = new Label(gitModeInfoArea, SWT.None);
+        gitModeImg.setImage(JFaceResources.getImage(Dialog.DLG_IMG_MESSAGE_WARNING));
+        gitModeImg.setBackground(ColorConstants.WARN_COLOR);
+
+        gitModeLink = new Link(gitModeInfoArea, SWT.WRAP);
+        gitModeLink.setText(Messages.getString("LoginProjectPage.gitModeInfo"));
+        gitModeLink.setBackground(ColorConstants.WARN_COLOR);
+        gitModeLink.setFont(LoginDialogV2.fixedFont);
+        
+        gitModeBtn = new Button(gitModeArea, SWT.CHECK | SWT.HORIZONTAL);
+        gitModeBtn.setText(Messages.getString("LoginProjectPage.gitBtn"));
+        gitModeBtn.setFont(LoginDialogV2.fixedFont);
+        
         // Create New Project
         createNewProject = new Button(projectOperationArea, SWT.RADIO);
         createNewProject.setFont(LoginDialogV2.fixedFont);
@@ -873,7 +909,7 @@ public class LoginProjectPage extends AbstractLoginActionPage {
         formData = new FormData();
         formData.left = new FormAttachment(0, TAB_HORIZONTAL_PADDING_LEVEL_3);
         formData.right = new FormAttachment(100, 0);
-        formData.bottom = new FormAttachment(100, 0);
+        formData.bottom = new FormAttachment(gitModeArea, -1 * TAB_VERTICAL_PADDING_LEVEL_2, SWT.TOP);
         branchArea.setLayoutData(formData);
         branchArea.setLayout(new FormLayout());
 
@@ -903,6 +939,32 @@ public class LoginProjectPage extends AbstractLoginActionPage {
             formData.bottom = new FormAttachment(svnBranchComboControl, 0, SWT.CENTER);
         }
         refreshProjectButton.setLayoutData(formData);
+        
+        // git mode info
+        formData = new FormData();
+        formData.right = new FormAttachment(100, 0);
+        formData.left = new FormAttachment(0, 0);
+        formData.bottom = new FormAttachment(100, 0);
+        gitModeArea.setLayoutData(formData);
+        
+        GridLayout gdl = new GridLayout(1, false);
+        gdl.marginWidth = 0;
+        gdl.marginHeight = 0;
+        gitModeArea.setLayout(gdl);
+
+        GridLayout gdlInfo = new GridLayout(2, false);
+        gdlInfo.marginWidth = 0;
+        gdlInfo.marginHeight = 0;
+        gitModeInfoArea.setLayout(gdlInfo);
+
+        GridData gridData = new GridData(SWT.FILL, SWT.BEGINNING, true, false);
+        gridData.widthHint = 320;
+        gridData.grabExcessHorizontalSpace = true;
+        gitModeLink.setLayoutData(gridData);
+        
+        GridData gd = new GridData();
+        gd.horizontalSpan = 2;
+        gitModeBtn.setLayoutData(gd);
 
         formData = new FormData();
         formData.top = new FormAttachment(0, 0);
@@ -1416,6 +1478,17 @@ public class LoginProjectPage extends AbstractLoginActionPage {
                 // nothing need to do
             }
         });
+        
+        if (!LoginHelper.getInstance().isStandardMode()) {
+            gitModeBtn.addSelectionListener(new SelectionAdapter() {
+
+                @Override
+                public void widgetSelected(SelectionEvent e) {
+                    LoginHelper.getInstance().setGitMode(gitModeBtn.getSelection());
+                    LoginHelper.getInstance().cleanGitHandlers();
+                }
+            });
+        }
 
     }
 
@@ -1814,12 +1887,20 @@ public class LoginProjectPage extends AbstractLoginActionPage {
     }
 
     protected void refreshBranchAreaVisible(boolean isRemote) {
+        gitModeArea.setVisible(isRemote & !LoginHelper.getInstance().isStandardMode());
         branchArea.setVisible(isRemote);
         FormData formData = (FormData) branchArea.getLayoutData();
+        FormData formDataGitMode = (FormData) gitModeArea.getLayoutData();
         if (isRemote) {
             formData.height = -1;
+            if (gitModeArea.getVisible()) {
+                formDataGitMode.height = -1;
+            } else {
+                formDataGitMode.height = 0;
+            }
         } else {
             formData.height = 0;
+            formDataGitMode.height = 0;
         }
         formData = (FormData) projectViewer.getControl().getLayoutData();
         if (isRemote) {
