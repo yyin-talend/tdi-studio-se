@@ -6,6 +6,9 @@
  * Automatically generated - do not modify.
  */
 package org.xmlsoap.schemas.soap.encoding.impl;
+
+import java.util.List;
+
 /**
  * An XML IDREFS(@http://schemas.xmlsoap.org/soap/encoding/).
  *
@@ -22,6 +25,21 @@ public class IDREFSImpl extends org.apache.xmlbeans.impl.values.XmlListImpl impl
     protected IDREFSImpl(org.apache.xmlbeans.SchemaType sType, boolean b)
     {
         super(sType, b);
+    }
+
+    @Override
+    public List<?> listValue() {
+        return getListValue();
+    }
+
+    @Override
+    public List<?> xlistValue() {
+        return xgetListValue();
+    }
+
+    @Override
+    public void set(List<?> list) {
+        setListValue(list);
     }
     
     private static final javax.xml.namespace.QName ID$0 = 

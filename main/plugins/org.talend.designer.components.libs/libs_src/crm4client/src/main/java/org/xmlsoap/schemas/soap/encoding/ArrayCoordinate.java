@@ -23,7 +23,7 @@ public interface ArrayCoordinate extends org.apache.xmlbeans.XmlString
      * of this type.
      */
     
-    public static final class Factory
+    static final class StaticFactory
     {
         public static ArrayCoordinate newValue(Object obj) {
           return (ArrayCoordinate) type.newValue( obj ); }
@@ -78,22 +78,6 @@ public interface ArrayCoordinate extends org.apache.xmlbeans.XmlString
         public static ArrayCoordinate parse(org.w3c.dom.Node node, org.apache.xmlbeans.XmlOptions options) throws org.apache.xmlbeans.XmlException {
           return (ArrayCoordinate) org.apache.xmlbeans.XmlBeans.getContextTypeLoader().parse( node, type, options ); }
         
-        /** @deprecated {@link org.apache.xmlbeans.xml.stream.XMLInputStream} */
-        public static ArrayCoordinate parse(org.apache.xmlbeans.xml.stream.XMLInputStream xis) throws org.apache.xmlbeans.XmlException, org.apache.xmlbeans.xml.stream.XMLStreamException {
-          return (ArrayCoordinate) org.apache.xmlbeans.XmlBeans.getContextTypeLoader().parse( xis, type, null ); }
-        
-        /** @deprecated {@link org.apache.xmlbeans.xml.stream.XMLInputStream} */
-        public static ArrayCoordinate parse(org.apache.xmlbeans.xml.stream.XMLInputStream xis, org.apache.xmlbeans.XmlOptions options) throws org.apache.xmlbeans.XmlException, org.apache.xmlbeans.xml.stream.XMLStreamException {
-          return (ArrayCoordinate) org.apache.xmlbeans.XmlBeans.getContextTypeLoader().parse( xis, type, options ); }
-        
-        /** @deprecated {@link org.apache.xmlbeans.xml.stream.XMLInputStream} */
-        public static org.apache.xmlbeans.xml.stream.XMLInputStream newValidatingXMLInputStream(org.apache.xmlbeans.xml.stream.XMLInputStream xis) throws org.apache.xmlbeans.XmlException, org.apache.xmlbeans.xml.stream.XMLStreamException {
-          return org.apache.xmlbeans.XmlBeans.getContextTypeLoader().newValidatingXMLInputStream( xis, type, null ); }
-        
-        /** @deprecated {@link org.apache.xmlbeans.xml.stream.XMLInputStream} */
-        public static org.apache.xmlbeans.xml.stream.XMLInputStream newValidatingXMLInputStream(org.apache.xmlbeans.xml.stream.XMLInputStream xis, org.apache.xmlbeans.XmlOptions options) throws org.apache.xmlbeans.XmlException, org.apache.xmlbeans.xml.stream.XMLStreamException {
-          return org.apache.xmlbeans.XmlBeans.getContextTypeLoader().newValidatingXMLInputStream( xis, type, options ); }
-        
-        private Factory() { } // No instance of this class allowed
+        private StaticFactory() { } // No instance of this class allowed
     }
 }

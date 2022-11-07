@@ -46,15 +46,15 @@ public interface ExpectedMediaTypeDocument extends org.apache.xmlbeans.XmlObject
      */
     public interface ExpectedMediaType extends org.apache.xmlbeans.XmlAnySimpleType
     {
-        java.util.List getListValue();
-        java.util.List xgetListValue();
-        void setListValue(java.util.List list);
+        java.util.List<?> getListValue();
+        java.util.List<?> xgetListValue();
+        void setListValue(java.util.List<?> list);
         /** @deprecated */
-        java.util.List listValue();
+        java.util.List<?> listValue();
         /** @deprecated */
-        java.util.List xlistValue();
+        java.util.List<?> xlistValue();
         /** @deprecated */
-        void set(java.util.List list);
+        void set(java.util.List<?> list);
         public static final org.apache.xmlbeans.SchemaType type = (org.apache.xmlbeans.SchemaType)
             org.apache.xmlbeans.XmlBeans.typeSystemForClassLoader(ExpectedMediaType.class.getClassLoader(), "schemaorg_apache_xmlbeans.system.sE3DFDC56E75679F2AF264CA469AD5996").resolveHandle("expectedmediatypec05aelemtype");
         
@@ -63,7 +63,7 @@ public interface ExpectedMediaTypeDocument extends org.apache.xmlbeans.XmlObject
          * of this type.
          */
         
-        public static final class Factory
+        static final class StaticFactory
         {
             public static org.w3.www._2004._06.xmlmime.ExpectedMediaTypeDocument.ExpectedMediaType newValue(java.lang.Object obj) {
               return (org.w3.www._2004._06.xmlmime.ExpectedMediaTypeDocument.ExpectedMediaType) type.newValue( obj ); }
@@ -74,7 +74,7 @@ public interface ExpectedMediaTypeDocument extends org.apache.xmlbeans.XmlObject
             public static org.w3.www._2004._06.xmlmime.ExpectedMediaTypeDocument.ExpectedMediaType newInstance(org.apache.xmlbeans.XmlOptions options) {
               return (org.w3.www._2004._06.xmlmime.ExpectedMediaTypeDocument.ExpectedMediaType) org.apache.xmlbeans.XmlBeans.getContextTypeLoader().newInstance( type, options ); }
             
-            private Factory() { } // No instance of this class allowed
+            private StaticFactory() { } // No instance of this class allowed
         }
     }
     
@@ -83,7 +83,7 @@ public interface ExpectedMediaTypeDocument extends org.apache.xmlbeans.XmlObject
      * of this type.
      */
     
-    public static final class Factory
+    static final class StaticFactory
     {
         public static org.w3.www._2004._06.xmlmime.ExpectedMediaTypeDocument newInstance() {
           return (org.w3.www._2004._06.xmlmime.ExpectedMediaTypeDocument) org.apache.xmlbeans.XmlBeans.getContextTypeLoader().newInstance( type, null ); }
@@ -135,22 +135,6 @@ public interface ExpectedMediaTypeDocument extends org.apache.xmlbeans.XmlObject
         public static org.w3.www._2004._06.xmlmime.ExpectedMediaTypeDocument parse(org.w3c.dom.Node node, org.apache.xmlbeans.XmlOptions options) throws org.apache.xmlbeans.XmlException {
           return (org.w3.www._2004._06.xmlmime.ExpectedMediaTypeDocument) org.apache.xmlbeans.XmlBeans.getContextTypeLoader().parse( node, type, options ); }
         
-        /** @deprecated {@link org.apache.xmlbeans.xml.stream.XMLInputStream} */
-        public static org.w3.www._2004._06.xmlmime.ExpectedMediaTypeDocument parse(org.apache.xmlbeans.xml.stream.XMLInputStream xis) throws org.apache.xmlbeans.XmlException, org.apache.xmlbeans.xml.stream.XMLStreamException {
-          return (org.w3.www._2004._06.xmlmime.ExpectedMediaTypeDocument) org.apache.xmlbeans.XmlBeans.getContextTypeLoader().parse( xis, type, null ); }
-        
-        /** @deprecated {@link org.apache.xmlbeans.xml.stream.XMLInputStream} */
-        public static org.w3.www._2004._06.xmlmime.ExpectedMediaTypeDocument parse(org.apache.xmlbeans.xml.stream.XMLInputStream xis, org.apache.xmlbeans.XmlOptions options) throws org.apache.xmlbeans.XmlException, org.apache.xmlbeans.xml.stream.XMLStreamException {
-          return (org.w3.www._2004._06.xmlmime.ExpectedMediaTypeDocument) org.apache.xmlbeans.XmlBeans.getContextTypeLoader().parse( xis, type, options ); }
-        
-        /** @deprecated {@link org.apache.xmlbeans.xml.stream.XMLInputStream} */
-        public static org.apache.xmlbeans.xml.stream.XMLInputStream newValidatingXMLInputStream(org.apache.xmlbeans.xml.stream.XMLInputStream xis) throws org.apache.xmlbeans.XmlException, org.apache.xmlbeans.xml.stream.XMLStreamException {
-          return org.apache.xmlbeans.XmlBeans.getContextTypeLoader().newValidatingXMLInputStream( xis, type, null ); }
-        
-        /** @deprecated {@link org.apache.xmlbeans.xml.stream.XMLInputStream} */
-        public static org.apache.xmlbeans.xml.stream.XMLInputStream newValidatingXMLInputStream(org.apache.xmlbeans.xml.stream.XMLInputStream xis, org.apache.xmlbeans.XmlOptions options) throws org.apache.xmlbeans.XmlException, org.apache.xmlbeans.xml.stream.XMLStreamException {
-          return org.apache.xmlbeans.XmlBeans.getContextTypeLoader().newValidatingXMLInputStream( xis, type, options ); }
-        
-        private Factory() { } // No instance of this class allowed
+        private StaticFactory() { } // No instance of this class allowed
     }
 }

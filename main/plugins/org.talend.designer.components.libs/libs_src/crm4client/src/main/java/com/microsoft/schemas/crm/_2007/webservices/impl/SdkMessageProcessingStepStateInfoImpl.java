@@ -6,6 +6,9 @@
  * Automatically generated - do not modify.
  */
 package com.microsoft.schemas.crm._2007.webservices.impl;
+
+import org.apache.xmlbeans.StringEnumAbstractBase;
+
 /**
  * An XML SdkMessageProcessingStepStateInfo(@http://schemas.microsoft.com/crm/2007/WebServices).
  *
@@ -23,7 +26,17 @@ public class SdkMessageProcessingStepStateInfoImpl extends org.apache.xmlbeans.i
     {
         super(sType, b);
     }
-    
+
+    @Override
+    public StringEnumAbstractBase enumValue() {
+        return getEnumValue();
+    }
+
+    @Override
+    public void set(StringEnumAbstractBase e) {
+        setEnumValue(e);
+    }
+
     private static final javax.xml.namespace.QName FORMATTEDVALUE$0 = 
         new javax.xml.namespace.QName("", "formattedvalue");
     

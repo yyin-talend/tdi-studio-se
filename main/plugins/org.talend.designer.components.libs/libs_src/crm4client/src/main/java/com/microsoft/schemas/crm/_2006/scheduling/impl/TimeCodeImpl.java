@@ -6,6 +6,9 @@
  * Automatically generated - do not modify.
  */
 package com.microsoft.schemas.crm._2006.scheduling.impl;
+
+import org.apache.xmlbeans.StringEnumAbstractBase;
+
 /**
  * An XML TimeCode(@http://schemas.microsoft.com/crm/2006/Scheduling).
  *
@@ -22,5 +25,15 @@ public class TimeCodeImpl extends org.apache.xmlbeans.impl.values.JavaStringEnum
     protected TimeCodeImpl(org.apache.xmlbeans.SchemaType sType, boolean b)
     {
         super(sType, b);
+    }
+
+    @Override
+    public StringEnumAbstractBase enumValue() {
+        return getEnumValue();
+    }
+
+    @Override
+    public void set(StringEnumAbstractBase e) {
+        setEnumValue(e);
     }
 }

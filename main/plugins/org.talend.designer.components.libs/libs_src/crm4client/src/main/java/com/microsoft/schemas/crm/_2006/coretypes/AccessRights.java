@@ -15,15 +15,15 @@ package com.microsoft.schemas.crm._2006.coretypes;
  */
 public interface AccessRights extends org.apache.xmlbeans.XmlAnySimpleType
 {
-    java.util.List getListValue();
-    java.util.List xgetListValue();
-    void setListValue(java.util.List list);
+    java.util.List<?> getListValue();
+    java.util.List<?> xgetListValue();
+    void setListValue(java.util.List<?> list);
     /** @deprecated */
-    java.util.List listValue();
+    java.util.List<?> listValue();
     /** @deprecated */
-    java.util.List xlistValue();
+    java.util.List<?> xlistValue();
     /** @deprecated */
-    void set(java.util.List list);
+    void set(java.util.List<?> list);
     public static final org.apache.xmlbeans.SchemaType type = (org.apache.xmlbeans.SchemaType)
         org.apache.xmlbeans.XmlBeans.typeSystemForClassLoader(AccessRights.class.getClassLoader(), "schemaorg_apache_xmlbeans.system.sE3DFDC56E75679F2AF264CA469AD5996").resolveHandle("accessrights75c0type");
     
@@ -122,7 +122,7 @@ public interface AccessRights extends org.apache.xmlbeans.XmlAnySimpleType
          * of this type.
          */
         
-        public static final class Factory
+        static final class StaticFactory
         {
             public static com.microsoft.schemas.crm._2006.coretypes.AccessRights.Item newValue(java.lang.Object obj) {
               return (com.microsoft.schemas.crm._2006.coretypes.AccessRights.Item) type.newValue( obj ); }
@@ -133,7 +133,7 @@ public interface AccessRights extends org.apache.xmlbeans.XmlAnySimpleType
             public static com.microsoft.schemas.crm._2006.coretypes.AccessRights.Item newInstance(org.apache.xmlbeans.XmlOptions options) {
               return (com.microsoft.schemas.crm._2006.coretypes.AccessRights.Item) org.apache.xmlbeans.XmlBeans.getContextTypeLoader().newInstance( type, options ); }
             
-            private Factory() { } // No instance of this class allowed
+            private StaticFactory() { } // No instance of this class allowed
         }
     }
     
@@ -142,7 +142,7 @@ public interface AccessRights extends org.apache.xmlbeans.XmlAnySimpleType
      * of this type.
      */
     
-    public static final class Factory
+    static final class StaticFactory
     {
         public static com.microsoft.schemas.crm._2006.coretypes.AccessRights newValue(java.lang.Object obj) {
           return (com.microsoft.schemas.crm._2006.coretypes.AccessRights) type.newValue( obj ); }
@@ -197,22 +197,6 @@ public interface AccessRights extends org.apache.xmlbeans.XmlAnySimpleType
         public static com.microsoft.schemas.crm._2006.coretypes.AccessRights parse(org.w3c.dom.Node node, org.apache.xmlbeans.XmlOptions options) throws org.apache.xmlbeans.XmlException {
           return (com.microsoft.schemas.crm._2006.coretypes.AccessRights) org.apache.xmlbeans.XmlBeans.getContextTypeLoader().parse( node, type, options ); }
         
-        /** @deprecated {@link org.apache.xmlbeans.xml.stream.XMLInputStream} */
-        public static com.microsoft.schemas.crm._2006.coretypes.AccessRights parse(org.apache.xmlbeans.xml.stream.XMLInputStream xis) throws org.apache.xmlbeans.XmlException, org.apache.xmlbeans.xml.stream.XMLStreamException {
-          return (com.microsoft.schemas.crm._2006.coretypes.AccessRights) org.apache.xmlbeans.XmlBeans.getContextTypeLoader().parse( xis, type, null ); }
-        
-        /** @deprecated {@link org.apache.xmlbeans.xml.stream.XMLInputStream} */
-        public static com.microsoft.schemas.crm._2006.coretypes.AccessRights parse(org.apache.xmlbeans.xml.stream.XMLInputStream xis, org.apache.xmlbeans.XmlOptions options) throws org.apache.xmlbeans.XmlException, org.apache.xmlbeans.xml.stream.XMLStreamException {
-          return (com.microsoft.schemas.crm._2006.coretypes.AccessRights) org.apache.xmlbeans.XmlBeans.getContextTypeLoader().parse( xis, type, options ); }
-        
-        /** @deprecated {@link org.apache.xmlbeans.xml.stream.XMLInputStream} */
-        public static org.apache.xmlbeans.xml.stream.XMLInputStream newValidatingXMLInputStream(org.apache.xmlbeans.xml.stream.XMLInputStream xis) throws org.apache.xmlbeans.XmlException, org.apache.xmlbeans.xml.stream.XMLStreamException {
-          return org.apache.xmlbeans.XmlBeans.getContextTypeLoader().newValidatingXMLInputStream( xis, type, null ); }
-        
-        /** @deprecated {@link org.apache.xmlbeans.xml.stream.XMLInputStream} */
-        public static org.apache.xmlbeans.xml.stream.XMLInputStream newValidatingXMLInputStream(org.apache.xmlbeans.xml.stream.XMLInputStream xis, org.apache.xmlbeans.XmlOptions options) throws org.apache.xmlbeans.XmlException, org.apache.xmlbeans.xml.stream.XMLStreamException {
-          return org.apache.xmlbeans.XmlBeans.getContextTypeLoader().newValidatingXMLInputStream( xis, type, options ); }
-        
-        private Factory() { } // No instance of this class allowed
+        private StaticFactory() { } // No instance of this class allowed
     }
 }

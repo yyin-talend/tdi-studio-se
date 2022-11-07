@@ -6,6 +6,10 @@
  * Automatically generated - do not modify.
  */
 package com.microsoft.schemas.crm._2006.coretypes.impl;
+
+import java.util.List;
+import org.apache.xmlbeans.StringEnumAbstractBase;
+
 /**
  * An XML AccessRights(@http://schemas.microsoft.com/crm/2006/CoreTypes).
  *
@@ -23,6 +27,22 @@ public class AccessRightsImpl extends org.apache.xmlbeans.impl.values.XmlListImp
     {
         super(sType, b);
     }
+
+    @Override
+    public List<?> listValue() {
+        return getListValue();
+    }
+
+    @Override
+    public List<?> xlistValue() {
+        return xgetListValue();
+    }
+
+    @Override
+    public void set(List<?> list) {
+        setListValue(list);
+    }
+
     /**
      * An anonymous inner XML type.
      *
@@ -39,6 +59,16 @@ public class AccessRightsImpl extends org.apache.xmlbeans.impl.values.XmlListImp
         protected ItemImpl(org.apache.xmlbeans.SchemaType sType, boolean b)
         {
             super(sType, b);
+        }
+
+        @Override
+        public StringEnumAbstractBase enumValue() {
+            return getEnumValue();
+        }
+
+        @Override
+        public void set(StringEnumAbstractBase e) {
+            setEnumValue(e);
         }
     }
 }
