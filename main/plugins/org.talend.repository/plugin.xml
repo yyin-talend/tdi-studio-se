@@ -3816,10 +3816,10 @@
       
       <libraryNeeded
         context="plugin:org.talend.libraries.apache"
-        id="reload4j-1.2.19.jar"
-        name="reload4j-1.2.19.jar"
-        mvn_uri="mvn:ch.qos.reload4j/reload4j/1.2.19"
-        uripath="platform:/plugin/org.talend.libraries.apache/lib/reload4j-1.2.19.jar">
+        id="reload4j-1.2.22.jar"
+        name="reload4j-1.2.22.jar"
+        mvn_uri="mvn:ch.qos.reload4j/reload4j/1.2.22"
+        uripath="platform:/plugin/org.talend.libraries.apache/lib/reload4j-1.2.22.jar">
       </libraryNeeded>
     
       <libraryNeeded
