@@ -37,9 +37,11 @@ import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.MultiPageEditorPart;
+import org.talend.analysistask.AnalysisReportRecorder;
 import org.talend.camel.core.model.camelProperties.CamelPropertiesPackage;
 import org.talend.commons.CommonsPlugin;
 import org.talend.commons.exception.ExceptionHandler;
+import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.ui.gmf.util.DisplayUtils;
 import org.talend.core.CorePlugin;
 import org.talend.core.model.components.ComponentCategory;
@@ -77,6 +79,7 @@ import org.talend.designer.core.convert.IProcessConvertService;
 import org.talend.designer.core.convert.ProcessConvertManager;
 import org.talend.designer.core.debug.JobLaunchShortcutManager;
 import org.talend.designer.core.i18n.Messages;
+import org.talend.designer.core.model.analysistask.ProjectAnalysisTask;
 import org.talend.designer.core.model.components.DummyComponent;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.model.components.EmfComponent;
@@ -923,5 +926,11 @@ public class DesignerCoreService implements IDesignerCoreService {
             return jobletProcessProvider.buildNewGraphicProcess(item, true);
         }
         return null;
+    }
+
+    @Override
+    public List<AnalysisReportRecorder> analysis(Project project) throws PersistenceException {
+        ProjectAnalysisTask analysisTask = new ProjectAnalysisTask();
+        return analysisTask.analysis(project);
     }
 }

@@ -137,6 +137,7 @@ import org.talend.core.runtime.process.LastGenerationInfo;
 import org.talend.core.runtime.process.TalendProcessArgumentConstant;
 import org.talend.core.runtime.process.TalendProcessOptionConstants;
 import org.talend.core.runtime.projectsetting.RuntimeLineageManager;
+import org.talend.core.runtime.util.ModuleAccessHelper;
 import org.talend.core.ui.ITestContainerProviderService;
 import org.talend.core.ui.services.IRulesProviderService;
 import org.talend.core.utils.BitwiseOptionUtils;
@@ -1861,6 +1862,8 @@ public class JavaProcessor extends AbstractJavaProcessor implements IJavaBreakpo
                 asList.add("-Dcom.sun.management.jmxremote.authenticate=false"); //$NON-NLS-1$
             }
         }
+
+        asList.addAll(ModuleAccessHelper.getModuleAccessVMArgsForProcessor(this));
 
         vmargs = asList.toArray(new String[0]);
         return vmargs;

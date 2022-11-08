@@ -46,6 +46,7 @@ import org.talend.core.runtime.process.ITalendProcessJavaProject;
 import org.talend.core.runtime.process.LastGenerationInfo;
 import org.talend.core.runtime.process.TalendProcessOptionConstants;
 import org.talend.core.runtime.repository.build.IMavenPomCreator;
+import org.talend.core.runtime.util.ModuleAccessHelper;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.utils.BigDataJobUtil;
 import org.talend.designer.core.utils.JavaProcessUtil;
@@ -195,9 +196,13 @@ public abstract class BigDataJavaProcessor extends MavenJavaProcessor implements
         }
 
         commandSegments.add(command);
-        if(!ignoreCustomJVMSetting) {
-        	commandSegments.addAll(extractJavaVMArguments());
+        
+        if (!ignoreCustomJVMSetting) {
+            commandSegments.addAll(extractJavaVMArguments());
         }
+
+        commandSegments.addAll(ModuleAccessHelper.getModuleAccessVMArgsForProcessor(this));
+
         return commandSegments;
     }
 

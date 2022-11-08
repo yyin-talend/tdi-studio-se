@@ -258,7 +258,7 @@ public class LoginHelper {
         }
         return isCloudUSConnection(connectionBean) || isCloudUSWestConnection(connectionBean)
                 || isCloudEUConnection(connectionBean) || isCloudAPACConnection(connectionBean)
-                || isCloudCustomConnection(connectionBean)|| isCloudAUSConnection(connectionBean);
+                || isCloudCustomConnection(connectionBean)|| isCloudAUSConnection(connectionBean) || isSSOCloudConnection(connectionBean);
     }
 
     public static boolean isCloudUSConnection(ConnectionBean connectionBean) {
@@ -301,6 +301,13 @@ public class LoginHelper {
             return false;
         }
         return RepositoryConstants.REPOSITORY_CLOUD_CUSTOM_ID.equals(connectionBean.getRepositoryId());
+    }
+    
+    public static boolean isSSOCloudConnection(ConnectionBean connectionBean) {
+        if (connectionBean == null) {
+            return false;
+        }        
+        return connectionBean.isLoginViaCloud();
     }
 
     public static boolean isCloudRepository(String repositoryId) {
@@ -488,6 +495,12 @@ public class LoginHelper {
         }
         String lastUsedBranch = null;
         if (isRemoteConnection) {
+            String jsonStr = lastUsedProject.getEmfProject().getUrl();
+            try {
+                lastUsedBranch = prefManipulator.getLastSVNBranch(new JSONObject(jsonStr).getString("location"), lastUsedProject.getTechnicalLabel());
+            } catch (JSONException ex) {
+                ExceptionHandler.process(ex);
+            }
             List<String> branches = null;
             try {
                 /**
@@ -975,7 +988,12 @@ public class LoginHelper {
         if (iStoredConnections == null) {
             return null;
         }
-        List<ConnectionBean> filteredConnections = new ArrayList<ConnectionBean>(iStoredConnections);
+        List<ConnectionBean> filteredConnections = new ArrayList<ConnectionBean>();
+        for (ConnectionBean conn: iStoredConnections) {
+            if (!conn.isLoginViaCloud()) {
+                filteredConnections.add(conn);
+            }
+        }
         boolean isOnlyRemoteConnection = false;
         IBrandingConfiguration brandingConfiguration = brandingService.getBrandingConfiguration();
         if (brandingConfiguration != null) {

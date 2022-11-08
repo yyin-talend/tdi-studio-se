@@ -401,15 +401,6 @@
    <extension
          point="org.talend.core.migrationTask">
 
-  <projecttask
-        beforeLogon="true"
-        breaks="7.3.1"
-        class="org.talend.repository.model.migration.spark.AddKafkaExtraInfo"
-        description="Add key, partition and topic to the output schema of tKafkaInput components"
-        id="org.talend.repository.model.migration.spark.AddKafkaExtraInfo"
-        name="AddKafkaExtraInfo"
-        version="7.3.1">                     
-  </projecttask>
 
   <projecttask
         beforeLogon="true"
@@ -3802,15 +3793,6 @@
               description="Add client configuration when using sftp"
               id="org.talend.repository.model.migration.AddClientParamsToFTPTDI44761"
               name="AddClientParamsToFTPTDI44761"
-              version="8.0.1">
-        </projecttask>
-        <projecttask
-              beforeLogon="false"
-              breaks="8.0.0"
-              class="org.talend.repository.model.migration.SaveDefaultClostdListValueForTckMigrationTask"
-              description="Save default closedlist value for tck components"
-              id="org.talend.repository.model.migration.SaveDefaultClostdListValueForTckMigrationTask"
-              name="SaveDefaultClostdListValueForTckMigrationTask"
               version="8.0.1">
         </projecttask>
         <projecttask

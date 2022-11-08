@@ -53,7 +53,8 @@ Require-Bundle: javax.xml.rpc,
  org.eclipse.swt,
  org.eclipse.core.net,
  org.eclipse.jface,
- org.talend.libraries.apache.axis2
+ org.talend.libraries.apache.axis2,
+ org.talend.signon.util
 Export-Package: org.talend.repository,
  org.talend.repository.constants,
  org.talend.repository.i18n,
@@ -103,4 +104,5 @@ Bundle-ClassPath: .,
  lib/velocity-1.7.jar
 Import-Package: com.fasterxml.jackson.core,
  com.fasterxml.jackson.databind,
- org.slf4j
+ org.slf4j,
+ org.talend.utils.json;version="1.0.0"
