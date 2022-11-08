@@ -29,7 +29,7 @@ public class UpdateLog4jJarUtils {
     
     private static final String SLF4J_VERSION = "1.7.29";
     
-    private static final String RELOG4J_VERSION = "1.2.19";
+    private static final String RELOG4J_VERSION = "1.2.22";
 
     public static final String[] MODULES_NEED_UPDATE_ORDER = { "spark-assembly-1.6.0-hadoop2.6.0.jar" };
 
