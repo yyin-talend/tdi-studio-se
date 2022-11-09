@@ -15,9 +15,12 @@ package org.talend.repository.ui.wizards.ConfigExternalLib;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
+import org.apache.log4j.Logger;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
@@ -49,11 +52,12 @@ import org.talend.repository.i18n.Messages;
 /**
  * Page of the Job Scripts Export Wizard. <br/>
  *
- * @referto WizardArchiveFileResourceExportPage1 $Id: JobScriptsExportWizardPage.java 1 2006-12-13 ä¸‹å�ˆ03:09:07 bqian
+ * @referto WizardArchiveFileResourceExportPage1 $Id: JobScriptsExportWizardPage.java 1 2006-12-13 Ã¤Â¸â€¹Ã¥ï¿½Ë†03:09:07 bqian
  *
  */
 public class ConfigExternalJarPage extends ConfigExternalLibPage {
-
+    private static Logger log = Logger.getLogger(ConfigExternalJarPage.class);
+    
     private Map<IMPORTType, File> newJarFiles = new HashMap<IMPORTType, File>();
 
     private LibraryField libField;
@@ -200,18 +204,33 @@ public class ConfigExternalJarPage extends ConfigExternalLibPage {
             if (GlobalServiceRegister.getDefault().isServiceRegistered(ILibraryManagerUIService.class)) {
                 ILibraryManagerUIService libUiService = GlobalServiceRegister.getDefault()
                         .getService(ILibraryManagerUIService.class);
-                IConfigModuleDialog dialog = libUiService.getConfigModuleDialog(getShell(), null);
+                IConfigModuleDialog dialog = libUiService.getConfigModuleDialog(getShell(), null, true);
                 if (dialog.open() == IDialogConstants.OK_ID) {
-                    IMPORTType type = ComponentFactory.eINSTANCE.createIMPORTType();
-                    type.setNAME(getSelectedItem().getProperty().getLabel());
-                    type.setMODULE(dialog.getModuleName());
-                    type.setMVN(dialog.getMavenURI());
-                    type.setREQUIRED(true);
-                    importTypes.add(type);
+                    String label = getSelectedItem().getProperty().getLabel();
+                    Map<String, String> moduleName2mvnUrls = dialog.getModulesMVNUrls();
+                    if(moduleName2mvnUrls != null) {
+                        Iterator<Entry<String, String>> iterator = moduleName2mvnUrls.entrySet().iterator();
+                        while(iterator.hasNext()) {
+                            Entry<String, String> entry = iterator.next();
+                            IMPORTType itype = buildIMPORTType(label, entry.getKey(), entry.getValue(), true);
+                            importTypes.add(itype);
+                        }
+                    }
                 }
             }
             ConfigExternalJarPage.this.setPageComplete(true);
             return importTypes;
+        }
+        
+
+        private IMPORTType buildIMPORTType(String label, String moduleName, String mvnURI, boolean required) {
+            IMPORTType type = ComponentFactory.eINSTANCE.createIMPORTType();
+            type.setNAME(label);
+            type.setMODULE(moduleName);
+            type.setMVN(mvnURI);
+            type.setREQUIRED(required);
+
+            return type;
         }
     }
 
