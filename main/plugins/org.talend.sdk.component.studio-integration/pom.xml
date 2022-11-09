@@ -316,9 +316,9 @@
       </activation>
       <dependencies>
         <dependency>
-          <groupId>org.openjdk.nashorn</groupId>
-          <artifactId>nashorn-core</artifactId>
-          <version>15.3</version>
+          <groupId>org.mozilla.javascript</groupId>
+          <artifactId>rhino</artifactId>
+          <version>1.7.14</version>
         </dependency>
       </dependencies>
     </profile>
