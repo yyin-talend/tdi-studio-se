@@ -124,6 +124,14 @@
 	</PARAMETERS>
 
 	<ADVANCED_PARAMETERS>
+	
+		<PARAMETER NAME="JDK_VERSION" FIELD="CLOSED_LIST" NUM_ROW="1" SHOW_IF="(READ_BY == 'JSONPATH_WITHOUTPUT_LOOP')">
+			<ITEMS DEFAULT="JDK_8">
+				<ITEM NAME="JDK_8" VALUE="JDK_8"/>
+				<ITEM NAME="JDK_15" VALUE="JDK_15"/>
+			</ITEMS>
+		</PARAMETER>
+    
 		<PARAMETER NAME="ADVANCED_SEPARATOR" FIELD="CHECK" REQUIRED="true" NUM_ROW="10" >
 			<DEFAULT>false</DEFAULT>
 		</PARAMETER>
@@ -151,9 +159,6 @@
 			<DEFAULT>"UTF-8"</DEFAULT>
 		</PARAMETER>
 
-		<PARAMETER NAME="USE_NASHORN" FIELD="CHECK" NUM_ROW="35" SHOW_IF="(READ_BY == 'JSONPATH_WITHOUTPUT_LOOP')">
-			<DEFAULT>false</DEFAULT>
-		</PARAMETER>
 	</ADVANCED_PARAMETERS>
 
 	<CODEGENERATION>
@@ -198,11 +203,11 @@
                 REQUIRED_IF="(READ_BY == 'JSONPATH')" BundleID="" />
 
 			<!-- nashorn for Java 15 and later -->
-			<IMPORT NAME="nashorn-core-15.3.jar" MODULE="nashorn-core-15.3.jar" MVN="mvn:org.openjdk.nashorn/nashorn-core/15.3" REQUIRED_IF="(USE_NASHORN == 'true') AND (READ_BY == 'JSONPATH_WITHOUTPUT_LOOP')"/>
-			<IMPORT NAME="asm-9.1.jar" MODULE="asm-9.1.jar" MVN="mvn:org.ow2.asm/asm/9.1" REQUIRED_IF="(USE_NASHORN == 'true') AND (READ_BY == 'JSONPATH_WITHOUTPUT_LOOP')"/>
-			<IMPORT NAME="asm-commons-9.1.jar" MODULE="asm-commons-9.1.jar" MVN="mvn:org.ow2.asm/asm-commons/9.1" REQUIRED_IF="(USE_NASHORN == 'true') AND (READ_BY == 'JSONPATH_WITHOUTPUT_LOOP')"/>
-			<IMPORT NAME="asm-tree-9.1.jar" MODULE="asm-tree-9.1.jar" MVN="mvn:org.ow2.asm/asm-tree/9.1" REQUIRED_IF="(USE_NASHORN == 'true') AND (READ_BY == 'JSONPATH_WITHOUTPUT_LOOP')"/>
-			<IMPORT NAME="asm-util-9.1.jar" MODULE="asm-util-9.1.jar" MVN="mvn:org.ow2.asm/asm-util/9.1" REQUIRED_IF="(USE_NASHORN == 'true') AND (READ_BY == 'JSONPATH_WITHOUTPUT_LOOP')"/>
+			<IMPORT NAME="nashorn-core-15.4.jar" MODULE="nashorn-core-15.4.jar" MVN="mvn:org.openjdk.nashorn/nashorn-core/15.4" REQUIRED_IF="(JDK_VERSION == 'JDK_15') AND (READ_BY == 'JSONPATH_WITHOUTPUT_LOOP')"/>
+			<IMPORT NAME="asm-9.1.jar" MODULE="asm-9.1.jar" MVN="mvn:org.ow2.asm/asm/9.1" REQUIRED_IF="(JDK_VERSION == 'JDK_15') AND (READ_BY == 'JSONPATH_WITHOUTPUT_LOOP')"/>
+			<IMPORT NAME="asm-commons-9.1.jar" MODULE="asm-commons-9.1.jar" MVN="mvn:org.ow2.asm/asm-commons/9.1" REQUIRED_IF="(JDK_VERSION == 'JDK_15') AND (READ_BY == 'JSONPATH_WITHOUTPUT_LOOP')"/>
+			<IMPORT NAME="asm-tree-9.1.jar" MODULE="asm-tree-9.1.jar" MVN="mvn:org.ow2.asm/asm-tree/9.1" REQUIRED_IF="(JDK_VERSION == 'JDK_15') AND (READ_BY == 'JSONPATH_WITHOUTPUT_LOOP')"/>
+			<IMPORT NAME="asm-util-9.1.jar" MODULE="asm-util-9.1.jar" MVN="mvn:org.ow2.asm/asm-util/9.1" REQUIRED_IF="(JDK_VERSION == 'JDK_15') AND (READ_BY == 'JSONPATH_WITHOUTPUT_LOOP')"/>
 		</IMPORTS>
 	</CODEGENERATION>
 

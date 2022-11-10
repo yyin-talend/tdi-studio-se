@@ -3803,6 +3803,14 @@
               name="Encrypt passwords for nexus proxy password in project setting preference"
               version="7.3.1">
         </projecttask>
+        <projecttask
+              beforeLogon="true"
+              breaks="8.0.1"
+              class="org.talend.repository.model.migration.tFileInputJsonJDK17Task"
+              id="org.talend.repository.model.migration.tFileInputJsonJDK17Task"
+              name="tFtileInputJson convert USE_NASHORN to JDK_VERSION"
+              version="8.0.1">
+        </projecttask>
    </extension>
 
    <extension
