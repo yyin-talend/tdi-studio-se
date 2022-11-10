@@ -22,6 +22,7 @@ import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.process.IConnection;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.INode;
+import org.talend.core.model.utils.ContextParameterUtils;
 import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.designer.dbmap.DbMapComponent;
 import org.talend.designer.dbmap.external.data.ExternalDbMapData;
@@ -169,6 +170,33 @@ public class PostgresGenerationManager extends DbGenerationManager {
             return "\\\"" + field + "\\\"";
         }
 
+    }
+
+    @Override
+    protected String getHandledAlias(DbMapComponent component, String alias) {
+        if (alias != null) {
+            List<String> contextList = getContextList(component);
+            boolean haveReplace = false;
+            for (String context : contextList) {
+                if (alias.contains(context)) {
+                    alias = alias.replaceAll("\\b" + context + "\\b", "\" +" + context + "+ \""); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+                    haveReplace = true;
+                    break;
+                }
+            }
+            if (!haveReplace) {
+                String quote = getQuote(component);
+                List<IConnection> inputConnections = (List<IConnection>) component.getIncomingConnections();
+                IConnection iconn = this.getConnectonByName(inputConnections, alias);
+                alias = getTableName(iconn, alias, quote);
+                if (!(alias.startsWith(quote) && alias.endsWith(quote))) {
+                    // for postgres add quote by default
+                    alias = getNameWithDelimitedIdentifier(alias, quote);
+                }
+                alias = adaptQuoteForTableAndColumnName(component, alias);
+            }
+        }
+        return alias;
     }
 
     @Override
@@ -324,5 +352,14 @@ public class PostgresGenerationManager extends DbGenerationManager {
             expression = expression.replaceAll("\\b" + context + "\\b", "\" +" + context + "+ \"");
         }
         return expression;
+    }
+
+    @Override
+    protected String getTableName(IConnection conn, String name, String quote) {
+        if (!ContextParameterUtils.isContainContextParam(name) && !isContainsGlobalMap(name)) {
+            return getNameWithDelimitedIdentifier(name, quote);
+        } else {
+            return name;
+        }
     }
 }
