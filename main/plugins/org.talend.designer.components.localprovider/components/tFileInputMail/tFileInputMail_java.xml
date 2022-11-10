@@ -98,7 +98,7 @@
       <IMPORT NAME="commons-io-2.8.0" MODULE="commons-io-2.8.0.jar" MVN="mvn:commons-io/commons-io/2.8.0" REQUIRED_IF="(MAIL_TYPE == 'MSG')" />
       
       <IMPORT NAME="talendMsgMailUtil" MODULE="talendMsgMailUtil-1.2-20201022.jar" MVN="mvn:org.talend.components/talendMsgMailUtil/1.2-20201022" UrlPath="platform:/plugin/org.talend.libraries.excel/lib/talendMsgMailUtil-1.2-20201022.jar" REQUIRED_IF="(MAIL_TYPE == 'MSG')" />
-      <IMPORT NAME="reload4j-1.2.19" MODULE="reload4j-1.2.19.jar" MVN="mvn:ch.qos.reload4j/reload4j/1.2.19" REQUIRED_IF="(MAIL_TYPE == 'MSG')" />
+      <IMPORT NAME="reload4j-1.2.22" MODULE="reload4j-1.2.22.jar" MVN="mvn:ch.qos.reload4j/reload4j/1.2.22" REQUIRED_IF="(MAIL_TYPE == 'MSG')" />
     </IMPORTS>
   </CODEGENERATION>
 <RETURNS>

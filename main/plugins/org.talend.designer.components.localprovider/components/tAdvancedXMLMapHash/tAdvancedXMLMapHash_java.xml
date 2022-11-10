@@ -63,8 +63,8 @@
         REQUIRED="true"
       />
       <IMPORT
-        NAME="reload4j-1.2.19"
-        MODULE="reload4j-1.2.19.jar" MVN="mvn:ch.qos.reload4j/reload4j/1.2.19" 
+        NAME="reload4j-1.2.22"
+        MODULE="reload4j-1.2.22.jar" MVN="mvn:ch.qos.reload4j/reload4j/1.2.22" 
         REQUIRED="true"
         BundleID=""
       />

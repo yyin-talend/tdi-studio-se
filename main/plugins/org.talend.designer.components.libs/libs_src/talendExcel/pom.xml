@@ -4,7 +4,7 @@
 
 	<groupId>org.talend.components</groupId>
 	<artifactId>talendExcel</artifactId>
-	<version>1.13-20211020</version>
+	<version>1.14-20220912</version>
 	<packaging>jar</packaging>
 
 	<name>talendExcel</name>
@@ -80,7 +80,7 @@
 		<dependency>
 			<groupId>ch.qos.reload4j</groupId>
 			<artifactId>reload4j</artifactId>
-			<version>1.2.19</version>
+			<version>1.2.22</version>
 		</dependency>
 		<!-- https://mvnrepository.com/artifact/org.apache.commons/commons-lang3 -->
 		<dependency>
