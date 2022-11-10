@@ -74,6 +74,9 @@ public final class TaCoKitNode {
     }
 
     public boolean needsMigration() {
+        if (isVirtualComponentNode() && !Lookups.taCoKitCache().isVirtualConnectionComponent(node.getComponentName())) {
+            return false;
+        }
         final int currentVersion = detail.getVersion();
         final int persistedVersion = getPersistedVersion();
         if (currentVersion < persistedVersion) {

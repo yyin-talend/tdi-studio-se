@@ -85,12 +85,17 @@ public class TaCoKitMigrationManager {
                 if (needMigration || tacokitNode.needsMigration()) {
                     Map<String, String> migratedProps = null;
                     if (taCoKitCache.isVirtualComponentName(compName)) {
-                        String family = Lookups.service().getDetail(compName).get().getId().getFamily();
-                        ConfigTypeNode configTypeNode = taCoKitCache.findDatastoreConfigTypeNodeByName(family);
-                        String id = configTypeNode.getId();
-                        // metadata migration no need to be encoded yet..
-                        migratedProps = configurationClient.migrate(id, tacokitNode.getPersistedVersion(),
-                                tacokitNode.getPropertiesToMigrate(false));
+                        if (taCoKitCache.isVirtualConnectionComponent(compName)) {
+                            String family = Lookups.service().getDetail(compName).get().getId().getFamily();
+                            ConfigTypeNode configTypeNode = taCoKitCache.findDatastoreConfigTypeNodeByName(family);
+                            String id = configTypeNode.getId();
+                            // metadata migration no need to be encoded yet..
+                            migratedProps = configurationClient.migrate(id, tacokitNode.getPersistedVersion(),
+                                    tacokitNode.getPropertiesToMigrate(false));
+                        } else {
+                            ExceptionHandler
+                                    .process(new UnsupportedOperationException("Can't migrate the component: " + compName));
+                        }
                     } else {
                         String id = tacokitNode.getId();
                         // we encode anything that may be escaped to avoid jsonb transform errors
