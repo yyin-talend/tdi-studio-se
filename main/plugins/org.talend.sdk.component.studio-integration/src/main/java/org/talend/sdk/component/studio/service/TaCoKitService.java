@@ -191,23 +191,26 @@ public class TaCoKitService implements ITaCoKitService {
 
     @Override
     public boolean isNeedMigration(String componentName, Map<String, String> persistedProperties) {
-        TaCoKitCache currentCach = Lookups.taCoKitCache();
+        TaCoKitCache currentCache = Lookups.taCoKitCache();
         Optional<ComponentDetail> detail = Lookups.service().getDetail(componentName);
         if (!detail.isPresent()) {
             ExceptionHandler.process(new Exception("Can't find component detail for " + componentName), Priority.WARN);
             return false;
         }
-        if (currentCach.isVirtualComponentName(componentName)) {
-            ConfigTypeNode configTypeNode = Lookups.taCoKitCache()
-                    .findDatastoreConfigTypeNodeByName(detail.get().getId().getFamily());
-            int curVersion = configTypeNode.getVersion();
-            final String version = Optional.ofNullable(
-                    persistedProperties.get(configTypeNode.getProperties().stream().filter(p -> p.getName().equals(p.getPath()))
-                            .findFirst().map(SimplePropertyDefinition::getPath).orElse("configuration") + ".__version"))
-                    .orElse("-1");
-            int persistedVersion = Integer.parseInt(version);
-            if (persistedVersion < curVersion) {
-                return true;
+        if (currentCache.isVirtualComponentName(componentName)) {
+            if (currentCache.isVirtualConnectionComponent(componentName)) {
+                ConfigTypeNode configTypeNode = Lookups.taCoKitCache()
+                        .findDatastoreConfigTypeNodeByName(detail.get().getId().getFamily());
+                int curVersion = configTypeNode.getVersion();
+                final String version = Optional
+                        .ofNullable(persistedProperties.get(
+                                configTypeNode.getProperties().stream().filter(p -> p.getName().equals(p.getPath())).findFirst()
+                                        .map(SimplePropertyDefinition::getPath).orElse("configuration") + ".__version"))
+                        .orElse("-1");
+                int persistedVersion = Integer.parseInt(version);
+                if (persistedVersion < curVersion) {
+                    return true;
+                }
             }
         } else {
             final Collection<PropertyDefinitionDecorator> properties = PropertyDefinitionDecorator
@@ -216,7 +219,7 @@ public class TaCoKitService implements ITaCoKitService {
                 for (PropertyDefinitionDecorator p : properties) {
                     if (p.getConfigurationType() != null && p.getConfigurationTypeName() != null
                             && (p.getPath() + VersionParameter.VERSION_SUFFIX).equals(key)) {
-                        int currentVersion = TaCoKitUtil.getConfigTypeVersion(p, currentCach.getConfigTypeNodes(),
+                        int currentVersion = TaCoKitUtil.getConfigTypeVersion(p, currentCache.getConfigTypeNodes(),
                                 detail.get().getId().getFamilyId());
                         int persistedVersion = Integer.parseInt(persistedProperties.get(key));
                         if (currentVersion > persistedVersion) {
