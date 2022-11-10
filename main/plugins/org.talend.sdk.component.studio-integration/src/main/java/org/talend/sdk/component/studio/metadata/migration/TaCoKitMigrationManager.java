@@ -25,9 +25,11 @@ import org.talend.designer.core.model.utils.emf.talendfile.impl.NodeTypeImpl;
 import org.talend.designer.core.model.utils.emf.talendfile.impl.ProcessTypeImpl;
 import org.talend.designer.core.utils.JavaProcessUtil;
 import org.talend.repository.model.IProxyRepositoryFactory;
+import org.talend.sdk.component.server.front.model.ConfigTypeNode;
 import org.talend.sdk.component.studio.Lookups;
 import org.talend.sdk.component.studio.exception.UserCancelledException;
 import org.talend.sdk.component.studio.i18n.Messages;
+import org.talend.sdk.component.studio.metadata.TaCoKitCache;
 import org.talend.sdk.component.studio.metadata.model.TaCoKitConfigurationModel;
 import org.talend.sdk.component.studio.model.update.TaCoKitUpdateManager;
 import org.talend.sdk.component.studio.websocket.WebSocketClient.V1Component;
@@ -47,7 +49,8 @@ public class TaCoKitMigrationManager {
         configurationClient = Lookups.client().v1().configurationType();
     }
 
-    public void checkProcessItemMigration(final ProcessItem processItem, final IProgressMonitor progressMonitor) throws UserCancelledException {
+    public void checkProcessItemMigration(final ProcessItem processItem, final String compType,
+            final IProgressMonitor progressMonitor) throws UserCancelledException {
         IProgressMonitor monitor = progressMonitor;
         if (monitor == null) {
             monitor = new NullProgressMonitor();
@@ -60,12 +63,13 @@ public class TaCoKitMigrationManager {
             // ignore exception as it happens only during label retrieval and is not critical
         }
         monitor.subTask(Messages.getString("migration.check.process.item", label));
-        checkNodeMigration(processItem, null);
+        checkNodeMigration(processItem, null, compType);
     }
 
-    public void checkNodeMigration(final ProcessItem processItem, String currentNodeName) {
+    public void checkNodeMigration(final ProcessItem processItem, String currentNodeName, String componentType) {
         final ProcessTypeImpl process = (ProcessTypeImpl) processItem.getProcess();
         boolean migrated = false;
+        TaCoKitCache taCoKitCache = Lookups.taCoKitCache();
         for (final Object elem : process.getNode()) {
             NodeTypeImpl node = (NodeTypeImpl) elem;
             if (TaCoKitNode.isTacokit(node)) {
@@ -74,12 +78,26 @@ public class TaCoKitMigrationManager {
                         continue;
                     }
                 }
-                final TaCoKitNode tacokitNode = new TaCoKitNode(node);
+                final TaCoKitNode tacokitNode = new TaCoKitNode(node, componentType);
+                String compName = node.getComponentName();
                 // Check from version properties / component version
-                boolean needMigration = JavaProcessUtil.needMigration(node.getComponentName(), node.getElementParameter());
+                boolean needMigration = JavaProcessUtil.needMigration(compName, node.getElementParameter());
                 if (needMigration || tacokitNode.needsMigration()) {
-                    tacokitNode.migrate(componentClient.migrate(tacokitNode.getId(), tacokitNode.getPersistedVersion(),
-                            tacokitNode.getPropertiesToMigrate()));
+                    Map<String, String> migratedProps = null;
+                    if (taCoKitCache.isVirtualComponentName(compName)) {
+                        String family = Lookups.service().getDetail(compName).get().getId().getFamily();
+                        ConfigTypeNode configTypeNode = taCoKitCache.findDatastoreConfigTypeNodeByName(family);
+                        String id = configTypeNode.getId();
+                        // metadata migration no need to be encoded yet..
+                        migratedProps = configurationClient.migrate(id, tacokitNode.getPersistedVersion(),
+                                tacokitNode.getPropertiesToMigrate(false));
+                    } else {
+                        String id = tacokitNode.getId();
+                        // we encode anything that may be escaped to avoid jsonb transform errors
+                        migratedProps = componentClient.migrate(id, tacokitNode.getPersistedVersion(),
+                                tacokitNode.getPropertiesToMigrate(true));
+                    }
+                    tacokitNode.migrate(migratedProps);
                     migrated = true;
                 }
             }

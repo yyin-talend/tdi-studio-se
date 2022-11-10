@@ -302,9 +302,10 @@ public class ComponentModel extends AbstractBasicComponent implements IAdditiona
     @Override // TODO This is dummy implementation. Correct impl should be added soon
     public List<? extends IElementParameter> createElementParameters(final INode node) {
         if (isNeedMigration() && node.getProcess() != null) {
-            ProcessItem processItem = ItemCacheManager.getProcessItem(node.getProcess().getId());
+            IProcess process = node.getProcess();
+            ProcessItem processItem = ItemCacheManager.getProcessItem(process.getId());
             if (processItem != null) {
-                manager.checkNodeMigration(processItem, getName());
+                manager.checkNodeMigration(processItem, getName(), process.getComponentsType());
             }
         }
         ElementParameterCreator creator = new ElementParameterCreator(this, detail, node, reportPath, isCatcherAvailable);

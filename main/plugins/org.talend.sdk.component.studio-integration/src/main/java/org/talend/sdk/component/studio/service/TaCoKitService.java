@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import org.apache.log4j.Priority;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.talend.commons.CommonsPlugin;
 import org.talend.commons.exception.ExceptionHandler;
@@ -37,6 +38,8 @@ import org.talend.core.model.utils.IComponentInstallerTask;
 import org.talend.core.runtime.CoreRuntimePlugin;
 import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.sdk.component.server.front.model.ComponentDetail;
+import org.talend.sdk.component.server.front.model.ConfigTypeNode;
+import org.talend.sdk.component.server.front.model.SimplePropertyDefinition;
 import org.talend.sdk.component.studio.Lookups;
 import org.talend.sdk.component.studio.ServerManager;
 import org.talend.sdk.component.studio.metadata.TaCoKitCache;
@@ -189,20 +192,38 @@ public class TaCoKitService implements ITaCoKitService {
     @Override
     public boolean isNeedMigration(String componentName, Map<String, String> persistedProperties) {
         TaCoKitCache currentCach = Lookups.taCoKitCache();
-        Optional<ComponentDetail> detail = Lookups.service().getDetail(componentName);         
-        final Collection<PropertyDefinitionDecorator> properties = PropertyDefinitionDecorator
-                .wrap(detail.get().getProperties());
-        for (String key : persistedProperties.keySet()) {
-            for (PropertyDefinitionDecorator p : properties) {
-                if (p.getConfigurationType() != null && p.getConfigurationTypeName() != null
-                        && (p.getPath() + VersionParameter.VERSION_SUFFIX).equals(key)) {
-                    int currentVersion = TaCoKitUtil.getConfigTypeVersion(p, currentCach.getConfigTypeNodes(),
-                            detail.get().getId().getFamilyId());
-                    int persistedVersion = Integer.parseInt(persistedProperties.get(key));
-                    if (currentVersion > persistedVersion) {
-                        return true;
+        Optional<ComponentDetail> detail = Lookups.service().getDetail(componentName);
+        if (!detail.isPresent()) {
+            ExceptionHandler.process(new Exception("Can't find component detail for " + componentName), Priority.WARN);
+            return false;
+        }
+        if (currentCach.isVirtualComponentName(componentName)) {
+            ConfigTypeNode configTypeNode = Lookups.taCoKitCache()
+                    .findDatastoreConfigTypeNodeByName(detail.get().getId().getFamily());
+            int curVersion = configTypeNode.getVersion();
+            final String version = Optional.ofNullable(
+                    persistedProperties.get(configTypeNode.getProperties().stream().filter(p -> p.getName().equals(p.getPath()))
+                            .findFirst().map(SimplePropertyDefinition::getPath).orElse("configuration") + ".__version"))
+                    .orElse("-1");
+            int persistedVersion = Integer.parseInt(version);
+            if (persistedVersion < curVersion) {
+                return true;
+            }
+        } else {
+            final Collection<PropertyDefinitionDecorator> properties = PropertyDefinitionDecorator
+                    .wrap(detail.get().getProperties());
+            for (String key : persistedProperties.keySet()) {
+                for (PropertyDefinitionDecorator p : properties) {
+                    if (p.getConfigurationType() != null && p.getConfigurationTypeName() != null
+                            && (p.getPath() + VersionParameter.VERSION_SUFFIX).equals(key)) {
+                        int currentVersion = TaCoKitUtil.getConfigTypeVersion(p, currentCach.getConfigTypeNodes(),
+                                detail.get().getId().getFamilyId());
+                        int persistedVersion = Integer.parseInt(persistedProperties.get(key));
+                        if (currentVersion > persistedVersion) {
+                            return true;
+                        }
+                        break;
                     }
-                    break;
                 }
             }
         }

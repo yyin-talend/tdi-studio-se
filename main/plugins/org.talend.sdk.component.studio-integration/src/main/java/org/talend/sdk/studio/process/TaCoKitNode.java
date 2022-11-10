@@ -4,8 +4,8 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.talend.sdk.component.studio.util.TaCoKitConst.BASE64_PREFIX;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Base64;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -15,18 +15,29 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.regex.Pattern;
 
+import org.apache.commons.lang3.StringUtils;
 import org.eclipse.emf.common.util.EList;
+import org.talend.core.model.components.ComponentCategory;
+import org.talend.core.model.components.IComponent;
 import org.talend.core.model.process.EParameterFieldType;
+import org.talend.core.model.process.IElementParameter;
+import org.talend.core.model.process.INode;
+import org.talend.core.model.repository.FakePropertyImpl;
+import org.talend.core.ui.component.ComponentsFactoryProvider;
 import org.talend.designer.core.model.components.EParameterName;
+import org.talend.designer.core.model.process.DataNode;
 import org.talend.designer.core.model.utils.emf.talendfile.impl.ElementParameterTypeImpl;
 import org.talend.designer.core.model.utils.emf.talendfile.impl.ElementValueTypeImpl;
 import org.talend.designer.core.model.utils.emf.talendfile.impl.NodeTypeImpl;
+import org.talend.designer.core.ui.editor.process.Process;
 import org.talend.sdk.component.server.front.model.ComponentDetail;
+import org.talend.sdk.component.server.front.model.ConfigTypeNode;
 import org.talend.sdk.component.server.front.model.SimplePropertyDefinition;
 import org.talend.sdk.component.studio.Lookups;
 import org.talend.sdk.component.studio.model.parameter.PropertyDefinitionDecorator;
 import org.talend.sdk.component.studio.model.parameter.VersionParameter;
 import org.talend.sdk.component.studio.model.parameter.WidgetTypeMapper;
+import org.talend.sdk.component.studio.util.TaCoKitConst;
 
 /**
  * Wrapper for NodeTypeImpl - class which represents persisted node (component in the process).
@@ -42,10 +53,11 @@ public final class TaCoKitNode {
 
     private final ComponentDetail detail;
 
-    private static final Set<String> MIGRATION_EXCLUSIONS = new HashSet<>(
-            Arrays.asList(EParameterName.UNIQUE_NAME.getName(), EParameterName.ACTIVATE.getName(), TACOKIT_COMPONENT_ID));
+    private final String compType;
 
-    public TaCoKitNode(final NodeTypeImpl node) {
+    private static Collection<String> commonParameterNames = null;
+
+    public TaCoKitNode(final NodeTypeImpl node, final String componentType) {
         Objects.requireNonNull(node, "Node should not be null");
         if (!isTacokit(node)) {
             throw new IllegalArgumentException("It is not Tacokit node " + node.getComponentName());
@@ -54,6 +66,7 @@ public final class TaCoKitNode {
         final String componentId = getComponentId(node).orElseThrow(() ->
                 new IllegalStateException("No component detail for " + node.getComponentName()));
         this.detail = Lookups.service().getDetailById(componentId);
+        this.compType = componentType == null ? ComponentCategory.CATEGORY_4_DI.getName() : componentType;
     }
 
     public String getId() {
@@ -69,24 +82,71 @@ public final class TaCoKitNode {
         return currentVersion != persistedVersion;
     }
 
-    public Map<String, String> getPropertiesToMigrate() {
+    public Map<String, String> getPropertiesToMigrate(boolean encode) {
         Map<String, String> properties = new HashMap<>();
         @SuppressWarnings("rawtypes")
         EList parameters = node.getElementParameter();
         for (final Object elem : parameters) {
             ElementParameterTypeImpl parameter = (ElementParameterTypeImpl) elem;
-            if (!MIGRATION_EXCLUSIONS.contains(parameter.getName())) {
+            if (!isCommonParameterName(parameter.getName())) {
                 if (EParameterFieldType.TABLE.name().equals(parameter.getField())) {
                     addTableElementValue(properties, parameter);
                 } else if (!EParameterFieldType.TECHNICAL.name().equals(parameter.getField())
                         || parameter.getName().endsWith(VersionParameter.VERSION_SUFFIX)) {
-                    // we encode anything that may be escaped to avoid jsonb transform errors
-                    final String value = Base64.getUrlEncoder().encodeToString(parameter.getValue().getBytes(UTF_8));
-                    properties.put(parameter.getName(), BASE64_PREFIX + value);
+                    String value = null;
+                    if (encode) {
+                        // we encode anything that may be escaped to avoid jsonb transform errors
+                        final String encodedValue = Base64.getUrlEncoder().encodeToString(parameter.getValue().getBytes(UTF_8));
+                        value = BASE64_PREFIX + encodedValue;
+                    } else {
+                        value = parameter.getValue();
+                    }
+                    properties.put(parameter.getName(), value);
                 }
             }
         }
+
+        /**
+         * Avoid the default value not stored issue effects migration
+         */
+        IComponent component = ComponentsFactoryProvider.getInstance().get(node.getComponentName(), compType);
+        INode tmpNode = new DataNode(component, component.getName());
+        Process process = new org.talend.designer.core.ui.editor.process.Process(new FakePropertyImpl());
+        tmpNode.setProcess(process);
+        List<? extends IElementParameter> elementParameters = component.createElementParameters(tmpNode);
+        process.dispose();
+        for (IElementParameter param : elementParameters) {
+            String name = param.getName();
+            if (properties.containsKey(name)) {
+                continue;
+            }
+            if (isCommonParameterName(name)) {
+                continue;
+            }
+            Object value = param.getValue();
+            if (value instanceof String && StringUtils.isNotBlank(value.toString())) {
+                properties.put(name, value.toString());
+            }
+        }
+
         return properties;
+    }
+
+    private Collection<SimplePropertyDefinition> getPropertyDefinition() {
+        Collection<SimplePropertyDefinition> props = null;
+        if (isVirtualComponentNode()) {
+            String family = Lookups.service().getDetail(node.getComponentName()).get().getId().getFamily();
+            ConfigTypeNode configTypeNode = Lookups.taCoKitCache().findDatastoreConfigTypeNodeByName(family);
+            props = configTypeNode.getProperties();
+        } else {
+            props = detail.getProperties();
+        }
+        return props;
+    }
+
+    private boolean isVirtualComponentNode() {
+        String componentName = node.getComponentName();
+        return Lookups.taCoKitCache().isVirtualComponentName(componentName);
     }
 
     private void addTableElementValue(Map<String, String> properties, ElementParameterTypeImpl tableElementParam) {
@@ -124,8 +184,8 @@ public final class TaCoKitNode {
         return null;
     }
 
-    private boolean isComponentProperty(final String name) {
-        return detail.getProperties().stream().anyMatch(property -> property.getPath().equals(name));
+    private boolean isComponentProperty(Collection<SimplePropertyDefinition> props, final String name) {
+        return props.stream().anyMatch(property -> property.getPath().equals(name));
     }
 
     @SuppressWarnings("unchecked")
@@ -134,8 +194,11 @@ public final class TaCoKitNode {
         final List<ElementParameterTypeImpl> tableFieldParamList = getTableFieldParameterFromMigration();
         node.getElementParameter().clear();
         node.getElementParameter().addAll(noMigration);
+
+        Collection<SimplePropertyDefinition> props = getPropertyDefinition();
         properties.entrySet().stream()
-                .filter(e -> (isComponentProperty(e.getKey()) && !(Pattern.compile("(\\[)\\d+(\\])").matcher(e.getKey())
+                .filter(e -> (isComponentProperty(props, e.getKey()) && !(Pattern.compile("(\\[)\\d+(\\])")
+                        .matcher(e.getKey())
                         .find())))
                 .forEach(e -> node.getElementParameter().add(createParameter(e.getKey(), e.getValue())));
         properties.entrySet().stream().filter(e -> e.getKey().endsWith(VersionParameter.VERSION_SUFFIX)).forEach(e -> {
@@ -207,8 +270,9 @@ public final class TaCoKitNode {
     }
 
     private SimplePropertyDefinition getProperty(final String path) {
-        return detail.getProperties().stream().filter(property -> property.getPath().equals(path)).findFirst().orElseThrow(
-                () -> new IllegalArgumentException("Can't find property for name: " + path));
+        Collection<SimplePropertyDefinition> props = getPropertyDefinition();
+        return props.stream().filter(property -> property.getPath().equals(path)).findFirst()
+                .orElseThrow(() -> new IllegalArgumentException("Can't find property for name: " + path));
     }
 
     private String getPropertyType(final String path) {
@@ -229,7 +293,7 @@ public final class TaCoKitNode {
     private List<ElementParameterTypeImpl> getParametersExcludedFromMigration() {
         List<ElementParameterTypeImpl> technical = new ArrayList<>();
         for (final Object elem : node.getElementParameter()) {
-            if (MIGRATION_EXCLUSIONS.contains(((ElementParameterTypeImpl) elem).getName())) {
+            if (isCommonParameterName(((ElementParameterTypeImpl) elem).getName())) {
                 technical.add((ElementParameterTypeImpl) elem);
             }
         }
@@ -252,6 +316,31 @@ public final class TaCoKitNode {
             }
         }
         return Optional.empty();
+    }
+
+    private static boolean isCommonParameterName(String paramName) {
+        if (paramName == null) {
+            return false;
+        }
+        if (paramName.endsWith(":" + EParameterName.PROPERTY_TYPE)
+                || paramName.endsWith(":" + EParameterName.REPOSITORY_PROPERTY_TYPE)) {
+            return true;
+        }
+        return getCommonParameterNames().contains(paramName);
+    }
+
+    private static Collection<String> getCommonParameterNames() {
+        if (commonParameterNames == null) {
+            Collection<String> paramNames = new HashSet<>();
+            paramNames.add(TACOKIT_COMPONENT_ID);
+            paramNames.add(TACOKIT_METADATA_TYPE_ID);
+            paramNames.add(TaCoKitConst.TACOKIT_COMPONENT_PLUGIN_NAME);
+            for (EParameterName parameter : EParameterName.values()) {
+                paramNames.add(parameter.getName());
+            }
+            commonParameterNames = paramNames;
+        }
+        return commonParameterNames;
     }
 
     /**
