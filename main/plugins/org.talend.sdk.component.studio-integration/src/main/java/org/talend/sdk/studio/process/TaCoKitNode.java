@@ -15,21 +15,13 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.regex.Pattern;
 
-import org.apache.commons.lang3.StringUtils;
 import org.eclipse.emf.common.util.EList;
 import org.talend.core.model.components.ComponentCategory;
-import org.talend.core.model.components.IComponent;
 import org.talend.core.model.process.EParameterFieldType;
-import org.talend.core.model.process.IElementParameter;
-import org.talend.core.model.process.INode;
-import org.talend.core.model.repository.FakePropertyImpl;
-import org.talend.core.ui.component.ComponentsFactoryProvider;
 import org.talend.designer.core.model.components.EParameterName;
-import org.talend.designer.core.model.process.DataNode;
 import org.talend.designer.core.model.utils.emf.talendfile.impl.ElementParameterTypeImpl;
 import org.talend.designer.core.model.utils.emf.talendfile.impl.ElementValueTypeImpl;
 import org.talend.designer.core.model.utils.emf.talendfile.impl.NodeTypeImpl;
-import org.talend.designer.core.ui.editor.process.Process;
 import org.talend.sdk.component.server.front.model.ComponentDetail;
 import org.talend.sdk.component.server.front.model.ConfigTypeNode;
 import org.talend.sdk.component.server.front.model.SimplePropertyDefinition;
@@ -106,29 +98,6 @@ public final class TaCoKitNode {
                     }
                     properties.put(parameter.getName(), value);
                 }
-            }
-        }
-
-        /**
-         * Avoid the default value not stored issue effects migration
-         */
-        IComponent component = ComponentsFactoryProvider.getInstance().get(node.getComponentName(), compType);
-        INode tmpNode = new DataNode(component, component.getName());
-        Process process = new org.talend.designer.core.ui.editor.process.Process(new FakePropertyImpl());
-        tmpNode.setProcess(process);
-        List<? extends IElementParameter> elementParameters = component.createElementParameters(tmpNode);
-        process.dispose();
-        for (IElementParameter param : elementParameters) {
-            String name = param.getName();
-            if (properties.containsKey(name)) {
-                continue;
-            }
-            if (isCommonParameterName(name)) {
-                continue;
-            }
-            Object value = param.getValue();
-            if (value instanceof String && StringUtils.isNotBlank(value.toString())) {
-                properties.put(name, value.toString());
             }
         }
 
