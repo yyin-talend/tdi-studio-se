@@ -785,6 +785,11 @@ public class TaCoKitUtil {
         }
     }
 
+    public static String getVersionPropName(ConfigTypeNode configTypeNode) {
+        return configTypeNode.getProperties().stream().filter(p -> p.getName().equals(p.getPath())).findFirst()
+                .map(SimplePropertyDefinition::getPath).orElse("configuration") + ".__version";
+    }
+
     public static class GAV {
 
         private String groupId;
