@@ -93,9 +93,7 @@ public class TaCoKitConfigurationModel {
     }
 
     public int getVersion() {
-        final String version = Optional.ofNullable(getProperties().get(configType.getProperties().stream()
-                .filter(p -> p.getName().equals(p.getPath()))
-                .findFirst().map(SimplePropertyDefinition::getPath).orElse("configuration") + ".__version"))
+        final String version = Optional.ofNullable(getProperties().get(TaCoKitUtil.getVersionPropName(configType)))
                 .orElse("-1");
         return Integer.parseInt(version);
     }

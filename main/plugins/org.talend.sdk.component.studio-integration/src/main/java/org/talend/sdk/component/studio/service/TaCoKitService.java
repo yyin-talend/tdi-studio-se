@@ -39,7 +39,6 @@ import org.talend.core.runtime.CoreRuntimePlugin;
 import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.sdk.component.server.front.model.ComponentDetail;
 import org.talend.sdk.component.server.front.model.ConfigTypeNode;
-import org.talend.sdk.component.server.front.model.SimplePropertyDefinition;
 import org.talend.sdk.component.studio.Lookups;
 import org.talend.sdk.component.studio.ServerManager;
 import org.talend.sdk.component.studio.metadata.TaCoKitCache;
@@ -203,9 +202,7 @@ public class TaCoKitService implements ITaCoKitService {
                         .findDatastoreConfigTypeNodeByName(detail.get().getId().getFamily());
                 int curVersion = configTypeNode.getVersion();
                 final String version = Optional
-                        .ofNullable(persistedProperties.get(
-                                configTypeNode.getProperties().stream().filter(p -> p.getName().equals(p.getPath())).findFirst()
-                                        .map(SimplePropertyDefinition::getPath).orElse("configuration") + ".__version"))
+                        .ofNullable(persistedProperties.get(TaCoKitUtil.getVersionPropName(configTypeNode)))
                         .orElse("-1");
                 int persistedVersion = Integer.parseInt(version);
                 if (persistedVersion < curVersion) {
