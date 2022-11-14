@@ -12,15 +12,19 @@
  */
 package org.talend.sdk.component.studio.metadata.migration;
 
+import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
+import org.eclipse.emf.common.util.EList;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.repository.model.ProxyRepositoryFactory;
+import org.talend.designer.core.model.utils.emf.talendfile.ElementParameterType;
 import org.talend.designer.core.model.utils.emf.talendfile.impl.NodeTypeImpl;
 import org.talend.designer.core.model.utils.emf.talendfile.impl.ProcessTypeImpl;
 import org.talend.designer.core.utils.JavaProcessUtil;
@@ -32,6 +36,7 @@ import org.talend.sdk.component.studio.i18n.Messages;
 import org.talend.sdk.component.studio.metadata.TaCoKitCache;
 import org.talend.sdk.component.studio.metadata.model.TaCoKitConfigurationModel;
 import org.talend.sdk.component.studio.model.update.TaCoKitUpdateManager;
+import org.talend.sdk.component.studio.util.TaCoKitUtil;
 import org.talend.sdk.component.studio.websocket.WebSocketClient.V1Component;
 import org.talend.sdk.component.studio.websocket.WebSocketClient.V1ConfigurationType;
 import org.talend.sdk.studio.process.TaCoKitNode;
@@ -80,17 +85,28 @@ public class TaCoKitMigrationManager {
                 }
                 final TaCoKitNode tacokitNode = new TaCoKitNode(node, componentType);
                 String compName = node.getComponentName();
+                EList elementParameter = node.getElementParameter();
                 // Check from version properties / component version
-                boolean needMigration = JavaProcessUtil.needMigration(compName, node.getElementParameter());
+                boolean needMigration = JavaProcessUtil.needMigration(compName, elementParameter);
                 if (needMigration || tacokitNode.needsMigration()) {
                     Map<String, String> migratedProps = null;
                     if (taCoKitCache.isVirtualComponentName(compName)) {
                         if (taCoKitCache.isVirtualConnectionComponent(compName)) {
+                            Map<String, String> props = new HashMap<>();
+                            for (Object obj : elementParameter) {
+                                if (obj instanceof ElementParameterType) {
+                                    ElementParameterType ep = (ElementParameterType) obj;
+                                    props.put(ep.getName(), ep.getValue());
+                                }
+                            }
                             String family = Lookups.service().getDetail(compName).get().getId().getFamily();
                             ConfigTypeNode configTypeNode = taCoKitCache.findDatastoreConfigTypeNodeByName(family);
                             String id = configTypeNode.getId();
+                            final String version = Optional.ofNullable(props.get(TaCoKitUtil.getVersionPropName(configTypeNode)))
+                                    .orElse("-1");
+                            int persistedVersion = Integer.parseInt(version);
                             // metadata migration no need to be encoded yet..
-                            migratedProps = configurationClient.migrate(id, tacokitNode.getPersistedVersion(),
+                            migratedProps = configurationClient.migrate(id, persistedVersion,
                                     tacokitNode.getPropertiesToMigrate(false));
                         } else {
                             ExceptionHandler
