@@ -618,6 +618,7 @@ public class LoginProjectPage extends AbstractLoginActionPage {
             connectionsViewer = new ComboViewer(connectionManageArea, SWT.READ_ONLY);
             connectionsViewer.getControl().setFont(LoginDialogV2.fixedFont);; 
         } 
+        title.setText("20221114");
 
         manageButton = new Button(connectionManageArea, SWT.NONE);
         manageButton.setFont(LoginDialogV2.fixedFont);
