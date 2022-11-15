@@ -212,7 +212,7 @@
    </ADVANCED_PARAMETERS>
    <CODEGENERATION>
      <IMPORTS>
-		<IMPORT NAME="Driver-HSQLDb" MODULE="hsqldb.jar" MVN="mvn:org.talend.libraries/hsqldb/6.0.0"  UrlPath="platform:/plugin/org.talend.libraries.jdbc.hsql/lib/hsqldb.jar" REQUIRED="true"/>
+		<IMPORT NAME="Driver-HSQLDb" MODULE="hsqldb-2.7.1-jdk8.jar" MVN="mvn:org.hsqldb/hsqldb/2.7.1/jar/jdk8" REQUIRED="true"/>
      </IMPORTS>
    </CODEGENERATION>
 

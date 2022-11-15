@@ -550,6 +550,8 @@ class HSQLDBManager extends Manager {
         this.tls = tls;
     }
     protected String getDriver() {
+    	System.setProperty("hsqldb.method_class_names", "net.ucanaccess.converters.*");
+    	
         return "org.hsqldb.jdbcDriver";
     }
     public String getSeparator(){
