@@ -34,6 +34,12 @@ if ((metadatas != null) && (metadatas.size() > 0)) {
 		    String serviceURL = ElementParameterParser.getValue(node, "__SERVICE_ROOT_URL__");
 		    String applicationId = ElementParameterParser.getValue(node, "__APPLICATION_ID__");
 		    String authority = ElementParameterParser.getValue(node, "__AUTHORITY__");
+		    String oauthTokenEndpoint = ElementParameterParser.getValue(node, "__OAUTH_TOKEN_ENDPOINT__");
+		    String premiseOAuthFlow = ElementParameterParser.getValue(node, "__PREMISE_AUTH_FLOW__");
+		    if(premiseOAuthFlow == null || premiseOAuthFlow.trim().isEmpty()){
+		    	// I set a default value
+		    	premiseOAuthFlow = "AUTHORIZATION_CODE";
+		    }
 		    String timeout = ElementParameterParser.getValue(node, "__TIMEOUT__");
 		    boolean reuseHttpClient = ("true").equals(ElementParameterParser.getValue(node,"__REUSE_HTTP_CLIENT__"));
 
@@ -102,10 +108,18 @@ if ((metadatas != null) && (metadatas.size() > 0)) {
 			<%
 				}
 				else{
+					if("ROPC".equals(premiseOAuthFlow)) {
+			%>
+					    org.talend.ms.crm.odata.ClientConfiguration clientConfig_<%=cid%> = org.talend.ms.crm.odata.ClientConfigurationFactory
+					.buildOAuthPremiseROPCClientConfiguration(<%=userName%>, password_<%=cid%>, <%=oauthTokenEndpoint%>, <%=serviceURL%>, <%=applicationId%>, clientSecret_<%=cid%>, <%=oauth_resource%>, "");
+			<%
+					}
+					else {
 			%>
 			    org.talend.ms.crm.odata.ClientConfiguration clientConfig_<%=cid%> = org.talend.ms.crm.odata.ClientConfigurationFactory
                         .buildOAuthPremiseClientConfiguration(<%=userName%>, password_<%=cid%>, <%=authority%>, <%=serviceURL%>, <%=applicationId%>, clientSecret_<%=cid%>, <%=redirectUrl%>, <%=oauth_resource%>);
 			<%
+					}
 				}
 			    } else {
 			    	if("NATIVE".equals(onlineRegisterApp)){
