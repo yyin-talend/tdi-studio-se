@@ -42,9 +42,17 @@ skeleton="../templates/db_output_bulk.skeleton"
 	if(useExistingS3Connection){
 		current_node = NodeUtil.getNodeByUniqueName(node.getProcess(),s3ConnectionCid,true);
 	}
-	boolean inheritRole = "INHERIT_CREDENTIALS".equalsIgnoreCase(ElementParameterParser.getValue(current_node, "__CREDENTIAL_PROVIDER__"));
+	String credentialProvider = ElementParameterParser.getValue(current_node, "__CREDENTIAL_PROVIDER__");
 	List<IMetadataColumn> columnList = getColumnList(node);
+	
+	if(!"STATIC_CREDENTIALS".equalsIgnoreCase(credentialProvider)) {
 %>
+    if(true) {
+        throw new IllegalArgumentException("Not supported S3 connection credential type: <%=credentialProvider%>. Please use \"Static Credentials.\"");
+    }
+<%}%>
+
+
 	String dbschema_<%=cid%> = null;
 	<%
 	if(useExistingConnection) {
@@ -237,13 +245,13 @@ skeleton="../templates/db_output_bulk.skeleton"
     	passwordFieldKey = "__SECRET_KEY_SSH__";
     }
     
-    if(useExistingS3Connection && !assumeRole){
-    	if(inheritRole){
-    		access_key = "\"\"";
+
+    
+    if(!assumeRole){
 %>
-			final String decryptedPwd_<%=cid%> = ""; 
+
 <%
-    	}else{
+
     		access_key = ElementParameterParser.getValue(current_node, "__ACCESS_KEY__");
     		if (ElementParameterParser.canEncrypt(current_node, passwordFieldKey)) {
 %> 
@@ -254,26 +262,8 @@ skeleton="../templates/db_output_bulk.skeleton"
 				final String decryptedPwd_<%=cid%> = <%= ElementParameterParser.getValue(current_node, passwordFieldKey)%>; 
 <%
 			}
-    	}
-    }else if(!useExistingS3Connection && !assumeRole){
-    	if(inheritRole){
-    		access_key = "\"\"";
-%>
-			final String decryptedPwd_<%=cid%> = ""; 
-<%
-    	}else{
-    		access_key = ElementParameterParser.getValue(current_node, "__ACCESS_KEY__");
-    		if (ElementParameterParser.canEncrypt(current_node, passwordFieldKey)) {
-%> 
-				final String decryptedPwd_<%=cid%> = routines.system.PasswordEncryptUtil.decryptPassword(<%=ElementParameterParser.getEncryptedValue(current_node, passwordFieldKey)%>);
-<%
-			} else {
-%>
-				final String decryptedPwd_<%=cid%> = <%= ElementParameterParser.getValue(current_node, passwordFieldKey)%>; 
-<%
-			}
-		}
-	} else {
+    } else {
+    	access_key = "\"\"";
 %>
 		final String decryptedPwd_<%=cid%> = "";
 <%
@@ -341,7 +331,7 @@ skeleton="../templates/db_output_bulk.skeleton"
 <%		
 			}
 		}
-	} else if(!assumeRole && !inheritRole) {
+	} else if(!assumeRole) {
 %>
 	    .append("aws_access_key_id=").append(<%=access_key%>).append(";aws_secret_access_key=").append(decryptedPwd_<%=cid%>)
 <%
