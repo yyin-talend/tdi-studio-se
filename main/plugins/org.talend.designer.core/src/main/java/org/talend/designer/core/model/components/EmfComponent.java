@@ -160,7 +160,6 @@ import org.talend.hadoop.distribution.model.DistributionVersionModule;
 import org.talend.hadoop.distribution.model.DynamicDistributionVersion;
 import org.talend.hadoop.distribution.utils.ComponentConditionUtil;
 import org.talend.librariesmanager.model.ModulesNeededProvider;
-import org.talend.librariesmanager.model.service.LocalLibraryManager;
 import org.talend.librariesmanager.prefs.LibrariesManagerUtils;
 
 /**
@@ -3332,7 +3331,6 @@ public class EmfComponent extends AbstractBasicComponent {
                 ExceptionHandler.process(e);
             }
         }
-        boolean isExtComponentProvider = LocalLibraryManager.isExtComponentProvider(provider.getId());
         for (DistributionVersionModule versionModule : dv.getVersionModules()) {
             IMPORTType importType = ComponentFactory.eINSTANCE.createIMPORTType();
             importType.setMODULEGROUP(versionModule.moduleGroup.getModuleName());
@@ -3340,8 +3338,7 @@ public class EmfComponent extends AbstractBasicComponent {
             importType.setREQUIREDIF(versionModule.getModuleRequiredIf().getConditionString());
             ModulesNeededProvider
             .collectModuleNeeded(compName, // $NON-NLS-1$
-                            importType, cachedModuleNeededList, versionModule.distributionVersion.getVersion(),
-                            isExtComponentProvider);
+                    importType, cachedModuleNeededList, versionModule.distributionVersion.getVersion());
         }
         distributionModuleNeededMap.put(dv, cachedModuleNeededList);
         moduleNeededList.addAll(cachedModuleNeededList);
@@ -3412,7 +3409,6 @@ public class EmfComponent extends AbstractBasicComponent {
         Set<DistributionModuleGroup> nodeModuleGroups = hc.getModuleGroups(hadoopLibParamName, compName);
         if (nodeModuleGroups != null) {
             Iterator<DistributionModuleGroup> moduleGroups = nodeModuleGroups.iterator();
-            boolean isExtComponentProvider = LocalLibraryManager.isExtComponentProvider(provider.getId());
             while (moduleGroups.hasNext()) {
                 DistributionModuleGroup group = moduleGroups.next();
                 IMPORTType importType = ComponentFactory.eINSTANCE.createIMPORTType();
@@ -3423,8 +3419,7 @@ public class EmfComponent extends AbstractBasicComponent {
                     importType.setREQUIREDIF(new NestedComponentCondition(condition).getConditionString());
                 }
                 importType.setMRREQUIRED(group.isMrRequired());
-                ModulesNeededProvider.collectModuleNeeded(compName, importType, cachedModuleNeededList, hc.getVersion(),
-                        isExtComponentProvider);
+                ModulesNeededProvider.collectModuleNeeded(compName, importType, cachedModuleNeededList, hc.getVersion());
             }
         }
         hadoopLibModuleNeededMap.put(hc, cachedModuleNeededList);
@@ -3466,10 +3461,8 @@ public class EmfComponent extends AbstractBasicComponent {
 
         Set<String> moduleNames = new HashSet<>();
         List<IMPORTType> importTypes = info.getImportType();
-        boolean isExtComponentProvider = LocalLibraryManager.isExtComponentProvider(provider.getId());
         for (IMPORTType importType : importTypes) {
-            ModulesNeededProvider.collectModuleNeeded(this.getName(), importType, componentImportNeedsList,
-                    isExtComponentProvider);
+            ModulesNeededProvider.collectModuleNeeded(this.getName(), importType, componentImportNeedsList);
         }
         for (String name : info.getComponentNames()) {
             IComponent component = null;
