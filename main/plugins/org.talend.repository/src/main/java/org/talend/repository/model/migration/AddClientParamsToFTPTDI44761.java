@@ -17,7 +17,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
-import java.util.Map;
 
 import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.core.language.ECodeLanguage;
@@ -70,30 +69,23 @@ public class AddClientParamsToFTPTDI44761 extends AbstractJobMigrationTask {
 
                             public void transform(NodeType node) {
                             	String useExistConnection = ComponentUtilities.getNodePropertyValue(node, "USE_EXISTING_CONNECTION");
-                            	String passwordFieldName = "";
                             	boolean useSFTP = "true".equals(ComponentUtilities.getNodePropertyValue(node, "SFTP"));
-                                if (useSFTP && (useExistConnection == null || "false". equals(useExistConnection))) {
-                                	
-                                	List<ElementValueType> values = new ArrayList<ElementValueType>();
+                                if (useSFTP && (useExistConnection == null || "false". equals(useExistConnection)) 
+                                		&& ComponentUtilities.getNodeProperty(node, "CONFIG_CLIENT") == null) {
+                                    ComponentUtilities.addNodeProperty(node, "CONFIG_CLIENT", "CHECK");
+                                    ComponentUtilities.getNodeProperty(node, "CONFIG_CLIENT").setValue("true");
+                                    ComponentUtilities.addNodeProperty(node, "CLIENT_PARAMETERS", "TABLE");
+                                    
+                                    List<ElementValueType> values = new ArrayList<ElementValueType>();
                                     TalendFileFactory fileFact = TalendFileFactory.eINSTANCE;
                                     List<String> params = new ArrayList<>();
-                                	
-                                	if (ComponentUtilities.getNodeProperty(node, "CONFIG_CLIENT") == null) {
-	                                    ComponentUtilities.addNodeProperty(node, "CONFIG_CLIENT", "CHECK");
-	                                    ComponentUtilities.getNodeProperty(node, "CONFIG_CLIENT").setValue("true");
-	                                    ComponentUtilities.addNodeProperty(node, "CLIENT_PARAMETERS", "TABLE");
-	                                    
-	                                    params.add("\"kex\":\"ecdh-sha2-nistp256,ecdh-sha2-nistp384,ecdh-sha2-nistp521,diffie-hellman-group14-sha1,diffie-hellman-group-exchange-sha256,diffie-hellman-group-exchange-sha1,diffie-hellman-group1-sha1,curve25519-sha256,curve25519-sha256@libssh.org,diffie-hellman-group16-sha512,diffie-hellman-group18-sha512,diffie-hellman-group14-sha256\"");
-	                                    params.add("\"server_host_key\":\"ssh-rsa,ssh-dss,ecdsa-sha2-nistp256,ecdsa-sha2-nistp384,ecdsa-sha2-nistp521,rsa-sha2-512,rsa-sha2-256\"");
-	                                    params.add("\"cipher.s2c\":\"aes128-ctr,aes128-cbc,3des-ctr,3des-cbc,blowfish-cbc,aes192-ctr,aes192-cbc,aes256-ctr,aes256-cbc,aes128-gcm@openssh.com,aes256-gcm@openssh.com\"");
-	                                    params.add("\"cipher.c2s\":\"aes128-ctr,aes128-cbc,3des-ctr,3des-cbc,blowfish-cbc,aes192-ctr,aes192-cbc,aes256-ctr,aes256-cbc,aes128-gcm@openssh.com,aes256-gcm@openssh.com\"");
-	                                    params.add("\"mac.s2c\":\"hmac-md5,hmac-sha1,hmac-sha2-256,hmac-sha1-96,hmac-md5-96,hmac-sha2-256-etm@openssh.com,hmac-sha2-512-etm@openssh.com,hmac-sha1-etm@openssh.com,hmac-sha2-512\"");
-	                                    params.add("\"mac.c2s\":\"hmac-md5,hmac-sha1,hmac-sha2-256,hmac-sha1-96,hmac-md5-96,hmac-sha2-256-etm@openssh.com,hmac-sha2-512-etm@openssh.com,hmac-sha1-etm@openssh.com,hmac-sha2-512\"");
-	                                    params.add("\"PubkeyAcceptedKeyTypes\":\"ssh-rsa\"");
-                					} else {
-                						String clientParams = ComponentUtilities.getNodePropertyValue(node, "__CLIENT_PARAMETERS__");
-                						System.out.println(">>>>>>>>>>>>>>>>>>>>>>>"+clientParams);
-                					}
+                                    
+                                    params.add("\"kex\":\"ecdh-sha2-nistp256,ecdh-sha2-nistp384,ecdh-sha2-nistp521,diffie-hellman-group14-sha1,diffie-hellman-group-exchange-sha256,diffie-hellman-group-exchange-sha1,diffie-hellman-group1-sha1,curve25519-sha256,curve25519-sha256@libssh.org,diffie-hellman-group16-sha512,diffie-hellman-group18-sha512,diffie-hellman-group14-sha256\"");
+                                    params.add("\"server_host_key\":\"ssh-rsa,ssh-dss,ecdsa-sha2-nistp256,ecdsa-sha2-nistp384,ecdsa-sha2-nistp521,rsa-sha2-512,rsa-sha2-256\"");
+                                    params.add("\"cipher.s2c\":\"aes128-ctr,aes128-cbc,3des-ctr,3des-cbc,blowfish-cbc,aes192-ctr,aes192-cbc,aes256-ctr,aes256-cbc,aes128-gcm@openssh.com,aes256-gcm@openssh.com\"");
+                                    params.add("\"cipher.c2s\":\"aes128-ctr,aes128-cbc,3des-ctr,3des-cbc,blowfish-cbc,aes192-ctr,aes192-cbc,aes256-ctr,aes256-cbc,aes128-gcm@openssh.com,aes256-gcm@openssh.com\"");
+                                    params.add("\"mac.s2c\":\"hmac-md5,hmac-sha1,hmac-sha2-256,hmac-sha1-96,hmac-md5-96,hmac-sha2-256-etm@openssh.com,hmac-sha2-512-etm@openssh.com,hmac-sha1-etm@openssh.com,hmac-sha2-512\"");
+                                    params.add("\"mac.c2s\":\"hmac-md5,hmac-sha1,hmac-sha2-256,hmac-sha1-96,hmac-md5-96,hmac-sha2-256-etm@openssh.com,hmac-sha2-512-etm@openssh.com,hmac-sha1-etm@openssh.com,hmac-sha2-512\"");
                                     
                                     for (String param : params) {
                                     	String[] strs = param.split(":");
