@@ -215,6 +215,7 @@ public abstract class TaCoKitConfigurationWizard extends CheckLastVersionReposit
             IWorkspaceRunnable operation = createFinishOperation();
             ISchedulingRule schedulingRule = workspace.getRoot();
             workspace.run(operation, schedulingRule, IWorkspace.AVOID_UPDATE, new NullProgressMonitor());
+            updateRelatedItems();
             closeLockStrategy();
             return true;
         } catch (Exception e) {
@@ -226,6 +227,11 @@ public abstract class TaCoKitConfigurationWizard extends CheckLastVersionReposit
             ExceptionMessageDialog.openError(getShell(), Messages.getString("TaCoKitConfiguration.wizard.exception.title"), //$NON-NLS-1$
                     message, e);
         }
+        return false;
+    }
+
+    protected boolean updateRelatedItems() {
+        // nothing to do
         return false;
     }
 
