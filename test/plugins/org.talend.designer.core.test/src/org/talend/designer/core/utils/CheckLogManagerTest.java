@@ -68,7 +68,7 @@ public class CheckLogManagerTest {
             }
             if (!selectLog4j2) {
                 // case1: if original job need commons-logging:commons-logging:ja for log4j1
-                assertTrue(modules4log4j.contains("jcl-over-slf4j-1.7.25.jar"));
+                assertTrue(modules4log4j.contains("jcl-over-slf4j-1.7.34.jar"));
             } else {
                 // case2: if original job need commons-logging:commons-logging:ja for log4j2
                 assertTrue(modules4log4j.contains("log4j-jcl-2.17.1.jar"));
