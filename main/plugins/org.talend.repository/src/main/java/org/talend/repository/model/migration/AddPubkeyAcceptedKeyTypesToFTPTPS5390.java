@@ -60,7 +60,7 @@ public class AddPubkeyAcceptedKeyTypesToFTPTPS5390 extends AbstractJobMigrationT
                                 final Iterator iterator = configurations.iterator();
                                 while (iterator.hasNext()){
                                     final ElementValueType next = (ElementValueType)iterator.next();
-                                    if(next.getValue().trim().equalsIgnoreCase("PubkeyAcceptedKeyTypes")){
+                                    if(next.getElementRef().trim().equalsIgnoreCase("PubkeyAcceptedKeyTypes")){
                                         ifHasKey = true;
                                     }
                                 }
