@@ -428,7 +428,8 @@ public class ComponentModel extends AbstractBasicComponent implements IAdditiona
                         if (!PluginChecker.isTIS()) {
                             modulesNeeded.add(new ModuleNeeded(getName(), "", true, "mvn:" + GAV.INSTANCE.getGroupId() + "/slf4j-standard/" + GAV.INSTANCE.getComponentRuntimeVersion()));
                         } else {
-                            modulesNeeded.add(new ModuleNeeded(getName(), "", true, "mvn:org.slf4j/slf4j-log4j12/" + GAV.INSTANCE.getSlf4jVersion()));
+                            modulesNeeded.add(new ModuleNeeded(getName(), "", true,
+                                    "mvn:org.slf4j/slf4j-reload4j/" + GAV.INSTANCE.getSlf4jVersion()));
                         }
                     }
 
