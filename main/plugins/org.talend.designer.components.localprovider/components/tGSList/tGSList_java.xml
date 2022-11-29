@@ -203,7 +203,7 @@
 				<IMPORT NAME="grpc-context-1.22.1" MODULE="grpc-context-1.22.1.jar" MVN="mvn:io.grpc/grpc-context/1.22.1" REQUIRED_IF="(USE_EXISTING_CONNECTION == 'false') AND ((AUTH_TYPE == 'SERVICE_ACCOUNT') OR (AUTH_TYPE == 'TOKEN'))" />
 				<IMPORT NAME="proto-google-common-protos-1.17.0" MODULE="proto-google-common-protos-1.17.0.jar" MVN="mvn:com.google.api.grpc/proto-google-common-protos/1.17.0" REQUIRED_IF="(USE_EXISTING_CONNECTION == 'false') AND ((AUTH_TYPE == 'SERVICE_ACCOUNT') OR (AUTH_TYPE == 'TOKEN'))" />
 				<IMPORT NAME="proto-google-iam-v1-0.13.0" MODULE="proto-google-iam-v1-0.13.0.jar" MVN="mvn:com.google.api.grpc/proto-google-iam-v1/0.13.0" REQUIRED_IF="(USE_EXISTING_CONNECTION == 'false') AND ((AUTH_TYPE == 'SERVICE_ACCOUNT') OR (AUTH_TYPE == 'TOKEN'))" />
-				<IMPORT NAME="protobuf-java-util-3.19.4" MODULE="protobuf-java-util-3.19.4.jar" MVN="mvn:com.google.protobuf/protobuf-java-util/3.19.4" REQUIRED_IF="(USE_EXISTING_CONNECTION == 'false') AND ((AUTH_TYPE == 'SERVICE_ACCOUNT') OR (AUTH_TYPE == 'TOKEN'))" />
+				<IMPORT NAME="protobuf-java-util-3.19.6" MODULE="protobuf-java-util-3.19.6.jar" MVN="mvn:com.google.protobuf/protobuf-java-util/3.19.6" REQUIRED_IF="(USE_EXISTING_CONNECTION == 'false') AND ((AUTH_TYPE == 'SERVICE_ACCOUNT') OR (AUTH_TYPE == 'TOKEN'))" />
 				<IMPORT NAME="annotation-1.1.0" MODULE="annotation-1.1.0.jar" MVN="mvn:androidx.annotation/annotation/1.1.0" REQUIRED_IF="(USE_EXISTING_CONNECTION == 'false') AND ((AUTH_TYPE == 'SERVICE_ACCOUNT') OR (AUTH_TYPE == 'TOKEN'))" />
 	    </IMPORTS>
    	</CODEGENERATION>
