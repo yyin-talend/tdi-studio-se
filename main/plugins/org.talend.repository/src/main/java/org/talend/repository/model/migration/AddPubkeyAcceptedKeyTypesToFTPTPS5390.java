@@ -54,33 +54,35 @@ public class AddPubkeyAcceptedKeyTypesToFTPTPS5390 extends AbstractJobMigrationT
                                 boolean ifConfigClient = "true".equals(ComponentUtilities.getNodePropertyValue(node, "CONFIG_CLIENT"));
                                 boolean useSFTP = "true".equals(ComponentUtilities.getNodePropertyValue(node, "SFTP"));
 
-                                final ElementParameterType client_parameters = ComponentUtilities.getNodeProperty(node, "CLIENT_PARAMETERS");
-                                boolean ifHasKey = false;
-                                final EList configurations = client_parameters.getElementValue();
-                                final Iterator iterator = configurations.iterator();
-                                while (iterator.hasNext()){
-                                    final ElementValueType next = (ElementValueType)iterator.next();
-                                    if(next.getElementRef().trim().equalsIgnoreCase("PubkeyAcceptedKeyTypes")){
-                                        ifHasKey = true;
+                                if (useSFTP && (useExistConnection == null || "false". equals(useExistConnection)) && ifConfigClient) {
+                                	
+                                	final ElementParameterType client_parameters = ComponentUtilities.getNodeProperty(node, "CLIENT_PARAMETERS");
+                                    boolean ifHasKey = false;
+                                    final EList configurations = client_parameters.getElementValue();
+                                    final Iterator iterator = configurations.iterator();
+                                    while (iterator.hasNext()){
+                                        final ElementValueType next = (ElementValueType)iterator.next();
+                                        if(next.getValue().trim().equalsIgnoreCase("\"PubkeyAcceptedKeyTypes\"")){
+                                            ifHasKey = true;
+                                        }
                                     }
-                                }
-                                
-                                if (useSFTP && (useExistConnection == null || "false". equals(useExistConnection))
-                                        && ifConfigClient && !ifHasKey) {
+                                    
+                                    if (!ifHasKey) {
 
-                                    TalendFileFactory fileFact = TalendFileFactory.eINSTANCE;
-
-                                    ElementValueType elementKey = fileFact.createElementValueType();
-                                    elementKey.setElementRef("PARAMETER"); //$NON-NLS-1$
-                                    elementKey.setValue("\"PubkeyAcceptedKeyTypes\"");
-                                    configurations.add(elementKey);
-
-                                    ElementValueType elementValue = fileFact.createElementValueType();
-                                    elementValue.setElementRef("VALUE"); //$NON-NLS-1$
-                                    elementValue.setValue("\"ssh-rsa\"");
-                                    configurations.add(elementValue);
-
-                                    ComponentUtilities.setNodeProperty(node, "CLIENT_PARAMETERS", configurations);
+	                                    TalendFileFactory fileFact = TalendFileFactory.eINSTANCE;
+	
+	                                    ElementValueType elementKey = fileFact.createElementValueType();
+	                                    elementKey.setElementRef("PARAMETER"); //$NON-NLS-1$
+	                                    elementKey.setValue("\"PubkeyAcceptedKeyTypes\"");
+	                                    configurations.add(elementKey);
+	
+	                                    ElementValueType elementValue = fileFact.createElementValueType();
+	                                    elementValue.setElementRef("VALUE"); //$NON-NLS-1$
+	                                    elementValue.setValue("\"ssh-rsa\"");
+	                                    configurations.add(elementValue);
+	
+	                                    ComponentUtilities.setNodeProperty(node, "CLIENT_PARAMETERS", configurations);
+                                    }
                                 }
                             }
 
