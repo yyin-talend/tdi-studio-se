@@ -3803,6 +3803,14 @@
               name="Encrypt passwords for nexus proxy password in project setting preference"
               version="7.3.1">
         </projecttask>
+        <projecttask
+              beforeLogon="true"
+              breaks="8.0.1"
+              class="org.talend.repository.model.migration.tFileInputJsonJDK17Task"
+              id="org.talend.repository.model.migration.tFileInputJsonJDK17Task"
+              name="tFtileInputJson convert USE_NASHORN to JDK_VERSION"
+              version="8.0.1">
+        </projecttask>
    </extension>
 
    <extension
@@ -3824,10 +3832,9 @@
     
       <libraryNeeded
         context="plugin:org.talend.libraries.apache"
-        id="slf4j-log4j12-1.7.29.jar"
-        name="slf4j-log4j12-1.7.29.jar"
-        mvn_uri="mvn:org.slf4j/slf4j-log4j12/1.7.29"
-        uripath="platform:/plugin/org.talend.libraries.apache/lib/slf4j-log4j12-1.7.29.jar">
+        id="slf4j-reload4j-1.7.34.jar"
+        name="slf4j-reload4j-1.7.34.jar"
+        mvn_uri="mvn:org.slf4j/slf4j-reload4j/1.7.34">
       </libraryNeeded>
     
        <libraryNeeded
@@ -3840,18 +3847,16 @@
     
       <libraryNeeded
         context="plugin:org.talend.libraries.apache"
-        id="jul-to-slf4j-1.7.29.jar"
-        name="jul-to-slf4j-1.7.29.jar"
-        mvn_uri="mvn:org.slf4j/jul-to-slf4j/1.7.29"
-        uripath="platform:/plugin/org.talend.libraries.apache/lib/jul-to-slf4j-1.7.29.jar">
+        id="jul-to-slf4j-1.7.34.jar"
+        name="jul-to-slf4j-1.7.34.jar"
+        mvn_uri="mvn:org.slf4j/jul-to-slf4j/1.7.34">
       </libraryNeeded>
     
       <libraryNeeded
         context="plugin:org.talend.libraries.apache"
-        id="jcl-over-slf4j-1.7.29.jar"
-        name="jcl-over-slf4j-1.7.29.jar"
-        mvn_uri="mvn:org.slf4j/jcl-over-slf4j/1.7.29"
-        uripath="platform:/plugin/org.talend.libraries.apache/lib/jcl-over-slf4j-1.7.29.jar">
+        id="jcl-over-slf4j-1.7.34.jar"
+        name="jcl-over-slf4j-1.7.34.jar"
+        mvn_uri="mvn:org.slf4j/jcl-over-slf4j/1.7.34">
       </libraryNeeded>
     
       <libraryNeeded
@@ -3904,10 +3909,9 @@
       
       <libraryNeeded
         context="plugin:org.talend.librariesmanager"
-        id="slf4j-api-1.7.29.jar"
-        name="slf4j-api-1.7.29.jar"
-        mvn_uri="mvn:org.slf4j/slf4j-api/1.7.29"
-        uripath="platform:/plugin/org.talend.librariesmanager/lib/slf4j-api-1.7.29.jar">
+        id="slf4j-api-1.7.34.jar"
+        name="slf4j-api-1.7.34.jar"
+        mvn_uri="mvn:org.slf4j/slf4j-api/1.7.34">
       </libraryNeeded>         
    </extension>
    <!--

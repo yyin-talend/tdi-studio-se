@@ -48,10 +48,12 @@ public class AddHourFormatToBigqueryBulkOutput extends AbstractJobMigrationTask 
             }
         };
 
+        boolean modified = false;
+
         for (String componentName : componentsNameToAffect) {
             IComponentFilter componentFilter = new NameComponentFilter(componentName);
             try {
-                ModifyComponentsAction.searchAndModify(item, processType, componentFilter,
+                modified = modified | ModifyComponentsAction.searchAndModify(item, processType, componentFilter,
                         Collections.singletonList(use12HourFormatConversion));
             } catch (PersistenceException e) {
                 ExceptionHandler.process(e);
@@ -59,7 +61,7 @@ public class AddHourFormatToBigqueryBulkOutput extends AbstractJobMigrationTask 
             }
         }
 
-        return ExecutionResult.SUCCESS_NO_ALERT;
+        return modified ? ExecutionResult.SUCCESS_NO_ALERT : ExecutionResult.NOTHING_TO_DO;
     }
 
 }

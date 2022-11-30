@@ -317,6 +317,20 @@ public class ProjectRefSettingPage extends ProjectSettingPage {
         viewer.refresh();
     }
 
+    private static boolean sameGitRepo(org.talend.core.model.properties.Project refProject) {
+        IGITProviderService gitSvc = IGITProviderService.get();
+        try {
+            if (gitSvc != null && gitSvc.isGITProject(ProjectManager.getInstance().getCurrentProject()) && gitSvc.isStandardMode()) {
+                String mainProjectGitUrl = gitSvc.getCleanGitRepositoryUrl(ProjectManager.getInstance().getCurrentProject().getEmfProject());
+                String refProjectGitUrl = gitSvc.getCleanGitRepositoryUrl(refProject);
+                return StringUtils.equals(refProjectGitUrl, mainProjectGitUrl);
+            }
+        } catch (Exception e) {
+            ExceptionHandler.process(e);
+        }
+        return false;
+    }
+    
     private List<ProjectReferenceBean> getReferenceProjectData(Project project) {
         List<ProjectReferenceBean> result = new ArrayList<ProjectReferenceBean>();
         List<ProjectReference> list = project.getProjectReferenceList();
@@ -449,6 +463,13 @@ public class ProjectRefSettingPage extends ProjectSettingPage {
                 IRepositoryService repositoryService = (IRepositoryService) GlobalServiceRegister.getDefault()
                         .getService(IRepositoryService.class);
                 if (repositoryService != null) {
+                    // for standard mode, same git repository, must be on same branch
+                    if (sameGitRepo(lastSelectedProject.getEmfProject())) {
+                        List<String> arr = new ArrayList<String>();
+                        String branchSelection = ProjectManager.getInstance().getMainProjectBranch(ProjectManager.getInstance().getCurrentProject());
+                        arr.add(branchSelection);
+                        return arr;
+                    }
                     return repositoryService.getProjectBranch(lastSelectedProject, false);
                 }
                 return null;

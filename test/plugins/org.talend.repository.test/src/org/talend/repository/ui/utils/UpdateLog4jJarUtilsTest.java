@@ -25,9 +25,8 @@ public class UpdateLog4jJarUtilsTest {
         assertTrue(modules4log4j2.contains("log4j-jul-2.17.1.jar"));
         assertTrue(modules4log4j2.contains("log4j-slf4j-impl-2.17.1.jar"));
 
-        assertFalse(modules4log4j2.contains("jcl-over-slf4j-1.7.25.jar"));
+        assertFalse(modules4log4j2.contains("jcl-over-slf4j-1.7.34.jar"));
         assertFalse(modules4log4j2.contains("log4j-to-slf4j-2.17.1.jar"));
-        assertFalse(modules4log4j2.contains("slf4j-log4j12-1.7.25.jar"));
         assertFalse(modules4log4j2.contains("reload4j-1.2.22.jar"));
 
         allLog4jModulesName = getAllLog4jModulesName();
@@ -42,10 +41,10 @@ public class UpdateLog4jJarUtilsTest {
         assertFalse(modules4log4j1.contains("log4j-jul-2.17.1.jar"));
         assertFalse(modules4log4j1.contains("log4j-slf4j-impl-2.17.1.jar"));
 
-        assertTrue(modules4log4j1.contains("jcl-over-slf4j-1.7.29.jar"));
-        assertTrue(modules4log4j1.contains("jul-to-slf4j-1.7.25.jar"));
+        assertTrue(modules4log4j1.contains("jcl-over-slf4j-1.7.34.jar"));
+        assertTrue(modules4log4j1.contains("jul-to-slf4j-1.7.34.jar"));
         assertTrue(modules4log4j1.contains("log4j-to-slf4j-2.17.1.jar"));
-        assertTrue(modules4log4j1.contains("slf4j-log4j12-1.7.29.jar"));
+        assertTrue(modules4log4j1.contains("slf4j-reload4j-1.7.34.jar"));
         assertTrue(modules4log4j1.contains("reload4j-1.2.22.jar"));
 
     }
@@ -64,9 +63,8 @@ public class UpdateLog4jJarUtilsTest {
         assertTrue(modules4log4j2.contains("mvn:org.apache.logging.log4j/log4j-jul/2.17.1/jar"));
         assertTrue(modules4log4j2.contains("mvn:org.apache.logging.log4j/log4j-slf4j-impl/2.17.1/jar"));
 
-        assertFalse(modules4log4j2.contains("mvn:org.slf4j/jcl-over-slf4j/1.7.25/jar"));
+        assertFalse(modules4log4j2.contains("mvn:org.slf4j/jcl-over-slf4j/1.7.34/jar"));
         assertFalse(modules4log4j2.contains("mvn:org.apache.logging.log4j/log4j-to-slf4j/2.17.1/jar"));
-        assertFalse(modules4log4j2.contains("mvn:org.slf4j/slf4j-log4j12/1.7.25/jar"));
         assertFalse(modules4log4j2.contains("mvn:ch.qos.reload4j/reload4j/1.2.22/jar"));
 
         allLog4jModules = getAllLog4jModules();
@@ -81,10 +79,10 @@ public class UpdateLog4jJarUtilsTest {
         assertFalse(modules4log4j1.contains("mvn:org.apache.logging.log4j/log4j-jul/2.17.1/jar"));
         assertFalse(modules4log4j1.contains("mvn:org.apache.logging.log4j/log4j-slf4j-impl/2.17.1/jar"));
 
-        assertTrue(modules4log4j1.contains("mvn:org.slf4j/jcl-over-slf4j/1.7.29/jar"));
-        assertTrue(modules4log4j1.contains("mvn:org.slf4j/jul-to-slf4j/1.7.25/jar"));
+        assertTrue(modules4log4j1.contains("mvn:org.slf4j/jcl-over-slf4j/1.7.34/jar"));
+        assertTrue(modules4log4j1.contains("mvn:org.slf4j/jul-to-slf4j/1.7.34/jar"));
         assertTrue(modules4log4j1.contains("mvn:org.apache.logging.log4j/log4j-to-slf4j/2.17.1/jar"));
-        assertTrue(modules4log4j1.contains("mvn:org.slf4j/slf4j-log4j12/1.7.29/jar"));
+        assertTrue(modules4log4j1.contains("mvn:org.slf4j/slf4j-reload4j/1.7.34/jar"));
         assertTrue(modules4log4j1.contains("mvn:ch.qos.reload4j/reload4j/1.2.22/jar"));
 
     }
@@ -98,10 +96,10 @@ public class UpdateLog4jJarUtilsTest {
         jarList.add("log4j-jul-2.17.1.jar");//$NON-NLS-1$
         jarList.add("log4j-slf4j-impl-2.17.1.jar");//$NON-NLS-1$
         // log1
-        jarList.add("jcl-over-slf4j-1.7.25.jar");//$NON-NLS-1$
-        jarList.add("jul-to-slf4j-1.7.25.jar");//$NON-NLS-1$
+        jarList.add("jcl-over-slf4j-1.7.34.jar");//$NON-NLS-1$
+        jarList.add("jul-to-slf4j-1.7.34.jar");//$NON-NLS-1$
         jarList.add("log4j-to-slf4j-2.17.1.jar");//$NON-NLS-1$
-        jarList.add("slf4j-log4j12-1.7.25.jar");//$NON-NLS-1$
+        jarList.add("slf4j-log4j12-1.7.34.jar");//$NON-NLS-1$
         jarList.add("reload4j-1.2.22.jar");//$NON-NLS-1$
         return jarList;
     }
@@ -125,17 +123,17 @@ public class UpdateLog4jJarUtilsTest {
         jarList.add(log4jSlf4jImpl);
 
         // log1
-        ModuleNeeded jclOverSlf4j = new ModuleNeeded("org.slf4j", "jcl-over-slf4j-1.7.25.jar", null, true); //$NON-NLS-1$ //$NON-NLS-2$
-        jclOverSlf4j.setMavenUri("mvn:org.slf4j/jcl-over-slf4j/1.7.25");//$NON-NLS-1$
+        ModuleNeeded jclOverSlf4j = new ModuleNeeded("org.slf4j", "jcl-over-slf4j-1.7.34.jar", null, true); //$NON-NLS-1$ //$NON-NLS-2$
+        jclOverSlf4j.setMavenUri("mvn:org.slf4j/jcl-over-slf4j/1.7.34");//$NON-NLS-1$
         jarList.add(jclOverSlf4j);
-        ModuleNeeded julToSlf4j = new ModuleNeeded("org.slf4j", "jul-to-slf4j-1.7.25.jar", null, true); //$NON-NLS-1$ //$NON-NLS-2$
-        julToSlf4j.setMavenUri("mvn:org.slf4j/jul-to-slf4j/1.7.25");//$NON-NLS-1$
+        ModuleNeeded julToSlf4j = new ModuleNeeded("org.slf4j", "jul-to-slf4j-1.7.34.jar", null, true); //$NON-NLS-1$ //$NON-NLS-2$
+        julToSlf4j.setMavenUri("mvn:org.slf4j/jul-to-slf4j/1.7.34");//$NON-NLS-1$
         jarList.add(julToSlf4j);
         ModuleNeeded log4jToSlf4j = new ModuleNeeded("org.apache.logging.log4j", "log4j-to-slf4j-2.17.1.jar", null, true); //$NON-NLS-1$ //$NON-NLS-2$
         log4jToSlf4j.setMavenUri("mvn:org.apache.logging.log4j/log4j-to-slf4j/2.17.1");//$NON-NLS-1$
         jarList.add(log4jToSlf4j);
-        ModuleNeeded slf4jLog4j12 = new ModuleNeeded("org.slf4j", "slf4j-log4j12-1.7.25.jar", null, true); //$NON-NLS-1$ //$NON-NLS-2$
-        slf4jLog4j12.setMavenUri("mvn:org.slf4j/slf4j-log4j12/1.7.25");//$NON-NLS-1$
+        ModuleNeeded slf4jLog4j12 = new ModuleNeeded("org.slf4j", "slf4j-log4j12-1.7.34.jar", null, true); //$NON-NLS-1$ //$NON-NLS-2$
+        slf4jLog4j12.setMavenUri("mvn:org.slf4j/slf4j-reload4j/1.7.34");//$NON-NLS-1$
         jarList.add(slf4jLog4j12);
         ModuleNeeded log4j = new ModuleNeeded("ch.qos.reload4j", "reload4j-1.2.22.jar", null, true); //$NON-NLS-1$ //$NON-NLS-2$
         log4j.setMavenUri("mvn:ch.qos.reload4j/reload4j/1.2.22");//$NON-NLS-1$

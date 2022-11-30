@@ -176,7 +176,7 @@
 
 	<CODEGENERATION>
 	 <IMPORTS>
-		<IMPORT NAME="Driver-HSQLDb" MODULE="hsqldb.jar" MVN="mvn:org.talend.libraries/hsqldb/6.0.0"  UrlPath="platform:/plugin/org.talend.libraries.jdbc.hsql/lib/hsqldb.jar" REQUIRED_IF="(USE_EXISTING_CONNECTION == 'false')"/>
+		<IMPORT NAME="Driver-HSQLDb" MODULE="hsqldb-2.7.1.jar" MVN="mvn:org.hsqldb/hsqldb/2.7.1" REQUIRED_IF="(USE_EXISTING_CONNECTION == 'false')"/>
 		<IMPORT NAME="Driver-ucanaccess" MODULE="ucanaccess-2.0.9.5.jar" MVN="mvn:org.talend.libraries/ucanaccess-2.0.9.5/6.0.0"  REQUIRED_IF="(USE_EXISTING_CONNECTION == 'false')"/>
 		<IMPORT NAME="Driver-JACKCESS" MODULE="jackcess-2.1.12.jar" MVN="mvn:com.healthmarketscience.jackcess/jackcess/2.1.12" REQUIRED_IF="(USE_EXISTING_CONNECTION == 'false')"/>
 		

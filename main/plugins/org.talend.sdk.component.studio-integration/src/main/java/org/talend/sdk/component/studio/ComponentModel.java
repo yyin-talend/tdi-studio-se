@@ -317,9 +317,10 @@ public class ComponentModel extends AbstractBasicComponent implements IAdditiona
     @Override // TODO This is dummy implementation. Correct impl should be added soon
     public List<? extends IElementParameter> createElementParameters(final INode node) {
         if (isNeedMigration() && node.getProcess() != null) {
-            ProcessItem processItem = ItemCacheManager.getProcessItem(node.getProcess().getId());
+            IProcess process = node.getProcess();
+            ProcessItem processItem = ItemCacheManager.getProcessItem(process.getId());
             if (processItem != null) {
-                manager.checkNodeMigration(processItem, getName());
+                manager.checkNodeMigration(processItem, getName(), process.getComponentsType());
             }
         }
         ElementParameterCreator creator = new ElementParameterCreator(this, detail, node, reportPath, isCatcherAvailable);
@@ -443,7 +444,8 @@ public class ComponentModel extends AbstractBasicComponent implements IAdditiona
                         if (!PluginChecker.isTIS()) {
                             modulesNeeded.add(new ModuleNeeded(getName(), "", true, "mvn:" + GAV.INSTANCE.getGroupId() + "/slf4j-standard/" + GAV.INSTANCE.getComponentRuntimeVersion()));
                         } else {
-                            modulesNeeded.add(new ModuleNeeded(getName(), "", true, "mvn:org.slf4j/slf4j-log4j12/" + GAV.INSTANCE.getSlf4jVersion()));
+                            modulesNeeded.add(new ModuleNeeded(getName(), "", true,
+                                    "mvn:org.slf4j/slf4j-reload4j/" + GAV.INSTANCE.getSlf4jVersion()));
                         }
                     }
 
