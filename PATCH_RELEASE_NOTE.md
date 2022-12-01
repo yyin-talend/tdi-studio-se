@@ -1,8 +1,9 @@
 ---
 version: 8.0.1
 module: https://talend.poolparty.biz/coretaxonomy/42
-product: https://talend.poolparty.biz/coretaxonomy/183
-
+product: 
+- https://talend.poolparty.biz/coretaxonomy/183
+- https://talend.poolparty.biz/coretaxonomy/23
 ---
 
 # TPS-5390
@@ -38,16 +39,10 @@ Consider the following requirements for your system:
 ## Installation
 
 - Installation On Studio:
-    1. Shut down Talend studio if it is opened.
-    2. Extract the zip.
-    3. Merge the folder "plugins"  and its content to "{studio}/plugins" and overwrite the existing files. 
-    4. remove the folder "{studio}/configuration/org.eclipse.osgi".
-    5. Start the Talend studio.
-    6. Rebuild your jobs.
-- Installation on Commandline:        
-    1. Shut down Talend Commandline if it is running.
-    2. Extract the zip.
-    3. Merge the folder "plugins"  and its content to "{cmdline}/studio/plugins" and overwrite the existing files.
-    4. Remove the folder "{cmdline}/studio/configuration/org.eclipse.osgi".
-    5. Restart Talend Commandlline.
-    6. Regenerate your jobs by commandline.
+
+1. Shut down Talend studio if it is opened.
+2. Extract the zip.
+3. Merge the folder "plugins"  and its content to "{studio}/plugins" and overwrite the existing files. 
+4. remove the folder "{studio}/configuration/org.eclipse.osgi".
+5. Start the Talend studio.
+6. Rebuild your jobs.
