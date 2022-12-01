@@ -33,12 +33,12 @@ This patch contains the following fix:
 
 Consider the following requirements for your system:
 
-- Must install Talend Studio 8.0.1 with the monthly released patch, Patch_20221118_R2022-11_v1-8.0.1.zip.
+- Must install Talend Studio 8.0.1 with the monthly released patch, Patch\_20220819\_R2022-08_v1-8.0.1.zip.
 - Or must update the Talend Studio 8.0.1 with the URL, https://update.talend.com/Studio/8/updates/R2022-08/.
 
 ## Installation
 
-- Installation On Studio:
+Installation On Studio:
 
 1. Shut down Talend studio if it is opened.
 2. Extract the zip.
