@@ -123,11 +123,11 @@ public class TalendDrawerFigure extends DrawerFigure {
             Field scrollpaneField = DrawerFigure.class.getDeclaredField("scrollpane");
             scrollpaneField.setAccessible(true);
             scrollpane = (ScrollPane) scrollpaneField.get(this);
+            getContentPane().setBackgroundColor(customizedCSSStyleSetting.getListBackgroundColor());
         } catch (Exception e) {
             CommonExceptionHandler.process(e);
         }
 
-        // getContentPane().setBackgroundColor(backgroundColor);
     }
 
     protected void createHoverHelp(final Control control) {
@@ -421,6 +421,8 @@ public class TalendDrawerFigure extends DrawerFigure {
                 cssStyleSetting.getCollapsedForgroundColor(), increment));
         customizedCSSStyleSetting.setCollapsedBackgroundColor(TalendPaletteCSSStyleSetting.getSubColor(
                 cssStyleSetting.getCollapsedBackgroundColor(), increment));
+        customizedCSSStyleSetting.setListBackgroundColor(
+                TalendPaletteCSSStyleSetting.getSubColor(cssStyleSetting.getListBackgroundColor(), increment));
 
         if (scrollpane != null) {
             Color backgroundColor = TalendPaletteCSSStyleSetting.getSubColor(customizedCSSStyleSetting.getBaseColor(), increment);
@@ -476,6 +478,8 @@ public class TalendDrawerFigure extends DrawerFigure {
         protected Color collapsedForgroundColor;
 
         protected Color collapsedBackgroundColor;
+
+        protected Color listBackgroundColor;
 
         protected Border scrollPaneBorder;
 
@@ -811,6 +815,14 @@ public class TalendDrawerFigure extends DrawerFigure {
          */
         public void setCollapsedBackgroundColor(Color collapsedBackgroundColor) {
             this.collapsedBackgroundColor = collapsedBackgroundColor;
+        }
+
+        public Color getListBackgroundColor() {
+            return listBackgroundColor;
+        }
+
+        public void setListBackgroundColor(Color listBackgroundColor) {
+            this.listBackgroundColor = listBackgroundColor;
         }
 
         /**

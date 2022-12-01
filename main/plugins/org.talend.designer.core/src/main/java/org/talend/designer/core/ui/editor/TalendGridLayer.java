@@ -12,6 +12,7 @@
 // ============================================================================
 package org.talend.designer.core.ui.editor;
 
+import org.apache.commons.lang3.StringUtils;
 import org.eclipse.draw2d.ColorConstants;
 import org.eclipse.draw2d.FreeformFigure;
 import org.eclipse.draw2d.Graphics;
@@ -19,9 +20,9 @@ import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.gef.editparts.GridLayer;
 import org.eclipse.swt.graphics.Color;
+import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.ui.gmf.draw2d.AnimatableZoomManager;
-import org.talend.commons.ui.runtime.image.EImage;
-import org.talend.commons.ui.runtime.image.ImageProvider;
+import org.talend.commons.ui.runtime.ITalendThemeService;
 
 /**
  * Grid that will be used for the designer. (modification of the default grid to have black points)
@@ -33,9 +34,43 @@ public class TalendGridLayer extends GridLayer {
 
     public static final Color GRID_COLOR = ColorConstants.black;
 
+    private static final Color GRID_COLOR_1 = new Color(131, 131, 131);
+
+    private static final Color GRID_COLOR_2 = new Color(255, 255, 255);
+
     public TalendGridLayer() {
         super();
         setForegroundColor(GRID_COLOR);
+    }
+
+    private Color getColor1() {
+        Color themeColor = ITalendThemeService.getColor("org.talend.designer.core.lightColor");
+        if (themeColor == null) {
+            themeColor = GRID_COLOR_1;
+        }
+        return themeColor;
+    }
+
+    private Color getColor2() {
+        Color themeColor = ITalendThemeService.getColor("org.talend.designer.core.darkColor");
+        if (themeColor == null) {
+            themeColor = GRID_COLOR_2;
+        }
+        return themeColor;
+    }
+
+    private int getColorAlpha() {
+        final int defaultAlpha = 30;
+        String alpha = ITalendThemeService.getProperty("org.talend.designer.core.alpha");
+        if (StringUtils.isBlank(alpha)) {
+            return defaultAlpha;
+        }
+        try {
+            return Integer.valueOf(alpha);
+        } catch (Exception e) {
+            ExceptionHandler.process(e);
+        }
+        return defaultAlpha;
     }
 
     @Override
@@ -71,13 +106,18 @@ public class TalendGridLayer extends GridLayer {
                     origin.y += distanceY;
                 }
             }
+            g.setAlpha(getColorAlpha());
             for (int i = origin.x - distanceX; i < clip.x + clip.width; i += distanceX) {
                 for (int j = origin.y - distanceY; j < clip.y + clip.height; j += distanceY) {
-                    // g.drawPoint(i, j);
+//                    g.drawPoint(i, j);
                     int re = Math.abs(i - j);
                     if (re / distanceY % 2 == 0) {
-                        g.drawImage(ImageProvider.getImage(EImage.CHESS_GRAY), i, j);
+                        g.setBackgroundColor(getColor1());
+//                        g.drawImage(ImageProvider.getImage(EImage.CHESS_GRAY), i, j);
+                    } else {
+                        g.setBackgroundColor(getColor2());
                     }
+                    g.fillRectangle(i, j, 32, 32);
                 }
             }
         }
