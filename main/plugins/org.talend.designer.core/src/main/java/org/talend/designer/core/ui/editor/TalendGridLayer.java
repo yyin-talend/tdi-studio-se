@@ -12,7 +12,6 @@
 // ============================================================================
 package org.talend.designer.core.ui.editor;
 
-import org.apache.commons.lang3.StringUtils;
 import org.eclipse.draw2d.ColorConstants;
 import org.eclipse.draw2d.FreeformFigure;
 import org.eclipse.draw2d.Graphics;
@@ -44,29 +43,18 @@ public class TalendGridLayer extends GridLayer {
     }
 
     private Color getColor1() {
-        Color themeColor = ITalendThemeService.getColor("org.talend.designer.core.lightColor");
-        if (themeColor == null) {
-            themeColor = GRID_COLOR_1;
-        }
-        return themeColor;
+        return ITalendThemeService.getColor("org.talend.designer.core.lightColor").orElse(GRID_COLOR_1);
     }
 
     private Color getColor2() {
-        Color themeColor = ITalendThemeService.getColor("org.talend.designer.core.darkColor");
-        if (themeColor == null) {
-            themeColor = GRID_COLOR_2;
-        }
-        return themeColor;
+        return ITalendThemeService.getColor("org.talend.designer.core.darkColor").orElse(GRID_COLOR_2);
     }
 
     private int getColorAlpha() {
         final int defaultAlpha = 30;
-        String alpha = ITalendThemeService.getProperty("org.talend.designer.core.alpha");
-        if (StringUtils.isBlank(alpha)) {
-            return defaultAlpha;
-        }
         try {
-            return Integer.valueOf(alpha);
+            return Integer.valueOf(
+                    ITalendThemeService.getProperty("org.talend.designer.core.alpha").orElse(String.valueOf(defaultAlpha)));
         } catch (Exception e) {
             ExceptionHandler.process(e);
         }
