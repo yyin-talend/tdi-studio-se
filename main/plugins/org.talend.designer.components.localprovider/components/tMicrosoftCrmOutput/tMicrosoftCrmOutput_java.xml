@@ -38476,9 +38476,9 @@
                 MVN="mvn:com.sun.xml.bind/jaxb-impl/2.2.11"
                 REQUIRED_IF="(AUTH_TYPE == 'ON_PREMISE') AND (MS_CRM_VERSION == 'CRM_2015')" />
             <IMPORT
-                NAME="jcl-over-slf4j-1.7.29"
-                MODULE="jcl-over-slf4j-1.7.29.jar"
-                MVN="mvn:org.slf4j/jcl-over-slf4j/1.7.29"
+                NAME="jcl-over-slf4j-1.7.34"
+                MODULE="jcl-over-slf4j-1.7.34.jar"
+                MVN="mvn:org.slf4j/jcl-over-slf4j/1.7.34"
                 REQUIRED_IF="(AUTH_TYPE == 'ON_PREMISE') AND (MS_CRM_VERSION == 'CRM_2015')" />
             <IMPORT
                 NAME="neethi-3.1.1"
@@ -38486,14 +38486,14 @@
                 MVN="mvn:org.apache.neethi/neethi/3.1.1"
                 REQUIRED_IF="(AUTH_TYPE == 'ON_PREMISE') AND (MS_CRM_VERSION == 'CRM_2015')" />
             <IMPORT
-                NAME="slf4j-api-1.7.29"
-                MODULE="slf4j-api-1.7.29.jar"
-                MVN="mvn:org.slf4j/slf4j-api/1.7.29"
+                NAME="slf4j-api-1.7.34"
+                MODULE="slf4j-api-1.7.34.jar"
+                MVN="mvn:org.slf4j/slf4j-api/1.7.34"
                 REQUIRED_IF="(AUTH_TYPE == 'ON_PREMISE') AND (MS_CRM_VERSION == 'CRM_2015')" />
             <IMPORT
-                NAME="slf4j-jdk14-1.7.29"
-                MODULE="slf4j-jdk14-1.7.29.jar"
-                MVN="mvn:org.slf4j/slf4j-jdk14/1.7.29"
+                NAME="slf4j-jdk14-1.7.34"
+                MODULE="slf4j-jdk14-1.7.34.jar"
+                MVN="mvn:org.slf4j/slf4j-jdk14/1.7.34"
                 REQUIRED_IF="(AUTH_TYPE == 'ON_PREMISE') AND (MS_CRM_VERSION == 'CRM_2015')" />
             <IMPORT
                 NAME="stax2-api-4.1"
@@ -38701,14 +38701,14 @@
                 MVN="mvn:org.apache.olingo/odata-commons-core/4.7.1"
                 REQUIRED_IF="((AUTH_TYPE=='ONLINE') AND (API_VERSION=='API_2011' OR API_VERSION=='API_2016_ODATA' OR API_VERSION=='API_2018_ODATA')) OR ((AUTH_TYPE == 'ON_PREMISE') AND (MS_CRM_VERSION == 'CRM_2016' OR MS_CRM_VERSION == 'CRM_2018'))" />
             <IMPORT
-                NAME="slf4j-api-1.7.29.jar"
-                MODULE="slf4j-api-1.7.29.jar"
-                MVN="mvn:org.slf4j/slf4j-api/1.7.29"
+                NAME="slf4j-api-1.7.34.jar"
+                MODULE="slf4j-api-1.7.34.jar"
+                MVN="mvn:org.slf4j/slf4j-api/1.7.34"
                 REQUIRED_IF="((AUTH_TYPE=='ONLINE') AND (API_VERSION=='API_2011' OR API_VERSION=='API_2016_ODATA' OR API_VERSION=='API_2018_ODATA')) OR ((AUTH_TYPE == 'ON_PREMISE') AND (MS_CRM_VERSION == 'CRM_2016' OR MS_CRM_VERSION == 'CRM_2018'))" />
             <IMPORT
-                NAME="slf4j-simple-1.7.29"
-                MODULE="slf4j-simple-1.7.29.jar"
-                MVN="mvn:org.slf4j/slf4j-simple/1.7.29"
+                NAME="slf4j-simple-1.7.34"
+                MODULE="slf4j-simple-1.7.34.jar"
+                MVN="mvn:org.slf4j/slf4j-simple/1.7.34"
                 REQUIRED_IF="((AUTH_TYPE=='ONLINE') AND (API_VERSION=='API_2011' OR API_VERSION=='API_2016_ODATA' OR API_VERSION=='API_2018_ODATA')) OR ((AUTH_TYPE == 'ON_PREMISE') AND (MS_CRM_VERSION == 'CRM_2016' OR MS_CRM_VERSION == 'CRM_2018'))" />
             <IMPORT
                 NAME="stax2-api-3.1.4"

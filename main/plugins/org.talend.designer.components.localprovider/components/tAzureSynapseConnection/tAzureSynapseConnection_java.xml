@@ -202,8 +202,8 @@
    <CODEGENERATION>
      <IMPORTS>
         <IMPORT NAME="Driver-mssql-jdbc" MODULE="mssql-jdbc.jar" MVN="mvn:com.microsoft.sqlserver/mssql-jdbc/actual"  REQUIRED="true" />
-        <IMPORT NAME="slf4j-api-1.7.29.jar" MODULE="slf4j-api-1.7.29.jar" MVN="mvn:org.slf4j/slf4j-api/1.7.29" REQUIRED_IF="(USE_SHARED_CONNECTION == 'true' AND SPECIFY_DATASOURCE_ALIAS=='false')" />
-        <IMPORT NAME="slf4j-log4j12-1.7.29.jar" MODULE="slf4j-log4j12-1.7.29.jar" MVN="mvn:org.slf4j/slf4j-log4j12/1.7.29" REQUIRED_IF="(USE_SHARED_CONNECTION == 'true' AND SPECIFY_DATASOURCE_ALIAS=='false')" />
+        <IMPORT NAME="slf4j-api-1.7.34.jar" MODULE="slf4j-api-1.7.34.jar" MVN="mvn:org.slf4j/slf4j-api/1.7.34" REQUIRED_IF="(USE_SHARED_CONNECTION == 'true' AND SPECIFY_DATASOURCE_ALIAS=='false')" />
+        <IMPORT NAME="slf4j-reload4j-1.7.34.jar" MODULE="slf4j-reload4j-1.7.34.jar" MVN="mvn:org.slf4j/slf4j-reload4j/1.7.34" REQUIRED_IF="(USE_SHARED_CONNECTION == 'true' AND SPECIFY_DATASOURCE_ALIAS=='false')" />
         <!--Active directory dependency module: msal4j and transitive -->
         <IMPORT NAME="msal4j" MODULE="msal4j-1.11.0.jar" MVN="mvn:com.microsoft.azure/msal4j/1.11.0"  REQUIRED_IF="(ACTIVE_DIR_AUTH == 'true')" />
         <IMPORT NAME="jackson-core" MODULE="jackson-core-2.13.4.jar" MVN="mvn:com.fasterxml.jackson.core/jackson-core/2.13.4"  REQUIRED_IF="(ACTIVE_DIR_AUTH == 'true')" />
