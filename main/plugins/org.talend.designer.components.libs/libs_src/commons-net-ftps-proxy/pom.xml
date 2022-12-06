@@ -18,7 +18,7 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <talend.nexus.url>https://artifacts-oss.talend.com</talend.nexus.url>
-        <slf4.version>1.7.25</slf4.version>
+        <slf4.version>1.7.34</slf4.version>
         <lombok.version>1.18.12</lombok.version>
     </properties>
 
