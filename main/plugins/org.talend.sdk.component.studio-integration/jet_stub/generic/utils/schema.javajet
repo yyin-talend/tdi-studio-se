@@ -111,26 +111,26 @@ if (dft != null){
 <%
 }
 %>
-.withProp("talend.studio.type", "<%=ttype%>")
+.withProp(org.talend.sdk.component.api.record.SchemaProperty.STUDIO_TYPE, "<%=ttype%>")
 <%
 if (key) {
 %>
-.withProp("talend.studio.key", "true")
+.withProp(org.talend.sdk.component.api.record.SchemaProperty.IS_KEY, "true")
 <%
 }
 if (precision != null) {
 %>
-.withProp("talend.studio.precision", "<%=precision%>")
+.withProp(org.talend.sdk.component.api.record.SchemaProperty.SCALE, "<%=precision%>")
 <%
 }
 if (length != null) {
 %>
-.withProp("talend.studio.length", "<%=length%>")
+.withProp(org.talend.sdk.component.api.record.SchemaProperty.SIZE, "<%=length%>")
 <%
 }
 if (pattern != null && !pattern.isEmpty()) {
 %>
-.withProp("talend.studio.pattern", "<%=org.talend.core.model.utils.TalendTextUtils.removeQuotes(pattern)%>")
+.withProp(org.talend.sdk.component.api.record.SchemaProperty.PATTERN, "<%=org.talend.core.model.utils.TalendTextUtils.removeQuotes(pattern)%>")
 <%
 }
 %>
