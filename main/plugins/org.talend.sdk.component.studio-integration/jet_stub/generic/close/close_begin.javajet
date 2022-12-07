@@ -60,7 +60,7 @@ mgr_<%=cid%>.findPlugin("<%=plugin%>")
     .forEach(serviceMeta_<%=cid%> -> {
         serviceMeta_<%=cid%>.getActions().stream().filter(actionMeta_<%=cid%> -> "close_connection".equals(actionMeta_<%=cid%>.getType())).forEach(actionMeta_<%=cid%> -> {
             synchronized (serviceMeta_<%=cid%>.getInstance()) {
-                org.talend.sdk.component.runtime.di.studio.RuntimeContextInjector.injectService(mgr_<%=cid%>, "<%=plugin%>", globalMap);
+                org.talend.sdk.component.runtime.di.studio.RuntimeContextInjector.injectService(mgr_<%=cid%>, "<%=plugin%>", new org.talend.sdk.component.api.context.RuntimeContextHolder("<%=cid%>", globalMap));
                 
                 Object result_<%=cid%> = actionMeta_<%=cid%>.getInvoker().apply(null);
                 org.talend.sdk.component.api.service.connection.CloseConnectionObject cco_<%=cid%> = (org.talend.sdk.component.api.service.connection.CloseConnectionObject) result_<%=cid%>;

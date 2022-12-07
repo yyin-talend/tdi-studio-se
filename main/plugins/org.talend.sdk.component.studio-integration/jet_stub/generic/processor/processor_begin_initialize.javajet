@@ -56,8 +56,7 @@
 
     final org.talend.sdk.component.runtime.output.Processor processorImpl_<%=cid%> = mgr_<%=cid%>.findProcessor("<%=family%>", "<%=originalName%>", <%=version%>, configuration_<%=cid%>)
                                                                                  .orElseThrow(() -> new IllegalArgumentException("Can't find <%=family%>#<%=originalName%>"));
-
-    org.talend.sdk.component.runtime.di.studio.RuntimeContextInjector.injectLifecycle(processorImpl_<%=cid%>, globalMap);
+    org.talend.sdk.component.runtime.di.studio.RuntimeContextInjector.injectLifecycle(processorImpl_<%=cid%>, new org.talend.sdk.component.api.context.RuntimeContextHolder("<%=cid%>", globalMap));
     
     final org.talend.sdk.component.runtime.di.studio.ParameterSetter changer_<%=cid%> = new org.talend.sdk.component.runtime.di.studio.ParameterSetter(processorImpl_<%=cid%>);
     <%
