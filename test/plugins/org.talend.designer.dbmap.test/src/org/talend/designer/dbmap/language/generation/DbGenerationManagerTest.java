@@ -50,6 +50,7 @@ import org.talend.designer.dbmap.DbMapComponent;
 import org.talend.designer.dbmap.external.data.ExternalDbMapData;
 import org.talend.designer.dbmap.external.data.ExternalDbMapEntry;
 import org.talend.designer.dbmap.external.data.ExternalDbMapTable;
+import org.talend.designer.dbmap.language.postgres.PostgresGenerationManager;
 
 public class DbGenerationManagerTest extends DbGenerationManagerTestHelper {
 
@@ -1156,7 +1157,8 @@ public class DbGenerationManagerTest extends DbGenerationManagerTestHelper {
 
      @Test
     public void testELTMapJoinWithUpdate() {
-        dbManager = new GenericDbGenerationManager();
+        dbManager = new PostgresGenerationManager();
+        dbManager.setAddQuotesInColumns(true);
         String schema = "dbo";
         String inputTable1 = "src1";
         String inputTable2 = "src2";
