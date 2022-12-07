@@ -341,28 +341,48 @@ public class ComponentModel extends AbstractBasicComponent implements IAdditiona
             returnVariables.add(numberLinesMessage);
         }
 
-        if (detail.getMetadata().containsKey(TaCoKitConst.META_KEY_AFTER_VARIABLE)) {
-            String afterVariableMetaValue = detail.getMetadata().getOrDefault(TaCoKitConst.META_KEY_AFTER_VARIABLE, "");
-            for (String string : afterVariableMetaValue.split(TaCoKitConst.AFTER_VARIABLE_LINE_DELIMITER)) {
-                String[] split = string.split(TaCoKitConst.AFTER_VARIABLE_VALUE_DELIMITER);
+        createReturns(returnVariables, true);
+        createReturns(returnVariables, false);
+
+        return returnVariables;
+    }
+
+    private void createReturns(List<NodeReturn> returnVariables, boolean isAfterVar) {
+        String varKey = TaCoKitConst.META_KEY_RETURN_VARIABLE;
+        if(isAfterVar) {
+            varKey = TaCoKitConst.META_KEY_AFTER_VARIABLE;
+        }
+        if (detail.getMetadata().containsKey(varKey)) {
+            String returnVariableMetaValue = detail.getMetadata().getOrDefault(varKey, "");
+            for (String string : returnVariableMetaValue.split(TaCoKitConst.RETURN_VARIABLE_LINE_DELIMITER)) {
+                String[] split = string.split(TaCoKitConst.RETURN_VARIABLE_VALUE_DELIMITER);
+                
                 String key = split[0];
                 String type = split[1];
+                
+                String availability = AFTER;
+                
+                String description = null;
+                
                 // if description is empty we use as description the key value
-                String description = split.length < 3 || split[2].isEmpty() ? split[0] : split[2];
-
+                if(isAfterVar) {
+                    description = split.length < 3 || split[2].isEmpty() ? split[0] : split[2];
+                } else {
+                    availability = split[2];
+                    description = (split.length < 4 || split[3].isEmpty()) ? split[0] : split[3];
+                }
+                
                 NodeReturn returnNode = new NodeReturn();
                 String javaType = JavaTypesManager.getJavaTypeFromCanonicalName(type).getId();
                 returnNode.setType(javaType);
                 returnNode.setDisplayName(description);
                 returnNode.setName(key);
-                returnNode.setAvailability(AFTER);
+                returnNode.setAvailability(availability);
                 returnVariables.add(returnNode);
             }
         }
-
-        return returnVariables;
-    }
-
+	}
+    
     /**
      * Creates component connectors. It creates all possible connector even if some
      * of them are not applicable for component. In such cases not applicable

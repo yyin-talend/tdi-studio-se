@@ -55,7 +55,7 @@ final org.talend.sdk.component.runtime.record.RecordConverters.MappingMetaRegist
 final org.talend.sdk.component.runtime.input.Mapper tempMapper_<%=cid%> = mgr_<%=cid%>.findMapper("<%=family%>", "<%=originalName%>", <%=version%>, configuration_<%=cid%>)
     .orElseThrow(() -> new IllegalArgumentException("Can't find <%=family%>#<%=originalName%>"));
 
-org.talend.sdk.component.runtime.di.studio.RuntimeContextInjector.injectLifecycle(tempMapper_<%=cid%>, globalMap);
+org.talend.sdk.component.runtime.di.studio.RuntimeContextInjector.injectLifecycle(tempMapper_<%=cid%>, new org.talend.sdk.component.api.context.RuntimeContextHolder("<%=cid%>", globalMap));
 
 final org.talend.sdk.component.runtime.di.studio.ParameterSetter changer_<%=cid%> = new org.talend.sdk.component.runtime.di.studio.ParameterSetter(tempMapper_<%=cid%>);
 <%
