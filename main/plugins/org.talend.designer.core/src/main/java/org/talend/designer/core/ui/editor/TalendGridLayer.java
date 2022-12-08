@@ -33,21 +33,21 @@ public class TalendGridLayer extends GridLayer {
 
     public static final Color GRID_COLOR = ColorConstants.black;
 
-    private static final Color GRID_COLOR_1 = new Color(131, 131, 131);
+    private static final Color GRID_LIGHT_COLOR = new Color(232, 235, 239);
 
-    private static final Color GRID_COLOR_2 = new Color(255, 255, 255);
+    private static final Color GRID_DARK_COLOR = new Color(125, 135, 150);
 
     public TalendGridLayer() {
         super();
         setForegroundColor(GRID_COLOR);
     }
 
-    private Color getColor1() {
-        return ITalendThemeService.getColor("org.talend.designer.core.lightColor").orElse(GRID_COLOR_1);
+    private Color getLightColor() {
+        return ITalendThemeService.getColor("org.talend.designer.core.lightColor").orElse(GRID_LIGHT_COLOR);
     }
 
-    private Color getColor2() {
-        return ITalendThemeService.getColor("org.talend.designer.core.darkColor").orElse(GRID_COLOR_2);
+    private Color getDarkColor() {
+        return ITalendThemeService.getColor("org.talend.designer.core.darkColor").orElse(GRID_DARK_COLOR);
     }
 
     private int getColorAlpha() {
@@ -100,10 +100,10 @@ public class TalendGridLayer extends GridLayer {
 //                    g.drawPoint(i, j);
                     int re = Math.abs(i - j);
                     if (re / distanceY % 2 == 0) {
-                        g.setBackgroundColor(getColor1());
+                        g.setBackgroundColor(getDarkColor());
 //                        g.drawImage(ImageProvider.getImage(EImage.CHESS_GRAY), i, j);
                     } else {
-                        g.setBackgroundColor(getColor2());
+                        g.setBackgroundColor(getLightColor());
                     }
                     g.fillRectangle(i, j, 32, 32);
                 }
