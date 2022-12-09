@@ -38,6 +38,8 @@ import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.jobs.ISchedulingRule;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.JavaCore;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.utils.generation.JavaUtils;
 import org.talend.core.CorePlugin;
@@ -85,6 +87,9 @@ import org.talend.utils.io.FilesUtils;
  */
 public class TalendJavaProjectManager {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(TalendJavaProjectManager.class);
+
+    
     private static Map<String, ITalendProcessJavaProject> talendCodeJavaProjects = new HashMap<>();
 
     private static Map<String, ITalendProcessJavaProject> talendCodesJarJavaProjects = new HashMap<>();
@@ -595,6 +600,11 @@ public class TalendJavaProjectManager {
             public void run(IProgressMonitor monitor) throws CoreException {
                 IProject[] projects = ResourcesPlugin.getWorkspace().getRoot().getProjects();
                 for (IProject project : projects) {
+                    // if already closed or not exist, do nothing.
+                    if (!project.exists() || !project.isOpen()) {
+                        LOGGER.info("project: " + project.getName() + " not exists or already closed");
+                        continue;
+                    }
                     if (project.hasNature("com.oaklandsw.transform.runtime.nature")) { //$NON-NLS-1$
                         // never delete TDM Builtin, Examples and Examples EDI project ref
                         // com.oaklandsw.data.transform.builtin
