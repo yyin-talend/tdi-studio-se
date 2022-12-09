@@ -175,10 +175,12 @@ public class JavaVersionProjectSettingPage extends AbstractProjectSettingPage {
         if (StringUtils.isBlank(content)) {
             StringBuilder builder = new StringBuilder();
             builder.append("\n");//$NON-NLS-1$
-            builder.append("# Component\n");//$NON-NLS-1$
+            builder.append("# Setup Java internal modules for your custom components,\n");//$NON-NLS-1$
+            builder.append("# Settings will be applied to Jobs which use these components.\n");//$NON-NLS-1$
             builder.append("#tSnowflakeConnection=java.base/java.nio\n");//$NON-NLS-1$
             builder.append("\n");//$NON-NLS-1$
-            builder.append("# Global Setup\n");//$NON-NLS-1$
+            builder.append("# Setup global Java internal modules,\n");//$NON-NLS-1$
+            builder.append("# Settings will be applied to all Jobs.\n");//$NON-NLS-1$
             builder.append("#GLOBAL=java.base/java.lang,java.base/java.io\n");//$NON-NLS-1$
             content = builder.toString();
         }
