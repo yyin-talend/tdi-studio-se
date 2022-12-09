@@ -441,7 +441,11 @@ public class LoginProjectPage extends AbstractLoginActionPage {
                     }
                     // svnBranchCombo.getCombo().setFont(originalFont);
                     branchesViewer.getCombo().setEnabled(projectViewer.getControl().isEnabled());
+                    finishButton.setEnabled(true);
                 });
+                
+                setRepositoryContextInContext();
+                
                 if (monitor.isCanceled()) {
                     return org.eclipse.core.runtime.Status.CANCEL_STATUS;
                 } else {
@@ -1254,9 +1258,7 @@ public class LoginProjectPage extends AbstractLoginActionPage {
                         // TODO Auto-generated catch block
                         ExceptionHandler.process(e);
                     }
-                    setRepositoryContextInContext();
                 }
-                finishButton.setEnabled(true);
             }
         });
 
@@ -2459,6 +2461,7 @@ public class LoginProjectPage extends AbstractLoginActionPage {
 
     private void fillUIBranches(final Project project, boolean lastUsedBranch) throws JSONException {
         if (disableBranchRefresh) {
+            finishButton.setEnabled(true);
             return;
         }
         if (LoginHelper.isRemotesConnection(getConnection())) {
@@ -2482,6 +2485,9 @@ public class LoginProjectPage extends AbstractLoginActionPage {
             }
             branchesViewer.getCombo().setEnabled(false);
             scheduleRefreshBranchJob();
+        } else {
+            setRepositoryContextInContext();
+            finishButton.setEnabled(true);
         }
     }
 

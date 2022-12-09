@@ -128,6 +128,8 @@ public class ProjectRefSettingPage extends ProjectSettingPage {
     private boolean isReadOnly = false;
 
     private Exception errorException;
+    
+    private boolean dataSaved = false;
 
     @Override
     protected Control createContents(Composite parent) {
@@ -617,7 +619,7 @@ public class ProjectRefSettingPage extends ProjectSettingPage {
             if (checkOtherEditorsOpened()) {
                 return false;
             }
-
+            dataSaved = false;
             MessageDialog.openInformation(Display.getCurrent().getActiveShell(),
                     Messages.getString("RepoReferenceProjectSetupAction.TitleReferenceChanged"), //$NON-NLS-1$
                     Messages.getString("RepoReferenceProjectSetupAction.MsgReferenceChanged")); //$NON-NLS-1$
@@ -636,7 +638,9 @@ public class ProjectRefSettingPage extends ProjectSettingPage {
                         public void run(IProgressMonitor monitor) throws CoreException {
                             try {
                                 relogin(mainProjectLabel, false, monitor);
-                                saveData();
+                                if (!dataSaved) {
+                                    saveData();
+                                }
                             } catch (Exception ex) {
                                 errorException = ex;
                                 synSetErrorMessage(errorException);
@@ -843,6 +847,8 @@ public class ProjectRefSettingPage extends ProjectSettingPage {
             ProxyRepositoryFactory.getInstance().logOnProject(switchProject, monitor);
         } catch (LoginException e) {
             if (LoginException.RESTART.equals(e.getKey())) {
+                saveData();
+                dataSaved = true;
                 Display.getDefault().asyncExec(() -> PlatformUI.getWorkbench().restart());
                 return;
             } else {
