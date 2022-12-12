@@ -205,10 +205,6 @@ public class RepositoryChangeMetadataCommand extends ChangeMetadataCommand {
             } else {
                 setDBTableFieldValue(node, newOutputMetadata.getTableName(), oldOutputMetadata.getTableName());
             }
-            if(newOutputMetadata != null && componentName.startsWith("tRESTClient")) {
-                newOutputMetadata.setListColumns(oldOutputMetadata.getListColumns());
-                newOutputMetadata.setOriginalColumns(oldOutputMetadata.getOriginalColumns());
-            }
             IElementParameter parameter = node.getElementParameter("SAP_FUNCTION");//$NON-NLS-1$
             if (parameter != null) {
                 setSAPFunctionName(node, parameter.getValue() == null ? null : (String) parameter.getValue());
