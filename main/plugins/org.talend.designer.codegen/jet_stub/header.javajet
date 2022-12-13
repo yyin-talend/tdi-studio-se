@@ -36,6 +36,15 @@
 	boolean stats = codeGenArgument.isStatistics();
 	boolean trace = codeGenArgument.isTrace();
 	boolean isRunInMultiThread = codeGenArgument.getIsRunInMultiThread();
+	
+	boolean exportTypeSpringBoot = false;
+	if (process instanceof org.talend.core.model.process.IProcess2) {
+            org.talend.core.model.process.IProcess2 p2 = (org.talend.core.model.process.IProcess2) process;
+	    if (p2.getProperty() != null && p2.getProperty().getAdditionalProperties() != null) {
+	        exportTypeSpringBoot = "REST_MS".equals(p2.getProperty().getAdditionalProperties().get(org.talend.core.runtime.process.TalendProcessArgumentConstant.ARG_BUILD_TYPE));
+	    } 
+	}
+
 	List<IContextParameter> params = new ArrayList<IContextParameter>();
 	params=process.getContextManager().getDefaultContext().getContextParameterList();
 	String className = process.getName();
@@ -141,7 +150,8 @@ for (INode node : process.getNodesOfType("tRESTClient")) {
     }
 }
 
-boolean talendEsbJobFactory = actAsProvider || !process.getNodesOfType("tRouteInput").isEmpty();
+boolean isChildRouteJob = !process.getNodesOfType("tRouteInput").isEmpty();
+boolean talendEsbJobFactory = actAsProvider || isChildRouteJob;
 boolean talendEsbJob = talendEsbJobFactory || actAsConsumer || ProcessorUtilities.isEsbJob(process);
 
 boolean isLog4jEnabled = ("true").equals(ElementParameterParser.getValue(process, "__LOG4J_ACTIVATE__"));//log4j enable
@@ -245,6 +255,11 @@ if(isRunInMultiThread){
 
 	<%//uft-8 is for temp file, for example: tSortRow, tMap. Because they need keep reversibility.%>
 	private final static String utf8Charset = "UTF-8";
+
+<%
+if(!exportTypeSpringBoot || isChildRouteJob){
+%>	
+
 	//contains type for every context property
 	public class PropertiesWithType extends java.util.Properties {
 		private static final long serialVersionUID = 1L;
@@ -265,9 +280,16 @@ if(isRunInMultiThread){
 			return propertyTypes.get(key);
 		}
 	}
-	
+<%
+}
+%>	
 	// create and load default properties
 	private java.util.Properties defaultProps = new java.util.Properties();
+	
+<%
+if(!exportTypeSpringBoot){
+%>	
+
 	// create application properties with default
 	public class ContextProperties extends PropertiesWithType {
 
@@ -333,6 +355,10 @@ public <%=JavaTypesManager.getTypeToGenerate(ctxParam.getType(),true)%> get<%=Ch
 		}
 %>
 	}
+	
+<%
+}
+%>		
 	protected ContextProperties context = new ContextProperties(); // will be instanciated by MS.
 	public ContextProperties getContext() {
 		return this.context;
