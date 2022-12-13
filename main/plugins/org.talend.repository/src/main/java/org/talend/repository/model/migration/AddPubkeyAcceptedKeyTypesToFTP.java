@@ -15,7 +15,7 @@ import org.talend.core.model.properties.Item;
 import org.talend.designer.core.model.utils.emf.talendfile.*;
 
 
-public class AddPubkeyAcceptedKeyTypesToFTPTPS5390 extends AbstractJobMigrationTask {
+public class AddPubkeyAcceptedKeyTypesToFTP extends AbstractJobMigrationTask {
 
     /*
      * (non-Javadoc)
@@ -23,7 +23,7 @@ public class AddPubkeyAcceptedKeyTypesToFTPTPS5390 extends AbstractJobMigrationT
      * @see org.talend.migration.IMigrationTask#getOrder()
      */
     public Date getOrder() {
-        GregorianCalendar gc = new GregorianCalendar(2022, 10, 24, 11, 0, 0);
+        GregorianCalendar gc = new GregorianCalendar(2022, 11, 13, 17, 0, 0);
         return gc.getTime();
     }
 
