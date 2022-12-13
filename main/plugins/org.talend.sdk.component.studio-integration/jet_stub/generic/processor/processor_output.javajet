@@ -77,6 +77,29 @@ if (params != null && !params.isEmpty()) {
                     }
                 }
             }
+        } else if(p.getFieldType() == EParameterFieldType.MEMO_SQL) {
+            if (!p.isShow(params)) {
+                continue;
+            }
+            
+            final String key = p.getName();
+            
+            String value = ElementParameterParser.getStringElementParameterValue(p);
+            if (p.getFieldType().toString().startsWith("MEMO")){
+                value = value.replace("\n", " ").replace("\r", " ");
+            }
+            if (org.talend.core.model.utils.ContextParameterUtils.isDynamic(value)) {
+                value = "String.valueOf(" + value + ")";
+            } else {
+                if (org.talend.core.model.utils.TalendTextUtils.isEnclosed(value)) {
+                    value = org.talend.core.model.utils.TalendTextUtils.removeQuotes(value);
+                }
+                value = org.talend.core.model.utils.TalendTextUtils.addQuotes(value);
+            }
+            
+            if(value != null) {
+                configurationToChange.put(key, value);
+            }
         }
     }
 }
