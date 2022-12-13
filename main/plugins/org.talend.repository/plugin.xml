@@ -3814,10 +3814,10 @@
         <projecttask
               beforeLogon="false"
               breaks="8.0.1"
-              class="org.talend.repository.model.migration.AddPubkeyAcceptedKeyTypesToFTPTPS5390"
+              class="org.talend.repository.model.migration.AddPubkeyAcceptedKeyTypesToFTPTPS5418"
               description="Add PubkeyAcceptedKeyTypes configuration when using sftp"
-              id="org.talend.repository.model.migration.AddPubkeyAcceptedKeyTypesToFTPTPS5390"
-              name="AddPubkeyAcceptedKeyTypesToFTPTPS5390"
+              id="org.talend.repository.model.migration.AddPubkeyAcceptedKeyTypesToFTPTPS5418"
+              name="AddPubkeyAcceptedKeyTypesToFTPTPS5418"
               version="8.0.1">
         </projecttask>
    </extension>
