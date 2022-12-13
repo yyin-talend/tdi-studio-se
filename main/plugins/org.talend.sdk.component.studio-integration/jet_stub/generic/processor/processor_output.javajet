@@ -85,9 +85,7 @@ if (params != null && !params.isEmpty()) {
             final String key = p.getName();
             
             String value = ElementParameterParser.getStringElementParameterValue(p);
-            if (p.getFieldType().toString().startsWith("MEMO")){
-                value = value.replace("\n", " ").replace("\r", " ");
-            }
+            value = value.replace("\n", " ").replace("\r", " ");
             if (org.talend.core.model.utils.ContextParameterUtils.isDynamic(value)) {
                 value = "String.valueOf(" + value + ")";
             } else {
