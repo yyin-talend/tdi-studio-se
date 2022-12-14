@@ -345,6 +345,17 @@ public class PostgresGenerationManager extends DbGenerationManager {
         return expression;
     }
 
+    /**
+     * replaceVariablesForAdditionalClauses is a new added method in supper class . added for add quotes in addition
+     * clauses.
+     * here to not change the logic of postgresGenerationManager . Override it with the same content as
+     * replaceVariablesForExpression
+     */
+    @Override
+    protected String replaceVariablesForAdditionalClauses(DbMapComponent component, String expression) {
+        return replaceVariablesForExpression(component, expression);
+    }
+
     private String replaceContextValue(String expression, String context) {
         if (inputSchemaContextSet.contains(context)) {
             expression = expression.replaceAll("\\b" + context + "\\b", "\\\\\"\"+" + context + "+\"\\\\\"");
