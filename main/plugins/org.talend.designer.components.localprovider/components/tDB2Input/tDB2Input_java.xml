@@ -151,6 +151,15 @@
 		    NUM_ROW="11">
 		    <DEFAULT>*Note: Example for Additional JDBC Parameters: "parameterName1=value1;parameterName2=value2;"</DEFAULT>
 		</PARAMETER>
+		
+		<PARAMETER NAME="USE_CURSOR" FIELD="CHECK" NUM_ROW="18">
+			<DEFAULT>false</DEFAULT>
+		</PARAMETER>
+		<PARAMETER NAME="CURSOR_SIZE" FIELD="TEXT" NUM_ROW="18"
+			SHOW_IF="(USE_CURSOR == 'true')">
+			<DEFAULT>1000</DEFAULT>
+		</PARAMETER>
+		
 		<PARAMETER NAME="TRIM_ALL_COLUMN" FIELD="CHECK" NUM_ROW="30">
 			<DEFAULT>false</DEFAULT>
 		</PARAMETER>
