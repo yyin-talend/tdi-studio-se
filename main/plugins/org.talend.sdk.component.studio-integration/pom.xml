@@ -109,6 +109,11 @@
       <groupId>org.apache.johnzon</groupId>
       <artifactId>johnzon-jsonb</artifactId>
     </dependency>
+    <dependency>
+	    <groupId>org.jruby</groupId>
+	    <artifactId>jruby</artifactId>
+	    <version>9.3.9.0</version>
+	  </dependency>
 
     <!-- Test Dependencies -->
     <dependency>
