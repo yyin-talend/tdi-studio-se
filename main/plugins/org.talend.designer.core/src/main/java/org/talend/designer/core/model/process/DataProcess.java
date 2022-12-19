@@ -3701,6 +3701,7 @@ public class DataProcess implements IGeneratingProcess {
      * @return
      */
     public void replaceNodeFromProviders(List<INode> graphicalNodeList) {
+        clearNodeReplaceProviderCache();
         List<INode> orginalList = new ArrayList<INode>(graphicalNodeList);
         IJobletProviderService jobletService = null;
         if (GlobalServiceRegister.getDefault().isServiceRegistered(IJobletProviderService.class)) {
@@ -3725,6 +3726,13 @@ public class DataProcess implements IGeneratingProcess {
         // such as ReplaceParallelization for Partition row in Joblet
         if (needReplaceForJoblet) {
             replaceNodeFromProviders(graphicalNodeList);
+        }
+        clearNodeReplaceProviderCache();
+    }
+
+    public void clearNodeReplaceProviderCache() {
+        if (IJobletProviderService.get() != null) {
+            IJobletProviderService.get().clearJobletProcessProviderCache();
         }
     }
 
