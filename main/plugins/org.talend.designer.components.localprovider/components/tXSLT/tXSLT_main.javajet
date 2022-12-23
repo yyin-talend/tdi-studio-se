@@ -99,7 +99,7 @@ if(outConns!=null ){
 		styleSource<%=cid%> = new javax.xml.transform.stream.StreamSource(new java.io.File((String)xslFile_<%=cid%>));
 	}
 <%} else {%>
- 	styleSource<%=cid%> = new javax.xml.transform.stream.StreamSource( new java.io.StringBufferInputStream ( <%=inConnName%>.<%=xslCol%>) );
+ 	styleSource<%=cid%> = new javax.xml.transform.stream.StreamSource( new java.io.StringReader ( <%=inConnName%>.<%=xslCol%>) );
 <%}%>
 	javax.xml.transform.Transformer t<%=cid%> = javax.xml.transform.TransformerFactory.newInstance(net.sf.saxon.TransformerFactoryImpl.class.getName(), null).newTransformer(styleSource<%=cid%>);
 
@@ -126,7 +126,7 @@ if(outConns!=null ){
     <%}%>
 	}
 <%} else {%>
-		xmlSource<%=cid%> = new javax.xml.transform.stream.StreamSource( new java.io.StringBufferInputStream ( <%=inConnName%>.<%=xmlCol%>) );
+		xmlSource<%=cid%> = new javax.xml.transform.stream.StreamSource( new java.io.StringReader ( <%=inConnName%>.<%=xmlCol%>) );
 <%}%>
 
 <% if(!overrideOutput) { %> 
