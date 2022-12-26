@@ -4,7 +4,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.talend.components</groupId>
 	<artifactId>talend-ws</artifactId>
-	<version>1.0.7-20220526</version>
+	<version>1.0.8-20221219</version>
 	<packaging>jar</packaging>
 
 	<licenses>
@@ -20,7 +20,7 @@
 
 		<talend.nexus.url>https://artifacts-oss.talend.com</talend.nexus.url>
 
-		<cxf.version>3.4.7</cxf.version>
+		<cxf.version>3.4.10</cxf.version>
 		<odata.version>4.3.0</odata.version>
 		<slf4j.version>1.7.12</slf4j.version>
 		<httpclient.version>4.5.13</httpclient.version>
