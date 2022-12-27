@@ -14,6 +14,9 @@
 */%>
 final java.util.Map<String, String> configuration_<%=cid%> = new java.util.HashMap<>();
 final java.util.Map<String, String> registry_metadata_<%=cid%> = new java.util.HashMap<>();
+
+java.net.URL mappings_url_<%=cid %>= this.getClass().getResource("/xmlMappings");
+globalMap.put("<%=cid %>_MAPPINGS_URL", mappings_url_<%=cid %>);
 <%
     final java.util.Map<String, String> configurationToChange = new java.util.HashMap<String, String>();
     
