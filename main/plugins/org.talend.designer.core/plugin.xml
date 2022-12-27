@@ -980,21 +980,7 @@
           </analysisTask>
        </extension>
        <extension
-         point="org.eclipse.ui.themes">
-          <themeElementCategory label="%designerCategory" id="org.talend.designer.core"/>
-          <colorDefinition
-                id="org.talend.designer.core.lightColor"
-                categoryId="org.talend.designer.core"
-                isEditable="true"
-                label="%designerLightColor"
-                value="232,235,239">
-          </colorDefinition>
-          <colorDefinition
-                id="org.talend.designer.core.darkColor"
-                categoryId="org.talend.designer.core"
-                isEditable="true"
-                label="%designerDeepColor"
-                value="125,135,150">
-          </colorDefinition>
-       </extension>
+   		 	point="org.eclipse.ui.themes">
+      		<themeElementCategory label="placeholder" id="org.talend.designer.core"/>
+	   </extension>
 </plugin>
