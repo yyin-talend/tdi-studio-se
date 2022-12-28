@@ -12,6 +12,7 @@
 // ============================================================================
 package org.talend.designer.runprocess.maven;
 
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -27,6 +28,7 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Platform;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.exception.PersistenceException;
@@ -94,7 +96,37 @@ public class MavenJavaProcessor extends JavaProcessor {
             IGeneratingProcess generatingProcess = (((Process)this.getProcess()).getGeneratingProcess());
             generatingProcess.generateAdditionalCode();
         }
+        removeMSLauncher();
         generateCodeAfter(statistics, trace, javaProperties, option);
+    }
+    
+    /**
+     * Delete microservice launcher for OSGi type running in studio
+     */
+    private void removeMSLauncher() {
+    	String buildType = getBuildType(getProperty());
+    	if(buildType.equals("OSGI")) {
+    		String packageFolder = JavaResourcesHelper.getJobClassPackageFolder(property.getItem(), true);
+    		IFolder srcFolder = getTalendJavaProject().getSrcSubFolder(null, packageFolder);
+            List<String> msSourceFiles = Arrays.asList(
+            		"App.java",
+            		"ContextProperties.java", 
+            		"MSContextProperties.java", 
+            		"PropertiesWithType.java", 
+            		"TalendManagementWebSecurityAutoConfiguration.java");
+            IProgressMonitor monitor = new NullProgressMonitor();
+            for (String msSourceFile : msSourceFiles) {
+                IFile f = srcFolder
+                        .getFile(msSourceFile);
+                if (f.exists()) {
+                    try {
+                        f.delete(true, monitor);
+                    } catch (CoreException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+    	}
     }
 
     protected void generateCodeAfter(boolean statistics, boolean trace, boolean javaProperties, int option)
