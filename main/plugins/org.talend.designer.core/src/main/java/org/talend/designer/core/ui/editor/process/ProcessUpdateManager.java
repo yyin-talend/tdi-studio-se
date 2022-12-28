@@ -2467,7 +2467,11 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
                 Map<String, Object> objectMap = (Map<String, Object>) objectList.get(i);
                 for (int j = 0; j < keys.length; j++) {
                     String key = keys[j];
-                    sameValues &= oldMap.get(key).equals(objectMap.get(key));
+                    if (oldMap.get(key) == null || "".equals(oldMap.get(key))) {
+                        sameValues &= (objectMap.get(key) == null || "".equals(objectMap.get(key)));
+                    } else {
+                        sameValues &= oldMap.get(key).equals(objectMap.get(key));
+                    }
                     if (sameValues == false) {
                         return false;
                     }

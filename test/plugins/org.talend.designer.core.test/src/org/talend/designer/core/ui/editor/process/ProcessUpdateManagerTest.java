@@ -127,5 +127,26 @@ public class ProcessUpdateManagerTest {
         objectValue.add(lineMap);
         result = updateManager.compareMapList(objectValue, oldList, new String[] { "SCHEMA_COLUMN", "QUERY", "NODECHECK" });
         assertFalse(result);
+
+        oldList = new ArrayList<Map<String, Object>>();
+        objectValue = new ArrayList<Map<String, Object>>();
+        lineMap = new HashMap<String, Object>();
+        line2Map = new HashMap<String, Object>();
+        lineMap.put("SCHEMA_COLUMN", "componentName");
+        lineMap.put("QUERY", "../componentName");
+        lineMap.put("NODECHECK", "");
+        line2Map.put("SCHEMA_COLUMN", "componentName");
+        line2Map.put("QUERY", "../componentName");
+        oldList.add(lineMap);
+        objectValue.add(line2Map);
+        result = updateManager.compareMapList(objectValue, oldList, new String[] { "SCHEMA_COLUMN", "QUERY", "NODECHECK" });
+        assertTrue(result);
+        oldList.clear();
+        oldList.add(line2Map);
+        objectValue.clear();
+        objectValue.add(lineMap);
+        result = updateManager.compareMapList(objectValue, oldList, new String[] { "SCHEMA_COLUMN", "QUERY", "NODECHECK" });
+        assertTrue(result);
+
     }
 }
