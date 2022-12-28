@@ -150,6 +150,8 @@ public class CodeGeneratorService implements ICodeGeneratorService {
         }
         ComponentCompilations.deleteMarkers();
         ComponentsFactoryProvider.getInstance().resetCache();
+        // mvnIndex will reset on 7.3, to load custom components and sync libs avoid impact mvnuri guessing
+        ComponentsFactoryProvider.getInstance().readComponents();
         ILibraryManagerService librairesManagerService = (ILibraryManagerService) GlobalServiceRegister.getDefault().getService(
                 ILibraryManagerService.class);
         librairesManagerService.clearCache();
