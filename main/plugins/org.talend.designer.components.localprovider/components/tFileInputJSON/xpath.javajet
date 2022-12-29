@@ -91,7 +91,9 @@ boolean checkDate = (checkDateStr!=null&&!("").equals(checkDateStr))?("true").eq
             if (Brace == barceType) {
                 if (isNeedAddRoot(originalJsonString)) {
                     jsonString4XML = "{ \"root\": " + originalJsonString + " }";
-                    loopString4XML = "root" + originalLoopString;
+                    if(!(originalLoopString.startsWith("/root") || originalLoopString.startsWith("root"))) {
+                        loopString4XML = "root" + originalLoopString;
+                    }
                     setAdditionRoot("root");
                 }
             } else if (Bracket == barceType) {
