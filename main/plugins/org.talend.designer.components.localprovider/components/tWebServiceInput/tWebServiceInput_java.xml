@@ -354,8 +354,8 @@ for(int i = 0; i &lt; result.length; i++){
 			/>
 			<IMPORT
 				NAME="talend-ws"
-				MODULE="talend-ws-2.0-20221219.jar"
-				MVN="mvn:org.talend.components/talend-ws/2.0-20221219"
+				MODULE="talend-ws-2.0-20221229.jar"
+				MVN="mvn:org.talend.components/talend-ws/2.0-20221229"
 				REQUIRED_IF="(API=='CXF')"
 			/>
 	
