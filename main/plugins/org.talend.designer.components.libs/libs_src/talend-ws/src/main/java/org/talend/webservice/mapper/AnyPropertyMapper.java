@@ -98,6 +98,8 @@ public class AnyPropertyMapper implements PropertyMapper {
                     try {
                         TransformerFactory transFactory = TransformerFactory.newInstance();
                         transFactory.setFeature(javax.xml.XMLConstants.FEATURE_SECURE_PROCESSING, Boolean.TRUE);
+                        transFactory.setAttribute(javax.xml.XMLConstants.ACCESS_EXTERNAL_DTD, "");
+                        transFactory.setAttribute(javax.xml.XMLConstants.ACCESS_EXTERNAL_STYLESHEET, "");
                         transformer = transFactory.newTransformer();
                         transformer.transform(domSource, result);
                     } catch (TransformerConfigurationException e) {

@@ -263,6 +263,8 @@ public class ServiceDiscoveryHelper {
 
         TransformerFactory tf = TransformerFactory.newInstance();
         tf.setFeature(javax.xml.XMLConstants.FEATURE_SECURE_PROCESSING, Boolean.TRUE);
+        tf.setAttribute(javax.xml.XMLConstants.ACCESS_EXTERNAL_DTD, "");
+        tf.setAttribute(javax.xml.XMLConstants.ACCESS_EXTERNAL_STYLESHEET, "");
         Transformer transformer = tf.newTransformer();
         transformer.transform(domSource, streamResult);
 

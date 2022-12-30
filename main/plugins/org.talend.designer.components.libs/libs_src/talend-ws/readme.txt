@@ -51,3 +51,5 @@ please @see org\talend\ws\helper\ServiceInvokerHelper.java
 10.(2019-01-18 modified by dchmyga) fixed TDI-41647
 
 11.(2020-08-24 modified by ozhelezniak) updated commons-codec to 1.14 in scope of TDI-44145
+
+12.(2022-12-01 modified by dochkas) fixed TDI-48440
