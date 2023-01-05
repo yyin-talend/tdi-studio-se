@@ -117,6 +117,7 @@ import org.talend.designer.mapper.model.tableentry.OutputColumnTableEntry;
 import org.talend.designer.mapper.model.tableentry.TableEntryLocation;
 import org.talend.designer.mapper.model.tableentry.VarTableEntry;
 import org.talend.designer.mapper.ui.MapperUI;
+import org.talend.designer.mapper.ui.color.ColorInfo;
 import org.talend.designer.mapper.ui.commands.DataMapTableViewSelectedCommand;
 import org.talend.designer.mapper.ui.dialog.AutoMappingDialog;
 import org.talend.designer.mapper.ui.dialog.MapReducePropertySetDialog;
@@ -1057,7 +1058,7 @@ public class UIManager extends AbstractUIManager {
         }
 
         // Color selectedColor = dataMapTableView.getDisplay().getSystemColor(SWT.COLOR_YELLOW);
-        Color unselectedColor = dataMapTableView.getDisplay().getSystemColor(SWT.COLOR_WHITE);
+        Color unselectedColor = ColorInfo.COLOR_ENTRY_NONE();
 
         Zone currentZone = dataMapTableView.getZone();
 

@@ -59,6 +59,7 @@ import org.talend.commons.utils.threading.ExecutionLimiterImproved;
 import org.talend.core.GlobalServiceRegister;
 import org.talend.core.model.metadata.IMetadataColumn;
 import org.talend.core.model.process.IConnection;
+import org.talend.core.ui.CoreUIPlugin;
 import org.talend.core.ui.branding.IBrandingService;
 import org.talend.core.ui.images.CoreImageProvider;
 import org.talend.designer.abstractmap.model.table.IDataMapTable;
@@ -78,7 +79,6 @@ import org.talend.designer.mapper.model.table.InputTable;
 import org.talend.designer.mapper.model.table.OutputTable;
 import org.talend.designer.mapper.model.table.VarsTable;
 import org.talend.designer.mapper.ui.color.ColorInfo;
-import org.talend.designer.mapper.ui.color.ColorProviderMapper;
 import org.talend.designer.mapper.ui.dnd.DragNDrop;
 import org.talend.designer.mapper.ui.event.MouseMoveScrollZoneHelper;
 import org.talend.designer.mapper.ui.font.FontProviderMapper;
@@ -402,7 +402,7 @@ public class MapperUI {
 
         addParentListeners(uiManager, uiProperties);
 
-        bgColorLinksZone = ColorProviderMapper.getColor(ColorInfo.COLOR_BACKGROUND_LINKS_ZONE);
+        bgColorLinksZone = ColorInfo.COLOR_BACKGROUND_LINKS_ZONE();
 
         GridLayout parentLayout = new GridLayout(1, true);
         mapperUIParent.setLayout(parentLayout);
@@ -450,7 +450,7 @@ public class MapperUI {
         createOutputZoneWithTables(mapperModel, uiManager, display);
 
         if (WindowSystem.isBigSurOrLater()) {
-            Color bgColorTransparent = ColorProviderMapper.getRGBAColor(ColorInfo.COLOR_BACKGROUND_TRANSPRENT);
+            Color bgColorTransparent = ColorInfo.COLOR_BACKGROUND_TRANSPRENT();
             datasFlowViewSashForm.setBackgroundMode(SWT.INHERIT_NONE);
             sc1.setBackground(bgColorTransparent);
             inputTablesZoneView.setBackground(bgColorTransparent);
@@ -459,7 +459,10 @@ public class MapperUI {
             sc3.setBackground(bgColorTransparent);
             outputTablesZoneView.setBackground(bgColorTransparent);
         } else {
-            datasFlowViewSashForm.setBackgroundMode(SWT.INHERIT_FORCE);
+            datasFlowViewSashForm.setBackgroundMode(SWT.INHERIT_FORCE); 
+            CoreUIPlugin.setCSSClass(sc1, MapperUI.class.getSimpleName());
+            CoreUIPlugin.setCSSClass(sc2, MapperUI.class.getSimpleName());
+            CoreUIPlugin.setCSSClass(sc3, MapperUI.class.getSimpleName());
         }
 
         uiManager.parseAllExpressionsForAllTables();
@@ -494,6 +497,7 @@ public class MapperUI {
         // // table.updateGridDataHeightForTableGlobalMap();
         // // table.resizeAtExpandedSize();
         // }
+
 
     }
 
@@ -929,7 +933,6 @@ public class MapperUI {
             threadToEvaluatePerformance.interrupt();
         }
         ImageProviderMapper.releaseImages();
-        ColorProviderMapper.releaseColors();
         FontProviderMapper.releaseFonts();
         if (backgroundRefreshLimiter != null) {
             backgroundRefreshLimiter.shutdown();

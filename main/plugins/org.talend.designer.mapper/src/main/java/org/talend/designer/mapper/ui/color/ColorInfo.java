@@ -12,8 +12,9 @@
 // ============================================================================
 package org.talend.designer.mapper.ui.color;
 
-import org.eclipse.swt.graphics.RGB;
+import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.widgets.Display;
+import org.talend.commons.ui.runtime.ITalendThemeService;
 
 /**
  * DOC mhelleboid class global comment. Detailled comment <br/>
@@ -23,7 +24,7 @@ import org.eclipse.swt.widgets.Display;
  */
 public enum ColorInfo {
 
-    COLOR_ENTRY_HIGHLIGHTED(176, 231, 0), // green
+    COLOR_ENTRY_HIGHLIGHTED(102,190,230), 
     COLOR_ENTRY_HIGHLIGHTEDALL(255, 255, 0), // yellow
     COLOR_ENTRY_SEARCH_HIGHLIGHTED(255, 150, 20), // orange
     COLOR_ENTRY_ERROR(100, 200, 255), // ?
@@ -31,7 +32,7 @@ public enum ColorInfo {
     COLOR_ENTRY_NORMAL(170, 170, 170), // ?
     COLOR_RED(255, 0, 0), // red
     COLOR_ENTRY_NONE(255, 255, 255), // white
-
+    
     COLOR_BACKGROUND_LINKS_ZONE(210, 210, 196), // gray
 
     // COLOR_UNSELECTED_ZONE_TO_ZONE_LINK(235, 235, 0), // light yellow
@@ -59,55 +60,125 @@ public enum ColorInfo {
     COLOR_DRAGGING_INSERTION_INDICATOR(0, 78, 152), // blue
     COLOR_TMAP_PREVIEW(235, 234, 230);
 
-    private int red;
-
-    private int green;
-
-    private int blue;
-
-    private int alpha = 255;
-
-    private int systemColor = -1;
+    private Color color = null;
 
     private ColorInfo(int red, int green, int blue) {
-        this.red = red;
-        this.green = green;
-        this.blue = blue;
+        color = new Color(Display.getCurrent(), red, green, blue);
     }
 
     private ColorInfo(int red, int green, int blue, int alpha) {
-        this.red = red;
-        this.green = green;
-        this.blue = blue;
-        this.alpha = alpha;
+        color = new Color(Display.getCurrent(), red, green, blue, alpha);
     }
 
-    // private ColorInfo(int systemColor) {
-    // this.systemColor = systemColor;
-    // }
-
-    public int getBlue() {
-        return this.blue;
+    public static Color COLOR_ENTRY_HIGHLIGHTED() {
+        return ITalendThemeService.getColor("COLOR_ENTRY_HIGHLIGHTED").orElse(COLOR_ENTRY_HIGHLIGHTED.getColor());
     }
-
-    public int getGreen() {
-        return this.green;
+    
+    public static Color COLOR_ENTRY_HIGHLIGHTEDALL() {
+        return ITalendThemeService.getColor("COLOR_ENTRY_HIGHLIGHTEDALL").orElse(COLOR_ENTRY_HIGHLIGHTEDALL.getColor());
     }
-
-    public int getRed() {
-        return this.red;
+    
+    public static Color COLOR_ENTRY_SEARCH_HIGHLIGHTED() {
+        return ITalendThemeService.getColor("COLOR_ENTRY_SEARCH_HIGHLIGHTED").orElse(COLOR_ENTRY_SEARCH_HIGHLIGHTED.getColor());
     }
-
-    public int getAlpha() {
-        return this.alpha;
+    
+    public static Color COLOR_ENTRY_ERROR() {
+        return ITalendThemeService.getColor("COLOR_ENTRY_ERROR").orElse(COLOR_ENTRY_ERROR.getColor());
     }
-
-    public RGB getRGB() {
-        if (systemColor != -1) {
-            return Display.getCurrent().getSystemColor(systemColor).getRGB();
-        } else {
-            return new RGB(red, green, blue);
-        }
+    
+    public static Color COLOR_ENTRY_WARNING() {
+        return ITalendThemeService.getColor("COLOR_ENTRY_WARNING").orElse(COLOR_ENTRY_WARNING.getColor());
     }
-
+    
+    public static Color COLOR_ENTRY_NORMAL() {
+        return ITalendThemeService.getColor("COLOR_ENTRY_NORMAL").orElse(COLOR_ENTRY_NORMAL.getColor());
+    }
+    
+    public static Color COLOR_RED() {
+        return ITalendThemeService.getColor("COLOR_RED").orElse(COLOR_RED.getColor());
+    }
+    
+    public static Color COLOR_ENTRY_NONE() {
+        return ITalendThemeService.getColor("COLOR_ENTRY_NONE").orElse(COLOR_ENTRY_NONE.getColor());
+    }
+    
+    public static Color COLOR_BACKGROUND_LINKS_ZONE() {
+        return ITalendThemeService.getColor("COLOR_BACKGROUND_LINKS_ZONE").orElse(COLOR_BACKGROUND_LINKS_ZONE.getColor());
+    }
+    
+    public static Color COLOR_SELECTED_ZONE_TO_ZONE_LINK() {
+        return ITalendThemeService.getColor("COLOR_SELECTED_ZONE_TO_ZONE_LINK").orElse(COLOR_SELECTED_ZONE_TO_ZONE_LINK.getColor());
+    }
+    
+    public static Color COLOR_UNSELECTED_ZONE_TO_ZONE_LINK() {
+        return ITalendThemeService.getColor("COLOR_UNSELECTED_ZONE_TO_ZONE_LINK").orElse(COLOR_UNSELECTED_ZONE_TO_ZONE_LINK.getColor());
+    }
+    
+    public static Color COLOR_SELECTED_LOOKUP_LINKS() {
+        return ITalendThemeService.getColor("COLOR_SELECTED_LOOKUP_LINKS").orElse(COLOR_SELECTED_LOOKUP_LINKS.getColor());
+    }
+    
+    public static Color COLOR_UNSELECTED_LOOKUP_LINKS() {
+        return ITalendThemeService.getColor("COLOR_UNSELECTED_LOOKUP_LINKS").orElse(COLOR_UNSELECTED_LOOKUP_LINKS.getColor());
+    }
+    
+    public static Color COLOR_SELECTED_FILTER_LINK() {
+        return ITalendThemeService.getColor("COLOR_SELECTED_FILTER_LINK").orElse(COLOR_SELECTED_FILTER_LINK.getColor());
+    }
+    
+    public static Color COLOR_UNSELECTED_FILTER_LINK() {
+        return ITalendThemeService.getColor("COLOR_UNSELECTED_FILTER_LINK").orElse(COLOR_UNSELECTED_FILTER_LINK.getColor());
+    }
+    
+    public static Color COLOR_SELECTED_GLOBALMAP_LINK() {
+        return ITalendThemeService.getColor("COLOR_SELECTED_GLOBALMAP_LINK").orElse(COLOR_SELECTED_GLOBALMAP_LINK.getColor());
+    }
+    
+    public static Color COLOR_UNSELECTED_GLOBALMAP_LINK() {
+        return ITalendThemeService.getColor("COLOR_UNSELECTED_GLOBALMAP_LINK").orElse(COLOR_UNSELECTED_GLOBALMAP_LINK.getColor());
+    }
+    
+    public static Color COLOR_HIGHLIGHTED_TEXT_ROW() {
+        return ITalendThemeService.getColor("COLOR_HIGHLIGHTED_TEXT_ROW").orElse(COLOR_HIGHLIGHTED_TEXT_ROW.getColor());
+    }
+    
+    public static Color COLOR_BACKGROUND_ERROR_EXPRESSION_CELL() {
+        return ITalendThemeService.getColor("COLOR_BACKGROUND_ERROR_EXPRESSION_CELL").orElse(COLOR_BACKGROUND_ERROR_EXPRESSION_CELL.getColor());
+    }
+    
+    public static Color COLOR_BACKGROUND_VALID_EXPRESSION_CELL() {
+        return ITalendThemeService.getColor("COLOR_BACKGROUND_VALID_EXPRESSION_CELL").orElse(COLOR_BACKGROUND_VALID_EXPRESSION_CELL.getColor());
+    }
+    
+    public static Color COLOR_BACKGROUND_TRANSPRENT() {
+        return ITalendThemeService.getColor("COLOR_BACKGROUND_TRANSPRENT").orElse(COLOR_BACKGROUND_TRANSPRENT.getColor());
+    }
+    
+    public static Color COLOR_FOREGROUND_ERROR_EXPRESSION_CELL() {
+        return ITalendThemeService.getColor("COLOR_FOREGROUND_ERROR_EXPRESSION_CELL").orElse(COLOR_FOREGROUND_ERROR_EXPRESSION_CELL.getColor());
+    }
+    
+    public static Color COLOR_FOREGROUND_VALID_EXPRESSION_CELL() {
+        return ITalendThemeService.getColor("COLOR_FOREGROUND_VALID_EXPRESSION_CELL").orElse(COLOR_FOREGROUND_VALID_EXPRESSION_CELL.getColor());
+    }
+    
+    public static Color COLOR_DRAGGING_INSERTION_INDICATOR() {
+        return ITalendThemeService.getColor("COLOR_DRAGGING_INSERTION_INDICATOR").orElse(COLOR_DRAGGING_INSERTION_INDICATOR.getColor());
+    }
+    
+    public static Color COLOR_TMAP_PREVIEW() {
+        return ITalendThemeService.getColor("COLOR_TMAP_PREVIEW").orElse(COLOR_TMAP_PREVIEW.getColor());
+    }
+    
+//    public static Color COLOR_ENTRY_SELECTED() {
+//        return ITalendThemeService.getColor("COLOR_ENTRY_SELECTED").orElse(COLOR_ENTRY_SELECTED.getColor());
+//    }
+//    
+//    public static Color COLOR_ENTRY_UNSELECTED() {
+//        return ITalendThemeService.getColor("COLOR_ENTRY_UNSELECTED").orElse(COLOR_ENTRY_UNSELECTED.getColor());
+//    }
+    
+    public Color getColor() {
+        return color;
+    }
 }

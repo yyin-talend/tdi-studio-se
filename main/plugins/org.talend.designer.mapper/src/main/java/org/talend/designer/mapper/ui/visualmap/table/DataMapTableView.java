@@ -169,7 +169,6 @@ import org.talend.designer.mapper.model.tableentry.OutputColumnTableEntry;
 import org.talend.designer.mapper.model.tableentry.TableEntryLocation;
 import org.talend.designer.mapper.model.tableentry.VarTableEntry;
 import org.talend.designer.mapper.ui.color.ColorInfo;
-import org.talend.designer.mapper.ui.color.ColorProviderMapper;
 import org.talend.designer.mapper.ui.dialog.ListStringValueDialog;
 import org.talend.designer.mapper.ui.dnd.CompleteDropTargetTableListener;
 import org.talend.designer.mapper.ui.dnd.DragNDrop;
@@ -2339,7 +2338,7 @@ public abstract class DataMapTableView extends Composite implements IDataMapTabl
             if (validCell) {
                 return null;
             } else {
-                return ColorProviderMapper.getColor(ColorInfo.COLOR_BACKGROUND_ERROR_EXPRESSION_CELL);
+                return ColorInfo.COLOR_BACKGROUND_ERROR_EXPRESSION_CELL();
             }
 
         }
@@ -2380,7 +2379,7 @@ public abstract class DataMapTableView extends Composite implements IDataMapTabl
         if (column.getId().equals(ID_EXPRESSION_COLUMN)) {
             return expressionColorProvider.getBackgroundColor(entry.getProblems() == null ? true : false);
         } else if (column.getId().equals(PREVIEW_COLUMN)) {
-            return ColorProviderMapper.getColor(ColorInfo.COLOR_TMAP_PREVIEW);
+            return ColorInfo.COLOR_TMAP_PREVIEW();
         }
         return null;
     }
@@ -2828,8 +2827,8 @@ public abstract class DataMapTableView extends Composite implements IDataMapTabl
             columnNameTextFilter.setVisible(table.isActivateColumnNameFilter());
             nameFilterTextGridData.exclude = !table.isActivateColumnNameFilter();
             //
-            columnNameTextFilter.setBackground(ColorProviderMapper.getColor(ColorInfo.COLOR_BACKGROUND_VALID_EXPRESSION_CELL));
-            columnNameTextFilter.setForeground(ColorProviderMapper.getColor(ColorInfo.COLOR_FOREGROUND_VALID_EXPRESSION_CELL));
+            columnNameTextFilter.setBackground(ColorInfo.COLOR_BACKGROUND_VALID_EXPRESSION_CELL());
+            columnNameTextFilter.setForeground(ColorInfo.COLOR_FOREGROUND_VALID_EXPRESSION_CELL());
 
             columnNameTextFilter.addFocusListener(new FocusListener() {
 
@@ -3002,17 +3001,17 @@ public abstract class DataMapTableView extends Composite implements IDataMapTabl
             expressionFilterText.setColoring(false);
             if (!mapperManager.isSearchOption()) {
                 expressionFilterText
-                        .setBackground(ColorProviderMapper.getColor(ColorInfo.COLOR_BACKGROUND_ERROR_EXPRESSION_CELL));
+                        .setBackground(ColorInfo.COLOR_BACKGROUND_ERROR_EXPRESSION_CELL());
                 expressionFilterText
-                        .setForeground(ColorProviderMapper.getColor(ColorInfo.COLOR_FOREGROUND_ERROR_EXPRESSION_CELL));
+                        .setForeground(ColorInfo.COLOR_FOREGROUND_ERROR_EXPRESSION_CELL());
             }
         } else {
             expressionFilterText.setColoring(true);
             if (!mapperManager.isSearchOption()) {
                 expressionFilterText
-                        .setBackground(ColorProviderMapper.getColor(ColorInfo.COLOR_BACKGROUND_VALID_EXPRESSION_CELL));
+                        .setBackground(ColorInfo.COLOR_BACKGROUND_VALID_EXPRESSION_CELL());
                 expressionFilterText
-                        .setForeground(ColorProviderMapper.getColor(ColorInfo.COLOR_FOREGROUND_VALID_EXPRESSION_CELL));
+                        .setForeground(ColorInfo.COLOR_FOREGROUND_VALID_EXPRESSION_CELL());
             }
         }
     }
