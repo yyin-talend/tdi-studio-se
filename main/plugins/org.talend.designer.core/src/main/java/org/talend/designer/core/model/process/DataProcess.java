@@ -403,6 +403,7 @@ public class DataProcess implements IGeneratingProcess {
             name = prefix + name;
         }
         dataConnec.setName(name);
+        dataConnec.setDesignName(connection.getDesignName());
         String uniqueName2 = connection.getUniqueName();
         if (prefix != null) {
             uniqueName2 = prefix + uniqueName2;

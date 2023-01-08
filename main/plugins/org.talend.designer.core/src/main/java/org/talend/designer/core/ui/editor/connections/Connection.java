@@ -95,6 +95,8 @@ public class Connection extends Element implements IConnection, IPerformance, IA
 
     private String uniqueName;
 
+    private String designName;
+
     // true if this connection is activated.
     private boolean activate = true;
 
@@ -882,6 +884,16 @@ public class Connection extends Element implements IConnection, IPerformance, IA
 
     public void setUniqueName(String uniqueName) {
         this.uniqueName = uniqueName;
+    }
+
+    @Override
+    public String getDesignName() {
+        return designName;
+    }
+
+    @Override
+    public void setDesignName(String designName) {
+        this.designName = designName;
     }
 
     /**

@@ -146,8 +146,12 @@
 						}
 						boolean hasAtLeastOneKey = hashableColumnsNames.size() > 0;
 
+	if(conn.getDesignName()!=null){
 %>
-
+    //<%=conn.getDesignName() %>
+<%
+	}
+%>
 public static class <%=conn.getName() %>Struct<%=templateOrigin %> implements routines.system.<%= isLookup ? "IPersistableComparableLookupRow<"+conn.getName()+"Struct>" : "IPersistableRow<"+conn.getName()+"Struct"+ templateOrigin + ">" %> {
     final static byte[] commonByteArrayLock_<%=codeGenArgument.getCurrentProjectName() %>_<%=codeGenArgument.getJobName() %> = new byte[0];
     static byte[] commonByteArray_<%=codeGenArgument.getCurrentProjectName() %>_<%=codeGenArgument.getJobName() %> = new byte[0];
