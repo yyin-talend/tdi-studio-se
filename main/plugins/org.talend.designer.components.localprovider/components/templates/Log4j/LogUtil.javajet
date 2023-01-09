@@ -117,8 +117,8 @@ class LogUtil extends BasicLogUtil{
         if(log4jEnabled){
         %>
             if (log.isDebugEnabled()) {
-//                class BytesLimit65535_<%=cid%>{
-//                    public void limitLog4jByte() throws Exception{
+                class BytesLimit65535_<%=node.getUniqueShortName()%>{
+                    public void limitLog4jByte() throws Exception{
                     StringBuilder <%=var("log4jParamters")%> = new StringBuilder();
                     <%=var("log4jParamters")%>.append("Parameters:");
                     <%
@@ -187,9 +187,9 @@ class LogUtil extends BasicLogUtil{
                     }
                     debug(var("log4jParamters")); 
                     %>
-//                    } 
-//                } 
-//            new BytesLimit65535_<%=cid%>().limitLog4jByte();
+                    } 
+                } 
+            new BytesLimit65535_<%=node.getUniqueShortName()%>().limitLog4jByte();
             }
         <%
         } 
