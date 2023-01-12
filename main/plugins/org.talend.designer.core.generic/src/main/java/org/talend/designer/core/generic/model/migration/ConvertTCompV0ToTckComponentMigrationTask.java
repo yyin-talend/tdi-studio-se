@@ -46,6 +46,7 @@ import org.talend.designer.core.model.utils.emf.talendfile.ElementValueType;
 import org.talend.designer.core.model.utils.emf.talendfile.NodeType;
 import org.talend.designer.core.model.utils.emf.talendfile.ProcessType;
 import org.talend.designer.core.model.utils.emf.talendfile.TalendFileFactory;
+import org.talend.utils.security.StudioEncryption;
 
 public abstract class ConvertTCompV0ToTckComponentMigrationTask extends AbstractJobMigrationTask {
 
@@ -112,6 +113,7 @@ public abstract class ConvertTCompV0ToTckComponentMigrationTask extends Abstract
                 
                 final TalendFileFactory fileFact = TalendFileFactory.eINSTANCE;
                 
+                //TODO tcompv0/javajet component force user to use double quote to wrap value most time, but tck one not do that, even expect not use double quote wrapper, need to consider that 
                 for(TckMigrationModel model : infos) {
                 	if(model.fieldType == null || model.fieldType.isEmpty()) {
                 		//field="TECHNICAL", and oldPath is value directly, so use it directly
@@ -153,9 +155,21 @@ public abstract class ConvertTCompV0ToTckComponentMigrationTask extends Abstract
                 			}
                 			ComponentUtilities.addNodeProperty(nodeType, model.newPath, "TABLE");
                             ComponentUtilities.setNodeProperty(nodeType, model.newPath, elementValues);
+                		} else if("PASSWORD".equals(model.fieldType)) {
+                			Property property = Property.class.cast(compProperties.getProperty(model.oldPath));
+                			String value = String.class.cast(property.getStoredValue());
+                			if(value != null) {//TODO check if user not set password(default is "\"\""), or empty string as user remove default one
+                				if(value.length() > 1 && value.startsWith("\"") && value.endsWith("\"")) {
+                					value = StudioEncryption.getStudioEncryption(StudioEncryption.EncryptionKeyName.SYSTEM).encrypt(value.substring(1, value.length()-1));
+                				} else {//a var like context.pwd, no need to encrypt
+                					
+                				}
+                			}
+                			ElementParameterType ept = ParameterUtilTool.createParameterType(model.fieldType, model.newPath, value);
+            				ParameterUtilTool.addParameterType(nodeType, ept);
                 		} else {
                 			Property property = Property.class.cast(compProperties.getProperty(model.oldPath));
-                			Object value = property.getStoredValue();//password works?
+                			Object value = property.getStoredValue();
                 			//enum's tostring to call name(), so ok
                 			ElementParameterType ept = ParameterUtilTool.createParameterType(model.fieldType, model.newPath, value == null ? null : String.valueOf(value));
             				ParameterUtilTool.addParameterType(nodeType, ept);
@@ -221,10 +235,19 @@ public abstract class ConvertTCompV0ToTckComponentMigrationTask extends Abstract
     		String oldComponentName = null;
     		
     		String line = null;
-			while((line = br.readLine())!=null) {
+			while(true) {
+				if((line = br.readLine())==null) {
+					if(oldComponentName!=null) {
+						result.put(oldComponentName, modelList);
+					}
+					break;
+				}
+				
 				if(line.trim().isEmpty()) {//next component
-					result.put(oldComponentName, modelList);
-					modelList = new ArrayList<>();
+					if(oldComponentName!=null) {
+						result.put(oldComponentName, modelList);
+						modelList = new ArrayList<>();
+					}
 					continue;
 				}
 				
