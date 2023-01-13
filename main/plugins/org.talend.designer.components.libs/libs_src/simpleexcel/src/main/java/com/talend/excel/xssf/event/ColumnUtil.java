@@ -1,5 +1,8 @@
 package com.talend.excel.xssf.event;
 
+import java.util.Calendar;
+import java.util.Date;
+
 public class ColumnUtil {
 
     /**
@@ -23,4 +26,13 @@ public class ColumnUtil {
         }
         return columnIndex;
     }
+    
+    
+    public static Date convert_Date1904(java.util.Date date) {
+        Calendar c = Calendar.getInstance();
+        c.setTime(date);
+        c.add(Calendar.DATE, 1462);
+        return c.getTime();
+}
+
 }

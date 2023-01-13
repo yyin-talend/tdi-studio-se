@@ -26,6 +26,10 @@ import org.xml.sax.InputSource;
 import org.xml.sax.XMLReader;
 import org.xml.sax.helpers.XMLReaderFactory;
 
+import org.openxmlformats.schemas.spreadsheetml.x2006.main.CTWorkbook;
+import org.openxmlformats.schemas.spreadsheetml.x2006.main.CTWorkbookPr;
+import org.openxmlformats.schemas.spreadsheetml.x2006.main.WorkbookDocument;
+
 import java.io.File;
 import java.io.InputStream;
 import java.text.DateFormat;
@@ -67,6 +71,8 @@ public class ExcelReader implements Callable {
     DefaultTalendSheetContentsHandler sheetContentsHandler = null;
 
     private boolean includePhoneticRuns;
+
+    boolean isDate1904 = false;
 
     public ExcelReader() {
         cache = DataBufferCache.getInstance();
@@ -134,7 +140,12 @@ public class ExcelReader implements Callable {
         futureTask.get();
     }
 
+    public boolean isDate1904(){
+        return isDate1904;
+    }
+
     public Object call() throws Exception {
+    	
         OPCPackage pkg = null;
         POIFSFileSystem fs = null;
         try {
@@ -157,6 +168,11 @@ public class ExcelReader implements Callable {
                 }
             }
             XSSFReader r = new XSSFReader(pkg);
+            InputStream workbookXml = r.getWorkbookData();
+            WorkbookDocument doc = WorkbookDocument.Factory.parse(workbookXml);
+            CTWorkbook wb = doc.getWorkbook();
+            CTWorkbookPr prefix = wb.getWorkbookPr();
+            isDate1904 = prefix.getDate1904();
 
             StylesTable styles = r.getStylesTable();
             ReadOnlySharedStringsTable strings = new ReadOnlySharedStringsTable(pkg, includePhoneticRuns);
