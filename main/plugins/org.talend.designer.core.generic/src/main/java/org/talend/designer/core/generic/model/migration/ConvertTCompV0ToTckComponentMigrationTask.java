@@ -23,6 +23,7 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.eclipse.emf.common.util.EList;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.components.api.properties.ComponentProperties;
@@ -38,8 +39,10 @@ import org.talend.core.repository.model.ProxyRepositoryFactory;
 import org.talend.daikon.properties.Properties;
 import org.talend.daikon.properties.property.Property;
 import org.talend.designer.core.generic.utils.ParameterUtilTool;
+import org.talend.designer.core.model.utils.emf.talendfile.ConnectionType;
 import org.talend.designer.core.model.utils.emf.talendfile.ElementParameterType;
 import org.talend.designer.core.model.utils.emf.talendfile.ElementValueType;
+import org.talend.designer.core.model.utils.emf.talendfile.MetadataType;
 import org.talend.designer.core.model.utils.emf.talendfile.NodeType;
 import org.talend.designer.core.model.utils.emf.talendfile.ProcessType;
 import org.talend.designer.core.model.utils.emf.talendfile.TalendFileFactory;
@@ -68,7 +71,6 @@ public abstract class ConvertTCompV0ToTckComponentMigrationTask extends Abstract
                 if (nodeType == null || props == null) {
                     return;
                 }
-                boolean modified = false;
                 
                 final String currComponentName = nodeType.getComponentName();
                 final List<TckMigrationModel> infos = props.get(currComponentName);
@@ -88,18 +90,7 @@ public abstract class ConvertTCompV0ToTckComponentMigrationTask extends Abstract
                     ElementParameterType paraType = ParameterUtilTool.findParameterType(nodeType, label.replaceAll("_", ""));
                     if (paraType != null) {
                         ParameterUtilTool.findParameterType(nodeType, "LABEL").setValue(paraType.getValue());
-                        modified = true;
                     }
-                }
-                final ElementParameterType propertyParamType = getParameterType(nodeType, "PROPERTY:PROPERTY_TYPE");
-                boolean isRepository = false;
-                if (propertyParamType != null && "REPOSITORY".equals(propertyParamType.getValue())) {
-                    isRepository = true;
-                }
-                final ElementParameterType sqlParamType = getParameterType(nodeType, "QUERYSTORE:QUERYSTORE_TYPE");
-                boolean isSQLRepository = false;
-                if (sqlParamType != null && "REPOSITORY".equals(sqlParamType.getValue())) {
-                    isSQLRepository = true;
                 }
                 
                 ElementParameterType tcompV0PropertiesElement = ParameterUtilTool.findParameterType(nodeType, "PROPERTIES");
@@ -119,17 +110,17 @@ public abstract class ConvertTCompV0ToTckComponentMigrationTask extends Abstract
                         ParameterUtilTool.addParameterType(nodeType, ept);
                     } else {
                         if("COMPONENT_LIST".equals(model.fieldType)) {
-                            final String enumName = Enum.class.cast(Property.class.cast(compProperties.getProperty(model.oldPath + ".referenceType")).getStoredValue()).name();
+                            final Enum<?> referenceType = Enum.class.cast(Property.class.cast(compProperties.getProperty(model.oldPath + ".referenceType")).getStoredValue());
                             ComponentUtilities.addNodeProperty(nodeType, "USE_EXISTING_CONNECTION", "CHECK");
                             ComponentUtilities.addNodeProperty(nodeType, model.newPath, "COMPONENT_LIST");
-                            if("THIS_COMPONENT".equals(enumName)) {
+                            if(referenceType == null || "THIS_COMPONENT".equals(referenceType.name())) {
                                 ComponentUtilities.setNodeValue(nodeType, "USE_EXISTING_CONNECTION", "false");
                             } else {
                                 ComponentUtilities.setNodeValue(nodeType, "USE_EXISTING_CONNECTION", "true");
                                 final Object value = Property.class.cast(compProperties.getProperty(model.oldPath + ".componentInstanceId")).getStoredValue();
                                 ComponentUtilities.setNodeValue(nodeType, model.newPath, value == null ? null : String.valueOf(value));
                             }
-                        } if("TABLE".equals(model.fieldType)) {
+                        } else if("TABLE".equals(model.fieldType)) {
                             java.util.List<ElementValueType> elementValues = new ArrayList<ElementValueType>();
                             String[] tableColumnMappings = model.oldPath.split(";");
                             for(String mapping : tableColumnMappings) {
@@ -158,7 +149,8 @@ public abstract class ConvertTCompV0ToTckComponentMigrationTask extends Abstract
                             String value = String.class.cast(property.getStoredValue());
                             if(value != null) {//TODO check if user not set password(default is "\"\""), or empty string as user remove default one
                                 if(value.length() > 1 && value.startsWith("\"") && value.endsWith("\"")) {
-                                    value = StudioEncryption.getStudioEncryption(StudioEncryption.EncryptionKeyName.SYSTEM).encrypt(value.substring(1, value.length()-1));
+                                    //need to encrypt with double quote
+                                    value = StudioEncryption.getStudioEncryption(StudioEncryption.EncryptionKeyName.SYSTEM).encrypt(value);
                                 } else {//a var like context.pwd, no need to encrypt
                                     
                                 }
@@ -173,15 +165,55 @@ public abstract class ConvertTCompV0ToTckComponentMigrationTask extends Abstract
                             ParameterUtilTool.addParameterType(nodeType, ept);
                         }
                     }
-                    modified = true;
                 }
                 
-                if(modified) {
-                    //remove tcompv0 PROPERTIES element
-                    ParameterUtilTool.removeParameterType(nodeType, tcompV0PropertiesElement);
+                // Migrate schemas : the reverse action with the one in NewComponentFrameworkMigrationTask
+                final String uniqueName = ParameterUtilTool.getParameterValue(nodeType, "UNIQUE_NAME");
+                final EList<MetadataType> metadatas = nodeType.getMetadata();
+                int indexOfFlow = -1;
+                for (int i=0;i<metadatas.size();i++) {
+                    final MetadataType metadataType = metadatas.get(i);
+                    
+                    if("FLOW".equals(metadataType.getConnector()) && uniqueName.equals(metadataType.getName())) {
+                        indexOfFlow = i;
+                    } if("MAIN".equals(metadataType.getConnector()) && "MAIN".equals(metadataType.getName())) {//tcompV0 use "MAIN" to match connection default
+                        metadataType.setConnector("FLOW");
+                        metadataType.setName(uniqueName);
+                        
+                        for (Object connectionObj : processType.getConnection()) {
+                            if (connectionObj instanceof ConnectionType) {
+                                ConnectionType connectionType = (ConnectionType) connectionObj;
+                                if (connectionType.getSource().equals(uniqueName)
+                                        && connectionType.getConnectorName().equals("MAIN")) {
+                                    connectionType.setConnectorName("FLOW");
+                                    connectionType.setMetaname(uniqueName);
+                                }
+                            }
+                        }
+                    } else if("REJECT".equals(metadataType.getConnector()) && "REJECT".equals(metadataType.getName())) {
+                        //TODO tck jdbc connector special? check it
+                        metadataType.setConnector("reject");
+                        metadataType.setName("reject");
+                        
+                        for (Object connectionObj : processType.getConnection()) {
+                            if (connectionObj instanceof ConnectionType) {
+                                ConnectionType connectionType = (ConnectionType) connectionObj;
+                                if (connectionType.getSource().equals(uniqueName)
+                                        && connectionType.getConnectorName().equals("REJECT")) {
+                                    connectionType.setConnectorName("reject");
+                                    connectionType.setMetaname("reject");
+                                }
+                            }
+                        }
+                    }
+                }
+                if(indexOfFlow > -1) { 
+                    metadatas.remove(indexOfFlow);
                 }
                 
-                //String uniqueName = ParameterUtilTool.getParameterValue(nodeType, "UNIQUE_NAME");
+                //remove tcompv0 PROPERTIES element at last
+                ParameterUtilTool.removeParameterType(nodeType, tcompV0PropertiesElement);
+                
                 //no need to change the unique name as it use unify name like "tDBInput_1", and tcompv0's node's metadata(metadata name/connection name/schema) in item match the connection by the unique name,
                 //so no need to migrate the metadata/connection line from tcompv0 to tck, it should work.
             }
@@ -216,7 +248,7 @@ public abstract class ConvertTCompV0ToTckComponentMigrationTask extends Abstract
 
     abstract protected String getMigrationFile();
     
-    private Pattern pattern = Pattern.compile("(t\\w++)(\\.([a-zA-Z_.]++))?=([^#]++)(#([a-zA-Z_]++))?");
+    private Pattern pattern = Pattern.compile("(t?\\w++)(\\.([a-zA-Z_.]++))?=([^#]++)(#([a-zA-Z_]++))?");
 
     private Map<String, List<TckMigrationModel>> getMigrationInfoFromFile() {
         Map<String, List<TckMigrationModel>> result = new HashMap<>();
