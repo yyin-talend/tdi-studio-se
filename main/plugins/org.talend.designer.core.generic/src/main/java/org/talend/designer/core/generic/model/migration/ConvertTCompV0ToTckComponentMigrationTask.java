@@ -25,7 +25,6 @@ import java.util.regex.Pattern;
 
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.exception.PersistenceException;
-import org.talend.components.api.component.Connector;
 import org.talend.components.api.properties.ComponentProperties;
 import org.talend.core.model.components.ComponentCategory;
 import org.talend.core.model.components.ComponentUtilities;
@@ -34,13 +33,11 @@ import org.talend.core.model.components.conversions.IComponentConversion;
 import org.talend.core.model.components.filters.IComponentFilter;
 import org.talend.core.model.components.filters.NameComponentFilter;
 import org.talend.core.model.migration.AbstractJobMigrationTask;
-import org.talend.core.model.process.EConnectionType;
 import org.talend.core.model.properties.Item;
 import org.talend.core.repository.model.ProxyRepositoryFactory;
 import org.talend.daikon.properties.Properties;
 import org.talend.daikon.properties.property.Property;
 import org.talend.designer.core.generic.utils.ParameterUtilTool;
-import org.talend.designer.core.model.utils.emf.talendfile.ConnectionType;
 import org.talend.designer.core.model.utils.emf.talendfile.ElementParameterType;
 import org.talend.designer.core.model.utils.emf.talendfile.ElementValueType;
 import org.talend.designer.core.model.utils.emf.talendfile.NodeType;
@@ -50,15 +47,15 @@ import org.talend.utils.security.StudioEncryption;
 
 public abstract class ConvertTCompV0ToTckComponentMigrationTask extends AbstractJobMigrationTask {
 
-	static class TckMigrationModel {
-		String oldComponentName;
-		String newComponentName;
-		
-		String oldPath;
-		String newPath;
-		String fieldType;
-	}
-	
+    static class TckMigrationModel {
+        String oldComponentName;
+        String newComponentName;
+        
+        String oldPath;
+        String newPath;
+        String fieldType;
+    }
+    
     @Override
     public ExecutionResult execute(final Item item) {
         final ProcessType processType = getProcessType(item);
@@ -79,6 +76,7 @@ public abstract class ConvertTCompV0ToTckComponentMigrationTask extends Abstract
                 
                 //update component node name to new one
                 nodeType.setComponentName(newComponentName);
+                nodeType.setComponentVersion("1");
                 
                 //get the new tck component define model
                 //final IComponent component = ComponentsFactoryProvider.getInstance().get(newComponentName, category.getName());
@@ -115,84 +113,77 @@ public abstract class ConvertTCompV0ToTckComponentMigrationTask extends Abstract
                 
                 //TODO tcompv0/javajet component force user to use double quote to wrap value most time, but tck one not do that, even expect not use double quote wrapper, need to consider that 
                 for(TckMigrationModel model : infos) {
-                	if(model.fieldType == null || model.fieldType.isEmpty()) {
-                		//field="TECHNICAL", and oldPath is value directly, so use it directly
-                		ElementParameterType ept = ParameterUtilTool.createParameterType("TECHNICAL", model.newPath, model.oldPath);
-                		ParameterUtilTool.addParameterType(nodeType, ept);
-                	} else {
-                		if("COMPONENT_LIST".equals(model.fieldType)) {
-                			final String enumName = Enum.class.cast(Property.class.cast(compProperties.getProperty(model.oldPath + ".referenceType")).getStoredValue()).name();
-                			ComponentUtilities.addNodeProperty(nodeType, "USE_EXISTING_CONNECTION", "CHECK");
-                			ComponentUtilities.addNodeProperty(nodeType, model.newPath, "COMPONENT_LIST");
-                			if("THIS_COMPONENT".equals(enumName)) {
-                    			ComponentUtilities.setNodeValue(nodeType, "USE_EXISTING_CONNECTION", "false");
-                			} else {
-                    			ComponentUtilities.setNodeValue(nodeType, "USE_EXISTING_CONNECTION", "true");
-                    			final Object value = Property.class.cast(compProperties.getProperty(model.oldPath + ".componentInstanceId")).getStoredValue();
-                    			ComponentUtilities.setNodeValue(nodeType, model.newPath, value == null ? null : String.valueOf(value));
-                			}
-                		} if("TABLE".equals(model.fieldType)) {
-                			java.util.List<ElementValueType> elementValues = new ArrayList<ElementValueType>();
-                			String[] tableColumnMappings = model.oldPath.split(";");
-                			for(String mapping : tableColumnMappings) {
-                				String[] oldPathAndNewPath = mapping.split("=");
-                				String oldPath = oldPathAndNewPath[0];
-                				String newPath = oldPathAndNewPath[1];
-                				
-                				Property property = Property.class.cast(compProperties.getProperty(oldPath));
-                				List value = List.class.cast(property.getStoredValue());//no password, so ok
-                				if(value == null) {
-                					//any list is null, break directly as tcompv0 table store every column as list, their size should be the same
-                					elementValues.clear();
-                					break;
-                				}
-                				for(Object item : value) {
-                					ElementValueType elementValue = fileFact.createElementValueType();
-                					elementValue.setElementRef(model.newPath + "[]."+ newPath);
-                					elementValue.setValue(item == null ? null : String.valueOf(item));
-                					elementValues.add(elementValue);
-                				}
-                			}
-                			ComponentUtilities.addNodeProperty(nodeType, model.newPath, "TABLE");
+                    if(model.fieldType == null || model.fieldType.isEmpty()) {
+                        //field="TECHNICAL", and oldPath is value directly, so use it directly
+                        ElementParameterType ept = ParameterUtilTool.createParameterType("TECHNICAL", model.newPath, model.oldPath);
+                        ParameterUtilTool.addParameterType(nodeType, ept);
+                    } else {
+                        if("COMPONENT_LIST".equals(model.fieldType)) {
+                            final String enumName = Enum.class.cast(Property.class.cast(compProperties.getProperty(model.oldPath + ".referenceType")).getStoredValue()).name();
+                            ComponentUtilities.addNodeProperty(nodeType, "USE_EXISTING_CONNECTION", "CHECK");
+                            ComponentUtilities.addNodeProperty(nodeType, model.newPath, "COMPONENT_LIST");
+                            if("THIS_COMPONENT".equals(enumName)) {
+                                ComponentUtilities.setNodeValue(nodeType, "USE_EXISTING_CONNECTION", "false");
+                            } else {
+                                ComponentUtilities.setNodeValue(nodeType, "USE_EXISTING_CONNECTION", "true");
+                                final Object value = Property.class.cast(compProperties.getProperty(model.oldPath + ".componentInstanceId")).getStoredValue();
+                                ComponentUtilities.setNodeValue(nodeType, model.newPath, value == null ? null : String.valueOf(value));
+                            }
+                        } if("TABLE".equals(model.fieldType)) {
+                            java.util.List<ElementValueType> elementValues = new ArrayList<ElementValueType>();
+                            String[] tableColumnMappings = model.oldPath.split(";");
+                            for(String mapping : tableColumnMappings) {
+                                String[] oldPathAndNewPath = mapping.split("=");
+                                String oldPath = oldPathAndNewPath[0];
+                                String newPath = oldPathAndNewPath[1];
+                                
+                                Property property = Property.class.cast(compProperties.getProperty(oldPath));
+                                List value = List.class.cast(property.getStoredValue());//no password, so ok
+                                if(value == null) {
+                                    //any list is null, break directly as tcompv0 table store every column as list, their size should be the same
+                                    elementValues.clear();
+                                    break;
+                                }
+                                for(Object item : value) {
+                                    ElementValueType elementValue = fileFact.createElementValueType();
+                                    elementValue.setElementRef(model.newPath + "[]."+ newPath);
+                                    elementValue.setValue(item == null ? null : String.valueOf(item));
+                                    elementValues.add(elementValue);
+                                }
+                            }
+                            ComponentUtilities.addNodeProperty(nodeType, model.newPath, "TABLE");
                             ComponentUtilities.setNodeProperty(nodeType, model.newPath, elementValues);
-                		} else if("PASSWORD".equals(model.fieldType)) {
-                			Property property = Property.class.cast(compProperties.getProperty(model.oldPath));
-                			String value = String.class.cast(property.getStoredValue());
-                			if(value != null) {//TODO check if user not set password(default is "\"\""), or empty string as user remove default one
-                				if(value.length() > 1 && value.startsWith("\"") && value.endsWith("\"")) {
-                					value = StudioEncryption.getStudioEncryption(StudioEncryption.EncryptionKeyName.SYSTEM).encrypt(value.substring(1, value.length()-1));
-                				} else {//a var like context.pwd, no need to encrypt
-                					
-                				}
-                			}
-                			ElementParameterType ept = ParameterUtilTool.createParameterType(model.fieldType, model.newPath, value);
-            				ParameterUtilTool.addParameterType(nodeType, ept);
-                		} else {
-                			Property property = Property.class.cast(compProperties.getProperty(model.oldPath));
-                			Object value = property.getStoredValue();
-                			//enum's tostring to call name(), so ok
-                			ElementParameterType ept = ParameterUtilTool.createParameterType(model.fieldType, model.newPath, value == null ? null : String.valueOf(value));
-            				ParameterUtilTool.addParameterType(nodeType, ept);
-                		}
-                	}
-                	modified = true;
+                        } else if("PASSWORD".equals(model.fieldType)) {
+                            Property property = Property.class.cast(compProperties.getProperty(model.oldPath));
+                            String value = String.class.cast(property.getStoredValue());
+                            if(value != null) {//TODO check if user not set password(default is "\"\""), or empty string as user remove default one
+                                if(value.length() > 1 && value.startsWith("\"") && value.endsWith("\"")) {
+                                    value = StudioEncryption.getStudioEncryption(StudioEncryption.EncryptionKeyName.SYSTEM).encrypt(value.substring(1, value.length()-1));
+                                } else {//a var like context.pwd, no need to encrypt
+                                    
+                                }
+                            }
+                            ElementParameterType ept = ParameterUtilTool.createParameterType(model.fieldType, model.newPath, value);
+                            ParameterUtilTool.addParameterType(nodeType, ept);
+                        } else {
+                            Property property = Property.class.cast(compProperties.getProperty(model.oldPath));
+                            Object value = property.getStoredValue();
+                            //enum's tostring to call name(), so ok
+                            ElementParameterType ept = ParameterUtilTool.createParameterType(model.fieldType, model.newPath, value == null ? null : String.valueOf(value));
+                            ParameterUtilTool.addParameterType(nodeType, ept);
+                        }
+                    }
+                    modified = true;
                 }
                 
                 if(modified) {
-                	//remove tcompv0 PROPERTIES element
-                	ParameterUtilTool.removeParameterType(nodeType, tcompV0PropertiesElement);
+                    //remove tcompv0 PROPERTIES element
+                    ParameterUtilTool.removeParameterType(nodeType, tcompV0PropertiesElement);
                 }
                 
-                String uniqueName = ParameterUtilTool.getParameterValue(nodeType, "UNIQUE_NAME");
-
-                for (Object connectionObj : processType.getConnection()) {
-                    ConnectionType connection = (ConnectionType) connectionObj;
-                    if (connection.getSource() != null && connection.getSource().equals(uniqueName)) {
-                        if (EConnectionType.FLOW_MAIN.getName().equals(connection.getConnectorName())) {
-                            connection.setConnectorName(Connector.MAIN_NAME);
-                        }
-                    }
-                }
+                //String uniqueName = ParameterUtilTool.getParameterValue(nodeType, "UNIQUE_NAME");
+                //no need to change the unique name as it use unify name like "tDBInput_1", and tcompv0's node's metadata(metadata name/connection name/schema) in item match the connection by the unique name,
+                //so no need to migrate the metadata/connection line from tcompv0 to tck, it should work.
             }
         };
 
@@ -228,48 +219,48 @@ public abstract class ConvertTCompV0ToTckComponentMigrationTask extends Abstract
     private Pattern pattern = Pattern.compile("(t\\w++)(\\.([a-zA-Z_.]++))?=([^#]++)(#([a-zA-Z_]++))?");
 
     private Map<String, List<TckMigrationModel>> getMigrationInfoFromFile() {
-    	Map<String, List<TckMigrationModel>> result = new HashMap<>();
-    	try(InputStream in = getClass().getResourceAsStream(getMigrationFile());BufferedReader br = new BufferedReader(new InputStreamReader(in, "UTF8"))) {
-    		List<TckMigrationModel> modelList = new ArrayList<>();
-    		
-    		String oldComponentName = null;
-    		
-    		String line = null;
-			while(true) {
-				if((line = br.readLine())==null) {
-					if(oldComponentName!=null) {
-						result.put(oldComponentName, modelList);
-					}
-					break;
-				}
-				
-				if(line.trim().isEmpty()) {//next component
-					if(oldComponentName!=null) {
-						result.put(oldComponentName, modelList);
-						modelList = new ArrayList<>();
-					}
-					continue;
-				}
-				
-				Matcher matcher = pattern.matcher(line);
-				if(matcher.find()) {
-					final TckMigrationModel model = new TckMigrationModel();
-					model.newComponentName = matcher.group(1);
-					model.newPath = matcher.group(3);
-					if(model.newPath == null || model.newPath.isEmpty()) {
-						oldComponentName = matcher.group(4);
-						model.oldComponentName = oldComponentName;
-					} else {
-						model.oldPath = matcher.group(4);
-						model.fieldType = matcher.group(6);
-						
-						modelList.add(model);
-					}
-				}
-			}
-		} catch (Exception e) {
-			throw new RuntimeException(e);
-		}
+        Map<String, List<TckMigrationModel>> result = new HashMap<>();
+        try(InputStream in = getClass().getResourceAsStream(getMigrationFile());BufferedReader br = new BufferedReader(new InputStreamReader(in, "UTF8"))) {
+            List<TckMigrationModel> modelList = new ArrayList<>();
+            
+            String oldComponentName = null;
+            
+            String line = null;
+            while(true) {
+                if((line = br.readLine())==null) {
+                    if(oldComponentName!=null) {
+                        result.put(oldComponentName, modelList);
+                    }
+                    break;
+                }
+                
+                if(line.trim().isEmpty()) {//next component
+                    if(oldComponentName!=null) {
+                        result.put(oldComponentName, modelList);
+                        modelList = new ArrayList<>();
+                    }
+                    continue;
+                }
+                
+                Matcher matcher = pattern.matcher(line);
+                if(matcher.find()) {
+                    final TckMigrationModel model = new TckMigrationModel();
+                    model.newComponentName = matcher.group(1);
+                    model.newPath = matcher.group(3);
+                    if(model.newPath == null || model.newPath.isEmpty()) {
+                        oldComponentName = matcher.group(4);
+                        model.oldComponentName = oldComponentName;
+                    } else {
+                        model.oldPath = matcher.group(4);
+                        model.fieldType = matcher.group(6);
+                        
+                        modelList.add(model);
+                    }
+                }
+            }
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
         return result;
     }
 
