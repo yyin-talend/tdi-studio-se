@@ -121,25 +121,51 @@ public abstract class ConvertTCompV0ToTckComponentMigrationTask extends Abstract
                                 ComponentUtilities.setNodeValue(nodeType, model.newPath, value == null ? null : String.valueOf(value));
                             }
                         } else if("TABLE".equals(model.fieldType)) {
-                            java.util.List<ElementValueType> elementValues = new ArrayList<ElementValueType>();
+                            final java.util.List<ElementValueType> elementValues = new ArrayList<ElementValueType>();
                             String[] tableColumnMappings = model.oldPath.split(";");
+                            int[] rowStarts = null;
                             for(String mapping : tableColumnMappings) {
                                 String[] oldPathAndNewPath = mapping.split("=");
                                 String oldPath = oldPathAndNewPath[0];
                                 String newPath = oldPathAndNewPath[1];
                                 
-                                Property property = Property.class.cast(compProperties.getProperty(oldPath));
-                                List value = List.class.cast(property.getStoredValue());//no password, so ok
-                                if(value == null) {
-                                    //any list is null, break directly as tcompv0 table store every column as list, their size should be the same
+                                Property<?> property = Property.class.cast(compProperties.getProperty(oldPath));
+                                Object originValue = property.getStoredValue();
+                                if(originValue == null) {
+                                    //any list is null, break directly as tcompv0 table store every column as list, their size should be the same,
+                                    //but have some special case, the code below process it
                                     elementValues.clear();
                                     break;
                                 }
-                                for(Object item : value) {
+                                final List<Object> value;
+                                if(List.class.isInstance(originValue)) {
+                                    value = List.class.cast(originValue);
+                                    if(rowStarts == null) {//as common, the first column should return a full list, not lose row in ui
+                                        rowStarts = new int[value.size()];
+                                        int elementValueSize = rowStarts.length * tableColumnMappings.length;
+                                        for(int i=0;i<elementValueSize;i++) {
+                                            elementValues.add(null);
+                                        }
+                                        for(int i=0;i<rowStarts.length;i++) {
+                                            rowStarts[i] = i * tableColumnMappings.length;
+                                        }
+                                    }
+                                } else {
+                                    //no idea why tcompv0 model not return list, process it here
+                                    value = new ArrayList<>();
+                                    for(int i=0;i<rowStarts.length;i++) {//correct the wrong list length
+                                        value.add(originValue);
+                                    }
+                                }
+                                for(int i=0;i<rowStarts.length;i++) {
                                     ElementValueType elementValue = fileFact.createElementValueType();
                                     elementValue.setElementRef(model.newPath + "[]."+ newPath);
+                                    
+                                    Object item = i<value.size() ? value.get(i) : null;//have to process the strange tcompv0 model
                                     elementValue.setValue(item == null ? null : String.valueOf(item));
-                                    elementValues.add(elementValue);
+                                    
+                                    //here for match tck model requirement in item, that need order
+                                    elementValues.set(rowStarts[i]++, elementValue);
                                 }
                             }
                             ComponentUtilities.addNodeProperty(nodeType, model.newPath, "TABLE");
