@@ -111,12 +111,22 @@ public abstract class ConvertTCompV0ToTckComponentMigrationTask extends Abstract
                     } else {
                         if("COMPONENT_LIST".equals(model.fieldType)) {
                             final Enum<?> referenceType = Enum.class.cast(Property.class.cast(compProperties.getProperty(model.oldPath + ".referenceType")).getStoredValue());
-                            ComponentUtilities.addNodeProperty(nodeType, "USE_EXISTING_CONNECTION", "CHECK");
+                            //USE_EXISTING_CONNECTION field may exist after migration from javajet to tcompv0, so here consider it
+                            final ElementParameterType oldUseConnectionElement = ComponentUtilities.getNodeProperty(nodeType, "USE_EXISTING_CONNECTION");
+                            if(oldUseConnectionElement == null) {
+                                ComponentUtilities.addNodeProperty(nodeType, "USE_EXISTING_CONNECTION", "CHECK");
+                            }
+                            
                             ComponentUtilities.addNodeProperty(nodeType, model.newPath, "COMPONENT_LIST");
                             if(referenceType == null || "THIS_COMPONENT".equals(referenceType.name())) {
-                                ComponentUtilities.setNodeValue(nodeType, "USE_EXISTING_CONNECTION", "false");
+                                if(oldUseConnectionElement == null) {
+                                    ComponentUtilities.setNodeValue(nodeType, "USE_EXISTING_CONNECTION", "false");
+                                }
                             } else {
-                                ComponentUtilities.setNodeValue(nodeType, "USE_EXISTING_CONNECTION", "true");
+                                if(oldUseConnectionElement == null) {
+                                    ComponentUtilities.setNodeValue(nodeType, "USE_EXISTING_CONNECTION", "true");
+                                }
+                                
                                 final Object value = Property.class.cast(compProperties.getProperty(model.oldPath + ".componentInstanceId")).getStoredValue();
                                 ComponentUtilities.setNodeValue(nodeType, model.newPath, value == null ? null : String.valueOf(value));
                             }
@@ -197,12 +207,15 @@ public abstract class ConvertTCompV0ToTckComponentMigrationTask extends Abstract
                 final String uniqueName = ParameterUtilTool.getParameterValue(nodeType, "UNIQUE_NAME");
                 final EList<MetadataType> metadatas = nodeType.getMetadata();
                 int indexOfFlow = -1;
+                boolean mainExists = false;
                 for (int i=0;i<metadatas.size();i++) {
                     final MetadataType metadataType = metadatas.get(i);
                     
                     if("FLOW".equals(metadataType.getConnector()) && uniqueName.equals(metadataType.getName())) {
                         indexOfFlow = i;
                     } if("MAIN".equals(metadataType.getConnector()) && "MAIN".equals(metadataType.getName())) {//tcompV0 use "MAIN" to match connection default
+                        mainExists = true;
+                        
                         metadataType.setConnector("FLOW");
                         metadataType.setName(uniqueName);
                         
@@ -233,7 +246,9 @@ public abstract class ConvertTCompV0ToTckComponentMigrationTask extends Abstract
                         }
                     }
                 }
-                if(indexOfFlow > -1) { 
+                //here consider tcompv0 model and javajet model for schema part both, as common, migration should only consider the lastest status/model, 
+                //but seems if old javajet jdbc component import, the schema part keep the old format, not tcompv0 format
+                if(mainExists && indexOfFlow > -1) { 
                     metadatas.remove(indexOfFlow);
                 }
                 
