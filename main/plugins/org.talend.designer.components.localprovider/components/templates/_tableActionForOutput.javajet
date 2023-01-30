@@ -12,11 +12,6 @@ if (!isParallelize) {
     manager = getManager(dbmsId, cid);
     
     String ending="";
-    
-    //TODO need to remove it as it seems not useful now
-    if("VECTORWISE".equalsIgnoreCase(dbmsId)) {
-        ending="WITH STRUCTURE = VECTORWISE";
-    }
 
     boolean useCascade = "true".equals(ElementParameterParser.getValue(node,"__USE_CASCADE__"));
 

@@ -53,6 +53,8 @@ skeleton="../templates/db_output_bulk.skeleton"
 
 	boolean useBatchSize = "true".equals(ElementParameterParser.getValue(node,"__USE_BATCH_SIZE__"));
 	String batchSize=ElementParameterParser.getValue(node,"__BATCH_SIZE__");
+	
+	String storageType = ElementParameterParser.getValue(node,"__STORAGE_TYPE__");
 
     boolean isParallelize ="true".equalsIgnoreCase(ElementParameterParser.getValue(node, "__PARALLELIZE__"));
 
@@ -164,7 +166,7 @@ if(columnList != null && columnList.size() > 0) {
                 stmtDrop_<%=cid%>.execute("<%=manager.getDropTableSQL()%>");
                 <%dbLog.table().dropDone(dbLog.var("tableName"));%>
                 <%dbLog.table().createTry(dbLog.var("tableName"));%>
-                stmtCreate_<%=cid%>.execute("<%=manager.getCreateTableSQL(stmtStructure)%>) WITH STRUCTURE = VECTORWISE");
+                stmtCreate_<%=cid%>.execute("<%=manager.getCreateTableSQL(stmtStructure)%>) WITH STRUCTURE = <%=storageType %>");
                 <%dbLog.table().createDone(dbLog.var("tableName"));%>
             }
             <%
@@ -172,7 +174,7 @@ if(columnList != null && columnList.size() > 0) {
             %>
             try (java.sql.Statement stmtCreate_<%=cid%> = conn_<%=cid%>.createStatement()) {
                 <%dbLog.table().createTry(dbLog.var("tableName"));%>
-                stmtCreate_<%=cid%>.execute("<%=manager.getCreateTableSQL(stmtStructure)%>) WITH STRUCTURE = VECTORWISE");
+                stmtCreate_<%=cid%>.execute("<%=manager.getCreateTableSQL(stmtStructure)%>) WITH STRUCTURE = <%=storageType %>");
                 <%dbLog.table().createDone(dbLog.var("tableName"));%>
             }
             <%
@@ -195,7 +197,7 @@ if(columnList != null && columnList.size() > 0) {
                 if(!whetherExist_<%=cid%>) {
                     try (java.sql.Statement stmtCreate_<%=cid%> = conn_<%=cid%>.createStatement()) {
                         <%dbLog.table().createTry(dbLog.var("tableName"));%>
-                        stmtCreate_<%=cid%>.execute("<%=manager.getCreateTableSQL(stmtStructure)%>) WITH STRUCTURE = VECTORWISE");
+                        stmtCreate_<%=cid%>.execute("<%=manager.getCreateTableSQL(stmtStructure)%>) WITH STRUCTURE = <%=storageType %>");
                         <%dbLog.table().createDone(dbLog.var("tableName"));%>
                     }
                 }
@@ -211,7 +213,7 @@ if(columnList != null && columnList.size() > 0) {
                 }
                 try (java.sql.Statement stmtCreate_<%=cid%> = conn_<%=cid%>.createStatement()) {
                     <%dbLog.table().createTry(dbLog.var("tableName"));%>
-                    stmtCreate_<%=cid%>.execute("<%=manager.getCreateTableSQL(stmtStructure)%>) WITH STRUCTURE = VECTORWISE");
+                    stmtCreate_<%=cid%>.execute("<%=manager.getCreateTableSQL(stmtStructure)%>) WITH STRUCTURE = <%=storageType %>");
                     <%dbLog.table().createDone(dbLog.var("tableName"));%>
                 }
             <%

@@ -325,12 +325,24 @@
       >
         <DEFAULT>10000</DEFAULT>
     </PARAMETER>
+    
+    <PARAMETER
+      NAME="STORAGE_TYPE"
+      FIELD="OPENED_LIST"
+      NUM_ROW="45"
+      NOT_SHOW_IF="(TABLE_ACTION == 'NONE') OR (TABLE_ACTION == 'CLEAR')"
+    >
+      <ITEMS DEFAULT="VECTORWISE">
+        <ITEM NAME="VECTORWISE" VALUE="VECTORWISE" />
+        <ITEM NAME="VECTORWISE_ROW" VALUE="VECTORWISE_ROW"/>
+      </ITEMS>
+    </PARAMETER>
 
   </ADVANCED_PARAMETERS>
 
   <CODEGENERATION>
     <IMPORTS>
-    	<IMPORT NAME="Driver-Ingres" MODULE="iijdbc.jar" MVN="mvn:org.talend.libraries/iijdbc/6.0.0" REQUIRED="true" />
+    	<IMPORT NAME="Driver-Ingres" MODULE="iijdbc-10.2-4.1.10.jar" MVN="mvn:com.ingres.jdbc/iijdbc/10.2-4.1.10" REQUIRED="true" />
     </IMPORTS>
   </CODEGENERATION>
 
