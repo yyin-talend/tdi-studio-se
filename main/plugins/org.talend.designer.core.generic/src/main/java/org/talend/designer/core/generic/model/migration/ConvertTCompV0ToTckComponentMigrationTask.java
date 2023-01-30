@@ -36,8 +36,12 @@ import org.talend.core.model.components.filters.NameComponentFilter;
 import org.talend.core.model.migration.AbstractJobMigrationTask;
 import org.talend.core.model.properties.Item;
 import org.talend.core.repository.model.ProxyRepositoryFactory;
+import org.talend.core.runtime.util.GenericTypeUtils;
 import org.talend.daikon.properties.Properties;
 import org.talend.daikon.properties.property.Property;
+import org.talend.daikon.properties.property.PropertyValueEvaluator;
+import org.talend.daikon.serialize.PostDeserializeSetup;
+import org.talend.designer.core.generic.utils.ComponentsUtils;
 import org.talend.designer.core.generic.utils.ParameterUtilTool;
 import org.talend.designer.core.model.utils.emf.talendfile.ConnectionType;
 import org.talend.designer.core.model.utils.emf.talendfile.ElementParameterType;
@@ -75,6 +79,7 @@ public abstract class ConvertTCompV0ToTckComponentMigrationTask extends Abstract
                 final String currComponentName = nodeType.getComponentName();
                 final List<TckMigrationModel> infos = props.get(currComponentName);
                 final String newComponentName = infos.get(0).newComponentName;
+                final String oldComponentName = nodeType.getComponentName();
                 
                 //update component node name to new one
                 nodeType.setComponentName(newComponentName);
@@ -94,11 +99,49 @@ public abstract class ConvertTCompV0ToTckComponentMigrationTask extends Abstract
                 }
                 
                 ElementParameterType tcompV0PropertiesElement = ParameterUtilTool.findParameterType(nodeType, "PROPERTIES");
-                //final ComponentProperties compProperties = ComponentsUtils.getComponentProperties(currComponentName);
                 final String jsonProperties = tcompV0PropertiesElement.getValue();
-                //TODO make sure it go through tcompv0 self migration, but tcompv0 jdbc have two migrations which all no need to be used here, 
-                //so may make sure it in future, not now
-                final ComponentProperties compProperties = Properties.Helper.fromSerializedPersistent(jsonProperties, ComponentProperties.class).object;
+                final ComponentProperties compProperties = Properties.Helper.fromSerializedPersistent(jsonProperties, ComponentProperties.class, new PostDeserializeSetup() {
+
+                    @Override
+                    public void setup(Object properties) {
+                        ((Properties) properties).setValueEvaluator(new PropertyValueEvaluator() {
+
+                            @Override
+                            public Object evaluate(Property property, Object storedValue) {
+                                if (storedValue instanceof String) {
+                                    //see EnumProperty, it have a bug, for example : "org.talend.components.jdbc.tjdbcoutput.TJDBCOutputProperties$DataAction", whose "$" is stored by ".", then class not found issue
+                                    //so have to fix here
+                                    if (GenericTypeUtils.isEnumType(property)) {
+                                        ComponentProperties newProperties = ComponentsUtils.getComponentProperties(oldComponentName);
+
+                                        Property newProperty = (Property) newProperties.getProperty(property.getName());
+                                        if (newProperty == null) {
+                                            newProperty = (Property) newProperties.getProperty("dataAction");
+                                        }
+                                        if (newProperty != null) {
+                                            List<?> propertyPossibleValues = ((Property<?>) newProperty)
+                                                    .getPossibleValues();
+                                            if (propertyPossibleValues != null) {
+                                                for (Object possibleValue : propertyPossibleValues) {
+                                                    if (possibleValue.toString().equals(storedValue)) {
+                                                        property.setStoredValue(possibleValue);
+                                                        return possibleValue;
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                                return storedValue;
+                            }
+
+                        });
+                        
+                        //go through the tcompv0 self migration
+                        ComponentsUtils.getComponentService().postDeserialize(((Properties) properties));
+                    }
+
+                }).object;
                 
                 final TalendFileFactory fileFact = TalendFileFactory.eINSTANCE;
                 
