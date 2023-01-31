@@ -888,7 +888,7 @@
 		<IMPORT NAME="Driver-INFORMIX-LSUPP" MODULE="ifxlsupp.jar" MVN="mvn:org.talend.libraries/ifxlsupp/6.0.0"  REQUIRED_IF="(USE_EXISTING_CONNECTION == 'false') AND (DBTYPE=='INFORMIX')" />
 		<IMPORT NAME="Driver-INFORMIX-SQLJ" MODULE="ifxsqlj.jar" MVN="mvn:org.talend.libraries/ifxsqlj/6.0.0"  REQUIRED_IF="(USE_EXISTING_CONNECTION == 'false') AND (DBTYPE=='INFORMIX')" />
 		<IMPORT NAME="Driver-INFORMIX-TOOLS" MODULE="ifxtools.jar" MVN="mvn:org.talend.libraries/ifxtools/6.0.0"  REQUIRED_IF="(USE_EXISTING_CONNECTION == 'false') AND (DBTYPE=='INFORMIX')"/>
-		<IMPORT NAME="Driver-INGRES" MODULE="iijdbc.jar" MVN="mvn:org.talend.libraries/iijdbc/6.0.0" REQUIRED_IF="(USE_EXISTING_CONNECTION == 'false') AND (DBTYPE=='INGRES')"/>
+		<IMPORT NAME="Driver-Ingres" MODULE="iijdbc-10.2-4.1.10.jar" MVN="mvn:com.ingres.jdbc/iijdbc/10.2-4.1.10" REQUIRED_IF="(USE_EXISTING_CONNECTION == 'false') AND (DBTYPE=='INGRES')"/>
 		<IMPORT NAME="Driver-JAVADB-DERBY" MODULE="derby.jar" MVN="mvn:org.talend.libraries/derby/6.0.0" REQUIRED_IF="DBTYPE=='JAVADB'"/>
 		<IMPORT NAME="Driver-JAVADB-DERBYCLIENT" MODULE="derbyclient.jar" MVN="mvn:org.talend.libraries/derbyclient/6.0.0" REQUIRED_IF="DBTYPE=='JAVADB'"/>
 		<IMPORT NAME="Driver-JAVADB-DERBYNET" MODULE="derbynet.jar" MVN="mvn:org.talend.libraries/derbynet/6.0.0" REQUIRED_IF="DBTYPE=='JAVADB'"/>
