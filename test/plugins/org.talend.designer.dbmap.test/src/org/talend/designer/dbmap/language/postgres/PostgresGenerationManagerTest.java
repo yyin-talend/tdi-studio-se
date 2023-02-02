@@ -328,6 +328,21 @@ public class PostgresGenerationManagerTest extends DbGenerationManagerTestHelper
         String query = manager.buildSqlSelect(dbMapComponent, "grade");
         assertEquals(expectedQuery, query);
 
+        ExternalDbMapEntry whereEntityExpression = new ExternalDbMapEntry();
+        whereEntityExpression.setName("where_entity");
+        whereEntityExpression.setExpression(
+                "\\\"eltinput\\\".\\\"String\\\">=to_char(now() + '-\" + context.JIKO_TARGET_DAYS + \" days', 'yyyymmddhh24mi')");
+        List<ExternalDbMapEntry> whereEntriesExpression = new ArrayList<ExternalDbMapEntry>();
+        whereEntriesExpression.add(whereEntityExpression);
+        externalData.setCustomWhereConditionsEntries(whereEntriesExpression);
+
+        String expectedQueryExpression = "\"SELECT\n"
+                + "\\\"\"+context.schema+\"\\\".\\\"eltinput\\\".\\\"String\\\", \\\"\"+context.schema+\"\\\".\\\"eltinput\\\".\\\"void\\\"\n"
+                + "FROM\n" + " \\\"\"+context.schema+\"\\\".\\\"eltinput\\\"\n"
+                + "WHERE \\\"eltinput\\\".\\\"String\\\">=to_char(now() + '-\" + context.JIKO_TARGET_DAYS + \" days', 'yyyymmddhh24mi')\"";
+        String queryExpression = manager.buildSqlSelect(dbMapComponent, "grade");
+        assertEquals(expectedQueryExpression, queryExpression);
+
         dbMapComponent = new DbMapComponent();
         schema = "eltschema";
         tableName = "elttable";
