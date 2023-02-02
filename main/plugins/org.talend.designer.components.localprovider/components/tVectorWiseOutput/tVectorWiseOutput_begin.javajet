@@ -166,7 +166,11 @@ if(columnList != null && columnList.size() > 0) {
                 stmtDrop_<%=cid%>.execute("<%=manager.getDropTableSQL()%>");
                 <%dbLog.table().dropDone(dbLog.var("tableName"));%>
                 <%dbLog.table().createTry(dbLog.var("tableName"));%>
-                stmtCreate_<%=cid%>.execute("<%=manager.getCreateTableSQL(stmtStructure)%>) WITH STRUCTURE = <%=storageType %>");
+                <%if(storageType != null && !("\"\"").equals(storageType) && !storageType.isBlank()){%>
+                	stmtCreate_<%=cid%>.execute("<%=manager.getCreateTableSQL(stmtStructure)%>) WITH STRUCTURE = " + <%=storageType %>);
+                <%}else{%>
+                	stmtCreate_<%=cid%>.execute("<%=manager.getCreateTableSQL(stmtStructure)%>)");
+                <%}%>
                 <%dbLog.table().createDone(dbLog.var("tableName"));%>
             }
             <%
@@ -174,7 +178,11 @@ if(columnList != null && columnList.size() > 0) {
             %>
             try (java.sql.Statement stmtCreate_<%=cid%> = conn_<%=cid%>.createStatement()) {
                 <%dbLog.table().createTry(dbLog.var("tableName"));%>
-                stmtCreate_<%=cid%>.execute("<%=manager.getCreateTableSQL(stmtStructure)%>) WITH STRUCTURE = <%=storageType %>");
+                <%if(storageType != null && !("\"\"").equals(storageType) && !storageType.isBlank()){%>
+                	stmtCreate_<%=cid%>.execute("<%=manager.getCreateTableSQL(stmtStructure)%>) WITH STRUCTURE = " + <%=storageType %>);
+                <%}else{%>
+                	stmtCreate_<%=cid%>.execute("<%=manager.getCreateTableSQL(stmtStructure)%>)");
+                <%}%>
                 <%dbLog.table().createDone(dbLog.var("tableName"));%>
             }
             <%
@@ -197,7 +205,11 @@ if(columnList != null && columnList.size() > 0) {
                 if(!whetherExist_<%=cid%>) {
                     try (java.sql.Statement stmtCreate_<%=cid%> = conn_<%=cid%>.createStatement()) {
                         <%dbLog.table().createTry(dbLog.var("tableName"));%>
-                        stmtCreate_<%=cid%>.execute("<%=manager.getCreateTableSQL(stmtStructure)%>) WITH STRUCTURE = <%=storageType %>");
+                        <%if(storageType != null && !("\"\"").equals(storageType) && !storageType.isBlank()){%>
+                        	stmtCreate_<%=cid%>.execute("<%=manager.getCreateTableSQL(stmtStructure)%>) WITH STRUCTURE = " + <%=storageType %>);
+                        <%}else{%>
+                        	stmtCreate_<%=cid%>.execute("<%=manager.getCreateTableSQL(stmtStructure)%>)");
+                        <%}%>
                         <%dbLog.table().createDone(dbLog.var("tableName"));%>
                     }
                 }
@@ -213,7 +225,11 @@ if(columnList != null && columnList.size() > 0) {
                 }
                 try (java.sql.Statement stmtCreate_<%=cid%> = conn_<%=cid%>.createStatement()) {
                     <%dbLog.table().createTry(dbLog.var("tableName"));%>
-                    stmtCreate_<%=cid%>.execute("<%=manager.getCreateTableSQL(stmtStructure)%>) WITH STRUCTURE = <%=storageType %>");
+                    <%if(storageType != null && !("\"\"").equals(storageType) && !storageType.isBlank()){%>
+                    	stmtCreate_<%=cid%>.execute("<%=manager.getCreateTableSQL(stmtStructure)%>) WITH STRUCTURE = " + <%=storageType %>);
+                    <%}else{%>
+                    	stmtCreate_<%=cid%>.execute("<%=manager.getCreateTableSQL(stmtStructure)%>)");
+                    <%}%>
                     <%dbLog.table().createDone(dbLog.var("tableName"));%>
                 }
             <%
