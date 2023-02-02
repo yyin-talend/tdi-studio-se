@@ -205,6 +205,11 @@ public class PostgresGenerationManager extends DbGenerationManager {
     }
 
     @Override
+    protected String getColumnName(IConnection conn, String name, String quote) {
+        return name;
+    }
+
+    @Override
     protected void buildTableDeclaration(DbMapComponent component, StringBuilder sb, ExternalDbMapTable inputTable) {
         sb.append(getHandledTableName(component, inputTable.getTableName(), inputTable.getAlias(), true));
     }
