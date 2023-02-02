@@ -360,7 +360,11 @@ public class PostgresGenerationManager extends DbGenerationManager {
         if (inputSchemaContextSet.contains(context)) {
             expression = expression.replaceAll("\\b" + context + "\\b", "\\\\\"\"+" + context + "+\"\\\\\"");
         } else {
-            expression = expression.replaceAll("\\b" + context + "\\b", "\" +" + context + "+ \"");
+            String tempExpression = expression.replace(" ", "");
+            if (!tempExpression.contains("\"+" + context + "+\"")) {
+                expression = expression.replaceAll("\\b" + context + "\\b", "\" +" + context + "+ \"");
+            }
+
         }
         return expression;
     }
