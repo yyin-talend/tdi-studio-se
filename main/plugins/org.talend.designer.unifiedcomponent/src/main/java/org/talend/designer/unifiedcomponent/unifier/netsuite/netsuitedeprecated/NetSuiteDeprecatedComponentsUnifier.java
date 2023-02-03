@@ -1,6 +1,6 @@
 // ============================================================================
 //
-// Copyright (C) 2006-2021 Talend Inc. - www.talend.com
+// Copyright (C) 2006-2022 Talend Inc. - www.talend.com
 //
 // This source code is available under agreement available at
 // %InstallDIR%\features\org.talend.rcp.branding.%PRODUCTNAME%\%PRODUCTNAME%license.txt
@@ -10,24 +10,19 @@
 // 9 rue Pages 92150 Suresnes, France
 //
 // ============================================================================
-package org.talend.designer.unifiedcomponent.delegate.service;
+package org.talend.designer.unifiedcomponent.unifier.netsuite.netsuitedeprecated;
 
-import org.talend.commons.ui.runtime.image.IImage;
+import org.talend.designer.unifiedcomponent.unifier.AbstractComponentsUnifier;
 
 /**
- * created by wchen on Dec 1, 2017 Detailled comment
+ * 
+ * created by hcyi on Nov 16, 2022 Detailled comment
  *
  */
-public interface IComponentDelegate {
+public class NetSuiteDeprecatedComponentsUnifier extends AbstractComponentsUnifier {
 
-    public static String FAMILY = "Databases/DB Common";
-
-    public String getComponentName();
-
-    public String getUnifiedDisplayName();
-
-    public String getFamily();
-
-    public IImage getImage();
-
+    @Override
+    public String getDisplayName() {
+        return "NetSuite Deprecated"; //$NON-NLS-1$
+    }
 }
