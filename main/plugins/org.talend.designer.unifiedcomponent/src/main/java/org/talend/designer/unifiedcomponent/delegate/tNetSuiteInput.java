@@ -1,6 +1,6 @@
 // ============================================================================
 //
-// Copyright (C) 2006-2021 Talend Inc. - www.talend.com
+// Copyright (C) 2006-2022 Talend Inc. - www.talend.com
 //
 // This source code is available under agreement available at
 // %InstallDIR%\features\org.talend.rcp.branding.%PRODUCTNAME%\%PRODUCTNAME%license.txt
@@ -12,14 +12,14 @@
 // ============================================================================
 package org.talend.designer.unifiedcomponent.delegate;
 
-import org.talend.designer.unifiedcomponent.delegate.service.IComponentDelegate;
 import org.talend.designer.unifiedcomponent.resources.ComponentImage;
 
 /**
- * created by wchen on Dec 4, 2017 Detailled comment
+ * created by hcyi on Nov 17, 2022
+ * Detailled comment
  *
  */
-public class tDBValidRows extends AbstractUnifiedComponent {
+public class tNetSuiteInput extends AbstractUnifiedComponent {
 
     /*
      * (non-Javadoc)
@@ -28,7 +28,12 @@ public class tDBValidRows extends AbstractUnifiedComponent {
      */
     @Override
     public String getComponentName() {
-        return "tDBValidRows";
+        return "tNetSuiteInput"; //$NON-NLS-1$
+    }
+
+    @Override
+    public String getUnifiedDisplayName() {
+        return "Version";//$NON-NLS-1$
     }
 
     /*
@@ -38,7 +43,7 @@ public class tDBValidRows extends AbstractUnifiedComponent {
      */
     @Override
     public String getFamily() {
-        return IComponentDelegate.FAMILY;
+        return "Business/NetSuite"; //$NON-NLS-1$
     }
 
     /*
@@ -48,7 +53,7 @@ public class tDBValidRows extends AbstractUnifiedComponent {
      */
     @Override
     public ComponentImage getImage() {
-        return ComponentImage.tDBValidRows;
+        return ComponentImage.tNetSuiteInput;
     }
 
 }
