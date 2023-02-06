@@ -253,7 +253,7 @@
        NUM_ROW="4" 
        EQUIRED="true"  
        GROUP="REGION_ENDPOINT_GROUP" 
-       SHOW_IF="(AUTH_TYPE == 'SERVICE_ACCOUNT')" >
+       SHOW_IF="(AUTH_MODE == 'SERVICE_ACCOUNT')" >
             <DEFAULT>false</DEFAULT>
     </PARAMETER>
     <PARAMETER  
@@ -262,7 +262,7 @@
        NUM_ROW="5" 
        REQUIRED="false" 
        GROUP="REGION_ENDPOINT_GROUP" 
-       SHOW_IF="(AUTH_TYPE == 'SERVICE_ACCOUNT') AND (USE_REGION_ENDPOINT == 'true')" >
+       SHOW_IF="(AUTH_MODE == 'SERVICE_ACCOUNT') AND (USE_REGION_ENDPOINT == 'true')" >
        <DEFAULT>"https://storage.googleapis.com"</DEFAULT>
     </PARAMETER>
     <PARAMETER  
@@ -271,7 +271,7 @@
        NUM_ROW="6" 
        REQUIRED="false" 
        GROUP="REGION_ENDPOINT_GROUP" 
-       SHOW_IF="(AUTH_TYPE == 'SERVICE_ACCOUNT') AND (USE_REGION_ENDPOINT == 'true')" >
+       SHOW_IF="(AUTH_MODE == 'SERVICE_ACCOUNT') AND (USE_REGION_ENDPOINT == 'true')" >
        <DEFAULT>"https://bigquery.googleapis.com"</DEFAULT>
     </PARAMETER>
     <PARAMETER NAME="TOKEN_NAME" FIELD="FILE" NUM_ROW="10"
