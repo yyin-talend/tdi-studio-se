@@ -1647,11 +1647,6 @@ public class CLASS {
                 createSQL.append(")");
             }
             
-            // add VectorWise option
-            if (VECTORWISE.equalsIgnoreCase(getDBMSId())){
-                createSQL.append("WITH STRUCTURE = VECTORWISE");
-            }
-            
             return createSQL.toString();
         }
                 

@@ -13,9 +13,9 @@
 package org.talend.designer.core.model.components;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.regex.Matcher;
 
 import org.apache.commons.lang.ArrayUtils;
@@ -40,7 +40,6 @@ import org.talend.core.model.process.IElement;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.INode;
 import org.talend.designer.core.ui.editor.process.Process;
-import org.talend.designer.joblet.model.JobletProcess;
 import org.talend.hadoop.distribution.DistributionFactory;
 import org.talend.hadoop.distribution.ESparkVersion;
 import org.talend.hadoop.distribution.spark.SparkVersionUtil;
@@ -301,6 +300,11 @@ public final class Expression {
         } else if (simpleExpression.contains(LESS_THAN)) {
             test = LESS_THAN;
         }
+
+        if (simpleExpression.contains("SPARK_MODE") && simpleExpression.contains("LINK@")) { //$NON-NLS-1$
+            return evaluateSparkMode(simpleExpression, listParam, currentParam);
+        }
+
         if ((simpleExpression.contains(" IN [") || //$NON-NLS-1$
                 simpleExpression.contains(" IN[")) && simpleExpression.endsWith("]")) { //$NON-NLS-1$ //$NON-NLS-2$
             return evaluateInExpression(simpleExpression, listParam);
@@ -315,9 +319,6 @@ public final class Expression {
         }
         if (simpleExpression.contains("SPARK_VERSION[")) { //$NON-NLS-1$
             return evaluateSparkVersion(simpleExpression, listParam, currentParam);
-        }
-        if (simpleExpression.contains("SPARK_MODE") && simpleExpression.contains("LINK@")) { //$NON-NLS-1$
-            return evaluateSparkMode(simpleExpression, listParam, currentParam);
         }
         if (simpleExpression.contains(IS_CONTEXT)) { //$NON-NLS-1$
             return evaluateIsContext(simpleExpression, listParam, currentParam);
@@ -883,11 +884,16 @@ public final class Expression {
                 return false;
             }
             String sparkModeValue = sparkMode.getValue().toString();
-            String toEvaluate = simpleExpression.substring(simpleExpression.indexOf("'") + 1, simpleExpression.lastIndexOf("'"));
-            if (simpleExpression.contains("!=")) {
-            	return !sparkModeValue.equals(toEvaluate);
+            if (simpleExpression.contains("IN [")) {
+                String values = simpleExpression.substring(simpleExpression.indexOf("[") + 1, simpleExpression.lastIndexOf("]"));
+                return Arrays.asList(values.split(",")).stream().map(m -> m.substring(1, m.length() - 1)).anyMatch(n -> sparkModeValue.equals(n));
             } else {
-            	return sparkModeValue.equals(toEvaluate);
+                String toEvaluate = simpleExpression.substring(simpleExpression.indexOf("'") + 1, simpleExpression.lastIndexOf("'"));
+                if (simpleExpression.contains("!=")) {
+                    return !sparkModeValue.equals(toEvaluate);
+                } else {
+                    return sparkModeValue.equals(toEvaluate);
+                }
             }
         }
         return false;
@@ -1131,10 +1137,14 @@ public final class Expression {
 
         // Look for the param name in list
         IElementParameter param = listParam.stream().filter(p -> paramName.equals(p.getName())).findAny().orElse(null);
-        if (param == null || !EParameterFieldType.TABLE.equals(param.getFieldType())) {
+        if (param == null) {
             return false;
         }
 
+        if (!EParameterFieldType.TABLE.equals(param.getFieldType())) {
+            return param.getValue().toString().contains(paramValue.replaceAll("'", ""));
+        }
+            
         // Check if we can find paraValue among table lines
         return ((List<Map<String, Object>>) param.getValue()).stream().anyMatch(line -> paramValue.equals(line.toString()));
     }

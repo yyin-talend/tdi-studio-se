@@ -310,7 +310,7 @@ globalMap.put("<%=cid%>_ERROR_MESSAGE",ee_<%=cid%>.getMessage());
 					com.google.cloud.storage.Storage.BlobWriteOption.md5Match());
 				java.io.InputStream inputStreamForUpload_<%=cid%> = java.nio.file.Files.newInputStream(file_<%=cid%>.toPath())) {
 				int curFileLimit_<%=cid%>;
-				while ((curFileLimit_<%=cid%> = inputStreamForUpload_<%=cid%>.read(buffer_<%=cid%>)) >= 0) {
+				while ((curFileLimit_<%=cid%> = inputStreamForUpload_<%=cid%>.read(buffer_<%=cid%>)) > 0) {
 					writer_<%=cid%>.write(java.nio.ByteBuffer.wrap(buffer_<%=cid%>, 0, curFileLimit_<%=cid%>));
 				}
 			} catch (IOException e_<%=cid%>) {

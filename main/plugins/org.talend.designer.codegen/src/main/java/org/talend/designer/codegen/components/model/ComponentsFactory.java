@@ -46,6 +46,7 @@ import org.talend.commons.exception.BusinessException;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.utils.io.FilesUtils;
 import org.talend.core.GlobalServiceRegister;
+import org.talend.core.ILibraryManagerService;
 import org.talend.core.language.LanguageManager;
 import org.talend.core.model.component_cache.ComponentsCache;
 import org.talend.core.model.components.AbstractComponentsProvider;
@@ -58,6 +59,7 @@ import org.talend.core.model.components.IComponentsFactory;
 import org.talend.core.model.components.IComponentsHandler;
 import org.talend.core.model.components.filters.ComponentsFactoryProviderManager;
 import org.talend.core.model.components.filters.IComponentFactoryFilter;
+import org.talend.core.model.general.ModuleNeeded;
 import org.talend.core.runtime.util.ComponentsLocationProvider;
 import org.talend.core.ui.IJobletProviderService;
 import org.talend.core.ui.ISparkJobletProviderService;
@@ -368,6 +370,8 @@ public class ComponentsFactory implements IComponentsFactory {
                     } else {
                         componentList.add(currentComp);
                         customComponentList.add(currentComp);
+
+                        syncCustomComponentLibs(currentFolder, currentComp.getModulesNeeded());
                     }
                 } catch (MissingMainXMLComponentFileException e) {
                     log.trace(currentFolder.getName() + " is not a " + getCodeLanguageSuffix() + " component", e); //$NON-NLS-1$ //$NON-NLS-2$
@@ -384,6 +388,18 @@ public class ComponentsFactory implements IComponentsFactory {
                     return;
                 }
             }
+        }
+    }
+
+    private void syncCustomComponentLibs(File componentFolder, List<ModuleNeeded> modulesNeeded) {
+        try {
+            if (GlobalServiceRegister.getDefault().isServiceRegistered(ILibraryManagerService.class)) {
+                ILibraryManagerService libraryService = GlobalServiceRegister.getDefault()
+                        .getService(ILibraryManagerService.class);
+                libraryService.deployLibsFromCustomComponents(componentFolder, modulesNeeded);
+            }
+        } catch (Exception e) {
+            ExceptionHandler.process(e);
         }
     }
 

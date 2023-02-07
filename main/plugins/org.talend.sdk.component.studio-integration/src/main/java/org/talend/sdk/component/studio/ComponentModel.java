@@ -52,6 +52,7 @@ import org.talend.core.model.process.INode;
 import org.talend.core.model.process.INodeConnector;
 import org.talend.core.model.process.INodeReturn;
 import org.talend.core.model.process.IProcess;
+import org.talend.core.model.properties.JobletProcessItem;
 import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.model.temp.ECodePart;
 import org.talend.core.runtime.IAdditionalInfo;
@@ -307,6 +308,10 @@ public class ComponentModel extends AbstractBasicComponent implements IAdditiona
             if (processItem != null) {
                 manager.checkNodeMigration(processItem, getName(), process.getComponentsType());
             }
+            JobletProcessItem jpi = ItemCacheManager.getJobletProcessItem(process.getId());
+            if (jpi != null) {
+                manager.checkNodeItemMigration(jpi, getName(), process.getComponentsType());
+            }
         }
         ElementParameterCreator creator = new ElementParameterCreator(this, detail, node, reportPath, isCatcherAvailable);
         List<IElementParameter> parameters = (List<IElementParameter>) creator.createParameters();
@@ -438,17 +443,22 @@ public class ComponentModel extends AbstractBasicComponent implements IAdditiona
                     modulesNeeded.addAll(dependencies
                             .getCommon()
                             .stream()
-                            .map(s -> new ModuleNeeded(getName(), "", true, s))
+                            .map(s -> new ModuleNeeded(getDisplayName(), "", true, s))
                             .collect(toList()));
-                    modulesNeeded.add(new ModuleNeeded(getName(), "", true, "mvn:org.talend.sdk.component/component-runtime-di/" + GAV.INSTANCE.getComponentRuntimeVersion()));
-                    modulesNeeded.add(new ModuleNeeded(getName(), "", true, "mvn:org.talend.sdk.component/component-runtime-design-extension/" + GAV.INSTANCE.getComponentRuntimeVersion()));
-                    modulesNeeded.add(new ModuleNeeded(getName(), "", true, "mvn:org.slf4j/slf4j-api/" + GAV.INSTANCE.getSlf4jVersion()));
+                    modulesNeeded.add(new ModuleNeeded(getDisplayName(), "", true,
+                            "mvn:org.talend.sdk.component/component-runtime-di/" + GAV.INSTANCE.getComponentRuntimeVersion()));
+                    modulesNeeded.add(new ModuleNeeded(getDisplayName(), "", true,
+                            "mvn:org.talend.sdk.component/component-runtime-design-extension/"
+                                    + GAV.INSTANCE.getComponentRuntimeVersion()));
+                    modulesNeeded.add(new ModuleNeeded(getDisplayName(), "", true,
+                            "mvn:org.slf4j/slf4j-api/" + GAV.INSTANCE.getSlf4jVersion()));
 
                     if (!hasTcomp0Component(iNode)) {
                         if (!PluginChecker.isTIS()) {
-                            modulesNeeded.add(new ModuleNeeded(getName(), "", true, "mvn:" + GAV.INSTANCE.getGroupId() + "/slf4j-standard/" + GAV.INSTANCE.getComponentRuntimeVersion()));
+                            modulesNeeded.add(new ModuleNeeded(getDisplayName(), "", true, "mvn:" + GAV.INSTANCE.getGroupId()
+                                    + "/slf4j-standard/" + GAV.INSTANCE.getComponentRuntimeVersion()));
                         } else {
-                            modulesNeeded.add(new ModuleNeeded(getName(), "", true,
+                            modulesNeeded.add(new ModuleNeeded(getDisplayName(), "", true,
                                     "mvn:org.slf4j/slf4j-reload4j/" + GAV.INSTANCE.getSlf4jVersion()));
                         }
                     }
@@ -461,28 +471,31 @@ public class ComponentModel extends AbstractBasicComponent implements IAdditiona
                         
                         if (coordinates != null) {
                             modulesNeeded.addAll(coordinates.stream()
-                                    .map(coordinate -> new ModuleNeeded(getName(), "", true, Mvn.locationToMvn(coordinate).replace(MavenConstants.LOCAL_RESOLUTION_URL + '!', "")))
+                                    .map(coordinate -> new ModuleNeeded(getDisplayName(), "", true,
+                                            Mvn.locationToMvn(coordinate).replace(MavenConstants.LOCAL_RESOLUTION_URL + '!', "")))
                                     .collect(Collectors.toList()));
                             //TODO fix this, this is wrong here as coordinates is a list object, not string, it's on purpose?
                             if (coordinates.contains("org.apache.beam") || coordinates.contains(":beam-sdks-java-io")) {
                                 modulesNeeded.addAll(dependencies
                                         .getBeam()
                                         .stream()
-                                        .map(s -> new ModuleNeeded(getName(), "", true, s))
+                                        .map(s -> new ModuleNeeded(getDisplayName(), "", true, s))
                                         .collect(toList()));
                             }
                             
                             String content = coordinates.toString();
                             if(content.contains("org.scala-lang") && !content.contains(":scala-library:")) {
                                 //we can't add this dependency to connector as spark/beam class conflict for TPD, so add here as provided by platform like spark/beam
-                                modulesNeeded.add(new ModuleNeeded(getName(), "", true, "mvn:org.scala-lang/scala-library/2.12.12"));
+                                modulesNeeded.add(
+                                        new ModuleNeeded(getDisplayName(), "", true, "mvn:org.scala-lang/scala-library/2.12.12"));
                             }
                         }
                     }
 
                     // We're assuming that pluginLocation has format of groupId:artifactId:version
                     final String location = index.getId().getPluginLocation().trim();
-                    modulesNeeded.add(new ModuleNeeded(getName(), "", true, Mvn.locationToMvn(location).replace(MavenConstants.LOCAL_RESOLUTION_URL + '!', "")));
+                    modulesNeeded.add(new ModuleNeeded(getDisplayName(), "", true,
+                            Mvn.locationToMvn(location).replace(MavenConstants.LOCAL_RESOLUTION_URL + '!', "")));
                 }
             }
         }
