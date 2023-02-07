@@ -95,6 +95,7 @@
     		}
     		%>
     		boolean useStar_<%=cid%> = false;
+    		resourceMap.remove("finish_<%=cid%>");
     		<%
     		//now we have to support the three kinds of setting, but it's not good:
     		//"1,2,*"

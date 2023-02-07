@@ -320,20 +320,21 @@ public class JSONFileStep3Form extends AbstractJSONFileStepForm {
     private ProcessDescription getProcessDescription(boolean defaultContext) {
         JSONFileConnection connection2 = JSONConnectionContextUtils.getJSONOriginalValueConnection(getConnection(),
                 this.connectionItem, isContextMode(), defaultContext);
+        String originalJSONContent = JSONConnectionContextUtils.getOriginalJSONContent(getConnection());
         ProcessDescription processDescription = null;
         if (wizard != null) {
-            processDescription = JSONShadowProcessHelper.getProcessDescription(connection2, wizard.getTempJsonPath());
+            processDescription = JSONShadowProcessHelper.getProcessDescription(connection2, wizard.getTempJsonPath(), originalJSONContent);
         } else {
             if (EJsonReadbyMode.JSONPATH.getValue().equals(connection2.getReadbyMode())) {
-                processDescription = JSONShadowProcessHelper.getProcessDescription(connection2, connection2.getJSONFilePath());
+                processDescription = JSONShadowProcessHelper.getProcessDescription(connection2, connection2.getJSONFilePath(), originalJSONContent);
             } else {
                 processDescription = JSONShadowProcessHelper.getProcessDescription(connection2,
-                        JSONUtil.changeJsonToXml(connection2.getJSONFilePath(), getConnectionEncoding()));
+                        JSONUtil.changeJsonToXml(connection2.getJSONFilePath(), getConnectionEncoding()), originalJSONContent);
             }
         }
         return processDescription;
     }
-
+    
     /**
      * run a ShadowProcess to determined the Metadata.
      */
