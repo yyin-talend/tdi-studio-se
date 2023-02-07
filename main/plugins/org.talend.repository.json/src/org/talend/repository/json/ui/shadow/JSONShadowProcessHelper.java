@@ -34,8 +34,11 @@ import org.talend.metadata.managment.ui.i18n.Messages;
 import org.talend.metadata.managment.ui.preview.AsynchronousPreviewHandler;
 import org.talend.metadata.managment.ui.preview.ProcessDescription;
 import org.talend.metadata.managment.ui.utils.ConnectionContextHelper;
+import org.talend.repository.json.util.ConvertJSONString;
+import org.talend.repository.json.util.JSONUtil;
 import org.talend.repository.model.json.JSONFileConnection;
 import org.talend.repository.model.json.SchemaTarget;
+import org.talend.repository.ui.wizards.metadata.connection.files.json.EJsonReadbyMode;
 
 /**
  * Create a ProcessDescription to use in the step2 & step3 of CSV File Wizard on Shadow mode.
@@ -99,7 +102,7 @@ public class JSONShadowProcessHelper {
      *
      * @return ProcessDescription
      */
-    public static ProcessDescription getProcessDescription(final JSONFileConnection connection, String tempJsonFile) {
+    public static ProcessDescription getProcessDescription(final JSONFileConnection connection, String tempJsonFile, String originalJsonString) {
         ContextType contextType = null;
         if (connection.isContextMode()) {
             contextType = ConnectionContextHelper.getContextTypeForContextMode(connection);
@@ -111,6 +114,10 @@ public class JSONShadowProcessHelper {
         if (contextType != null && xpathQuery != null) {
             xpathQuery = ContextParameterUtils.getOriginalValue(contextType, xpathQuery);
         }
+        
+        String readbyMode = connection.getReadbyMode();
+        xpathQuery = amendXPathQuery(originalJsonString, xpathQuery, readbyMode);
+        
         processDescription.setLoopQuery(TalendQuoteUtils.addQuotes(xpathQuery));
         if (connection.getSchema().get(0).getLimitBoucle() != null
                 && !("").equals(connection.getSchema().get(0).getLimitBoucle()) //$NON-NLS-1$
@@ -131,7 +138,7 @@ public class JSONShadowProcessHelper {
                 mapping.add(lineMapping);
             }
         }
-        processDescription.setReadbyMode(connection.getReadbyMode());
+        processDescription.setReadbyMode(readbyMode);
         processDescription.setMapping(mapping);
         String encode = connection.getEncoding();
         if (encode != null && !("").equals(encode)) { //$NON-NLS-1$
@@ -144,6 +151,30 @@ public class JSONShadowProcessHelper {
         }
 
         return processDescription;
+    }
+
+    private static String amendXPathQuery(String originalJsonString, String xpathQuery, String readbyMode) {
+        ConvertJSONString convertJSONString = new ConvertJSONString();
+        convertJSONString.setJsonString(originalJsonString);
+        convertJSONString.barceType();
+        if(EJsonReadbyMode.XPATH.getValue().equals(readbyMode)) {
+            if(JSONUtil.isXPathOfJson(originalJsonString, xpathQuery, '/')) {
+                if(convertJSONString.isBraceType() && convertJSONString.isNeedAddRoot(originalJsonString)) {
+                    if(xpathQuery.startsWith("/")) {
+                        xpathQuery = "root" + xpathQuery;
+                    } else {
+                        xpathQuery = "root/" + xpathQuery;
+                    }
+                } else if(convertJSONString.isBracketType()) {
+                    if(xpathQuery.startsWith("/")) {
+                        xpathQuery = "root/object" + xpathQuery;
+                    } else {
+                        xpathQuery = "root/object/" + xpathQuery;
+                    }
+                }
+            }
+        }
+        return xpathQuery;
     }
 
     /**

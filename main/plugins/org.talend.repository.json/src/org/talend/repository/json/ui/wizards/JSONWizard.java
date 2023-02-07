@@ -65,6 +65,7 @@ import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.model.properties.PropertiesFactory;
 import org.talend.core.model.properties.Property;
 import org.talend.core.model.update.RepositoryUpdateManager;
+import org.talend.core.model.utils.ContextParameterUtils;
 import org.talend.core.repository.model.ProxyRepositoryFactory;
 import org.talend.core.runtime.CoreRuntimePlugin;
 import org.talend.core.ui.preference.metadata.MetadataTypeLengthConstants;
@@ -624,7 +625,7 @@ public class JSONWizard extends CheckLastVersionRepositoryWizard implements INew
         // TODO
         JSONFileConnection connection2 = JSONConnectionContextUtils.getJSONOriginalValueConnection(connection,
                 this.connectionItem, connection.isContextMode(), true);
-        ProcessDescription processDescription = JSONShadowProcessHelper.getProcessDescription(connection2, getTempJsonPath());
+        ProcessDescription processDescription = JSONShadowProcessHelper.getProcessDescription(connection2, getTempJsonPath(), JSONConnectionContextUtils.getOriginalJSONContent(connection));
         CsvArray csvArray = null;
         try {
             if (EJsonReadbyMode.JSONPATH.getValue().equals(getReadbyMode())) {
