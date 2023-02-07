@@ -22,6 +22,7 @@ import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import org.apache.commons.io.IOUtils;
@@ -32,6 +33,12 @@ import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.commons.utils.workbench.resources.ResourceUtils;
 import org.talend.core.model.general.Project;
 import org.talend.repository.ProjectManager;
+
+import net.sf.json.JSON;
+import net.sf.json.JSONArray;
+import net.sf.json.JSONObject;
+import net.sf.json.JSONSerializer;
+import net.sf.json.util.JSONUtils;
 
 /**
  * DOC wanghong class global comment. Detailled comment
@@ -316,4 +323,84 @@ public class JSONUtil {
         return indexList;
     }
 
+    /**
+     * @param jsonContent
+     * @param xpath  like "root/a/b", "/root/a/b" 
+     * @param sep  xpath separator, default '/' 
+     * @return
+     */
+    public static boolean isXPathOfJson(String jsonContent, String xpath, Character sep) {
+        if(jsonContent == null || xpath == null) {
+            return false;
+        }
+        
+        if(null == sep) {
+            sep = '/';
+        }
+        
+        if(xpath.startsWith(sep.toString())) {
+            xpath = xpath.substring(1);
+        }
+        
+        String sep_str = sep.toString();
+        if(sep == '.') {
+            sep_str = "\\" + sep_str;
+        }
+        String[] split = xpath.split(sep_str);
+        
+        boolean result = false;
+        
+        JSON json = JSONSerializer.toJSON(jsonContent);
+        if(json.isArray()) {
+            JSONArray jarray = (JSONArray) json;
+            result = canFoundInArray(jarray, split);
+        }else {
+            JSONObject jsonobj = (JSONObject) json;
+            result = canFoundInJsonObject(jsonobj, split);
+        }
+        
+        return result;
+    }
+    
+    private static boolean canFoundInArray(JSONArray array, String[] xpath) {
+        Iterator iterator = array.iterator();
+        while(iterator.hasNext()) {
+            Object next = iterator.next();
+            if(JSONUtils.isObject(next) && xpath.length > 0) {
+                JSONObject obj = (JSONObject) next;
+                if(obj.containsKey(xpath[0])) {
+                    return canFoundInJsonObject(obj, xpath);
+                }
+            } else if(JSONUtils.isString(next)) {
+                return xpath.length == 1 && xpath[0].equals(next);
+            }
+        }
+            
+        return false;
+    }
+    
+    private static boolean canFoundInJsonObject(JSONObject jobj, String[] xpath) {
+        if(xpath.length == 1) {
+            return jobj.containsKey(xpath[0]);
+        }
+        
+        if(jobj.containsKey(xpath[0])) {
+            Object obj = jobj.get(xpath[0]);
+            String[] _xpath = new String[xpath.length - 1];
+            System.arraycopy(xpath, 1, _xpath, 0, _xpath.length);
+            if(JSONUtils.isArray(obj)) {
+                return canFoundInArray((JSONArray)obj, _xpath);
+            } 
+            
+            if(JSONUtils.isObject(obj)) {
+                return canFoundInJsonObject((JSONObject)obj, _xpath);
+            }
+            
+            if(JSONUtils.isString(obj)) {
+                return xpath.length == 1 && xpath[0].equals(obj);
+            }
+        }
+        
+        return false;
+    }
 }

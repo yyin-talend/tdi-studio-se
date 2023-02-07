@@ -19,10 +19,6 @@ import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 
-import net.sf.json.JSON;
-import net.sf.json.JSONSerializer;
-import net.sf.json.xml.XMLSerializer;
-
 import org.apache.commons.io.IOUtils;
 import org.eclipse.core.resources.IProject;
 import org.talend.commons.exception.PersistenceException;
@@ -30,6 +26,10 @@ import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.commons.utils.workbench.resources.ResourceUtils;
 import org.talend.core.model.general.Project;
 import org.talend.repository.ProjectManager;
+
+import net.sf.json.JSON;
+import net.sf.json.JSONSerializer;
+import net.sf.json.xml.XMLSerializer;
 
 /**
  * DOC wanghong class global comment. Detailled comment
@@ -89,17 +89,25 @@ public class ConvertJSONString {
         barceType();
         jsonString4XML = originalJsonString;
         loopString4XML = originalLoopString;
-        if (Brace == barceType) {
+        if (isBraceType()) {
             if (isNeedAddRoot(originalJsonString)) {
                 jsonString4XML = "{ \"root\": " + originalJsonString + " }";
                 loopString4XML = "root" + originalLoopString;
                 currentFlag = ROOT;
             }
-        } else if (Bracket == barceType) {
+        } else if (isBracketType()) {
             jsonString4XML = "{ \"root\" : { \"object\": " + originalJsonString + " } }";
             loopString4XML = "root/object" + originalLoopString;
             currentFlag = ROOT_OBJECT;
         }
+    }
+
+    public boolean isBraceType() {
+        return Brace == barceType;
+    }
+
+    public boolean isBracketType() {
+        return Bracket == barceType;
     }
 
     public boolean isNeedAddRoot(String originalJsonString) {
