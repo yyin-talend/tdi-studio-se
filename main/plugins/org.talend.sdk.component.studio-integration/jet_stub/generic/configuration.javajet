@@ -234,26 +234,30 @@ final java.util.Map<String, String> registry_metadata_<%=cid%> = new java.util.H
                     }
                 } else {
                     value = ElementParameterParser.getStringElementParameterValue(p);
-                    // fix MEMO Types: behave now as TEXT_AREA
-                    if (p.getFieldType().toString().startsWith("MEMO")){
-                        value = value.replace("\n", " ").replace("\r", " ");
-                    }
-                    if (org.talend.core.model.utils.ContextParameterUtils.isDynamic(value)) {
-                        value = "String.valueOf(" + value + ")";
-                    }
-                    else {
-                        if (org.talend.core.model.utils.TalendTextUtils.isEnclosed(value)) {
-                            value = org.talend.core.model.utils.TalendTextUtils.removeQuotes(value);
+                    
+                    if(cid.contains("JDBC") && p.getFieldType() == EParameterFieldType.MEMO_SQL && value.contains("+")) {
+                        value = org.talend.core.model.utils.NodeUtil.replaceCRLFInMEMO_SQL(value);
+                    } else {
+                        // fix MEMO Types: behave now as TEXT_AREA
+                        if (p.getFieldType().toString().startsWith("MEMO")){
+                            value = value.replace("\n", " ").replace("\r", " ");
                         }
-                        
-                        Object sourceName = p.getTaggedValue("org.talend.sdk.component.source");
-                        boolean isTacokit = "tacokit".equalsIgnoreCase(String.valueOf(sourceName));
-                        if(isTacokit) {
-                        	value = org.talend.core.model.utils.TalendTextUtils.addQuotes(org.talend.core.utils.TalendQuoteUtils.checkAndAddBackslashes(value));
+                        if (org.talend.core.model.utils.ContextParameterUtils.isDynamic(value)) {
+                            value = "String.valueOf(" + value + ")";
                         } else {
-                        	value = org.talend.core.model.utils.TalendTextUtils.addQuotes(value);
+                            if (org.talend.core.model.utils.TalendTextUtils.isEnclosed(value)) {
+                                value = org.talend.core.model.utils.TalendTextUtils.removeQuotes(value);
+                            }
+                            
+                            Object sourceName = p.getTaggedValue("org.talend.sdk.component.source");
+                            boolean isTacokit = "tacokit".equalsIgnoreCase(String.valueOf(sourceName));
+                            if(isTacokit) {
+                            	value = org.talend.core.model.utils.TalendTextUtils.addQuotes(org.talend.core.utils.TalendQuoteUtils.checkAndAddBackslashes(value));
+                            } else {
+                            	value = org.talend.core.model.utils.TalendTextUtils.addQuotes(value);
+                            }
+                            
                         }
-                        
                     }
                 }
                 if (value != null) {

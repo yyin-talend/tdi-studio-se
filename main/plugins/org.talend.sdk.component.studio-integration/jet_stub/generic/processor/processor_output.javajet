@@ -77,7 +77,7 @@ if (params != null && !params.isEmpty()) {
                     }
                 }
             }
-        } else if(p.getFieldType() == EParameterFieldType.MEMO_SQL) {
+        } else if(cid.contains("JDBC") && p.getFieldType() == EParameterFieldType.MEMO_SQL) {
             if (!p.isShow(params)) {
                 continue;
             }
@@ -85,14 +85,19 @@ if (params != null && !params.isEmpty()) {
             final String key = p.getName();
             
             String value = ElementParameterParser.getStringElementParameterValue(p);
-            value = value.replace("\n", " ").replace("\r", " ");
-            if (org.talend.core.model.utils.ContextParameterUtils.isDynamic(value)) {
-                value = "String.valueOf(" + value + ")";
+            
+            if (value.contains("+")) {
+                value = org.talend.core.model.utils.NodeUtil.replaceCRLFInMEMO_SQL(value);
             } else {
-                if (org.talend.core.model.utils.TalendTextUtils.isEnclosed(value)) {
-                    value = org.talend.core.model.utils.TalendTextUtils.removeQuotes(value);
+                value = value.replace("\n", " ").replace("\r", " ");
+                if (org.talend.core.model.utils.ContextParameterUtils.isDynamic(value)) {
+                    value = "String.valueOf(" + value + ")";
+                } else {
+                    if (org.talend.core.model.utils.TalendTextUtils.isEnclosed(value)) {
+                        value = org.talend.core.model.utils.TalendTextUtils.removeQuotes(value);
+                    }
+                    value = org.talend.core.model.utils.TalendTextUtils.addQuotes(value);
                 }
-                value = org.talend.core.model.utils.TalendTextUtils.addQuotes(value);
             }
             
             if(value != null) {
