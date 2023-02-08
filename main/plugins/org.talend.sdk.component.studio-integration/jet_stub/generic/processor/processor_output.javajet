@@ -88,6 +88,7 @@ if (params != null && !params.isEmpty()) {
             
             if (value.contains("+")) {
                 value = org.talend.core.model.utils.NodeUtil.replaceCRLFInMEMO_SQL(value);
+                value = value.endsWith(";") ? value.substring(0, value.length() -1) : value;
             } else {
                 value = value.replace("\n", " ").replace("\r", " ");
                 if (org.talend.core.model.utils.ContextParameterUtils.isDynamic(value)) {

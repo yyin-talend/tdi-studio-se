@@ -153,7 +153,7 @@ globalMap.put("<%=cid %>_MAPPINGS_URL", mappings_url_<%=cid %>);
                                 }
                                 if (meta.equals("defaultValue")){
                                 %>
-                                configuration_<%=cid%>.put("<%=parameterName%>[<%=i%>].defaultValue", "<%=column.getDefault()%>");
+                                configuration_<%=cid%>.put("<%=parameterName%>[<%=i%>].defaultValue", "<%=org.talend.core.model.utils.TalendTextUtils.removeQuotes(column.getDefault())%>");
                                 <%
                                 }
                                 if (meta.equals("key")){
@@ -190,7 +190,7 @@ globalMap.put("<%=cid %>_MAPPINGS_URL", mappings_url_<%=cid %>);
                                 }
                                 if (meta.equals("comment")){
                                 %>
-                                configuration_<%=cid%>.put("<%=parameterName%>[<%=i%>].comment", "<%=column.getComment()%>");
+                                configuration_<%=cid%>.put("<%=parameterName%>[<%=i%>].comment", "<%=org.talend.core.model.utils.TalendTextUtils.removeQuotes(column.getComment())%>");
                                 <%
                                 }
                             }
@@ -240,6 +240,7 @@ globalMap.put("<%=cid %>_MAPPINGS_URL", mappings_url_<%=cid %>);
                     
                     if(cid.contains("JDBC") && p.getFieldType() == EParameterFieldType.MEMO_SQL && value.contains("+")) {
                         value = org.talend.core.model.utils.NodeUtil.replaceCRLFInMEMO_SQL(value);
+                        value = value.endsWith(";") ? value.substring(0, value.length() -1) : value;
                     } else if(cid.contains("JDBC") && key.contains("tableName") && (value.contains("+") || value.contains(".") || "pid".equals(value.trim()))) {
                         //as common, should no database table is named with "+" or ".", and "+" and "." should appear for java var or expression or database full table name with catalog/schema, so do the "if" check above
                         //user may use var : pid, which we have no way to know that is a var or not a var for user, here treat it as a var here, not wrap by double quote
