@@ -219,7 +219,7 @@
 
    <CODEGENERATION>
      <IMPORTS>
-       <IMPORT NAME="Driver-SQLite" MODULE="sqlitejdbc-v056.jar" MVN="mvn:org.talend.libraries/sqlitejdbc-v056/6.0.0" REQUIRED="true" />
+       <IMPORT NAME="Driver-SQLite" MODULE="sqlite-jdbc-3.40.0.0.jar" MVN="mvn:org.xerial/sqlite-jdbc/3.40.0.0" REQUIRED="true" />
      </IMPORTS>
    </CODEGENERATION>
 
