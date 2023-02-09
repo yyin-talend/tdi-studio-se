@@ -229,6 +229,7 @@ public class JSONFileStep2Form extends AbstractJSONFileStepForm implements IRefr
 
         }
         treePopulator.setEncoding(getConnectionEncoding());
+        treePopulator.setOriginfilePath(jsonFilePath);
         treePopulator.populateTree(wizard.getTempJsonPath(), treeNode);
         fieldsModel.setJSONXPathLoopDescriptor(jsonXPathLoopDescriptor.getSchemaTargets());
         fieldsTableEditorView.getTableViewerCreator().layout();
@@ -537,8 +538,9 @@ public class JSONFileStep2Form extends AbstractJSONFileStepForm implements IRefr
     private ProcessDescription getProcessDescription(boolean defaultContext) {
         JSONFileConnection connection2 = JSONConnectionContextUtils.getJSONOriginalValueConnection(getConnection(),
                 this.connectionItem, isContextMode(), defaultContext);
+        String originalJSONContent = JSONConnectionContextUtils.getOriginalJSONContent(getConnection());
         ProcessDescription processDescription = JSONShadowProcessHelper.getProcessDescription(connection2,
-                wizard.getTempJsonPath());
+                wizard.getTempJsonPath(), originalJSONContent);
         return processDescription;
     }
 
@@ -1003,6 +1005,15 @@ public class JSONFileStep2Form extends AbstractJSONFileStepForm implements IRefr
             resetStatusIfNecessary();
             String tempJson = this.wizard.getTempJsonPath();
             this.treePopulator.setEncoding(getConnectionEncoding());
+            try {
+                if (isContextMode()) {
+                    ContextType contextType = ConnectionContextHelper.getContextTypeForContextMode(getConnection(), getConnection().getContextName());
+                    jsonFilePath = TalendQuoteUtils.removeQuotes(ContextParameterUtils.getOriginalValue(contextType, jsonFilePath));
+                }
+            } catch (Exception e) {
+                ExceptionHandler.process(e);
+            }
+            this.treePopulator.setOriginfilePath(jsonFilePath);
             this.treePopulator.populateTree(tempJson, treeNode);
 
             ScrollBar verticalBar = availableJSONTree.getVerticalBar();

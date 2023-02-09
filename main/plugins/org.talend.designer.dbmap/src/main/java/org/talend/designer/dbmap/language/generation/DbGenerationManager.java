@@ -852,7 +852,10 @@ public abstract class DbGenerationManager {
                             .replaceAll("\\b" + context + "\\b", //$NON-NLS-1$ //$NON-NLS-2$
                                     "\" +" + "\"" + quote + "\" + " + context + " + \"" + quote + "\"" + "+ \""); //$NON-NLS-1$ //$NON-NLS-2$
                 } else {
-                    expression = expression.replaceAll("\\b" + context + "\\b", "\" +" + context + "+ \""); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+                    String tempExpression = expression.replace(" ", "");
+                    if (!tempExpression.contains("\"+" + context + "+\"")) {
+                        expression = expression.replaceAll("\\b" + context + "\\b", "\" +" + context + "+ \"");//$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+                    }
                 }
                 haveReplace = true;
             }
@@ -2081,7 +2084,14 @@ public abstract class DbGenerationManager {
                 }
                 tableName = schemaValue + "." + tableValue;
             } else {
-                tableName = getTableName(iconn, tableNoQuote, quote);
+                // when it's the case of tELTMap -> tELTMap . should take talbe name from tableName instead of
+                // tableNoQuote
+                if (org.apache.commons.lang.StringUtils.isEmpty(tableNoQuote)
+                        && org.apache.commons.lang.StringUtils.isNotEmpty(tableName)) {
+                    tableName = getTableName(iconn, tableName, quote);
+                } else {
+                    tableName = getTableName(iconn, tableNoQuote, quote);
+                }
             }
             tableName = adaptQuoteForTableAndColumnName(component, tableName);
             return replaceVariablesForExpression(component, tableName);
@@ -2188,8 +2198,8 @@ public abstract class DbGenerationManager {
     }
     
     protected String getTableName(IConnection conn, String name, String quote) {
-        if (!isRefTableConnection(conn) && isAddQuotesInTableNames()
-                && !ContextParameterUtils.isContainContextParam(name) && !isContainsGlobalMap(name)) {
+        if (isAddQuotesInTableNames() && !ContextParameterUtils.isContainContextParam(name)
+                && !isContainsGlobalMap(name)) {
             return getNameWithDelimitedIdentifier(name, quote);
         } else {
             return name;
