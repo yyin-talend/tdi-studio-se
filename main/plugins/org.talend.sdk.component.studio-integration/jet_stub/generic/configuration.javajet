@@ -238,7 +238,7 @@ globalMap.put("<%=cid %>_MAPPINGS_URL", mappings_url_<%=cid %>);
                 } else {
                     value = ElementParameterParser.getStringElementParameterValue(p);
                     
-                    if(cid.contains("JDBC") && p.getFieldType() == EParameterFieldType.MEMO_SQL && value.contains("+")) {
+                    if(cid.contains("JDBC") && p.getFieldType() == EParameterFieldType.MEMO_SQL && (value.contains("+") || org.talend.core.model.utils.TalendTextUtils.isEnclosed(value))) {
                         value = org.talend.core.model.utils.NodeUtil.replaceCRLFInMEMO_SQL(value);
                         value = value.endsWith(";") ? value.substring(0, value.length() -1) : value;
                     } else if(cid.contains("JDBC") && key.contains("tableName") && (value.contains("+") || value.contains(".") || "pid".equals(value.trim()))) {

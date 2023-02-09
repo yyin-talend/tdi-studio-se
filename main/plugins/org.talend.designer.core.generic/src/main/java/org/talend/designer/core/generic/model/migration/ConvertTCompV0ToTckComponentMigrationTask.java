@@ -166,12 +166,12 @@ public abstract class ConvertTCompV0ToTckComponentMigrationTask extends Abstract
                                     ComponentUtilities.setNodeValue(nodeType, "USE_EXISTING_CONNECTION", "false");
                                 }
                             } else {
-                                if(oldUseConnectionElement == null) {
-                                    ComponentUtilities.setNodeValue(nodeType, "USE_EXISTING_CONNECTION", "true");
-                                }
-                                
                                 final Object value = Property.class.cast(compProperties.getProperty(model.oldPath + ".componentInstanceId")).getStoredValue();
                                 ComponentUtilities.setNodeValue(nodeType, model.newPath, value == null ? null : String.valueOf(value));
+                                
+                                if(oldUseConnectionElement == null && value != null) {
+                                    ComponentUtilities.setNodeValue(nodeType, "USE_EXISTING_CONNECTION", "true");
+                                }
                             }
                         } else if("TABLE".equals(model.fieldType)) {
                             final java.util.List<ElementValueType> elementValues = new ArrayList<ElementValueType>();
@@ -297,6 +297,11 @@ public abstract class ConvertTCompV0ToTckComponentMigrationTask extends Abstract
                 
                 //remove tcompv0 PROPERTIES element at last
                 ParameterUtilTool.removeParameterType(nodeType, tcompV0PropertiesElement);
+                
+                ElementParameterType familyElementParameter = ParameterUtilTool.findParameterType(nodeType, "FAMILY");
+                if(familyElementParameter != null) {
+                    ParameterUtilTool.removeParameterType(nodeType, familyElementParameter);
+                }
                 
                 ElementParameterType versionElementParameter = ParameterUtilTool.findParameterType(nodeType, "VERSION");
                 if(versionElementParameter != null) {
