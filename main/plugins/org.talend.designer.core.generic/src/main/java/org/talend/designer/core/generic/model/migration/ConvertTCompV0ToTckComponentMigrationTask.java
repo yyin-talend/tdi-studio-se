@@ -231,7 +231,13 @@ public abstract class ConvertTCompV0ToTckComponentMigrationTask extends Abstract
                                     //need to encrypt with double quote
                                     value = StudioEncryption.getStudioEncryption(StudioEncryption.EncryptionKeyName.SYSTEM).encrypt(value);
                                 } else {//a var like context.pwd, no need to encrypt
-                                    
+                                    //tuj TDI44051_tJDBCInput_MySQL5_Dynamic_SpecialCharacter will return a wrong password with char 0x1b that is not valid for studio item store
+                                    //and also if TDI44051_tJDBCInput_MySQL5_Dynamic_SpecialCharacter not use existed connection and generate current password in generated code, 
+                                    //the generated code will be wrong too, so set value to null if that
+                                    String invalid = "" + (char)27;
+                                    if(value.contains(invalid)) {//indexOf(int) works for unicode? not sure, so not use
+                                        value = null;
+                                    }
                                 }
                             }
                             ElementParameterType ept = ParameterUtilTool.createParameterType(model.fieldType, model.newPath, value);
