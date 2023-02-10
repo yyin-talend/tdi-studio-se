@@ -239,9 +239,14 @@ public abstract class ConvertTCompV0ToTckComponentMigrationTask extends Abstract
                         } else {
                             Property property = Property.class.cast(compProperties.getProperty(model.oldPath));
                             Object value = property.getStoredValue();
-                            //enum's tostring to call name(), so ok
-                            ElementParameterType ept = ParameterUtilTool.createParameterType(model.fieldType, model.newPath, value == null ? null : String.valueOf(value));
-                            ParameterUtilTool.addParameterType(nodeType, ept);
+                            if(value != null && Enum.class.isInstance(value)) {
+	                            //enum's tostring to call name(), so ok
+	                            ElementParameterType ept = ParameterUtilTool.createParameterType(model.fieldType, model.newPath, correctValue(model.oldPath, String.valueOf(value)));
+	                            ParameterUtilTool.addParameterType(nodeType, ept);
+                            } else {
+	                            ElementParameterType ept = ParameterUtilTool.createParameterType(model.fieldType, model.newPath, value == null ? null : String.valueOf(value));
+	                            ParameterUtilTool.addParameterType(nodeType, ept);
+                            }
                         }
                     }
                 }
@@ -343,6 +348,10 @@ public abstract class ConvertTCompV0ToTckComponentMigrationTask extends Abstract
             }
         }
         return ExecutionResult.NOTHING_TO_DO;
+    }
+    
+    protected String correctValue(String path, String value) {
+        return value;
     }
 
     abstract protected String getMigrationFile();
