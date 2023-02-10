@@ -86,8 +86,8 @@ if (params != null && !params.isEmpty()) {
             
             String value = ElementParameterParser.getStringElementParameterValue(p);
             
-            if (value.contains("+")) {
-                value = org.talend.core.model.utils.NodeUtil.replaceCRLFInMEMO_SQL(value);
+            if (value.contains("+") || org.talend.core.model.utils.TalendTextUtils.isEnclosed(value)) {
+                value = org.talend.core.model.utils.NodeUtil.replaceCRLFInMEMO_SQL(value).trim();
                 value = value.endsWith(";") ? value.substring(0, value.length() -1) : value;
             } else {
                 value = value.replace("\n", " ").replace("\r", " ");

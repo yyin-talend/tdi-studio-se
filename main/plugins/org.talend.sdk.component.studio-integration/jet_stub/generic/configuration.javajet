@@ -239,7 +239,7 @@ globalMap.put("<%=cid %>_MAPPINGS_URL", mappings_url_<%=cid %>);
                     value = ElementParameterParser.getStringElementParameterValue(p);
                     
                     if(cid.contains("JDBC") && p.getFieldType() == EParameterFieldType.MEMO_SQL && (value.contains("+") || org.talend.core.model.utils.TalendTextUtils.isEnclosed(value))) {
-                        value = org.talend.core.model.utils.NodeUtil.replaceCRLFInMEMO_SQL(value);
+                        value = org.talend.core.model.utils.NodeUtil.replaceCRLFInMEMO_SQL(value).trim();
                         value = value.endsWith(";") ? value.substring(0, value.length() -1) : value;
                     } else if(cid.contains("JDBC") && key.contains("tableName") && (value.contains("+") || value.contains(".") || "pid".equals(value.trim()))) {
                         //as common, should no database table is named with "+" or ".", and "+" and "." should appear for java var or expression or database full table name with catalog/schema, so do the "if" check above

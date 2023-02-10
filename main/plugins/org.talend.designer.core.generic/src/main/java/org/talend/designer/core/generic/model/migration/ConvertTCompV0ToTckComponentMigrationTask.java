@@ -308,6 +308,11 @@ public abstract class ConvertTCompV0ToTckComponentMigrationTask extends Abstract
                     ParameterUtilTool.removeParameterType(nodeType, versionElementParameter);
                 }
                 
+                ElementParameterType componentElementParameter = ParameterUtilTool.findParameterType(nodeType, "COMPONENT_NAME");
+                if(componentElementParameter != null) {
+                    ParameterUtilTool.removeParameterType(nodeType, componentElementParameter);
+                }
+                
                 //no need to change the unique name as it use unify name like "tDBInput_1", and tcompv0's node's metadata(metadata name/connection name/schema) in item match the connection by the unique name,
                 //so no need to migrate the metadata/connection line from tcompv0 to tck, it should work.
             }
