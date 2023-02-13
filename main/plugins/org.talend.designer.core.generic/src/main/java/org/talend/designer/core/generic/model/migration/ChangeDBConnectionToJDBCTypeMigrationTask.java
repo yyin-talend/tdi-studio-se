@@ -79,9 +79,7 @@ public class ChangeDBConnectionToJDBCTypeMigrationTask extends AbstractJobMigrat
                 DatabaseConnection dbConnection = connection;
                 String dbType = dbConnection.getDatabaseType();
                 if (dbType != null && !dbType.equals(EDatabaseTypeName.PARACCEL.getDbType())
-                        && !dbType.equals(EDatabaseTypeName.INGRES.getDbType())
-                        && !dbType.equals(EDatabaseTypeName.INTERBASE.getDbType())
-                        && !dbType.equals(EDatabaseTypeName.VECTORWISE.getDbType())) {
+                        && !dbType.equals(EDatabaseTypeName.INTERBASE.getDbType())) {
                     return ExecutionResult.NOTHING_TO_DO;
                 }
                 String compProperties = connection.getCompProperties();
