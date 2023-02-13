@@ -216,6 +216,11 @@ public class ComponentModel extends AbstractBasicComponent implements IAdditiona
     public String getDisplayName() {
         return TaCoKitUtil.getDisplayName(index);
     }
+    
+    @Override
+    public boolean canParallelize() {
+        return "tJDBCNewOutput".equals(getDisplayName());
+    }
 
     /**
      * Returns long component name, aka title (e.g. "Salesforce Input"). It is i18n
