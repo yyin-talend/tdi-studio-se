@@ -460,9 +460,7 @@ public class MapperUI {
             outputTablesZoneView.setBackground(bgColorTransparent);
         } else {
             datasFlowViewSashForm.setBackgroundMode(SWT.INHERIT_FORCE); 
-            CoreUIPlugin.setCSSClass(sc1, MapperUI.class.getSimpleName());
-            CoreUIPlugin.setCSSClass(sc2, MapperUI.class.getSimpleName());
-            CoreUIPlugin.setCSSClass(sc3, MapperUI.class.getSimpleName());
+
         }
 
         uiManager.parseAllExpressionsForAllTables();
@@ -720,7 +718,7 @@ public class MapperUI {
         inputsZone = new InputsZone(datasFlowViewSashForm, getZoneStyle(), mapperManager);
         inputsZone.createHeaderZoneComponents();
 
-        sc1 = new ScrolledComposite(inputsZone, getBorder() | SWT.H_SCROLL | SWT.V_SCROLL);
+        sc1 = new MapperScrolledComposite(inputsZone, getBorder() | SWT.H_SCROLL | SWT.V_SCROLL);
         // this.dropTargetOperationListener.addControl(sc1);
 
         GridData sc1GridData = new GridData(GridData.FILL_BOTH);
@@ -814,7 +812,7 @@ public class MapperUI {
         SearchZone searchZone = new SearchZone(datasFlowViewSashForm, getZoneStyle(), mapperManager);
         searchZone.createSearchZone();
 
-        sc2 = new ScrolledComposite(searchZone, getBorder() | SWT.H_SCROLL | SWT.V_SCROLL);
+        sc2 = new MapperScrolledComposite(searchZone, getBorder() | SWT.H_SCROLL | SWT.V_SCROLL);
 
         GridData sc2GridData = new GridData(GridData.FILL_BOTH);
         sc2.setLayoutData(sc2GridData);
@@ -868,7 +866,8 @@ public class MapperUI {
         outputsZone.createHeaderZoneComponents();
         // this.dropTargetOperationListener.addControl(outputsZone);
 
-        sc3 = new ScrolledComposite(outputsZone, getBorder() | SWT.H_SCROLL | SWT.V_SCROLL);
+        sc3 = new MapperScrolledComposite(outputsZone, getBorder() | SWT.H_SCROLL | SWT.V_SCROLL);
+        
         // this.dropTargetOperationListener.addControl(sc3);
 
         GridData sc3GridData = new GridData(GridData.FILL_BOTH);
