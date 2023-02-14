@@ -102,7 +102,7 @@ Export-Package: org.talend.repository,
  org.talend.repository.utils
 Bundle-Activator: org.talend.repository.RepositoryPlugin
 Bundle-ClassPath: .,
- lib/velocity-1.7.jar
+ lib/velocity-engine-core-2.3.jar
 Import-Package: com.fasterxml.jackson.core,
  com.fasterxml.jackson.databind,
  org.slf4j,
