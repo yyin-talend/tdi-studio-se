@@ -51,7 +51,7 @@ public class TemplateProcessor {
                 engine.setProperty(RuntimeConstants.EVENTHANDLER_REFERENCEINSERTION, EscapeXmlReference.class.getName());
             }
             if (SharedStudioUtils.isSharedStudioMode()) {
-                engine.setProperty(RuntimeConstants.RUNTIME_LOG,
+                engine.setProperty(RuntimeConstants.RUNTIME_LOG_INSTANCE,
                         Platform.getConfigurationLocation().getURL().getFile() + "/velocity.log");
             }
             engine.init();
