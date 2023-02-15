@@ -148,7 +148,7 @@ public class NameAndLabelsReferenceController extends AbstractElementPropertySec
         Control cLayout = dField.getLayoutControl();
         Text moduleText = (Text) dField.getControl();
         moduleText.setData(PARAMETER_NAME, param.getName());
-        moduleText.setEditable(false);
+        moduleText.setEditable(!param.isRepositoryValueUsed());
         cLayout.setBackground(subComposite.getBackground());
 
         addDragAndDropTarget(moduleText);
