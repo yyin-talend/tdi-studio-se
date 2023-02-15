@@ -143,6 +143,7 @@ import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.model.utils.NodeUtil;
 import org.talend.core.runtime.services.IExpressionBuilderDialogService;
+import org.talend.core.ui.CoreUIPlugin;
 import org.talend.core.ui.metadata.editor.MetadataTableEditorView;
 import org.talend.core.ui.proposal.TalendProposalProvider;
 import org.talend.designer.abstractmap.model.table.IDataMapTable;
@@ -457,7 +458,7 @@ public abstract class DataMapTableView extends Composite implements IDataMapTabl
             setBackground(new Color(display, systemColor.getRed(), systemColor.getGreen(), systemColor.getBlue()));
             setBackgroundMode(SWT.INHERIT_NONE);
         } else {
-            Color listBackground = display.getSystemColor(SWT.COLOR_WIDGET_LIGHT_SHADOW);
+            Color listBackground = new Color(0,0,0);
             this.setBackground(listBackground);
         }
 
@@ -479,7 +480,8 @@ public abstract class DataMapTableView extends Composite implements IDataMapTabl
         headerGridData.heightHint = getHeaderHeight();
         headerComposite.setLayoutData(headerGridData);
         GridLayout headerLayout = new GridLayout();
-
+        CoreUIPlugin.setCSSClass(headerComposite, "MapperTableHeader");
+        
         int margin = 0;
         headerLayout.marginLeft = 3;
         headerLayout.marginRight = margin;
@@ -510,11 +512,10 @@ public abstract class DataMapTableView extends Composite implements IDataMapTabl
         dataNameLabel.minimumWidth = nameLabel.getText().length() * 8;
 
         nameLabel.setLayoutData(dataNameLabel);
-        // nameLabel.setBackground(nameLabel.getDisplay().getSystemColor(SWT.COLOR_RED));
-
+        CoreUIPlugin.setCSSClass(nameLabel, "MapperTableHeader");
+        
         int rightStyle = toolbarNeedToHaveRightStyle() ? SWT.RIGHT : SWT.NONE;
         toolBarActions = new ToolBar(headerComposite, SWT.FLAT | rightStyle | SWT.NONE);
-        // toolBarActions.setBackground(nameLabel.getDisplay().getSystemColor(SWT.COLOR_BLUE));
 
         if (addToolItems()) {
             addToolItemSeparator();
@@ -586,9 +587,9 @@ public abstract class DataMapTableView extends Composite implements IDataMapTabl
             new DragNDrop(mapperManager, tableForEntries, true, true);
         }
 
-        Composite footerComposite = new Composite(this, SWT.NONE);
-        GridData footerGridData = new GridData(10, 2);
-        footerComposite.setLayoutData(footerGridData);
+//        Composite footerComposite = new Composite(this, SWT.NONE);
+//        GridData footerGridData = new GridData(10, 2);
+//        footerComposite.setLayoutData(footerGridData);
 
         if (WindowSystem.isGTK()) {
             sizeToolBar = toolBarActions.computeSize(SWT.DEFAULT, SWT.DEFAULT);
@@ -899,7 +900,7 @@ public abstract class DataMapTableView extends Composite implements IDataMapTabl
         tableForEntries = tableViewerCreatorForColumns.getTable();
         GridData tableEntriesGridData = new GridData(SWT.FILL, SWT.FILL, true, true);
         tableEntriesGridData.grabExcessVerticalSpace = true;
-        tableEntriesGridData.horizontalSpan = 3; // for 10690
+        tableEntriesGridData.horizontalSpan = 0; // for 10690
         tableEntriesGridData.minimumHeight = tableForEntries.getHeaderHeight() + tableForEntries.getItemHeight();
         tableForEntries.setLayoutData(tableEntriesGridData);
         tableViewerCreatorForColumns.setCellModifier(new TableCellModifier(tableViewerCreatorForColumns));
