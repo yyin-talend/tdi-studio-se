@@ -20,13 +20,53 @@
 	boolean isVersion_V2_0 = "true".equals(ElementParameterParser.getValue(node, "__Version_V2_0__"));
 	boolean isVersion_V3_2 = "true".equals(ElementParameterParser.getValue(node, "__Version_V3_2__"));
 	boolean isVersion_V4_0 = "true".equals(ElementParameterParser.getValue(node, "__Version_V4.0__"));
+	
+	String code = ElementParameterParser.getValue(node, "__CODE_MAIN__");
+	
+	List<IMetadataTable> metadatas = node.getMetadataList();
+	if ((metadatas!=null)&&(metadatas.size()>0)) {
+		IMetadataTable metadata = metadatas.get(0);
+		if (metadata!=null) {
+	
+			// we give a default value to prevComponentName so that no error
+			// occur when the user tries to generated Java code while no input
+			// component was linked to our tJavaFlex.
+			String inputRowName = "input_row";
+			String outputRowName = "output_row";
+
+			List< ? extends IConnection> inConns = node.getIncomingConnections();
+			if (inConns != null && !inConns.isEmpty()) {
+				IConnection inConn = inConns.get(0);
+				inputRowName = inConn.getName();
+			}
+			
+			List< ? extends IConnection> outConns = node.getOutgoingSortedConnections();
+			if (outConns != null && !outConns.isEmpty()) {
+				IConnection outConn = outConns.get(0);
+				if(outConn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)){
+					outputRowName = outConn.getName();
+				}
+			}
+
+			// In case the user would make some tricky Java things, he can use
+			// the arrays as a whole.
+			code = code.replaceAll(
+				"(?<![\\w$|.])input_row(?![\\w$])",
+				inputRowName
+			);
+
+			code = code.replaceAll(
+				"(?<![\\w$|.])output_row(?![\\w$])",
+				outputRowName
+			);
+		}
+	}
 %>
 
 <%
 //after TOS4.0, copy action BEFORE code
 
 if(autoPropagate&&isVersion_V4_0){//1
-	List<IMetadataTable> metadatas = node.getMetadataList();
 	if ((metadatas!=null)&&(metadatas.size()>0)) {//A
     	IMetadataTable metadata = metadatas.get(0);
     	if (metadata!=null) {//2
@@ -63,13 +103,12 @@ if(autoPropagate&&isVersion_V4_0){//1
 } //1
 %>
 
-<%=ElementParameterParser.getValue(node, "__CODE_MAIN__") %>
+<%=code %>
 
 <%
 //between TOS3.2 and TOS4.0, copy action AFTER code
  
 if(autoPropagate&&isVersion_V3_2){//1
-	List<IMetadataTable> metadatas = node.getMetadataList();
 	if ((metadatas!=null)&&(metadatas.size()>0)) {//A
     	IMetadataTable metadata = metadatas.get(0);
     	if (metadata!=null) {//2
