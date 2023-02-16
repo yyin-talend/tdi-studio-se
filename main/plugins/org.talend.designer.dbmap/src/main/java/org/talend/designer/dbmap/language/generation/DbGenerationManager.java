@@ -1364,6 +1364,7 @@ public abstract class DbGenerationManager {
     private boolean buildCondition(DbMapComponent component, StringBuilder sbWhere, ExternalDbMapTable table,
             boolean isFirstClause, ExternalDbMapEntry dbMapEntry, boolean writeCr, boolean isSqlQuery) {
         String expression = initExpression(component, dbMapEntry);
+        expression = addQuoteForSpecialChar(expression, component);
         IDbOperator dbOperator = getOperatorsManager().getOperatorFromValue(dbMapEntry.getOperator());
         boolean operatorIsSet = dbOperator != null;
         boolean expressionIsSet = expression != null && expression.trim().length() > 0;

@@ -12,13 +12,18 @@
 // ============================================================================
 package org.talend.designer.dbmap.language.postgres;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
 import org.talend.core.model.metadata.IMetadataColumn;
 import org.talend.core.model.metadata.IMetadataTable;
+import org.talend.core.model.metadata.MetadataToolHelper;
 import org.talend.core.model.process.IConnection;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.INode;
@@ -154,11 +159,6 @@ public class PostgresGenerationManager extends DbGenerationManager {
             return expression.replaceAll("\\b" + subExpression + "\\b", getHandledField(subExpression, true));
         }
 
-    }
-
-    @Override
-    protected String getHandledField(DbMapComponent component, String field) {
-        return getHandledField(field, false);
     }
 
     private String getHandledField(String field, boolean inRegx) {
@@ -357,9 +357,67 @@ public class PostgresGenerationManager extends DbGenerationManager {
     }
 
     @Override
-    protected String getColumnName(IConnection conn, String name, String quote) {
-        return name;
+    protected String addQuoteForSpecialChar(String expression, DbMapComponent component) {
+        if (expression == null) {
+            return expression;
+        }
+        List<String> specialList = new ArrayList<String>();
+        Map<String, List<String>> map = new HashMap<String, List<String>>();
+        List<IConnection> inputConnections = (List<IConnection>) component.getIncomingConnections();
+        if (inputConnections == null) {
+            return expression;
+        }
+        for (IConnection iconn : inputConnections) {
+            IMetadataTable metadataTable = iconn.getMetadataTable();
+            if (metadataTable != null) {
+                List<IMetadataColumn> lColumn = metadataTable.getListColumns();
+                for (IMetadataColumn co : lColumn) {
+                    String columnLabel = co.getOriginalDbColumnName();
+                    if (columnLabel == null) {
+                        columnLabel = co.getLabel();
+                    }
+                    String exp = MetadataToolHelper.validateValueNoLengthLimit(columnLabel);
+                    if (!exp.equals(columnLabel)) {
+                        specialList.add(columnLabel);
+                    }
+                }
+            }
+        }
+        for (String specialColumn : specialList) {
+            if (expression.contains(specialColumn)) {
+                if (map.get(expression) == null) {
+                    List<String> list = new ArrayList<String>();
+                    list.add(specialColumn);
+                    map.put(expression, list);
+                } else {
+                    List<String> list = map.get(expression);
+                    list.add(specialColumn);
+                }
+            }
+        }
+        if (map.size() > 0) {
+            List<String> list = map.get(expression);
+            Collections.sort(list);
+            String specialColumn = list.get(list.size() - 1);
+            if (expression.contains(specialColumn)) {
+                int begin = expression.indexOf(specialColumn);
+                int length = specialColumn.length();
+                int allLength = expression.length();
+                if (specialColumn.trim().startsWith("\\\"") && specialColumn.trim().endsWith("\\\"")) {
+                    return expression;
+                }
+                String quote = getQuote(component);
+                if ("\"".equals(quote)) {
+                    quote = "\\\"";
+                }
+                expression = expression.substring(0, begin) + quote + expression.substring(begin, begin + length) + quote
+                        + expression.substring(begin + length, allLength);
+                return expression;
+            }
+        }
+        return expression;
     }
+
     private String replaceContextValue(String expression, String context) {
         if (inputSchemaContextSet.contains(context)) {
             expression = expression.replaceAll("\\b" + context + "\\b", "\\\\\"\"+" + context + "+\"\\\\\"");
