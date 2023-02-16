@@ -243,12 +243,6 @@
            <group
                  id="PIG-BASE-LIB-MAPR50X_LASTEST">
            </group>
-           <library
-                 id="hive-exec-mapr-5.0.X-lastest">
-           </library>
-           <library
-                 id="hive-metastore-mapr-5.0.X-lastest">
-           </library>
         </libraryNeededGroup>
         <libraryNeededGroup
               description="The lastest Spark libraries of MAPR50X"
