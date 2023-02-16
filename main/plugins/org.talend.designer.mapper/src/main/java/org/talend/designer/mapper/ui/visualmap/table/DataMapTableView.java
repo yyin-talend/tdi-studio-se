@@ -387,9 +387,9 @@ public abstract class DataMapTableView extends Composite implements IDataMapTabl
 
     protected int changedOptions = 0;
 
-    private Color color = null;
-
-    protected Color previewColor = null;
+//    private Color color = null;
+//
+//    protected Color previewColor = null;
 
     private boolean needInitProposals = false;
 
@@ -426,8 +426,8 @@ public abstract class DataMapTableView extends Composite implements IDataMapTabl
         this.talendTypeFilter = NodeUtil.createMetadataTalendTypeFilter(mapperManager.getAbstractMapComponent());
         expressionColorProvider = new ExpressionColorProvider();
 
-        color = new Color(Display.getDefault(), 238, 238, 0);
-        previewColor = new Color(Display.getDefault(), 235, 0, 219);
+//        color = new Color(Display.getDefault(), 238, 238, 0);
+//        previewColor = new Color(Display.getDefault(), 235, 0, 219);
 
         createComponents();
         addListeners();
@@ -458,7 +458,7 @@ public abstract class DataMapTableView extends Composite implements IDataMapTabl
             setBackground(new Color(display, systemColor.getRed(), systemColor.getGreen(), systemColor.getBlue()));
             setBackgroundMode(SWT.INHERIT_NONE);
         } else {
-            Color listBackground = new Color(0,0,0);
+            Color listBackground = display.getSystemColor(SWT.COLOR_WIDGET_LIGHT_SHADOW);
             this.setBackground(listBackground);
         }
 
@@ -623,20 +623,20 @@ public abstract class DataMapTableView extends Composite implements IDataMapTabl
                 // do nothing
             }
         });
-        column.setColorProvider(new IColumnColorProvider<GlobalMapEntry>() {
-
-            public Color getBackgroundColor(GlobalMapEntry bean) {
-                if (needColumnBgColor(bean)) {
-                    return color;
-                }
-                return null;
-            }
-
-            public Color getForegroundColor(GlobalMapEntry bean) {
-                // TODO Auto-generated method stub
-                return null;
-            }
-        });
+//        column.setColorProvider(new IColumnColorProvider<GlobalMapEntry>() {
+//
+//            public Color getBackgroundColor(GlobalMapEntry bean) {
+//                if (needColumnBgColor(bean)) {
+//                    return color;
+//                }
+//                return null;
+//            }
+//
+//            public Color getForegroundColor(GlobalMapEntry bean) {
+//                // TODO Auto-generated method stub
+//                return null;
+//            }
+//        });
 
         final TableViewerCreatorColumn valueColumn = new TableViewerCreatorColumn(tableViewerCreator);
         valueColumn.setTitle("Value");
@@ -688,20 +688,20 @@ public abstract class DataMapTableView extends Composite implements IDataMapTabl
         }
         valueColumn.setBeanPropertyAccessors(getMapSettingValueAccess(cellEditor));
         valueColumn.setModifiable(true);
-        valueColumn.setColorProvider(new IColumnColorProvider<GlobalMapEntry>() {
-
-            public Color getBackgroundColor(GlobalMapEntry bean) {
-                if (needColumnBgColor(bean)) {
-                    return color;
-                }
-                return null;
-            }
-
-            public Color getForegroundColor(GlobalMapEntry bean) {
-                // TODO Auto-generated method stub
-                return null;
-            }
-        });
+//        valueColumn.setColorProvider(new IColumnColorProvider<GlobalMapEntry>() {
+//
+//            public Color getBackgroundColor(GlobalMapEntry bean) {
+//                if (needColumnBgColor(bean)) {
+//                    return color;
+//                }
+//                return null;
+//            }
+//
+//            public Color getForegroundColor(GlobalMapEntry bean) {
+//                // TODO Auto-generated method stub
+//                return null;
+//            }
+//        });
 
     }
 
@@ -900,7 +900,7 @@ public abstract class DataMapTableView extends Composite implements IDataMapTabl
         tableForEntries = tableViewerCreatorForColumns.getTable();
         GridData tableEntriesGridData = new GridData(SWT.FILL, SWT.FILL, true, true);
         tableEntriesGridData.grabExcessVerticalSpace = true;
-        tableEntriesGridData.horizontalSpan = 0; // for 10690
+        tableEntriesGridData.horizontalSpan = 3; // for 10690
         tableEntriesGridData.minimumHeight = tableForEntries.getHeaderHeight() + tableForEntries.getItemHeight();
         tableForEntries.setLayoutData(tableEntriesGridData);
         tableViewerCreatorForColumns.setCellModifier(new TableCellModifier(tableViewerCreatorForColumns));
@@ -1240,14 +1240,14 @@ public abstract class DataMapTableView extends Composite implements IDataMapTabl
 
             public void widgetDisposed(DisposeEvent e) {
                 removeListenerForTrace();
-                if (color != null) {
-                    color.dispose();
-                    color = null;
-                }
-                if (previewColor != null) {
-                    previewColor.dispose();
-                    previewColor = null;
-                }
+//                if (color != null) {
+//                    color.dispose();
+//                    color = null;
+//                }
+//                if (previewColor != null) {
+//                    previewColor.dispose();
+//                    previewColor = null;
+//                }
             }
         });
 
@@ -2598,8 +2598,9 @@ public abstract class DataMapTableView extends Composite implements IDataMapTabl
             new DragNDrop(mapperManager, expressionFilterText, false, true);
 
             expressionFilterText.setVisible(table.isActivateExpressionFilter());
+            expressionFilterText.setBackground(Display.getCurrent().getSystemColor(SWT.COLOR_DARK_RED));
             gridData.exclude = !table.isActivateExpressionFilter();
-
+            CoreUIPlugin.setCSSClass(expressionFilterText, "MapperTableHeader");
             expressionFilterText.addFocusListener(new FocusListener() {
 
                 public void focusGained(FocusEvent e) {

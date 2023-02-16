@@ -221,9 +221,7 @@ public class StyledTextHandler {
         // System.out.println("\n"+countCR);
         int lineCount = this.styledText.getLineCount();
         // System.out.println(lineCount);
-        Color whiteColor = ColorInfo.COLOR_RED(); //TODO --KK
-        this.styledText.setLineBackground(0, lineCount, whiteColor);
-        this.styledText.redraw();
+        this.styledText.setLineBackground(0, lineCount, null);
         this.styledText.setLineBackground(countCR, 1, ColorInfo.COLOR_HIGHLIGHTED_TEXT_ROW());
         return countCR;
     }
