@@ -30,7 +30,6 @@ public enum ColorInfo {
     COLOR_ENTRY_ERROR(100, 200, 255), // ?
     COLOR_ENTRY_WARNING(0, 200, 60), // ?
     COLOR_ENTRY_NORMAL(170, 170, 170), // ?
-    COLOR_RED(255, 0, 0), // red
     COLOR_ENTRY_NONE(255, 255, 255), // white
     
     COLOR_BACKGROUND_LINKS_ZONE(210, 210, 196), // gray
@@ -92,10 +91,6 @@ public enum ColorInfo {
     
     public static Color COLOR_ENTRY_NORMAL() {
         return ITalendThemeService.getColor("COLOR_ENTRY_NORMAL").orElse(COLOR_ENTRY_NORMAL.getColor());
-    }
-    
-    public static Color COLOR_RED() {
-        return ITalendThemeService.getColor("COLOR_RED").orElse(COLOR_RED.getColor());
     }
     
     public static Color COLOR_ENTRY_NONE() {
