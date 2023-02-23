@@ -16,9 +16,18 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
 import java.util.List;
 
+import org.apache.commons.io.IOUtils;
+import org.eclipse.core.runtime.FileLocator;
+import org.eclipse.core.runtime.Path;
+import org.eclipse.core.runtime.Platform;
+import org.junit.Assert;
 import org.junit.Test;
+import org.osgi.framework.Bundle;
 
 /**
  * DOC jding  class global comment. Detailled comment
@@ -99,4 +108,23 @@ public class JSONUtilTest {
         assertTrue(list.contains(47));
     }
 
+    @Test
+    public void testIsXPathOfJson() {
+        String[] jsonfiles = {"json1.json", "json2.json"};
+        String[][] xpaths = {{"/rcp.authorized.plug-ins","/root/rcp.authorized.plug-ins"},{"/Class/student","/root/object/Class/student"}};
+        
+        Bundle jsontestBundle = Platform.getBundle("org.talend.repository.json.test");
+        
+        for(int i = 0; i<jsonfiles.length; i++) {
+            URL jsonurl = FileLocator.find(jsontestBundle, new Path("/resources/" + jsonfiles[i]), null);
+            
+            try(InputStream input = jsonurl.openStream()) {
+                String jsonStr = IOUtils.toString(input, "UTF-8");
+                assertTrue(JSONUtil.isXPathOfJson(jsonStr, xpaths[i][0], '/'));
+                assertFalse(JSONUtil.isXPathOfJson(jsonStr, xpaths[i][1], '/'));
+            } catch (IOException e) {
+                Assert.fail(e.getMessage());
+            }
+        }
+    }
 }

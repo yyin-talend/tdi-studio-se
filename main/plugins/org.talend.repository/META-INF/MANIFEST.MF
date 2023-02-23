@@ -9,6 +9,7 @@ Eclipse-LazyStart: true
 Bundle-Vendor: .Talend SA.
 Require-Bundle: javax.xml.rpc,
  org.apache.commons.collections,
+ org.apache.commons.io,
  org.apache.commons.logging,
  org.apache.commons.lang,
  org.talend.model,
@@ -101,7 +102,7 @@ Export-Package: org.talend.repository,
  org.talend.repository.utils
 Bundle-Activator: org.talend.repository.RepositoryPlugin
 Bundle-ClassPath: .,
- lib/velocity-1.7.jar
+ lib/velocity-engine-core-2.3.jar
 Import-Package: com.fasterxml.jackson.core,
  com.fasterxml.jackson.databind,
  org.slf4j,

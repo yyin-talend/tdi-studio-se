@@ -2055,6 +2055,15 @@ public class TalendEditorDropTargetListener extends TemplateTransferDropTargetLi
                             rcSetting.getDefaultComponentName().replaceFirst("JDBC", componentKey));
                 }
             }
+            //
+            String parentTypeLabel = null;
+            ERepositoryObjectType parentType = type.findParentType(type);
+            if (parentType != null) {
+                parentTypeLabel = parentType.getLabel();
+            }
+            if ("NetSuite".equalsIgnoreCase(type.getLabel()) || "NetSuite".equalsIgnoreCase(parentTypeLabel)) {//$NON-NLS-1$ //$NON-NLS-2$
+                typeName = "NetSuite".toLowerCase(); //$NON-NLS-1$
+            }
         }
 
         RepositoryComponentSetting settingCopy = new RepositoryComponentSetting();

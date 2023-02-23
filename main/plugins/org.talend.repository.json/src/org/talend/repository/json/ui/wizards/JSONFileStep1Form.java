@@ -73,6 +73,7 @@ import org.talend.core.model.general.ModuleNeeded.ELibraryInstallStatus;
 import org.talend.core.model.general.Project;
 import org.talend.core.model.metadata.EMetadataEncoding;
 import org.talend.core.model.properties.ConnectionItem;
+import org.talend.core.model.utils.ContextParameterUtils;
 import org.talend.core.utils.TalendQuoteUtils;
 import org.talend.datatools.xml.utils.ATreeNode;
 import org.talend.designer.core.model.utils.emf.talendfile.ContextType;
@@ -269,6 +270,16 @@ public class JSONFileStep1Form extends AbstractJSONFileStepForm {
         }
         getConnection().setReadbyMode(readbyMode);
         treePopulator.setLimit(limit);
+        String jsonFilePath = fileFieldJSON.getText();
+        try {
+            if (isContextMode()) {
+                ContextType contextType = ConnectionContextHelper.getContextTypeForContextMode(getConnection(), getConnection().getContextName());
+                jsonFilePath = TalendQuoteUtils.removeQuotes(ContextParameterUtils.getOriginalValue(contextType, jsonFilePath));
+            }
+        } catch (Exception e) {
+            ExceptionHandler.process(e);
+        }
+        treePopulator.setOriginfilePath(jsonFilePath);
         this.treePopulator.configureDefaultTreeViewer();
         if (filePath != null && !filePath.isEmpty()) {
             this.treePopulator.setEncoding(getConnectionEncoding());

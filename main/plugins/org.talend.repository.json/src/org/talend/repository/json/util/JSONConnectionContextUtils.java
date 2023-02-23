@@ -12,9 +12,14 @@
 // ============================================================================
 package org.talend.repository.json.util;
 
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.util.List;
 
+import org.apache.commons.io.IOUtils;
+import org.talend.commons.exception.ExceptionHandler;
 import org.talend.core.model.properties.ConnectionItem;
+import org.talend.core.model.utils.ContextParameterUtils;
 import org.talend.core.utils.TalendQuoteUtils;
 import org.talend.designer.core.model.utils.emf.talendfile.ContextType;
 import org.talend.metadata.managment.ui.utils.ConnectionContextHelper;
@@ -87,5 +92,42 @@ public final class JSONConnectionContextUtils {
         }
 
         return cloneConn;
+    }
+    
+
+    public static String getOriginalJSONContent(JSONFileConnection connection) {
+        try {
+            return IOUtils.toString(new FileInputStream(getJsonPath(connection)), getConnectionEncoding(connection));
+        } catch (IOException e) {
+            ExceptionHandler.process(e);
+        }
+
+        return null;
+    }
+
+    public static String getJsonPath(JSONFileConnection connection) {
+        String jsonFilePath = connection.getJSONFilePath();
+        try {
+            if (connection.isContextMode()) {
+                ContextType contextType = ConnectionContextHelper.getContextTypeForContextMode(connection, connection.getContextName());
+                jsonFilePath = TalendQuoteUtils.removeQuotes(ContextParameterUtils.getOriginalValue(contextType, jsonFilePath));
+            }
+        } catch (Exception e) {
+            ExceptionHandler.process(e);
+        }
+        return jsonFilePath;
+    }
+
+    public static String getConnectionEncoding(JSONFileConnection connection) {
+        String encoding = connection.getEncoding();
+        try {
+            if (connection.isContextMode()) {
+                ContextType contextType = ConnectionContextHelper.getContextTypeForContextMode(connection, connection.getContextName());
+                encoding = TalendQuoteUtils.removeQuotes(ContextParameterUtils.getOriginalValue(contextType, encoding));
+            }
+        } catch (Exception e) {
+            ExceptionHandler.process(e);
+        }
+        return encoding;
     }
 }

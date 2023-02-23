@@ -3811,6 +3811,22 @@
               name="tFtileInputJson convert USE_NASHORN to JDK_VERSION"
               version="8.0.1">
         </projecttask>
+        <projecttask
+              beforeLogon="true"
+              breaks="8.0.1"
+              class="org.talend.repository.model.migration.MSCRMSetDefaultVersionTDI48883MigrationTask"
+              id="org.talend.repository.model.migration.MSCRMSetDefaultVersionTDI48883MigrationTask"
+              name="Set default version in tMicrosoftCRMXxx"
+              version="8.0.1">
+        </projecttask>
+        <projecttask
+               beforeLogon="true"
+               breaks="8.0.1"
+               class="org.talend.repository.model.migration.NetSuiteLegacyRenameMigrationTask"
+               id="org.talend.repository.model.migration.NetSuiteLegacyRenameMigrationTask"
+               name="Rename Netsuite components to NetSuiteLegacy"
+               version="8.0.1">
+        </projecttask>
    </extension>
 
    <extension

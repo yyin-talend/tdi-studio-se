@@ -45,6 +45,8 @@ import org.talend.repository.json.i18n.Messages;
 import org.talend.repository.json.node.JSONRepositoryNodeType;
 import org.talend.repository.json.util.ConvertJSONString;
 import org.talend.repository.json.util.EJSONRepositoryToComponent;
+import org.talend.repository.json.util.JSONConnectionContextUtils;
+import org.talend.repository.json.util.JSONUtil;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.json.JSONFileConnection;
 import org.talend.repository.model.json.JSONFileConnectionItem;
@@ -175,22 +177,26 @@ public class JSONDragAndDropHandler extends AbstractDragAndDropServiceHandler {
     private String getJsonXpath(JSONXPathLoopDescriptor xmlDesc) {
         String flag = xmlDesc.getFlag();
         String xpath = xmlDesc.getAbsoluteXPathQuery();
-        if (flag != null && flag.equals(ConvertJSONString.ROOT)) {
-            if (xpath.startsWith("/root")) {
-                xpath = xpath.replaceFirst("/root", "");
-            }
-            if (xpath.length() == 0) {
-                xpath = "/";
-            }
-
-        } else if (flag != null && flag.equals(ConvertJSONString.ROOT_OBJECT)) {
-            if (xpath.startsWith("/root/object")) {
-                xpath = xpath.replaceFirst("/root/object", "");
-            } else if (xpath.startsWith("/root")) {
-                xpath = xpath.replaceFirst("/root", "");
-            }
-            if (xpath.length() == 0) {
-                xpath = "/";
+        
+        String originalJSONContent = JSONConnectionContextUtils.getOriginalJSONContent(xmlDesc.getConnection());
+        if(!JSONUtil.isXPathOfJson(originalJSONContent, xpath, '/')) {//
+            if (flag != null && flag.equals(ConvertJSONString.ROOT)) {
+                if (xpath.startsWith("/root")) {
+                    xpath = xpath.replaceFirst("/root", "");
+                }
+                if (xpath.length() == 0) {
+                    xpath = "/";
+                }
+                
+            } else if (flag != null && flag.equals(ConvertJSONString.ROOT_OBJECT)) {
+                if (xpath.startsWith("/root/object")) {
+                    xpath = xpath.replaceFirst("/root/object", "");
+                } else if (xpath.startsWith("/root")) {
+                    xpath = xpath.replaceFirst("/root", "");
+                }
+                if (xpath.length() == 0) {
+                    xpath = "/";
+                }
             }
         }
         return xpath;

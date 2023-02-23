@@ -58,6 +58,7 @@ import org.talend.core.model.process.INode;
 import org.talend.core.model.process.INodeConnector;
 import org.talend.core.model.process.INodeReturn;
 import org.talend.core.model.process.IProcess;
+import org.talend.core.model.properties.JobletProcessItem;
 import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.model.temp.ECodePart;
 import org.talend.core.runtime.IAdditionalInfo;
@@ -322,6 +323,10 @@ public class ComponentModel extends AbstractBasicComponent implements IAdditiona
             if (processItem != null) {
                 manager.checkNodeMigration(processItem, getName(), process.getComponentsType());
             }
+            JobletProcessItem jpi = ItemCacheManager.getJobletProcessItem(process.getId());
+            if (jpi != null) {
+                manager.checkNodeItemMigration(jpi, getName(), process.getComponentsType());
+            }
         }
         ElementParameterCreator creator = new ElementParameterCreator(this, detail, node, reportPath, isCatcherAvailable);
         List<IElementParameter> parameters = (List<IElementParameter>) creator.createParameters();
@@ -356,28 +361,48 @@ public class ComponentModel extends AbstractBasicComponent implements IAdditiona
             returnVariables.add(numberLinesMessage);
         }
 
-        if (detail.getMetadata().containsKey(TaCoKitConst.META_KEY_AFTER_VARIABLE)) {
-            String afterVariableMetaValue = detail.getMetadata().getOrDefault(TaCoKitConst.META_KEY_AFTER_VARIABLE, "");
-            for (String string : afterVariableMetaValue.split(TaCoKitConst.AFTER_VARIABLE_LINE_DELIMITER)) {
-                String[] split = string.split(TaCoKitConst.AFTER_VARIABLE_VALUE_DELIMITER);
+        createReturns(returnVariables, true);
+        createReturns(returnVariables, false);
+
+        return returnVariables;
+    }
+
+    private void createReturns(List<NodeReturn> returnVariables, boolean isAfterVar) {
+        String varKey = TaCoKitConst.META_KEY_RETURN_VARIABLE;
+        if(isAfterVar) {
+            varKey = TaCoKitConst.META_KEY_AFTER_VARIABLE;
+        }
+        if (detail.getMetadata().containsKey(varKey)) {
+            String returnVariableMetaValue = detail.getMetadata().getOrDefault(varKey, "");
+            for (String string : returnVariableMetaValue.split(TaCoKitConst.RETURN_VARIABLE_LINE_DELIMITER)) {
+                String[] split = string.split(TaCoKitConst.RETURN_VARIABLE_VALUE_DELIMITER);
+                
                 String key = split[0];
                 String type = split[1];
+                
+                String availability = AFTER;
+                
+                String description = null;
+                
                 // if description is empty we use as description the key value
-                String description = split.length < 3 || split[2].isEmpty() ? split[0] : split[2];
-
+                if(isAfterVar) {
+                    description = split.length < 3 || split[2].isEmpty() ? split[0] : split[2];
+                } else {
+                    availability = split[2];
+                    description = (split.length < 4 || split[3].isEmpty()) ? split[0] : split[3];
+                }
+                
                 NodeReturn returnNode = new NodeReturn();
                 String javaType = JavaTypesManager.getJavaTypeFromCanonicalName(type).getId();
                 returnNode.setType(javaType);
                 returnNode.setDisplayName(description);
                 returnNode.setName(key);
-                returnNode.setAvailability(AFTER);
+                returnNode.setAvailability(availability);
                 returnVariables.add(returnNode);
             }
         }
-
-        return returnVariables;
-    }
-
+	}
+    
     /**
      * Creates component connectors. It creates all possible connector even if some
      * of them are not applicable for component. In such cases not applicable
@@ -434,27 +459,32 @@ public class ComponentModel extends AbstractBasicComponent implements IAdditiona
                     modulesNeeded.addAll(dependencies
                             .getCommon()
                             .stream()
-                            .map(s -> new ModuleNeeded(getName(), "", true, s))
+                            .map(s -> new ModuleNeeded(getDisplayName(), "", true, s))
                             .collect(toList()));
-                    modulesNeeded.add(new ModuleNeeded(getName(), "", true, "mvn:org.talend.sdk.component/component-runtime-di/" + GAV.INSTANCE.getComponentRuntimeVersion()));
-                    modulesNeeded.add(new ModuleNeeded(getName(), "", true, "mvn:org.talend.sdk.component/component-runtime-design-extension/" + GAV.INSTANCE.getComponentRuntimeVersion()));
-                    modulesNeeded.add(new ModuleNeeded(getName(), "", true, "mvn:org.slf4j/slf4j-api/" + GAV.INSTANCE.getSlf4jVersion()));
+                    modulesNeeded.add(new ModuleNeeded(getDisplayName(), "", true,
+                            "mvn:org.talend.sdk.component/component-runtime-di/" + GAV.INSTANCE.getComponentRuntimeVersion()));
+                    modulesNeeded.add(new ModuleNeeded(getDisplayName(), "", true,
+                            "mvn:org.talend.sdk.component/component-runtime-design-extension/"
+                                    + GAV.INSTANCE.getComponentRuntimeVersion()));
+                    modulesNeeded.add(new ModuleNeeded(getDisplayName(), "", true,
+                            "mvn:org.slf4j/slf4j-api/" + GAV.INSTANCE.getSlf4jVersion()));
 
                     if (!hasTcomp0Component(iNode)) {
                         if (!PluginChecker.isTIS()) {
-                            modulesNeeded.add(new ModuleNeeded(getName(), "", true, "mvn:" + GAV.INSTANCE.getGroupId() + "/slf4j-standard/" + GAV.INSTANCE.getComponentRuntimeVersion()));
+                            modulesNeeded.add(new ModuleNeeded(getDisplayName(), "", true, "mvn:" + GAV.INSTANCE.getGroupId()
+                                    + "/slf4j-standard/" + GAV.INSTANCE.getComponentRuntimeVersion()));
                         } else {
-                            modulesNeeded.add(new ModuleNeeded(getName(), "", true,
+                            modulesNeeded.add(new ModuleNeeded(getDisplayName(), "", true,
                                     "mvn:org.slf4j/slf4j-reload4j/" + GAV.INSTANCE.getSlf4jVersion()));
                         }
                     }
 
                     final List<ModuleNeeded> componentsDeps = this.componentDependencies(dependencies, detail.getId());
                     modulesNeeded.addAll(componentsDeps);
-
                     // We're assuming that pluginLocation has format of groupId:artifactId:version
                     final String location = index.getId().getPluginLocation().trim();
-                    modulesNeeded.add(new ModuleNeeded(getName(), "", true, Mvn.locationToMvn(location).replace(MavenConstants.LOCAL_RESOLUTION_URL + '!', "")));
+                    modulesNeeded.add(new ModuleNeeded(getDisplayName(), "", true,
+                            Mvn.locationToMvn(location).replace(MavenConstants.LOCAL_RESOLUTION_URL + '!', "")));
                 }
             }
         }
@@ -531,39 +561,35 @@ public class ComponentModel extends AbstractBasicComponent implements IAdditiona
     }
 
     private List<ModuleNeeded> componentDependencies(final ComponentService.Dependencies dependencies,
-                                                     final ComponentId componentId) {
-        final Map<String, ?> componentDependencies = !Lookups.configuration().isActive() ? null : Lookups.client().v1().component().dependencies(componentId.getId());
+                                                     final ComponentId componentId) {     
+        final Map<String, ?> componentDependencies = !Lookups.configuration().isActive() ? null : Lookups.client().v1().component().dependencies(detail.getId().getId());
         if (componentDependencies != null && componentDependencies.containsKey("dependencies")) {
             final Collection<String> coordinates = Collection.class.cast(Map.class
                     .cast(Map.class.cast(componentDependencies.get("dependencies")).values().iterator().next())
                     .get("dependencies"));
-
+            
             if (coordinates != null) {
-                final Stream<String> directDependencies = coordinates.stream()
-                        .map(Mvn::locationToMvn)
-                        .map((String gav) -> gav.replace(MavenConstants.LOCAL_RESOLUTION_URL + '!', ""));
-
+                modulesNeeded.addAll(coordinates.stream()
+                        .map(coordinate -> new ModuleNeeded(getDisplayName(), "", true,
+                                Mvn.locationToMvn(coordinate).replace(MavenConstants.LOCAL_RESOLUTION_URL + '!', "")))
+                        .collect(Collectors.toList()));
                 //TODO fix this, this is wrong here as coordinates is a list object, not string, it's on purpose?
-                final Stream<String> beamDependencies;
                 if (coordinates.contains("org.apache.beam") || coordinates.contains(":beam-sdks-java-io")) {
-                    beamDependencies = dependencies.getBeam().stream();
-                } else {
-                    beamDependencies = Stream.empty();
+                    modulesNeeded.addAll(dependencies
+                            .getBeam()
+                            .stream()
+                            .map(s -> new ModuleNeeded(getDisplayName(), "", true, s))
+                            .collect(toList()));
                 }
-
-                final Stream<String> scalaDependencies;
+                
                 String content = coordinates.toString();
-                if (content.contains("org.scala-lang") && !content.contains(":scala-library:")) {
+                if(content.contains("org.scala-lang") && !content.contains(":scala-library:")) {
                     //we can't add this dependency to connector as spark/beam class conflict for TPD, so add here as provided by platform like spark/beam
-                    scalaDependencies = Stream.of("mvn:org.scala-lang/scala-library/2.12.12");
-                } else {
-                    scalaDependencies = Stream.empty();
+                    modulesNeeded.add(
+                            new ModuleNeeded(getDisplayName(), "", true, "mvn:org.scala-lang/scala-library/2.12.12"));
                 }
-                return Stream.concat(Stream.concat(directDependencies, beamDependencies), scalaDependencies)
-                        .map(this::moduleDependency)
-                        .collect(Collectors.toList());
             }
-        }
+        }       
         return Collections.emptyList();
     }
 

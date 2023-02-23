@@ -104,10 +104,12 @@ public class TaCoKitConst {
     public static final String CREATE_CONNECTION_ATCION_NAME = "create_connection";
 
     public static final String META_KEY_AFTER_VARIABLE = "variables::after::value"; //$NON-NLS-1$
+    
+    public static final String META_KEY_RETURN_VARIABLE = "variables::return::value";
 
-    public static final String AFTER_VARIABLE_VALUE_DELIMITER = "\\\\:";
+    public static final String RETURN_VARIABLE_VALUE_DELIMITER = "\\\\:";
 
-    public static final String AFTER_VARIABLE_LINE_DELIMITER = "\\\\;";
+    public static final String RETURN_VARIABLE_LINE_DELIMITER = "\\\\;";
 
     public static final String DATASTORE_PATH = "DATASTORE_PATH";
 

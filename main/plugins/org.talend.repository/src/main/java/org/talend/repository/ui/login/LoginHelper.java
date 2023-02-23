@@ -41,6 +41,7 @@ import org.eclipse.ui.PlatformUI;
 import org.talend.commons.CommonsPlugin;
 import org.talend.commons.exception.ClientException;
 import org.talend.commons.exception.CommonExceptionHandler;
+import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.exception.InformException;
 import org.talend.commons.exception.LoginException;
 import org.talend.commons.exception.OperationCancelException;
@@ -48,7 +49,6 @@ import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.exception.SystemException;
 import org.talend.commons.exception.WarningException;
 import org.talend.commons.ui.gmf.util.DisplayUtils;
-import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.commons.ui.runtime.exception.MessageBoxExceptionHandler;
 import org.talend.commons.utils.PasswordHelper;
 import org.talend.commons.utils.system.EnvironmentUtils;
@@ -470,7 +470,7 @@ public class LoginHelper {
         return toReturn;
     }
 
-    public boolean loginAuto() {
+    public boolean loginAuto() throws Exception {
         ConnectionBean connBean = getConnection();
         User user = getUser(connBean);
 
@@ -707,6 +707,15 @@ public class LoginHelper {
         if (branch.startsWith("branches/")) {
             branch = branch.substring("branches/".length());
         }
+        
+        IGITProviderService gs = IGITProviderService.get();
+        try {
+            if (gs != null && gs.isGITProject(project) && gs.isStandardMode()) {
+                location = gs.getProjectLocationKey(project);
+            }
+        } catch (PersistenceException e) {
+            ExceptionHandler.process(e);
+        }
         JSONObject json = prefManipulator.getLogonLocalBranchStatus(location, projectName);
         if (json != null) {
             if (!json.has(branch)) {
@@ -817,7 +826,7 @@ public class LoginHelper {
             if (retrieveProjectThread.isInterrupted()) {
                 return null;
             }
-            if (isAuthorizationException(e)) {
+            if (isAuthorizationException(e) && errorManager != null) {
                 errorManager.setHasAuthException(true);
                 errorManager.setAuthException(e);
             }

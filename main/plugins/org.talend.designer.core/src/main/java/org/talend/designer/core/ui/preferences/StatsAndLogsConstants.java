@@ -48,6 +48,8 @@ public class StatsAndLogsConstants {
     private static final String SYBASE = "SYBASE"; //$NON-NLS-1$
 
     private static final String SQL_SERVER = "MSSQL"; //$NON-NLS-1$
+    
+    private static final String INGRES = "INGRES";
 
     private static final String SQLITE = "SQLITE"; //$NON-NLS-1$
 
@@ -74,7 +76,7 @@ public class StatsAndLogsConstants {
             EDatabaseTypeName.ORACLE_OCI.getProduct(), EDatabaseTypeName.PLUSPSQL.getProduct(),
             EDatabaseTypeName.PSQL.getProduct(), EDatabaseTypeName.IBMDB2.getProduct(), EDatabaseTypeName.SYBASEASE.getProduct(),
             EDatabaseTypeName.SQLITE.getProduct(), EDatabaseTypeName.FIREBIRD.getProduct(), EDatabaseTypeName.ACCESS.getProduct(),
-            EDatabaseTypeName.TERADATA.getProduct(), EDatabaseTypeName.INFORMIX.getProduct() };
+            EDatabaseTypeName.INGRES.getProduct(), EDatabaseTypeName.TERADATA.getProduct(), EDatabaseTypeName.INFORMIX.getProduct() };
 
     private static final String[] PERL_DISPLAY_DBNAMES = new String[] {
             "MySQL", "Oracle with SID", "Oracle with service name", "Oracle OCI",//$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
@@ -82,7 +84,7 @@ public class StatsAndLogsConstants {
 
     private static final String[] JAVA_DISPLAY_DBNAMES = new String[] {
             "JDBC", "MySQL", "Microsoft SQL Server", "Oracle with SID", "Oracle with service name", "Oracle OCI",//$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$//$NON-NLS-6$
-            "PostgresPlus", "PostgreSQL", "IBM DB2", "Sybase", "SQLite", "FireBird", "Informix", "Access", "Teradata" }; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$ //$NON-NLS-7$ //$NON-NLS-8$ //$NON-NLS-9$ //$NON-NLS-10$
+            "PostgresPlus", "PostgreSQL", "IBM DB2", "Sybase", "Ingres", "SQLite", "FireBird", "Informix", "Access", "Teradata" }; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$ //$NON-NLS-7$ //$NON-NLS-8$ //$NON-NLS-9$ //$NON-NLS-10$
 
     private static final String[] PERL_DB_COMPONENTS = new String[] {
             "tMysqlOutput", ORACLE_SID_ALIAS, ORACLE_SN_ALIAS, ORACLE_OCI_ALIAS,//$NON-NLS-1$
@@ -100,22 +102,22 @@ public class StatsAndLogsConstants {
             IBM_DB2, SYBASE, SQLITE, FIREBIRD };
 
     private static final String[] JAVA_REPOSITORY_ITEMS = new String[] { JDBC, MYSQL, SQL_SERVER, ORACLE_WITH_SID_CONN_TYPE,
-            ORACLE_WITH_SERVICE_CONN_TYPE, ORACLE_OCI, POSTGRESPLUS, POSTGRESQL, IBM_DB2, SYBASE, SQLITE,
+            ORACLE_WITH_SERVICE_CONN_TYPE, ORACLE_OCI, POSTGRESPLUS, POSTGRESQL, IBM_DB2, INGRES, SYBASE, SQLITE,
             FIREBIRD, INFORMIX, ACCESS, TERADATA };
 
     private static final String[] JAVA_CODE_LIST = new String[] { JDBC, MYSQL, SQL_SERVER,
             "OCLE", "OCLE", "OCLE_OCI", POSTGRESPLUS, POSTGRESQL, //$NON-NLS-1$ //$NON-NLS-2$//$NON-NLS-3$
-            IBM_DB2, SYBASE, SQLITE, FIREBIRD, INFORMIX, ACCESS, TERADATA };
+            IBM_DB2, SYBASE, INGRES, SQLITE, FIREBIRD, INFORMIX, ACCESS, TERADATA };
 
     public static final String[] ORACLE_VERSION_DISPLAY = new String[] {
-    		"Oracle 18 and above", "Oracle 12", "Oracle 11", "Oracle 10", "Oracle 9", "Oracle 8" }; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+            "Oracle 18 and above", "Oracle 12 (Deprecated)", "Oracle 11 (Deprecated)" }; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                                                                                         // //$NON-NLS};
 
     public static final String[] ORACLE_VERSION_CODE = new String[] {
-    		"ORACLE_18", "ORACLE_12", "ORACLE_11", "ORACLE_10", "ORACLE_9", "ORACLE_8" }; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+            "ORACLE_18", "ORACLE_12", "ORACLE_11" }; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
 
     public static final String[] ORACLE_VERSION_DRIVER = new String[] {
-            "ojdbc8-19.3.0.0.jar", "ojdbc7.jar", "ojdbc6.jar", "ojdbc14.jar", "ojdbc14-9i.jar", //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-            "ojdbc12.jar" }; //$NON-NLS-1$
+            "ojdbc8-19.3.0.0.jar", "ojdbc7.jar", "ojdbc6.jar" }; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 
     // for bug 11487
     public static final String[] MYSQL_VERSION_DISPLAY = new String[] { "MySQL 8", "MySQL 5", "MariaDB" }; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
@@ -135,20 +137,17 @@ public class StatsAndLogsConstants {
             "jtds-1.3.1-patch-20190523.jar", "mssql-jdbc.jar"};//$NON-NLS-1$  //$NON-NLS-2$
 
 
-    public static final String[] DB_VERSION_DISPLAY = new String[] { "Oracle 18 and above", "Oracle 12", "Oracle 11", "Oracle 10",
-            "Oracle 9", "Oracle 8", "MySQL 8", "MySQL 5", "MariaDB", "Open source JTDS", "Microsoft", "Access 2003",
+    public static final String[] DB_VERSION_DISPLAY = new String[] { "Oracle 18 and above", "Oracle 12 (Deprecated)",
+            "Oracle 11 (Deprecated)", "MySQL 8", "MySQL 5", "MariaDB", "Open source JTDS", "Microsoft", "Access 2003",
             "Access 2007", "Prior to v9", "v9 +", "Sybase 16 (SQL Anywhere) and above", "Sybase 16", "Sybase 12/15" };
 
-
-    public static final String[] DB_VERSION_CODE = new String[] {"ORACLE_18", "ORACLE_12", "ORACLE_11", "ORACLE_10", "ORACLE_9", "ORACLE_8",
-            "MYSQL_8", "MYSQL_5", "MariaDB", "JTDS", "MSSQL_PROP", "ACCESS_2003", "ACCESS_2007", "PRIOR_TO_V9", "V9_X",
+    public static final String[] DB_VERSION_CODE = new String[] { "ORACLE_18", "ORACLE_12", "ORACLE_11", "MYSQL_8",
+            "MYSQL_5", "MariaDB", "JTDS", "MSSQL_PROP", "ACCESS_2003", "ACCESS_2007", "PRIOR_TO_V9", "V9_X",
             "SYBSEIQ_16_SA", "SYBSEIQ_16", "SYBSEIQ_12_15" };
 
-
-
-    public static final String[] DB_VERSION_DRIVER = new String[] {  "ORACLE_18","ORACLE_12", "ORACLE_11", "ORACLE_10", "ORACLE_9",
-            "ORACLE_8", "MYSQL_8", "MYSQL_5", "MARIADB", "JTDS", "MSSQL_PROP", "ACCESS_2003", "ACCESS_2007", "PRIOR_TO_V9",
-            "V9_X", "SYBSEIQ_16_SA", "SYBSEIQ_16", "SYBSEIQ_12_15" };
+    public static final String[] DB_VERSION_DRIVER = new String[] { "ORACLE_18", "ORACLE_12", "ORACLE_11", "MYSQL_8",
+            "MYSQL_5", "MARIADB", "JTDS", "MSSQL_PROP", "ACCESS_2003", "ACCESS_2007", "PRIOR_TO_V9", "V9_X",
+            "SYBSEIQ_16_SA", "SYBSEIQ_16", "SYBSEIQ_12_15" };
 
 
     public static final String[] ACCESS_VERSION_DISPLAY = new String[] { "Access 2003", "Access 2007" }; //$NON-NLS-1$ //$NON-NLS-2$

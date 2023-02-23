@@ -119,12 +119,16 @@ final java.util.Map<String, String> registry_metadata_<%=cid%> = new java.util.H
                         <%
                         }
                     }
-                    if (!hasDynamic){
-                        String [] columnMetas = java.util.Optional.ofNullable(p.getListItemsDisplayCodeName()).orElse(new String[0]);
-                        List<String> metas = new java.util.ArrayList();
-                        for (String k : columnMetas){
-                            metas.add(k.substring(k.lastIndexOf(".")+1));
-                        }
+                    
+                    String [] columnMetas = java.util.Optional.ofNullable(p.getListItemsDisplayCodeName()).orElse(new String[0]);
+                    List<String> metas = new java.util.ArrayList();
+                    for (String k : columnMetas){
+                        metas.add(k.substring(k.lastIndexOf(".")+1));
+                    }
+                    
+                    final boolean isFullSchema = metas.contains("talendType");
+                    
+                    if (isFullSchema || !hasDynamic){
                         for(int i = 0; i < columns.size(); i++) {
                             IMetadataColumn column = columns.get(i);
                             for (String meta : metas){
@@ -241,7 +245,15 @@ final java.util.Map<String, String> registry_metadata_<%=cid%> = new java.util.H
                         if (org.talend.core.model.utils.TalendTextUtils.isEnclosed(value)) {
                             value = org.talend.core.model.utils.TalendTextUtils.removeQuotes(value);
                         }
-                        value = org.talend.core.model.utils.TalendTextUtils.addQuotes(value);
+                        
+                        Object sourceName = p.getTaggedValue("org.talend.sdk.component.source");
+                        boolean isTacokit = "tacokit".equalsIgnoreCase(String.valueOf(sourceName));
+                        if(isTacokit) {
+                        	value = org.talend.core.model.utils.TalendTextUtils.addQuotes(org.talend.core.utils.TalendQuoteUtils.checkAndAddBackslashes(value));
+                        } else {
+                        	value = org.talend.core.model.utils.TalendTextUtils.addQuotes(value);
+                        }
+                        
                     }
                 }
                 if (value != null) {

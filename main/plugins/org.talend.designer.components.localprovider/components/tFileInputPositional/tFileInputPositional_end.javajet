@@ -35,6 +35,10 @@ if(!(filename_<%=cid %> instanceof java.io.InputStream)){
 	if(byteReader_<%=cid %>!=null) {
 		byteReader_<%=cid %>.close();
 	}
+	
+	if(in_<%=cid %>!=null) {
+		in_<%=cid %>.close();
+	}
 }
 globalMap.put("<%=cid %>_NB_LINE",nb_line_<%=cid %>);
 resourceMap.put("finish_<%=cid%>", true);
