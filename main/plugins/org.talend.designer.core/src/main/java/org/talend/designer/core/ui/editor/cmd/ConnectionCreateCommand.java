@@ -12,6 +12,7 @@
 // ============================================================================
 package org.talend.designer.core.ui.editor.cmd;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -29,7 +30,6 @@ import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.metadata.MetadataTable;
 import org.talend.core.model.process.EConnectionType;
 import org.talend.core.model.process.EParameterFieldType;
-import org.talend.core.model.process.IConnection;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.IExternalNode;
 import org.talend.core.model.process.INodeConnector;
@@ -427,10 +427,10 @@ public class ConnectionCreateCommand extends Command {
 					source.getMetadataList().add(newMetadata);
 				}
                 this.connection = new Connection(source, target, newLineStyle, connectorName, metaName, connectionName,
-                        monitorConnection, conn != null ? conn.getInputOrder() : -1);
+                        monitorConnection);
             } else {
                 this.connection = new Connection(source, target, newLineStyle, connectorName, metaName, connectionName, metaName,
-                        monitorConnection, this.connectionParameters, conn != null ? conn.getInputOrder() : -1);
+                        monitorConnection, this.connectionParameters);
             }
         } else { // in case of redo, reuse the same instance
             if (newMetadata != null) {
@@ -541,13 +541,6 @@ public class ConnectionCreateCommand extends Command {
      */
     public static void setCreatingConnection(boolean creatingConnection) {
         ConnectionCreateCommand.creatingConnection = creatingConnection;
-    }
-
-    private Connection conn;
-    public void setconnection(IConnection conn) {
-        if(conn instanceof Connection) {
-            this.conn = (Connection) conn;
-        }
     }
 
 }
