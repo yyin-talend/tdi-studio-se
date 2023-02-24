@@ -521,6 +521,10 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
             }
         }
 
+        if (exportTypeCombo.getItemCount() > 0) {
+            exportTypeCombo.setText(exportTypeCombo.getItem(0));
+        }
+        
         if (jType != null) {
         	exportTypeCombo.setText(jType.label);
 
@@ -543,7 +547,7 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
             }
         }
 
-        if (exportTypeCombo.getItemCount() > 0) {
+        if (exportTypeCombo.getItemCount() == 0) {
             exportTypeCombo.setText(exportTypeCombo.getItem(0));
         }
         
