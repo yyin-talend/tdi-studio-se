@@ -467,7 +467,7 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
             }
         }
 
-        for (JobExportType exportType : extractExportJobTypes()) {
+        for (JobExportType exportType : extractExportJobTypes()) {//[POJO, OSGI, MSESB, MSESB_IMAGE, IMAGE, ROUTE, SERVICE]
             if (!Boolean.getBoolean("talend.export.job.2." + exportType.toString() + ".hide")) { //$NON-NLS-1$//$NON-NLS-2$
                 // TESB-20767 Microservice should not be display with TDI license
                 if (exportType == JobExportType.ROUTE || exportType == JobExportType.SERVICE) {
@@ -520,9 +520,11 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
                 }
             }
         }
+
         if (exportTypeCombo.getItemCount() > 0) {
             exportTypeCombo.setText(exportTypeCombo.getItem(0));
         }
+        
         if (jType != null) {
         	exportTypeCombo.setText(jType.label);
 
@@ -543,6 +545,10 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
                     }
                 }
             }
+        }
+        
+        if (exportTypeCombo.getItemCount() == 1) {
+            exportTypeCombo.setText(exportTypeCombo.getItem(0));
         }
 
         if (exportTypeFixed != null) {

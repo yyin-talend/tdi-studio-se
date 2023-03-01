@@ -444,26 +444,20 @@ globalMap.put("<%=cid%>_ERROR_MESSAGE",e.getMessage());
                             if(temp_row_<%=cid%>[i]!=null) {
                                 temp_row_<%=cid%>[i] = df_<%=cid %>.format(doubleCell_<%=cid%>);
                             }
-                    	} else if(jxl.CellType.DATE== cell_<%=cid%>.getType()||jxl.CellType.DATE_FORMULA== cell_<%=cid%>.getType()){
+                        } else
+<%                  } %>
+                        if(jxl.CellType.DATE== cell_<%=cid%>.getType()||jxl.CellType.DATE_FORMULA== cell_<%=cid%>.getType()){
 
-	                            		  	jxl.DateCell dc_<%= cid %> = (jxl.DateCell)cell_<%=cid%>;
-                            				java.util.Date date_<%= cid %> = dc_<%= cid %>.getDate();
-                        					temp_row_<%= cid %>[i] = sdf_<%= cid %>.format(date_<%= cid %>);
-                        					
+                            jxl.DateCell dc_<%= cid %> = (jxl.DateCell)cell_<%=cid%>;
+                            java.util.Date date_<%= cid %> = dc_<%= cid %>.getDate();
+                            temp_row_<%= cid %>[i] = sdf_<%= cid %>.format(date_<%= cid %>);
+
                         } else{
                             temp_row_<%= cid %>[i] = cell_<%=cid%>.getContents();
                         }
-<%
-                    }else{
-%>
-                        temp_row_<%= cid %>[i] = cell_<%=cid%>.getContents();
-<%
-                    }
-%>
-
-				}else{
-					temp_row_<%= cid %>[i]="";
-				}
+                }else{
+                     temp_row_<%= cid %>[i]="";
+                }
 			}
 
 			boolean whetherReject_<%=cid %> = false;
@@ -1442,6 +1436,9 @@ globalMap.put("<%=cid%>_ERROR_MESSAGE",e.getMessage());
 %>
 				try{
 					<%=firstConnName %>.<%=column.getLabel() %> = ParserUtils.parseTo_Date(temp_row_<%=cid %>[columnIndex_<%=cid%>]<%=(isTrimAll || (!trimSelects.isEmpty() && ("true").equals(trimSelects.get(i).get("TRIM"))))?".trim()":"" %>, <%= patternValue %>);
+					if(excelReader_<%=cid%>.isDate1904()){
+				        <%=firstConnName %>.<%=column.getLabel() %> = com.talend.excel.xssf.event.ColumnUtil.convert_Date1904(<%=firstConnName %>.<%=column.getLabel() %>);
+				    }
 				}catch(java.lang.Exception e){
 globalMap.put("<%=cid%>_ERROR_MESSAGE",e.getMessage());
 					<% // for bug TDI-19404 %>
