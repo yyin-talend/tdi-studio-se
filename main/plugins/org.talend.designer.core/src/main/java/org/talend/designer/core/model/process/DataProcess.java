@@ -554,9 +554,6 @@ public class DataProcess implements IGeneratingProcess {
             uniqueName = prefix + uniqueName;
         }
         dataNode.setUniqueName(uniqueName);
-        if (!graphicalNode.getUniqueName().equals(graphicalNode.getGeneratingUniqueName())) {
-            dataNode.setGeneratingUniqueName(graphicalNode.getGeneratingUniqueName());
-        }
         dataNode.setSubProcessStart(graphicalNode.isSubProcessStart());
         dataNode.setThereLinkWithHash(graphicalNode.isThereLinkWithHash());
         dataNode.setHasConditionalOutputs(graphicalNode.hasConditionalOutputs());
@@ -906,9 +903,6 @@ public class DataProcess implements IGeneratingProcess {
             AbstractNode curNode;
             if (component.getPluginExtension() == null) {
                 curNode = new DataNode(component, uniqueName);
-                if (!graphicalNode.getUniqueName().equals(graphicalNode.getGeneratingUniqueName())) {
-                    curNode.setGeneratingUniqueName(graphicalNode.getGeneratingUniqueName() + "_" + curItem.getName());
-                }
             } else {
                 // mapper
                 curNode = (AbstractNode) ExternalNodesFactory.getInstance(component.getPluginExtension());
@@ -928,9 +922,6 @@ public class DataProcess implements IGeneratingProcess {
                 curNode.setListConnector(graphicalNode.getListConnector());
                 copyElementParametersValue(graphicalNode, curNode);
                 curNode.setUniqueName(uniqueName);
-                if (!graphicalNode.getUniqueName().equals(graphicalNode.getGeneratingUniqueName())) {
-                    curNode.setGeneratingUniqueName(graphicalNode.getGeneratingUniqueName() + "_" + curItem.getName());
-                }
                 curNode.setSubProcessStart(graphicalNode.isSubProcessStart());
                 curNode.setThereLinkWithHash(graphicalNode.isThereLinkWithHash());
                 curNode.setHasConditionalOutputs(graphicalNode.hasConditionalOutputs());
@@ -1757,9 +1748,7 @@ public class DataProcess implements IGeneratingProcess {
         }
         // Build a simple copy of the process (to have new objects, avoid to modify the ones in the designer..)
         List<INode> newGraphicalNodeList = buildCopyOfGraphicalNodeList(graphicalNodeList);
-        clearNodeReplaceProviderCache();
         replaceNodeFromProviders(newGraphicalNodeList);
-        clearNodeReplaceProviderCache();
         // job settings extra (feature 2710)
         if (JobSettingsManager.isImplicittContextLoadActived(duplicatedProcess)) {
             List<DataNode> contextLoadNodes = JobSettingsManager.createExtraContextLoadNodes(duplicatedProcess);
@@ -3736,12 +3725,6 @@ public class DataProcess implements IGeneratingProcess {
         // such as ReplaceParallelization for Partition row in Joblet
         if (needReplaceForJoblet) {
             replaceNodeFromProviders(graphicalNodeList);
-        }
-    }
-
-    public void clearNodeReplaceProviderCache() {
-        if (IJobletProviderService.get() != null) {
-            IJobletProviderService.get().clearJobletProcessProviderCache();
         }
     }
 
