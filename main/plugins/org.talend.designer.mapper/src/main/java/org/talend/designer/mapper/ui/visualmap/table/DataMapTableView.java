@@ -480,7 +480,7 @@ public abstract class DataMapTableView extends Composite implements IDataMapTabl
         headerGridData.heightHint = getHeaderHeight();
         headerComposite.setLayoutData(headerGridData);
         GridLayout headerLayout = new GridLayout();
-        CoreUIPlugin.setCSSClass(headerComposite, "MapperTableHeader");
+       // CoreUIPlugin.setCSSClass(headerComposite, "MapperTableHeader");
         
         int margin = 0;
         headerLayout.marginLeft = 3;
@@ -512,7 +512,7 @@ public abstract class DataMapTableView extends Composite implements IDataMapTabl
         dataNameLabel.minimumWidth = nameLabel.getText().length() * 8;
 
         nameLabel.setLayoutData(dataNameLabel);
-        CoreUIPlugin.setCSSClass(nameLabel, "MapperTableHeader");
+       // CoreUIPlugin.setCSSClass(nameLabel, "MapperTableHeader");
         
         int rightStyle = toolbarNeedToHaveRightStyle() ? SWT.RIGHT : SWT.NONE;
         toolBarActions = new ToolBar(headerComposite, SWT.FLAT | rightStyle | SWT.NONE);
@@ -605,6 +605,12 @@ public abstract class DataMapTableView extends Composite implements IDataMapTabl
     protected abstract void createContent();
 
     protected abstract void createMapSettingTable();
+    
+    public void setTableHeaderBackground(Color color) {
+        if(headerComposite != null && !headerComposite.isDisposed()) {
+            headerComposite.setBackground(color);
+        } 
+    }
 
     protected void initMapSettingColumns(final TableViewerCreator<GlobalMapEntry> tableViewerCreator) {
         final Table table = tableViewerCreator.getTable();
@@ -2600,7 +2606,7 @@ public abstract class DataMapTableView extends Composite implements IDataMapTabl
             expressionFilterText.setVisible(table.isActivateExpressionFilter());
             expressionFilterText.setBackground(Display.getCurrent().getSystemColor(SWT.COLOR_DARK_RED));
             gridData.exclude = !table.isActivateExpressionFilter();
-            CoreUIPlugin.setCSSClass(expressionFilterText, "MapperTableHeader");
+           // CoreUIPlugin.setCSSClass(expressionFilterText, "MapperTableHeader");
             expressionFilterText.addFocusListener(new FocusListener() {
 
                 public void focusGained(FocusEvent e) {

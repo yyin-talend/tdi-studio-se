@@ -54,6 +54,7 @@ import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.ToolItem;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.PlatformUI;
+import org.talend.commons.ui.runtime.ITalendThemeService;
 import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.commons.ui.runtime.image.ImageUtils;
 import org.talend.commons.ui.runtime.swt.tableviewer.selection.ILineSelectionListener;
@@ -150,7 +151,10 @@ import org.talend.designer.mapper.utils.ParseExpressionResult;
  *
  */
 public class UIManager extends AbstractUIManager {
-
+    
+    private final Color UNSELECTED_TABLEHERDER_BG = ITalendThemeService.getColor("COLOR_TMAP_TABELHEADER_UNSELECTED_BG").orElse(Display.getDefault().getSystemColor(SWT.COLOR_WIDGET_LIGHT_SHADOW));;
+    private final Color SELECTED_TABLEHERDER_BG = ITalendThemeService.getColor("COLOR_TMAP_TABELHEADER_SELECTED_BG").orElse(UNSELECTED_TABLEHERDER_BG);
+    
     private final MapperManager mapperManager;
 
     private MapperUI mapperUI;
@@ -439,10 +443,10 @@ public class UIManager extends AbstractUIManager {
                 // disable highlight for other DataMapTableView and highlight selected DataMapTableView
                 for (IDataMapTable table : tables) {
                     DataMapTableView otherDataMapTableView = mapperManager.retrieveAbstractDataMapTableView(table);
-                    otherDataMapTableView.setBackground(dataMapTableView.getDisplay().getSystemColor(
-                            SWT.COLOR_WIDGET_LIGHT_SHADOW));
+                    otherDataMapTableView.setBackground(UNSELECTED_TABLEHERDER_BG);
+                    otherDataMapTableView.setTableHeaderBackground(UNSELECTED_TABLEHERDER_BG);
                 }
-                dataMapTableView.setBackground(dataMapTableView.getDisplay().getSystemColor(SWT.COLOR_YELLOW));
+                dataMapTableView.setTableHeaderBackground(SELECTED_TABLEHERDER_BG);
             }
 
             if (selectAllEntries) {
