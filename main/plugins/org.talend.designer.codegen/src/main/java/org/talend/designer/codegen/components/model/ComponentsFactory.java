@@ -74,7 +74,6 @@ import org.talend.core.model.components.IComponentsFactory;
 import org.talend.core.model.components.IComponentsHandler;
 import org.talend.core.model.components.filters.ComponentsFactoryProviderManager;
 import org.talend.core.model.components.filters.IComponentFactoryFilter;
-import org.talend.core.model.general.ModuleNeeded;
 import org.talend.core.runtime.util.ComponentsLocationProvider;
 import org.talend.core.ui.IJobletProviderService;
 import org.talend.core.ui.ISparkJobletProviderService;
@@ -118,6 +117,8 @@ public class ComponentsFactory implements IComponentsFactory {
     private IProgressMonitor monitor;
 
     private SubMonitor subMonitor;
+
+    private static Map<IComponent, File> customComponentFolderMap = new HashMap<IComponent, File>();
 
     private static Map<String, Map<String, IComponent>> componentsCache = new HashMap<String, Map<String, IComponent>>();
 
@@ -170,6 +171,7 @@ public class ComponentsFactory implements IComponentsFactory {
 			} // not used anymore
             long startTime = System.currentTimeMillis();
 
+            customComponentFolderMap.clear();
             // TimeMeasure.display = true;
             // TimeMeasure.displaySteps = true;
             // TimeMeasure.measureActive = true;
@@ -226,6 +228,8 @@ public class ComponentsFactory implements IComponentsFactory {
             isInitialising.set(false);
             initialiseLock.unlock();
         }
+        // sync custom component libs after init
+        syncCustomComponentLibs();
     }
 
     private boolean wait4InitialiseFinish() {
@@ -632,7 +636,7 @@ public class ComponentsFactory implements IComponentsFactory {
                             componentList.add(currentComp);
                             if (isCustom) {
                                 customComponentList.add(currentComp);
-                                syncCustomComponentLibs(currentFolder, currentComp.getModulesNeeded());
+                                customComponentFolderMap.put(currentComp, currentFolder);
                             }
                             if (pathSource != null) {
                                 Path userComponent = new Path(pathSource);
@@ -672,18 +676,22 @@ public class ComponentsFactory implements IComponentsFactory {
         }
     }
 
-    private void syncCustomComponentLibs(File componentFolder, List<ModuleNeeded> modulesNeeded) {
+    private void syncCustomComponentLibs() {
         try {
             if (GlobalServiceRegister.getDefault().isServiceRegistered(ILibraryManagerService.class)) {
                 ILibraryManagerService libraryService = GlobalServiceRegister.getDefault()
                         .getService(ILibraryManagerService.class);
-                libraryService.deployLibsFromCustomComponents(componentFolder, modulesNeeded);
+                if (libraryService != null) {
+                    customComponentFolderMap.forEach((component, componentFolder) -> libraryService
+                            .deployLibsFromCustomComponents(componentFolder, component.getModulesNeeded()));
+                }
             }
         } catch (Exception e) {
             ExceptionHandler.process(e);
+        } finally {
+            customComponentFolderMap.clear();
         }
     }
-
     /**
      * DOC smallet Comment method "checkComponentFolder".
      *
