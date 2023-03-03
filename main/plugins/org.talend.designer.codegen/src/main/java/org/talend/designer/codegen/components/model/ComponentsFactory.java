@@ -59,7 +59,6 @@ import org.talend.core.model.components.IComponentsFactory;
 import org.talend.core.model.components.IComponentsHandler;
 import org.talend.core.model.components.filters.ComponentsFactoryProviderManager;
 import org.talend.core.model.components.filters.IComponentFactoryFilter;
-import org.talend.core.model.general.ModuleNeeded;
 import org.talend.core.runtime.util.ComponentsLocationProvider;
 import org.talend.core.ui.IJobletProviderService;
 import org.talend.core.ui.ISparkJobletProviderService;
@@ -91,6 +90,8 @@ public class ComponentsFactory implements IComponentsFactory {
     private Set<IComponent> componentList = Collections.synchronizedSet(new HashSet<>());
 
     private static Set<IComponent> customComponentList = new HashSet<>(); // user/exchange/tck components
+
+    private static Map<IComponent, File> customComponentFolderMap = new HashMap<IComponent, File>();
 
     private IProgressMonitor monitor;
 
@@ -134,6 +135,7 @@ public class ComponentsFactory implements IComponentsFactory {
             componentList.clear();
             skeletonList.clear();
             customComponentList.clear();
+            customComponentFolderMap.clear();
 
             boolean needRegenerate = false;
             if (CodeGeneratorActivator.getDefault().getBundle().getBundleContext().getProperty("osgi.dev") != null) {
@@ -171,6 +173,8 @@ public class ComponentsFactory implements IComponentsFactory {
             initComponentNameMap();
 
             isInitializing.set(false);
+            // sync custom component libs after init
+            syncCustomComponentLibs();
             // TimeMeasure.step("initComponents", "createCache");
             log.info(componentList.size() + " components loaded in " + (System.currentTimeMillis() - startTime) + " ms"); //$NON-NLS-1$ //$NON-NLS-2$
 
@@ -370,8 +374,7 @@ public class ComponentsFactory implements IComponentsFactory {
                     } else {
                         componentList.add(currentComp);
                         customComponentList.add(currentComp);
-
-                        syncCustomComponentLibs(currentFolder, currentComp.getModulesNeeded());
+                        customComponentFolderMap.put(currentComp, currentFolder);
                     }
                 } catch (MissingMainXMLComponentFileException e) {
                     log.trace(currentFolder.getName() + " is not a " + getCodeLanguageSuffix() + " component", e); //$NON-NLS-1$ //$NON-NLS-2$
@@ -391,15 +394,20 @@ public class ComponentsFactory implements IComponentsFactory {
         }
     }
 
-    private void syncCustomComponentLibs(File componentFolder, List<ModuleNeeded> modulesNeeded) {
+    private void syncCustomComponentLibs() {
         try {
             if (GlobalServiceRegister.getDefault().isServiceRegistered(ILibraryManagerService.class)) {
                 ILibraryManagerService libraryService = GlobalServiceRegister.getDefault()
                         .getService(ILibraryManagerService.class);
-                libraryService.deployLibsFromCustomComponents(componentFolder, modulesNeeded);
+                if (libraryService != null) {
+                    customComponentFolderMap.forEach((component, componentFolder) -> libraryService
+                            .deployLibsFromCustomComponents(componentFolder, component.getModulesNeeded()));
+                }
             }
         } catch (Exception e) {
             ExceptionHandler.process(e);
+        } finally {
+            customComponentFolderMap.clear();
         }
     }
 
