@@ -24,9 +24,9 @@ public enum ImageInfo {
     RESTORE_ICON("/icons/uncollapse16.png"), //$NON-NLS-1$
     // MAPPER_ICON("/icons/tMap32.ico"),
     ADD_CONSTRAINT_ICON("/icons/add_constraint16.png"), //$NON-NLS-1$
-    REMOVE_CONSTRAINT_ICON("/icons/remove_constraint16.png"), //$NON-NLS-1$
+
     CHECKED_ICON("/icons/checked.png"), //$NON-NLS-1$
-    UNCHECKED_ICON("/icons/unchecked.png"), //$NON-NLS-1$
+
     ADD_FILTER_ICON("/icons/addfilter.png"), //$NON-NLS-1$
     PROPERTY_TOOL_ICON("/icons/property.png"), //$NON-NLS-1$
     TMAP_FILTER_ICON("/icons/tmap_filter.png"), //$NON-NLS-1$
