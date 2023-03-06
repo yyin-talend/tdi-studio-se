@@ -305,7 +305,7 @@ public class ComponentListController extends AbstractElementPropertySectionContr
             if (node.getJobletNode() != null) {
                 node = node.getJobletNode();
             }
-            final String uniqueName = node.getUniqueName();
+            final String uniqueName = node.getGeneratingUniqueName();
             if (uniqueName.equals(currentNode.getUniqueName())) {
                 continue;
             }
