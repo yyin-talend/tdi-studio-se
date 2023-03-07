@@ -147,9 +147,9 @@ public class JavaCodeProblemsChecker extends CodeProblemsChecker {
                         for (int i = 0; i < generatingNodesListSize; i++) {
                             INode node = generatingNodes.get(i);
                             /* startsWith method used in case of virtual component such as 'tMap_1_TMAP_OUT' */
-                            if (node.getUniqueName().equals(selectedNodeName)
+                            if (node.getGeneratingUniqueName().equals(selectedNodeName)
                                     || node.getUniqueName().startsWith(selectedNodeName + "_")) { //$NON-NLS-1$
-                                uniqueNodeName = node.getUniqueName();
+                                uniqueNodeName = node.getGeneratingUniqueName();
                                 found = true;
                                 break;
                             }

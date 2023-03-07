@@ -790,7 +790,7 @@ public final class Expression {
             // if relatedNodeName is empty, maybe means this property have not been setted
             if (relatedNodeName != null && !relatedNodeName.trim().isEmpty()) {
                 for (INode aNode : node.getProcess().getGeneratingNodes()) {
-                    if (aNode.getUniqueName().equals(relatedNodeName)) {
+                    if (aNode.getGeneratingUniqueName().equals(relatedNodeName)) {
                         return aNode.getElementParameters();
                     }
                 }
