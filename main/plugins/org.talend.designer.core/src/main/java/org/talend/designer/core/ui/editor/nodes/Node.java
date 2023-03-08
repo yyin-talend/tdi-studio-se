@@ -2992,7 +2992,7 @@ public class Node extends Element implements IGraphicalNode {
                                 }
                                 boolean foundValue = false;
                                 for (INode datanode : nodeList) {
-                                    if (datanode.getUniqueName().equals(param.getValue())) {
+                                    if (datanode.getGeneratingUniqueName().equals(param.getValue())) {
                                         foundValue = true;
                                         break;
                                     }
