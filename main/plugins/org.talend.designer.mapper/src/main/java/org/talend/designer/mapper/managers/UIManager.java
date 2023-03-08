@@ -152,9 +152,6 @@ import org.talend.designer.mapper.utils.ParseExpressionResult;
  */
 public class UIManager extends AbstractUIManager {
     
-    private final Color UNSELECTED_TABLEHERDER_BG = ITalendThemeService.getColor("COLOR_TMAP_TABELHEADER_UNSELECTED_BG").orElse(Display.getDefault().getSystemColor(SWT.COLOR_WIDGET_LIGHT_SHADOW));;
-    private final Color SELECTED_TABLEHERDER_BG = ITalendThemeService.getColor("COLOR_TMAP_TABELHEADER_SELECTED_BG").orElse(UNSELECTED_TABLEHERDER_BG);
-    
     private final MapperManager mapperManager;
 
     private MapperUI mapperUI;

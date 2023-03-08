@@ -30,7 +30,7 @@ import org.eclipse.swt.widgets.ToolItem;
 import org.talend.commons.ui.runtime.image.EImage;
 import org.talend.designer.abstractmap.model.tableentry.ITableEntry;
 import org.talend.designer.dbmap.managers.MapperManager;
-import org.talend.designer.dbmap.ui.visualmap.table.EntryState;
+import org.talend.designer.mapper.ui.visualmap.table.EntryState;
 
 /**
  * DOC hcyi class global comment. Detailled comment

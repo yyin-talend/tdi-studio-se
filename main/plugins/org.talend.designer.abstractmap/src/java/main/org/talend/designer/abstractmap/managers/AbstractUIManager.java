@@ -13,6 +13,10 @@
 package org.talend.designer.abstractmap.managers;
 
 import org.apache.log4j.Level;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.widgets.Display;
+import org.talend.commons.ui.runtime.ITalendThemeService;
 import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.designer.abstractmap.ui.dnd.DraggingInfosPopup;
 import org.talend.designer.abstractmap.ui.properties.LINK_STYLE;
@@ -22,6 +26,9 @@ import org.talend.designer.abstractmap.ui.properties.LINK_STYLE;
  *
  */
 public abstract class AbstractUIManager {
+    
+    protected final Color UNSELECTED_TABLEHERDER_BG = ITalendThemeService.getColor("COLOR_TMAP_TABELHEADER_UNSELECTED_BG").orElse(Display.getDefault().getSystemColor(SWT.COLOR_WIDGET_LIGHT_SHADOW));;
+    protected final Color SELECTED_TABLEHERDER_BG = ITalendThemeService.getColor("COLOR_TMAP_TABELHEADER_SELECTED_BG").orElse(UNSELECTED_TABLEHERDER_BG);
 
     private LINK_STYLE linkStyle;
 

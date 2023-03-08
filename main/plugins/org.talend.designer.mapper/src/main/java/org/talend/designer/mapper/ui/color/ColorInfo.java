@@ -55,6 +55,8 @@ public enum ColorInfo {
 
     COLOR_FOREGROUND_ERROR_EXPRESSION_CELL(255, 255, 255), // white
     COLOR_FOREGROUND_VALID_EXPRESSION_CELL(0, 0, 0), // black
+    
+    COLOR_BACKGROUND_WARNING_EXPRESSION_CELL(255, 190, 150), // light orange
 
     COLOR_DRAGGING_INSERTION_INDICATOR(0, 78, 152), // blue
     COLOR_TMAP_PREVIEW(235, 234, 230);
@@ -163,6 +165,10 @@ public enum ColorInfo {
     
     public static Color COLOR_TMAP_PREVIEW() {
         return ITalendThemeService.getColor("COLOR_TMAP_PREVIEW").orElse(COLOR_TMAP_PREVIEW.getColor());
+    }
+    
+    public static Color COLOR_BACKGROUND_WARNING_EXPRESSION_CELL() {
+        return ITalendThemeService.getColor("COLOR_BACKGROUND_WARNING_EXPRESSION_CELL").orElse(COLOR_BACKGROUND_WARNING_EXPRESSION_CELL.getColor());
     }
     
 //    public static Color COLOR_ENTRY_SELECTED() {

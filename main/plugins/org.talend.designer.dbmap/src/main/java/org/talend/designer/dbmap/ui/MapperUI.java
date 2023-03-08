@@ -58,8 +58,6 @@ import org.talend.designer.dbmap.managers.UIManager;
 import org.talend.designer.dbmap.model.MapperModel;
 import org.talend.designer.dbmap.model.table.InputTable;
 import org.talend.designer.dbmap.model.table.OutputTable;
-import org.talend.designer.dbmap.ui.color.ColorInfo;
-import org.talend.designer.dbmap.ui.color.ColorProviderMapper;
 import org.talend.designer.dbmap.ui.event.MouseMoveScrollZoneHelper;
 import org.talend.designer.dbmap.ui.font.FontProviderMapper;
 import org.talend.designer.dbmap.ui.footer.FooterComposite;
@@ -75,6 +73,8 @@ import org.talend.designer.dbmap.ui.visualmap.zone.scrollable.InputTablesZoneVie
 import org.talend.designer.dbmap.ui.visualmap.zone.scrollable.OutputTablesZoneView;
 import org.talend.designer.dbmap.ui.visualmap.zone.scrollable.TablesZoneView;
 import org.talend.designer.dbmap.ui.visualmap.zone.scrollable.VarsTableZoneView;
+import org.talend.designer.mapper.ui.MapperScrolledComposite;
+import org.talend.designer.mapper.ui.color.ColorInfo;
 
 /**
  * DOC amaumont class global comment. Detailled comment <br/>
@@ -185,7 +185,7 @@ public class MapperUI {
         addParentListeners(uiManager, uiProperties);
 
         final Display display = mapperUIParent.getDisplay();
-        bgColorLinksZone = ColorProviderMapper.getColor(ColorInfo.COLOR_BACKGROUND_LINKS_ZONE);
+        bgColorLinksZone = ColorInfo.COLOR_BACKGROUND_LINKS_ZONE();
 
         GridLayout parentLayout = new GridLayout(1, true);
         mapperUIParent.setLayout(parentLayout);
@@ -260,7 +260,7 @@ public class MapperUI {
         createOutputZoneWithTables(mapperModel, uiManager, display);
 
         if (WindowSystem.isBigSurOrLater()) {
-            Color bgColorTransparent = ColorProviderMapper.getRGBAColor(ColorInfo.COLOR_BACKGROUND_TRANSPRENT);
+            Color bgColorTransparent = ColorInfo.COLOR_BACKGROUND_TRANSPRENT();
             datasFlowViewSashForm.setBackgroundMode(SWT.INHERIT_NONE);
             sc1.setBackground(bgColorTransparent);
             inputTablesZoneView.setBackground(bgColorTransparent);
@@ -534,7 +534,7 @@ public class MapperUI {
         inputsZone = new InputsZone(datasFlowViewSashForm, getZoneStyle(), mapperManager);
         inputsZone.createHeaderZoneComponents();
 
-        sc1 = new ScrolledComposite(inputsZone, getBorder() | SWT.H_SCROLL | SWT.V_SCROLL);
+        sc1 = new MapperScrolledComposite(inputsZone, getBorder() | SWT.H_SCROLL | SWT.V_SCROLL);
         // this.dropTargetOperationListener.addControl(sc1);
 
         GridData sc1GridData = new GridData(GridData.FILL_BOTH);
@@ -621,7 +621,7 @@ public class MapperUI {
         SearchZone searchZone = new SearchZone(datasFlowViewSashForm, getZoneStyle(), mapperManager);
         searchZone.createSearchZone();
 
-        sc2 = new ScrolledComposite(searchZone, getBorder() | SWT.H_SCROLL | SWT.V_SCROLL);
+        sc2 = new MapperScrolledComposite(searchZone, getBorder() | SWT.H_SCROLL | SWT.V_SCROLL);
 
         GridData sc2GridData = new GridData(GridData.FILL_BOTH);
         sc2.setLayoutData(sc2GridData);
@@ -676,7 +676,7 @@ public class MapperUI {
         outputsZone.createHeaderZoneComponents();
         // this.dropTargetOperationListener.addControl(outputsZone);
 
-        sc3 = new ScrolledComposite(outputsZone, getBorder() | SWT.H_SCROLL | SWT.V_SCROLL);
+        sc3 = new MapperScrolledComposite(outputsZone, getBorder() | SWT.H_SCROLL | SWT.V_SCROLL);
         // this.dropTargetOperationListener.addControl(sc3);
 
         GridData sc3GridData = new GridData(GridData.FILL_BOTH);
@@ -745,7 +745,6 @@ public class MapperUI {
             threadToEvaluatePerformance.interrupt();
         }
         ImageProviderMapper.releaseImages();
-        ColorProviderMapper.releaseColors();
         FontProviderMapper.releaseFonts();
     }
 
