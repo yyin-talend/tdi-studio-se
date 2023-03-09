@@ -120,12 +120,7 @@ public class TaCoKitGuessSchemaProcess {
             final Future<GuessSchemaResult> result = executorService.submit(() -> {
                 final Pattern pattern = Pattern.compile("^\\[\\s*(INFO|WARN|ERROR|DEBUG|TRACE)\\s*]");
                 String out;
-                final List<String> err = new ArrayList();
-                // read stderr stream
-                try (final BufferedReader reader = new BufferedReader(new InputStreamReader(executeProcess.getErrorStream()))) {
-                    err.addAll(reader.lines().collect(toList()));
-                    err.add("===== Root cause ======");
-                }
+                final List<String> err = new ArrayList<String>();
                 // read stdout stream
                 try (final BufferedReader reader =
                              new BufferedReader(new InputStreamReader(executeProcess.getInputStream()))) {
@@ -135,6 +130,13 @@ public class TaCoKitGuessSchemaProcess {
                             .filter(l -> l.startsWith("[") || l.startsWith("{"))    // ignore line with non json data
                             .collect(joining("\n"));
                 }
+                
+                // read stderr stream
+                try (final BufferedReader reader = new BufferedReader(new InputStreamReader(executeProcess.getErrorStream()))) {
+                     err.addAll(reader.lines().parallel().collect(toList()));
+                     err.add("===== Root cause ======");
+                }
+                
                 return new GuessSchemaResult(out, err.stream().collect(joining("\n")));
             });
 
